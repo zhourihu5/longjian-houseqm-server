@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.longfor.longjian.houseqm.dao.HouseQmCheckTaskIssueLogMapper" >
+  <resultMap id="BaseResultMap" type="com.longfor.longjian.houseqm.po.HouseQmCheckTaskIssueLog" >
+    <!--
+      WARNING - @mbg.generated
+    -->
+    <id column="id" property="id" jdbcType="INTEGER" />
+    <result column="project_id" property="projectId" jdbcType="INTEGER" />
+    <result column="task_id" property="taskId" jdbcType="INTEGER" />
+    <result column="uuid" property="uuid" jdbcType="VARCHAR" />
+    <result column="issue_uuid" property="issueUuid" jdbcType="VARCHAR" />
+    <result column="sender_id" property="senderId" jdbcType="INTEGER" />
+    <result column="status" property="status" jdbcType="INTEGER" />
+    <result column="client_create_at" property="clientCreateAt" jdbcType="TIMESTAMP" />
+    <result column="create_at" property="createAt" jdbcType="TIMESTAMP" />
+    <result column="update_at" property="updateAt" jdbcType="TIMESTAMP" />
+    <result column="delete_at" property="deleteAt" jdbcType="TIMESTAMP" />
+  </resultMap>
+  <resultMap id="ResultMapWithBLOBs" type="com.longfor.longjian.houseqm.po.HouseQmCheckTaskIssueLog" extends="BaseResultMap" >
+    <!--
+      WARNING - @mbg.generated
+    -->
+    <result column="desc" property="desc" jdbcType="LONGVARCHAR" />
+    <result column="attachment_md5_list" property="attachmentMd5List" jdbcType="LONGVARCHAR" />
+    <result column="audio_md5_list" property="audioMd5List" jdbcType="LONGVARCHAR" />
+    <result column="memo_audio_md5_list" property="memoAudioMd5List" jdbcType="LONGVARCHAR" />
+    <result column="detail" property="detail" jdbcType="LONGVARCHAR" />
+  </resultMap>
+  <sql id="Base_Column_List" >
+    <!--
+      WARNING - @mbg.generated
+    -->
+    id, project_id, task_id, uuid, issue_uuid, sender_id, status, client_create_at, create_at, 
+    update_at, delete_at
+  </sql>
+  <sql id="Blob_Column_List" >
+    <!--
+      WARNING - @mbg.generated
+    -->
+    desc, attachment_md5_list, audio_md5_list, memo_audio_md5_list, detail
+  </sql>
+</mapper>

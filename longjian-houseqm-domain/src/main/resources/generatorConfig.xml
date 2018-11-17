@@ -6,7 +6,7 @@
 <generatorConfiguration>
     <!--mysql 连接数据库jar 这里选择自己本地位置-->
     <classPathEntry location="C:/Project/programs/mysql-connector-java-5.1.42-bin.jar" />
-    <context id="generateTables" targetRuntime="MyBatis3">
+    <context id="generateTables" targetRuntime="MyBatis3"  defaultModelType="flat">
 
         <plugin type="tk.mybatis.mapper.generator.MapperPlugin">
             <property name="mappers" value="com.longfor.gaia.gfs.data.mybatis.LFMySQLMapper"/>

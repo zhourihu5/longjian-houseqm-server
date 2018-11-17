@@ -1,8 +1,6 @@
 package com.longfor.longjian.houseqm.app.appService;
 
 import com.google.common.collect.Lists;
-import com.longfor.longjian.houseqm.app.vo.CompanyVo;
-import com.longfor.longjian.houseqm.domain.externalService.TeamService;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections.CollectionUtils;
 import org.springframework.stereotype.Repository;
