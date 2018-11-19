@@ -19,6 +19,8 @@ import javax.validation.constraints.Min;
  * http://192.168.37.159:3000/project/8/interface/api/306  项目任务信息汇总
  * http://192.168.37.159:3000/project/8/interface/api/310  获取区域列表
  * http://192.168.37.159:3000/project/8/interface/api/314  获取任务详情-总体情况
+ * http://192.168.37.159:3000/project/8/interface/api/318  获取整改追踪信息
+ * http://192.168.37.159:3000/project/8/interface/api/322  获取区域下任务信息
  *
  * @author lipeishuai
  * @date 2018/11/17 15:07
