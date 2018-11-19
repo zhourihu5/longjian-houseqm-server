@@ -29,11 +29,17 @@ public class IssueListController {
 
 
     /**
-     * 问题检索
      *
      * @param projectId
      * @param categoryCls
      * @param pageLevel
+     * @param taskId
+     * @param areaIds
+     * @param statusIn
+     * @param isOverDue
+     * @param keyWord
+     * @param pageNum
+     * @param pageSize
      * @return
      */
     @MockOperation
