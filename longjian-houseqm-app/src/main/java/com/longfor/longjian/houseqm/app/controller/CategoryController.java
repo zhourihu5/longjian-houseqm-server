@@ -24,6 +24,9 @@ import org.springframework.web.bind.annotation.RestController;
  * http://192.168.37.159:3000/project/8/interface/api/1620 项目统计分析分项详情获取检查项列表
  * http://192.168.37.159:3000/project/8/interface/api/1644 项目统计分析人员对比获取检查项
  *
+ * http://192.168.37.159:3000/project/8/interface/api/530  获取检查项标准
+ *
+ *
  *
  * @author lipeishuai
  * @date 2018/11/17 14:57
