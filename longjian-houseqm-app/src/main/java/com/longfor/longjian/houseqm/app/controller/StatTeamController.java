@@ -25,7 +25,7 @@ import org.springframework.web.bind.annotation.RestController;
  */
 
 @RestController
-@RequestMapping("/gapi/v3/stat_houseqm/stat/")
+@RequestMapping("gapi/v3/stat_houseqm/stat/")
 @Slf4j
 public class StatTeamController {
 
