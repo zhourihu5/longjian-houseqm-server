@@ -20,4 +20,16 @@
     -->
     id, project_id, task_id, squad_type, name, create_at, update_at, delete_at
   </sql>
+  <select id="selectByTaskIds" resultMap="BaseResultMap">
+    select
+    <include refid="Base_Column_List" />
+    from user_in_house_qm_check_task
+    where task_id in
+    <foreach close=")" collection="idList" index="index" item="id" open="(" separator=",">
+      #{id}
+    </foreach>
+    <if test="deleted =='false'">
+      and delete_at is null
+    </if>
+  </select>
 </mapper>

@@ -10,6 +10,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.annotation.Resource;
@@ -35,13 +36,16 @@ public class BuildingqmController {
 
     /**
      *
-     * @param deviceReq
+     * @param deviceId
+     * @param token
      * @return
      */
     @MockOperation
     @GetMapping(value = "buildingqm/my_task_list", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
-    public TaskResponse<TaskListVo> myTaskList(DeviceReq deviceReq){
+    public TaskResponse<TaskListVo> myTaskList(@RequestParam(value="device_id" ) Integer deviceId,
+                                               @RequestParam(value="token") String token){
 
+        //// TODO: 2018/11/24
         Integer uid = null;
 
         TaskListVo vo = buildingqmService.myTaskList(uid);
@@ -64,13 +68,21 @@ public class BuildingqmController {
 
     /**
      *
-     * @param deviceReq
+     * @param deviceId
+     * @param taskIds
+     * @param token
      * @return
      */
     @MockOperation
     @GetMapping(value = "buildingqm/task_squads_members", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
-    public LjBaseResponse<TaskMemberListVo> taskSquadsMembers(DeviceReq deviceReq){
-        return null;
+    public LjBaseResponse<TaskMemberListVo> taskSquadsMembers(@RequestParam(value="device_id" ) Integer deviceId,
+                                                              @RequestParam(value="task_ids") String taskIds,
+                                                              @RequestParam(value="token") String token){
+
+        LjBaseResponse<TaskMemberListVo> vos = new LjBaseResponse<>();
+        TaskMemberListVo vo = buildingqmService.taskSquadsMembers(taskIds);
+        vos.setData(vo);
+        return vos;
     }
 
     /**

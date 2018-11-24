@@ -7,6 +7,7 @@ import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
 import java.util.List;
+import java.util.Set;
 
 /**
  * @author lipeishuai
@@ -31,7 +32,24 @@ public class UserInHouseQmCheckTaskService {
         return userInHouseQmCheckTaskMapper.selectByUserId(userId);
     }
 
+    /**
+     *
+     * @param taskIdList
+     * @return
+     */
+    public List<UserInHouseQmCheckTask> selectByTaskIds(Set<Integer> taskIdList){
 
+        return userInHouseQmCheckTaskMapper.selectByTaskIds(taskIdList,"false");
+    }
 
+    /**
+     *
+     * @param taskIdList
+     * @return
+     */
+    public List<UserInHouseQmCheckTask> selectByTaskIdsEvenDeleted(Set<Integer> taskIdList){
+
+        return userInHouseQmCheckTaskMapper.selectByTaskIds(taskIdList,"true");
+    }
 
 }

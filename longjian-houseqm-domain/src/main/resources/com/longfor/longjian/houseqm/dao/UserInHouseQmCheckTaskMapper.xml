@@ -1,35 +1,47 @@
-<?xml version="1.0" encoding="UTF-8" ?>
-<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
-<mapper namespace="com.longfor.longjian.houseqm.dao.UserInHouseQmCheckTaskMapper" >
-  <resultMap id="BaseResultMap" type="com.longfor.longjian.houseqm.po.UserInHouseQmCheckTask" >
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.longfor.longjian.houseqm.dao.UserInHouseQmCheckTaskMapper">
+  <resultMap id="BaseResultMap" type="com.longfor.longjian.houseqm.po.UserInHouseQmCheckTask">
     <!--
       WARNING - @mbg.generated
     -->
-    <id column="id" property="id" jdbcType="INTEGER" />
-    <result column="squad_id" property="squadId" jdbcType="INTEGER" />
-    <result column="user_id" property="userId" jdbcType="INTEGER" />
-    <result column="role_type" property="roleType" jdbcType="INTEGER" />
-    <result column="project_id" property="projectId" jdbcType="INTEGER" />
-    <result column="task_id" property="taskId" jdbcType="INTEGER" />
-    <result column="create_at" property="createAt" jdbcType="TIMESTAMP" />
-    <result column="update_at" property="updateAt" jdbcType="TIMESTAMP" />
-    <result column="delete_at" property="deleteAt" jdbcType="TIMESTAMP" />
-    <result column="can_approve" property="canApprove" jdbcType="INTEGER" />
-    <result column="can_direct_approve" property="canDirectApprove" jdbcType="INTEGER" />
+    <id column="id" jdbcType="INTEGER" property="id" />
+    <result column="squad_id" jdbcType="INTEGER" property="squadId" />
+    <result column="user_id" jdbcType="INTEGER" property="userId" />
+    <result column="role_type" jdbcType="INTEGER" property="roleType" />
+    <result column="project_id" jdbcType="INTEGER" property="projectId" />
+    <result column="task_id" jdbcType="INTEGER" property="taskId" />
+    <result column="create_at" jdbcType="TIMESTAMP" property="createAt" />
+    <result column="update_at" jdbcType="TIMESTAMP" property="updateAt" />
+    <result column="delete_at" jdbcType="TIMESTAMP" property="deleteAt" />
+    <result column="can_approve" jdbcType="INTEGER" property="canApprove" />
+    <result column="can_direct_approve" jdbcType="INTEGER" property="canDirectApprove" />
+    <result column="can_reassign" jdbcType="INTEGER" property="canReassign" />
   </resultMap>
-  <sql id="Base_Column_List" >
+  <sql id="Base_Column_List">
     <!--
       WARNING - @mbg.generated
     -->
     id, squad_id, user_id, role_type, project_id, task_id, create_at, update_at, delete_at, 
-    can_approve, can_direct_approve
+    can_approve, can_direct_approve, can_reassign
   </sql>
-  <select id="selectByUserId" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
+  <select id="selectByUserId" parameterType="java.lang.Integer" resultMap="BaseResultMap">
     select
     <include refid="Base_Column_List" />
     from user_in_house_qm_check_task
     where user_id = #{userId,jdbcType=INTEGER} and delete_at is null
   </select>
-
+    <select id="selectByTaskIds" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List" />
+        from user_in_house_qm_check_task
+        where task_id in
+        <foreach close=")" collection="idList" index="index" item="id" open="(" separator=",">
+            #{id}
+        </foreach>
+        <if test="deleted =='false'">
+            and delete_at is null
+        </if>
+    </select>
 
 </mapper>

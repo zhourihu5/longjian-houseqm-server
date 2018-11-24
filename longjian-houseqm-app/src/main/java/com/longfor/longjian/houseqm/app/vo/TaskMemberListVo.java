@@ -15,7 +15,7 @@ import java.util.List;
 public class TaskMemberListVo implements Serializable{
 
     private List<SquadVo> squad_list;
-    private List<SquadVo> member_list;
+    private List<MemberVo> member_list;
 
     @Data
     @NoArgsConstructor
@@ -41,6 +41,7 @@ public class TaskMemberListVo implements Serializable{
         private Integer role_type;
         private Integer can_approve;
         private Integer can_direct_approve;
+        private Integer can_reassign;
         private Integer task_id;
         private Integer update_at;
         private Integer delete_at;

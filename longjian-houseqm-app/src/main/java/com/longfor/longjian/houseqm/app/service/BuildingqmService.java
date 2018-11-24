@@ -7,11 +7,14 @@ import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
 import com.longfor.longjian.common.consts.checktask.*;
 import com.longfor.longjian.houseqm.app.vo.TaskListVo;
+import com.longfor.longjian.houseqm.app.vo.TaskMemberListVo;
 import com.longfor.longjian.houseqm.app.vo.TaskVo;
 import com.longfor.longjian.houseqm.domain.internalService.HouseQmCheckTaskService;
+import com.longfor.longjian.houseqm.domain.internalService.HouseQmCheckTaskSquadService;
 import com.longfor.longjian.houseqm.domain.internalService.UserInHouseQmCheckTaskService;
 import com.longfor.longjian.houseqm.innervo.ApiBuildingQmCheckTaskConfig;
 import com.longfor.longjian.houseqm.po.HouseQmCheckTask;
+import com.longfor.longjian.houseqm.po.HouseQmCheckTaskSquad;
 import com.longfor.longjian.houseqm.po.UserInHouseQmCheckTask;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections.CollectionUtils;
@@ -39,6 +42,9 @@ public class BuildingqmService {
 
     @Resource
     HouseQmCheckTaskService houseQmCheckTaskService;
+
+    @Resource
+    HouseQmCheckTaskSquadService houseQmCheckTaskSquadService;
 
 
     /**
@@ -69,6 +75,64 @@ public class BuildingqmService {
     }
 
 
+    /**
+     *
+     * @param taskIdsStr
+     * @return
+     */
+     public TaskMemberListVo taskSquadsMembers(String taskIdsStr){
+
+         TaskMemberListVo taskMemberListVo = new TaskMemberListVo();
+         if(StringUtils.isEmpty(taskIdsStr)){
+             return taskMemberListVo;
+         }
+         Set<Integer> taskIds = Sets.newHashSet();
+         String[] ids = taskIdsStr.split(",");
+         for(String id: ids){
+             taskIds.add(Integer.parseInt(id));
+         }
+         if(CollectionUtils.isEmpty(taskIds)){
+             return taskMemberListVo;
+         }
+
+         List<UserInHouseQmCheckTask> allUserTasks = userInHouseQmCheckTaskService.selectByTaskIdsEvenDeleted(taskIds);
+         List<HouseQmCheckTaskSquad> allHouseQmCheckTasks = houseQmCheckTaskSquadService.selectByTaskIdsEvenDeleted(taskIds);
+
+         List<TaskMemberListVo.MemberVo> memberListVo = Lists.newArrayList();
+         List<TaskMemberListVo.SquadVo> squaListVo = Lists.newArrayList();
+
+         for(HouseQmCheckTaskSquad task: allHouseQmCheckTasks){
+             TaskMemberListVo.SquadVo vo = taskMemberListVo.new SquadVo();
+             vo.setId(task.getId());
+             vo.setProject_id(task.getProjectId());
+             vo.setTask_id(task.getTaskId());
+             vo.setSquad_type(task.getSquadType());
+             vo.setName(task.getName());
+             vo.setUpdate_at((int)(task.getCreateAt().getTime()/1000));
+             vo.setDelete_at((int)(task.getCreateAt().getTime()/1000));
+             squaListVo.add(vo);
+         }
+
+         for(UserInHouseQmCheckTask task: allUserTasks){
+             TaskMemberListVo.MemberVo vo = taskMemberListVo.new MemberVo();
+             vo.setId(task.getId());
+             vo.setSquad_id(task.getSquadId());
+             vo.setUser_id(task.getUserId());
+             vo.setRole_type(task.getRoleType());
+             vo.setCan_approve(task.getCanApprove());
+             vo.setCan_direct_approve(task.getCanDirectApprove());
+             vo.setCan_reassign(task.getCanReassign());
+             vo.setTask_id(task.getTaskId());
+             vo.setUpdate_at((int)(task.getCreateAt().getTime()/1000));
+             vo.setDelete_at((int)(task.getCreateAt().getTime()/1000));
+             memberListVo.add(vo);
+         }
+
+         taskMemberListVo.setMember_list(memberListVo);
+         taskMemberListVo.setSquad_list(squaListVo);
+
+         return taskMemberListVo;
+     }
 
 
     /**
