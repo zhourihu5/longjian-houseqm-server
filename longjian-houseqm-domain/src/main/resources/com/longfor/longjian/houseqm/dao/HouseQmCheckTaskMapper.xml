@@ -45,4 +45,18 @@
     -->
     area_ids
   </sql>
+
+  <select id="selectByTaskIds" resultMap="BaseResultMap">
+      select
+      <include refid="Base_Column_List" />
+      from house_qm_check_task
+      where task_id in
+      <foreach collection="idList" item="id" index="index"
+               open="(" close=")" separator=",">
+          #{id}
+      </foreach>
+      <if test="deleted =='false'">
+          and delete_at is null
+      </if>
+  </select>
 </mapper>

@@ -4,12 +4,15 @@ import com.longfor.gaia.gfs.web.mock.MockOperation;
 import com.longfor.longjian.common.base.LjBaseResponse;
 import com.longfor.longjian.houseqm.app.req.DeviceReq;
 import com.longfor.longjian.houseqm.app.req.UpdateDeviceReq;
+import com.longfor.longjian.houseqm.app.service.BuildingqmService;
 import com.longfor.longjian.houseqm.app.vo.*;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+
+import javax.annotation.Resource;
 
 /**
  *
@@ -26,6 +29,10 @@ import org.springframework.web.bind.annotation.RestController;
 @Slf4j
 public class BuildingqmController {
 
+
+    @Resource
+    BuildingqmService buildingqmService;
+
     /**
      *
      * @param deviceReq
@@ -34,7 +41,14 @@ public class BuildingqmController {
     @MockOperation
     @GetMapping(value = "buildingqm/my_task_list", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     public TaskResponse<TaskListVo> myTaskList(DeviceReq deviceReq){
-        return null;
+
+        Integer uid = null;
+
+        TaskListVo vo = buildingqmService.myTaskList(uid);
+        TaskResponse<TaskListVo> response = new TaskResponse();
+        response.setData(vo);
+
+        return response;
     }
 
     /**

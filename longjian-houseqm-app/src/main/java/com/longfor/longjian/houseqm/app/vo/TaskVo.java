@@ -27,6 +27,7 @@ public class TaskVo implements Serializable {
     private int  project_id;
     private int repaired_picture_status;
     private int repairer_follower_permission;
+    private int repairer_refund_permission   = 0;
     private String root_category_key;
     private int status;
     private int task_id;
