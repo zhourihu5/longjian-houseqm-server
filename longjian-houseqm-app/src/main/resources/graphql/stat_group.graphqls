@@ -1,0 +1,19 @@
+schema {
+    query: gapiQuery
+}
+
+type gapiQuery{
+    progressStat(categoryKey: String):StatGroupItem
+}
+
+type StatGroupItem {
+    items: [StatGroup]
+}
+
+type StatGroup {
+    totalAcreage: Int!
+    issueCount: Int
+    year: Int
+    timeFrameType: String
+    beginOn: String
+}

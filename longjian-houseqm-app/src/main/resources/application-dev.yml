@@ -6,12 +6,12 @@ spring:
     name: longjian-houseqm-app
   cloud:
     consul:
-      enabled: true
+      enabled: false
       host: 192.168.37.218
       port: 8500
       discovery:
         register: true
-        healthCheckInterval: 5s
+        healthCheckInterval: 600s
         fail-fast: false
     sleuth:
       enabled: true

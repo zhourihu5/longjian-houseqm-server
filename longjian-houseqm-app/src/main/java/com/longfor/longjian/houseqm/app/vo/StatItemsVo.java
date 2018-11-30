@@ -4,6 +4,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.io.Serializable;
+import java.util.List;
 
 /**
  * @author lipeishuai
@@ -11,8 +12,9 @@ import java.io.Serializable;
  */
 @Data
 @NoArgsConstructor
-public class StatListVo implements Serializable {
+public class StatItemsVo implements Serializable {
 
-    private StatItemsVo result;
-
+    private List<StatDataVo> items;
 }
+
+

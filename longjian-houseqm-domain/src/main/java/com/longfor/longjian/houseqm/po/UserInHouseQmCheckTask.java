@@ -1,9 +1,7 @@
 package com.longfor.longjian.houseqm.po;
 
-import javax.persistence.Column;
-import javax.persistence.Id;
-import javax.persistence.Table;
 import java.util.Date;
+import javax.persistence.*;
 
 @Table(name = "user_in_house_qm_check_task")
 public class UserInHouseQmCheckTask {

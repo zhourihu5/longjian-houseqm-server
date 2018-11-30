@@ -15,8 +15,10 @@ spring:
 
 logging:
   level:
-    ROOT: DEBUG
-    com.longfor: DEBUG
+    ROOT: INFO
+    com.longfor: INFO
+    com.longfor.longjian: debug
+    graphql.GraphQL: debug
 
 
 management:
@@ -37,4 +39,3 @@ endpoints:
   info:
     enabled: true
     sensitive: false
-

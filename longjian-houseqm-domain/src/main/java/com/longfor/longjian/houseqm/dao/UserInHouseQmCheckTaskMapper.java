@@ -9,21 +9,21 @@ import java.util.Set;
 
 public interface UserInHouseQmCheckTaskMapper extends LFMySQLMapper<UserInHouseQmCheckTask> {
     /**
-     * 根据用户ID查
-     *
-     * @param userId
-     * @return
-     */
-    List<UserInHouseQmCheckTask> selectByUserId(Integer userId);
-
-
-
-    /**
      *
      * @param taskIdList
      * @param deleted
      * @return
      */
     List<UserInHouseQmCheckTask> selectByTaskIds(@Param("idList")Set<Integer> taskIdList, @Param("deleted")String deleted);
+
+
+    /**
+     *
+     * @param userId
+     * @return
+     */
+    List<UserInHouseQmCheckTask> selectByUserId(@Param("userId")Integer userId);
+
+
 
 }

@@ -1,14 +1,14 @@
 package com.longfor.longjian.houseqm.app.controller;
 
-import com.longfor.gaia.gfs.web.mock.MockOperation;
 import com.longfor.longjian.common.base.LjBaseResponse;
-import com.longfor.longjian.houseqm.app.req.GroupReq;
-import com.longfor.longjian.houseqm.app.vo.StatListVo;
+import com.longfor.longjian.common.exception.LjBaseRuntimeException;
+import com.longfor.longjian.houseqm.app.req.StatGroupReq;
+import com.longfor.longjian.houseqm.app.service.StatGroupService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.MediaType;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+
+import javax.annotation.Resource;
 
 /**
  *
@@ -30,16 +30,37 @@ import org.springframework.web.bind.annotation.RestController;
 @Slf4j
 public class StatGroupController {
 
+    @Resource
+    private StatGroupService statGroupService;
 
     /**
      *
-     * @param groupReq
+     * @param groupId
+     * @param pageLevel
+     * @param tip
+     * @param statGroupReq
      * @return
      */
-    @MockOperation
-    @GetMapping(value = "group", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
-    public LjBaseResponse<StatListVo> group(GroupReq groupReq){
-        return null;
+    @PostMapping(value = "group", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+    public LjBaseResponse<Object> group(@RequestParam(value="group_id") String groupId,
+                                            @RequestParam(value="page_level") String pageLevel,
+                                            @RequestParam(value="tip") String tip,
+                                            @RequestBody StatGroupReq statGroupReq){
+
+        LjBaseResponse response =new LjBaseResponse();
+        try{
+
+            Object statListVo = statGroupService.execute(statGroupReq.getQuery(),statGroupReq.getVariables());
+            response.setData(statListVo);
+
+        }catch (LjBaseRuntimeException ex){
+
+            response.setData(ex.getErrorMsg());
+            response.setResult(ex.getErrorCode());
+            log.error("StatGroupController#group error,{}",ex);
+        }
+
+        return response;
     }
 
 

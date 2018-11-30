@@ -2,13 +2,11 @@ package com.longfor.longjian.houseqm.app.controller;
 
 import com.longfor.gaia.gfs.web.mock.MockOperation;
 import com.longfor.longjian.common.base.LjBaseResponse;
+import com.longfor.longjian.houseqm.app.req.StatTeamReq;
 import com.longfor.longjian.houseqm.app.vo.StatListVo;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.MediaType;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 /**
  * http://192.168.37.159:3000/project/8/interface/api/1220 获取公司本月和上月度统计数据
@@ -39,11 +37,16 @@ public class StatTeamController {
      * @return
      */
     @MockOperation
-    @GetMapping(value = "team", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+    @PostMapping(value = "team", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     public LjBaseResponse<StatListVo> doAction(@RequestParam(value="project_id" ) Integer projectId,
                                                @RequestParam(value="group_id") String groupId,
                                                @RequestParam(value="team_id") String teamId,
-                                               @RequestParam(value="tip") String tip){
+                                               @RequestParam(value="tip") String tip,
+                                               @RequestBody StatTeamReq statTeamReq
+
+    ){
+
+
 
 
         return null;

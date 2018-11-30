@@ -15,6 +15,7 @@
 
     <properties>
         <maven.deploy.skip>true</maven.deploy.skip>
+        <kotlin.version>1.3.10</kotlin.version>
     </properties>
 
     <dependencies>
@@ -30,7 +31,13 @@
         <dependency>
             <groupId>com.longfor.longjian</groupId>
             <artifactId>longjian-common</artifactId>
-            <version>1.0.1-SNAPSHOT</version>
+            <version>1.0.2-SNAPSHOT</version>
+        </dependency>
+        <!-- graphql -->
+        <dependency>
+            <groupId>com.graphql-java</groupId>
+            <artifactId>graphql-java</artifactId>
+            <version>11.0</version>
         </dependency>
 
     </dependencies>
