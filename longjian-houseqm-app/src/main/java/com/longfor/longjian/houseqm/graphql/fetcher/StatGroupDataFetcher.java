@@ -21,7 +21,7 @@ public class StatGroupDataFetcher{
     /**
      * itemsFetcher
      */
-    public DataFetcher<StatItemsVo> progressStatDataFetcher = environment -> {
+    public static DataFetcher<StatItemsVo> progressStatDataFetcher = environment -> {
 
         StatItemsVo statItemsVo =new StatItemsVo();
 
@@ -31,7 +31,7 @@ public class StatGroupDataFetcher{
     /**
      * itemsFetcher
      */
-    public DataFetcher<List<StatDataVo>> statGroupItemDataFetcher = environment -> {
+    public static DataFetcher<List<StatDataVo>> statGroupItemDataFetcher = environment -> {
 
 
         List<StatDataVo>  statDataVos = Lists.newArrayList();

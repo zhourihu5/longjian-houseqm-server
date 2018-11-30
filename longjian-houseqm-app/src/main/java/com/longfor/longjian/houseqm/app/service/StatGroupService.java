@@ -1,13 +1,15 @@
 package com.longfor.longjian.houseqm.app.service;
 
+import com.github.benmanes.caffeine.cache.Cache;
 import com.longfor.longjian.common.exception.LjBaseRuntimeException;
 import com.longfor.longjian.houseqm.app.req.StatGroupReq;
+import com.longfor.longjian.houseqm.graphql.schema.CachingPreparsedDocumentProvider;
 import com.longfor.longjian.houseqm.graphql.schema.StatGroupSchema;
 import graphql.ExecutionInput;
 import graphql.ExecutionResult;
 import graphql.GraphQL;
 import graphql.GraphQLError;
-import graphql.schema.GraphQLSchema;
+import graphql.execution.preparsed.PreparsedDocumentEntry;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections.CollectionUtils;
 import org.springframework.stereotype.Service;
@@ -28,6 +30,10 @@ public class StatGroupService {
     @Resource
     private StatGroupSchema statGroupSchema;
 
+    @Resource
+    private CachingPreparsedDocumentProvider cachingPreparsedDocumentProvider;
+
+
 
     /**
      *
@@ -41,8 +47,12 @@ public class StatGroupService {
 
         log.debug("StatGroupService#execute - variableVo categoryKey :{}", variableVo.getCategoryKey());
 
-        GraphQLSchema schema = statGroupSchema.buildSchema();
-        GraphQL graphQL = GraphQL.newGraphQL(schema).build();
+
+        Cache<String, PreparsedDocumentEntry> cache = cachingPreparsedDocumentProvider.getCache();
+        GraphQL graphQL = GraphQL.newGraphQL(StatGroupSchema.statGroupSchema)
+                .preparsedDocumentProvider(cache::get)
+                .build();
+
         ExecutionInput executionInput =  ExecutionInput.newExecutionInput().query(query).variables(variables).build();
         ExecutionResult executionResult = graphQL.execute(executionInput);
 

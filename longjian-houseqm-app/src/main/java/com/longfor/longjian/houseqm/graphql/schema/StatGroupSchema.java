@@ -7,12 +7,15 @@ import graphql.schema.idl.SchemaGenerator;
 import graphql.schema.idl.SchemaParser;
 import graphql.schema.idl.TypeDefinitionRegistry;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.core.io.Resource;
 import org.springframework.stereotype.Service;
 import org.springframework.util.ResourceUtils;
 
-import javax.annotation.Resource;
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.io.InputStreamReader;
 
 /**
  *
@@ -23,8 +26,10 @@ import java.io.FileNotFoundException;
 @Service
 public class StatGroupSchema {
 
-    @Resource
-    StatGroupDataFetcher statGroupDataFetcher;
+    @Value("classpath:graphql/stat_group.graphqls")
+    private static Resource schemaResource;
+
+    public static GraphQLSchema statGroupSchema = buildSchema();
 
 
     /**
@@ -32,13 +37,13 @@ public class StatGroupSchema {
      *
      * @return
      */
-    public RuntimeWiring buildRuntimeWiring(){
+    public static RuntimeWiring buildRuntimeWiring(){
         return RuntimeWiring.newRuntimeWiring()
                 .type("gapiQuery", typeWiring -> typeWiring
-                        .dataFetcher("progressStat",statGroupDataFetcher.progressStatDataFetcher)
+                        .dataFetcher("progressStat",StatGroupDataFetcher.progressStatDataFetcher)
                 )
                 .type("StatGroupItem", typeWiring -> typeWiring
-                        .dataFetcher("items",statGroupDataFetcher.statGroupItemDataFetcher)
+                        .dataFetcher("items",StatGroupDataFetcher.statGroupItemDataFetcher)
                )
                 .build();
     }
@@ -47,7 +52,30 @@ public class StatGroupSchema {
      *
      * @return
      */
-    public GraphQLSchema buildSchema(){
+    public  GraphQLSchema buildSchema1(){
+
+        SchemaGenerator schemaGenerator = new SchemaGenerator();
+
+        InputStreamReader schemaReader = null;
+        try {
+            schemaReader = new InputStreamReader(schemaResource.getInputStream());
+        } catch (IOException e) {
+            log.error("buildSchema FileNotFoundException:classpath:graphql/stat_group.graphqls");
+        }
+        TypeDefinitionRegistry typeRegistry = new SchemaParser().parse(schemaReader);
+
+        RuntimeWiring wiring = buildRuntimeWiring();
+        GraphQLSchema graphQLSchema = schemaGenerator.makeExecutableSchema(
+                typeRegistry, wiring);
+
+        return graphQLSchema;
+    }
+
+    /**
+     *
+     * @return
+     */
+    private static GraphQLSchema buildSchema(){
 
         SchemaParser schemaParser = new SchemaParser();
         SchemaGenerator schemaGenerator = new SchemaGenerator();
@@ -60,12 +88,10 @@ public class StatGroupSchema {
             log.error("FileNotFoundException:classpath:graphql/stat_group.graphqls");
         }
 
-
         TypeDefinitionRegistry typeRegistry = schemaParser.parse(schemaFile);
         RuntimeWiring wiring = buildRuntimeWiring();
         GraphQLSchema graphQLSchema = schemaGenerator.makeExecutableSchema(typeRegistry, wiring);
 
         return graphQLSchema;
     }
-
 }
