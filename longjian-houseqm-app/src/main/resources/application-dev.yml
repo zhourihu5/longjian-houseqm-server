@@ -41,7 +41,7 @@ longfor:
         enabled: true # default false
       logs:
         enabled: true # default false
-        reportFrequency: 60 # default 60
+        reportFrequency: 600 # default 60
   data:
     pagehelper:
       helperDialect: mysql
