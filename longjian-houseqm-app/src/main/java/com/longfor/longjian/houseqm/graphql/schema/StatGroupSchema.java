@@ -77,6 +77,8 @@ public class StatGroupSchema {
      */
     private static GraphQLSchema buildSchema(){
 
+        log.info("StatGroupSchema#buildSchema ing");
+
         SchemaParser schemaParser = new SchemaParser();
         SchemaGenerator schemaGenerator = new SchemaGenerator();
 
