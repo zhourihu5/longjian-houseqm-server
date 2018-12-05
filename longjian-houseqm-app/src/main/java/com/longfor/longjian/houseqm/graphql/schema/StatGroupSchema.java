@@ -12,10 +12,7 @@ import org.springframework.core.io.Resource;
 import org.springframework.stereotype.Service;
 import org.springframework.util.ResourceUtils;
 
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.IOException;
-import java.io.InputStreamReader;
+import java.io.*;
 
 /**
  *
@@ -25,6 +22,8 @@ import java.io.InputStreamReader;
 @Slf4j
 @Service
 public class StatGroupSchema {
+
+
 
     @Value("classpath:graphql/stat_group.graphqls")
     private static Resource schemaResource;
@@ -38,7 +37,7 @@ public class StatGroupSchema {
      * @return
      */
     public static RuntimeWiring buildRuntimeWiring(){
-        return RuntimeWiring.newRuntimeWiring()
+        return RuntimeWiring.newRuntimeWiring().scalar(Scalars.DateField)
                 .type("gapiQuery", typeWiring -> typeWiring
                         .dataFetcher("progressStat",StatGroupDataFetcher.progressStatDataFetcher)
                 )
@@ -58,6 +57,8 @@ public class StatGroupSchema {
 
         InputStreamReader schemaReader = null;
         try {
+
+            InputStream pipelineConfigSchema = getClass().getResourceAsStream("/graphql/pipelineConfig.graphqls");
             schemaReader = new InputStreamReader(schemaResource.getInputStream());
         } catch (IOException e) {
             log.error("buildSchema FileNotFoundException:classpath:graphql/stat_group.graphqls");
@@ -92,6 +93,7 @@ public class StatGroupSchema {
 
         TypeDefinitionRegistry typeRegistry = schemaParser.parse(schemaFile);
         RuntimeWiring wiring = buildRuntimeWiring();
+
         GraphQLSchema graphQLSchema = schemaGenerator.makeExecutableSchema(typeRegistry, wiring);
 
         return graphQLSchema;

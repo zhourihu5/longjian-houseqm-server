@@ -23,6 +23,20 @@ public class StatGroupDataFetcher{
      */
     public static DataFetcher<StatItemsVo> progressStatDataFetcher = environment -> {
 
+        /*
+        envionment中的参数只能是第一层中得到， 在statGroupItemDataFetcher中就没有了
+         */
+        String categoryKey = environment.getArgument("categoryKey");
+        String timeFrameType = environment.getArgument("timeFrameType");
+        int[] teamIds = environment.getArgument("teamIds");
+        String dateField = environment.getArgument("timeFrameEnd");
+
+        log.debug("StatGroupDataFetcher - progressStatDataFetcher - categoryKey:{}", categoryKey);
+        log.debug("StatGroupDataFetcher - progressStatDataFetcher - timeFrameType:{}", timeFrameType);
+        log.debug("StatGroupDataFetcher - progressStatDataFetcher - teamIds:{}", teamIds);
+        log.debug("StatGroupDataFetcher - progressStatDataFetcher - timeFrameEnd:{}", dateField);
+
+
         StatItemsVo statItemsVo =new StatItemsVo();
 
         return statItemsVo;
@@ -37,8 +51,15 @@ public class StatGroupDataFetcher{
         List<StatDataVo>  statDataVos = Lists.newArrayList();
 
         String categoryKey = environment.getArgument("categoryKey");
+        String timeFrameType = environment.getArgument("timeFrameType");
+        int[] teamIds = environment.getArgument("teamIds");
+        String dateField = environment.getArgument("timeFrameEnd");
 
-        log.debug("StatGroupDataFetcher - progressStatDataFetcher - categoryKey:{}", categoryKey);
+        log.debug("StatGroupDataFetcher - statGroupItemDataFetcher - categoryKey:{}", categoryKey);
+        log.debug("StatGroupDataFetcher - statGroupItemDataFetcher - timeFrameType:{}", timeFrameType);
+        log.debug("StatGroupDataFetcher - statGroupItemDataFetcher - teamIds:{}", teamIds);
+        log.debug("StatGroupDataFetcher - statGroupItemDataFetcher - timeFrameEnd:{}", dateField);
+
 
         StatDataVo statDataVo = new StatDataVo();
         statDataVo.setIssueCount(100);

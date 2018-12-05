@@ -55,8 +55,8 @@ public class StatGroupController {
 
         }catch (LjBaseRuntimeException ex){
 
-            response.setData(ex.getErrorMsg());
             response.setResult(ex.getErrorCode());
+            response.setMessage(ex.getErrorMsg());
             log.error("StatGroupController#group error,{}",ex);
         }
 

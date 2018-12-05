@@ -59,8 +59,12 @@ public class StatGroupService {
         Object data = executionResult.getData();
         List<GraphQLError> errors = executionResult.getErrors();
 
+
         if(CollectionUtils.isNotEmpty(errors)){
-            throw new LjBaseRuntimeException(401,"StatGroupService graphql 执行出错");
+            for(GraphQLError error: errors){
+                log.error("StatGroupService graphql error {} details:{}",error.getErrorType(), error.getMessage());
+                throw new LjBaseRuntimeException(410, error.getMessage());
+            }
         }
 
         log.debug("StatGroupService#execute - data: {}", data);
