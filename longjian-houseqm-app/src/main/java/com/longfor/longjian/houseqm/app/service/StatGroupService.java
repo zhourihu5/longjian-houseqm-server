@@ -2,7 +2,7 @@ package com.longfor.longjian.houseqm.app.service;
 
 import com.github.benmanes.caffeine.cache.Cache;
 import com.longfor.longjian.common.exception.LjBaseRuntimeException;
-import com.longfor.longjian.houseqm.app.req.StatGroupReq;
+import com.longfor.longjian.houseqm.app.vo.VariableVo;
 import com.longfor.longjian.houseqm.graphql.schema.CachingPreparsedDocumentProvider;
 import com.longfor.longjian.houseqm.graphql.schema.StatGroupSchema;
 import graphql.ExecutionInput;
@@ -11,6 +11,7 @@ import graphql.GraphQL;
 import graphql.GraphQLError;
 import graphql.execution.preparsed.PreparsedDocumentEntry;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.beanutils.PropertyUtils;
 import org.apache.commons.collections.CollectionUtils;
 import org.springframework.stereotype.Service;
 
@@ -41,12 +42,17 @@ public class StatGroupService {
      * @param variableVo
      * @return
      */
-    public Object execute(String query, StatGroupReq.VariableVo variableVo ){
+    public Object execute(String query, VariableVo variableVo ) {
 
-        Map<String, Object> variables = variableVo.toMap();
+        Map<String, Object> variables = null;
+        try {
+            variables = PropertyUtils.describe(variableVo);
+        } catch (Exception e) {
+            log.error("StatGroupService to map: error {}",e);
+            throw new LjBaseRuntimeException(410, "to map error");
+        }
 
         log.debug("StatGroupService#execute - variableVo categoryKey :{}", variableVo.getCategoryKey());
-
 
         Cache<String, PreparsedDocumentEntry> cache = cachingPreparsedDocumentProvider.getCache();
         GraphQL graphQL = GraphQL.newGraphQL(StatGroupSchema.statGroupSchema)

@@ -1,6 +1,8 @@
 package com.longfor.longjian.houseqm.graphql.schema;
 
+import com.longfor.longjian.houseqm.graphql.data.DateScalarType;
 import com.longfor.longjian.houseqm.graphql.fetcher.StatGroupDataFetcher;
+import graphql.schema.GraphQLScalarType;
 import graphql.schema.GraphQLSchema;
 import graphql.schema.idl.RuntimeWiring;
 import graphql.schema.idl.SchemaGenerator;
@@ -24,6 +26,7 @@ import java.io.*;
 public class StatGroupSchema {
 
 
+    public static final GraphQLScalarType DateField = new DateScalarType();
 
     @Value("classpath:graphql/stat_group.graphqls")
     private static Resource schemaResource;
@@ -37,13 +40,15 @@ public class StatGroupSchema {
      * @return
      */
     public static RuntimeWiring buildRuntimeWiring(){
-        return RuntimeWiring.newRuntimeWiring().scalar(Scalars.DateField)
+        return RuntimeWiring.newRuntimeWiring().scalar(DateField)
                 .type("gapiQuery", typeWiring -> typeWiring
                         .dataFetcher("progressStat",StatGroupDataFetcher.progressStatDataFetcher)
                 )
                 .type("StatGroupItem", typeWiring -> typeWiring
                         .dataFetcher("items",StatGroupDataFetcher.statGroupItemDataFetcher)
-               )
+                ).type("timeFrameType",typeWiring -> typeWiring
+                        .enumValues(StatGroupDataFetcher.timeFrameTypeResolver)
+                )
                 .build();
     }
 

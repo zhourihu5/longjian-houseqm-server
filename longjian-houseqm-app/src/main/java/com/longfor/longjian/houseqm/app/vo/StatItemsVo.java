@@ -1,5 +1,6 @@
 package com.longfor.longjian.houseqm.app.vo;
 
+import com.longfor.longjian.houseqm.graphql.data.PassedVariableVo;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
@@ -15,6 +16,7 @@ import java.util.List;
 public class StatItemsVo implements Serializable {
 
     private List<StatDataVo> items;
+    private PassedVariableVo variableVo;
 }
 
 
