@@ -16,7 +16,7 @@
 
     <properties>
         <maven.deploy.skip>true</maven.deploy.skip>
-        <gaia-gfs.version>1.0.2-SNAPSHOT</gaia-gfs.version>
+        <gaia-gfs.version>1.0.2</gaia-gfs.version>
         <mysql.version>5.1.46</mysql.version>
         <h2.version>1.4.192</h2.version>
     </properties>
