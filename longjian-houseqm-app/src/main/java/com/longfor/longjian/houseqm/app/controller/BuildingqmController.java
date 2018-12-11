@@ -44,8 +44,8 @@ public class BuildingqmController {
     @GetMapping(value = "buildingqm/my_task_list", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     public TaskResponse<TaskListVo> myTaskList(@RequestParam(value="device_id" ) Integer deviceId,
                                                @RequestParam(value="token") String token){
-
         //// TODO: 2018/11/24
+
         Integer uid = null;
 
         TaskListVo vo = buildingqmService.myTaskList(uid);
@@ -63,6 +63,7 @@ public class BuildingqmController {
     @MockOperation
     @GetMapping(value = "check_update/check", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     public LjBaseResponse<TaskIssueListVo> check(UpdateDeviceReq updateDeviceReq){
+
         return null;
     }
 
@@ -86,14 +87,21 @@ public class BuildingqmController {
     }
 
     /**
-     *
+     * 补全与我相关问题信息
      * @param deviceReq
      * @return
      */
     @MockOperation
     @GetMapping(value = "buildingqm/my_issue_patch_list/", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     public LjBaseResponse<MyIssuePatchListVo> myIssuePatchList(DeviceReq deviceReq){
-        return null;
+
+        //// Todo: 获取uid
+        Integer uid = null;
+        //调用业务方法
+        MyIssuePatchListVo miplv= buildingqmService.myIssuePathList(uid,deviceReq.getTask_id(),deviceReq.getTimestamp());
+        LjBaseResponse<MyIssuePatchListVo> ljBaseResponse = new LjBaseResponse<>();
+        ljBaseResponse.setData(miplv);
+        return ljBaseResponse;
     }
 
 }

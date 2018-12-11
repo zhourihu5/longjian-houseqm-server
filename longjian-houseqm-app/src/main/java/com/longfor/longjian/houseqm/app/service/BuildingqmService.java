@@ -6,16 +6,13 @@ import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
 import com.longfor.longjian.common.consts.checktask.*;
+import com.longfor.longjian.houseqm.app.vo.MyIssuePatchListVo;
 import com.longfor.longjian.houseqm.app.vo.TaskListVo;
 import com.longfor.longjian.houseqm.app.vo.TaskMemberListVo;
 import com.longfor.longjian.houseqm.app.vo.TaskVo;
-import com.longfor.longjian.houseqm.domain.internalService.HouseQmCheckTaskService;
-import com.longfor.longjian.houseqm.domain.internalService.HouseQmCheckTaskSquadService;
-import com.longfor.longjian.houseqm.domain.internalService.UserInHouseQmCheckTaskService;
+import com.longfor.longjian.houseqm.domain.internalService.*;
 import com.longfor.longjian.houseqm.innervo.ApiBuildingQmCheckTaskConfig;
-import com.longfor.longjian.houseqm.po.HouseQmCheckTask;
-import com.longfor.longjian.houseqm.po.HouseQmCheckTaskSquad;
-import com.longfor.longjian.houseqm.po.UserInHouseQmCheckTask;
+import com.longfor.longjian.houseqm.po.*;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -23,9 +20,7 @@ import org.springframework.stereotype.Repository;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 
 /**
  * @author lipeishuai
@@ -132,6 +127,112 @@ public class BuildingqmService {
          taskMemberListVo.setSquad_list(squaListVo);
 
          return taskMemberListVo;
+     }
+
+     @Resource
+     HouseQmCheckTaskIssueUserService houseQmCheckTaskIssueUserService;
+
+    @Resource
+    HouseQmCheckTaskIssueService houseQmCheckTaskIssueService;
+
+    @Resource
+    HouseQmCheckTaskIssueLogService houseQmCheckTaskIssueLogService;
+
+    @Resource
+    HouseQmCheckTaskIssueAttachmentService houseQmCheckTaskIssueAttachmentService;
+
+    /**
+     *
+     * @param userId
+     * @param taskId
+     * @param timestamp
+     * @return
+     */
+     public MyIssuePatchListVo myIssuePathList(Integer userId,Integer taskId,Integer timestamp){
+
+         MyIssuePatchListVo myIssuePatchListVo = new MyIssuePatchListVo();
+         // 获取所有user的问题的uuid
+         List<HouseQmCheckTaskIssueUser> houseQmCheckTaskIssueUsers =houseQmCheckTaskIssueUserService.searchByUserIdAndTaskIdAndAndCreateAt(userId,taskId,timestamp);
+         Set<String> issueUuids = Sets.newHashSet();
+         for (HouseQmCheckTaskIssueUser user : houseQmCheckTaskIssueUsers) {
+             issueUuids.add(user.getIssueUuid());
+         }
+         // 如果issueUuids 为空返回null
+         // 获取问题的uuid
+         List<HouseQmCheckTaskIssue> taskIssues=houseQmCheckTaskIssueService.searchByIssueUuidsAndclientCreateAt(issueUuids,timestamp);
+         Set<String> taskIssueUuids = Sets.newHashSet();
+         Map<String, HouseQmCheckTaskIssue> issueMap = Maps.newHashMap();
+         for (HouseQmCheckTaskIssue taskIssue : taskIssues) {
+             issueMap.put(taskIssue.getUuid(), taskIssue);
+             taskIssueUuids.add(taskIssue.getUuid());
+         }
+         //获取问题日志信息
+         List<HouseQmCheckTaskIssueLog> houseQmCheckTaskIssueLogs =houseQmCheckTaskIssueLogService.searchByIssueUuid(taskIssueUuids);
+         List<MyIssuePatchListVo.LogVo> logs = Lists.newArrayList();
+         for (HouseQmCheckTaskIssueLog issueLog : houseQmCheckTaskIssueLogs) {
+             MyIssuePatchListVo.LogVo logVo = myIssuePatchListVo.new LogVo();
+             logVo.setId(issueLog.getId());
+             logVo.setProjectId(issueLog.getProjectId());
+             logVo.setTaskId(issueLog.getTaskId());
+             logVo.setUuid(issueLog.getUuid());
+             logVo.setIssueUuid(issueLog.getIssueUuid());
+             logVo.setSenderId(issueLog.getSenderId());
+             logVo.setDesc(issueLog.getDesc());
+             logVo.setStatus(issueLog.getStatus());
+             logVo.setAttachmentMd5List(issueLog.getAttachmentMd5List());
+             logVo.setAudioMd5List(issueLog.getAudioMd5List());
+             logVo.setMemoAudioMd5List(issueLog.getMemoAudioMd5List());
+             logVo.setClientCreateAt((int)(issueLog.getClientCreateAt().getTime()/1000));
+
+             MyIssuePatchListVo.LogDetailVo dic_detail = (MyIssuePatchListVo.LogDetailVo) JSONObject.parse(issueLog.getDetail());
+             MyIssuePatchListVo.LogDetailVo detail = myIssuePatchListVo.new LogDetailVo();
+             if(issueMap.get(issueLog.getIssueUuid())!=null){
+                 detail.setTitle(issueMap.get(issueLog.getIssueUuid()).getTitle());
+                 detail.setArea_id(issueMap.get(issueLog.getIssueUuid()).getAreaId());
+                 detail.setPos_x(issueMap.get(issueLog.getIssueUuid()).getPosX());
+                 detail.setPos_y(issueMap.get(issueLog.getIssueUuid()).getPosY());
+                 detail.setTyp(issueMap.get(issueLog.getIssueUuid()).getTyp());
+             }
+             detail.setPlan_end_on(dic_detail.getPlan_end_on());
+             detail.setEnd_on(dic_detail.getEnd_on());
+             detail.setRepairer_id(dic_detail.getRepairer_id());
+             detail.setRepairer_follower_ids(dic_detail.getRepairer_follower_ids());
+             detail.setCondition(dic_detail.getCondition());
+             detail.setCategory_cls(dic_detail.getCategory_cls());
+             detail.setCategory_key(dic_detail.getCategory_key());
+             detail.setCheck_item_key(dic_detail.getCheck_item_key());
+             detail.setIssue_reason(dic_detail.getIssue_reason());
+             detail.setIssue_reason_detail(dic_detail.getIssue_reason_detail());
+             detail.setIssue_suggest(dic_detail.getIssue_suggest());
+             detail.setPotential_risk(dic_detail.getPotential_risk());
+             detail.setPreventive_action_detail(dic_detail.getPreventive_action_detail());
+
+             logVo.setDetail(detail);
+             logVo.setUpdateAt((int)(issueLog.getUpdateAt().getTime()/1000));
+             logVo.setDeleteAt((int)(issueLog.getDeleteAt().getTime()/1000));
+             logs.add(logVo);
+         }
+         myIssuePatchListVo.setLog_list(logs);
+         //获取问题附件信息
+         List<HouseQmCheckTaskIssueAttachment>  houseQmCheckTaskIssueAttachments=houseQmCheckTaskIssueAttachmentService.searchByIssueUuid(taskIssueUuids);
+         List<MyIssuePatchListVo.AttachmentVo> attachments = Lists.newArrayList();
+         for (HouseQmCheckTaskIssueAttachment attachment : houseQmCheckTaskIssueAttachments) {
+             MyIssuePatchListVo.AttachmentVo attachmentVo = myIssuePatchListVo.new AttachmentVo();
+             attachmentVo.setId(attachment.getId());
+             attachmentVo.setProject_id(attachment.getProjectId());
+             attachmentVo.setTask_id(attachment.getTaskId());
+             attachmentVo.setIssue_uuid(attachment.getIssueUuid());
+             attachmentVo.setUser_id(attachment.getUserId());
+             attachmentVo.setPublic_type(attachment.getPublicType());
+             attachmentVo.setAttachment_type(attachment.getAttachmentType());
+             attachmentVo.setMd5(attachment.getMd5());
+             attachmentVo.setStatus(attachment.getStatus());
+             attachmentVo.setUpdate_at((int)(attachment.getUpdateAt().getTime()/1000));
+             attachmentVo.setDelete_at((int)(attachment.getDeleteAt().getTime()/1000));
+             attachments.add(attachmentVo);
+         }
+         myIssuePatchListVo.setAttachment_list(attachments);
+         return myIssuePatchListVo;
      }
 
 
@@ -264,4 +365,7 @@ public class BuildingqmService {
             return obj;
         }
     }
+
+
+
 }
