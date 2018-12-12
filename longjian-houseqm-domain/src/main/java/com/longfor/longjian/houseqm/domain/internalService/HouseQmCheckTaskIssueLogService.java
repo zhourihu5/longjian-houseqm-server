@@ -20,8 +20,14 @@ public class HouseQmCheckTaskIssueLogService {
     @Resource
     HouseQmCheckTaskIssueLogMapper houseQmCheckTaskIssueLogMapper;
 
+    /**
+     * 根据issueUuid 查 取未删除的，并按客户端创建时间升序排序
+     *
+     * @param issueUuids
+     * @return
+     */
     public List<HouseQmCheckTaskIssueLog> searchByIssueUuid(Set<String> issueUuids){
-
-        return null;
+        List<HouseQmCheckTaskIssueLog> houseQmCheckTaskIssueLogs = houseQmCheckTaskIssueLogMapper.selectByIssueUuid(issueUuids, "false");
+        return houseQmCheckTaskIssueLogs;
     }
 }

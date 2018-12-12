@@ -67,4 +67,16 @@
     -->
     attachment_md5_list, audio_md5_list, detail
   </sql>
+
+  <select id="selectByIssueUuidsAndclientCreateAt" resultMap="BaseResultMap">
+    select uuid,title,pos_x,pos_y,typ,area_id from house_qm_check_task_issue
+    where uuid in
+    <foreach collection="issueUuids" open="(" separator="," close=")" item="issueUuid">
+      #{issueUuid}
+    </foreach>
+    and client_create_at &lt; from_unixtime(#{timestamp})
+    <if test="deleted == 'false'">
+      and delete_at is null
+    </if>
+  </select>
 </mapper>

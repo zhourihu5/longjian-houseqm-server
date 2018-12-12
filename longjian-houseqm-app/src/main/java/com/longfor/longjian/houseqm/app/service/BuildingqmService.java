@@ -151,13 +151,16 @@ public class BuildingqmService {
      public MyIssuePatchListVo myIssuePathList(Integer userId,Integer taskId,Integer timestamp){
 
          MyIssuePatchListVo myIssuePatchListVo = new MyIssuePatchListVo();
-         // 获取所有user的问题的uuid
-         List<HouseQmCheckTaskIssueUser> houseQmCheckTaskIssueUsers =houseQmCheckTaskIssueUserService.searchByUserIdAndTaskIdAndAndCreateAt(userId,taskId,timestamp);
+         // 获取所有问题的uuid
+         List<HouseQmCheckTaskIssueUser> houseQmCheckTaskIssueUsers =houseQmCheckTaskIssueUserService.searchByUserIdAndTaskIdAndCreateAt(userId,taskId,timestamp);
          Set<String> issueUuids = Sets.newHashSet();
          for (HouseQmCheckTaskIssueUser user : houseQmCheckTaskIssueUsers) {
              issueUuids.add(user.getIssueUuid());
          }
          // 如果issueUuids 为空返回null
+         if (issueUuids.isEmpty()){
+             return myIssuePatchListVo;
+         }
          // 获取问题的uuid
          List<HouseQmCheckTaskIssue> taskIssues=houseQmCheckTaskIssueService.searchByIssueUuidsAndclientCreateAt(issueUuids,timestamp);
          Set<String> taskIssueUuids = Sets.newHashSet();
@@ -165,6 +168,9 @@ public class BuildingqmService {
          for (HouseQmCheckTaskIssue taskIssue : taskIssues) {
              issueMap.put(taskIssue.getUuid(), taskIssue);
              taskIssueUuids.add(taskIssue.getUuid());
+         }
+         if (taskIssueUuids.isEmpty()){
+             return myIssuePatchListVo;
          }
          //获取问题日志信息
          List<HouseQmCheckTaskIssueLog> houseQmCheckTaskIssueLogs =houseQmCheckTaskIssueLogService.searchByIssueUuid(taskIssueUuids);

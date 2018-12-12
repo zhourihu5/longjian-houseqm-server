@@ -21,9 +21,16 @@ public class HouseQmCheckTaskIssueUserService {
     @Resource
     HouseQmCheckTaskIssueUserMapper houseQmCheckTaskIssueUserMapper;
 
-    public List<HouseQmCheckTaskIssueUser> searchByUserIdAndTaskIdAndAndCreateAt(int userId, int taskId,int timestamp){
-
-        return null;
+    /**
+     * 根据userId taskId createAt时间 查 取未删除的
+     * @param userId
+     * @param taskId
+     * @param timestamp
+     * @return
+     */
+    public List<HouseQmCheckTaskIssueUser> searchByUserIdAndTaskIdAndCreateAt(int userId, int taskId,int timestamp){
+        List<HouseQmCheckTaskIssueUser> houseQmCheckTaskIssueUsers = houseQmCheckTaskIssueUserMapper.selectByUserIdAndTaskIdAndCreateAt(userId, taskId, timestamp,"false");
+        return houseQmCheckTaskIssueUsers;
     }
 
 }

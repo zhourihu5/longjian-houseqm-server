@@ -45,7 +45,6 @@ public class BuildingqmController {
     public TaskResponse<TaskListVo> myTaskList(@RequestParam(value="device_id" ) Integer deviceId,
                                                @RequestParam(value="token") String token){
         //// TODO: 2018/11/24
-
         Integer uid = null;
 
         TaskListVo vo = buildingqmService.myTaskList(uid);
@@ -63,7 +62,6 @@ public class BuildingqmController {
     @MockOperation
     @GetMapping(value = "check_update/check", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     public LjBaseResponse<TaskIssueListVo> check(UpdateDeviceReq updateDeviceReq){
-
         return null;
     }
 
@@ -79,7 +77,6 @@ public class BuildingqmController {
     public LjBaseResponse<TaskMemberListVo> taskSquadsMembers(@RequestParam(value="device_id" ) Integer deviceId,
                                                               @RequestParam(value="task_ids") String taskIds,
                                                               @RequestParam(value="token") String token){
-
         LjBaseResponse<TaskMemberListVo> vos = new LjBaseResponse<>();
         TaskMemberListVo vo = buildingqmService.taskSquadsMembers(taskIds);
         vos.setData(vo);

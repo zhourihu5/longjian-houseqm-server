@@ -20,8 +20,13 @@ public class HouseQmCheckTaskIssueAttachmentService {
     @Resource
     HouseQmCheckTaskIssueAttachmentMapper houseQmCheckTaskIssueAttachmentMapper;
 
+    /**
+     * 根据问题uuid 查 取 未删除的 数据
+     * @param issueUuids
+     * @return
+     */
     public List<HouseQmCheckTaskIssueAttachment> searchByIssueUuid(Set<String> issueUuids){
-
-        return null;
+        List<HouseQmCheckTaskIssueAttachment> houseQmCheckTaskIssueAttachments = houseQmCheckTaskIssueAttachmentMapper.selectByIssueUuid(issueUuids, "false");
+        return houseQmCheckTaskIssueAttachments;
     }
 }

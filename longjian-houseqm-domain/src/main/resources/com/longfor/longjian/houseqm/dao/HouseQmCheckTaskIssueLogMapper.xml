@@ -40,4 +40,20 @@
     -->
     desc, attachment_md5_list, audio_md5_list, memo_audio_md5_list, detail
   </sql>
+  <sql id="Full_Column_List">
+    id, project_id, task_id, uuid, issue_uuid, sender_id, status, client_create_at, create_at,
+    update_at, delete_at,desc,attachment_md5_list, audio_md5_list, memo_audio_md5_list, detail
+  </sql>
+  <select id="selectByIssueUuid" resultMap="ResultMapWithBLOBs">
+      select <include refid="Full_Column_List" /> from house_qm_check_task_issue_log
+        where issue_uuid in
+        <foreach collection="issueUuids" item="issueUuid" open="(" separator="," close=")" index="index">
+          #{issueUuid}
+        </foreach>
+        <if test="deleted == 'false'">
+          and delete_at is null
+        </if>
+        order by client_create_at asc
+  </select>
+
 </mapper>

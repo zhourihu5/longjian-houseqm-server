@@ -19,9 +19,15 @@ public class HouseQmCheckTaskIssueService {
     @Resource
     HouseQmCheckTaskIssueMapper houseQmCheckTaskIssueMapper;
 
+    /**
+     * 根据问题uuid 客户端创建时间 查 取 未删除的数据
+     * @param issueUuids
+     * @param timestamp
+     * @return
+     */
     public List<HouseQmCheckTaskIssue> searchByIssueUuidsAndclientCreateAt(Set<String> issueUuids,int timestamp){
-
-        return null;
+        List<HouseQmCheckTaskIssue> taskIssues = houseQmCheckTaskIssueMapper.selectByIssueUuidsAndclientCreateAt(issueUuids, timestamp, "false");
+        return taskIssues;
     }
 
 }
