@@ -20,6 +20,7 @@ import org.springframework.stereotype.Repository;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
+import java.text.SimpleDateFormat;
 import java.util.*;
 
 /**
@@ -148,8 +149,7 @@ public class BuildingqmService {
      * @param timestamp
      * @return
      */
-     public MyIssuePatchListVo myIssuePathList(Integer userId,Integer taskId,Integer timestamp){
-
+     public MyIssuePatchListVo myIssuePathList(int userId,int taskId,int timestamp){
          MyIssuePatchListVo myIssuePatchListVo = new MyIssuePatchListVo();
          // 获取所有问题的uuid
          List<HouseQmCheckTaskIssueUser> houseQmCheckTaskIssueUsers =houseQmCheckTaskIssueUserService.searchByUserIdAndTaskIdAndCreateAt(userId,taskId,timestamp);
@@ -157,7 +157,7 @@ public class BuildingqmService {
          for (HouseQmCheckTaskIssueUser user : houseQmCheckTaskIssueUsers) {
              issueUuids.add(user.getIssueUuid());
          }
-         // 如果issueUuids 为空返回null
+         // 如果issueUuids为空直接返回
          if (issueUuids.isEmpty()){
              return myIssuePatchListVo;
          }
@@ -190,7 +190,7 @@ public class BuildingqmService {
              logVo.setMemoAudioMd5List(issueLog.getMemoAudioMd5List());
              logVo.setClientCreateAt((int)(issueLog.getClientCreateAt().getTime()/1000));
 
-             MyIssuePatchListVo.LogDetailVo dic_detail = (MyIssuePatchListVo.LogDetailVo) JSONObject.parse(issueLog.getDetail());
+             JSONObject dic_detail = JSONObject.parseObject(issueLog.getDetail());
              MyIssuePatchListVo.LogDetailVo detail = myIssuePatchListVo.new LogDetailVo();
              if(issueMap.get(issueLog.getIssueUuid())!=null){
                  detail.setTitle(issueMap.get(issueLog.getIssueUuid()).getTitle());
@@ -199,23 +199,36 @@ public class BuildingqmService {
                  detail.setPos_y(issueMap.get(issueLog.getIssueUuid()).getPosY());
                  detail.setTyp(issueMap.get(issueLog.getIssueUuid()).getTyp());
              }
-             detail.setPlan_end_on(dic_detail.getPlan_end_on());
-             detail.setEnd_on(dic_detail.getEnd_on());
-             detail.setRepairer_id(dic_detail.getRepairer_id());
-             detail.setRepairer_follower_ids(dic_detail.getRepairer_follower_ids());
-             detail.setCondition(dic_detail.getCondition());
-             detail.setCategory_cls(dic_detail.getCategory_cls());
-             detail.setCategory_key(dic_detail.getCategory_key());
-             detail.setCheck_item_key(dic_detail.getCheck_item_key());
-             detail.setIssue_reason(dic_detail.getIssue_reason());
-             detail.setIssue_reason_detail(dic_detail.getIssue_reason_detail());
-             detail.setIssue_suggest(dic_detail.getIssue_suggest());
-             detail.setPotential_risk(dic_detail.getPotential_risk());
-             detail.setPreventive_action_detail(dic_detail.getPreventive_action_detail());
 
+             detail.setPlan_end_on(dic_detail.getIntValue("PlanEndOn"));
+             detail.setEnd_on(dic_detail.getIntValue("EndOn"));
+             detail.setRepairer_id(dic_detail.getIntValue("RepairerId"));
+             detail.setRepairer_follower_ids(dic_detail.getString("RepairerFollowerIds"));
+             detail.setCondition(dic_detail.getIntValue("Condition"));
+             detail.setCategory_cls(dic_detail.getIntValue("CategoryCls"));
+             detail.setCategory_key(dic_detail.getString("CategoryKey"));
+             detail.setCheck_item_key(dic_detail.getString("CheckItemKey"));
+             detail.setIssue_reason(dic_detail.getIntValue("IssueReason"));
+             detail.setIssue_reason_detail(dic_detail.getString("IssueReasonDetail"));
+             detail.setIssue_suggest(dic_detail.getString("IssueSuggest"));
+             detail.setPotential_risk(dic_detail.getString("PotentialRisk"));
+             detail.setPreventive_action_detail(dic_detail.getString("PreventiveActionDetail"));
              logVo.setDetail(detail);
-             logVo.setUpdateAt((int)(issueLog.getUpdateAt().getTime()/1000));
-             logVo.setDeleteAt((int)(issueLog.getDeleteAt().getTime()/1000));
+             SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+             String updateAt = formatter.format(issueLog.getUpdateAt());
+             //String deleteAt = formatter.format(issueLog.getDeleteAt());
+             if (issueLog.getUpdateAt()==null||updateAt.equals("0001-01-01 00:00:00")||updateAt.equals("")||!issueLog.getUpdateAt().after(new Date("1980-01-01 08:00:00"))){
+                 logVo.setUpdateAt(0);
+             }else {
+                 logVo.setUpdateAt((int)(issueLog.getUpdateAt().getTime()/1000));
+             }
+             if (issueLog.getDeleteAt()==null){
+                 logVo.setDeleteAt(0);
+             }/*else if (deleteAt.equals("0001-01-01 00:00:00")||deleteAt.equals("")||!issueLog.getDeleteAt().after(new Date("1980-01-01 08:00:00"))) {
+                 logVo.setDeleteAt(0);
+             }*/else {
+                 logVo.setDeleteAt((int)(issueLog.getDeleteAt().getTime()/1000));
+             }
              logs.add(logVo);
          }
          myIssuePatchListVo.setLog_list(logs);
