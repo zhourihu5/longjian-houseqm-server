@@ -59,4 +59,12 @@
           and delete_at is null
       </if>
   </select>
+
+  <select id="selectByProjectIdAndCategoryClsAndStatus" resultMap="BaseResultMap" >
+    SELECT <include refid="Base_Column_List" /> FROM house_qm_check_task
+    WHERE project_id=#{projectId} AND category_cls=#{categoryCls} AND status=#{status}
+      <if test="deleted == 'false'">
+          AND delete_at is NULL
+      </if>
+  </select>
 </mapper>

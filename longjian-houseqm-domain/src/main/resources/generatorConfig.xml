@@ -5,7 +5,7 @@
 
 <generatorConfiguration>
     <!--mysql 连接数据库jar 这里选择自己本地位置-->
-    <classPathEntry location="C:/Project/programs/mysql-connector-java-5.1.42-bin.jar" />
+    <classPathEntry location="e:/work/mysql-connector-java-5.1.46-bin.jar" />
     <context id="generateTables" targetRuntime="MyBatis3"  defaultModelType="flat">
 
         <plugin type="tk.mybatis.mapper.generator.MapperPlugin">
@@ -20,7 +20,7 @@
 
         <!--数据库连接的信息：驱动类、连接地址、用户名、密码 -->
         <jdbcConnection driverClass="com.mysql.jdbc.Driver"
-                        connectionURL="jdbc:mysql://192.168.96.168:3306/zhijian2" userId="zhijian"
+                        connectionURL="jdbc:mysql://192.168.96.168:3306/zhijian2_notify" userId="zhijian"
                         password="JM4tLp9u6pPANLhT">
         </jdbcConnection>
         <!-- 默认false，把JDBC DECIMAL 和 NUMERIC 类型解析为 Integer，为 true时把JDBC DECIMAL 和
@@ -55,7 +55,7 @@
         </javaClientGenerator>
 
         <!-- 指定数据库表 -->
-        <table tableName="user_in_house_qm_check_task" enableCountByExample="false" enableUpdateByExample="false" enableDeleteByExample="false" enableSelectByExample="false" selectByExampleQueryId="false"/>
+        <table tableName="push_strategy_category_threshold" enableCountByExample="false" enableUpdateByExample="false" enableDeleteByExample="false" enableSelectByExample="false" selectByExampleQueryId="false"/>
 
     </context>
 </generatorConfiguration>

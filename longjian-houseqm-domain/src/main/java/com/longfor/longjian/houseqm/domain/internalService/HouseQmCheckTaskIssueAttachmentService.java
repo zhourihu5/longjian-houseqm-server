@@ -1,5 +1,6 @@
 package com.longfor.longjian.houseqm.domain.internalService;
 
+import com.longfor.gaia.gfs.data.mybatis.datasource.LFAssignDataSource;
 import com.longfor.longjian.houseqm.dao.HouseQmCheckTaskIssueAttachmentMapper;
 import com.longfor.longjian.houseqm.po.HouseQmCheckTaskIssueAttachment;
 import lombok.extern.slf4j.Slf4j;
@@ -15,6 +16,7 @@ import java.util.Set;
  */
 @Service
 @Slf4j
+@LFAssignDataSource("zhijian2")
 public class HouseQmCheckTaskIssueAttachmentService {
 
     @Resource

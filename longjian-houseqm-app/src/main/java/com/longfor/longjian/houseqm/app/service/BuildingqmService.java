@@ -261,7 +261,7 @@ public class BuildingqmService {
             if (strdt.equals("0001-01-01 00:00:00")||strdt.equals("")||!dt.after(initDate)){
                 return 0;
             }else{
-                return (int) (dt.getTime() / 1000);
+                return (int) (dt.getTime()/1000);
             }
         }
      }
@@ -343,7 +343,6 @@ public class BuildingqmService {
                 item.setIssue_desc_status(CheckTaskIssueDescEnum.Arbitrary.getValue());
                 item.setIssue_default_desc("(该问题无文字描述)");
             } else {
-
                 JSONObject configData = JSON.parseObject(task.getConfigInfo());
                 item.setRepairer_refund_permission(getValueOrDefault(configData, "repairer_refund_permission",
                         CheckTaskRepairerRefundPermission.No.getValue()));

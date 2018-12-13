@@ -1,5 +1,6 @@
 package com.longfor.longjian.houseqm.domain.internalService;
 
+import com.longfor.gaia.gfs.data.mybatis.datasource.LFAssignDataSource;
 import com.longfor.longjian.houseqm.dao.HouseQmCheckTaskMapper;
 import com.longfor.longjian.houseqm.po.HouseQmCheckTask;
 import lombok.extern.slf4j.Slf4j;
@@ -15,6 +16,7 @@ import java.util.Set;
  */
 @Service
 @Slf4j
+@LFAssignDataSource("zhijian2")
 public class HouseQmCheckTaskService {
 
 
@@ -29,7 +31,6 @@ public class HouseQmCheckTaskService {
      * @return
      */
     public List<HouseQmCheckTask> selectByTaskIds(Set<Integer> taskIds){
-
         return houseQmCheckTaskMapper.selectByTaskIds(taskIds,"false");
     }
 
@@ -45,4 +46,12 @@ public class HouseQmCheckTaskService {
         return houseQmCheckTaskMapper.selectByTaskIds(taskIds,"true");
     }
 
+    /**
+     * 取未删除的数据
+     * @param houseQmCheckTask
+     * @return
+     */
+    public List<HouseQmCheckTask> selectByProjectIdAndCategoryClsAndStatus(HouseQmCheckTask houseQmCheckTask){
+        return houseQmCheckTaskMapper.selectByProjectIdAndCategoryClsAndStatus(houseQmCheckTask,"false");
+    }
 }
