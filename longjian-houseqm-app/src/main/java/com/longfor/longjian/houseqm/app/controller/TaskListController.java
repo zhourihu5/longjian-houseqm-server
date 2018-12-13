@@ -45,6 +45,9 @@ public class TaskListController {
                                          @RequestParam(value="team_id") String teamId,
                                          @RequestParam(value="status") String status){
 
+        ////Todo uid
+        Integer uid =null;
+
 
         return null;
     }

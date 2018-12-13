@@ -20,6 +20,7 @@ import org.springframework.stereotype.Repository;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.*;
 
@@ -188,7 +189,7 @@ public class BuildingqmService {
              logVo.setAttachmentMd5List(issueLog.getAttachmentMd5List());
              logVo.setAudioMd5List(issueLog.getAudioMd5List());
              logVo.setMemoAudioMd5List(issueLog.getMemoAudioMd5List());
-             logVo.setClientCreateAt((int)(issueLog.getClientCreateAt().getTime()/1000));
+             logVo.setClientCreateAt(DatetimeToTimeStamp(issueLog.getClientCreateAt()));
 
              JSONObject dic_detail = JSONObject.parseObject(issueLog.getDetail());
              MyIssuePatchListVo.LogDetailVo detail = myIssuePatchListVo.new LogDetailVo();
@@ -199,7 +200,6 @@ public class BuildingqmService {
                  detail.setPos_y(issueMap.get(issueLog.getIssueUuid()).getPosY());
                  detail.setTyp(issueMap.get(issueLog.getIssueUuid()).getTyp());
              }
-
              detail.setPlan_end_on(dic_detail.getIntValue("PlanEndOn"));
              detail.setEnd_on(dic_detail.getIntValue("EndOn"));
              detail.setRepairer_id(dic_detail.getIntValue("RepairerId"));
@@ -214,21 +214,8 @@ public class BuildingqmService {
              detail.setPotential_risk(dic_detail.getString("PotentialRisk"));
              detail.setPreventive_action_detail(dic_detail.getString("PreventiveActionDetail"));
              logVo.setDetail(detail);
-             SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-             String updateAt = formatter.format(issueLog.getUpdateAt());
-             //String deleteAt = formatter.format(issueLog.getDeleteAt());
-             if (issueLog.getUpdateAt()==null||updateAt.equals("0001-01-01 00:00:00")||updateAt.equals("")||!issueLog.getUpdateAt().after(new Date("1980-01-01 08:00:00"))){
-                 logVo.setUpdateAt(0);
-             }else {
-                 logVo.setUpdateAt((int)(issueLog.getUpdateAt().getTime()/1000));
-             }
-             if (issueLog.getDeleteAt()==null){
-                 logVo.setDeleteAt(0);
-             }/*else if (deleteAt.equals("0001-01-01 00:00:00")||deleteAt.equals("")||!issueLog.getDeleteAt().after(new Date("1980-01-01 08:00:00"))) {
-                 logVo.setDeleteAt(0);
-             }*/else {
-                 logVo.setDeleteAt((int)(issueLog.getDeleteAt().getTime()/1000));
-             }
+             logVo.setUpdateAt(DatetimeToTimeStamp(issueLog.getUpdateAt()));
+             logVo.setDeleteAt(DatetimeToTimeStamp(issueLog.getDeleteAt()));
              logs.add(logVo);
          }
          myIssuePatchListVo.setLog_list(logs);
@@ -246,14 +233,38 @@ public class BuildingqmService {
              attachmentVo.setAttachment_type(attachment.getAttachmentType());
              attachmentVo.setMd5(attachment.getMd5());
              attachmentVo.setStatus(attachment.getStatus());
-             attachmentVo.setUpdate_at((int)(attachment.getUpdateAt().getTime()/1000));
-             attachmentVo.setDelete_at((int)(attachment.getDeleteAt().getTime()/1000));
+             attachmentVo.setUpdate_at(DatetimeToTimeStamp(attachment.getUpdateAt()));
+             attachmentVo.setDelete_at(DatetimeToTimeStamp(attachment.getDeleteAt()));
              attachments.add(attachmentVo);
          }
          myIssuePatchListVo.setAttachment_list(attachments);
          return myIssuePatchListVo;
      }
 
+    /**
+     * 时间处理
+     * @param dt
+     * @return
+     */
+     private int DatetimeToTimeStamp(Date dt){
+        if (dt==null){
+            return 0;
+        }else {
+            SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+            String strdt = formatter.format(dt);
+            Date initDate = null;
+            try {
+                initDate = formatter.parse("1980-01-01 08:00:00");
+            } catch (ParseException e) {
+                e.printStackTrace();
+            }
+            if (strdt.equals("0001-01-01 00:00:00")||strdt.equals("")||!dt.after(initDate)){
+                return 0;
+            }else{
+                return (int) (dt.getTime() / 1000);
+            }
+        }
+     }
 
     /**
      *

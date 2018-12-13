@@ -72,7 +72,7 @@ public class BuildingqmController {
      * @param token
      * @return
      */
-    @MockOperation
+
     @GetMapping(value = "buildingqm/task_squads_members", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     public LjBaseResponse<TaskMemberListVo> taskSquadsMembers(@RequestParam(value="device_id" ) Integer deviceId,
                                                               @RequestParam(value="task_ids") String taskIds,
@@ -88,12 +88,12 @@ public class BuildingqmController {
      * @param deviceReq
      * @return
      */
-    @MockOperation
+
     @GetMapping(value = "buildingqm/my_issue_patch_list/", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     public LjBaseResponse<MyIssuePatchListVo> myIssuePatchList(DeviceReq deviceReq){
 
-        //// Todo: 获取uid
-        Integer uid = null;
+        //// Todo: 获取uid 为了测试改为0，
+        Integer uid = 0;
         //调用业务方法
         MyIssuePatchListVo miplv= buildingqmService.myIssuePathList(uid,deviceReq.getTask_id(),deviceReq.getTimestamp());
         LjBaseResponse<MyIssuePatchListVo> ljBaseResponse = new LjBaseResponse<>();

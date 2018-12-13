@@ -102,7 +102,7 @@ longfor:
             maximum-pool-size: 10
         custom02:
           driver-class-name: com.mysql.jdbc.Driver
-          url: jdbc:mysql://192.168.36.95:3306/zhijian2_apisvr?useUnicode=true&characterEncoding=UTF8
+          url: jdbc:mysql://192.168.36.95:3306/zhijian2?useUnicode=true&characterEncoding=UTF8
           username: zhijian
           password: JM4tLp9u6pPANLhT
     redis:
