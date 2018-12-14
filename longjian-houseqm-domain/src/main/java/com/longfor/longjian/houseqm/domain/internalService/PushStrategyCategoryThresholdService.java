@@ -26,6 +26,7 @@ public class PushStrategyCategoryThresholdService {
      * @param taskIds
      * @return
      */
+    @LFAssignDataSource("zhijian2_notify")
     public List<PushStrategyCategoryThreshold> searchByTaskIds(Set<Integer> taskIds){
        return pushStrategyCategoryThresholdMapper.selectByTaskIds(taskIds,"false");
     }

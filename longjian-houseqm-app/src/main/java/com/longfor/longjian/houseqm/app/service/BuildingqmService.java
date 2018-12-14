@@ -5,6 +5,7 @@ import com.alibaba.fastjson.JSONObject;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
+import com.longfor.gaia.gfs.data.mybatis.datasource.LFAssignDataSource;
 import com.longfor.longjian.common.consts.checktask.*;
 import com.longfor.longjian.houseqm.app.vo.MyIssuePatchListVo;
 import com.longfor.longjian.houseqm.app.vo.TaskListVo;
@@ -189,7 +190,7 @@ public class BuildingqmService {
              logVo.setAttachmentMd5List(issueLog.getAttachmentMd5List());
              logVo.setAudioMd5List(issueLog.getAudioMd5List());
              logVo.setMemoAudioMd5List(issueLog.getMemoAudioMd5List());
-             logVo.setClientCreateAt(DatetimeToTimeStamp(issueLog.getClientCreateAt()));
+             logVo.setClientCreateAt(datetimeToTimeStamp(issueLog.getClientCreateAt()));
 
              JSONObject dic_detail = JSONObject.parseObject(issueLog.getDetail());
              MyIssuePatchListVo.LogDetailVo detail = myIssuePatchListVo.new LogDetailVo();
@@ -214,8 +215,8 @@ public class BuildingqmService {
              detail.setPotential_risk(dic_detail.getString("PotentialRisk"));
              detail.setPreventive_action_detail(dic_detail.getString("PreventiveActionDetail"));
              logVo.setDetail(detail);
-             logVo.setUpdateAt(DatetimeToTimeStamp(issueLog.getUpdateAt()));
-             logVo.setDeleteAt(DatetimeToTimeStamp(issueLog.getDeleteAt()));
+             logVo.setUpdateAt(datetimeToTimeStamp(issueLog.getUpdateAt()));
+             logVo.setDeleteAt(datetimeToTimeStamp(issueLog.getDeleteAt()));
              logs.add(logVo);
          }
          myIssuePatchListVo.setLog_list(logs);
@@ -233,8 +234,8 @@ public class BuildingqmService {
              attachmentVo.setAttachment_type(attachment.getAttachmentType());
              attachmentVo.setMd5(attachment.getMd5());
              attachmentVo.setStatus(attachment.getStatus());
-             attachmentVo.setUpdate_at(DatetimeToTimeStamp(attachment.getUpdateAt()));
-             attachmentVo.setDelete_at(DatetimeToTimeStamp(attachment.getDeleteAt()));
+             attachmentVo.setUpdate_at(datetimeToTimeStamp(attachment.getUpdateAt()));
+             attachmentVo.setDelete_at(datetimeToTimeStamp(attachment.getDeleteAt()));
              attachments.add(attachmentVo);
          }
          myIssuePatchListVo.setAttachment_list(attachments);
@@ -246,7 +247,7 @@ public class BuildingqmService {
      * @param dt
      * @return
      */
-     private int DatetimeToTimeStamp(Date dt){
+     private int datetimeToTimeStamp(Date dt){
         if (dt==null){
             return 0;
         }else {

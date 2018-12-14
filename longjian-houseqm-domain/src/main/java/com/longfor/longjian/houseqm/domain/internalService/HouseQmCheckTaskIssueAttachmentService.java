@@ -16,7 +16,6 @@ import java.util.Set;
  */
 @Service
 @Slf4j
-@LFAssignDataSource("zhijian2")
 public class HouseQmCheckTaskIssueAttachmentService {
 
     @Resource
@@ -27,6 +26,7 @@ public class HouseQmCheckTaskIssueAttachmentService {
      * @param issueUuids
      * @return
      */
+    @LFAssignDataSource(value = "zhijian2")
     public List<HouseQmCheckTaskIssueAttachment> searchByIssueUuid(Set<String> issueUuids){
         List<HouseQmCheckTaskIssueAttachment> houseQmCheckTaskIssueAttachments = houseQmCheckTaskIssueAttachmentMapper.selectByIssueUuid(issueUuids, "false");
         return houseQmCheckTaskIssueAttachments;

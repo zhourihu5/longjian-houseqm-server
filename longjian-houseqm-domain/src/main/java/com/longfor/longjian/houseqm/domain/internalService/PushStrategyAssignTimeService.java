@@ -16,7 +16,6 @@ import java.util.Set;
  */
 @Service
 @Slf4j
-@LFAssignDataSource("zhijian2_notify")
 public class PushStrategyAssignTimeService {
     @Resource
     PushStrategyAssignTimeMapper pushStrategyAssignTimeMapper;
@@ -26,6 +25,7 @@ public class PushStrategyAssignTimeService {
      * @param taskIds
      * @return
      */
+    @LFAssignDataSource("zhijian2_notify")
     public List<PushStrategyAssignTime> searchByTaskIds(Set<Integer> taskIds){
         return pushStrategyAssignTimeMapper.selectByTaskIds(taskIds,"false");
     }

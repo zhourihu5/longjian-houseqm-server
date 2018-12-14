@@ -14,6 +14,5 @@ import java.util.List;
 @Data
 @NoArgsConstructor
 public class TaskList2Vo implements Serializable {
-
     private List<ApiBuildingQmCheckTaskMsg> task_list;
 }

@@ -31,7 +31,7 @@
       <foreach collection="taskIds" index="index" open="(" separator="," close=")" item="item">
         #{item}
       </foreach>
-      <if test="delete == 'false'">
+      <if test="deleted == 'false'">
         AND delete_at IS NULL
       </if>
   </select>

@@ -44,7 +44,7 @@ public class TaskListController {
      */
 
     @GetMapping(value = "list", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
-    public TaskResponse<TaskListVo> list(@RequestParam(value="project_id" ) Integer projectId,
+    public TaskResponse<TaskList2Vo> list(@RequestParam(value="project_id" ) Integer projectId,
                                          @RequestParam(value="category_cls") Integer categoryCls,
                                          @RequestParam(value="page_level") String pageLevel,
                                          @RequestParam(value="group_id") String groupId,
@@ -56,7 +56,9 @@ public class TaskListController {
         ////Todo 根据uid、project_id判断权限
 
         TaskList2Vo taskListVo = taskListService.list(teamId, projectId, categoryCls, status);
-        TaskResponse<TaskListVo> taskResponse = new TaskResponse<>();
+        TaskResponse<TaskList2Vo> taskResponse = new TaskResponse<>();
+        taskResponse.setMessage("success");
+        taskResponse.setMsg("success");
         taskResponse.setData(taskListVo);
         return taskResponse;
     }

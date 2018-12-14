@@ -16,7 +16,6 @@ import java.util.Set;
  */
 @Service
 @Slf4j
-@LFAssignDataSource("zhijian2")
 public class HouseQmCheckTaskIssueService {
     @Resource
     HouseQmCheckTaskIssueMapper houseQmCheckTaskIssueMapper;
@@ -27,6 +26,7 @@ public class HouseQmCheckTaskIssueService {
      * @param timestamp
      * @return
      */
+    @LFAssignDataSource("zhijian2")
     public List<HouseQmCheckTaskIssue> searchByIssueUuidsAndclientCreateAt(Set<String> issueUuids,int timestamp){
         List<HouseQmCheckTaskIssue> taskIssues = houseQmCheckTaskIssueMapper.selectByIssueUuidsAndclientCreateAt(issueUuids, timestamp, "false");
         return taskIssues;

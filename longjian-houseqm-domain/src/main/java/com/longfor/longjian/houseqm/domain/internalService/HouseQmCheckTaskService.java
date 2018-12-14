@@ -16,7 +16,6 @@ import java.util.Set;
  */
 @Service
 @Slf4j
-@LFAssignDataSource("zhijian2")
 public class HouseQmCheckTaskService {
 
 
@@ -30,6 +29,7 @@ public class HouseQmCheckTaskService {
      * @param taskIds
      * @return
      */
+    @LFAssignDataSource("zhijian2")
     public List<HouseQmCheckTask> selectByTaskIds(Set<Integer> taskIds){
         return houseQmCheckTaskMapper.selectByTaskIds(taskIds,"false");
     }
@@ -51,6 +51,7 @@ public class HouseQmCheckTaskService {
      * @param houseQmCheckTask
      * @return
      */
+    @LFAssignDataSource("zhijian2")
     public List<HouseQmCheckTask> selectByProjectIdAndCategoryClsAndStatus(HouseQmCheckTask houseQmCheckTask){
         return houseQmCheckTaskMapper.selectByProjectIdAndCategoryClsAndStatus(houseQmCheckTask,"false");
     }

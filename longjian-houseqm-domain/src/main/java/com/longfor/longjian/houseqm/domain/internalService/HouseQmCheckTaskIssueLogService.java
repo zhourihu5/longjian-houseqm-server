@@ -17,7 +17,6 @@ import java.util.Set;
  */
 @Service
 @Slf4j
-@LFAssignDataSource("zhijian2")
 public class HouseQmCheckTaskIssueLogService {
     @Resource
     HouseQmCheckTaskIssueLogMapper houseQmCheckTaskIssueLogMapper;
@@ -28,6 +27,7 @@ public class HouseQmCheckTaskIssueLogService {
      * @param issueUuids
      * @return
      */
+    @LFAssignDataSource("zhijian2")
     public List<HouseQmCheckTaskIssueLog> searchByIssueUuid(Set<String> issueUuids){
         List<HouseQmCheckTaskIssueLog> houseQmCheckTaskIssueLogs = houseQmCheckTaskIssueLogMapper.selectByIssueUuid(issueUuids, "false");
         return houseQmCheckTaskIssueLogs;

@@ -46,9 +46,9 @@
     area_ids
   </sql>
 
-  <select id="selectByTaskIds" resultMap="BaseResultMap">
+  <select id="selectByTaskIds" resultMap="ResultMapWithBLOBs">
       select
-      <include refid="Base_Column_List" />
+      <include refid="Base_Column_List" />,<include refid="Blob_Column_List"/>
       from house_qm_check_task
       where task_id in
       <foreach collection="idList" item="id" index="index"
@@ -60,9 +60,9 @@
       </if>
   </select>
 
-  <select id="selectByProjectIdAndCategoryClsAndStatus" resultMap="BaseResultMap" >
-    SELECT <include refid="Base_Column_List" /> FROM house_qm_check_task
-    WHERE project_id=#{projectId} AND category_cls=#{categoryCls} AND status=#{status}
+  <select id="selectByProjectIdAndCategoryClsAndStatus" resultMap="ResultMapWithBLOBs" >
+    SELECT <include refid="Base_Column_List" />,<include refid="Blob_Column_List"/> FROM house_qm_check_task
+    WHERE project_id=#{houseQmCheckTask.projectId} AND category_cls=#{houseQmCheckTask.categoryCls} AND status=#{houseQmCheckTask.status}
       <if test="deleted == 'false'">
           AND delete_at is NULL
       </if>
