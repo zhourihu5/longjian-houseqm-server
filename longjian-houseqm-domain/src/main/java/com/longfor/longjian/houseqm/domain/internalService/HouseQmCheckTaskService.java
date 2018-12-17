@@ -42,7 +42,6 @@ public class HouseQmCheckTaskService {
      * @return
      */
     public List<HouseQmCheckTask> selectByTaskIdsEvenDeleted(Set<Integer> taskIds){
-
         return houseQmCheckTaskMapper.selectByTaskIds(taskIds,"true");
     }
 
@@ -55,4 +54,16 @@ public class HouseQmCheckTaskService {
     public List<HouseQmCheckTask> selectByProjectIdAndCategoryClsAndStatus(HouseQmCheckTask houseQmCheckTask){
         return houseQmCheckTaskMapper.selectByProjectIdAndCategoryClsAndStatus(houseQmCheckTask,"false");
     }
+
+    /**
+     *  根据项目id 任务id查
+     * @param projectId
+     * @param taskId
+     * @return
+     */
+    @LFAssignDataSource("zhijian2")
+    public HouseQmCheckTask selectByProjectIdAndTaskId(Integer projectId,Integer taskId){
+        return houseQmCheckTaskMapper.selectByProjectIdAndTaskId(projectId,taskId);
+    }
+
 }

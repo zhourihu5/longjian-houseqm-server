@@ -67,4 +67,11 @@
           AND delete_at is NULL
       </if>
   </select>
+
+    <select id="selectByProjectIdAndTaskId" resultMap="BaseResultMap" >
+       select <include refid="Base_Column_List"/>
+        FROM house_qm_check_task
+        WHERE task_id=#{taskId}  and project_id=#{projectId}
+   </select>
+
 </mapper>

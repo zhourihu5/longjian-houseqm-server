@@ -24,4 +24,13 @@ public interface HouseQmCheckTaskMapper extends LFMySQLMapper<HouseQmCheckTask> 
      * @return
      */
     List<HouseQmCheckTask> selectByProjectIdAndCategoryClsAndStatus(@Param("houseQmCheckTask") HouseQmCheckTask houseQmCheckTask,@Param("deleted")String deleted);
+
+    /**
+     *
+     * @param projectId
+     * @param taskId
+     * @return
+     */
+    HouseQmCheckTask selectByProjectIdAndTaskId(@Param("projectId") Integer projectId,@Param("taskId") Integer taskId);
+
 }

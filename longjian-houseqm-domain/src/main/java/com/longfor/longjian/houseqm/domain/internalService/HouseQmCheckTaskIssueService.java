@@ -2,6 +2,7 @@ package com.longfor.longjian.houseqm.domain.internalService;
 
 import com.longfor.gaia.gfs.data.mybatis.datasource.LFAssignDataSource;
 import com.longfor.longjian.houseqm.dao.HouseQmCheckTaskIssueMapper;
+import com.longfor.longjian.houseqm.po.CheckerIssueStat;
 import com.longfor.longjian.houseqm.po.HouseQmCheckTaskIssue;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -31,5 +32,67 @@ public class HouseQmCheckTaskIssueService {
         List<HouseQmCheckTaskIssue> taskIssues = houseQmCheckTaskIssueMapper.selectByIssueUuidsAndclientCreateAt(issueUuids, timestamp, "false");
         return taskIssues;
     }
+
+    /**
+     * 查询未删除 根据项目id 任务id 数据
+     * @param projectId
+     * @param taskIds
+     * @return
+     */
+    @LFAssignDataSource("zhijian2")
+    public List<CheckerIssueStat> searchCheckerIssueStatisticByProjIdAndTaskId(Integer projectId, List<Integer> taskIds){
+        List<CheckerIssueStat> checkerIssueStats = houseQmCheckTaskIssueMapper.selectByProjectIdAndTaskIdIn(projectId, taskIds, "false");
+        return checkerIssueStats;
+    }
+
+    /**
+     *  获取创建时间 以yyyy-MM-dd 格式
+     * @param projectId
+     * @param taskIds
+     * @return
+     */
+    @LFAssignDataSource("zhijian2")
+    public List<CheckerIssueStat> searchHouseQmCheckTaskIssueActiveDateByProjTaskIdIn(Integer projectId, List<Integer> taskIds){
+        List<CheckerIssueStat> taskIssues = houseQmCheckTaskIssueMapper.selectCreateAtByProjectIdAndTaskIdsIn(projectId, taskIds, "false");
+        return taskIssues;
+    }
+
+    /**
+     *  根据项目id 任务id 客户端创建时间>=date 小于=date+1 查询项目任务信息
+     * @param projectId
+     * @param taskIds
+     * @param date
+     * @return
+     */
+    @LFAssignDataSource("zhijian2")
+    public List<CheckerIssueStat> getIssueSituationDailyByProjTaskIdInDate(Integer projectId, List<Integer> taskIds,String date){
+        List<CheckerIssueStat> checkerIssueStat = houseQmCheckTaskIssueMapper.selectByProjectIdAndTaskIdAndClientCreateAt(projectId, taskIds, date, "false");
+        return checkerIssueStat;
+    }
+
+    /**
+     * 根据客户端创建时间 lte endOn=(date+1)
+     * @param projectId
+     * @param taskIds
+     * @param date
+     * @return
+     */
+    @LFAssignDataSource("zhijian2")
+    public List<CheckerIssueStat> searchByProjectIdAndTaskIdsAndClientCreateAt(Integer projectId, List<Integer> taskIds,String date){
+        return houseQmCheckTaskIssueMapper.selectByProjectIdAndTaskIdsAndClientCreateAt(projectId, taskIds,date,"false");
+    }
+
+    /**
+     *
+     * @param projectId
+     * @param taskId
+     * @return
+     */
+    @LFAssignDataSource("zhijian2")
+    public List<CheckerIssueStat> searchByProjectIdAndTaskId(Integer projectId,Integer taskId){
+        List<CheckerIssueStat> checkerIssueStats = houseQmCheckTaskIssueMapper.selectByProjectIdAndTaskId(projectId, taskId, "false");
+        return checkerIssueStats;
+    }
+
 
 }

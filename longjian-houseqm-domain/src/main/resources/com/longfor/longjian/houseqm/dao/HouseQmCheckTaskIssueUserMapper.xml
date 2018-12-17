@@ -23,7 +23,7 @@
   
   <select id="selectByUserIdAndTaskIdAndCreateAt" resultMap="BaseResultMap">
     select issue_uuid from house_qm_check_task_issue_user
-    where user_id=#{userId} and task_id=#{taskId} and create_at &gt; from_unixtime(#{timestamp})
+    where user_id=#{userId} and task_id=#{taskId} and create_at &gt; from_unixtime(#{timestamp},'%y-%m-%d')
     <if test="deleted == 'false'">
       and delete_at is null
     </if>
