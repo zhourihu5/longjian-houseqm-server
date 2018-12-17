@@ -66,4 +66,15 @@ public class HouseQmCheckTaskService {
         return houseQmCheckTaskMapper.selectByProjectIdAndTaskId(projectId,taskId);
     }
 
+    /**
+     *
+     * @param projectId
+     * @param categoryCls
+     * @return
+     */
+    @LFAssignDataSource("zhijian2")
+    public List<HouseQmCheckTask> searchByProjectIdAndCategoryClsIn(Integer projectId,List<Integer> categoryCls){
+        return houseQmCheckTaskMapper.selectByProjectIdAndCategoryClsIn(projectId,categoryCls);
+    }
+
 }

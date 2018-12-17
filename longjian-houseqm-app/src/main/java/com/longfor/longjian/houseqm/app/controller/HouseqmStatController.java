@@ -167,30 +167,41 @@ public class HouseqmStatController {
                                                      @RequestParam(value="team_id") String teamId,
                                                      @RequestParam(value="task_id") Integer taskId,
                                                      @RequestParam(value="group_id") String groupId){
-
         TaskAreaListVo talv=houseqmStatService.searchAreasByProjTaskIdTyp(projectId,taskId);
         LjBaseResponse<TaskAreaListVo> ljbr = new LjBaseResponse<>();
         ljbr.setData(talv);
         return ljbr;
     }
 
-    @MockOperation
+    /**
+     * 获取区域下任务信息
+     * @param projectId
+     * @param categoryCls
+     * @param pageLevel
+     * @param teamId
+     * @param areaId
+     * @param groupId
+     * @return
+     */
     @GetMapping(value = "stat/area_situation_task_list", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
-    public LjBaseResponse<TaskAreaListVo> areaSituationTaskList(@RequestParam(value="project_id" ) Integer projectId,
-                                                       @RequestParam(value="category_cls") String categoryCls,
+    public LjBaseResponse<AreaTaskListVo> areaSituationTaskList(@RequestParam(value="project_id" ) Integer projectId,
+                                                       @RequestParam(value="category_cls") Integer categoryCls,
                                                        @RequestParam(value="page_level") String pageLevel,
                                                        @RequestParam(value="team_id") String teamId,
-                                                       @RequestParam(value="area_id") String areaId,
+                                                       @RequestParam(value="area_id") Integer areaId,
                                                        @RequestParam(value="group_id") String groupId){
-
-
-        return null;
+        List<Integer> list = Lists.newArrayList();
+        list.add(categoryCls);
+        AreaTaskListVo areaTaskListVo=houseqmStatService.searchHouseQmCheckTaskByProjIdAreaIdCategoryClsIn(projectId,areaId,list);
+        LjBaseResponse<AreaTaskListVo> ljbr = new LjBaseResponse<>();
+        ljbr.setData(areaTaskListVo);
+        return ljbr;
     }
 
 
 
     /**
-     *
+     * 获取任务详情-总体情况
      * @param projectId
      * @param categoryCls
      * @param pageLevel
@@ -199,7 +210,6 @@ public class HouseqmStatController {
      * @param groupId
      * @return
      */
-    @MockOperation
     @GetMapping(value = "stat/task_detail", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     public LjBaseResponse<TaskStatVo> taskDetail(@RequestParam(value="project_id" ) Integer projectId,
                                                  @RequestParam(value="category_cls") String categoryCls,

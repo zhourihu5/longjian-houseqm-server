@@ -2,11 +2,9 @@ package com.longfor.longjian.houseqm.app.service;
 
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
+import com.google.common.collect.Sets;
 import com.longfor.longjian.houseqm.app.consts.HouseQmCheckTaskIssueEnum;
-import com.longfor.longjian.houseqm.app.vo.CheckerStatListVo;
-import com.longfor.longjian.houseqm.app.vo.ProjectDailyListVo;
-import com.longfor.longjian.houseqm.app.vo.ProjectOveralListVo;
-import com.longfor.longjian.houseqm.app.vo.TaskAreaListVo;
+import com.longfor.longjian.houseqm.app.vo.*;
 import com.longfor.longjian.houseqm.domain.internalService.AreaService;
 import com.longfor.longjian.houseqm.domain.internalService.HouseQmCheckTaskIssueService;
 import com.longfor.longjian.houseqm.domain.internalService.HouseQmCheckTaskService;
@@ -132,7 +130,7 @@ public class HouseqmStatService {
         for(int i=1; i<totalDates.size(); i++){
             tmp = totalDates.get(i);
             int j=i-1;
-            for(; j>=0&&(DateCompare(tmp, totalDates.get(j))>0); j--){
+            for(; j>=0&&(dateCompare(tmp, totalDates.get(j))>0); j--){
                 totalDates.set(j+1, totalDates.get(j));
             }
             totalDates.set(j+1, tmp);
@@ -242,7 +240,7 @@ public class HouseqmStatService {
         List<Area> res = areaService.selectAreasByIdInAreaIds(areaIds);
         List<String> areaPathAndIds = Lists.newArrayList();
         for (Area area : res) {
-            areaPathAndIds.add(area.getPath()+area.getId());
+            areaPathAndIds.add(area.getPath()+area.getId()+"/");
         }
         //getRootAreaIds()
         Map<String, Boolean> mPath = Maps.newHashMap();
@@ -271,12 +269,54 @@ public class HouseqmStatService {
     }
 
     /**
+     *
+     * @param projectId
+     * @param areaId
+     * @param categoryCls
+     * @return
+     */
+    public AreaTaskListVo searchHouseQmCheckTaskByProjIdAreaIdCategoryClsIn(Integer projectId, Integer areaId, List<Integer> categoryCls){
+        List<HouseQmCheckTask> tasks=houseQmCheckTaskService.searchByProjectIdAndCategoryClsIn(projectId,categoryCls);
+        List<Integer> areaIds= Lists.newArrayList();
+        for (HouseQmCheckTask item : tasks) {
+            List<Integer> areaList = splitToIdsComma(item.getAreaIds());
+            for (Integer i : areaList) {
+                areaIds.add(i);
+            }
+        }
+        //去重
+        HashSet<Integer> set = Sets.newHashSet(areaIds);
+        areaIds.clear();
+        areaIds.addAll(set);
+        List<Area> areas = areaService.selectAreasByIdInAreaIds(areaIds);
+        HashMap<Integer, String> areaMap = Maps.newHashMap();
+        for (Area area : areas) {
+            areaMap.put(area.getId(), area.getPath()+area.getId()+"/");
+        }
+        AreaTaskListVo areaTaskListVo = new AreaTaskListVo();
+        List<AreaTaskListVo.AreaTaskVo> list = Lists.newArrayList();
+        for (HouseQmCheckTask item : tasks) {
+            AreaTaskListVo.AreaTaskVo areaTaskVo = areaTaskListVo.new AreaTaskVo();
+            List<Integer> areaList = splitToIdsComma(item.getAreaIds());
+            if (checkRootAreaIntersectAreas(areaMap,areaId,areaList)){
+                areaTaskVo.setId(item.getTaskId());
+                areaTaskVo.setName(item.getName());
+                areaTaskVo.setCategory_cls(""+item.getCategoryCls());
+                list.add(areaTaskVo);
+            }
+        }
+        areaTaskListVo.setTasks(list);
+        return areaTaskListVo;
+    }
+
+
+    /**
      * 时间比较排序
      * @param s1
      * @param s2
      * @return
      */
-    private long DateCompare(String s1, String s2) {
+    private long dateCompare(String s1, String s2) {
         try {
             SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
             Date d1 = sdf.parse(s1);
@@ -288,4 +328,39 @@ public class HouseqmStatService {
         return 0;
     }
 
+    /**
+     * 字符串分割 转换为int类型的
+     * @param ids
+     * @return
+     */
+    private List<Integer> splitToIdsComma(String ids){
+        List<Integer> list = Lists.newArrayList();
+        String[] str = ids.split(",");
+        List<String> areaList = Arrays.asList(str);
+        for (String s : areaList) {
+            list.add(Integer.parseInt(s));
+        }
+        return list;
+    }
+
+    /**
+     *
+     * @param areaMap
+     * @param id
+     * @param ids
+     * @return
+     */
+    private Boolean checkRootAreaIntersectAreas(Map<Integer,String> areaMap,Integer id,List<Integer> ids){
+        for (Integer i : ids) {
+            if (i==id){
+                return true;
+            }
+            if (areaMap.containsKey(i)){
+                if (areaMap.get(i).indexOf("/"+id+"/")!=-1){
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
 }
