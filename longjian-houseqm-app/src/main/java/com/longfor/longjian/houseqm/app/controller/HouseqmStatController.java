@@ -160,17 +160,18 @@ public class HouseqmStatController {
      * @param groupId
      * @return
      */
-    @MockOperation
     @GetMapping(value = "stat/task_area_list", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     public LjBaseResponse<TaskAreaListVo> taskAreaList(@RequestParam(value="project_id" ) Integer projectId,
                                                      @RequestParam(value="category_cls") String categoryCls,
                                                      @RequestParam(value="page_level") String pageLevel,
                                                      @RequestParam(value="team_id") String teamId,
-                                                     @RequestParam(value="task_id") String taskId,
+                                                     @RequestParam(value="task_id") Integer taskId,
                                                      @RequestParam(value="group_id") String groupId){
 
-
-        return null;
+        TaskAreaListVo talv=houseqmStatService.searchAreasByProjTaskIdTyp(projectId,taskId);
+        LjBaseResponse<TaskAreaListVo> ljbr = new LjBaseResponse<>();
+        ljbr.setData(talv);
+        return ljbr;
     }
 
     @MockOperation

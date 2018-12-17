@@ -6,9 +6,12 @@ import com.longfor.longjian.houseqm.app.consts.HouseQmCheckTaskIssueEnum;
 import com.longfor.longjian.houseqm.app.vo.CheckerStatListVo;
 import com.longfor.longjian.houseqm.app.vo.ProjectDailyListVo;
 import com.longfor.longjian.houseqm.app.vo.ProjectOveralListVo;
+import com.longfor.longjian.houseqm.app.vo.TaskAreaListVo;
+import com.longfor.longjian.houseqm.domain.internalService.AreaService;
 import com.longfor.longjian.houseqm.domain.internalService.HouseQmCheckTaskIssueService;
 import com.longfor.longjian.houseqm.domain.internalService.HouseQmCheckTaskService;
 import com.longfor.longjian.houseqm.domain.internalService.UserService;
+import com.longfor.longjian.houseqm.po.Area;
 import com.longfor.longjian.houseqm.po.CheckerIssueStat;
 import com.longfor.longjian.houseqm.po.HouseQmCheckTask;
 import com.longfor.longjian.houseqm.po.User;
@@ -38,6 +41,9 @@ public class HouseqmStatService {
 
     @Resource
     HouseQmCheckTaskService houseQmCheckTaskService;
+
+    @Resource
+    AreaService areaService;
 
     /**
      * @param projectId
@@ -217,6 +223,51 @@ public class HouseqmStatService {
         }
         item.setChecked_count(areaMap.size());
         return item;
+    }
+
+    /**
+     *
+     * @param projectId
+     * @param taskId
+     * @return
+     */
+    public TaskAreaListVo searchAreasByProjTaskIdTyp(Integer projectId, Integer taskId){
+        HouseQmCheckTask task = houseQmCheckTaskService.selectByProjectIdAndTaskId(projectId, taskId);
+        String strAreaIds = task.getAreaIds();
+        String[] strAreaIdss = strAreaIds.split(",");
+        List<Integer> areaIds = Lists.newArrayList();
+        for (String item : strAreaIdss) {
+            areaIds.add(Integer.parseInt(item));
+        }
+        List<Area> res = areaService.selectAreasByIdInAreaIds(areaIds);
+        List<String> areaPathAndIds = Lists.newArrayList();
+        for (Area area : res) {
+            areaPathAndIds.add(area.getPath()+area.getId());
+        }
+        //getRootAreaIds()
+        Map<String, Boolean> mPath = Maps.newHashMap();
+        for (String v : areaPathAndIds) {
+            String[] names = v.split("/");
+            mPath.put(names[1],true);
+        }
+        areaIds.clear();
+        for (Map.Entry<String, Boolean> k : mPath.entrySet()) {
+            areaIds.add(Integer.parseInt(k.getKey()));
+        }
+        List<Area> areas = areaService.selectAreasByIdInAreaIds(areaIds);
+        TaskAreaListVo taskAreaListVo = new TaskAreaListVo();
+        List<TaskAreaListVo.TaskAreaVo> list = Lists.newArrayList();
+        for (Area item : areas) {
+            TaskAreaListVo.TaskAreaVo taskAreaVo = taskAreaListVo.new TaskAreaVo();
+            taskAreaVo.setId(item.getId());
+            taskAreaVo.setName(item.getName());
+            taskAreaVo.setFather_id(item.getFatherId());
+            taskAreaVo.setPath(item.getPath());
+            taskAreaVo.setTyp(item.getType());
+            list.add(taskAreaVo);
+        }
+        taskAreaListVo.setAreas(list);
+        return taskAreaListVo;
     }
 
     /**
