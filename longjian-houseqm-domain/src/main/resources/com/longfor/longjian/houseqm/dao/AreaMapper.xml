@@ -48,5 +48,24 @@
           #{areaId}
         </foreach>
     </select>
+    <select id="selectById" resultMap="BaseResultMap" >
+        select <include refid="Base_Column_List" />
+        from area
+        where id =#{areaId}
+    </select>
 
+    <select id="selectByProjectIdAndIdIn" resultMap="BaseResultMap" >
+        SELECT <include refid="Base_Column_List"/> from area
+        WHERE project_id=#{projectId} AND id IN
+        <foreach collection="areaIds" item="areaId" index="index" open="(" separator="," close=")">
+            #{areaId}
+        </foreach>
+    </select>
+    <select id="selectByProjectIdAndPathLikeOrIdAndTypeIn" resultMap="BaseResultMap" >
+        SELECT <include refid="Base_Column_List"/> from area
+        WHERE project_id=#{projectId} AND path LIKE #{likePath} OR id=#{id} AND type IN
+        <foreach collection="types" item="type" index="index" open="(" separator="," close=")">
+            #{type}
+        </foreach>
+    </select>
 </mapper>

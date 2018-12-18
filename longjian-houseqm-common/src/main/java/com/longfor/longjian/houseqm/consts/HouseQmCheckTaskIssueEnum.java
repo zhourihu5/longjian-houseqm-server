@@ -1,5 +1,8 @@
-package com.longfor.longjian.houseqm.app.consts;
+package com.longfor.longjian.houseqm.consts;
 
+/**
+ * Created by houyan on 2018/12/17.
+ */
 public enum HouseQmCheckTaskIssueEnum {
     Record(99,"普通记录"),FindProblem(1,"发现问题"),Good(2,"优秀做法"),Difficult(3,"困难问题");
 

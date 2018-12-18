@@ -4,6 +4,7 @@ import com.google.common.collect.Lists;
 import com.longfor.gaia.gfs.web.mock.MockOperation;
 import com.longfor.longjian.common.base.LjBaseResponse;
 import com.longfor.longjian.houseqm.app.service.HouseqmStatService;
+import com.longfor.longjian.houseqm.app.service.HouseqmStatisticService;
 import com.longfor.longjian.houseqm.app.vo.*;
 import io.swagger.annotations.ApiParam;
 import lombok.extern.slf4j.Slf4j;
@@ -16,6 +17,7 @@ import org.springframework.web.bind.annotation.RestController;
 import javax.annotation.Resource;
 import javax.validation.Valid;
 import javax.validation.constraints.Min;
+import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -39,6 +41,9 @@ public class HouseqmStatController {
 
     @Resource
     HouseqmStatService houseqmStatService;
+
+    @Resource
+    HouseqmStatisticService houseqmStatisticService;
 
     /**
      * 项目/任务检查人员统计
@@ -215,18 +220,28 @@ public class HouseqmStatController {
                                                  @RequestParam(value="category_cls") String categoryCls,
                                                  @RequestParam(value="page_level") String pageLevel,
                                                  @RequestParam(value="team_id") String teamId,
-                                                 @RequestParam(value="task_id") String taskId,
-                                                 @RequestParam(value="group_id") String groupId){
+                                                 @RequestParam(value="task_id") Integer taskId,
+                                                 @RequestParam(value="group_id") String groupId,
+                                                 @RequestParam(value ="area_id")Integer areaId){
 
-
-        return null;
+        TaskStatVo.IssueStatVo issue=houseqmStatisticService.getCheckTaskIssueTypeStatByTaskIdAreaId(taskId,areaId);
+        TaskStatVo.HouseStatVo house=houseqmStatisticService.getHouseQmCheckTaskHouseStatByTaskId(projectId,taskId,areaId);
+        house.setHouse_checked_percent(getPercentage(house.getChecked_count(), house.getHouse_count()));
+        house.setHouse_repaired_percent(getPercentage(house.getRepaired_count(), house.getHas_issue_count()));
+        house.setHouse_approveded_percent(getPercentage(house.getApproved_count(), house.getRepaired_count()));
+        LjBaseResponse<TaskStatVo> ljbr = new LjBaseResponse<>();
+        TaskStatVo taskStatVo = new TaskStatVo();
+        taskStatVo.setIssue(issue);
+        taskStatVo.setHouse(house);
+        ljbr.setData(taskStatVo);
+        return ljbr;
     }
 
 
 
 
     /**
-     *
+     * 获取整改追踪信息
      * @param projectId
      * @param categoryCls
      * @param pageLevel
@@ -235,7 +250,6 @@ public class HouseqmStatController {
      * @param groupId
      * @return
      */
-    @MockOperation
     @GetMapping(value = "stat/task_situation_repair_stat", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     public LjBaseResponse<TaskRepairStatVo> taskSituationRepairStat(@RequestParam(value="project_id" ) Integer projectId,
                                                                     @RequestParam(value="category_cls") String categoryCls,
@@ -247,4 +261,20 @@ public class HouseqmStatController {
 
         return null;
     }
+
+    /**
+     * 用于taskDetail() 计算百分比
+     * @param a
+     * @param b
+     * @return
+     */
+    private String getPercentage(int a,int b){
+        if (a==0|| b==0){
+            return "0";
+        }
+        DecimalFormat df = new DecimalFormat("0.00");
+        String result = df.format((float) a / (float) b * 100);
+        return result;
+    }
+
 }

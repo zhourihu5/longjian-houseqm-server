@@ -4,6 +4,7 @@ import com.longfor.gaia.gfs.data.mybatis.datasource.LFAssignDataSource;
 import com.longfor.longjian.houseqm.dao.HouseQmCheckTaskIssueMapper;
 import com.longfor.longjian.houseqm.po.CheckerIssueStat;
 import com.longfor.longjian.houseqm.po.HouseQmCheckTaskIssue;
+import com.longfor.longjian.houseqm.po.HouseQmCheckTaskIssueAreaGroupModel;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
@@ -17,6 +18,7 @@ import java.util.Set;
  */
 @Service
 @Slf4j
+@LFAssignDataSource("zhijian2")
 public class HouseQmCheckTaskIssueService {
     @Resource
     HouseQmCheckTaskIssueMapper houseQmCheckTaskIssueMapper;
@@ -94,5 +96,58 @@ public class HouseQmCheckTaskIssueService {
         return checkerIssueStats;
     }
 
+    /**
+     *
+     * @param taskId
+     * @param areaPath
+     * @return
+     */
+    @LFAssignDataSource("zhijian2")
+    public List<HouseQmCheckTaskIssue> searchByTaskIdAndAreaPathAndIdLike(Integer taskId,String areaPath){
+        return houseQmCheckTaskIssueMapper.selectByTaskIdAndAreaPathAndIdLike(taskId,areaPath,"false");
+    }
 
+    /**
+     *
+     * @param taskId
+     * @param types
+     * @param areaPathLike
+     * @return
+     */
+    @LFAssignDataSource("zhijian2")
+    public List<HouseQmCheckTaskIssueAreaGroupModel> selectByTaskIdAndTyeInAndAreaPathAndIdLike(Integer taskId,List<Integer> types,String areaPathLike){
+        return houseQmCheckTaskIssueMapper.selectByTaskIdAndTyeInAndAreaPathAndIdLike(taskId,types,areaPathLike,"false");
+    }
+
+    /**
+     *
+     * @param taskId
+     * @param types
+     * @return
+     */
+    @LFAssignDataSource("zhijian2")
+    public List<HouseQmCheckTaskIssueAreaGroupModel> selectByTaskIdAndTyeIn(Integer taskId,List<Integer> types){
+        return houseQmCheckTaskIssueMapper.selectByTaskIdAndTyeIn(taskId, types, "false");
+    }
+
+    /**
+     *
+     * @param taskId
+     * @param areaPathLike
+     * @return
+     */
+    @LFAssignDataSource("zhijian2")
+    public List<HouseQmCheckTaskIssueAreaGroupModel> selectHouseQmCheckTaskIssueAreaGroupModelByTaskIdAndAreaPathAndIdLike(Integer taskId,String areaPathLike){
+        return houseQmCheckTaskIssueMapper.selectHouseQmCheckTaskIssueAreaGroupModelByTaskIdAndAreaPathAndIdLike(taskId, areaPathLike, "false");
+    }
+
+    /**
+     *
+     * @param taskId
+     * @return
+     */
+    @LFAssignDataSource("zhijian2")
+    public List<HouseQmCheckTaskIssueAreaGroupModel> selectByTaskId(Integer taskId){
+        return houseQmCheckTaskIssueMapper.selectByTaskId(taskId, "false");
+    }
 }

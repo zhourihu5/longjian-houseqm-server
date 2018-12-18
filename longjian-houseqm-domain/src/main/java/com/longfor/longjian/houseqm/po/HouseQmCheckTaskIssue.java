@@ -98,13 +98,13 @@ public class HouseQmCheckTaskIssue {
      * 在图纸上的位置X
      */
     @Column(name = "pos_x")
-    private Short posX;
+    private Integer posX;
 
     /**
      * 在图纸上的位置Y
      */
     @Column(name = "pos_y")
-    private Short posY;
+    private Integer posY;
 
     /**
      * 问题标题
@@ -507,7 +507,7 @@ public class HouseQmCheckTaskIssue {
      *
      * @return pos_x - 在图纸上的位置X
      */
-    public Short getPosX() {
+    public Integer getPosX() {
         return posX;
     }
 
@@ -516,7 +516,7 @@ public class HouseQmCheckTaskIssue {
      *
      * @param posX 在图纸上的位置X
      */
-    public void setPosX(Short posX) {
+    public void setPosX(Integer posX) {
         this.posX = posX;
     }
 
@@ -525,7 +525,7 @@ public class HouseQmCheckTaskIssue {
      *
      * @return pos_y - 在图纸上的位置Y
      */
-    public Short getPosY() {
+    public Integer getPosY() {
         return posY;
     }
 
@@ -534,7 +534,7 @@ public class HouseQmCheckTaskIssue {
      *
      * @param posY 在图纸上的位置Y
      */
-    public void setPosY(Short posY) {
+    public void setPosY(Integer posY) {
         this.posY = posY;
     }
 
