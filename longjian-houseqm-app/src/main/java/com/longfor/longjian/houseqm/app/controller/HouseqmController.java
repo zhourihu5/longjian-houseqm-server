@@ -18,12 +18,11 @@ import org.springframework.web.bind.annotation.RestController;
  * http://192.168.37.159:3000/project/8/interface/api/348
  * http://192.168.37.159:3000/project/8/interface/api/352
  * http://192.168.37.159:3000/project/8/interface/api/356
- *
+ * <p>
  * http://192.168.37.159:3000/project/8/interface/api/672 获取问题人员列表
  * http://192.168.37.159:3000/project/8/interface/api/674 获取指定任务与我相关的issue列表（增量接口
  * http://192.168.37.159:3000/project/8/interface/api/676  读取与我相关的issue附件
  * http://192.168.37.159:3000/project/8/interface/api/682 读取指定任务与我相关的issue log列表（增量接口）
- *
  *
  * @author lipeishuai
  * @date 2018/11/20 18:01
@@ -34,49 +33,45 @@ import org.springframework.web.bind.annotation.RestController;
 public class HouseqmController {
 
     /**
-     *
      * @param deviceReq
      * @return
      */
     @MockOperation
     @GetMapping(value = "my_issue_log_list", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
-    public TaskResponse<MyIssueListVo> myIssueLogList(DeviceReq deviceReq){
+    public TaskResponse<MyIssueListVo> myIssueLogList(DeviceReq deviceReq) {
         return null;
     }
 
 
     /**
-     *
      * @param deviceReq
      * @return
      */
     @MockOperation
     @GetMapping(value = "my_issue_list", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
-    public TaskResponse<MyIssueListVo> myIssueList(DeviceReq deviceReq){
+    public TaskResponse<MyIssueListVo> myIssueList(DeviceReq deviceReq) {
         return null;
     }
 
 
     /**
-     *
      * @param deviceReq
      * @return
      */
     @MockOperation
     @GetMapping(value = "issue_members", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
-    public LjBaseResponse<MyIssueMemberListVo> issueMembers(DeviceReq deviceReq){
+    public LjBaseResponse<MyIssueMemberListVo> issueMembers(DeviceReq deviceReq) {
         return null;
     }
 
 
     /**
-     *
      * @param deviceReq
      * @return
      */
     @MockOperation
     @GetMapping(value = "my_issue_attachment_list", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
-    public LjBaseResponse<MyIssueAttachListVo> myIssueAttachmentList(DeviceReq deviceReq){
+    public LjBaseResponse<MyIssueAttachListVo> myIssueAttachmentList(DeviceReq deviceReq) {
         return null;
     }
 }

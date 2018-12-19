@@ -11,7 +11,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 /**
- *
  * http://192.168.37.159:3000/project/8/interface/api/368
  * http://192.168.37.159:3000/project/8/interface/api/374
  * http://192.168.37.159:3000/project/8/interface/api/380
@@ -33,112 +32,102 @@ import org.springframework.web.bind.annotation.RestController;
 public class HouseqmStatisticController {
 
     /**
-     *
      * @param projectReq
      * @return
      */
     @MockOperation
     @GetMapping(value = "task_stat", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
-    public LjBaseResponse<ProjectDailyListVo> taskStat(ProjectReq projectReq){
+    public LjBaseResponse<ProjectDailyListVo> taskStat(ProjectReq projectReq) {
         return null;
     }
 
     /**
-     *
      * @param projectReq
      * @return
      */
     @MockOperation
     @GetMapping(value = "get_daterange_options", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
-    public LjBaseResponse<ProjectDailyListVo> getDaterangeOptions(ProjectReq projectReq){
+    public LjBaseResponse<ProjectDailyListVo> getDaterangeOptions(ProjectReq projectReq) {
         return null;
     }
 
     /**
-     *
      * @param projectReq
      * @return
      */
     @MockOperation
     @GetMapping(value = "task_list", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
-    public LjBaseResponse<ProjectDailyListVo> taskList(ProjectReq projectReq){
+    public LjBaseResponse<ProjectDailyListVo> taskList(ProjectReq projectReq) {
         return null;
     }
 
     /**
-     *
      * @param projectReq
      * @return
      */
     @MockOperation
     @GetMapping(value = "project_issue_repair", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
-    public LjBaseResponse<ProjectDailyListVo> projectIssueRepair(ProjectReq projectReq){
+    public LjBaseResponse<ProjectDailyListVo> projectIssueRepair(ProjectReq projectReq) {
         return null;
     }
 
     /**
-     *
      * @param projectReq
      * @return
      */
     @MockOperation
     @GetMapping(value = "task_checkitem_stat", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
-    public LjBaseResponse<ProjectDailyListVo> taskCheckitemStat(ProjectReq projectReq){
+    public LjBaseResponse<ProjectDailyListVo> taskCheckitemStat(ProjectReq projectReq) {
         return null;
     }
 
     /**
-     *
      * @param projectReq
      * @return
      */
     @MockOperation
     @GetMapping(value = "task_issue_repair", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
-    public LjBaseResponse<ProjectDailyListVo> taskIssueRepair(ProjectReq projectReq){
+    public LjBaseResponse<ProjectDailyListVo> taskIssueRepair(ProjectReq projectReq) {
         return null;
     }
 
     /**
-     *
      * @param projectReq
      * @return
      */
     @MockOperation
     @GetMapping(value = "task_issue_repair_list", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
-    public LjBaseResponse<ProjectDailyListVo> taskIssueRepairList(ProjectReq projectReq){
+    public LjBaseResponse<ProjectDailyListVo> taskIssueRepairList(ProjectReq projectReq) {
         return null;
     }
 
     /**
-     *
      * @param projectReq
      * @return
      */
     @MockOperation
     @GetMapping(value = "category_issue_list", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
-    public LjBaseResponse<ProjectDailyListVo> categoryIssueList(ProjectReq projectReq){
+    public LjBaseResponse<ProjectDailyListVo> categoryIssueList(ProjectReq projectReq) {
         return null;
     }
 
     /**
-     *
      * @param projectReq
      * @return
      */
     @MockOperation
     @GetMapping(value = "project_building_list", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
-    public LjBaseResponse<ProjectDailyListVo> projectBuildingList(ProjectReq projectReq){
+    public LjBaseResponse<ProjectDailyListVo> projectBuildingList(ProjectReq projectReq) {
         return null;
     }
 
     /**
-     *
      * @param projectReq
      * @return
      */
     @MockOperation
     @GetMapping(value = "task_building_list", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
-    public LjBaseResponse<ProjectDailyListVo> taskBuildingList(ProjectReq projectReq){
+    public LjBaseResponse<ProjectDailyListVo> taskBuildingList(ProjectReq projectReq) {
         return null;
     }
 

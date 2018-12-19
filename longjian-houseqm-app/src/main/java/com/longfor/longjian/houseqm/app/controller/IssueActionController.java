@@ -30,15 +30,14 @@ import org.springframework.web.bind.annotation.RestController;
 public class IssueActionController {
 
     /**
-     *
      * @param groupId
      * @param tip
      * @return
      */
     @MockOperation
     @GetMapping(value = "issue_action", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
-    public TaskResponse<IssueActionVo> doAction(@RequestParam(value="group_id") String groupId,
-                                                @RequestParam(value="tip") String tip){
+    public TaskResponse<IssueActionVo> doAction(@RequestParam(value = "group_id") String groupId,
+                                                @RequestParam(value = "tip") String tip) {
 
 
         return null;

@@ -18,6 +18,7 @@ public class TaskRepairStatVo implements Serializable {
   @Data
   @NoArgsConstructor
   public class TaskRepairVo implements Serializable {
+    private Integer total_count;
     private String initime_finish;
     private Integer  initime_finish_count;
     private String initime_unfinish;

@@ -14,7 +14,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 /**
- *
  * http://192.168.37.159:3000/project/8/interface/api/752  获取(工程检查)问题字段配置列表
  *
  * @author lipeishuai
@@ -26,7 +25,6 @@ import org.springframework.web.bind.annotation.RestController;
 public class BuildingqmSettingController {
 
     /**
-     *
      * @return
      */
     @MockOperation

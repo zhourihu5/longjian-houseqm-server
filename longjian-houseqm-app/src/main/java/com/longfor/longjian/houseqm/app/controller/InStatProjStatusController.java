@@ -24,16 +24,15 @@ public class InStatProjStatusController {
 
 
     /**
-     *
      * @param teamId
      * @return
      */
     @MockOperation
     @GetMapping(value = "search", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
-    public LjBaseResponse<SearchListVo> doAction(@RequestParam(value="team_id") String teamId){
+    public LjBaseResponse<SearchListVo> doAction(@RequestParam(value = "team_id") String teamId) {
 
         SearchListVo searchListVo = new SearchListVo();
-        SearchListVo.SearchVo vo= searchListVo.new SearchVo();
+        SearchListVo.SearchVo vo = searchListVo.new SearchVo();
 
         return null;
     }

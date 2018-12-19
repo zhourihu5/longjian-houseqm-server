@@ -29,7 +29,6 @@ public class StatTeamController {
 
 
     /**
-     *
      * @param projectId
      * @param groupId
      * @param teamId
@@ -38,15 +37,13 @@ public class StatTeamController {
      */
     @MockOperation
     @PostMapping(value = "team", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
-    public LjBaseResponse<StatListVo> doAction(@RequestParam(value="project_id" ) Integer projectId,
-                                               @RequestParam(value="group_id") String groupId,
-                                               @RequestParam(value="team_id") String teamId,
-                                               @RequestParam(value="tip") String tip,
+    public LjBaseResponse<StatListVo> doAction(@RequestParam(value = "project_id") Integer projectId,
+                                               @RequestParam(value = "group_id") String groupId,
+                                               @RequestParam(value = "team_id") String teamId,
+                                               @RequestParam(value = "tip") String tip,
                                                @RequestBody StatTeamReq statTeamReq
 
-    ){
-
-
+    ) {
 
 
         return null;

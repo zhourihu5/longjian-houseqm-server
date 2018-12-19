@@ -11,7 +11,6 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 /**
- *
  * http://192.168.37.159:3000/project/8/interface/api/282  获取可用于检索的任务列表
  * http://192.168.37.159:3000/project/8/interface/api/1524 项目下季度检查获取任务列表
  *
@@ -35,12 +34,12 @@ public class IusseTaskListController {
      */
     @MockOperation
     @GetMapping(value = "task_list", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
-    public TaskResponse<TaskListVo> doAction(@RequestParam(value="project_id" ) Integer projectId,
-                                             @RequestParam(value="category_cls") String categoryCls,
-                                             @RequestParam(value="page_level") String pageLevel,
-                                             @RequestParam(value="task_id") String taskId,
-                                             @RequestParam(value="team_id") String teamId
-                                             ){
+    public TaskResponse<TaskListVo> doAction(@RequestParam(value = "project_id") Integer projectId,
+                                             @RequestParam(value = "category_cls") String categoryCls,
+                                             @RequestParam(value = "page_level") String pageLevel,
+                                             @RequestParam(value = "task_id") String taskId,
+                                             @RequestParam(value = "team_id") String teamId
+    ) {
 
 
         return null;

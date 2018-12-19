@@ -31,6 +31,7 @@ public class TaskListController {
 
     @Resource
     TaskListService taskListService;
+
     /**
      * 获取项目下任务列表任务信息
      *
@@ -44,15 +45,15 @@ public class TaskListController {
      */
 
     @GetMapping(value = "list", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
-    public TaskResponse<TaskList2Vo> list(@RequestParam(value="project_id" ) Integer projectId,
-                                         @RequestParam(value="category_cls") Integer categoryCls,
-                                         @RequestParam(value="page_level") String pageLevel,
-                                         @RequestParam(value="group_id") String groupId,
-                                         @RequestParam(value="team_id") Integer teamId,
-                                         @RequestParam(value="status") Integer status){
+    public TaskResponse<TaskList2Vo> list(@RequestParam(value = "project_id") Integer projectId,
+                                          @RequestParam(value = "category_cls") Integer categoryCls,
+                                          @RequestParam(value = "page_level") String pageLevel,
+                                          @RequestParam(value = "group_id") String groupId,
+                                          @RequestParam(value = "team_id") Integer teamId,
+                                          @RequestParam(value = "status") Integer status) {
 
         ////Todo uid
-        Integer uid =null;
+        Integer uid = null;
         ////Todo 根据uid、project_id判断权限
 
         TaskList2Vo taskListVo = taskListService.list(teamId, projectId, categoryCls, status);
@@ -76,12 +77,12 @@ public class TaskListController {
      */
     @MockOperation
     @GetMapping(value = "task_role", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
-    public TaskResponse<TaskRoleListVo> taskRole(@RequestParam(value="project_id" ) Integer projectId,
-                                                 @RequestParam(value="category_cls") String categoryCls,
-                                                 @RequestParam(value="page_level") String pageLevel,
-                                                 @RequestParam(value="group_id") String groupId,
-                                                 @RequestParam(value="team_id") String teamId,
-                                                 @RequestParam(value="status") String status){
+    public TaskResponse<TaskRoleListVo> taskRole(@RequestParam(value = "project_id") Integer projectId,
+                                                 @RequestParam(value = "category_cls") String categoryCls,
+                                                 @RequestParam(value = "page_level") String pageLevel,
+                                                 @RequestParam(value = "group_id") String groupId,
+                                                 @RequestParam(value = "team_id") String teamId,
+                                                 @RequestParam(value = "status") String status) {
 
 
         return null;

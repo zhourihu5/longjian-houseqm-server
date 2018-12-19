@@ -11,10 +11,9 @@ import org.springframework.web.bind.annotation.*;
 import javax.annotation.Resource;
 
 /**
- *
  * http://192.168.37.159:3000/project/8/interface/api/594  获取集团下项目统计信息
  * http://192.168.37.159:3000/project/8/interface/api/600 获取集团下所有公司统计信息
- *
+ * <p>
  * http://192.168.37.159:3000/project/8/interface/api/932  获取集团本月和上月指标
  * http://192.168.37.159:3000/project/8/interface/api/972  获取集团下近七天每天的数据
  * http://192.168.37.159:3000/project/8/interface/api/1004 获取集团下搜索时段区域的趋势对比信息
@@ -34,7 +33,6 @@ public class StatGroupController {
     private StatGroupService statGroupService;
 
     /**
-     *
      * @param groupId
      * @param pageLevel
      * @param tip
@@ -42,27 +40,26 @@ public class StatGroupController {
      * @return
      */
     @PostMapping(value = "group", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
-    public LjBaseResponse<Object> group(@RequestParam(value="group_id") String groupId,
-                                            @RequestParam(value="page_level") String pageLevel,
-                                            @RequestParam(value="tip") String tip,
-                                            @RequestBody StatGroupReq statGroupReq){
+    public LjBaseResponse<Object> group(@RequestParam(value = "group_id") String groupId,
+                                        @RequestParam(value = "page_level") String pageLevel,
+                                        @RequestParam(value = "tip") String tip,
+                                        @RequestBody StatGroupReq statGroupReq) {
 
-        LjBaseResponse response =new LjBaseResponse();
-        try{
+        LjBaseResponse response = new LjBaseResponse();
+        try {
 
-            Object statListVo = statGroupService.execute(statGroupReq.getQuery(),statGroupReq.getVariables());
+            Object statListVo = statGroupService.execute(statGroupReq.getQuery(), statGroupReq.getVariables());
             response.setData(statListVo);
 
-        }catch (LjBaseRuntimeException ex){
+        } catch (LjBaseRuntimeException ex) {
 
             response.setResult(ex.getErrorCode());
             response.setMessage(ex.getErrorMsg());
-            log.error("StatGroupController#group error,{}",ex);
+            log.error("StatGroupController#group error,{}", ex);
         }
 
         return response;
     }
-
 
 
 }

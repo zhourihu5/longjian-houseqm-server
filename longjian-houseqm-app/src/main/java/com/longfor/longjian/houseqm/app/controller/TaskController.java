@@ -23,7 +23,6 @@ import org.springframework.web.bind.annotation.RestController;
 public class TaskController {
 
     /**
-     *
      * @param projectId
      * @param categoryCls
      * @param pageLevel
@@ -34,12 +33,12 @@ public class TaskController {
      */
     @MockOperation
     @GetMapping(value = "view", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
-    public LjBaseResponse<TaskVo> view(@RequestParam(value="project_id" ) Integer projectId,
-                                                @RequestParam(value="category_cls") String categoryCls,
-                                                @RequestParam(value="page_level") String pageLevel,
-                                                @RequestParam(value="group_id") String groupId,
-                                                @RequestParam(value="team_id") String teamId,
-                                                @RequestParam(value="task_id") String taskId){
+    public LjBaseResponse<TaskVo> view(@RequestParam(value = "project_id") Integer projectId,
+                                       @RequestParam(value = "category_cls") String categoryCls,
+                                       @RequestParam(value = "page_level") String pageLevel,
+                                       @RequestParam(value = "group_id") String groupId,
+                                       @RequestParam(value = "team_id") String teamId,
+                                       @RequestParam(value = "task_id") String taskId) {
 
 
         return null;

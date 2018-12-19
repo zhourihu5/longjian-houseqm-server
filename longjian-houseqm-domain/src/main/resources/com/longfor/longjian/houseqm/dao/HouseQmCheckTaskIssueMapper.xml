@@ -64,11 +64,21 @@
         <result column="date" property="date" jdbcType="TIMESTAMP"/>
     </resultMap>
     <!-- 获取任务详情-总体情况 -->
-    <resultMap id="houseQmCheckTaskIssueAreaGroupModel" type="com.longfor.longjian.houseqm.po.HouseQmCheckTaskIssueAreaGroupModel" >
+    <resultMap id="houseQmCheckTaskIssueAreaGroupModel"
+               type="com.longfor.longjian.houseqm.po.HouseQmCheckTaskIssueAreaGroupModel">
         <result column="extend_col" property="extendCol" jdbcType="INTEGER"/>
         <result column="area_path" property="areaPath" jdbcType="VARCHAR"/>
         <result column="area_id" property="areaId" jdbcType="INTEGER"/>
         <result column="status" property="status" jdbcType="INTEGER"/>
+    </resultMap>
+
+    <resultMap id="issueRepairCount" type="com.longfor.longjian.houseqm.po.IssueRepairCount" >
+        <result column="total" property="total" jdbcType="INTEGER"/>
+        <result column="no_plan_end_on" property="noPlanEndOn" jdbcType="INTEGER"/>
+        <result column="overtime_unfinish" property="overtimeUnfinish" jdbcType="INTEGER"/>
+        <result column="intime_unfinish" property="initimeUnfinish" jdbcType="INTEGER"/>
+        <result column="overtime_finish" property="overtimeFinish" jdbcType="INTEGER"/>
+        <result column="intime_finish" property="initimeFinish" jdbcType="INTEGER"/>
     </resultMap>
     <sql id="Base_Column_List">
         <!--
@@ -165,17 +175,17 @@
         GROUP BY status
     </select>
 
-    <select id="selectByTaskIdAndTyeInAndAreaPathAndIdLike" resultMap="houseQmCheckTaskIssueAreaGroupModel" >
+    <select id="selectByTaskIdAndTyeInAndAreaPathAndIdLike" resultMap="houseQmCheckTaskIssueAreaGroupModel">
         SELECT LEFT(area_path_and_id,LENGTH(area_path_and_id)-LENGTH(area_id)-1) AS area_path,
         area_id,MIN(status) AS status,COUNT(*) AS extend_col
         FROM house_qm_check_task_issue
         WHERE task_id=#{taskId} AND typ IN
-        <foreach collection="types" item="type" index="index" open="(" separator="," close=")" >
+        <foreach collection="types" item="type" index="index" open="(" separator="," close=")">
             #{type}
         </foreach>
         AND area_path_and_id LIKE #{areaPathLike}
         <if test="deleted=='false'">
-            AND  delete_at IS NULL
+            AND delete_at IS NULL
         </if>
         GROUP BY area_path
     </select>
@@ -184,34 +194,56 @@
         area_id,MIN(status) AS status,COUNT(*) AS extend_col
         FROM house_qm_check_task_issue
         WHERE task_id=#{taskId} AND typ IN
-        <foreach collection="types" item="type" index="index" open="(" separator="," close=")" >
+        <foreach collection="types" item="type" index="index" open="(" separator="," close=")">
             #{type}
         </foreach>
         <if test="deleted=='false'">
-            AND  delete_at IS NULL
+            AND delete_at IS NULL
         </if>
         GROUP BY area_path
     </select>
-    <select id="selectHouseQmCheckTaskIssueAreaGroupModelByTaskIdAndAreaPathAndIdLike" resultMap="houseQmCheckTaskIssueAreaGroupModel">
+    <select id="selectHouseQmCheckTaskIssueAreaGroupModelByTaskIdAndAreaPathAndIdLike"
+            resultMap="houseQmCheckTaskIssueAreaGroupModel">
         SELECT LEFT(area_path_and_id,LENGTH(area_path_and_id)-LENGTH(area_id)-1) AS area_path,
         area_id,MIN(status) AS status,COUNT(*) AS extend_col
         FROM house_qm_check_task_issue
         WHERE task_id=#{taskId}
         AND area_path_and_id LIKE #{areaPathLike}
         <if test="deleted=='false'">
-            AND  delete_at IS NULL
+            AND delete_at IS NULL
         </if>
         GROUP BY area_path
     </select>
-    <select id="selectByTaskId" resultMap="houseQmCheckTaskIssueAreaGroupModel" >
+    <select id="selectByTaskId" resultMap="houseQmCheckTaskIssueAreaGroupModel">
         SELECT LEFT(area_path_and_id,LENGTH(area_path_and_id)-LENGTH(area_id)-1) AS area_path,
         area_id,MIN(status) AS status,COUNT(*) AS extend_col
         FROM house_qm_check_task_issue
         WHERE task_id=#{taskId}
         <if test="deleted=='false'">
-            AND  delete_at IS NULL
+            AND delete_at IS NULL
         </if>
         GROUP BY area_path
+    </select>
+
+    <select id="selectByProjectIdAndTaskIdAndTypeIn" resultMap="issueRepairCount">
+        SELECT COUNT(1) as total,
+        COUNT(CASE WHEN plan_end_on IS NULL OR plan_end_on &lt; '1970-01-02' THEN 1 ELSE NULL END) as no_plan_end_on,
+        COUNT(CASE WHEN status = 30 AND plan_end_on &gt; '1970-01-02' AND plan_end_on &lt; now() THEN 1 ELSE NULL END)
+        as overtime_unfinish,
+        COUNT(CASE WHEN status = 30 AND plan_end_on &gt; now() THEN 1 ELSE NULL END) as intime_unfinish,
+        COUNT(CASE WHEN status != 30 AND plan_end_on &gt; '1970-01-02' AND end_on &gt; plan_end_on THEN 1 ELSE NULL END)
+        as overtime_finish,
+        COUNT(CASE WHEN status != 30 AND plan_end_on &gt; '1970-01-02' AND end_on &lt;= plan_end_on THEN 1 ELSE NULL
+        END) as intime_finish
+        FROM house_qm_check_task_issue
+        WHERE project_id= #{projectId} AND task_id = #{taskId}
+        AND typ IN
+        <foreach collection="types" item="type" index="index" open="(" separator="," close=")">
+            #{type}
+        </foreach>
+        <if test="deleted=='false'">
+            AND delete_at IS NULL
+        </if>
     </select>
 
 </mapper>

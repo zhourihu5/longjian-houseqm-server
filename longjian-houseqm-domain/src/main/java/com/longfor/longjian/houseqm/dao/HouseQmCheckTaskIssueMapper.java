@@ -4,6 +4,7 @@ import com.longfor.gaia.gfs.data.mybatis.LFMySQLMapper;
 import com.longfor.longjian.houseqm.po.CheckerIssueStat;
 import com.longfor.longjian.houseqm.po.HouseQmCheckTaskIssue;
 import com.longfor.longjian.houseqm.po.HouseQmCheckTaskIssueAreaGroupModel;
+import com.longfor.longjian.houseqm.po.IssueRepairCount;
 import org.apache.ibatis.annotations.Param;
 
 import java.util.List;
@@ -72,13 +73,50 @@ public interface HouseQmCheckTaskIssueMapper extends LFMySQLMapper<HouseQmCheckT
      */
     List<HouseQmCheckTaskIssue> selectByTaskIdAndAreaPathAndIdLike(@Param("taskId") Integer taskId, @Param("areaPath") String areaPath, @Param("deleted") String deleted);
 
+    /**
+     *
+     * @param taskId
+     * @param types
+     * @param areaPathLike
+     * @param deleted
+     * @return
+     */
     List<HouseQmCheckTaskIssueAreaGroupModel> selectByTaskIdAndTyeInAndAreaPathAndIdLike(@Param("taskId") Integer taskId, @Param("types") List<Integer> types, @Param("areaPathLike") String areaPathLike,@Param("deleted") String deleted);
 
+    /**
+     *
+     * @param taskId
+     * @param types
+     * @param deleted
+     * @return
+     */
     List<HouseQmCheckTaskIssueAreaGroupModel> selectByTaskIdAndTyeIn(@Param("taskId")Integer taskId,  @Param("types")List<Integer> types, @Param("deleted")String deleted);
 
+    /**
+     *
+     * @param taskId
+     * @param areaPathLike
+     * @param deleted
+     * @return
+     */
     List<HouseQmCheckTaskIssueAreaGroupModel> selectHouseQmCheckTaskIssueAreaGroupModelByTaskIdAndAreaPathAndIdLike(@Param("taskId")Integer taskId, @Param("areaPathLike")String areaPathLike, @Param("deleted")String deleted);
 
+    /**
+     *
+     * @param taskId
+     * @param deleted
+     * @return
+     */
     List<HouseQmCheckTaskIssueAreaGroupModel> selectByTaskId(@Param("taskId")Integer taskId,@Param("deleted") String deleted);
 
+    /**
+     *
+     * @param projectId
+     * @param taskId
+     * @param types
+     * @param deleted
+     * @return
+     */
+    List<IssueRepairCount> selectByProjectIdAndTaskIdAndTypeIn(@Param("projectId") Integer projectId, @Param("taskId") Integer taskId, @Param("types") List<Integer> types,@Param("deleted") String deleted);
 
 }

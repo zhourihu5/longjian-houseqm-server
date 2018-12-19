@@ -29,7 +29,6 @@ public class IssueListController {
 
 
     /**
-     *
      * @param projectId
      * @param categoryCls
      * @param pageLevel
@@ -44,21 +43,21 @@ public class IssueListController {
      */
     @MockOperation
     @GetMapping(value = "list", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
-    public TaskResponse<PageInfo<IssueListVo>> doAction(@RequestParam(value="project_id" ) Integer projectId,
-                                                    @RequestParam(value="category_cls") String categoryCls,
-                                                    @RequestParam(value="page_level") String pageLevel,
-                                                    @RequestParam(value="task_id") String taskId,
-                                                    @RequestParam(value="area_ids") String areaIds,
-                                                    @RequestParam(value="status_in") String statusIn,
-                                                    @RequestParam(value="is_overdue") String isOverDue,
-                                                    @RequestParam(value="key_word") String keyWord,
-                                                    @ApiParam(value = "当前页码", required = false)
-                                                   @Valid @Min(0)
-                                                   @RequestParam(value = "page", required = false, defaultValue = "0") Integer pageNum,
-                                                    @ApiParam(value = "分页大小", required = false)
-                                                   @Valid @Min(1)
-                                                   @RequestParam(value = "page_size", required = false, defaultValue = "10") Integer pageSize
-                                         ){
+    public TaskResponse<PageInfo<IssueListVo>> doAction(@RequestParam(value = "project_id") Integer projectId,
+                                                        @RequestParam(value = "category_cls") String categoryCls,
+                                                        @RequestParam(value = "page_level") String pageLevel,
+                                                        @RequestParam(value = "task_id") String taskId,
+                                                        @RequestParam(value = "area_ids") String areaIds,
+                                                        @RequestParam(value = "status_in") String statusIn,
+                                                        @RequestParam(value = "is_overdue") String isOverDue,
+                                                        @RequestParam(value = "key_word") String keyWord,
+                                                        @ApiParam(value = "当前页码", required = false)
+                                                        @Valid @Min(0)
+                                                        @RequestParam(value = "page", required = false, defaultValue = "0") Integer pageNum,
+                                                        @ApiParam(value = "分页大小", required = false)
+                                                        @Valid @Min(1)
+                                                        @RequestParam(value = "page_size", required = false, defaultValue = "10") Integer pageSize
+    ) {
 
 
         return null;

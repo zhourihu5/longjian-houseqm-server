@@ -16,7 +16,6 @@ import org.springframework.web.bind.annotation.RestController;
 import javax.annotation.Resource;
 
 /**
- *
  * http://192.168.37.159:3000/project/8/interface/api/626  项目下获取我的任务列表
  * http://192.168.37.159:3000/project/8/interface/api/658  检查任务更新
  * http://192.168.37.159:3000/project/8/interface/api/670  获取任务角色列表
@@ -35,15 +34,14 @@ public class BuildingqmController {
     BuildingqmService buildingqmService;
 
     /**
-     *
      * @param deviceId
      * @param token
      * @return
      */
     @MockOperation
     @GetMapping(value = "buildingqm/my_task_list", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
-    public TaskResponse<TaskListVo> myTaskList(@RequestParam(value="device_id" ) Integer deviceId,
-                                               @RequestParam(value="token") String token){
+    public TaskResponse<TaskListVo> myTaskList(@RequestParam(value = "device_id") Integer deviceId,
+                                               @RequestParam(value = "token") String token) {
         //// TODO: 2018/11/24
         Integer uid = null;
 
@@ -55,18 +53,16 @@ public class BuildingqmController {
     }
 
     /**
-     *
      * @param updateDeviceReq
      * @return
      */
     @MockOperation
     @GetMapping(value = "check_update/check", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
-    public LjBaseResponse<TaskIssueListVo> check(UpdateDeviceReq updateDeviceReq){
+    public LjBaseResponse<TaskIssueListVo> check(UpdateDeviceReq updateDeviceReq) {
         return null;
     }
 
     /**
-     *
      * @param deviceId
      * @param taskIds
      * @param token
@@ -74,9 +70,9 @@ public class BuildingqmController {
      */
 
     @GetMapping(value = "buildingqm/task_squads_members", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
-    public LjBaseResponse<TaskMemberListVo> taskSquadsMembers(@RequestParam(value="device_id" ) Integer deviceId,
-                                                              @RequestParam(value="task_ids") String taskIds,
-                                                              @RequestParam(value="token") String token){
+    public LjBaseResponse<TaskMemberListVo> taskSquadsMembers(@RequestParam(value = "device_id") Integer deviceId,
+                                                              @RequestParam(value = "task_ids") String taskIds,
+                                                              @RequestParam(value = "token") String token) {
         LjBaseResponse<TaskMemberListVo> vos = new LjBaseResponse<>();
         TaskMemberListVo vo = buildingqmService.taskSquadsMembers(taskIds);
         vos.setData(vo);
@@ -85,17 +81,18 @@ public class BuildingqmController {
 
     /**
      * 补全与我相关问题信息
+     *
      * @param deviceReq
      * @return
      */
 
     @GetMapping(value = "buildingqm/my_issue_patch_list/", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
-    public LjBaseResponse<MyIssuePatchListVo> myIssuePatchList(DeviceReq deviceReq){
+    public LjBaseResponse<MyIssuePatchListVo> myIssuePatchList(DeviceReq deviceReq) {
 
         //// Todo: 获取uid 为了测试改为0，
         Integer uid = 0;
         //调用业务方法
-        MyIssuePatchListVo miplv= buildingqmService.myIssuePathList(uid,deviceReq.getTask_id(),deviceReq.getTimestamp());
+        MyIssuePatchListVo miplv = buildingqmService.myIssuePathList(uid, deviceReq.getTask_id(), deviceReq.getTimestamp());
         LjBaseResponse<MyIssuePatchListVo> ljBaseResponse = new LjBaseResponse<>();
         ljBaseResponse.setData(miplv);
         return ljBaseResponse;

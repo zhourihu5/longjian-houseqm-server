@@ -2,7 +2,7 @@ package com.longfor.longjian.houseqm.po;
 
 import java.util.Date;
 import javax.persistence.*;
-
+@Table(name = "area")
 public class Area {
     @Id
     private Integer id;

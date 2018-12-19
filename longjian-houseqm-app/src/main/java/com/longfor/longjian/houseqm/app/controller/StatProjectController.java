@@ -33,7 +33,6 @@ public class StatProjectController {
 
 
     /**
-     *
      * @param projectId
      * @param groupId
      * @param teamId
@@ -42,10 +41,10 @@ public class StatProjectController {
      */
     @MockOperation
     @GetMapping(value = "project", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
-    public LjBaseResponse<StatListVo> doAction(@RequestParam(value="project_id" ) Integer projectId,
-                                               @RequestParam(value="group_id") String groupId,
-                                               @RequestParam(value="team_id") String teamId,
-                                               @RequestParam(value="tip") String tip){
+    public LjBaseResponse<StatListVo> doAction(@RequestParam(value = "project_id") Integer projectId,
+                                               @RequestParam(value = "group_id") String groupId,
+                                               @RequestParam(value = "team_id") String teamId,
+                                               @RequestParam(value = "tip") String tip) {
 
 
         return null;

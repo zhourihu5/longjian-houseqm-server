@@ -26,7 +26,6 @@ public class PartnerBoardController {
 
 
     /**
-     *
      * @param pageLevel
      * @param groupId
      * @param tip
@@ -34,9 +33,9 @@ public class PartnerBoardController {
      */
     @MockOperation
     @GetMapping(value = "partner_board", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
-    public TaskResponse<BoardListVo> doAction(@RequestParam(value="page_level") String pageLevel,
-                                              @RequestParam(value="group_id") String groupId,
-                                              @RequestParam(value="tip") String tip){
+    public TaskResponse<BoardListVo> doAction(@RequestParam(value = "page_level") String pageLevel,
+                                              @RequestParam(value = "group_id") String groupId,
+                                              @RequestParam(value = "tip") String tip) {
 
 
         return null;

@@ -22,9 +22,7 @@ import org.springframework.web.bind.annotation.RestController;
 public class TaskCheckedAreasController {
 
 
-
     /**
-     *
      * 获取任务区域信息
      *
      * @param projectId
@@ -37,12 +35,12 @@ public class TaskCheckedAreasController {
      */
     @MockOperation
     @GetMapping(value = "checked_areas", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
-    public TaskResponse<String> doAction(@RequestParam(value="project_id" ) Integer projectId,
-                                                 @RequestParam(value="category_cls") String categoryCls,
-                                                 @RequestParam(value="page_level") String pageLevel,
-                                                 @RequestParam(value="group_id") String groupId,
-                                                 @RequestParam(value="team_id") String teamId,
-                                                 @RequestParam(value="task_id") String taskId){
+    public TaskResponse<String> doAction(@RequestParam(value = "project_id") Integer projectId,
+                                         @RequestParam(value = "category_cls") String categoryCls,
+                                         @RequestParam(value = "page_level") String pageLevel,
+                                         @RequestParam(value = "group_id") String groupId,
+                                         @RequestParam(value = "team_id") String teamId,
+                                         @RequestParam(value = "task_id") String taskId) {
 
 
         return null;

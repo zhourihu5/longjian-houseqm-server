@@ -5,6 +5,7 @@ import com.longfor.longjian.houseqm.dao.HouseQmCheckTaskIssueMapper;
 import com.longfor.longjian.houseqm.po.CheckerIssueStat;
 import com.longfor.longjian.houseqm.po.HouseQmCheckTaskIssue;
 import com.longfor.longjian.houseqm.po.HouseQmCheckTaskIssueAreaGroupModel;
+import com.longfor.longjian.houseqm.po.IssueRepairCount;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
@@ -150,4 +151,17 @@ public class HouseQmCheckTaskIssueService {
     public List<HouseQmCheckTaskIssueAreaGroupModel> selectByTaskId(Integer taskId){
         return houseQmCheckTaskIssueMapper.selectByTaskId(taskId, "false");
     }
+
+    /**
+     *
+     * @param projectId
+     * @param taskId
+     * @param types
+     * @return
+     */
+    @LFAssignDataSource("zhijian2")
+    public List<IssueRepairCount> selectByProjectIdAndTaskIdAndTyeIn(Integer projectId, Integer taskId, List<Integer> types){
+        return houseQmCheckTaskIssueMapper.selectByProjectIdAndTaskIdAndTypeIn(projectId,taskId ,types,"false");
+    }
+
 }
