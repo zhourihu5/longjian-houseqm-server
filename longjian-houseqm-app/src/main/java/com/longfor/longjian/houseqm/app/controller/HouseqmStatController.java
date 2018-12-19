@@ -1,11 +1,12 @@
 package com.longfor.longjian.houseqm.app.controller;
 
 import com.google.common.collect.Lists;
-import com.longfor.gaia.gfs.web.mock.MockOperation;
 import com.longfor.longjian.common.base.LjBaseResponse;
-import com.longfor.longjian.houseqm.app.service.HouseqmStatService;
-import com.longfor.longjian.houseqm.app.service.HouseqmStatisticService;
+import com.longfor.longjian.houseqm.app.service.IHouseqmStatService;
+import com.longfor.longjian.houseqm.app.service.IHouseqmStatisticService;
 import com.longfor.longjian.houseqm.app.vo.*;
+import com.longfor.longjian.houseqm.util.MathUtil;
+import com.longfor.longjian.houseqm.util.StringSplitToListUtil;
 import io.swagger.annotations.ApiParam;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.MediaType;
@@ -43,10 +44,10 @@ import java.util.List;
 public class HouseqmStatController {
 
     @Resource
-    HouseqmStatService houseqmStatService;
+    IHouseqmStatService houseqmStatService;
 
     @Resource
-    HouseqmStatisticService houseqmStatisticService;
+    IHouseqmStatisticService houseqmStatisticService;
 
     /**
      * 项目/任务检查人员统计
@@ -66,11 +67,7 @@ public class HouseqmStatController {
                                                          @RequestParam(value = "group_id") String groupId,
                                                          @RequestParam(value = "team_id") String teamId,
                                                          @RequestParam(value = "task_ids") String taskIds) {
-        String[] taskId = taskIds.split(",");
-        List<Integer> taskIdList = Lists.newArrayList();
-        for (String s : taskId) {
-            taskIdList.add(Integer.parseInt(s));
-        }
+        List<Integer> taskIdList = StringSplitToListUtil.splitToIdsComma(taskIds, ",");
         CheckerStatListVo checkerStatListVo = houseqmStatService.searchCheckerIssueStatisticByProjIdAndTaskId(projectId, taskIdList);
         LjBaseResponse<CheckerStatListVo> lbrsp = new LjBaseResponse<>();
         lbrsp.setData(checkerStatListVo);
@@ -105,12 +102,7 @@ public class HouseqmStatController {
                                                                  @RequestParam(value = "page_size", required = false, defaultValue = "10") Integer pageSize
     ) {
 
-        String[] taskId = taskIds.split(",");
-        List<Integer> taskIdList = Lists.newArrayList();
-        for (String s : taskId) {
-            taskIdList.add(Integer.parseInt(s));
-        }
-
+        List<Integer> taskIdList = StringSplitToListUtil.splitToIdsComma(taskIds, ",");
         ProjectDailyListVo pdv = houseqmStatService.searchTaskSituationDailyByProjTaskIdInOnPage(projectId, taskIdList, pageNum, pageSize);
         LjBaseResponse<ProjectDailyListVo> lbrsp = new LjBaseResponse<>();
         lbrsp.setData(pdv);
@@ -119,7 +111,6 @@ public class HouseqmStatController {
 
     /**
      * 项目任务信息汇总
-     *
      * @param projectId
      * @param categoryCls
      * @param pageLevel
@@ -135,11 +126,7 @@ public class HouseqmStatController {
                                                                     @RequestParam(value = "team_id") String teamId,
                                                                     @RequestParam(value = "task_ids") String taskIds,
                                                                     @RequestParam(value = "group_id") String groupId) {
-        String[] strTaskId = taskIds.split(",");
-        List<Integer> taskIdList = Lists.newArrayList();
-        for (String s : strTaskId) {
-            taskIdList.add(Integer.parseInt(s));
-        }
+        List<Integer> taskIdList = StringSplitToListUtil.splitToIdsComma(taskIds, ",");
         ProjectOveralListVo projectOveralListVo = new ProjectOveralListVo();
         ProjectOveralListVo.ProjectOveralVo totalStat = projectOveralListVo.new ProjectOveralVo();
         ArrayList<ProjectOveralListVo.ProjectOveralVo> items = Lists.newArrayList();
@@ -234,9 +221,9 @@ public class HouseqmStatController {
 
         TaskStatVo.IssueStatVo issue = houseqmStatisticService.getCheckTaskIssueTypeStatByTaskIdAreaId(taskId, areaId);
         TaskStatVo.HouseStatVo house = houseqmStatisticService.getHouseQmCheckTaskHouseStatByTaskId(projectId, taskId, areaId);
-        house.setHouse_checked_percent(getPercentage(house.getChecked_count(), house.getHouse_count()));
-        house.setHouse_repaired_percent(getPercentage(house.getRepaired_count(), house.getHas_issue_count()));
-        house.setHouse_approveded_percent(getPercentage(house.getApproved_count(), house.getRepaired_count()));
+        house.setHouse_checked_percent(MathUtil.getPercentage(house.getChecked_count(), house.getHouse_count()));
+        house.setHouse_repaired_percent(MathUtil.getPercentage(house.getRepaired_count(), house.getHas_issue_count()));
+        house.setHouse_approveded_percent(MathUtil.getPercentage(house.getApproved_count(), house.getRepaired_count()));
         LjBaseResponse<TaskStatVo> ljbr = new LjBaseResponse<>();
         TaskStatVo taskStatVo = new TaskStatVo();
         taskStatVo.setIssue(issue);
@@ -277,20 +264,6 @@ public class HouseqmStatController {
         return ljbr;
     }
 
-    /**
-     * 用于taskDetail() 计算百分比
-     *
-     * @param a
-     * @param b
-     * @return
-     */
-    private String getPercentage(int a, int b) {
-        if (a == 0 || b == 0) {
-            return "0";
-        }
-        DecimalFormat df = new DecimalFormat("0.00");
-        String result = df.format((float) a / (float) b * 100);
-        return result;
-    }
+
 
 }

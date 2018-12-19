@@ -1,4 +1,4 @@
-package com.longfor.longjian.houseqm.app.service;
+package com.longfor.longjian.houseqm.app.service.impl;
 
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
@@ -6,18 +6,19 @@ import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
 import com.longfor.longjian.common.consts.checktask.*;
+import com.longfor.longjian.houseqm.app.service.ITaskListService;
 import com.longfor.longjian.houseqm.app.vo.TaskList2Vo;
 import com.longfor.longjian.houseqm.app.vo.TaskPushStrategyVo;
 import com.longfor.longjian.houseqm.domain.internalService.*;
 import com.longfor.longjian.houseqm.innervo.ApiBuildingQmCheckTaskConfig;
 import com.longfor.longjian.houseqm.innervo.ApiBuildingQmCheckTaskMsg;
 import com.longfor.longjian.houseqm.po.*;
+import com.longfor.longjian.houseqm.util.DateUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Repository;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
-import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.*;
 
@@ -28,7 +29,7 @@ import java.util.*;
 @Repository
 @Service
 @Slf4j
-public class TaskListService {
+public class TaskListServiceImpl implements ITaskListService {
 
     @Resource
     HouseQmCheckTaskService houseQmCheckTaskService;
@@ -106,11 +107,11 @@ public class TaskListService {
                 task.setIssue_desc_status(CheckTaskIssueDescEnum.Arbitrary.getValue());
                 task.setIssue_default_desc("(该问题无文字描述)");
             }
-            task.setPlan_begin_on(datetimeToTimeStamp(checkTask.getPlanBeginOn()));
-            task.setPlan_end_on(datetimeToTimeStamp(checkTask.getPlanEndOn()));
-            task.setCreate_at(datetimeToTimeStamp(checkTask.getCreateAt()));
-            task.setUpdate_at(datetimeToTimeStamp(checkTask.getUpdateAt()));
-            task.setDelete_at(datetimeToTimeStamp(checkTask.getDeleteAt()));
+            task.setPlan_begin_on(DateUtil.datetimeToTimeStamp(checkTask.getPlanBeginOn()));
+            task.setPlan_end_on(DateUtil.datetimeToTimeStamp(checkTask.getPlanEndOn()));
+            task.setCreate_at(DateUtil.datetimeToTimeStamp(checkTask.getCreateAt()));
+            task.setUpdate_at(DateUtil.datetimeToTimeStamp(checkTask.getUpdateAt()));
+            task.setDelete_at(DateUtil.datetimeToTimeStamp(checkTask.getDeleteAt()));
 
             HashMap<String, Map> pushStrategy = Maps.newHashMap();
             if (assignTimeMap.containsKey(task.getTask_id())){
@@ -149,30 +150,7 @@ public class TaskListService {
         return taskListVo;
     }
 
-    /**
-     *
-     * @param dt
-     * @return
-     */
-    private int datetimeToTimeStamp(Date dt){
-        if (dt==null){
-            return 0;
-        }else {
-            SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-            String strdt = formatter.format(dt);
-            Date initDate = null;
-            try {
-                initDate = formatter.parse("1980-01-01 08:00:00");
-            } catch (ParseException e) {
-                e.printStackTrace();
-            }
-            if (strdt.equals("0001-01-01 00:00:00")||strdt.equals("")||!dt.after(initDate)){
-                return 0;
-            }else{
-                return (int) (dt.getTime()/1000);
-            }
-        }
-    }
+
 
     /**
      *

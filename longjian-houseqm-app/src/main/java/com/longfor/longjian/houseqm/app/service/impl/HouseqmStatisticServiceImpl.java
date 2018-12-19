@@ -1,7 +1,9 @@
-package com.longfor.longjian.houseqm.app.service;
+package com.longfor.longjian.houseqm.app.service.impl;
 
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
+import com.longfor.longjian.houseqm.app.service.IHouseqmStatisticService;
+import com.longfor.longjian.houseqm.app.vo.IssueMinStatusVo;
 import com.longfor.longjian.houseqm.app.vo.TaskRepairStatVo;
 import com.longfor.longjian.houseqm.app.vo.TaskStatVo;
 import com.longfor.longjian.houseqm.consts.HouseQmCheckTaskIssueEnum;
@@ -10,8 +12,8 @@ import com.longfor.longjian.houseqm.domain.internalService.AreaService;
 import com.longfor.longjian.houseqm.domain.internalService.HouseQmCheckTaskIssueService;
 import com.longfor.longjian.houseqm.domain.internalService.HouseQmCheckTaskService;
 import com.longfor.longjian.houseqm.po.*;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import com.longfor.longjian.houseqm.util.MathUtil;
+import com.longfor.longjian.houseqm.util.StringSplitToListUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Repository;
 import org.springframework.stereotype.Service;
@@ -27,7 +29,7 @@ import java.util.*;
 @Repository
 @Service
 @Slf4j
-public class HouseqmStatisticService {
+public class HouseqmStatisticServiceImpl implements IHouseqmStatisticService {
 
     @Resource
     HouseQmCheckTaskIssueService houseQmCheckTaskIssueService;
@@ -96,8 +98,8 @@ public class HouseqmStatisticService {
             //读取任务
             HouseQmCheckTask task = houseQmCheckTaskService.selectByProjectIdAndTaskId(projectId, taskId);
             // 获取出任务下的区域与检验类型的交集
-            List<Integer> areaIds = splitToIdsComma(task.getAreaIds(), ",");
-            List<Integer> areaTypes = splitToIdsComma(task.getAreaTypes(), ",");
+            List<Integer> areaIds = StringSplitToListUtil.splitToIdsComma(task.getAreaIds(), ",");
+            List<Integer> areaTypes = StringSplitToListUtil.splitToIdsComma(task.getAreaTypes(), ",");
             if (areaIds.size() == 0 || areaTypes.size() == 0) {
                 return houseStatVo;
             }
@@ -117,10 +119,10 @@ public class HouseqmStatisticService {
 
             //计算总户数
             // 找出拥有问题的最小状态，用来区分是否所有问题都处理完了
-            Map<Integer, IssueMinStatus> areaIssueMap = getIssueMinStatusMapByTaskIdAndAreaId(taskId, areaId, true);
-            Map<Integer, IssueMinStatus> checkedAreaIssueMap = getIssueMinStatusMapByTaskIdAndAreaId(taskId, areaId, false);
+            Map<Integer, IssueMinStatusVo> areaIssueMap = getIssueMinStatusMapByTaskIdAndAreaId(taskId, areaId, true);
+            Map<Integer, IssueMinStatusVo> checkedAreaIssueMap = getIssueMinStatusMapByTaskIdAndAreaId(taskId, areaId, false);
             houseStatVo.setChecked_count(checkedAreaIssueMap.size());
-            for (Map.Entry<Integer, IssueMinStatus> status : areaIssueMap.entrySet()) {
+            for (Map.Entry<Integer, IssueMinStatusVo> status : areaIssueMap.entrySet()) {
                 houseStatVo.setHas_issue_count(houseStatVo.getHas_issue_count() + 1);
                 if (status.getValue().getMinStatus() == HouseQmCheckTaskIssueStatusEnum.ReformNoCheck.getId()) {
                     houseStatVo.setRepaired_count(houseStatVo.getRepaired_count() + 1);
@@ -151,7 +153,7 @@ public class HouseqmStatisticService {
         types.add(HouseQmCheckTaskIssueEnum.FindProblem.getId());
         types.add(HouseQmCheckTaskIssueEnum.Difficult.getId());
 
-        // 以下条件成立时调用对应成立时的方法。
+        // 以下条件成立时调用对应成立时的方法。go代码较复杂
         if (areaId>0){
 
         }
@@ -170,11 +172,11 @@ public class HouseqmStatisticService {
             ic.setTotal(1);
         }
         DecimalFormat f = new DecimalFormat("0.00");
-        String iniTimeFinish= f.format((float)ic.getInitimeFinish() /(float) ic.getTotal() * 100.0);
-        String iniTimeUnFinish = f.format((float)ic.getInitimeUnfinish() / (float)ic.getTotal() * 100.0);
-        String overTimeFinish = f.format((float)ic.getOvertimeFinish() / (float)ic.getTotal() * 100.0);
-        String overTimeUnFinish = f.format((float)ic.getOvertimeUnfinish() /(float) ic.getTotal() * 100.0);
-        String noPlanEndOn = f.format((float)ic.getNoPlanEndOn() /(float) ic.getTotal() * 100.0);
+        String iniTimeFinish=MathUtil.getPercentage(ic.getInitimeFinish(),ic.getTotal());
+        String iniTimeUnFinish = MathUtil.getPercentage(ic.getInitimeUnfinish() ,ic.getTotal());
+        String overTimeFinish = MathUtil.getPercentage(ic.getOvertimeFinish(),ic.getTotal());
+        String overTimeUnFinish = MathUtil.getPercentage(ic.getOvertimeUnfinish() ,ic.getTotal());
+        String noPlanEndOn = MathUtil.getPercentage(ic.getNoPlanEndOn() ,ic.getTotal());
 
         item.setInitime_finish(iniTimeFinish);
         item.setInitime_unfinish(iniTimeUnFinish);
@@ -194,12 +196,13 @@ public class HouseqmStatisticService {
     }
 
     /**
+     *
      * @param taskId
      * @param areaId
      * @param onlyIssue
      * @return
      */
-    private Map<Integer, IssueMinStatus> getIssueMinStatusMapByTaskIdAndAreaId(Integer taskId, Integer areaId, Boolean onlyIssue) {
+    private Map<Integer, IssueMinStatusVo> getIssueMinStatusMapByTaskIdAndAreaId(Integer taskId, Integer areaId, Boolean onlyIssue) {
         List<Integer> types = Lists.newArrayList();
         types.add(HouseQmCheckTaskIssueEnum.FindProblem.getId());
         types.add(HouseQmCheckTaskIssueEnum.Difficult.getId());
@@ -216,11 +219,11 @@ public class HouseqmStatisticService {
             result = houseQmCheckTaskIssueService.selectByTaskId(taskId);
         }
 
-        HashMap<Integer, IssueMinStatus> maps = Maps.newHashMap();
+        HashMap<Integer, IssueMinStatusVo> maps = Maps.newHashMap();
         for (HouseQmCheckTaskIssueAreaGroupModel area : result) {
-            List<Integer> aIds = splitToIdsComma(area.getAreaPath(), "/");
+            List<Integer> aIds = StringSplitToListUtil.splitToIdsComma(area.getAreaPath(), "/");
             if (aIds.size() > 0) {
-                IssueMinStatus minStatus = new IssueMinStatus();
+                IssueMinStatusVo minStatus = new IssueMinStatusVo();
                 minStatus.setCount(area.getExtendCol());
                 minStatus.setMinStatus(area.getStatus());
                 maps.put(aIds.get(aIds.size() - 1), minStatus);
@@ -228,37 +231,5 @@ public class HouseqmStatisticService {
         }
         return maps;
     }
-
-    /**
-     * 字符串分割 转换为int类型的
-     *
-     * @param ids
-     * @return
-     */
-    private List<Integer> splitToIdsComma(String ids, String sep) {
-        List<Integer> list = Lists.newArrayList();
-        ids.trim();
-        String[] str = ids.split(sep);
-        List<String> areaList = Arrays.asList(str);
-        for (String s : areaList) {
-            if (s.equals("")) {
-                continue;
-            }
-            list.add(Integer.valueOf(s));
-        }
-        return list;
-    }
-
-    /**
-     * 用于getIssueMinStatusMapByTaskIdAndAreaId()方法
-     */
-    @NoArgsConstructor
-    @Data
-    public class IssueMinStatus {
-        private Integer count;
-        private Integer minStatus;
-    }
-
-
 
 }

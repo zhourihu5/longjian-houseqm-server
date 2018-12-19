@@ -1,22 +1,23 @@
-package com.longfor.longjian.houseqm.app.service;
+package com.longfor.longjian.houseqm.app.service.impl;
 
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
+import com.longfor.longjian.houseqm.app.service.IHouseqmStatService;
 import com.longfor.longjian.houseqm.consts.HouseQmCheckTaskIssueEnum;
-import com.longfor.longjian.houseqm.consts.HouseQmCheckTaskIssueStatusEnum;
 import com.longfor.longjian.houseqm.app.vo.*;
 import com.longfor.longjian.houseqm.domain.internalService.AreaService;
 import com.longfor.longjian.houseqm.domain.internalService.HouseQmCheckTaskIssueService;
 import com.longfor.longjian.houseqm.domain.internalService.HouseQmCheckTaskService;
 import com.longfor.longjian.houseqm.domain.internalService.UserService;
 import com.longfor.longjian.houseqm.po.*;
+import com.longfor.longjian.houseqm.util.DateUtil;
+import com.longfor.longjian.houseqm.util.StringSplitToListUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Repository;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
-import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.*;
 
@@ -27,7 +28,7 @@ import java.util.*;
 @Repository
 @Service
 @Slf4j
-public class HouseqmStatService {
+public class HouseqmStatServiceImpl implements IHouseqmStatService {
 
     @Resource
     HouseQmCheckTaskIssueService houseQmCheckTaskIssueService;
@@ -56,7 +57,6 @@ public class HouseqmStatService {
             list.add(stat.getUserId());
         }
         Map<Integer, User> userMap = userService.selectByIds(list);
-
         Map<Integer, CheckerStatListVo.CheckerStatVo> checkerMap = Maps.newHashMap();
         Map<Integer, Map<String, Boolean>> areaMap = Maps.newHashMap();
         Map<String, Boolean> fatherPathMap = Maps.newHashMap();
@@ -128,7 +128,7 @@ public class HouseqmStatService {
         for(int i=1; i<totalDates.size(); i++){
             tmp = totalDates.get(i);
             int j=i-1;
-            for(; j>=0&&(dateCompare(tmp, totalDates.get(j))>0); j--){
+            for(; j>=0&&(DateUtil.dateCompare(tmp, totalDates.get(j))>0); j--){
                 totalDates.set(j+1, totalDates.get(j));
             }
             totalDates.set(j+1, tmp);
@@ -277,7 +277,7 @@ public class HouseqmStatService {
         List<HouseQmCheckTask> tasks=houseQmCheckTaskService.searchByProjectIdAndCategoryClsIn(projectId,categoryCls);
         List<Integer> areaIds= Lists.newArrayList();
         for (HouseQmCheckTask item : tasks) {
-            List<Integer> areaList = splitToIdsComma(item.getAreaIds());
+            List<Integer> areaList = StringSplitToListUtil.splitToIdsComma(item.getAreaIds(),",");
             for (Integer i : areaList) {
                 areaIds.add(i);
             }
@@ -295,7 +295,7 @@ public class HouseqmStatService {
         List<AreaTaskListVo.AreaTaskVo> list = Lists.newArrayList();
         for (HouseQmCheckTask item : tasks) {
             AreaTaskListVo.AreaTaskVo areaTaskVo = areaTaskListVo.new AreaTaskVo();
-            List<Integer> areaList = splitToIdsComma(item.getAreaIds());
+            List<Integer> areaList = StringSplitToListUtil.splitToIdsComma(item.getAreaIds(),",");
             if (checkRootAreaIntersectAreas(areaMap,areaId,areaList)){
                 areaTaskVo.setId(item.getTaskId());
                 areaTaskVo.setName(item.getName());
@@ -305,40 +305,6 @@ public class HouseqmStatService {
         }
         areaTaskListVo.setTasks(list);
         return areaTaskListVo;
-    }
-
-
-    /**
-     * 时间比较排序
-     * @param s1
-     * @param s2
-     * @return
-     */
-    private long dateCompare(String s1, String s2) {
-        try {
-            SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
-            Date d1 = sdf.parse(s1);
-            Date d2 = sdf.parse(s2);
-            return ((d1.getTime() - d2.getTime()) / (24 * 3600 * 1000));
-        } catch (ParseException e) {
-            e.printStackTrace();
-        }
-        return 0;
-    }
-
-    /**
-     * 字符串分割 转换为int类型的
-     * @param ids
-     * @return
-     */
-    private List<Integer> splitToIdsComma(String ids){
-        List<Integer> list = Lists.newArrayList();
-        String[] str = ids.split(",");
-        List<String> areaList = Arrays.asList(str);
-        for (String s : areaList) {
-            list.add(Integer.parseInt(s));
-        }
-        return list;
     }
 
     /**
@@ -361,4 +327,6 @@ public class HouseqmStatService {
         }
         return false;
     }
+
+
 }
