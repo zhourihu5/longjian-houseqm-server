@@ -35,7 +35,7 @@
     <!--
       WARNING - @mbg.generated
     -->
-    id, project_id, task_id, name, status, category_cls, root_category_key, area_types, 
+    id, project_id, task_id, name, status, category_cls, root_category_key, area_types,
     plan_begin_on, plan_end_on, end_on, creator, editor, create_at, update_at, delete_at, 
     config_info, delivery_begin_on, delivery_end_on
   </sql>
@@ -59,4 +59,37 @@
           and delete_at is null
       </if>
   </select>
+
+
+
+    <select id="selectByProjectIdAndCategoryCls" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List" />
+        from house_qm_check_task
+        where
+        <if test="projectId !=null">
+            project_id=#{projectId}
+        </if>
+        <if test="categoryCls !=null">
+           and  category_cls=#{categoryCls}
+        </if>
+
+        <if test="deleted =='false'">
+            and delete_at is null
+        </if>
+    </select>
+
+    <select id="getHouseQmCheckTaskByProjTaskId" resultMap="ResultMapWithBLOBs">
+        select
+        <include refid="Base_Column_List" />,
+        <include refid="Blob_Column_List" />
+        from house_qm_check_task
+        where
+        <if test="projectId !=null">
+            project_id=#{projectId}
+        </if>
+        <if test="taskId !=null">
+            and  task_id=#{taskId}
+        </if>
+    </select>
 </mapper>

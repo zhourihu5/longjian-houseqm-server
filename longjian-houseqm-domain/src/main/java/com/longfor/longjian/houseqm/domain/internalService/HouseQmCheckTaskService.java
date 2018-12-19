@@ -1,5 +1,6 @@
 package com.longfor.longjian.houseqm.domain.internalService;
 
+import com.longfor.gaia.gfs.data.mybatis.datasource.LFAssignDataSource;
 import com.longfor.longjian.houseqm.dao.HouseQmCheckTaskMapper;
 import com.longfor.longjian.houseqm.po.HouseQmCheckTask;
 import lombok.extern.slf4j.Slf4j;
@@ -44,5 +45,9 @@ public class HouseQmCheckTaskService {
 
         return houseQmCheckTaskMapper.selectByTaskIds(taskIds,"true");
     }
+    @LFAssignDataSource("zhijian2")
+    public List<HouseQmCheckTask> selectByProjectIdAndCategoryCls(Integer projectId, Integer categoryCls) {
+        return   houseQmCheckTaskMapper.selectByProjectIdAndCategoryCls(projectId,categoryCls,"false");
 
+    }
 }
