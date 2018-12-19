@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
-<<<<<<< HEAD
 <mapper namespace="com.longfor.longjian.houseqm.dao.AreaMapper">
     <resultMap id="BaseResultMap" type="com.longfor.longjian.houseqm.po.Area">
         <!--
@@ -46,95 +45,59 @@
         from area
         WHERE id IN
         <foreach collection="areaIds" item="areaId" index="index" open="(" separator="," close=")">
-          #{areaId}
+            #{areaId}
         </foreach>
     </select>
-    <select id="selectById" resultMap="BaseResultMap" >
-        select <include refid="Base_Column_List" />
+    <select id="selectById" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
         from area
         where id =#{areaId}
     </select>
 
-    <select id="selectByProjectIdAndIdIn" resultMap="BaseResultMap" >
-        SELECT <include refid="Base_Column_List"/> from area
+    <select id="selectByProjectIdAndIdIn" resultMap="BaseResultMap">
+        SELECT
+        <include refid="Base_Column_List"/>
+        from area
         WHERE project_id=#{projectId} AND id IN
         <foreach collection="areaIds" item="areaId" index="index" open="(" separator="," close=")">
             #{areaId}
         </foreach>
     </select>
-    <select id="selectByProjectIdAndPathLikeOrIdAndTypeIn" resultMap="BaseResultMap" >
-        SELECT <include refid="Base_Column_List"/> from area
+    <select id="selectByProjectIdAndPathLikeOrIdAndTypeIn" resultMap="BaseResultMap">
+        SELECT
+        <include refid="Base_Column_List"/>
+        from area
         WHERE project_id=#{projectId} AND path LIKE #{likePath} OR id=#{id} AND type IN
         <foreach collection="types" item="type" index="index" open="(" separator="," close=")">
             #{type}
         </foreach>
-=======
-<mapper namespace="com.longfor.longjian.houseqm.dao.AreaMapper" >
-    <resultMap id="BaseResultMap" type="com.longfor.longjian.houseqm.po.Area" >
-        <!--
-          WARNING - @mbg.generated
-        -->
-        <id column="id" property="id" jdbcType="INTEGER" />
-        <result column="project_id" property="projectId" jdbcType="INTEGER" />
-        <result column="name" property="name" jdbcType="VARCHAR" />
-        <result column="custom_code" property="customCode" jdbcType="VARCHAR" />
-        <result column="path" property="path" jdbcType="VARCHAR" />
-        <result column="type" property="type" jdbcType="INTEGER" />
-        <result column="area_class_id" property="areaClassId" jdbcType="INTEGER" />
-        <result column="is_lock" property="isLock" jdbcType="INTEGER" />
-        <result column="order_by" property="orderBy" jdbcType="INTEGER" />
-        <result column="drawing_md5" property="drawingMd5" jdbcType="VARCHAR" />
-        <result column="father_id" property="fatherId" jdbcType="INTEGER" />
-        <result column="create_at" property="createAt" jdbcType="TIMESTAMP" />
-        <result column="update_at" property="updateAt" jdbcType="TIMESTAMP" />
-        <result column="delete_at" property="deleteAt" jdbcType="TIMESTAMP" />
-    </resultMap>
-    <resultMap id="ResultMapWithBLOBs" type="com.longfor.longjian.houseqm.po.Area" extends="BaseResultMap" >
-        <!--
-          WARNING - @mbg.generated
-        -->
-        <result column="location" property="location" jdbcType="LONGVARCHAR" />
-    </resultMap>
+    </select>
 
-    <sql id="Blob_Column_List" >
-        <!--
-          WARNING - @mbg.generated
-        -->
-        location
-    </sql>
-
-    <sql id="Base_Column_List" >
-        <!--
-          WARNING - @mbg.generated
-        -->
-        id,project_id,name,custom_code,path,type,area_class_id,is_lock,order_by,drawing_md5,father_id,create_at,update_at,delete_at
-    </sql>
     <select id="selectByAreaIds" resultMap="ResultMapWithBLOBs">
         select
-        <include refid="Base_Column_List" />,
-        <include refid="Blob_Column_List" />
+        <include refid="Base_Column_List"/>,
+        <include refid="Blob_Column_List"/>
         from area
         <where>
             id in
-            <foreach collection="idList" open="(" close = ")" item = "id" separator=",">
+            <foreach collection="idList" open="(" close=")" item="id" separator=",">
                 #{id}
             </foreach>
         </where>
     </select>
     <select id="selectByFatherId" resultMap="BaseResultMap">
-    select
-        <include refid="Base_Column_List" />,
-        <include refid="Blob_Column_List" />
-    from area
-    where
-    <if test="projectId !=null">
-        project_id=#{projectId}
-    </if>
+        select
+        <include refid="Base_Column_List"/>,
+        <include refid="Blob_Column_List"/>
+        from area
+        where
+        <if test="projectId !=null">
+            project_id=#{projectId}
+        </if>
 
-    <if test="fatherId !=null">
-        and father_id=#{fatherId}
-    </if>
-
->>>>>>> fb0bebdb7adc0fb08fae18ad73d2925c70495b95
+        <if test="fatherId !=null">
+            and father_id=#{fatherId}
+        </if>
     </select>
 </mapper>
