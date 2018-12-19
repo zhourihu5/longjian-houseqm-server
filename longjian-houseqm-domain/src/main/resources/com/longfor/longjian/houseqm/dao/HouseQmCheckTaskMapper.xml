@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<<<<<<< HEAD
 <mapper namespace="com.longfor.longjian.houseqm.dao.HouseQmCheckTaskMapper">
     <resultMap id="BaseResultMap" type="com.longfor.longjian.houseqm.po.HouseQmCheckTask">
         <!--
@@ -88,5 +89,98 @@
         <foreach collection="categoryCls" item="category" index="index" open="(" separator="," close=")">
             #{category}
         </foreach>
+=======
+<mapper namespace="com.longfor.longjian.houseqm.dao.HouseQmCheckTaskMapper" >
+  <resultMap id="BaseResultMap" type="com.longfor.longjian.houseqm.po.HouseQmCheckTask" >
+    <!--
+      WARNING - @mbg.generated
+    -->
+    <id column="id" property="id" jdbcType="INTEGER" />
+    <result column="project_id" property="projectId" jdbcType="INTEGER" />
+    <result column="task_id" property="taskId" jdbcType="INTEGER" />
+    <result column="name" property="name" jdbcType="VARCHAR" />
+    <result column="status" property="status" jdbcType="INTEGER" />
+    <result column="category_cls" property="categoryCls" jdbcType="INTEGER" />
+    <result column="root_category_key" property="rootCategoryKey" jdbcType="VARCHAR" />
+    <result column="area_types" property="areaTypes" jdbcType="VARCHAR" />
+    <result column="plan_begin_on" property="planBeginOn" jdbcType="TIMESTAMP" />
+    <result column="plan_end_on" property="planEndOn" jdbcType="TIMESTAMP" />
+    <result column="end_on" property="endOn" jdbcType="TIMESTAMP" />
+    <result column="creator" property="creator" jdbcType="INTEGER" />
+    <result column="editor" property="editor" jdbcType="INTEGER" />
+    <result column="create_at" property="createAt" jdbcType="TIMESTAMP" />
+    <result column="update_at" property="updateAt" jdbcType="TIMESTAMP" />
+    <result column="delete_at" property="deleteAt" jdbcType="TIMESTAMP" />
+    <result column="config_info" property="configInfo" jdbcType="VARCHAR" />
+    <result column="delivery_begin_on" property="deliveryBeginOn" jdbcType="TIMESTAMP" />
+    <result column="delivery_end_on" property="deliveryEndOn" jdbcType="TIMESTAMP" />
+  </resultMap>
+  <resultMap id="ResultMapWithBLOBs" type="com.longfor.longjian.houseqm.po.HouseQmCheckTask" extends="BaseResultMap" >
+    <!--
+      WARNING - @mbg.generated
+    -->
+    <result column="area_ids" property="areaIds" jdbcType="LONGVARCHAR" />
+  </resultMap>
+  <sql id="Base_Column_List" >
+    <!--
+      WARNING - @mbg.generated
+    -->
+    id, project_id, task_id, name, status, category_cls, root_category_key, area_types,
+    plan_begin_on, plan_end_on, end_on, creator, editor, create_at, update_at, delete_at, 
+    config_info, delivery_begin_on, delivery_end_on
+  </sql>
+  <sql id="Blob_Column_List" >
+    <!--
+      WARNING - @mbg.generated
+    -->
+    area_ids
+  </sql>
+
+  <select id="selectByTaskIds" resultMap="BaseResultMap">
+      select
+      <include refid="Base_Column_List" />
+      from house_qm_check_task
+      where task_id in
+      <foreach collection="idList" item="id" index="index"
+               open="(" close=")" separator=",">
+          #{id}
+      </foreach>
+      <if test="deleted =='false'">
+          and delete_at is null
+      </if>
+  </select>
+
+
+
+    <select id="selectByProjectIdAndCategoryCls" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List" />
+        from house_qm_check_task
+        where
+        <if test="projectId !=null">
+            project_id=#{projectId}
+        </if>
+        <if test="categoryCls !=null">
+           and  category_cls=#{categoryCls}
+        </if>
+
+        <if test="deleted =='false'">
+            and delete_at is null
+        </if>
+    </select>
+
+    <select id="getHouseQmCheckTaskByProjTaskId" resultMap="ResultMapWithBLOBs">
+        select
+        <include refid="Base_Column_List" />,
+        <include refid="Blob_Column_List" />
+        from house_qm_check_task
+        where
+        <if test="projectId !=null">
+            project_id=#{projectId}
+        </if>
+        <if test="taskId !=null">
+            and  task_id=#{taskId}
+        </if>
+>>>>>>> fb0bebdb7adc0fb08fae18ad73d2925c70495b95
     </select>
 </mapper>

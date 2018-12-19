@@ -6,7 +6,6 @@ import com.longfor.gaia.gfs.data.mybatis.datasource.LFAssignDataSource;
 import com.longfor.longjian.houseqm.dao.AreaMapper;
 import com.longfor.longjian.houseqm.po.Area;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
@@ -15,6 +14,10 @@ import java.util.*;
 /**
  * @author Houyan
  * @date 2018/12/17 0017 15:14
+ */
+
+/**
+ * Created by Dongshun on 2018/12/18.
  */
 @Service
 @Slf4j
@@ -102,6 +105,20 @@ public class AreaService {
         return items;
     }
 
+
+    @LFAssignDataSource("zhijian2")
+    public List<Area> selectByAreaIds(List<Integer> integers) {
+        return  areaMapper.selectByAreaIds(integers);
+
+
+    }
+
+
+    @LFAssignDataSource("zhijian2")
+    public List<Area> selectByFatherId(Integer prodectId,Integer i) {
+        return areaMapper.selectByFatherId(prodectId,0);
+    }
+
     /**
      * 字符串筛选
      * @param paths
@@ -168,5 +185,9 @@ public class AreaService {
         }
         return items;
     }
+
+
+
+
 
 }

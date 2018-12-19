@@ -44,7 +44,10 @@ public class HouseQmCheckTaskService {
     public List<HouseQmCheckTask> selectByTaskIdsEvenDeleted(Set<Integer> taskIds){
         return houseQmCheckTaskMapper.selectByTaskIds(taskIds,"true");
     }
-
+    @LFAssignDataSource("zhijian2")
+    public List<HouseQmCheckTask> selectByProjectIdAndCategoryCls(Integer projectId, Integer categoryCls) {
+        return houseQmCheckTaskMapper.selectByProjectIdAndCategoryCls(projectId, categoryCls, "false");
+    }
     /**
      * 取未删除的数据
      * @param houseQmCheckTask

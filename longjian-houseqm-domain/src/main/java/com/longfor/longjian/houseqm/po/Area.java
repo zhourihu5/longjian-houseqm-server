@@ -2,6 +2,10 @@ package com.longfor.longjian.houseqm.po;
 
 import java.util.Date;
 import javax.persistence.*;
+
+/**
+ * Created by Dongshun on 2018/12/17.
+ */
 @Table(name = "area")
 public class Area {
     @Id
@@ -255,3 +259,4 @@ public class Area {
         this.location = location == null ? null : location.trim();
     }
 }
+

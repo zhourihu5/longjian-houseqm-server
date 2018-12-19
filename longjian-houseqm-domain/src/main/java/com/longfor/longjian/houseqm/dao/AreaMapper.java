@@ -5,7 +5,9 @@ import com.longfor.longjian.houseqm.po.Area;
 import org.apache.ibatis.annotations.Param;
 
 import java.util.List;
-
+/**
+ * Created by Dongshun on 2018/12/18.
+ */
 public interface AreaMapper extends LFMySQLMapper<Area> {
 
     /**
@@ -40,4 +42,8 @@ public interface AreaMapper extends LFMySQLMapper<Area> {
      */
     List<Area> selectByProjectIdAndPathLikeOrIdAndTypeIn(@Param("projectId") Integer projectId,@Param("likePath") String likePath,@Param("id") Integer id,@Param("types") List<Integer> types);
 
+
+    List<Area> selectByAreaIds(@Param(value = "idList") List<Integer> integers);
+
+    List<Area> selectByFatherId(@Param(value="projectId")Integer prodectId, @Param(value="fatherId")int i);
 }
