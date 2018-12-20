@@ -72,7 +72,6 @@ public class TaskListController {
      * @param pageLevel
      * @param groupId
      * @param teamId
-     * @param status
      * @return
      */
     @GetMapping(value = "task_role", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)

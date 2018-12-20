@@ -72,7 +72,7 @@
         <result column="status" property="status" jdbcType="INTEGER"/>
     </resultMap>
 
-    <resultMap id="issueRepairCount" type="com.longfor.longjian.houseqm.po.IssueRepairCount" >
+    <resultMap id="issueRepairCount" type="com.longfor.longjian.houseqm.po.IssueRepairCount">
         <result column="total" property="total" jdbcType="INTEGER"/>
         <result column="no_plan_end_on" property="noPlanEndOn" jdbcType="INTEGER"/>
         <result column="overtime_unfinish" property="overtimeUnfinish" jdbcType="INTEGER"/>
@@ -246,4 +246,14 @@
         </if>
     </select>
 
+    <select id="selectAreaIdByProjectIdAndTaskIdAndAreaIdInAndNoDeleted" resultMap="BaseResultMap">
+        select area_id from house_qm_check_task_issue
+        WHERE project_id=#{projectId} AND task_id =#{taskId}  AND area_id IN
+        <foreach collection="areaIds" item="areaId" index="index" open="(" separator="," close=")">
+            #{areaId}
+        </foreach>
+        <if test="deleted=='false'">
+            AND delete_at IS NULL
+        </if>
+    </select>
 </mapper>

@@ -81,4 +81,10 @@ public class HouseQmCheckTaskServiceImpl implements HouseQmCheckTaskService {
         return houseQmCheckTaskMapper.selectByProjectIdAndCategoryClsIn(projectId,categoryCls);
     }
 
+    @Override
+    @LFAssignDataSource("zhijian2")
+    public HouseQmCheckTask selectAreaIdsByProjectIdAndTaskIdAndNoDeleted(Integer projectId, Integer taskId) {
+        return houseQmCheckTaskMapper.selectAreaIdsByProjectIdAndTaskIdAndNoDeleted(projectId,taskId,"false");
+    }
+
 }

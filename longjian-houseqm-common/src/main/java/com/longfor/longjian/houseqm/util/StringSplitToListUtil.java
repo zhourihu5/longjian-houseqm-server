@@ -32,4 +32,21 @@ public class StringSplitToListUtil {
         }
         return list;
     }
+
+    /**
+     * int集合数组 按给定的sep 拼接成字符串
+     * @param list
+     * @return
+     */
+    public static String dataToString(List<Integer> list,String sep) {
+        StringBuilder sb = new StringBuilder();
+        for(int i = 0; i < list.size(); i++) {
+            if (sb.length() > 0) {//该步即不会第一位有逗号，也防止最后一位拼接逗号！
+                sb.append(sep);
+            }
+            sb.append(list.get(i));
+        }
+        return sb.toString();
+    }
+
 }

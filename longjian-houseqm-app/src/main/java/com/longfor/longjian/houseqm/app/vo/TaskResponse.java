@@ -15,7 +15,7 @@ import java.io.Serializable;
 @NoArgsConstructor
 public class TaskResponse<T> extends LjBaseResponse implements Serializable {
 
-    private String message;
-    private String msg;
+    private String message="success";
+    private String msg="success";
 
 }
