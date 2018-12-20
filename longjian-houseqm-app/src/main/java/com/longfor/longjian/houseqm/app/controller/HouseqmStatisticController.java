@@ -1,11 +1,12 @@
 package com.longfor.longjian.houseqm.app.controller;
 
-
+import com.longfor.longjian.houseqm.app.service.IHouseqmStatisticService;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 import com.longfor.gaia.gfs.web.mock.MockOperation;
 import com.longfor.longjian.common.base.LjBaseResponse;
 import com.longfor.longjian.houseqm.app.req.ProjectReq;
 import com.longfor.longjian.houseqm.app.service.HouseqmStaticService;
-import com.longfor.longjian.houseqm.app.service.HouseqmStatisticService;
 import com.longfor.longjian.houseqm.app.vo.*;
 import com.longfor.longjian.houseqm.consts.TimeStauEnum;
 import com.longfor.longjian.houseqm.domain.internalService.AreaService;
@@ -13,10 +14,7 @@ import com.longfor.longjian.houseqm.domain.internalService.HouseQmCheckTaskRspSe
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
-
 import javax.annotation.Resource;
 import java.text.DecimalFormat;
 import java.text.ParseException;
@@ -53,7 +51,8 @@ public class HouseqmStatisticController {
     @Resource
     AreaService areaService;
     @Resource
-    HouseqmStatisticService houseqmStatisticService;
+    IHouseqmStatisticService houseqmStatisticService;
+
 
 
     @GetMapping(value = "task_stat", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)

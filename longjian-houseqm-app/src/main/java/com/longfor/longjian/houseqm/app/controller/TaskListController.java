@@ -1,9 +1,8 @@
 package com.longfor.longjian.houseqm.app.controller;
 
 import com.longfor.gaia.gfs.web.mock.MockOperation;
-import com.longfor.longjian.houseqm.app.service.TaskListService;
+import com.longfor.longjian.houseqm.app.service.ITaskListService;
 import com.longfor.longjian.houseqm.app.vo.TaskList2Vo;
-import com.longfor.longjian.houseqm.app.vo.TaskListVo;
 import com.longfor.longjian.houseqm.app.vo.TaskResponse;
 import com.longfor.longjian.houseqm.app.vo.TaskRoleListVo;
 import lombok.extern.slf4j.Slf4j;
@@ -30,7 +29,7 @@ public class TaskListController {
 
 
     @Resource
-    TaskListService taskListService;
+    ITaskListService taskListService;
 
     /**
      * 获取项目下任务列表任务信息
