@@ -91,4 +91,13 @@
             #{item}
         </foreach>
     </select>
+    <select id="selectByTaskIdAndNoDeleted" resultMap="BaseResultMap">
+        SELECT
+        <include refid="Base_Column_List"/>
+        FROM user_in_house_qm_check_task
+        WHERE task_id=#{taskId}
+        <if test="deleted=='false'">
+            AND delete_at IS NULL
+        </if>
+    </select>
 </mapper>

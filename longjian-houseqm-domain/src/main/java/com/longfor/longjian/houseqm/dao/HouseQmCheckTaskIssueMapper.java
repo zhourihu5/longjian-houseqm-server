@@ -138,4 +138,14 @@ public interface HouseQmCheckTaskIssueMapper extends LFMySQLMapper<HouseQmCheckT
      * @return
      */
     List<HouseQmCheckTaskIssue> searchByConditionOrderByPageUnscoped(@Param("task_id")Integer task_id, @Param("last_id")Integer last_id, @Param("timestamp")Integer timestamp,@Param("userIds") List<Integer> userIds, @Param("userId") Integer userId,@Param("start")Integer start,@Param("limit")Integer limit);
+    /**
+     *
+     * @param projectId
+     * @param taskId
+     * @param areaIds
+     * @param deleted
+     * @return
+     */
+    List<HouseQmCheckTaskIssue> selectAreaIdByProjectIdAndTaskIdAndAreaIdInAndNoDeleted(@Param("projectId") Integer projectId,@Param("taskId") Integer taskId, @Param("areaIds") List<Integer> areaIds,@Param("deleted") String deleted);
+
 }

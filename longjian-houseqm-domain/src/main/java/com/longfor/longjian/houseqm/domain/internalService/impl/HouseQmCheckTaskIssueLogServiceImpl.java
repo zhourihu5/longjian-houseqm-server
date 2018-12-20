@@ -3,22 +3,38 @@ package com.longfor.longjian.houseqm.domain.internalService.impl;
 import com.longfor.gaia.gfs.data.mybatis.datasource.LFAssignDataSource;
 import com.longfor.longjian.houseqm.dao.HouseQmCheckTaskIssueLogMapper;
 import com.longfor.longjian.houseqm.dao.UserInHouseQmCheckTaskMapper;
-import com.longfor.longjian.houseqm.domain.internalService.IHouseQmCheckTaskIssueLogService;
+import com.longfor.longjian.houseqm.domain.internalService.HouseQmCheckTaskIssueLogService;
+import com.longfor.longjian.houseqm.po.HouseQmCheckTaskIssueAttachment;
 import com.longfor.longjian.houseqm.po.HouseQmCheckTaskIssueLog;
-import com.longfor.longjian.houseqm.po.UserInHouseQmCheckTask;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-
-import java.util.ArrayList;
+import org.springframework.beans.factory.annotation.Autowired;
+import javax.annotation.Resource;
 import java.util.List;
+import java.util.Set;
+
+/**
+ * @author Houyan
+ * @date 2018/12/11 0011 16:01
+ */
 @Service
 @Slf4j
-public class HouseQmCheckTaskIssueLogServiceImpl implements IHouseQmCheckTaskIssueLogService {
+public class HouseQmCheckTaskIssueLogServiceImpl implements HouseQmCheckTaskIssueLogService {
+    @Resource
+    HouseQmCheckTaskIssueLogMapper houseQmCheckTaskIssueLogMapper;
     @Autowired
     private UserInHouseQmCheckTaskMapper userInHouseQmCheckTaskMapper;
-    @Autowired
-    private HouseQmCheckTaskIssueLogMapper houseQmCheckTaskIssueLogMapper;
+    /**
+     * 根据issueUuid 查 取未删除的，并按客户端创建时间升序排序
+     *
+     * @param issueUuids
+     * @return
+     */
+    @LFAssignDataSource("zhijian2")
+    public List<HouseQmCheckTaskIssueLog> searchByIssueUuid(Set<String> issueUuids){
+        List<HouseQmCheckTaskIssueLog> houseQmCheckTaskIssueLogs = houseQmCheckTaskIssueLogMapper.selectByIssueUuid(issueUuids, "false");
+        return houseQmCheckTaskIssueLogs;
+    }
     @Override
     @LFAssignDataSource("zhijian2")
     public List<HouseQmCheckTaskIssueLog> searchHouseQmCheckTaskIssueLogByMyIdTaskIdLastIdUpdateAtGt(Integer userId, Integer task_id, Integer last_id, Integer timestamp, Integer limit,Integer start,Integer checker) {

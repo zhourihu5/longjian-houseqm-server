@@ -39,6 +39,13 @@ public interface UserInHouseQmCheckTaskMapper extends LFMySQLMapper<UserInHouseQ
      * @return
      */
     List<UserInHouseQmCheckTask> searchBySquadIdIn(@Param("squadIds") List<Integer> squadIds);
+    /**
+     *
+     * @param taskId
+     * @param deleted
+     * @return
+     */
+    List<UserInHouseQmCheckTask> selectByTaskIdAndNoDeleted(@Param("taskId") Integer taskId,@Param("deleted") String deleted);
 
     /**
      *

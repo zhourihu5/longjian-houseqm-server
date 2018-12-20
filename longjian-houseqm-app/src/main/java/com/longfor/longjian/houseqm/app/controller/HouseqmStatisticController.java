@@ -7,7 +7,6 @@ import com.longfor.longjian.houseqm.app.req.ProjectReq;
 import com.longfor.longjian.houseqm.app.service.HouseqmStaticService;
 import com.longfor.longjian.houseqm.app.vo.*;
 import com.longfor.longjian.houseqm.consts.TimeStauEnum;
-import com.longfor.longjian.houseqm.domain.internalService.AreaService;
 import com.longfor.longjian.houseqm.domain.internalService.HouseQmCheckTaskRspService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.MediaType;
@@ -43,8 +42,6 @@ public class HouseqmStatisticController {
     HouseqmStaticService houseqmStaticService;
     @Resource
     HouseQmCheckTaskRspService houseQmCheckTaskRspService;
-    @Resource
-    AreaService areaService;
 
 
     @MockOperation

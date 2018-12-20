@@ -120,4 +120,12 @@
             and task_id=#{taskId}
         </if>
     </select>
+
+    <select id="selectAreaIdsByProjectIdAndTaskIdAndNoDeleted" resultMap="ResultMapWithBLOBs">
+        SELECT area_ids from house_qm_check_task
+        WHERE project_id=#{projectId} AND task_id=#{taskId}
+        <if test="deleted=='false'">
+            AND delete_at IS NULL
+        </if>
+    </select>
 </mapper>

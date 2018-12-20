@@ -300,4 +300,15 @@
             id ASC
             LIMIT #{start},#{limit}
     </select>
+
+    <select id="selectAreaIdByProjectIdAndTaskIdAndAreaIdInAndNoDeleted" resultMap="BaseResultMap">
+        select area_id from house_qm_check_task_issue
+        WHERE project_id=#{projectId} AND task_id =#{taskId}  AND area_id IN
+        <foreach collection="areaIds" item="areaId" index="index" open="(" separator="," close=")">
+            #{areaId}
+        </foreach>
+        <if test="deleted=='false'">
+            AND delete_at IS NULL
+        </if>
+    </select>
 </mapper>

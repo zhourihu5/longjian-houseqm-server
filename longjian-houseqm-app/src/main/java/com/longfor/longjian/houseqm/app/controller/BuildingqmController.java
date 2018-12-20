@@ -4,7 +4,7 @@ import com.longfor.gaia.gfs.web.mock.MockOperation;
 import com.longfor.longjian.common.base.LjBaseResponse;
 import com.longfor.longjian.houseqm.app.req.DeviceReq;
 import com.longfor.longjian.houseqm.app.req.UpdateDeviceReq;
-import com.longfor.longjian.houseqm.app.service.BuildingqmService;
+import com.longfor.longjian.houseqm.app.service.IBuildingqmService;
 import com.longfor.longjian.houseqm.app.vo.*;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.MediaType;
@@ -31,7 +31,7 @@ public class BuildingqmController {
 
 
     @Resource
-    BuildingqmService buildingqmService;
+    IBuildingqmService buildingqmService;
 
     /**
      * @param deviceId

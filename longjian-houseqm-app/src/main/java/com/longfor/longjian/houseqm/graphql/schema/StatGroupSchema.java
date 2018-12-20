@@ -22,7 +22,7 @@ import java.io.*;
  * @date 2018/11/29 11:20
  */
 @Slf4j
-@Service
+//@Service
 public class StatGroupSchema {
 
 

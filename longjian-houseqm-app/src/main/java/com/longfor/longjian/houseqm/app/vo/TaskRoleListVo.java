@@ -25,6 +25,7 @@ public class TaskRoleListVo implements Serializable{
         private int role_type;
         private int  can_approve;
         private int can_direct_approve;
+        private int can_reassign;
         private String real_name;
         private int  task_id;
     }
