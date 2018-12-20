@@ -1,7 +1,7 @@
 package com.longfor.longjian.houseqm.app.controller;
 
 import com.longfor.longjian.common.base.LjBaseResponse;
-import com.longfor.longjian.houseqm.app.service.impl.TaskService;
+import com.longfor.longjian.houseqm.app.service.ITaskService;
 import com.longfor.longjian.houseqm.app.vo.HouseQmCheckTaskRspVo;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.MediaType;
@@ -24,7 +24,7 @@ import javax.annotation.Resource;
 @Slf4j
 public class TaskController {
     @Resource
-    TaskService taskService;
+    ITaskService taskService;
 
     @GetMapping(value = "view", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     public LjBaseResponse<HouseQmCheckTaskRspVo> view(@RequestParam(value="project_id" ) Integer projectId,
