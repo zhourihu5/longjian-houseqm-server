@@ -16,4 +16,17 @@ public interface HouseQmCheckTaskIssueAttachmentMapper extends LFMySQLMapper<Hou
      * @return
      */
     public List<HouseQmCheckTaskIssueAttachment> selectByIssueUuid(@Param("issueUuids") Set<String> issueUuids,@Param("deleted") String deleted);
+
+    /**
+     *
+     * @param task_id
+     * @param userId
+     * @param userIds
+     * @param privateInt
+     * @param publicInt
+     * @param start
+     * @param limit
+     * @return
+     */
+    List<HouseQmCheckTaskIssueAttachment> searchByConditionOrderByPageUnscoped(@Param("task_id") Integer task_id, @Param("userId") Integer userId,@Param("timestamp")Integer timestamp, @Param("userIds") List<Integer> userIds, @Param("privateInt") Integer privateInt, @Param("publicInt") Integer publicInt, @Param("start") Integer start, @Param("limit") Integer limit);
 }

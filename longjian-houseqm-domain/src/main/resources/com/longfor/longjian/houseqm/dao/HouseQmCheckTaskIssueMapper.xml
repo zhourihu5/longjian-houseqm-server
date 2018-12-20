@@ -245,5 +245,59 @@
             AND delete_at IS NULL
         </if>
     </select>
-
+    <!--List<HouseQmCheckTaskIssue> searchHouseQmCheckTaskIssueByTaskIdUuidIn(@Param("task_id") Integer task_id,@Param("uuids") List<String> uuids);-->
+    <select id="searchHouseQmCheckTaskIssueByTaskIdUuidIn" resultMap="ResultMapWithBLOBs">
+        select
+        id, project_id, task_id, uuid, sender_id, plan_end_on, end_on, area_id, area_path_and_id,
+        category_cls, category_key, category_path_and_key, check_item_key, check_item_path_and_key,
+        drawing_m_d5, pos_x, pos_y, title, typ, content, `condition`, status, repairer_id,
+        repairer_follower_ids, client_create_at, last_assigner, last_assign_at, last_repairer,
+        last_repairer_at, destroy_user, destroy_at, delete_user, delete_time, create_at,
+        update_at, delete_at
+        from
+        house_qm_check_task_issue
+        where task_id= #{task_id}
+        and
+        uuid in
+        <foreach collection="uuids" item="item" index="index" open="(" separator="," close=")">
+            #{item}
+        </foreach>
+        and delete_at is null
+    </select>
+    <select id="searchByConditionOrderByPageUnscoped" resultMap="BaseResultMap">
+        SELECT
+            id, project_id, task_id, uuid, sender_id, plan_end_on, end_on, area_id, area_path_and_id,
+                category_cls, category_key, category_path_and_key, check_item_key, check_item_path_and_key,
+                drawing_m_d5, pos_x, pos_y, title, typ, content, `condition`, status, repairer_id,
+                repairer_follower_ids, client_create_at, last_assigner, last_assign_at, last_repairer,
+                last_repairer_at, destroy_user, destroy_at, delete_user, delete_time, create_at,
+                update_at, delete_at
+        FROM
+            house_qm_check_task_issue hqcti
+        WHERE
+            hqcti.task_id = #{task_id}
+        AND hqcti.id > #{last_id}
+        <if test="timestamp != null and timestamp >= 0">
+            AND hqcti.update_at > FROM_UNIXTIME( #{timestamp} )
+        </if>
+        OR (
+            hqcti.sender_id IN
+            <foreach collection="userIds" item="item" open="(" separator="," close=")" index="index">
+                #{item}
+            </foreach>
+            AND hqcti.task_id = #{task_id}
+            AND hqcti.uuid IN (
+                SELECT
+                    hqmctiu.issue_uuid
+                FROM
+                    house_qm_check_task_issue_user hqmctiu
+                WHERE
+                    hqmctiu.task_id = #{task_id}
+                AND hqmctiu.user_id = #{userId}
+            )
+        )
+            ORDER BY
+            id ASC
+            LIMIT #{start},#{limit}
+    </select>
 </mapper>
