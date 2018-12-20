@@ -8,6 +8,7 @@ import com.longfor.longjian.houseqm.po.IssueRepairCount;
 import org.apache.ibatis.annotations.Param;
 
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 public interface HouseQmCheckTaskIssueMapper extends LFMySQLMapper<HouseQmCheckTaskIssue> {
@@ -111,13 +112,10 @@ public interface HouseQmCheckTaskIssueMapper extends LFMySQLMapper<HouseQmCheckT
 
     /**
      *
-     * @param projectId
-     * @param taskId
-     * @param types
-     * @param deleted
+     * @param map
      * @return
      */
-    List<IssueRepairCount> selectByProjectIdAndTaskIdAndTypeIn(@Param("projectId") Integer projectId, @Param("taskId") Integer taskId, @Param("types") List<Integer> types,@Param("deleted") String deleted);
+    List<IssueRepairCount> selectByProjectIdAndTaskIdAndTyeInAndDongTai(Map<String,Object> map);
 
     /**
      *
@@ -128,5 +126,6 @@ public interface HouseQmCheckTaskIssueMapper extends LFMySQLMapper<HouseQmCheckT
      * @return
      */
     List<HouseQmCheckTaskIssue> selectAreaIdByProjectIdAndTaskIdAndAreaIdInAndNoDeleted(@Param("projectId") Integer projectId,@Param("taskId") Integer taskId, @Param("areaIds") List<Integer> areaIds,@Param("deleted") String deleted);
+
 
 }

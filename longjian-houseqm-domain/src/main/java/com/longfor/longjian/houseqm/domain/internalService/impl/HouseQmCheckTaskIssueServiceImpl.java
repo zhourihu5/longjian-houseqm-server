@@ -12,6 +12,7 @@ import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 /**
@@ -153,22 +154,16 @@ public class HouseQmCheckTaskIssueServiceImpl implements HouseQmCheckTaskIssueSe
         return houseQmCheckTaskIssueMapper.selectByTaskId(taskId, "false");
     }
 
-    /**
-     *
-     * @param projectId
-     * @param taskId
-     * @param types
-     * @return
-     */
-    @LFAssignDataSource("zhijian2")
-    public List<IssueRepairCount> selectByProjectIdAndTaskIdAndTyeIn(Integer projectId, Integer taskId, List<Integer> types){
-        return houseQmCheckTaskIssueMapper.selectByProjectIdAndTaskIdAndTypeIn(projectId,taskId ,types,"false");
-    }
-
     @Override
     @LFAssignDataSource("zhijian2")
     public List<HouseQmCheckTaskIssue> selectAreaIdByProjectIdAndTaskIdAndAreaIdInAndNoDeleted(Integer projectId, Integer taskId, List<Integer> areaIds) {
         return houseQmCheckTaskIssueMapper.selectAreaIdByProjectIdAndTaskIdAndAreaIdInAndNoDeleted(projectId,taskId,areaIds,"false");
+    }
+
+    @Override
+    @LFAssignDataSource("zhijian2")
+    public List<IssueRepairCount> selectByProjectIdAndTaskIdAndTyeInAndDongTai(Map<String, Object> map) {
+        return houseQmCheckTaskIssueMapper.selectByProjectIdAndTaskIdAndTyeInAndDongTai(map);
     }
 
 }

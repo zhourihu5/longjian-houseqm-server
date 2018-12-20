@@ -168,7 +168,10 @@
     </select>
     <select id="selectByTaskIdAndAreaPathAndIdLike" resultMap="BaseResultMap">
         SELECT status,COUNT(*) as pos_x from house_qm_check_task_issue
-        WHERE task_id=#{taskId} AND area_path_and_id LIKE #{areaPath}
+        WHERE task_id=#{taskId}
+        <if test="areaPath!=''">
+            AND area_path_and_id LIKE #{areaPath}
+        </if>
         <if test="deleted=='false'">
             AND delete_at IS NULL
         </if>
@@ -225,12 +228,13 @@
         GROUP BY area_path
     </select>
 
-    <select id="selectByProjectIdAndTaskIdAndTypeIn" resultMap="issueRepairCount">
+    <select id="selectByProjectIdAndTaskIdAndTyeInAndDongTai" resultMap="issueRepairCount"
+            parameterType="java.util.Map">
         SELECT COUNT(1) as total,
         COUNT(CASE WHEN plan_end_on IS NULL OR plan_end_on &lt; '1970-01-02' THEN 1 ELSE NULL END) as no_plan_end_on,
-        COUNT(CASE WHEN status = 30 AND plan_end_on &gt; '1970-01-02' AND plan_end_on &lt; now() THEN 1 ELSE NULL END)
+        COUNT(CASE WHEN status = 30 AND plan_end_on &gt; '1970-01-02' AND plan_end_on &lt; #{now} THEN 1 ELSE NULL END)
         as overtime_unfinish,
-        COUNT(CASE WHEN status = 30 AND plan_end_on &gt; now() THEN 1 ELSE NULL END) as intime_unfinish,
+        COUNT(CASE WHEN status = 30 AND plan_end_on &gt; #{now} THEN 1 ELSE NULL END) as intime_unfinish,
         COUNT(CASE WHEN status != 30 AND plan_end_on &gt; '1970-01-02' AND end_on &gt; plan_end_on THEN 1 ELSE NULL END)
         as overtime_finish,
         COUNT(CASE WHEN status != 30 AND plan_end_on &gt; '1970-01-02' AND end_on &lt;= plan_end_on THEN 1 ELSE NULL
@@ -241,6 +245,11 @@
         <foreach collection="types" item="type" index="index" open="(" separator="," close=")">
             #{type}
         </foreach>
+        <where>
+            <if test="areaId!=null">and area_path_and_id like ${aredId}</if>
+            <if test="beginOn!=null">AND client_create_at &gt;= #{beginOn}</if>
+            <if test="endOn!=null">AND client_create_at &lt;= #{endOn}</if>
+        </where>
         <if test="deleted=='false'">
             AND delete_at IS NULL
         </if>
@@ -248,7 +257,7 @@
 
     <select id="selectAreaIdByProjectIdAndTaskIdAndAreaIdInAndNoDeleted" resultMap="BaseResultMap">
         select area_id from house_qm_check_task_issue
-        WHERE project_id=#{projectId} AND task_id =#{taskId}  AND area_id IN
+        WHERE project_id=#{projectId} AND task_id =#{taskId} AND area_id IN
         <foreach collection="areaIds" item="areaId" index="index" open="(" separator="," close=")">
             #{areaId}
         </foreach>

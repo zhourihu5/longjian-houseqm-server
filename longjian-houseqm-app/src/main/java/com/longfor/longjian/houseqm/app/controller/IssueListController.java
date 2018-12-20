@@ -29,6 +29,7 @@ public class IssueListController {
 
 
     /**
+     * 问题检索
      * @param projectId
      * @param categoryCls
      * @param pageLevel
@@ -41,7 +42,6 @@ public class IssueListController {
      * @param pageSize
      * @return
      */
-    @MockOperation
     @GetMapping(value = "list", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     public TaskResponse<PageInfo<IssueListVo>> doAction(@RequestParam(value = "project_id") Integer projectId,
                                                         @RequestParam(value = "category_cls") String categoryCls,

@@ -152,19 +152,24 @@ public class HouseqmStatisticServiceImpl implements IHouseqmStatisticService {
         List<Integer> types = Lists.newArrayList();
         types.add(HouseQmCheckTaskIssueEnum.FindProblem.getId());
         types.add(HouseQmCheckTaskIssueEnum.Difficult.getId());
-
-        // 以下条件成立时调用对应成立时的方法。go代码较复杂
+        HashMap<String, Object> condiMap = Maps.newHashMap();
+        // 以下条件成立时调用对应成立时的方法。
         if (areaId>0){
-
+            condiMap.put("areaId","%%/areaId/%%");//模糊查询 AreaPathAndId like '%%/ /areaId%%'
         }
         if (beginOn.getTime()/1000>0){
-
+            condiMap.put("beginOn", beginOn);
         }
         if (endOn.getTime()/1000>0){
-
+            condiMap.put("endOn", endOn);
         }
-        //不成立时调用下面的业务方法
-        issueCounts=houseQmCheckTaskIssueService.selectByProjectIdAndTaskIdAndTyeIn(projectId,taskId,types);
+        Date now = new Date();
+        condiMap.put("now", now);
+        condiMap.put("projectId", projectId);
+        condiMap.put("taskId", taskId);
+        condiMap.put("types", types);
+        condiMap.put("deleted", "false");
+        issueCounts=houseQmCheckTaskIssueService.selectByProjectIdAndTaskIdAndTyeInAndDongTai(condiMap);
         IssueRepairCount ic=issueCounts.get(0);
         TaskRepairStatVo taskRepairStatVo = new TaskRepairStatVo();
         TaskRepairStatVo.TaskRepairVo item = taskRepairStatVo.new TaskRepairVo();

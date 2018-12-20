@@ -6,6 +6,7 @@ import com.longfor.longjian.houseqm.po.HouseQmCheckTaskIssueAreaGroupModel;
 import com.longfor.longjian.houseqm.po.IssueRepairCount;
 
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 public interface HouseQmCheckTaskIssueService {
@@ -31,8 +32,7 @@ public interface HouseQmCheckTaskIssueService {
 
     List<HouseQmCheckTaskIssueAreaGroupModel> selectByTaskId(Integer taskId);
 
-    List<IssueRepairCount> selectByProjectIdAndTaskIdAndTyeIn(Integer projectId, Integer taskId, List<Integer> types);
-
     List<HouseQmCheckTaskIssue> selectAreaIdByProjectIdAndTaskIdAndAreaIdInAndNoDeleted(Integer projectId, Integer taskId, List<Integer> areaIds);
 
+    List<IssueRepairCount> selectByProjectIdAndTaskIdAndTyeInAndDongTai(Map<String,Object> map);
 }
