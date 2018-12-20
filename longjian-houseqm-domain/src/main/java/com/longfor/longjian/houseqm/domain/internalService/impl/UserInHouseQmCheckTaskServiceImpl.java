@@ -1,5 +1,6 @@
 package com.longfor.longjian.houseqm.domain.internalService.impl;
 
+import com.longfor.gaia.gfs.data.mybatis.datasource.LFAssignDataSource;
 import com.longfor.longjian.houseqm.dao.UserInHouseQmCheckTaskMapper;
 import com.longfor.longjian.houseqm.domain.internalService.UserInHouseQmCheckTaskService;
 import com.longfor.longjian.houseqm.po.UserInHouseQmCheckTask;
@@ -51,6 +52,12 @@ public class UserInHouseQmCheckTaskServiceImpl implements UserInHouseQmCheckTask
     public List<UserInHouseQmCheckTask> selectByTaskIdsEvenDeleted(Set<Integer> taskIdList){
 
         return userInHouseQmCheckTaskMapper.selectByTaskIds(taskIdList,"true");
+    }
+
+    @Override
+    @LFAssignDataSource("zhijian2")
+    public List<UserInHouseQmCheckTask> searchByTaskIdAndNoDeleted(Integer taskId) {
+        return userInHouseQmCheckTaskMapper.selectByTaskIdAndNoDeleted(taskId,"false");
     }
 
 }

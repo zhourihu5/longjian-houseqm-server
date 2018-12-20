@@ -9,6 +9,7 @@ import com.longfor.longjian.common.consts.checktask.*;
 import com.longfor.longjian.houseqm.app.service.ITaskListService;
 import com.longfor.longjian.houseqm.app.vo.TaskList2Vo;
 import com.longfor.longjian.houseqm.app.vo.TaskPushStrategyVo;
+import com.longfor.longjian.houseqm.app.vo.TaskRoleListVo;
 import com.longfor.longjian.houseqm.domain.internalService.*;
 import com.longfor.longjian.houseqm.innervo.ApiBuildingQmCheckTaskConfig;
 import com.longfor.longjian.houseqm.innervo.ApiBuildingQmCheckTaskMsg;
@@ -45,6 +46,12 @@ public class TaskListServiceImpl implements ITaskListService {
 
     @Resource
     PushStrategyCategoryThresholdService pushStrategyCategoryThresholdService;
+
+    @Resource
+    UserInHouseQmCheckTaskService userInHouseQmCheckTaskService;
+
+    @Resource
+    UserService userService;
 
     /**
      *
@@ -150,7 +157,48 @@ public class TaskListServiceImpl implements ITaskListService {
         return taskListVo;
     }
 
+    @Override
+    public TaskRoleListVo taskRole(Integer taskId) {
+        List<UserInHouseQmCheckTask>  userList=userInHouseQmCheckTaskService.searchByTaskIdAndNoDeleted(taskId);
+        List<Integer> userIds = Lists.newArrayList();
+        for (UserInHouseQmCheckTask user : userList) {
+            userIds.add(user.getUserId());
+        }
+        Map<Integer, User> userMap = creatUsersMap(userIds);
+        TaskRoleListVo taskRoleListVo = new TaskRoleListVo();
+        List<TaskRoleListVo.TaskRoleVo> list = Lists.newArrayList();
+        for (UserInHouseQmCheckTask user : userList) {
+            TaskRoleListVo.TaskRoleVo item = taskRoleListVo.new TaskRoleVo();
+            item.setId(user.getId());
+            item.setUser_id(user.getUserId());
+            item.setRole_type(user.getRoleType());
+            item.setCan_approve(user.getCanApprove());
+            item.setCan_direct_approve(user.getCanDirectApprove());
+            item.setCan_reassign(user.getCanReassign());
+            item.setTask_id(user.getTaskId());
+            item.setSquad_id(user.getSquadId());
+            if (userMap.containsKey( user.getUserId())){
+                item.setReal_name(userMap.get(user.getUserId()).getRealName());
+            }
+            list.add(item);
+        }
+        taskRoleListVo.setRole_list(list);
+        return taskRoleListVo;
+    }
 
+    /**
+     *
+     * @param userIds
+     * @return
+     */
+    private Map<Integer, User> creatUsersMap(List<Integer> userIds){
+        List<User> userList=userService.searchByUserIdInAndNoDeleted(userIds);
+        HashMap<Integer, User> userDict = Maps.newHashMap();
+        for (User user : userList) {
+            userDict.put(user.getUserId(), user);
+        }
+        return userDict;
+    }
 
     /**
      *
@@ -248,4 +296,5 @@ public class TaskListServiceImpl implements ITaskListService {
         taskPushStrategyVo.setCategoryThresholdMap(strategyCategoryThresholdMap);
         return taskPushStrategyVo;
     }
+
 }

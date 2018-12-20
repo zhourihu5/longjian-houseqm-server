@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.annotation.Resource;
+import java.util.List;
 
 /**
  * http://192.168.37.159:3000/project/8/interface/api/226  获取项目下任务列表任务信息
@@ -74,16 +75,22 @@ public class TaskListController {
      * @param status
      * @return
      */
-    @MockOperation
     @GetMapping(value = "task_role", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     public TaskResponse<TaskRoleListVo> taskRole(@RequestParam(value = "project_id") Integer projectId,
                                                  @RequestParam(value = "category_cls") String categoryCls,
                                                  @RequestParam(value = "page_level") String pageLevel,
                                                  @RequestParam(value = "group_id") String groupId,
                                                  @RequestParam(value = "team_id") String teamId,
-                                                 @RequestParam(value = "status") String status) {
+                                                 @RequestParam(value = "task_id") Integer taskId) {
 
+        //todo session(uid)
+        //permission 根据uid 和projectid check_project
+//        uid = session['uid']
+//        has_per = ucenter_api.check_project_permission(uid, req.project_id, '项目.工程检查.任务管理.查看')
 
-        return null;
+        TaskResponse<TaskRoleListVo> taskResponse = new TaskResponse<>();
+        TaskRoleListVo roleListVos = taskListService.taskRole(taskId);
+        taskResponse.setData(roleListVos);
+        return taskResponse;
     }
 }
