@@ -4,12 +4,13 @@ import com.longfor.gaia.gfs.data.mybatis.datasource.LFAssignDataSource;
 import com.longfor.longjian.houseqm.dao.HouseQmCheckTaskIssueLogMapper;
 import com.longfor.longjian.houseqm.dao.UserInHouseQmCheckTaskMapper;
 import com.longfor.longjian.houseqm.domain.internalService.HouseQmCheckTaskIssueLogService;
-import com.longfor.longjian.houseqm.po.HouseQmCheckTaskIssueAttachment;
 import com.longfor.longjian.houseqm.po.HouseQmCheckTaskIssueLog;
+import com.longfor.longjian.houseqm.po.UserInHouseQmCheckTask;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
-import org.springframework.beans.factory.annotation.Autowired;
+
 import javax.annotation.Resource;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 
@@ -22,7 +23,7 @@ import java.util.Set;
 public class HouseQmCheckTaskIssueLogServiceImpl implements HouseQmCheckTaskIssueLogService {
     @Resource
     HouseQmCheckTaskIssueLogMapper houseQmCheckTaskIssueLogMapper;
-    @Autowired
+    @Resource
     private UserInHouseQmCheckTaskMapper userInHouseQmCheckTaskMapper;
     /**
      * 根据issueUuid 查 取未删除的，并按客户端创建时间升序排序

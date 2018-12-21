@@ -1,20 +1,14 @@
 package com.longfor.longjian.houseqm.domain.internalService.impl;
 
 import com.longfor.gaia.gfs.data.mybatis.datasource.LFAssignDataSource;
-import com.longfor.longjian.houseqm.dao.HouseQmCheckTaskIssueMapper;
+import com.longfor.longjian.houseqm.dao.*;
 import com.longfor.longjian.houseqm.domain.internalService.HouseQmCheckTaskIssueService;
-import com.longfor.longjian.houseqm.po.CheckerIssueStat;
-import com.longfor.longjian.houseqm.po.HouseQmCheckTaskIssue;
-import com.longfor.longjian.houseqm.po.HouseQmCheckTaskIssueAreaGroupModel;
-import com.longfor.longjian.houseqm.po.IssueRepairCount;
+import com.longfor.longjian.houseqm.po.*;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
-import com.longfor.longjian.houseqm.dao.*;
-import com.longfor.longjian.houseqm.po.*;
-import org.springframework.beans.factory.annotation.Autowired;
-import java.util.ArrayList;
-import java.util.List;
+
 import javax.annotation.Resource;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 
@@ -28,16 +22,14 @@ import java.util.Set;
 public class HouseQmCheckTaskIssueServiceImpl implements HouseQmCheckTaskIssueService {
     @Resource
     HouseQmCheckTaskIssueMapper houseQmCheckTaskIssueMapper;
-    @Autowired
-    private HouseQmCheckTaskIssueMapper houseQmCheckTaskIssueMapper;
-    @Autowired
+    @Resource
     private UserInHouseQmCheckTaskMapper userInHouseQmCheckTaskMapper;
-    @Autowired
+    @Resource
     private HouseQmCheckTaskIssueUserMapper houseQmCheckTaskIssueUserMapper;
 
-    @Autowired
+    @Resource
     private HouseQmCheckTaskSquadMapper houseQmCheckTaskSquadMapper;
-    @Autowired
+    @Resource
     private HouseQmCheckTaskIssueAttachmentMapper houseQmCheckTaskIssueAttachmentMapper;
     /**
      * 根据问题uuid 客户端创建时间 查 取 未删除的数据

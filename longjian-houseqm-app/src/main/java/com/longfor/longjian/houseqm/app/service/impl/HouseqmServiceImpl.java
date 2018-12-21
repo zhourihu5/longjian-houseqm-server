@@ -2,25 +2,22 @@ package com.longfor.longjian.houseqm.app.service.impl;
 
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.TypeReference;
-import com.google.gson.JsonObject;
 import com.longfor.longjian.common.base.LjBaseResponse;
 import com.longfor.longjian.houseqm.app.req.DeviceReq;
 import com.longfor.longjian.houseqm.app.service.IHouseqmService;
 import com.longfor.longjian.houseqm.app.vo.*;
 import com.longfor.longjian.houseqm.consts.HouseQmCheckTaskIssueAttachmentPublicTypeEnum;
 import com.longfor.longjian.houseqm.consts.HouseQmUserInIssueRoleTypeEnum;
-import com.longfor.longjian.houseqm.domain.internalService.IHouseQmCheckTaskIssueLogService;
-import com.longfor.longjian.houseqm.domain.internalService.IHouseQmCheckTaskIssueService;
+import com.longfor.longjian.houseqm.domain.internalService.HouseQmCheckTaskIssueLogService;
+import com.longfor.longjian.houseqm.domain.internalService.HouseQmCheckTaskIssueService;
 import com.longfor.longjian.houseqm.po.HouseQmCheckTaskIssue;
 import com.longfor.longjian.houseqm.po.HouseQmCheckTaskIssueAttachment;
 import com.longfor.longjian.houseqm.po.HouseQmCheckTaskIssueLog;
 import com.longfor.longjian.houseqm.po.HouseQmCheckTaskIssueUser;
 import com.longfor.longjian.houseqm.util.JsonUtil;
-import lombok.Data;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import springfox.documentation.spring.web.json.Json;
 
 import javax.servlet.http.HttpServletRequest;
 import java.util.*;
@@ -30,9 +27,9 @@ import java.util.*;
 public class HouseqmServiceImpl implements IHouseqmService {
     private static final Integer HOUSEQM_API_GET_PER_TIME = 5000;
     @Autowired
-    private IHouseQmCheckTaskIssueLogService houseQmCheckTaskIssueLogService;
+    private HouseQmCheckTaskIssueLogService houseQmCheckTaskIssueLogService;
     @Autowired
-    private IHouseQmCheckTaskIssueService houseQmCheckTaskIssueService;
+    private HouseQmCheckTaskIssueService houseQmCheckTaskIssueService;
 
     @Override
     public TaskResponse<MyIssueListVo> myIssueLogList(DeviceReq deviceReq, HttpServletRequest request) {
