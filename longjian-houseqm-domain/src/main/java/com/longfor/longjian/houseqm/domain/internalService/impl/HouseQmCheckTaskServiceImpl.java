@@ -42,9 +42,11 @@ public class HouseQmCheckTaskServiceImpl implements HouseQmCheckTaskService {
      * @param taskIds
      * @return
      */
+    @LFAssignDataSource("zhijian2")
     public List<HouseQmCheckTask> selectByTaskIdsEvenDeleted(Set<Integer> taskIds){
         return houseQmCheckTaskMapper.selectByTaskIds(taskIds,"true");
     }
+
     @LFAssignDataSource("zhijian2")
     public List<HouseQmCheckTask> selectByProjectIdAndCategoryCls(Integer projectId, Integer categoryCls) {
         return houseQmCheckTaskMapper.selectByProjectIdAndCategoryCls(projectId, categoryCls, "false");

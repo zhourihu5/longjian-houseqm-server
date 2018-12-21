@@ -130,7 +130,6 @@ public interface HouseQmCheckTaskIssueMapper extends LFMySQLMapper<HouseQmCheckT
      * @param task_id
      * @param last_id
      * @param timestamp
-     * @param orderBy
      * @param userIds
      * @param userId
      * @return
