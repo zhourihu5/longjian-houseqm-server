@@ -121,6 +121,19 @@ public class AreaServiceImpl implements AreaService {
     }
 
     /**
+     *
+     * @author hy
+     * @date 2018/12/21 0021
+     * @param areaPaths
+     * @return java.util.List<com.longfor.longjian.houseqm.po.Area>
+     */
+    @Override
+    @LFAssignDataSource("zhijian2")
+    public List<Area> searchAreaByIdInAndNoDeleted(List<Integer> areaPaths) {
+        return areaMapper.selectAreaByIdInAndNoDeleted(areaPaths,"false");
+    }
+
+    /**
      * 字符串筛选
      * @param paths
      * @return
@@ -186,9 +199,6 @@ public class AreaServiceImpl implements AreaService {
         }
         return items;
     }
-
-
-
 
 
 }

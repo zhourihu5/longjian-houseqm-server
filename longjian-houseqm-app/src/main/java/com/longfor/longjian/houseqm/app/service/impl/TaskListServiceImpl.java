@@ -15,13 +15,16 @@ import com.longfor.longjian.houseqm.innervo.ApiBuildingQmCheckTaskConfig;
 import com.longfor.longjian.houseqm.innervo.ApiBuildingQmCheckTaskMsg;
 import com.longfor.longjian.houseqm.po.*;
 import com.longfor.longjian.houseqm.util.DateUtil;
+import com.longfor.longjian.houseqm.util.JsonUtil;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Repository;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
 import java.text.SimpleDateFormat;
 import java.util.*;
+import java.util.concurrent.atomic.AtomicReference;
 
 /**
  * @author Houyan
@@ -249,6 +252,8 @@ public class TaskListServiceImpl implements ITaskListService {
         return team;
     }
 
+    @Value("spe.team_group_100194.export_issue")
+    String svrCfg;
     /**
      * 
      * @param teamId
@@ -266,6 +271,18 @@ public class TaskListServiceImpl implements ITaskListService {
             export_issue=teamGroup.get("export_issue");
         }
         return export_issue;
+
+       /* //读取生成配置的auto.yaml
+        List<Map<String, String>> list = JsonUtil.GsonToListMaps(svrCfg);
+        AtomicReference<String> teamGroup=null;
+        list.forEach(item ->{
+            if (item.containsKey("team_group_" + teamId)){
+                teamGroup.set(item.get("team_group_" + teamId));
+            }
+        });
+        String[] sexport_issue = teamGroup.get().split(":");
+        String export_issue = sexport_issue[1].trim();
+        return export_issue;*/
     }
 
     /**

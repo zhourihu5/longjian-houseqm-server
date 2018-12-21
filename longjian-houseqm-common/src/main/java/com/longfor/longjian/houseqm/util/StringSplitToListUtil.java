@@ -4,6 +4,7 @@ import com.google.common.collect.Lists;
 
 import java.util.Arrays;
 import java.util.List;
+import java.util.regex.Pattern;
 
 /**
  * @author Houyan
@@ -34,19 +35,45 @@ public class StringSplitToListUtil {
     }
 
     /**
-     * int集合数组 按给定的sep 拼接成字符串
+     *  字符串转换成对应的List String泛型
+     * @author hy
+     * @date 2018/12/21 0021
+     * @param ids
+     * @param sep
+     * @return java.util.List<java.lang.String>
+     */
+    public static List<String> splitToStringComma(String ids,String sep){
+        String[] str = ids.split(sep);
+        List<String> list = Arrays.asList(str);
+        return list;
+    }
+
+    /**
+     * 集合数组 按给定的sep 拼接成字符串
      * @param list
      * @return
      */
-    public static String dataToString(List<Integer> list,String sep) {
+    public static String dataToString(List list,String sep) {
         StringBuilder sb = new StringBuilder();
         for(int i = 0; i < list.size(); i++) {
-            if (sb.length() > 0) {//该步即不会第一位有逗号，也防止最后一位拼接逗号！
+            if (sb.length() > 0) {//该步即不会第一位有sep，也防止最后一位拼接sep！
                 sb.append(sep);
             }
             sb.append(list.get(i));
         }
         return sb.toString();
+    }
+
+    /**
+     *  判断字符是否为数字类型
+     * @author hy
+     * @date 2018/12/21 0021
+     * @param str
+     * @return boolean
+     */
+    public static boolean isInteger(String str) {
+        Pattern pattern = Pattern.compile("^[-\\+]?[\\d]*$");
+        return pattern.matcher(str).matches();
     }
 
 }

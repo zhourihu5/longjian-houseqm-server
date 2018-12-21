@@ -72,7 +72,7 @@
         <result column="status" property="status" jdbcType="INTEGER"/>
     </resultMap>
 
-    <resultMap id="issueRepairCount" type="com.longfor.longjian.houseqm.po.IssueRepairCount" >
+    <resultMap id="issueRepairCount" type="com.longfor.longjian.houseqm.po.IssueRepairCount">
         <result column="total" property="total" jdbcType="INTEGER"/>
         <result column="no_plan_end_on" property="noPlanEndOn" jdbcType="INTEGER"/>
         <result column="overtime_unfinish" property="overtimeUnfinish" jdbcType="INTEGER"/>
@@ -86,7 +86,7 @@
         -->
         id, project_id, task_id, uuid, sender_id, plan_end_on, end_on, area_id, area_path_and_id,
         category_cls, category_key, category_path_and_key, check_item_key, check_item_path_and_key,
-        drawing_m_d5, pos_x, pos_y, title, typ, content, condition, status, repairer_id,
+        drawing_m_d5, pos_x, pos_y, title, typ, content, `condition`, status, repairer_id,
         repairer_follower_ids, client_create_at, last_assigner, last_assign_at, last_repairer,
         last_repairer_at, destroy_user, destroy_at, delete_user, delete_time, create_at,
         update_at, delete_at
@@ -273,43 +273,43 @@
         </foreach>
         and delete_at is null
     </select>
+
     <select id="searchByConditionOrderByPageUnscoped" resultMap="BaseResultMap">
         SELECT
-            id, project_id, task_id, uuid, sender_id, plan_end_on, end_on, area_id, area_path_and_id,
-                category_cls, category_key, category_path_and_key, check_item_key, check_item_path_and_key,
-                drawing_m_d5, pos_x, pos_y, title, typ, content, `condition`, status, repairer_id,
-                repairer_follower_ids, client_create_at, last_assigner, last_assign_at, last_repairer,
-                last_repairer_at, destroy_user, destroy_at, delete_user, delete_time, create_at,
-                update_at, delete_at
+        id, project_id, task_id, uuid, sender_id, plan_end_on, end_on, area_id, area_path_and_id,
+        category_cls, category_key, category_path_and_key, check_item_key, check_item_path_and_key,
+        drawing_m_d5, pos_x, pos_y, title, typ, content, `condition`, status, repairer_id,
+        repairer_follower_ids, client_create_at, last_assigner, last_assign_at, last_repairer,
+        last_repairer_at, destroy_user, destroy_at, delete_user, delete_time, create_at,
+        update_at, delete_at
         FROM
-            house_qm_check_task_issue hqcti
+        house_qm_check_task_issue hqcti
         WHERE
-            hqcti.task_id = #{task_id}
+        hqcti.task_id = #{task_id}
         AND hqcti.id > #{last_id}
         <if test="timestamp != null and timestamp >= 0">
             AND hqcti.update_at > FROM_UNIXTIME( #{timestamp} )
         </if>
         OR (
-            hqcti.sender_id IN
-            <foreach collection="userIds" item="item" open="(" separator="," close=")" index="index">
-                #{item}
-            </foreach>
-            AND hqcti.task_id = #{task_id}
-            AND hqcti.uuid IN (
-                SELECT
-                    hqmctiu.issue_uuid
-                FROM
-                    house_qm_check_task_issue_user hqmctiu
-                WHERE
-                    hqmctiu.task_id = #{task_id}
-                AND hqmctiu.user_id = #{userId}
-            )
+        hqcti.sender_id IN
+        <foreach collection="userIds" item="item" open="(" separator="," close=")" index="index">
+            #{item}
+        </foreach>
+        AND hqcti.task_id = #{task_id}
+        AND hqcti.uuid IN (
+        SELECT
+        hqmctiu.issue_uuid
+        FROM
+        house_qm_check_task_issue_user hqmctiu
+        WHERE
+        hqmctiu.task_id = #{task_id}
+        AND hqmctiu.user_id = #{userId}
         )
-            ORDER BY
-            id ASC
-            LIMIT #{start},#{limit}
+        )
+        ORDER BY
+        id ASC
+        LIMIT #{start},#{limit}
     </select>
-
     <select id="selectAreaIdByProjectIdAndTaskIdAndAreaIdInAndNoDeleted" resultMap="BaseResultMap">
         select area_id from house_qm_check_task_issue
         WHERE project_id=#{projectId} AND task_id =#{taskId} AND area_id IN
@@ -320,4 +320,94 @@
             AND delete_at IS NULL
         </if>
     </select>
+
+    <select id="selectTotalByProjectIdAndCategoryClsAndNoDeletedAndDongTai" parameterType="java.util.Map"
+            resultType="java.lang.Integer">
+        SELECT COUNT(id) FROM house_qm_check_task_issue
+        WHERE project_id=#{projectId} AND category_cls =#{categoryCls}
+        <where>
+            <if test="taskId>0">AND task_id=#{taskId}</if>
+            <if test="status!=null">
+                AND status in
+                <foreach collection="status" item="item" index="index" open="(" separator="," close=")">
+                    #{item}
+                </foreach>
+            </if>
+            <if test="categoryPathAndKey!=null">AND category_path_and_key LIKE ${categoryPathAndKey}</if>
+            <if test="checkItemKey!=null">AND check_item_key=#{checkItemKey}</if>
+            <if test="areaPathAndId!=null">
+                AND
+                <foreach collection="areaPathAndId" item="item" index="index" open="(" separator="OR" close=")">
+                    area_path_and_id like ${item}
+                </foreach>
+            </if>
+            <if test="type!=null">AND typ=#{type}</if>
+            <if test="condition!=null">AND condition =#{condition}</if>
+            <if test="senderId!=null">AND sender_id =#{senderId}</if>
+            <if test="repairerId!=null">AND repairer_id=#{repairerId}</if>
+            <if test="clientCreateAtGte!=null">AND client_create_at &gt;= #{clientCreateAtGte}</if>
+            <if test="clientCreateAtLte!=null">AND client_create_at &lt;= #{clientCreateAtLte}</if>
+            <if test="status1!=null">
+                AND status in <foreach collection="status1" item="item" index="index" open="(" separator="," close=")">
+                #{item}
+            </foreach> and plan_end_on &gt;= '1980-01-01 08:00:00' and plan_end_on &lt;= now()
+            </if>
+            <if test="status2!=null" >
+                OR status in <foreach collection="status2" item="item" index="index" open="(" separator="," close=")">
+                #{item}
+            </foreach> and plan_end_on &gt;= '1980-01-01 08:00:00' and plan_end_on &lt;= end_on
+            </if>
+            <if test="content!=null">and content like ${content}</if>
+            <if test="id!=null" >OR id =#{id}</if>
+        </where>
+        <if test="deleted=='false'">
+            AND delete_at IS NULL
+        </if>
+    </select>
+
+    <select id="selectHouseQmCheckTaskIssueByPageAndProjectIdAndCategoryClsAndNoDeletedAndDongTai" resultMap="ResultMapWithBLOBs" parameterType="java.util.Map">
+        SELECT <include refid="Base_Column_List" />,<include refid="Blob_Column_List" /> FROM house_qm_check_task_issue
+        WHERE project_id=#{projectId} AND category_cls =#{categoryCls}
+        <where>
+            <if test="taskId>0">AND task_id=#{taskId}</if>
+            <if test="status!=null">
+                AND status in
+                <foreach collection="status" item="item" index="index" open="(" separator="," close=")">
+                    #{item}
+                </foreach>
+            </if>
+            <if test="categoryPathAndKey!=null">AND category_path_and_key LIKE ${categoryPathAndKey}</if>
+            <if test="checkItemKey!=null">AND check_item_key=#{checkItemKey}</if>
+            <if test="areaPathAndId!=null">
+                AND
+                <foreach collection="areaPathAndId" item="item" index="index" open="(" separator="OR" close=")">
+                    area_path_and_id like ${item}
+                </foreach>
+            </if>
+            <if test="type!=null">AND typ=#{type}</if>
+            <if test="condition!=null">AND condition =#{condition}</if>
+            <if test="senderId!=null">AND sender_id =#{senderId}</if>
+            <if test="repairerId!=null">AND repairer_id=#{repairerId}</if>
+            <if test="clientCreateAtGte!=null">AND client_create_at &gt;= #{clientCreateAtGte}</if>
+            <if test="clientCreateAtLte!=null">AND client_create_at &lt;= #{clientCreateAtLte}</if>
+            <if test="status1!=null">
+                AND status in <foreach collection="status1" item="item" index="index" open="(" separator="," close=")">
+                #{item}
+            </foreach> and plan_end_on &gt;= '1980-01-01 08:00:00' and plan_end_on &lt;= now()
+            </if>
+            <if test="status2!=null" >
+                OR status in <foreach collection="status2" item="item" index="index" open="(" separator="," close=")">
+                #{item}
+            </foreach> and plan_end_on &gt;= '1980-01-01 08:00:00' and plan_end_on &lt;= end_on
+            </if>
+            <if test="content!=null">and content like ${content}</if>
+            <if test="id!=null" >OR id =#{id}</if>
+        </where>
+        <if test="deleted=='false'">
+            AND delete_at IS NULL
+        </if>
+        <if test="reverse==true">order by client_create_at desc </if>
+        limit #{start},#{pageSize}
+    </select>
+
 </mapper>
