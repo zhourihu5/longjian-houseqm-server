@@ -43,6 +43,54 @@
             and delete_at is null
         </if>
     </select>
+    <!--List<UserInHouseQmCheckTask> searchByTaskIdUserIdRoleType(@Param("userId")Integer userId, @Param("task_id")Integer task_id, @Param("checker") Integer checker);-->
+    <select id="searchByTaskIdUserIdRoleType" resultMap="BaseResultMap">
+        SELECT
+        <include refid="Base_Column_List"/>
+        FROM
+        user_in_house_qm_check_task
+        WHERE user_id = #{userId}
+            AND task_id =#{task_id}
+            AND role_type=#{checker}
+            and delete_at is null
+    </select>
+    <!--List<UserInHouseQmCheckTask> searchBySquadIdIn(@Param("squadIds") List<Integer> squadIds);-->
+    <select id="searchBySquadIdIn" resultMap="BaseResultMap">
+        SELECT
+        <include refid="Base_Column_List"/>
+        FROM
+        user_in_house_qm_check_task
+        WHERE
+        squad_id in
+        <foreach collection="squadIds" index="index" item="item" open="(" separator="," close=")" >
+            #{item}
+        </foreach>
+        AND
+        delete_at is NULL
+    </select>
+    <select id="searchByCondition" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        FROM
+        user_in_house_qm_check_task
+        where
+        task_id =#{task_id}
+        AND user_id = #{userId}
+        AND delete_at is null
+    </select>
+    <select id="searchByTaskIdSquadIdIn" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        FROM
+        user_in_house_qm_check_task
+        where
+        task_id =#{task_id}
+        and
+        squad_id in
+        <foreach collection="existsSquadIds" index="index" item="item" open="(" separator="," close=")" >
+            #{item}
+        </foreach>
+    </select>
     <select id="selectByTaskIdAndNoDeleted" resultMap="BaseResultMap">
         SELECT
         <include refid="Base_Column_List"/>

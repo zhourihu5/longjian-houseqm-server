@@ -3,15 +3,19 @@ package com.longfor.longjian.houseqm.app.controller;
 import com.longfor.gaia.gfs.web.mock.MockOperation;
 import com.longfor.longjian.common.base.LjBaseResponse;
 import com.longfor.longjian.houseqm.app.req.DeviceReq;
+import com.longfor.longjian.houseqm.app.service.IHouseqmService;
 import com.longfor.longjian.houseqm.app.vo.MyIssueAttachListVo;
 import com.longfor.longjian.houseqm.app.vo.MyIssueListVo;
 import com.longfor.longjian.houseqm.app.vo.MyIssueMemberListVo;
 import com.longfor.longjian.houseqm.app.vo.TaskResponse;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+
+import javax.servlet.http.HttpServletRequest;
 
 /**
  * http://192.168.37.159:3000/project/8/interface/api/344
@@ -31,15 +35,15 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("/v3/api/houseqm/")
 @Slf4j
 public class HouseqmController {
-
+    @Autowired
+    private IHouseqmService houseqmService;
     /**
      * @param deviceReq
      * @return
      */
-    @MockOperation
     @GetMapping(value = "my_issue_log_list", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
-    public TaskResponse<MyIssueListVo> myIssueLogList(DeviceReq deviceReq) {
-        return null;
+    public TaskResponse<MyIssueListVo> myIssueLogList(DeviceReq deviceReq, HttpServletRequest request) {
+        return houseqmService.myIssueLogList(deviceReq,request);
     }
 
 
@@ -47,10 +51,9 @@ public class HouseqmController {
      * @param deviceReq
      * @return
      */
-    @MockOperation
     @GetMapping(value = "my_issue_list", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
-    public TaskResponse<MyIssueListVo> myIssueList(DeviceReq deviceReq) {
-        return null;
+    public TaskResponse<MyIssueListVo> myIssueList(DeviceReq deviceReq,HttpServletRequest request) {
+        return houseqmService.myIssueList(deviceReq,request);
     }
 
 
@@ -58,10 +61,9 @@ public class HouseqmController {
      * @param deviceReq
      * @return
      */
-    @MockOperation
     @GetMapping(value = "issue_members", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     public LjBaseResponse<MyIssueMemberListVo> issueMembers(DeviceReq deviceReq) {
-        return null;
+        return houseqmService.issueMembers(deviceReq);
     }
 
 
@@ -69,9 +71,8 @@ public class HouseqmController {
      * @param deviceReq
      * @return
      */
-    @MockOperation
     @GetMapping(value = "my_issue_attachment_list", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     public LjBaseResponse<MyIssueAttachListVo> myIssueAttachmentList(DeviceReq deviceReq) {
-        return null;
+        return houseqmService.myIssueAttachementList(deviceReq);
     }
 }

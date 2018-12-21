@@ -28,5 +28,18 @@
       and delete_at is null
     </if>
   </select>
-
+  <select id="searchByConditionOrderByPageUnscoped" resultMap="BaseResultMap">
+    select
+    id, task_id, issue_uuid, user_id, role_type, create_at, update_at, delete_at
+    from  house_qm_check_task_issue_user
+    where task_id = #{task_id}
+    and id > #{last_id}
+    <if test="timestamp != null and timestamp >= 0">
+      AND update_at > FROM_UNIXTIME( #{timestamp} )
+    </if>
+    and delete_at is null
+    ORDER BY
+    id ASC
+    limit #{start},#{limit}
+  </select>
 </mapper>
