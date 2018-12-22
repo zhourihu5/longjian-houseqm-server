@@ -5,6 +5,8 @@ import com.longfor.longjian.houseqm.po.HouseQmCheckTaskIssue;
 import com.longfor.longjian.houseqm.po.HouseQmCheckTaskIssueAreaGroupModel;
 import com.longfor.longjian.houseqm.po.IssueRepairCount;
 
+import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.Set;
 
@@ -32,5 +34,7 @@ public interface HouseQmCheckTaskIssueService {
     List<HouseQmCheckTaskIssueAreaGroupModel> selectByTaskId(Integer taskId);
 
     List<IssueRepairCount> selectByProjectIdAndTaskIdAndTyeIn(Integer projectId, Integer taskId, List<Integer> types);
+
+    ArrayList<HouseQmCheckTaskIssue> houseQmCheckTaskIssueByProTaskIdAreaidBegin(Integer projectId, Integer taskId, Integer areaId, Date begin, Date endOns, List<Integer> types);
 
 }

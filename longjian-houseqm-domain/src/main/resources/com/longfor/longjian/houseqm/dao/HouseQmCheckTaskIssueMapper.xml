@@ -41,6 +41,8 @@
         <result column="create_at" property="createAt" jdbcType="TIMESTAMP"/>
         <result column="update_at" property="updateAt" jdbcType="TIMESTAMP"/>
         <result column="delete_at" property="deleteAt" jdbcType="TIMESTAMP"/>
+        <result column="count" property="count" jdbcType="INTEGER"/>
+
     </resultMap>
     <resultMap id="ResultMapWithBLOBs" type="com.longfor.longjian.houseqm.po.HouseQmCheckTaskIssue"
                extends="BaseResultMap">
@@ -245,5 +247,19 @@
             AND delete_at IS NULL
         </if>
     </select>
-
+    <select id="searchhouseQmCheckTaskIssueByProTaskIdAreaidBegin" resultMap="BaseResultMap">
+        SELECT  check_item_key,check_item_path_and_key,category_key,category_path_and_key,count(*)as count
+        from house_qm_check_task_issue
+        WHERE project_id=#{projectId} AND area_path_and_id LIKE concat('%', #{areaId},'%')  AND task_id=#{taskId} AND typ
+        IN
+        <foreach collection="types" item="type" open="(" separator="," close=")" index="index">
+            #{type}
+        </foreach>
+        AND client_create_at &gt;= #{begin} AND
+        client_create_at  &lt;= DATE_ADD(#{endOns},INTERVAL 1 DAY)
+        <if test="deleted =='false'">
+            and delete_at is NULL
+        </if>
+        GROUP BY category_path_and_key,check_item_key
+    </select>
 </mapper>

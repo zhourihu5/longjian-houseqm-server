@@ -1,6 +1,9 @@
 package com.longfor.longjian.houseqm.app.controller;
 
+import com.google.common.collect.Lists;
+import com.longfor.longjian.houseqm.app.vo.HouseqmStatisticTaskCheckitemStatRspMsgVo;
 import com.longfor.longjian.houseqm.app.service.IHouseqmStatisticService;
+import com.longfor.longjian.houseqm.util.DateUtil;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import com.longfor.gaia.gfs.web.mock.MockOperation;
@@ -131,20 +134,43 @@ public class HouseqmStatisticController {
     }
 
     /**
-     * @param projectReq
+     * @param
      * @return
      */
-    @MockOperation
     @GetMapping(value = "task_checkitem_stat", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
-    public LjBaseResponse<ProjectDailyListVo> taskCheckitemStat(ProjectReq projectReq) {
-        return null;
+    public LjBaseResponse<HouseqmStatisticTaskCheckitemStatRspMsgVo> taskCheckitemStat(@RequestParam(value = "project_id") Integer projectId,
+                                                                                       @RequestParam(value = "task_id") Integer taskId,
+                                                                                       @RequestParam(value = "area_id") Integer areaId,
+                                                                                       @RequestParam(value = "begin_on") Integer beginOn,
+                                                                                       @RequestParam(value = "end_on") Integer endOn,
+                                                                                       @RequestParam(value = "timestamp") Integer timestamp) {
+
+        Date begin = DateUtil.transForDate(beginOn);
+        Date endOns = DateUtil.transForDate(endOn);
+        List<HouseQmIssueCategoryStatVo> categoryStatlist = houseqmStatisticService.searchHouseQmIssueCategoryStatByProjTaskIdAreaIdBeginOnEndOn(projectId, taskId, areaId, begin, endOns);
+        HouseqmStatisticTaskCheckitemStatRspMsgVo vo = new HouseqmStatisticTaskCheckitemStatRspMsgVo();
+        List<HouseqmStatisticTaskCheckitemStatRspMsgVo.ApiHouseQmCheckItemIssueStat> issueStatList=Lists.newArrayList();
+        for (int i = 0; i < categoryStatlist.size(); i++) {
+            HouseqmStatisticTaskCheckitemStatRspMsgVo.ApiHouseQmCheckItemIssueStat apiHouseQmCheckItemIssueStat = new HouseqmStatisticTaskCheckitemStatRspMsgVo().new ApiHouseQmCheckItemIssueStat();
+            apiHouseQmCheckItemIssueStat.setName( categoryStatlist.get(i).getName());
+            apiHouseQmCheckItemIssueStat.setKey(categoryStatlist.get(i).getKey());
+            apiHouseQmCheckItemIssueStat.setFatherKey(categoryStatlist.get(i).getParentKey());
+            apiHouseQmCheckItemIssueStat.setIssueCount( categoryStatlist.get(i).getIssueCount());
+            issueStatList.add(apiHouseQmCheckItemIssueStat);
+        }
+        vo.setItems(issueStatList);
+
+        //total
+        LjBaseResponse<HouseqmStatisticTaskCheckitemStatRspMsgVo> ljBaseResponse = new LjBaseResponse();
+        ljBaseResponse.setData(vo);
+
+        return ljBaseResponse;
     }
 
     /**
      * @param
      * @return
      */
-
     @GetMapping(value = "task_issue_repair", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     public LjBaseResponse<TaskRepairStatVo> taskIssueRepair(@RequestParam(value = "project_id") Integer projectId,
                                                             @RequestParam(value = "task_id") Integer taskId,
@@ -152,52 +178,19 @@ public class HouseqmStatisticController {
                                                             @RequestParam(value = "begin_on") Integer beginOn,
                                                             @RequestParam(value = "end_on") Integer endOn,
                                                             @RequestParam(value = "timestamp") Integer timestamp) {
-        Date begin = null;
-        Date endOns = null;
-        if (beginOn > 0) {
-            begin = transForDate(beginOn);
-        }
-        if (endOn > 0) {
-            Date end = transForDate(endOn);
-            endOns = addDate(end, 0, 0, 1);
-        }
+        Date begin = DateUtil.transForDate(beginOn);
+        Date endOns = DateUtil.transForDate(endOn);
         TaskRepairStatVo taskRepairStatVo = houseqmStatisticService.searchIssueRepairStatisticByProjTaskIdAreaIdBeginOnEndOn(projectId, taskId, areaId, begin, endOns);
 
         LjBaseResponse<TaskRepairStatVo> ljbr = new LjBaseResponse<>();
         ljbr.setData(taskRepairStatVo);
         return ljbr;
-    }
 
-    public static Date addDate(Date enOndate, int year, int month, int day) {
-        //获取默认选中的日期的年月日星期的值，并赋值
-        Calendar calendar = Calendar.getInstance();//日历对象
-        calendar.setTime(enOndate);//设置当前日期
-        //处理后的日期
-        calendar.add(calendar.get(Calendar.YEAR), year);
-        calendar.add(calendar.get(Calendar.MONTH), month);
-        calendar.add(calendar.get(Calendar.DATE), day);
-        return calendar.getTime();
     }
 
 
-    // 时间戳转日期
-    public static Date transForDate(Integer ms) {
-        if (ms == null) {
-            ms = 0;
-        }
-        long msl = (long) ms * 1000;
-        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-        Date temp = null;
-        if (ms != null) {
-            try {
-                String str = sdf.format(msl);
-                temp = sdf.parse(str);
-            } catch (ParseException e) {
-                e.printStackTrace();
-            }
-        }
-        return temp;
-    }
+
+
 
 
     /**

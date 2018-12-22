@@ -8,9 +8,12 @@ import com.longfor.longjian.houseqm.po.HouseQmCheckTaskIssue;
 import com.longfor.longjian.houseqm.po.HouseQmCheckTaskIssueAreaGroupModel;
 import com.longfor.longjian.houseqm.po.IssueRepairCount;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.ibatis.annotations.Param;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
+import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.Set;
 
@@ -163,6 +166,12 @@ public class HouseQmCheckTaskIssueServiceImpl implements HouseQmCheckTaskIssueSe
     @LFAssignDataSource("zhijian2")
     public List<IssueRepairCount> selectByProjectIdAndTaskIdAndTyeIn(Integer projectId, Integer taskId, List<Integer> types){
         return houseQmCheckTaskIssueMapper.selectByProjectIdAndTaskIdAndTypeIn(projectId,taskId ,types,"false");
+    }
+
+    @Override
+    @LFAssignDataSource("zhijian2")
+    public ArrayList<HouseQmCheckTaskIssue> houseQmCheckTaskIssueByProTaskIdAreaidBegin(Integer projectId, Integer taskId, Integer areaId, Date begin, Date endOns, List<Integer> types) {
+        return houseQmCheckTaskIssueMapper.searchhouseQmCheckTaskIssueByProTaskIdAreaidBegin(projectId,  taskId,  areaId,  begin,  endOns,  types,"false");
     }
 
 }
