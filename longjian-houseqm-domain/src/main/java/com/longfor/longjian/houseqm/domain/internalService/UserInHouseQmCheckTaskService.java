@@ -12,4 +12,6 @@ public interface UserInHouseQmCheckTaskService {
 
     List<UserInHouseQmCheckTask> selectByTaskIdsEvenDeleted(Set<Integer> taskIdList);
 
+    List<UserInHouseQmCheckTask> searchByTaskIdAndNoDeleted(Integer taskId);
+
 }

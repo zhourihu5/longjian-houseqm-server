@@ -16,4 +16,16 @@ public interface HouseQmCheckTaskIssueLogMapper extends LFMySQLMapper<HouseQmChe
      * @return
      */
     public List<HouseQmCheckTaskIssueLog> selectByIssueUuid(@Param("issueUuids") Set<String> issueUuids,@Param("deleted") String deleted);
+
+    /**
+     *
+     * @param userIds
+     * @param task_id
+     * @param last_id
+     * @param timestamp
+     * @param start
+     * @param limit
+     * @return
+     */
+    List<HouseQmCheckTaskIssueLog> searchHouseQmCheckTaskIssueLogByMyIdTaskIdLastIdUpdateAtGt(@Param("userId") Integer userId,@Param("userIds")List<Integer> userIds,@Param("task_id") Integer task_id, @Param("last_id")Integer last_id, @Param("timestamp")Integer timestamp, @Param("start")Integer start, @Param("limit")Integer limit);
 }

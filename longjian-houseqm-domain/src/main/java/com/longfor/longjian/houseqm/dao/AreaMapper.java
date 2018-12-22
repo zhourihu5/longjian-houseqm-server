@@ -46,4 +46,15 @@ public interface AreaMapper extends LFMySQLMapper<Area> {
     List<Area> selectByAreaIds(@Param(value = "idList") List<Integer> integers);
 
     List<Area> selectByFatherId(@Param(value="projectId")Integer prodectId, @Param(value="fatherId")int i);
+
+    /**
+     *
+     * @author hy
+     * @date 2018/12/21 0021
+     * @param areaPaths
+     * @param deleted
+     * @return java.util.List<com.longfor.longjian.houseqm.po.Area>
+     */
+    List<Area> selectAreaByIdInAndNoDeleted(@Param("areaPaths") List<Integer> areaPaths,@Param("deleted") String deleted);
+
 }

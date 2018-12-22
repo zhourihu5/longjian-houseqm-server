@@ -42,9 +42,11 @@ public class HouseQmCheckTaskServiceImpl implements HouseQmCheckTaskService {
      * @param taskIds
      * @return
      */
+    @LFAssignDataSource("zhijian2")
     public List<HouseQmCheckTask> selectByTaskIdsEvenDeleted(Set<Integer> taskIds){
         return houseQmCheckTaskMapper.selectByTaskIds(taskIds,"true");
     }
+
     @LFAssignDataSource("zhijian2")
     public List<HouseQmCheckTask> selectByProjectIdAndCategoryCls(Integer projectId, Integer categoryCls) {
         return houseQmCheckTaskMapper.selectByProjectIdAndCategoryCls(projectId, categoryCls, "false");
@@ -79,6 +81,12 @@ public class HouseQmCheckTaskServiceImpl implements HouseQmCheckTaskService {
     @LFAssignDataSource("zhijian2")
     public List<HouseQmCheckTask> searchByProjectIdAndCategoryClsIn(Integer projectId,List<Integer> categoryCls){
         return houseQmCheckTaskMapper.selectByProjectIdAndCategoryClsIn(projectId,categoryCls);
+    }
+
+    @Override
+    @LFAssignDataSource("zhijian2")
+    public HouseQmCheckTask selectAreaIdsByProjectIdAndTaskIdAndNoDeleted(Integer projectId, Integer taskId) {
+        return houseQmCheckTaskMapper.selectAreaIdsByProjectIdAndTaskIdAndNoDeleted(projectId,taskId,"false");
     }
 
 }

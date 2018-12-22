@@ -14,8 +14,10 @@ public interface HouseQmCheckTaskService {
 
     List<HouseQmCheckTask> selectByProjectIdAndCategoryClsAndStatus(HouseQmCheckTask houseQmCheckTask);
 
-    HouseQmCheckTask selectByProjectIdAndTaskId(Integer projectId,Integer taskId);
+    HouseQmCheckTask selectByProjectIdAndTaskId(Integer projectId, Integer taskId);
 
-    List<HouseQmCheckTask> searchByProjectIdAndCategoryClsIn(Integer projectId,List<Integer> categoryCls);
+    List<HouseQmCheckTask> searchByProjectIdAndCategoryClsIn(Integer projectId, List<Integer> categoryCls);
+
+    HouseQmCheckTask selectAreaIdsByProjectIdAndTaskIdAndNoDeleted(Integer projectId, Integer taskId);
 
 }

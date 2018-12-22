@@ -39,4 +39,10 @@ public class UserServiceImpl implements UserService {
         return map;
     }
 
+    @Override
+    @LFAssignDataSource("zhijian2_apisvr")
+    public List<User> searchByUserIdInAndNoDeleted(List<Integer> userIds) {
+        return userMapper.selectByUserIdInAndNoDeleted(userIds,"false");
+    }
+
 }

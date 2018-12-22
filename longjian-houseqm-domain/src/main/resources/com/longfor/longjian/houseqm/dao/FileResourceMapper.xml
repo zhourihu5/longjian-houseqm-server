@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.longfor.longjian.houseqm.dao.FileResourceMapper">
+    <resultMap id="BaseResultMap" type="com.longfor.longjian.houseqm.po.FileResource">
+        <!--
+          WARNING - @mbg.generated
+        -->
+        <id column="id" property="id" jdbcType="INTEGER"/>
+        <result column="mime_type" property="mimeType" jdbcType="VARCHAR"/>
+        <result column="file_name" property="fileName" jdbcType="VARCHAR"/>
+        <result column="file_ext" property="fileExt" jdbcType="VARCHAR"/>
+        <result column="file_size" property="fileSize" jdbcType="INTEGER"/>
+        <result column="file_md5" property="fileMd5" jdbcType="VARCHAR"/>
+        <result column="desc" property="desc" jdbcType="VARCHAR"/>
+        <result column="store_key" property="storeKey" jdbcType="VARCHAR"/>
+        <result column="sender_id" property="senderId" jdbcType="INTEGER"/>
+        <result column="create_at" property="createAt" jdbcType="TIMESTAMP"/>
+        <result column="update_at" property="updateAt" jdbcType="TIMESTAMP"/>
+        <result column="delete_at" property="deleteAt" jdbcType="TIMESTAMP"/>
+        <result column="project_id" property="projectId" jdbcType="INTEGER"/>
+        <result column="typ" property="typ" jdbcType="INTEGER"/>
+    </resultMap>
+    <sql id="Base_Column_List">
+        <!--
+          WARNING - @mbg.generated
+        -->
+        id, mime_type, file_name, file_ext, file_size, file_md5, `desc`, store_key, sender_id,
+        create_at, update_at, delete_at, project_id, typ
+    </sql>
+
+    <select id="selectFileResourceByFileMd5InAndNoDeleted" resultMap="BaseResultMap">
+        SELECT
+        <include refid="Base_Column_List"/>
+        FROM file_resource WHERE file_md5 IN
+        <foreach collection="attachments" item="item" index="index" open="(" separator="," close=")">
+            #{item}
+        </foreach>
+        <if test="deleted=='false'">
+            AND delete_at IS NULL
+        </if>
+    </select>
+
+</mapper>

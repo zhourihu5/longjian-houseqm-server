@@ -1,38 +1,54 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
-<mapper namespace="com.longfor.longjian.houseqm.dao.UserMapper" >
-  <resultMap id="BaseResultMap" type="com.longfor.longjian.houseqm.po.User" >
-    <!--
-      WARNING - @mbg.generated
-    -->
-    <id column="user_id" property="userId" jdbcType="INTEGER" />
-    <result column="group_code" property="groupCode" jdbcType="VARCHAR" />
-    <result column="user_name" property="userName" jdbcType="VARCHAR" />
-    <result column="password" property="password" jdbcType="VARCHAR" />
-    <result column="group_id" property="groupId" jdbcType="INTEGER" />
-    <result column="mobile" property="mobile" jdbcType="VARCHAR" />
-    <result column="email" property="email" jdbcType="VARCHAR" />
-    <result column="real_name" property="realName" jdbcType="VARCHAR" />
-    <result column="status" property="status" jdbcType="INTEGER" />
-    <result column="reg_time" property="regTime" jdbcType="INTEGER" />
-    <result column="last_login_time" property="lastLoginTime" jdbcType="INTEGER" />
-    <result column="last_login_ip" property="lastLoginIp" jdbcType="VARCHAR" />
-    <result column="create_at" property="createAt" jdbcType="TIMESTAMP" />
-    <result column="update_at" property="updateAt" jdbcType="TIMESTAMP" />
-    <result column="delete_at" property="deleteAt" jdbcType="TIMESTAMP" />
-  </resultMap>
-  <sql id="Base_Column_List" >
-    <!--
-      WARNING - @mbg.generated
-    -->
-    user_id, group_code, user_name, password, group_id, mobile, email, real_name, status, 
-    reg_time, last_login_time, last_login_ip, create_at, update_at, delete_at
-  </sql>
-  <select id="selectByUserIds" resultMap="BaseResultMap">
-    SELECT <include refid="Base_Column_List" /> from user
-    WHERE user_id in
-    <foreach collection="users" index="index" item="userId" open="(" separator="," close=")">
-      #{userId}
-    </foreach>
-  </select>
+<mapper namespace="com.longfor.longjian.houseqm.dao.UserMapper">
+    <resultMap id="BaseResultMap" type="com.longfor.longjian.houseqm.po.User">
+        <!--
+          WARNING - @mbg.generated
+        -->
+        <id column="user_id" property="userId" jdbcType="INTEGER"/>
+        <result column="group_code" property="groupCode" jdbcType="VARCHAR"/>
+        <result column="user_name" property="userName" jdbcType="VARCHAR"/>
+        <result column="password" property="password" jdbcType="VARCHAR"/>
+        <result column="group_id" property="groupId" jdbcType="INTEGER"/>
+        <result column="mobile" property="mobile" jdbcType="VARCHAR"/>
+        <result column="email" property="email" jdbcType="VARCHAR"/>
+        <result column="real_name" property="realName" jdbcType="VARCHAR"/>
+        <result column="status" property="status" jdbcType="INTEGER"/>
+        <result column="reg_time" property="regTime" jdbcType="INTEGER"/>
+        <result column="last_login_time" property="lastLoginTime" jdbcType="INTEGER"/>
+        <result column="last_login_ip" property="lastLoginIp" jdbcType="VARCHAR"/>
+        <result column="create_at" property="createAt" jdbcType="TIMESTAMP"/>
+        <result column="update_at" property="updateAt" jdbcType="TIMESTAMP"/>
+        <result column="delete_at" property="deleteAt" jdbcType="TIMESTAMP"/>
+    </resultMap>
+    <sql id="Base_Column_List">
+        <!--
+          WARNING - @mbg.generated
+        -->
+        user_id, group_code, user_name, password, group_id, mobile, email, real_name, status,
+        reg_time, last_login_time, last_login_ip, create_at, update_at, delete_at
+    </sql>
+    <select id="selectByUserIds" resultMap="BaseResultMap">
+        SELECT
+        <include refid="Base_Column_List"/>
+        from user
+        WHERE user_id in
+        <foreach collection="users" index="index" item="userId" open="(" separator="," close=")">
+            #{userId}
+        </foreach>
+    </select>
+
+    <select id="selectByUserIdInAndNoDeleted" resultMap="BaseResultMap">
+        SELECT
+        <include refid="Base_Column_List"/>
+        FROM user
+        WHERE user_id in
+        <foreach collection="userIds" item="userId" index="index" open="(" separator="," close=")">
+            #{userId}
+        </foreach>
+        <if test="deleted=='false'">
+            AND delete_at IS NULL
+        </if>
+
+    </select>
 </mapper>

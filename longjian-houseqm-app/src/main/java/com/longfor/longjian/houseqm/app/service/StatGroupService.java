@@ -28,8 +28,8 @@ import java.util.Map;
 @Service
 public class StatGroupService {
 
-    @Resource
-    private StatGroupSchema statGroupSchema;
+//    @Resource
+//    private StatGroupSchema statGroupSchema;
 
     @Resource
     private CachingPreparsedDocumentProvider cachingPreparsedDocumentProvider;

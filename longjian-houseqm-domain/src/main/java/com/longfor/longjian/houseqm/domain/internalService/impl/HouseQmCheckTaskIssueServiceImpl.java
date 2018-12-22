@@ -3,10 +3,7 @@ package com.longfor.longjian.houseqm.domain.internalService.impl;
 import com.longfor.gaia.gfs.data.mybatis.datasource.LFAssignDataSource;
 import com.longfor.longjian.houseqm.dao.HouseQmCheckTaskIssueMapper;
 import com.longfor.longjian.houseqm.domain.internalService.HouseQmCheckTaskIssueService;
-import com.longfor.longjian.houseqm.po.CheckerIssueStat;
-import com.longfor.longjian.houseqm.po.HouseQmCheckTaskIssue;
-import com.longfor.longjian.houseqm.po.HouseQmCheckTaskIssueAreaGroupModel;
-import com.longfor.longjian.houseqm.po.IssueRepairCount;
+import com.longfor.longjian.houseqm.po.*;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.ibatis.annotations.Param;
 import org.springframework.stereotype.Service;
@@ -14,7 +11,9 @@ import org.springframework.stereotype.Service;
 import javax.annotation.Resource;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 /**
@@ -27,7 +26,15 @@ import java.util.Set;
 public class HouseQmCheckTaskIssueServiceImpl implements HouseQmCheckTaskIssueService {
     @Resource
     HouseQmCheckTaskIssueMapper houseQmCheckTaskIssueMapper;
+    @Resource
+    private UserInHouseQmCheckTaskMapper userInHouseQmCheckTaskMapper;
+    @Resource
+    private HouseQmCheckTaskIssueUserMapper houseQmCheckTaskIssueUserMapper;
 
+    @Resource
+    private HouseQmCheckTaskSquadMapper houseQmCheckTaskSquadMapper;
+    @Resource
+    private HouseQmCheckTaskIssueAttachmentMapper houseQmCheckTaskIssueAttachmentMapper;
     /**
      * 根据问题uuid 客户端创建时间 查 取 未删除的数据
      * @param issueUuids
@@ -156,16 +163,121 @@ public class HouseQmCheckTaskIssueServiceImpl implements HouseQmCheckTaskIssueSe
         return houseQmCheckTaskIssueMapper.selectByTaskId(taskId, "false");
     }
 
+    @Override
+    @LFAssignDataSource("zhijian2")
+    public List<HouseQmCheckTaskIssue> searchHouseQmCheckTaskIssueByTaskIdUuidIn(Integer task_id, List<String> uuids) {
+        return houseQmCheckTaskIssueMapper.searchHouseQmCheckTaskIssueByTaskIdUuidIn(task_id, uuids);
+    }
+
+    @Override
+    @LFAssignDataSource("zhijian2")
+    public List<HouseQmCheckTaskIssue> searchHouseQmCheckTaskIssueByMyIdTaskIdLastIdUpdateAtGt(Integer userId, Integer task_id, Integer last_id, Integer timestamp, Integer start, Integer limit, Integer checker) {
+        List<HouseQmCheckTaskIssue> houseQmCheckTaskIssues = new ArrayList<>();
+        try {
+            List<UserInHouseQmCheckTask> userInHouseQmCheckTasks = userInHouseQmCheckTaskMapper.searchByTaskIdUserIdRoleType(userId, task_id, checker);
+            List<Integer> squadIds = new ArrayList<>();
+            List<Integer> userIds = new ArrayList<>();
+            userInHouseQmCheckTasks.forEach(userInHouseQmCheckTask -> {
+                squadIds.add(userInHouseQmCheckTask.getSquadId());
+            });
+            List<UserInHouseQmCheckTask> userInHouseQmCheckTaskSearchSquadIdsList = userInHouseQmCheckTaskMapper.searchBySquadIdIn(squadIds);
+            userInHouseQmCheckTaskSearchSquadIdsList.forEach(userInHouseQmCheckTask -> {
+                userIds.add(userInHouseQmCheckTask.getUserId());
+            });
+            if (userIds.size() == 0) {
+                userIds.add(userId);
+            }
+            userIds.add(userId);
+            houseQmCheckTaskIssues = houseQmCheckTaskIssueMapper.searchByConditionOrderByPageUnscoped(task_id, last_id, timestamp, userIds, userId, start, limit);
+        } catch (Exception e) {
+            log.error("error" + e);
+        }
+
+        return houseQmCheckTaskIssues;
+    }
+
+    @Override
+    @LFAssignDataSource("zhijian2")
+    public List<HouseQmCheckTaskIssueUser> searchHouseQmCheckTaskIssueUserByTaskIdLastIdUpdateAtGt(Integer task_id, Integer last_id, Integer timestamp, Integer start, Integer limit) {
+        try {
+            List<HouseQmCheckTaskIssueUser> houseQmCheckTaskIssueUsers = houseQmCheckTaskIssueUserMapper.searchByConditionOrderByPageUnscoped(task_id, last_id, timestamp, start, limit);
+            return houseQmCheckTaskIssueUsers;
+        } catch (Exception e) {
+            log.error("error:" + e);
+        }
+        return null;
+    }
+
+    @Override
+    @LFAssignDataSource("zhijian2")
+    public List<HouseQmCheckTaskIssueAttachment> searchHouseQmCheckTaskIssueAttachmentByMyIdTaskIdLastIdUpdateAtGt(Integer userId, Integer task_id, Integer last_id, Integer timestamp, Integer start, Integer limit,Integer privateInt,Integer publicInt ) {
+        try {
+            List<UserInHouseQmCheckTask> userInHouseQmCheckTasks = userInHouseQmCheckTaskMapper.searchByCondition(task_id, userId);
+            List<Integer> squadIds = new ArrayList<>();
+            userInHouseQmCheckTasks.forEach(userInHouseQmCheckTask -> {
+                if (userInHouseQmCheckTask.getSquadId() != null) {
+                    squadIds.add(userInHouseQmCheckTask.getSquadId());
+                }
+            });
+            List<HouseQmCheckTaskSquad> houseQmCheckTaskSquads = null;
+            List<Integer> existsSquadIds = new ArrayList<>();
+            if (squadIds.size() > 0) {
+                //找出所有组的，确保其有效
+                houseQmCheckTaskSquads = houseQmCheckTaskSquadMapper.searchByInId(squadIds);
+                houseQmCheckTaskSquads.forEach(houseQmCheckTaskSquad -> {
+                    existsSquadIds.add(houseQmCheckTaskSquad.getId());
+                });
+            }
+            //再根据组ID获取相关的组用户信息
+            List<UserInHouseQmCheckTask> userInHouseQmCheckTaskSquadIdInList = userInHouseQmCheckTaskMapper.searchByTaskIdSquadIdIn(task_id, existsSquadIds);
+            List<Integer> userIds = new ArrayList<>();
+            userInHouseQmCheckTaskSquadIdInList.forEach(userInHouseQmCheckTask -> {
+                userIds.add(userInHouseQmCheckTask.getUserId());
+            });
+            List<HouseQmCheckTaskIssueAttachment> houseQmCheckTaskIssueAttachments=houseQmCheckTaskIssueAttachmentMapper.searchByConditionOrderByPageUnscoped(task_id,userId,timestamp,userIds,privateInt,publicInt,start,limit);
+            return  houseQmCheckTaskIssueAttachments;
+        } catch (Exception e) {
+            log.error("error:" + e);
+        }
+        return null;
+    }
+
     /**
      *
-     * @param projectId
-     * @param taskId
-     * @param types
-     * @return
+     * @author hy
+     * @date 2018/12/21 0021
+     *  * @param map
+     * @return java.lang.Integer
      */
+    @Override
     @LFAssignDataSource("zhijian2")
-    public List<IssueRepairCount> selectByProjectIdAndTaskIdAndTyeIn(Integer projectId, Integer taskId, List<Integer> types){
-        return houseQmCheckTaskIssueMapper.selectByProjectIdAndTaskIdAndTypeIn(projectId,taskId ,types,"false");
+    public Integer searchTotalByProjectIdAndCategoryClsAndNoDeletedAndDongTai(Map<String, Object> map) {
+        return houseQmCheckTaskIssueMapper.selectTotalByProjectIdAndCategoryClsAndNoDeletedAndDongTai(map);
+    }
+
+    /**
+     *
+     * @author hy
+     * @date 2018/12/21 0021
+     *  * @param map
+     * @return java.util.List<com.longfor.longjian.houseqm.po.HouseQmCheckTaskIssue>
+     */
+    @Override
+    @LFAssignDataSource("zhijian2")
+    public List<HouseQmCheckTaskIssue> searchByPageAndProjectIdAndCategoryClsAndNoDeletedAndDongTai(Map<String, Object> map) {
+        return houseQmCheckTaskIssueMapper.selectHouseQmCheckTaskIssueByPageAndProjectIdAndCategoryClsAndNoDeletedAndDongTai(map);
+    }
+
+    @Override
+    @LFAssignDataSource("zhijian2")
+    public List<HouseQmCheckTaskIssue> selectAreaIdByProjectIdAndTaskIdAndAreaIdInAndNoDeleted(Integer projectId, Integer taskId, List<Integer> areaIds) {
+        return houseQmCheckTaskIssueMapper.selectAreaIdByProjectIdAndTaskIdAndAreaIdInAndNoDeleted(projectId,taskId,areaIds,"false");
+    }
+
+    @Override
+    @LFAssignDataSource("zhijian2")
+    public List<IssueRepairCount> selectByProjectIdAndTaskIdAndTyeInAndDongTai(Map<String, Object> map) {
+        return houseQmCheckTaskIssueMapper.selectByProjectIdAndTaskIdAndTyeInAndDongTai(map);
     }
 
     @Override

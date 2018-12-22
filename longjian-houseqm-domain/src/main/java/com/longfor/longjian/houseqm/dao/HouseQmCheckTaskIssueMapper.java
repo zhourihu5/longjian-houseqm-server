@@ -10,6 +10,7 @@ import org.apache.ibatis.annotations.Param;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 public interface HouseQmCheckTaskIssueMapper extends LFMySQLMapper<HouseQmCheckTaskIssue> {
@@ -113,13 +114,57 @@ public interface HouseQmCheckTaskIssueMapper extends LFMySQLMapper<HouseQmCheckT
 
     /**
      *
+     * @param map
+     * @return
+     */
+    List<IssueRepairCount> selectByProjectIdAndTaskIdAndTyeInAndDongTai(Map<String,Object> map);
+
+    /**
+     *
+     * @param task_id
+     * @param uuids
+     * @return
+     */
+    List<HouseQmCheckTaskIssue> searchHouseQmCheckTaskIssueByTaskIdUuidIn(@Param("task_id") Integer task_id,@Param("uuids") List<String> uuids);
+
+    /**
+     *
+     * @param task_id
+     * @param last_id
+     * @param timestamp
+     * @param userIds
+     * @param userId
+     * @return
+     */
+    List<HouseQmCheckTaskIssue> searchByConditionOrderByPageUnscoped(@Param("task_id")Integer task_id, @Param("last_id")Integer last_id, @Param("timestamp")Integer timestamp,@Param("userIds") List<Integer> userIds, @Param("userId") Integer userId,@Param("start")Integer start,@Param("limit")Integer limit);
+
+    /**
+     *
      * @param projectId
      * @param taskId
-     * @param types
+     * @param areaIds
      * @param deleted
      * @return
      */
-    List<IssueRepairCount> selectByProjectIdAndTaskIdAndTypeIn(@Param("projectId") Integer projectId, @Param("taskId") Integer taskId, @Param("types") List<Integer> types,@Param("deleted") String deleted);
+    List<HouseQmCheckTaskIssue> selectAreaIdByProjectIdAndTaskIdAndAreaIdInAndNoDeleted(@Param("projectId") Integer projectId,@Param("taskId") Integer taskId, @Param("areaIds") List<Integer> areaIds,@Param("deleted") String deleted);
+
+    /**
+     *
+     * @author hy
+     * @date 2018/12/21 0021
+     * @param map
+     * @return java.lang.Integer
+     */
+    Integer selectTotalByProjectIdAndCategoryClsAndNoDeletedAndDongTai(Map<String,Object> map);
+
+    /**
+     *
+     * @author hy
+     * @date 2018/12/21 0021
+     * @param map
+     * @return java.util.List<com.longfor.longjian.houseqm.po.HouseQmCheckTaskIssue>
+     */
+    List<HouseQmCheckTaskIssue> selectHouseQmCheckTaskIssueByPageAndProjectIdAndCategoryClsAndNoDeletedAndDongTai(Map<String,Object> map);
 
     ArrayList<HouseQmCheckTaskIssue> searchhouseQmCheckTaskIssueByProTaskIdAreaidBegin(@Param("projectId")Integer projectId,  @Param("taskId")Integer taskId,@Param("areaId") Integer areaId, @Param("begin")Date begin, @Param("endOns")Date endOns,  @Param("types") List<Integer> types,@Param("deleted") String deleted);
 }

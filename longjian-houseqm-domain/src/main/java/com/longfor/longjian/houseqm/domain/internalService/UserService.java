@@ -7,4 +7,8 @@ import java.util.Map;
 
 public interface UserService {
     Map<Integer, User> selectByIds(List<Integer> users);
+
+    List<User> searchByUserIdInAndNoDeleted(List<Integer> userIds);
+
+
 }

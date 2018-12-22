@@ -100,4 +100,16 @@
             and father_id=#{fatherId}
         </if>
     </select>
+    <select id="selectAreaByIdInAndNoDeleted" resultMap="ResultMapWithBLOBs">
+        SELECT<include refid="Base_Column_List"/>,
+        <include refid="Blob_Column_List"/>
+        FROM area WHERE id IN
+        <foreach collection="areaPaths" item="item" index="index" open="(" separator="," close=")">
+            #{item}
+        </foreach>
+        <if test="deleted=='false'">
+            AND delete_at IS NULL
+        </if>
+    </select>
+
 </mapper>
