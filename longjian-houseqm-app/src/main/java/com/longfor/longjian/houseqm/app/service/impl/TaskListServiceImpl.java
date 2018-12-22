@@ -57,14 +57,13 @@ public class TaskListServiceImpl implements ITaskListService {
     UserService userService;
 
     /**
-     *
      * @param teamId
      * @param projectId
      * @param categoryCls
      * @param status
      * @return
      */
-    public TaskList2Vo list(int teamId,int projectId,int categoryCls,int status){
+    public TaskList2Vo list(int teamId, int projectId, int categoryCls, int status) {
         TaskList2Vo taskListVo = new TaskList2Vo();
         List<ApiBuildingQmCheckTaskMsg> list = Lists.newArrayList();
         HouseQmCheckTask houseQmCheckTask = new HouseQmCheckTask();
@@ -72,7 +71,7 @@ public class TaskListServiceImpl implements ITaskListService {
         houseQmCheckTask.setCategoryCls(categoryCls);
         houseQmCheckTask.setStatus(status);
         List<HouseQmCheckTask> houseQmCheckTasks = houseQmCheckTaskService.selectByProjectIdAndCategoryClsAndStatus(houseQmCheckTask);
-        if (houseQmCheckTasks.isEmpty()){
+        if (houseQmCheckTasks.isEmpty()) {
             return taskListVo;
         }
         Set<Integer> taskIds = Sets.newHashSet();
@@ -101,7 +100,7 @@ public class TaskListServiceImpl implements ITaskListService {
             task.setArea_ids(checkTask.getAreaIds());
             task.setArea_types(checkTask.getAreaTypes());
 
-            if (taskMap.containsKey(task.getTask_id())){
+            if (taskMap.containsKey(task.getTask_id())) {
                 ApiBuildingQmCheckTaskConfig cfg = taskMap.get(task.getTask_id());
                 task.setRepairer_refund_permission(cfg.getRepairer_refund_permission());
                 task.setRepairer_follower_permission(cfg.getRepairer_follower_permission());
@@ -109,7 +108,7 @@ public class TaskListServiceImpl implements ITaskListService {
                 task.setRepaired_picture_status(cfg.getRepaired_picture_status());
                 task.setIssue_desc_status(cfg.getIssue_desc_status());
                 task.setIssue_default_desc(cfg.getIssue_default_desc());
-            }else {
+            } else {
                 task.setRepairer_refund_permission(CheckTaskRepairerRefundPermission.No.getValue());
                 task.setRepairer_follower_permission(CheckTaskRepairerFollowerPermission.CompleteRepair.getValue());
                 task.setChecker_approve_permission(CheckerApprovePermission.No.getValue());
@@ -124,11 +123,11 @@ public class TaskListServiceImpl implements ITaskListService {
             task.setDelete_at(DateUtil.datetimeToTimeStamp(checkTask.getDeleteAt()));
 
             HashMap<String, Map> pushStrategy = Maps.newHashMap();
-            if (assignTimeMap.containsKey(task.getTask_id())){
+            if (assignTimeMap.containsKey(task.getTask_id())) {
                 HashMap<String, Object> assignTime = Maps.newHashMap();
                 String pushTime = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(assignTimeMap.get(task.getTask_id()).getPushTime());
                 assignTime.put("push_time", pushTime);
-                assignTime.put("user_ids",assignTimeMap.get(task.getTask_id()).getUserIds());
+                assignTime.put("user_ids", assignTimeMap.get(task.getTask_id()).getUserIds());
                 pushStrategy.put("assign_time", assignTime);
             }
             if (categoryOverdueMap.containsKey(task.getTask_id())) {
@@ -138,7 +137,7 @@ public class TaskListServiceImpl implements ITaskListService {
                 pushStrategy.put("category_overdue", categoryOverdue);
             }
 
-            if (categoryThresholdMap.containsKey(task.getTask_id())){
+            if (categoryThresholdMap.containsKey(task.getTask_id())) {
                 HashMap<Object, Object> categoryThreshold = Maps.newHashMap();
                 categoryThreshold.put("category_keys", categoryThresholdMap.get(task.getTask_id()).getCategoryKeys());
                 categoryThreshold.put("user_ids", categoryThresholdMap.get(task.getTask_id()).getUserIds());
@@ -148,8 +147,8 @@ public class TaskListServiceImpl implements ITaskListService {
             String pushStrategyStr = JSONObject.toJSONString(pushStrategy);
             task.setPush_strategy_config(pushStrategyStr);
             //判断输出问题配置信息是否为null
-            if (exportIssueConfig!=null){
-                String url=exportIssueConfig+"?project_id="+projectId+"&task_id="+task.getTask_id();
+            if (exportIssueConfig != null) {
+                String url = exportIssueConfig + "?project_id=" + projectId + "&task_id=" + task.getTask_id();
                 task.getExtra_ops().setExport_issue(url);
             }
 
@@ -162,7 +161,7 @@ public class TaskListServiceImpl implements ITaskListService {
 
     @Override
     public TaskRoleListVo taskRole(Integer taskId) {
-        List<UserInHouseQmCheckTask>  userList=userInHouseQmCheckTaskService.searchByTaskIdAndNoDeleted(taskId);
+        List<UserInHouseQmCheckTask> userList = userInHouseQmCheckTaskService.searchByTaskIdAndNoDeleted(taskId);
         List<Integer> userIds = Lists.newArrayList();
         for (UserInHouseQmCheckTask user : userList) {
             userIds.add(user.getUserId());
@@ -180,7 +179,7 @@ public class TaskListServiceImpl implements ITaskListService {
             item.setCan_reassign(user.getCanReassign());
             item.setTask_id(user.getTaskId());
             item.setSquad_id(user.getSquadId());
-            if (userMap.containsKey( user.getUserId())){
+            if (userMap.containsKey(user.getUserId())) {
                 item.setReal_name(userMap.get(user.getUserId()).getRealName());
             }
             list.add(item);
@@ -190,12 +189,11 @@ public class TaskListServiceImpl implements ITaskListService {
     }
 
     /**
-     *
      * @param userIds
      * @return
      */
-    private Map<Integer, User> creatUsersMap(List<Integer> userIds){
-        List<User> userList=userService.searchByUserIdInAndNoDeleted(userIds);
+    private Map<Integer, User> creatUsersMap(List<Integer> userIds) {
+        List<User> userList = userService.searchByUserIdInAndNoDeleted(userIds);
         HashMap<Integer, User> userDict = Maps.newHashMap();
         for (User user : userList) {
             userDict.put(user.getUserId(), user);
@@ -204,16 +202,15 @@ public class TaskListServiceImpl implements ITaskListService {
     }
 
     /**
-     *
      * @param taskIds
      * @return
      */
-    private Map<Integer, ApiBuildingQmCheckTaskConfig> creatTaskMap(Set<Integer> taskIds){
+    private Map<Integer, ApiBuildingQmCheckTaskConfig> creatTaskMap(Set<Integer> taskIds) {
         HashMap<Integer, ApiBuildingQmCheckTaskConfig> taskMap = Maps.newHashMap();
         List<HouseQmCheckTask> taskList = houseQmCheckTaskService.selectByTaskIds(taskIds);
         for (HouseQmCheckTask task : taskList) {
             ApiBuildingQmCheckTaskConfig item = new ApiBuildingQmCheckTaskConfig();
-            if (task.getConfigInfo()==null){
+            if (task.getConfigInfo() == null) {
                 item.setRepairer_refund_permission(CheckTaskRepairerRefundPermission.No.getValue());
                 item.setRepairer_follower_permission(CheckTaskRepairerFollowerPermission.CompleteRepair.getValue());
                 item.setChecker_approve_permission(CheckerApprovePermission.No.getValue());
@@ -221,7 +218,7 @@ public class TaskListServiceImpl implements ITaskListService {
                 item.setIssue_desc_status(CheckTaskIssueDescEnum.Arbitrary.getValue());
                 item.setIssue_default_desc("(该问题无文字描述)");
                 taskMap.put(task.getTaskId(), item);
-            }else {
+            } else {
                 JSONObject configData = JSON.parseObject(task.getConfigInfo());
                 item.setRepairer_refund_permission(configData.getIntValue("repairer_refund_permission"));
                 item.setRepairer_follower_permission(configData.getIntValue("repairer_follower_permission"));
@@ -236,73 +233,58 @@ public class TaskListServiceImpl implements ITaskListService {
     }
 
     /**
-     *
      * @param teamId
      * @return
      */
-    private Team getTopTeam(int teamId){
-        Team team=null;
-        for (int i=0;i<15;i++){
-            team= teamService.selectByTeamId(teamId);
-            if(team==null||team.getParentTeamId()==0){
+    private Team getTopTeam(int teamId) {
+        Team team = null;
+        for (int i = 0; i < 15; i++) {
+            team = teamService.selectByTeamId(teamId);
+            if (team == null || team.getParentTeamId() == 0) {
                 break;
             }
-            teamId=team.getParentTeamId();
+            teamId = team.getParentTeamId();
         }
         return team;
     }
 
-    @Value("spe.team_group_100194.export_issue")
+    @Value("${spe.team_group_100194.export_issue}")
     String svrCfg;
+
+    @Value("team_group_100194")
+    String teamGrop;
     /**
-     * 
      * @param teamId
      * @return
      */
-    private String getExportIssueConfig(int teamId){
-        String export_issue=null;
+    private String getExportIssueConfig(int teamId) {
         //读取生成配置的auto.yaml
-        HashMap<String, String> map = Maps.newHashMap();
-        map.put("export_issue", "/v3stat/spec/qingshui/export_issue/");
-        Map<String, Map<String,String>> svrCfg = Maps.newHashMap();
-        svrCfg.put("team_group_100194",map);
-        Map<String, String> teamGroup = svrCfg.get("team_group_" + teamId);
-        if (teamGroup!=null){
-            export_issue=teamGroup.get("export_issue");
+        String export_issue=null;
+        if (teamGrop.equals("team_group_" + teamId)){
+            export_issue= svrCfg;
+        }else {
+            export_issue="";
         }
         return export_issue;
-
-       /* //读取生成配置的auto.yaml
-        List<Map<String, String>> list = JsonUtil.GsonToListMaps(svrCfg);
-        AtomicReference<String> teamGroup=null;
-        list.forEach(item ->{
-            if (item.containsKey("team_group_" + teamId)){
-                teamGroup.set(item.get("team_group_" + teamId));
-            }
-        });
-        String[] sexport_issue = teamGroup.get().split(":");
-        String export_issue = sexport_issue[1].trim();
-        return export_issue;*/
     }
 
     /**
-     * 
      * @param taskIds
      * @return
      */
-    private TaskPushStrategyVo creatTaskPushStrategyMap(Set<Integer> taskIds){
+    private TaskPushStrategyVo creatTaskPushStrategyMap(Set<Integer> taskIds) {
         TaskPushStrategyVo taskPushStrategyVo = new TaskPushStrategyVo();
         HashMap<Integer, PushStrategyAssignTime> assignTimeMap = Maps.newHashMap();
-        List<PushStrategyAssignTime> pushStrategyAssignTimeList =pushStrategyAssignTimeService.searchByTaskIds(taskIds);
+        List<PushStrategyAssignTime> pushStrategyAssignTimeList = pushStrategyAssignTimeService.searchByTaskIds(taskIds);
         for (PushStrategyAssignTime item : pushStrategyAssignTimeList) {
             assignTimeMap.put(item.getTaskId(), item);
         }
         HashMap<Integer, PushStrategyCategoryOverdue> strategyCategoryOverdueMap = Maps.newHashMap();
-        List<PushStrategyCategoryOverdue> pushStrategyCategoryOverdueList=pushStrategyCategoryOverdueService.searchByTaskIds(taskIds);
+        List<PushStrategyCategoryOverdue> pushStrategyCategoryOverdueList = pushStrategyCategoryOverdueService.searchByTaskIds(taskIds);
         for (PushStrategyCategoryOverdue item : pushStrategyCategoryOverdueList) {
             strategyCategoryOverdueMap.put(item.getTaskId(), item);
         }
-        List<PushStrategyCategoryThreshold> pushStrategyCategoryThresholdList=pushStrategyCategoryThresholdService.searchByTaskIds(taskIds);
+        List<PushStrategyCategoryThreshold> pushStrategyCategoryThresholdList = pushStrategyCategoryThresholdService.searchByTaskIds(taskIds);
         HashMap<Integer, PushStrategyCategoryThreshold> strategyCategoryThresholdMap = Maps.newHashMap();
         for (PushStrategyCategoryThreshold item : pushStrategyCategoryThresholdList) {
             strategyCategoryThresholdMap.put(item.getTaskId(), item);

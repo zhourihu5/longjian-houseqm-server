@@ -48,7 +48,7 @@ public class IssueServiceImpl implements IIssueService {
     @Resource
     FileResourceService fileResourceService;
 
-    @Value("env_info.host_list")
+    @Value("${env_info.host_list}")
     String envInfo;
 
     /**
