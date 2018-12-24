@@ -2,11 +2,7 @@ package com.longfor.longjian.houseqm.domain.internalService;
 
 import com.longfor.longjian.houseqm.po.*;
 
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 
 public interface HouseQmCheckTaskIssueService {
     List<HouseQmCheckTaskIssue> searchByIssueUuidsAndclientCreateAt(Set<String> issueUuids, int timestamp);
@@ -100,4 +96,12 @@ public interface HouseQmCheckTaskIssueService {
 
     ArrayList<HouseQmCheckTaskIssue> houseQmCheckTaskIssueByProTaskIdAreaidBegin(Integer projectId, Integer taskId, Integer areaId, Date begin, Date endOns, List<Integer> types);
 
+    /**
+     *
+     * @author hy
+     * @date 2018/12/24 0024
+     * @param condiMap
+     * @return java.util.List<com.longfor.longjian.houseqm.po.IssueRepairCount>
+     */
+    List<IssueRepairCount> selectIssueRepairCountByProjectIdAndCategoryClsAndTypInAndStatusInAndNoDeletedAndDongTai(HashMap<String, Object> condiMap);
 }

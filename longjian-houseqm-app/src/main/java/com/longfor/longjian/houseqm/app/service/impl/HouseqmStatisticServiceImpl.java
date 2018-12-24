@@ -177,7 +177,7 @@ public class HouseqmStatisticServiceImpl implements IHouseqmStatisticService {
         HashMap<String, Object> condiMap = Maps.newHashMap();
         // 以下条件成立时调用对应成立时的方法。
         if (areaId > 0) {
-            condiMap.put("areaId", "%/"+areaId+"/%");//模糊查询 AreaPathAndId like '%%/ /areaId%%'
+            condiMap.put("areaId", "%/" + areaId + "/%");//模糊查询 AreaPathAndId like '%%/ /areaId%%'
         }
         if (beginOn.getTime() / 1000 > 0) {
             condiMap.put("beginOn", beginOn);
@@ -229,7 +229,7 @@ public class HouseqmStatisticServiceImpl implements IHouseqmStatisticService {
      * @date 2018/12/22 0022
      */
     @Override
-    public HouseqmStatisticCategoryIssueListRspMsgVo taskIssueRepairList(Integer projectId,Integer taskId,Integer areaId,Integer beginOn,Integer endOn,Integer timestamp,Integer planStatus,String source,Integer page,Integer pageSize) {
+    public HouseqmStatisticCategoryIssueListRspMsgVo taskIssueRepairList(Integer projectId, Integer taskId, Integer areaId, Integer beginOn, Integer endOn, Integer timestamp, Integer planStatus, String source, Integer page, Integer pageSize) {
         Date beginOn1 = DateUtil.timeStampToDate(beginOn, "yyyy-MM-dd");
         Date endOn1 = DateUtil.timeStampToDate(endOn, "yyyy-MM-dd");
         if (beginOn > 0) {
@@ -310,8 +310,8 @@ public class HouseqmStatisticServiceImpl implements IHouseqmStatisticService {
 
             List<String> list = StringSplitToListUtil.splitToStringComma(item.getAttachmentMd5List(), ",");
             apiTaskIssueRepairListRsp.setAttachmentUrlList(new ArrayList<String>());
-            list.forEach(fm ->{
-                if (fileMap.containsKey(fm)){
+            list.forEach(fm -> {
+                if (fileMap.containsKey(fm)) {
                     List<String> attachmentUrlList = apiTaskIssueRepairListRsp.getAttachmentUrlList();
                     attachmentUrlList.add(fileMap.get(fm));
                     apiTaskIssueRepairListRsp.setAttachmentUrlList(attachmentUrlList);
@@ -327,6 +327,89 @@ public class HouseqmStatisticServiceImpl implements IHouseqmStatisticService {
         return issueListRspMsgVo;
     }
 
+    /**
+     * @param projectId
+     * @param source
+     * @param areaId
+     * @param beginOn
+     * @param endOn
+     * @param timestamp
+     * @return com.longfor.longjian.houseqm.app.vo.IssueRepairStatisticVo
+     * @author hy
+     * @date 2018/12/24 0024
+     */
+    @Override
+    public IssueRepairStatisticVo projectIssueRepair(Integer projectId, String source, Integer areaId, Integer beginOn, Integer endOn, Integer timestamp) {
+        Date beginOn1 = DateUtil.timeStampToDate(beginOn, "yyyy-MM-dd");
+        Date endOn1 = DateUtil.timeStampToDate(endOn, "yyyy-MM-dd");
+        if (beginOn > 0) {
+            beginOn1 = DateUtil.timeStampToDate(beginOn, "yyyy-MM-dd");
+        }
+        if (endOn > 0) {
+            Calendar c = Calendar.getInstance();
+            Date date = DateUtil.timeStampToDate(endOn, "yyyy-MM-dd");
+            c.setTime(date);
+            c.add(Calendar.DAY_OF_MONTH, 1);
+            endOn1 = DateUtil.timeStampToDate((int) (c.getTime().getTime() / 1000), "yyyy-MM-dd");
+        }
+        List<Integer> categoryClsList = getCategoryClsList(source);
+        IssueRepairStatisticVo issueRepairStatisticVo = searchIssueRepairStatisticByProjCategoryClsInAreaIdBeginOnEndOn(projectId, categoryClsList, areaId, beginOn1, endOn1);
+        return issueRepairStatisticVo;
+    }
+
+    /**
+     *
+     * @author hy
+     * @date 2018/12/24 0024
+     * @param projectId
+     * @param categoryClsList
+     * @param areaId
+     * @param beginOn1
+     * @param endOn1
+     * @return com.longfor.longjian.houseqm.app.vo.IssueRepairStatisticVo
+     */
+    private IssueRepairStatisticVo searchIssueRepairStatisticByProjCategoryClsInAreaIdBeginOnEndOn(Integer projectId, List<Integer> categoryClsList, Integer areaId, Date beginOn1, Date endOn1) {
+        String nowStr = DateUtil.getNowTimeStr("yyyy-MM-dd HH:mm:ss");
+        HashMap<String, Object> condiMap = new HashMap<>();
+        condiMap.put("projectId", projectId);
+        condiMap.put("categoryClsList", categoryClsList);
+
+        if (areaId > 0) condiMap.put("areaPathAndId", "%/" + areaId + "/%");
+        if (beginOn1.getTime() / 1000 > 0) condiMap.put("clientCreateAtGte", beginOn1);
+        if (endOn1.getTime() / 1000 > 0)condiMap.put("clientCreateAtLte", endOn1);
+        ArrayList<Integer> typs = Lists.newArrayList();
+        typs.add(HouseQmCheckTaskIssueEnum.FindProblem.getId());
+        typs.add(HouseQmCheckTaskIssueEnum.Difficult.getId());
+        condiMap.put("typ", typs);
+        condiMap.put("now", nowStr);
+        condiMap.put("status", HouseQmCheckTaskIssueStatusEnum.AssignNoReform.getId());
+        ArrayList<Integer> statusIn = Lists.newArrayList();
+        statusIn.add(HouseQmCheckTaskIssueStatusEnum.AssignNoReform.getId());
+        statusIn.add(HouseQmCheckTaskIssueStatusEnum.ReformNoCheck.getId());
+        statusIn.add(HouseQmCheckTaskIssueStatusEnum.CheckYes.getId());
+        condiMap.put("statusIn", statusIn);
+        List<IssueRepairCount> issueCounts=houseQmCheckTaskIssueService.selectIssueRepairCountByProjectIdAndCategoryClsAndTypInAndStatusInAndNoDeletedAndDongTai(condiMap);
+        IssueRepairCount ic = issueCounts.get(0);
+        IssueRepairStatisticVo item = new IssueRepairStatisticVo();
+        if (ic.getTotal()== 0) {
+            // 防止除数为0。总之，total为0的时候，全部结果是0%
+            ic.setTotal(1);
+        }
+
+        item.setNoPlanEndOn(MathUtil.getPercentage(ic.getNoPlanEndOn(), ic.getTotal()));
+        item.setOvertimeUnfinish(MathUtil.getPercentage(ic.getOvertimeUnfinish(), ic.getTotal()));
+        item.setInitimeUnfinish(MathUtil.getPercentage(ic.getInitimeUnfinish(), ic.getTotal()));
+        item.setOvertimeFinish(MathUtil.getPercentage(ic.getOvertimeFinish(), ic.getTotal()));
+        item.setInitimeFinish(MathUtil.getPercentage(ic.getInitimeFinish(), ic.getTotal()));
+
+        item.setTotalCount(ic.getTotal());
+        item.setNoPlanEndOnCount(ic.getNoPlanEndOn());
+        item.setOvertimeUnfinishCount(ic.getOvertimeUnfinish());
+        item.setInitimeUnfinishCount(ic.getInitimeUnfinish());
+        item.setOvertimeFinishCount(ic.getOvertimeFinish());
+        item.setInitimeFinishCount(ic.getInitimeFinish());
+        return item;
+    }
 
     /**
      * @param projectId
@@ -347,35 +430,34 @@ public class HouseqmStatisticServiceImpl implements IHouseqmStatisticService {
         condiMap.put("projectId", projectId);
         condiMap.put("categoryCls", categoryClsList);
         if (taskId > 0) condiMap.put("taskId", taskId);
-        if (areaId > 0) condiMap.put("areaId", "/"+areaId+"/");
+        if (areaId > 0) condiMap.put("areaId", "/" + areaId + "/");
         if (beginOn.getTime() / 1000 > 0) condiMap.put("clientCreateAtGte", beginOn);
         if (endOn.getTime() / 1000 > 0) condiMap.put("clientCreateAtLte", endOn);
         ArrayList<Integer> typs = Lists.newArrayList();
         typs.add(HouseQmCheckTaskIssueEnum.FindProblem.getId());
         typs.add(HouseQmCheckTaskIssueEnum.Difficult.getId());
         condiMap.put("typs", typs);
-        Date now = new Date();
-        String nowStr = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(now);
+        String nowStr = DateUtil.getNowTimeStr("yyyy-MM-dd HH:mm:ss");
         condiMap.put("now", nowStr);
-        if (planStatus==HouseQmIssuePlanStatusEnum.OnTimeFinish.getId()){
+        if (planStatus == HouseQmIssuePlanStatusEnum.OnTimeFinish.getId()) {
             condiMap.put("status1", true);
-        }else if (planStatus==HouseQmIssuePlanStatusEnum.UnOnTimeNotFinish.getId()){
+        } else if (planStatus == HouseQmIssuePlanStatusEnum.UnOnTimeNotFinish.getId()) {
             condiMap.put("status2", true);
-        }else if (planStatus==HouseQmIssuePlanStatusEnum.NoSettingTime.getId()){
+        } else if (planStatus == HouseQmIssuePlanStatusEnum.NoSettingTime.getId()) {
             condiMap.put("status3", true);
-        }else if (planStatus==HouseQmIssuePlanStatusEnum.OverTimeFinish.getId()){
+        } else if (planStatus == HouseQmIssuePlanStatusEnum.OverTimeFinish.getId()) {
             condiMap.put("status4", true);
-        }else if (planStatus==HouseQmIssuePlanStatusEnum.OverTimeNotFinish.getId()){
+        } else if (planStatus == HouseQmIssuePlanStatusEnum.OverTimeNotFinish.getId()) {
             condiMap.put("status5", true);
         }
-        int start=0;
-        if (page>0){
-            start=(page-1)*pageSize;
+        int start = 0;
+        if (page > 0) {
+            start = (page - 1) * pageSize;
         }
-        int total=houseQmCheckTaskIssueService.selectCountByProjectIdAndCategoryClsAndTypeAndStatusInAndDongTai(condiMap);
+        int total = houseQmCheckTaskIssueService.selectCountByProjectIdAndCategoryClsAndTypeAndStatusInAndDongTai(condiMap);
         condiMap.put("start", start);
         condiMap.put("pageSize", pageSize);
-        List<HouseQmCheckTaskIssue> houseQmCheckTaskIssues=houseQmCheckTaskIssueService.selectHouseQmCheckTaskIssueByProjectIdAndCategoryClsAndTypeAndStatusInAndOrderByDescAndPageDongTai(condiMap);
+        List<HouseQmCheckTaskIssue> houseQmCheckTaskIssues = houseQmCheckTaskIssueService.selectHouseQmCheckTaskIssueByProjectIdAndCategoryClsAndTypeAndStatusInAndOrderByDescAndPageDongTai(condiMap);
 
         HouseQmCheckTaskIssueListVo houseQmCheckTaskIssueListVo = new HouseQmCheckTaskIssueListVo();
         houseQmCheckTaskIssueListVo.setTotal(total);
@@ -384,14 +466,13 @@ public class HouseqmStatisticServiceImpl implements IHouseqmStatisticService {
     }
 
     /**
-     *
-     * @author hy
-     * @date 2018/12/22 0022
      * @param module
      * @return java.util.List<java.lang.Integer>
+     * @author hy
+     * @date 2018/12/22 0022
      */
     private List<Integer> getCategoryClsList(String module) {
-        String source=null;
+        String source = null;
         if ("gcgl".equals(module)) { //兼容app 端
             source = CategoryClsConst.SOURCE_NAME_GCJC;
         }
@@ -412,22 +493,22 @@ public class HouseqmStatisticServiceImpl implements IHouseqmStatisticService {
         return categoryClsMap.get(source);
     }
 
-        @Override
+    @Override
     public List<HouseQmIssueCategoryStatVo> searchHouseQmIssueCategoryStatByProjTaskIdAreaIdBeginOnEndOn(Integer projectId, Integer taskId, Integer areaId, Date begin, Date endOns) {
         List<Integer> types = Lists.newArrayList();
         types.add(HouseQmCheckTaskIssueEnum.FindProblem.getId());
         types.add(HouseQmCheckTaskIssueEnum.Difficult.getId());
-            ArrayList<SimpleHouseQmCheckTaskIssueStatVo> issueStatVoList= Lists.newArrayList();
+        ArrayList<SimpleHouseQmCheckTaskIssueStatVo> issueStatVoList = Lists.newArrayList();
         ArrayList<HouseQmCheckTaskIssue> issueList = houseQmCheckTaskIssueService.houseQmCheckTaskIssueByProTaskIdAreaidBegin(projectId, taskId, areaId, begin, endOns, types);
-            for (int i = 0; i < issueList.size(); i++) {
-                SimpleHouseQmCheckTaskIssueStatVo simpleHouseQmCheckTaskIssueStatVo = new SimpleHouseQmCheckTaskIssueStatVo();
-                simpleHouseQmCheckTaskIssueStatVo.setCategoryKey(issueList.get(i).getCategoryKey());
-                simpleHouseQmCheckTaskIssueStatVo.setCategoryPathAndKey(issueList.get(i).getCategoryPathAndKey());
-                simpleHouseQmCheckTaskIssueStatVo.setCheckItemKey(issueList.get(i).getCheckItemKey());
-                simpleHouseQmCheckTaskIssueStatVo.setCheckItemPathAndKey(issueList.get(i).getCheckItemPathAndKey());
-                simpleHouseQmCheckTaskIssueStatVo.setCount(issueList.get(i).getCount());
-                issueStatVoList.add(simpleHouseQmCheckTaskIssueStatVo);
-            }
+        for (int i = 0; i < issueList.size(); i++) {
+            SimpleHouseQmCheckTaskIssueStatVo simpleHouseQmCheckTaskIssueStatVo = new SimpleHouseQmCheckTaskIssueStatVo();
+            simpleHouseQmCheckTaskIssueStatVo.setCategoryKey(issueList.get(i).getCategoryKey());
+            simpleHouseQmCheckTaskIssueStatVo.setCategoryPathAndKey(issueList.get(i).getCategoryPathAndKey());
+            simpleHouseQmCheckTaskIssueStatVo.setCheckItemKey(issueList.get(i).getCheckItemKey());
+            simpleHouseQmCheckTaskIssueStatVo.setCheckItemPathAndKey(issueList.get(i).getCheckItemPathAndKey());
+            simpleHouseQmCheckTaskIssueStatVo.setCount(issueList.get(i).getCount());
+            issueStatVoList.add(simpleHouseQmCheckTaskIssueStatVo);
+        }
         List<HouseQmIssueCategoryStatVo> vos = calculateIssueCount(issueStatVoList);
         return vos;
     }
@@ -438,21 +519,21 @@ public class HouseqmStatisticServiceImpl implements IHouseqmStatisticService {
         Map<String, Object> map = groupIssueStatByCategoryAndCheckItem(issueStatVoList);
         Map<String, Category> categoryMap = null;
         Map<String, CheckItem> checkItemMap = null;
-        boolean isStatLevel3=false;
+        boolean isStatLevel3 = false;
         for (Map.Entry<String, Object> entrys : map.entrySet()) {
             if (entrys.getKey().equals("categoryKeys")) {
-                List<String>keys= (List<String>) entrys.getValue();
+                List<String> keys = (List<String>) entrys.getValue();
                 categoryMap = getCategoryMapByCategoryKeys(keys);
             }
             if (entrys.getKey().equals("checkItemKeys")) {
-            List<String>keys= (List<String>) entrys.getValue();
+                List<String> keys = (List<String>) entrys.getValue();
                 checkItemMap = getCheckItemMapByCheckItemKeys(keys);
             }
             if (categoryMap.size() > 0) {
                 String rootKey = "";
                 for (Map.Entry<String, Category> entry : categoryMap.entrySet()) {
-                    String newStr = entry.getValue().getPath(). substring(1, entry.getValue().getPath().length());
-                    String[] split =newStr.split("/");
+                    String newStr = entry.getValue().getPath().substring(1, entry.getValue().getPath().length());
+                    String[] split = newStr.split("/");
 /*
                     split[split.length]= entry.getValue().getKey();
 */
@@ -466,21 +547,21 @@ public class HouseqmStatisticServiceImpl implements IHouseqmStatisticService {
                 for (Map.Entry<String, HouseQmIssueCategoryStatVo> entry : categoryStatMap.entrySet()) {
                     for (Map.Entry<String, Category> Entry : categoryMap.entrySet()) {
 
-                        if(entry.getValue().getKey().equals(Entry.getKey())) {
-                     boolean isRoot=false;
+                        if (entry.getValue().getKey().equals(Entry.getKey())) {
+                            boolean isRoot = false;
 
-                                    //通过“/”进行匹配
+                            //通过“/”进行匹配
                             int level = 0;
 
                             String str = Entry.getValue().getPath();
 
-                            for(int i = 0; i < str.length(); i++){
-                                if(str.charAt(i)=='/'){
+                            for (int i = 0; i < str.length(); i++) {
+                                if (str.charAt(i) == '/') {
                                     level++;
                                 }
                             }
-                                      //需要跳过三级
-                            if (isStatLevel3){
+                            //需要跳过三级
+                            if (isStatLevel3) {
                                 if (level < 3) {
                                     continue;
                                 } else if (level == 3) {
@@ -496,41 +577,39 @@ public class HouseqmStatisticServiceImpl implements IHouseqmStatisticService {
                             }
                             entry.getValue().setName(Entry.getValue().getName());
 
-                            if(!isRoot){
-                                entry.getValue().setParentKey (Entry.getValue().getFatherKey());
+                            if (!isRoot) {
+                                entry.getValue().setParentKey(Entry.getValue().getFatherKey());
                             }
                             objects.add(entry.getValue());
                         }
                     }
                 }
             }
-                    if(entrys.getKey().equals("checkItemStatMap")){
-                        HashMap<String, HouseQmIssueCategoryStatVo> checkItemStatMap = (HashMap<String, HouseQmIssueCategoryStatVo>) entrys.getValue();
-                        for (Map.Entry<String, HouseQmIssueCategoryStatVo> entryS : checkItemStatMap.entrySet()) {
-                            for (Map.Entry<String, CheckItem> Entry : checkItemMap.entrySet()) {
+            if (entrys.getKey().equals("checkItemStatMap")) {
+                HashMap<String, HouseQmIssueCategoryStatVo> checkItemStatMap = (HashMap<String, HouseQmIssueCategoryStatVo>) entrys.getValue();
+                for (Map.Entry<String, HouseQmIssueCategoryStatVo> entryS : checkItemStatMap.entrySet()) {
+                    for (Map.Entry<String, CheckItem> Entry : checkItemMap.entrySet()) {
 
-                                if(entryS.getValue().getKey().equals(Entry.getKey())) {
-                                    entryS.getValue().setName(Entry.getValue().getName());
-                                    entryS.getValue().setParentKey(Entry.getValue().getCategoryKey());
-                                    entryS.getValue().setKey("C"+Entry.getValue().getKey());
-                                    objects.add(entryS.getValue());
-                                }
+                        if (entryS.getValue().getKey().equals(Entry.getKey())) {
+                            entryS.getValue().setName(Entry.getValue().getName());
+                            entryS.getValue().setParentKey(Entry.getValue().getCategoryKey());
+                            entryS.getValue().setKey("C" + Entry.getValue().getKey());
+                            objects.add(entryS.getValue());
+                        }
 
-
-                            }
-                            }
 
                     }
+                }
+
+            }
 
         }
 
-return objects;
+        return objects;
     }
 
 
-
-
-    private Map<String, CheckItem> getCheckItemMapByCheckItemKeys( List<String> keys) {
+    private Map<String, CheckItem> getCheckItemMapByCheckItemKeys(List<String> keys) {
         List<CheckItem> checkItemsList = checkItemService.SearchCheckItemByKeyIn(keys);
         HashMap<String, CheckItem> map = Maps.newHashMap();
         for (int i = 0; i < checkItemsList.size(); i++) {
@@ -540,8 +619,8 @@ return objects;
         return map;
     }
 
-    private Map<String, Category> getCategoryMapByCategoryKeys( List<String> keys) {
-        List<Category> categoryList =  categoryService.SearchCategoryByKeyIn(keys);
+    private Map<String, Category> getCategoryMapByCategoryKeys(List<String> keys) {
+        List<Category> categoryList = categoryService.SearchCategoryByKeyIn(keys);
         HashMap<String, Category> map = Maps.newHashMap();
         for (int i = 0; i < categoryList.size(); i++) {
             map.put(categoryList.get(i).getKey(), categoryList.get(i));
@@ -563,12 +642,12 @@ return objects;
             String[] categoryPathKeys = issueStatVoList.get(i).getCategoryPathAndKey().split("/");
             for (int j = 0; j < categoryPathKeys.length; j++) {
                 //判断key是否存在
-                    if(!categoryStatMap.containsKey(categoryPathKeys[j])){
-                        HouseQmIssueCategoryStatVo houseQmIssueCategoryStatVo = new HouseQmIssueCategoryStatVo();
-                        houseQmIssueCategoryStatVo.setKey(categoryPathKeys[j]);
-                        //存放key value（对象中的key值）
-                        categoryStatMap.put(categoryPathKeys[j], houseQmIssueCategoryStatVo);
-                    }
+                if (!categoryStatMap.containsKey(categoryPathKeys[j])) {
+                    HouseQmIssueCategoryStatVo houseQmIssueCategoryStatVo = new HouseQmIssueCategoryStatVo();
+                    houseQmIssueCategoryStatVo.setKey(categoryPathKeys[j]);
+                    //存放key value（对象中的key值）
+                    categoryStatMap.put(categoryPathKeys[j], houseQmIssueCategoryStatVo);
+                }
                 //遍历此map
                 for (Map.Entry<String, HouseQmIssueCategoryStatVo> entrys : categoryStatMap.entrySet()) {
                     //当map中的key存在
@@ -589,10 +668,10 @@ return objects;
                 }
 
             }
-                //当CheckItemKey的长度大于0
+            //当CheckItemKey的长度大于0
             if (issueStatVoList.get(i).getCheckItemKey().length() > 0) {
                 //判断key是否存在于map
-                if(!checkItemStatMap.containsKey(issueStatVoList.get(i).getCheckItemKey()) ){
+                if (!checkItemStatMap.containsKey(issueStatVoList.get(i).getCheckItemKey())) {
                     HouseQmIssueCategoryStatVo houseQmIssueCategoryStatVo = new HouseQmIssueCategoryStatVo();
                     houseQmIssueCategoryStatVo.setKey(issueStatVoList.get(i).getCheckItemKey());
                     //存放key value（对象中的key值）
@@ -622,8 +701,8 @@ return objects;
         return map;
     }
 
-//去重
 
+    //去重
     public static List removeDuplicate(List list) {
         HashSet h = new HashSet(list);
         list.clear();
@@ -648,11 +727,10 @@ return objects;
     }
 
     /**
-     *
-     * @author hy
-     * @date 2018/12/23 0023
      * @param areaIdList
      * @return com.longfor.longjian.houseqm.app.vo.AreaMapVo
+     * @author hy
+     * @date 2018/12/23 0023
      */
     private AreaMapVo createAreasMapByLeaveIds(List<Integer> areaIdList) {
         List<Area> areas = areaService.selectAreasByIdInAreaIds(areaIdList);
@@ -664,13 +742,12 @@ return objects;
     }
 
     /**
-     *
-     * @author hy
-     * @date 2018/12/23 0023
      * @param categorys
      * @return com.longfor.longjian.houseqm.app.vo.CategoryV3MapVo
+     * @author hy
+     * @date 2018/12/23 0023
      */
-    private CategoryV3MapVo newCategoryMap(List<CategoryV3> categorys){
+    private CategoryV3MapVo newCategoryMap(List<CategoryV3> categorys) {
         CategoryV3MapVo categoryV3MapVo = new CategoryV3MapVo();
         Map<String, CategoryV3> categoryV3Map = categorys.stream().collect(Collectors.toMap(CategoryV3::getKey, a -> a, (k1, k2) -> k1));
         categoryV3MapVo.setCategoryV3Map(categoryV3Map);
@@ -678,13 +755,12 @@ return objects;
     }
 
     /**
-     *
-     * @author hy
-     * @date 2018/12/23 0023
      * @param checkItemV3s
      * @return com.longfor.longjian.houseqm.app.vo.CheckItemV3MapVo
+     * @author hy
+     * @date 2018/12/23 0023
      */
-    private CheckItemV3MapVo newCheckItemMap(List<CheckItemV3> checkItemV3s){
+    private CheckItemV3MapVo newCheckItemMap(List<CheckItemV3> checkItemV3s) {
         CheckItemV3MapVo checkItemV3MapVo = new CheckItemV3MapVo();
         Map<String, CheckItemV3> checkItemV3Map = checkItemV3s.stream().collect(Collectors.toMap(CheckItemV3::getKey, a -> a, (k1, k2) -> k1));
         checkItemV3MapVo.setCheckItemV3Map(checkItemV3Map);

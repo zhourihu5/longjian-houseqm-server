@@ -7,11 +7,7 @@ import com.longfor.longjian.houseqm.po.HouseQmCheckTaskIssueAreaGroupModel;
 import com.longfor.longjian.houseqm.po.IssueRepairCount;
 import org.apache.ibatis.annotations.Param;
 
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 
 public interface HouseQmCheckTaskIssueMapper extends LFMySQLMapper<HouseQmCheckTaskIssue> {
     /**
@@ -187,4 +183,13 @@ public interface HouseQmCheckTaskIssueMapper extends LFMySQLMapper<HouseQmCheckT
 
 
     ArrayList<HouseQmCheckTaskIssue> searchhouseQmCheckTaskIssueByProTaskIdAreaidBegin(@Param("projectId")Integer projectId,  @Param("taskId")Integer taskId,@Param("areaId") Integer areaId, @Param("begin")Date begin, @Param("endOns")Date endOns,  @Param("types") List<Integer> types,@Param("deleted") String deleted);
+
+    /**
+     *
+     * @author hy
+     * @date 2018/12/24 0024
+     * @param condiMap
+     * @return java.util.List<com.longfor.longjian.houseqm.po.IssueRepairCount>
+     */
+    List<IssueRepairCount> selectIssueRepairCountByProjectIdAndCategoryClsAndTypInAndStatusInAndNoDeletedAndDongTai(HashMap<String, Object> condiMap);
 }

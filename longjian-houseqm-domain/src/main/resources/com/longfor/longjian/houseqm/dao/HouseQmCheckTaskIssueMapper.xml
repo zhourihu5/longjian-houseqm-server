@@ -505,4 +505,35 @@
         </if>
         GROUP BY category_path_and_key,check_item_key
     </select>
+
+    <select id="selectIssueRepairCountByProjectIdAndCategoryClsAndTypInAndStatusInAndNoDeletedAndDongTai" resultMap="issueRepairCount" parameterType="java.util.Map">
+        SELECT COUNT(1) as total,
+        COUNT(CASE WHEN plan_end_on IS NULL OR plan_end_on &lt; '1970-01-02' THEN 1 ELSE NULL END) as no_plan_end_on,
+        COUNT(CASE WHEN status = #{status} AND plan_end_on &gt; '1970-01-02' AND plan_end_on &lt; '${now}' THEN 1 ELSE NULL END) as overtime_unfinish,
+        COUNT(CASE WHEN status = #{status} AND plan_end_on &gt; '${now}' THEN 1 ELSE NULL END) as intime_unfinish,
+        COUNT(CASE WHEN status != #{status} AND plan_end_on &gt; '1970-01-02' AND end_on &gt; plan_end_on THEN 1 ELSE NULL END) as overtime_finish,
+        COUNT(CASE WHEN status != #{status} AND plan_end_on &gt; '1970-01-02' AND end_on &lt;= plan_end_on THEN 1 ELSE NULL END) as intime_finish
+        FROM house_qm_check_task_issue
+        <where>
+            project_id=#{projectId} AND category_cls IN
+            <foreach collection="categoryClsList" item="item" open="(" separator="," close=")" index="index">
+                #{item}
+            </foreach>
+            <if test="areaPathAndId!=null">
+                AND area_path_and_id LIKE '${areaPathAndId}'
+            </if>
+            <if test="clientCreateAtGte!=null"> AND client_create_at &gt;=#{clientCreateAtGte} </if>
+            <if test="clientCreateAtLte!=null">AND client_create_at &lt;=#{clientCreateAtLte}  </if>
+            AND typ IN
+            <foreach collection="typ" item="type" open="(" separator="," close=")" index="index">
+                #{type}
+            </foreach>
+            AND `status` IN
+            <foreach collection="statusIn" item="item" open="(" separator="," close=")" index="index">
+                #{item}
+            </foreach>
+            AND delete_at IS NULL
+        </where>
+    </select>
+
 </mapper>

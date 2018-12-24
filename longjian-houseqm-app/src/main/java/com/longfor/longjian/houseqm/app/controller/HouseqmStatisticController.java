@@ -59,8 +59,7 @@ public class HouseqmStatisticController {
     IHouseqmStatisticService iHouseqmStatisticService;
     @Resource
     AreaService areaService;
-    @Resource
-    IHouseqmStatisticService houseqmStatisticService;
+
 
 
 
@@ -129,14 +128,21 @@ public class HouseqmStatisticController {
     }
 
     /**
-     * @param projectReq
-     * @return
+     *
+     * @author hy
+     * @date 2018/12/24 0024
+     * @param
+     * @return com.longfor.longjian.common.base.LjBaseResponse<com.longfor.longjian.houseqm.app.vo.ProjectDailyListVo>
      */
-    @MockOperation
     @GetMapping(value = "project_issue_repair", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
-    public LjBaseResponse<ProjectDailyListVo> projectIssueRepair(ProjectReq projectReq) {
-
-        return null;
+    public LjBaseResponse<IssueRepairStatisticVo> projectIssueRepair(@RequestParam(value = "project_id") Integer projectId,@RequestParam(value = "source")String source,
+                                                                 @RequestParam(value = "area_id") Integer areaId,@RequestParam(value = "begin_on",defaultValue = "0")Integer beginOn,
+                                                                @RequestParam(value = "end_on",defaultValue = "0")Integer endOn,@RequestParam(value = "timestamp",defaultValue = "0")Integer timestamp
+                                                                        ) {
+        IssueRepairStatisticVo issueRepairStatisticVo = iHouseqmStatisticService.projectIssueRepair(projectId, source, areaId, beginOn, endOn, timestamp);
+        LjBaseResponse<IssueRepairStatisticVo> ljbr = new LjBaseResponse<>();
+        ljbr.setData(issueRepairStatisticVo);
+        return ljbr;
     }
 
     /**
@@ -153,7 +159,7 @@ public class HouseqmStatisticController {
 
         Date begin = DateUtil.transForDate(beginOn);
         Date endOns = DateUtil.transForDate(endOn);
-        List<HouseQmIssueCategoryStatVo> categoryStatlist = houseqmStatisticService.searchHouseQmIssueCategoryStatByProjTaskIdAreaIdBeginOnEndOn(projectId, taskId, areaId, begin, endOns);
+        List<HouseQmIssueCategoryStatVo> categoryStatlist = iHouseqmStatisticService.searchHouseQmIssueCategoryStatByProjTaskIdAreaIdBeginOnEndOn(projectId, taskId, areaId, begin, endOns);
         HouseqmStatisticTaskCheckitemStatRspMsgVo vo = new HouseqmStatisticTaskCheckitemStatRspMsgVo();
         List<HouseqmStatisticTaskCheckitemStatRspMsgVo.ApiHouseQmCheckItemIssueStat> issueStatList=Lists.newArrayList();
         for (int i = 0; i < categoryStatlist.size(); i++) {
@@ -186,7 +192,7 @@ public class HouseqmStatisticController {
                                                             @RequestParam(value = "timestamp") Integer timestamp) {
         Date begin = DateUtil.transForDate(beginOn);
         Date endOns = DateUtil.transForDate(endOn);
-        TaskRepairStatVo taskRepairStatVo = houseqmStatisticService.searchIssueRepairStatisticByProjTaskIdAreaIdBeginOnEndOn(projectId, taskId, areaId, begin, endOns);
+        TaskRepairStatVo taskRepairStatVo = iHouseqmStatisticService.searchIssueRepairStatisticByProjTaskIdAreaIdBeginOnEndOn(projectId, taskId, areaId, begin, endOns);
 
         LjBaseResponse<TaskRepairStatVo> ljbr = new LjBaseResponse<>();
         ljbr.setData(taskRepairStatVo);
@@ -203,7 +209,7 @@ public class HouseqmStatisticController {
     *
     * @author hy
     * @date 2018/12/22 0022
-    * @param req
+    * @param
     * @return com.longfor.longjian.common.base.LjBaseResponse<com.longfor.longjian.houseqm.app.vo.HouseqmStatisticCategoryIssueListRspMsgVo>
     */
     @GetMapping(value = "task_issue_repair_list", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
