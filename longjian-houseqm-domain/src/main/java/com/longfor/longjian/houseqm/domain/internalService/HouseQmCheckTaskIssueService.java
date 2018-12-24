@@ -78,4 +78,22 @@ public interface HouseQmCheckTaskIssueService {
 
     List<HouseQmCheckTaskIssue> searchByPageAndProjectIdAndCategoryClsAndNoDeletedAndDongTai(Map<String,Object> map);
 
+    /**
+     *
+     * @author hy
+     * @date 2018/12/22 0022
+     * @param map
+     * @return java.lang.Integer
+     */
+    Integer selectCountByProjectIdAndCategoryClsAndTypeAndStatusInAndDongTai(Map<String,Object> map);
+
+    /**
+     *
+     * @author hy
+     * @date 2018/12/22 0022
+     * @param map
+     * @return java.util.List<com.longfor.longjian.houseqm.po.HouseQmCheckTaskIssue>
+     */
+    List<HouseQmCheckTaskIssue> selectHouseQmCheckTaskIssueByProjectIdAndCategoryClsAndTypeAndStatusInAndOrderByDescAndPageDongTai(Map<String,Object> map);
+
 }

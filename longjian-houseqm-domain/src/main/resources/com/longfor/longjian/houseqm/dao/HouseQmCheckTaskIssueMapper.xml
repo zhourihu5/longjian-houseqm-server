@@ -240,12 +240,12 @@
         COUNT(CASE WHEN status != 30 AND plan_end_on &gt; '1970-01-02' AND end_on &lt;= plan_end_on THEN 1 ELSE NULL
         END) as intime_finish
         FROM house_qm_check_task_issue
-        WHERE project_id= #{projectId} AND task_id = #{taskId}
-        AND typ IN
-        <foreach collection="types" item="type" index="index" open="(" separator="," close=")">
-            #{type}
-        </foreach>
         <where>
+            project_id= #{projectId} AND task_id = #{taskId}
+            AND typ IN
+            <foreach collection="types" item="type" index="index" open="(" separator="," close=")">
+                #{type}
+            </foreach>
             <if test="areaId!=null">and area_path_and_id like ${aredId}</if>
             <if test="beginOn!=null">AND client_create_at &gt;= #{beginOn}</if>
             <if test="endOn!=null">AND client_create_at &lt;= #{endOn}</if>
@@ -324,8 +324,8 @@
     <select id="selectTotalByProjectIdAndCategoryClsAndNoDeletedAndDongTai" parameterType="java.util.Map"
             resultType="java.lang.Integer">
         SELECT COUNT(id) FROM house_qm_check_task_issue
-        WHERE project_id=#{projectId} AND category_cls =#{categoryCls}
         <where>
+            project_id=#{projectId} AND category_cls =#{categoryCls}
             <if test="taskId>0">AND task_id=#{taskId}</if>
             <if test="status!=null">
                 AND status in
@@ -352,23 +352,26 @@
                 #{item}
             </foreach> and plan_end_on &gt;= '1980-01-01 08:00:00' and plan_end_on &lt;= now()
             </if>
-            <if test="status2!=null" >
+            <if test="status2!=null">
                 OR status in <foreach collection="status2" item="item" index="index" open="(" separator="," close=")">
                 #{item}
             </foreach> and plan_end_on &gt;= '1980-01-01 08:00:00' and plan_end_on &lt;= end_on
             </if>
             <if test="content!=null">and content like ${content}</if>
-            <if test="id!=null" >OR id =#{id}</if>
+            <if test="id!=null">OR id =#{id}</if>
         </where>
         <if test="deleted=='false'">
             AND delete_at IS NULL
         </if>
     </select>
 
-    <select id="selectHouseQmCheckTaskIssueByPageAndProjectIdAndCategoryClsAndNoDeletedAndDongTai" resultMap="ResultMapWithBLOBs" parameterType="java.util.Map">
-        SELECT <include refid="Base_Column_List" />,<include refid="Blob_Column_List" /> FROM house_qm_check_task_issue
-        WHERE project_id=#{projectId} AND category_cls =#{categoryCls}
+    <select id="selectHouseQmCheckTaskIssueByPageAndProjectIdAndCategoryClsAndNoDeletedAndDongTai"
+            resultMap="ResultMapWithBLOBs" parameterType="java.util.Map">
+        SELECT<include refid="Base_Column_List"/>,
+        <include refid="Blob_Column_List"/>
+        FROM house_qm_check_task_issue
         <where>
+            project_id=#{projectId} AND category_cls =#{categoryCls}
             <if test="taskId>0">AND task_id=#{taskId}</if>
             <if test="status!=null">
                 AND status in
@@ -395,19 +398,94 @@
                 #{item}
             </foreach> and plan_end_on &gt;= '1980-01-01 08:00:00' and plan_end_on &lt;= now()
             </if>
-            <if test="status2!=null" >
+            <if test="status2!=null">
                 OR status in <foreach collection="status2" item="item" index="index" open="(" separator="," close=")">
                 #{item}
             </foreach> and plan_end_on &gt;= '1980-01-01 08:00:00' and plan_end_on &lt;= end_on
             </if>
             <if test="content!=null">and content like ${content}</if>
-            <if test="id!=null" >OR id =#{id}</if>
+            <if test="id!=null">OR id =#{id}</if>
         </where>
         <if test="deleted=='false'">
             AND delete_at IS NULL
         </if>
-        <if test="reverse==true">order by client_create_at desc </if>
+        <if test="reverse==true">order by client_create_at desc</if>
         limit #{start},#{pageSize}
+    </select>
+
+    <select id="selectCountByProjectIdAndCategoryClsAndTypeAndStatusInAndDongTai" resultType="java.lang.Integer"
+            parameterType="java.util.Map">
+        SELECT COUNT(id) FROM house_qm_check_task_issue
+        <where>
+            project_id=#{projectId} AND category_cls in
+            <foreach collection="categoryCls" item="item" index="index" open="(" separator="," close=")">
+                #{item}
+            </foreach>
+            <if test="taskId>0">AND task_id=#{taskId}</if>
+            <if test="areaId!=null">AND area_path_and_id LIKE '%${areaId}%'</if>
+            <if test="clientCreateAtGte!=null">AND client_create_at &gt;= #{clientCreateAtGte}</if>
+            <if test="clientCreateAtLte!=null">AND client_create_at &lt;= #{clientCreateAtLte}</if>
+            <if test="types!=null">AND typ in
+                <foreach collection="types" item="item" index="index" open="(" separator="," close=")">
+                    #{item}
+                </foreach>
+            </if>
+            <if test="status1!=null">
+                AND status != 20 and status != 30 AND plan_end_on &gt; '1970-01-02' AND end_on &lt;= plan_end_on
+            </if>
+            <if test="status2!=null">
+                AND status =30 and plan_end_on &gt; ${now}
+            </if>
+            <if test="status3!=null">
+                AND (plan_end_on IS NULL OR plan_end_on &lt; '1970-01-02') AND status != 20
+            </if>
+            <if test="status4!=null">
+                AND status !=20 AND status != 30 AND plan_end_on &gt; '1970-01-02' AND end_on &gt; plan_end_on
+            </if>
+            <if test="status5!=null">
+                AND status = 30 AND plan_end_on &gt; '1970-01-02' AND plan_end_on &lt; ${now}
+            </if>
+        </where>
+    </select>
+
+    <select id="selectHouseQmCheckTaskIssueByProjectIdAndCategoryClsAndTypeAndStatusInAndOrderByDescAndPageDongTai"
+            resultMap="ResultMapWithBLOBs" parameterType="java.util.Map">
+        SELECT<include refid="Base_Column_List"/>,
+        <include refid="Blob_Column_List"/>
+        FROM house_qm_check_task_issue
+        <where>
+            project_id=#{projectId}
+            AND category_cls in
+            <foreach collection="categoryCls" item="item" index="index" open="(" separator="," close=")">
+                #{item}
+            </foreach>
+            <if test="taskId>0">AND task_id=#{taskId}</if>
+            <if test="areaId!=null">AND area_path_and_id like '%${areaId}%'</if>
+            <if test="clientCreateAtGte!=null">AND client_create_at &gt;= #{clientCreateAtGte}</if>
+            <if test="clientCreateAtLte!=null">AND client_create_at &lt;= #{clientCreateAtLte}</if>
+            <if test="types!=null">AND typ in
+                <foreach collection="types" item="item" index="index" open="(" separator="," close=")">
+                    #{item}
+                </foreach>
+            </if>
+            <if test="status1!=null">
+                AND status != 20 and status != 30 AND plan_end_on &gt; '1970-01-02' AND end_on &lt;= plan_end_on
+            </if>
+            <if test="status2!=null">
+                AND status =30 and plan_end_on &gt; ${now}
+            </if>
+            <if test="status3!=null">
+                AND (plan_end_on IS NULL OR plan_end_on &lt; '1970-01-02') AND status != 20
+            </if>
+            <if test="status4!=null">
+                AND status !=20 AND status != 30 AND plan_end_on &gt; '1970-01-02' AND end_on &gt; plan_end_on
+            </if>
+            <if test="status5!=null">
+                AND status = 30 AND plan_end_on &gt; '1970-01-02' AND plan_end_on &lt; ${now}
+            </if>
+        </where>
+        order by update_at desc
+        LIMIT #{start},#{pageSize}
     </select>
 
 </mapper>

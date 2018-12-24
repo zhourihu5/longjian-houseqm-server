@@ -1,7 +1,9 @@
 package com.longfor.longjian.houseqm.util;
 
 import com.google.common.collect.Lists;
+import org.apache.commons.lang.StringUtils;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.regex.Pattern;
@@ -44,7 +46,10 @@ public class StringSplitToListUtil {
      */
     public static List<String> splitToStringComma(String ids,String sep){
         String[] str = ids.split(sep);
-        List<String> list = Arrays.asList(str);
+        ArrayList<String> list = Lists.newArrayList();
+        for (String s : str) {
+            list.add(s);
+        }
         return list;
     }
 
@@ -74,6 +79,23 @@ public class StringSplitToListUtil {
     public static boolean isInteger(String str) {
         Pattern pattern = Pattern.compile("^[-\\+]?[\\d]*$");
         return pattern.matcher(str).matches();
+    }
+
+
+    /**
+     *
+     * @author hy
+     * @date 2018/12/22 0022
+     * @param str
+     * @param removeSep
+     * @param splitSep
+     * @return java.util.List<java.lang.String>
+     */
+    public static List<String> removeStartAndEndStrAndSplit(String str,String removeSep,String splitSep){
+        String s = StringUtils.removeStart(str, removeSep);
+        String s1 = StringUtils.removeEnd(s, removeSep);
+        List<String> strings = splitToStringComma(s1, splitSep);
+        return strings;
     }
 
 }

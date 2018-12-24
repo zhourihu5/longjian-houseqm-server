@@ -5,17 +5,22 @@ import com.longfor.gaia.gfs.web.mock.MockOperation;
 import com.longfor.longjian.common.base.LjBaseResponse;
 import com.longfor.longjian.houseqm.app.req.ProjectReq;
 import com.longfor.longjian.houseqm.app.service.HouseqmStaticService;
+import com.longfor.longjian.houseqm.app.service.IHouseqmStatisticService;
 import com.longfor.longjian.houseqm.app.vo.*;
 import com.longfor.longjian.houseqm.consts.TimeStauEnum;
 import com.longfor.longjian.houseqm.domain.internalService.HouseQmCheckTaskRspService;
+import com.longfor.longjian.houseqm.util.DateUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+
 import javax.annotation.Resource;
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -42,7 +47,8 @@ public class HouseqmStatisticController {
     HouseqmStaticService houseqmStaticService;
     @Resource
     HouseQmCheckTaskRspService houseQmCheckTaskRspService;
-
+    @Resource
+    IHouseqmStatisticService iHouseqmStatisticService;
 
     @MockOperation
     @GetMapping(value = "task_stat", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
@@ -55,8 +61,6 @@ public class HouseqmStatisticController {
 */
         return null;
     }
-
-
 
 
     /**
@@ -88,7 +92,6 @@ public class HouseqmStatisticController {
     }
 
     /**
-     *
      * @param projectId
      * @param categoryCl
      * @return
@@ -135,14 +138,24 @@ public class HouseqmStatisticController {
         return null;
     }
 
-    /**
-     * @param projectReq
-     * @return
-     */
-    @MockOperation
+   /**
+    *
+    * @author hy
+    * @date 2018/12/22 0022
+    * @param req
+    * @return com.longfor.longjian.common.base.LjBaseResponse<com.longfor.longjian.houseqm.app.vo.HouseqmStatisticCategoryIssueListRspMsgVo>
+    */
     @GetMapping(value = "task_issue_repair_list", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
-    public LjBaseResponse<ProjectDailyListVo> taskIssueRepairList(ProjectReq projectReq) {
-        return null;
+    public LjBaseResponse<HouseqmStatisticCategoryIssueListRspMsgVo> taskIssueRepairList(@RequestParam(value = "project_id") Integer projectId,@RequestParam(value = "task_id")Integer taskId,
+                                                                                         @RequestParam(value = "area_id")Integer areaId,@RequestParam(value = "begin_on",defaultValue = "0")Integer beginOn,
+                                                                                         @RequestParam(value = "end_on",defaultValue = "0")Integer endOn,@RequestParam(value = "timestamp",defaultValue = "0")Integer timestamp,
+                                                                                         @RequestParam(value = "plan_status",defaultValue = "0")Integer planStatus,@RequestParam(value = "source") String source,
+                                                                                         @RequestParam(value = "page",defaultValue = "1")Integer page,@RequestParam(value = "page_size",defaultValue = "20")Integer pageSize) {
+
+        HouseqmStatisticCategoryIssueListRspMsgVo projectDailyListVo = iHouseqmStatisticService.taskIssueRepairList(projectId,taskId,areaId,beginOn,endOn,timestamp,planStatus,source,page,pageSize);
+        LjBaseResponse<HouseqmStatisticCategoryIssueListRspMsgVo> ljbr = new LjBaseResponse<>();
+        ljbr.setData(projectDailyListVo);
+        return ljbr;
     }
 
     /**
@@ -157,15 +170,14 @@ public class HouseqmStatisticController {
 
 
     /**
-     *
      * @param prodectId
      * @param timestamp
      * @return
      */
     @GetMapping(value = "project_building_list", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     public LjBaseResponse<HouseqmStatisticProjectBuildingListRspMsgVo> projectBuildingList(@RequestParam(value = "project_id") Integer prodectId,
-                                                                  @RequestParam(value = "timestamp") Integer timestamp) {
-        List<ApiBuildingInfo> buildingInfoList=  houseqmStaticService.PSelectByFatherId(prodectId);
+                                                                                           @RequestParam(value = "timestamp") Integer timestamp) {
+        List<ApiBuildingInfo> buildingInfoList = houseqmStaticService.PSelectByFatherId(prodectId);
         HouseqmStatisticProjectBuildingListRspMsgVo msgVo = new HouseqmStatisticProjectBuildingListRspMsgVo();
         msgVo.setItems(buildingInfoList);
         LjBaseResponse<HouseqmStatisticProjectBuildingListRspMsgVo> response = new LjBaseResponse<>();
@@ -182,7 +194,7 @@ public class HouseqmStatisticController {
     public LjBaseResponse<HouseqmStatisticTaskBuildingListRspMsgVo> taskBuildingList(@RequestParam(value = "project_id") Integer prodectId,
                                                                                      @RequestParam(value = "task_id") Integer taskId,
                                                                                      @RequestParam(value = "timestamp") Integer timestamp) {
-        HouseqmStatisticTaskBuildingListRspMsgVo msgVo= houseqmStaticService.taskBuildingList(prodectId,taskId);
+        HouseqmStatisticTaskBuildingListRspMsgVo msgVo = houseqmStaticService.taskBuildingList(prodectId, taskId);
         LjBaseResponse<HouseqmStatisticTaskBuildingListRspMsgVo> response = new LjBaseResponse<>();
         response.setData(msgVo);
         return response;

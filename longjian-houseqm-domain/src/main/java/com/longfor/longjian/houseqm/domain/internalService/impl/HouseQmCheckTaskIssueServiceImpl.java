@@ -243,7 +243,7 @@ public class HouseQmCheckTaskIssueServiceImpl implements HouseQmCheckTaskIssueSe
      *
      * @author hy
      * @date 2018/12/21 0021
-     *  * @param map
+     * @param map
      * @return java.lang.Integer
      */
     @Override
@@ -263,6 +263,32 @@ public class HouseQmCheckTaskIssueServiceImpl implements HouseQmCheckTaskIssueSe
     @LFAssignDataSource("zhijian2")
     public List<HouseQmCheckTaskIssue> searchByPageAndProjectIdAndCategoryClsAndNoDeletedAndDongTai(Map<String, Object> map) {
         return houseQmCheckTaskIssueMapper.selectHouseQmCheckTaskIssueByPageAndProjectIdAndCategoryClsAndNoDeletedAndDongTai(map);
+    }
+
+    /**
+     *
+     * @author hy
+     * @date 2018/12/22 0022
+     *  @param map
+     * @return java.lang.Integer
+     */
+    @Override
+    @LFAssignDataSource("zhijian2")
+    public Integer selectCountByProjectIdAndCategoryClsAndTypeAndStatusInAndDongTai(Map<String, Object> map) {
+        return houseQmCheckTaskIssueMapper.selectCountByProjectIdAndCategoryClsAndTypeAndStatusInAndDongTai(map);
+    }
+
+    /**
+     *
+     * @author hy
+     * @date 2018/12/22 0022
+     * @param map
+     * @return java.util.List<com.longfor.longjian.houseqm.po.HouseQmCheckTaskIssue>
+     */
+    @Override
+    @LFAssignDataSource("zhijian2")
+    public List<HouseQmCheckTaskIssue> selectHouseQmCheckTaskIssueByProjectIdAndCategoryClsAndTypeAndStatusInAndOrderByDescAndPageDongTai(Map<String, Object> map) {
+        return houseQmCheckTaskIssueMapper.selectHouseQmCheckTaskIssueByProjectIdAndCategoryClsAndTypeAndStatusInAndOrderByDescAndPageDongTai(map);
     }
 
     @Override
