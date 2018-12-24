@@ -45,6 +45,15 @@ public class HouseQmCheckTaskIssue {
      */
     @Column(name = "end_on")
     private Date endOn;
+private int count;
+
+    public int getCount() {
+        return count;
+    }
+
+    public void setCount(int count) {
+        this.count = count;
+    }
 
     /**
      * 区域ID

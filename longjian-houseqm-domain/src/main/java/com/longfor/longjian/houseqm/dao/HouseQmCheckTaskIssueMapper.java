@@ -7,6 +7,8 @@ import com.longfor.longjian.houseqm.po.HouseQmCheckTaskIssueAreaGroupModel;
 import com.longfor.longjian.houseqm.po.IssueRepairCount;
 import org.apache.ibatis.annotations.Param;
 
+import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -184,4 +186,5 @@ public interface HouseQmCheckTaskIssueMapper extends LFMySQLMapper<HouseQmCheckT
     List<HouseQmCheckTaskIssue> selectHouseQmCheckTaskIssueByProjectIdAndCategoryClsAndTypeAndStatusInAndOrderByDescAndPageDongTai(Map<String, Object> map);
 
 
+    ArrayList<HouseQmCheckTaskIssue> searchhouseQmCheckTaskIssueByProTaskIdAreaidBegin(@Param("projectId")Integer projectId,  @Param("taskId")Integer taskId,@Param("areaId") Integer areaId, @Param("begin")Date begin, @Param("endOns")Date endOns,  @Param("types") List<Integer> types,@Param("deleted") String deleted);
 }

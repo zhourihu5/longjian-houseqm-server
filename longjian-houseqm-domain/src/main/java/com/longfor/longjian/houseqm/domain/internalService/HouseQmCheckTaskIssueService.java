@@ -2,6 +2,8 @@ package com.longfor.longjian.houseqm.domain.internalService;
 
 import com.longfor.longjian.houseqm.po.*;
 
+import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -95,5 +97,7 @@ public interface HouseQmCheckTaskIssueService {
      * @return java.util.List<com.longfor.longjian.houseqm.po.HouseQmCheckTaskIssue>
      */
     List<HouseQmCheckTaskIssue> selectHouseQmCheckTaskIssueByProjectIdAndCategoryClsAndTypeAndStatusInAndOrderByDescAndPageDongTai(Map<String,Object> map);
+
+    ArrayList<HouseQmCheckTaskIssue> houseQmCheckTaskIssueByProTaskIdAreaidBegin(Integer projectId, Integer taskId, Integer areaId, Date begin, Date endOns, List<Integer> types);
 
 }
