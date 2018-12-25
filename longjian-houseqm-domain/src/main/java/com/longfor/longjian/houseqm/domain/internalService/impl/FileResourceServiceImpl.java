@@ -8,6 +8,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -32,5 +33,11 @@ public class FileResourceServiceImpl implements FileResourceService {
     @LFAssignDataSource("zhijian2")
     public List<FileResource> searchFileResourceByFileMd5InAndNoDeleted(List<String> attachments) {
         return fileResourceMapper.selectFileResourceByFileMd5InAndNoDeleted(attachments,"false");
+    }
+
+    @Override
+    @LFAssignDataSource("zhijian2")
+    public List<FileResource> SearchByMd5In(ArrayList<String> attachmentMd5List) {
+        return fileResourceMapper.searchByMd5In(attachmentMd5List);
     }
 }

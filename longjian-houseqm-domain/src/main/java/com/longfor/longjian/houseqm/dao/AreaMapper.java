@@ -5,6 +5,8 @@ import com.longfor.longjian.houseqm.po.Area;
 import org.apache.ibatis.annotations.Param;
 
 import java.util.List;
+import java.util.Set;
+
 /**
  * Created by Dongshun on 2018/12/18.
  */
@@ -57,4 +59,7 @@ public interface AreaMapper extends LFMySQLMapper<Area> {
      */
     List<Area> selectAreaByIdInAndNoDeleted(@Param("areaPaths") List<Integer> areaPaths,@Param("deleted") String deleted);
 
+/*
+    List<Area> selectAreaByIds(@Param("areaList")List<Integer> areaIds);
+*/
 }

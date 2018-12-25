@@ -180,6 +180,11 @@ public class HouseqmStatisticController {
                                                             @RequestParam(value = "timestamp") Integer timestamp) {
         Date begin = DateUtil.transForDate(beginOn);
         Date endOns = DateUtil.transForDate(endOn);
+   /*     //endon加一天
+        Calendar c = Calendar.getInstance();
+        c.setTime(endOns);
+        c.add(Calendar.DAY_OF_MONTH, 1);// +1天
+         endOns = c.getTime();*/
         TaskRepairStatVo taskRepairStatVo = houseqmStatisticService.searchIssueRepairStatisticByProjTaskIdAreaIdBeginOnEndOn(projectId, taskId, areaId, begin, endOns);
 
         LjBaseResponse<TaskRepairStatVo> ljbr = new LjBaseResponse<>();
@@ -204,13 +209,47 @@ public class HouseqmStatisticController {
     }
 
     /**
-     * @param projectReq
+     * @param
      * @return
      */
-    @MockOperation
+
     @GetMapping(value = "category_issue_list", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
-    public LjBaseResponse<ProjectDailyListVo> categoryIssueList(ProjectReq projectReq) {
-        return null;
+    public LjBaseResponse<HouseqmStatisticCategoryIssueListRspMsgVo> categoryIssueList(@RequestParam(value = "project_id") Integer projectId,
+                                                                @RequestParam(value = "category_key") String categoryKey,
+                                                                @RequestParam(value = "area_id") Integer areaId,
+                                                                @RequestParam(value = "page") Integer page,
+                                                                @RequestParam(value = "page_size") Integer pageSize
+                                                                ) {
+     List<HouseQmCheckTaskIssueOnlineInfoVo>infoList=   houseqmStatisticService.SearchHouseQmCheckTaskIssueOnlineInfoByProjCategoryKeyAreaIdPaged(projectId, categoryKey, areaId, page, pageSize);
+        ArrayList<HouseqmStatisticCategoryIssueListRspMsgVo.ApiTaskIssueRepairListRsp> objects = Lists.newArrayList();
+        for (int i = 0; i < infoList.size(); i++) {
+            HouseqmStatisticCategoryIssueListRspMsgVo.ApiTaskIssueRepairListRsp listRsp = new HouseqmStatisticCategoryIssueListRspMsgVo().new ApiTaskIssueRepairListRsp();
+            listRsp.setId(infoList.get(i).getId());
+            listRsp.setProjectId(infoList.get(i).getProjectId());
+            listRsp.setTaskId(infoList.get(i).getTaskId());
+            listRsp.setUuid(infoList.get(i).getUuid());
+            listRsp.setTitle(infoList.get(i).getTitle());
+            listRsp.setTyp(infoList.get(i).getTyp());
+            listRsp.setContent(infoList.get(i).getContent());
+            listRsp.setCondition(infoList.get(i).getCondition());
+            listRsp.setStatus(infoList.get(i).getStatus());
+            listRsp.setPlanEndOn(DateUtil.datetimeToTimeStamp( infoList.get(i).getPlanEndOn()));
+            listRsp.setAttachmentMd5List(infoList.get(i).getAttachmentMd5List());
+            listRsp.setClientCreateAt(DateUtil.datetimeToTimeStamp(infoList.get(i).getClientCreateAt()));
+            listRsp.setUpdateAt(DateUtil.datetimeToTimeStamp(infoList.get(i).getUpdateAt()));
+            listRsp.setAttachmentUrlList(infoList.get(i).getAttachmentUrlList());
+            listRsp.setAreaPathName(infoList.get(i).getAreaPathName());
+            listRsp.setCategoryPathName(infoList.get(i).getCategoryPathName());
+            listRsp.setCheckItemPathName(infoList.get(i).getCheckItemPathName());
+            objects.add(listRsp);
+
+        }
+        LjBaseResponse<HouseqmStatisticCategoryIssueListRspMsgVo> ljr = new LjBaseResponse<>();
+        HouseqmStatisticCategoryIssueListRspMsgVo vo = new HouseqmStatisticCategoryIssueListRspMsgVo();
+        vo.setIssue_list(objects);
+       /* vo.setTotal();*/
+        ljr.setData(vo);
+        return ljr;
     }
 
 

@@ -3,6 +3,7 @@ package com.longfor.longjian.houseqm.domain.internalService;
 import com.longfor.longjian.houseqm.po.Area;
 
 import java.util.List;
+import java.util.Set;
 
 public interface AreaService {
 
@@ -25,4 +26,8 @@ public interface AreaService {
      * @param areaPaths
      */
     List<Area> searchAreaByIdInAndNoDeleted(List<Integer> areaPaths);
+
+/*
+    List<Area> selectAreaByIds(List<Integer> areaIds);
+*/
 }

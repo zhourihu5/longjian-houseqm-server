@@ -39,5 +39,15 @@
             AND delete_at IS NULL
         </if>
     </select>
+    <select id="searchByMd5In" resultMap="BaseResultMap">
+        SELECT
+        <include refid="Base_Column_List"/>
+        FROM file_resource WHERE file_md5 IN
+        <foreach collection="attachmentsList" item="item" index="index" open="(" separator="," close=")">
+            #{item}
+        </foreach>
+
+    </select>
+
 
 </mapper>

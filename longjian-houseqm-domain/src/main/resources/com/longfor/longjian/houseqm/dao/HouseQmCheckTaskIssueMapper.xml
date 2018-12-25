@@ -411,7 +411,7 @@
         <if test="reverse==true">order by client_create_at desc </if>
         limit #{start},#{pageSize}
     </select>
-    <select id="searchhouseQmCheckTaskIssueByProTaskIdAreaidBegin" resultMap="BaseResultMap">
+    <select id="searchhouseQmCheckTaskIssueByProTaskIdAreaidBegin" resultMap="BaseResultMap" >
         SELECT  check_item_key,check_item_path_and_key,category_key,category_path_and_key,count(*)as count
         from house_qm_check_task_issue
         WHERE project_id=#{projectId} AND area_path_and_id LIKE concat('%', #{areaId},'%')  AND task_id=#{taskId} AND typ
@@ -425,5 +425,21 @@
             and delete_at is NULL
         </if>
         GROUP BY category_path_and_key,check_item_key
+    </select>
+    <select id="searchHouseQmCheckTaskIssueByProjCategoryKeyAreaId" resultMap="ResultMapWithBLOBs" parameterType="java.util.Map">
+        SELECT <include refid="Base_Column_List" />,<include refid="Blob_Column_List" />
+        FROM house_qm_check_task_issue
+        WHERE project_id=#{projectId}
+        <if test="categoryKey!=null">
+          AND category_path_and_key LIKE  concat('%', #{categoryKey},'%')
+        </if>
+        <if test="areaId!=null">
+        and  area_path_and_id like concat('%', #{areaId},'%')
+        </if>
+                AND  typ in
+                <foreach collection="types" item="item" index="index" open="(" separator="," close=")">
+                   #{item}
+                </foreach>
+        limit #{page},#{pageSize}
     </select>
 </mapper>
