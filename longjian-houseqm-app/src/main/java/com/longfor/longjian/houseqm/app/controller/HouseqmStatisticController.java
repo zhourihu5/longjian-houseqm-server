@@ -24,6 +24,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import javax.annotation.Resource;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 
@@ -69,6 +70,11 @@ public class HouseqmStatisticController {
         houseStatVo.setHouseCheckedPercent(getPercentage(checkTaskHouseStatInfo.getCheckedCount(), checkTaskHouseStatInfo.getHouseCount()));
         houseStatVo.setHouseRepairedPercent(getPercentage(checkTaskHouseStatInfo.getRepairedCount(), checkTaskHouseStatInfo.getHasIssueCount()));
         houseStatVo.setHouseApprovededPercent(getPercentage(checkTaskHouseStatInfo.getApprovedCount(), checkTaskHouseStatInfo.getRepairedCount()));
+        houseStatVo.setApprovedCount(checkTaskHouseStatInfo.getApprovedCount());
+        houseStatVo.setHasIssueCount(checkTaskHouseStatInfo.getHasIssueCount());
+        houseStatVo.setRepairedCount(checkTaskHouseStatInfo.getRepairedCount());
+        houseStatVo.setCheckedCount(checkTaskHouseStatInfo.getCheckedCount());
+        houseStatVo.setHouseCount(checkTaskHouseStatInfo.getHouseCount());
         HouseqmStatisticTaskStatRspMsgVo vo = new HouseqmStatisticTaskStatRspMsgVo();
         vo.setItem(houseStatVo);
         LjBaseResponse<HouseqmStatisticTaskStatRspMsgVo> response = new LjBaseResponse<>();
@@ -188,12 +194,13 @@ public class HouseqmStatisticController {
                                                             @RequestParam(value = "timestamp") Integer timestamp) {
         Date begin = DateUtil.transForDate(beginOn);
         Date endOns = DateUtil.transForDate(endOn);
-        TaskRepairStatVo taskRepairStatVo = iHouseqmStatisticService.searchIssueRepairStatisticByProjTaskIdAreaIdBeginOnEndOn(projectId, taskId, areaId, begin, endOns);
-   /*     //endon加一天
+      //endon加一天
         Calendar c = Calendar.getInstance();
         c.setTime(endOns);
         c.add(Calendar.DAY_OF_MONTH, 1);// +1天
-         endOns = c.getTime();*/
+         endOns = c.getTime();
+        TaskRepairStatVo taskRepairStatVo = iHouseqmStatisticService.searchIssueRepairStatisticByProjTaskIdAreaIdBeginOnEndOn(projectId, taskId, areaId, begin, endOns);
+
         LjBaseResponse<TaskRepairStatVo> ljbr = new LjBaseResponse<>();
         ljbr.setData(taskRepairStatVo);
         return ljbr;
@@ -237,7 +244,7 @@ public class HouseqmStatisticController {
                                                                 @RequestParam(value = "page") Integer page,
                                                                 @RequestParam(value = "page_size") Integer pageSize
                                                                 ) {
-     List<HouseQmCheckTaskIssueOnlineInfoVo>infoList=   iHouseqmStatisticService.SearchHouseQmCheckTaskIssueOnlineInfoByProjCategoryKeyAreaIdPaged(projectId, categoryKey, areaId, page, pageSize);
+     List<HouseQmCheckTaskIssueOnlineInfoVo>infoList= iHouseqmStatisticService.SearchHouseQmCheckTaskIssueOnlineInfoByProjCategoryKeyAreaIdPaged(projectId, categoryKey, areaId, page, pageSize);
         ArrayList<HouseqmStatisticCategoryIssueListRspMsgVo.ApiTaskIssueRepairListRsp> objects = Lists.newArrayList();
         for (int i = 0; i < infoList.size(); i++) {
             HouseqmStatisticCategoryIssueListRspMsgVo.ApiTaskIssueRepairListRsp listRsp = new HouseqmStatisticCategoryIssueListRspMsgVo().new ApiTaskIssueRepairListRsp();
@@ -264,7 +271,7 @@ public class HouseqmStatisticController {
         LjBaseResponse<HouseqmStatisticCategoryIssueListRspMsgVo> ljr = new LjBaseResponse<>();
         HouseqmStatisticCategoryIssueListRspMsgVo vo = new HouseqmStatisticCategoryIssueListRspMsgVo();
         vo.setIssue_list(objects);
-       /* vo.setTotal();*/
+        vo.setTotal(infoList.size());
         ljr.setData(vo);
         return ljr;
     }

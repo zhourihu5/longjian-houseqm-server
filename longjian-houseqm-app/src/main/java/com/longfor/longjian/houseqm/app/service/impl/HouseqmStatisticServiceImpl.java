@@ -213,22 +213,21 @@ public class HouseqmStatisticServiceImpl implements IHouseqmStatisticService {
         String noPlanEndOn = MathUtil.getPercentage(ic.getNoPlanEndOn(), ic.getTotal());
 
 
+        item.setInitime_finish(iniTimeFinish);
+        item.setInitime_unfinish(iniTimeUnFinish);
+        item.setOvertime_finish(overTimeFinish);
+        item.setOvertime_unfinish(overTimeUnFinish);
+        item.setNo_plan_end_on(noPlanEndOn);
 
-                item.setInitime_finish(iniTimeFinish);
-                item.setInitime_unfinish(iniTimeUnFinish);
-                item.setOvertime_finish(overTimeFinish);
-                item.setOvertime_unfinish(overTimeUnFinish);
-                item.setNo_plan_end_on(noPlanEndOn);
+        item.setInitime_finish_count(ic.getInitimeFinish());
+        item.setInitime_unfinish_count(ic.getInitimeUnfinish());
+        item.setOvertime_finish_count(ic.getOvertimeFinish());
+        item.setOvertime_unfinish_count(ic.getOvertimeUnfinish());
+        item.setNo_plan_end_on_count(ic.getNoPlanEndOn());
+        item.setTotal_count(ic.getTotal());
 
-                item.setInitime_finish_count(ic.getInitimeFinish());
-                item.setInitime_unfinish_count(ic.getInitimeUnfinish());
-                item.setOvertime_finish_count(ic.getOvertimeFinish());
-                item.setOvertime_unfinish_count(ic.getOvertimeUnfinish());
-                item.setNo_plan_end_on_count(ic.getNoPlanEndOn());
-                item.setTotal_count(ic.getTotal());
-
-                taskRepairStatVo.setItem(item);
-                return taskRepairStatVo;
+        taskRepairStatVo.setItem(item);
+        return taskRepairStatVo;
 
 
     }
@@ -370,15 +369,14 @@ public class HouseqmStatisticServiceImpl implements IHouseqmStatisticService {
     }
 
     /**
-     *
-     * @author hy
-     * @date 2018/12/24 0024
      * @param projectId
      * @param categoryClsList
      * @param areaId
      * @param beginOn1
      * @param endOn1
      * @return com.longfor.longjian.houseqm.app.vo.IssueRepairStatisticVo
+     * @author hy
+     * @date 2018/12/24 0024
      */
     private IssueRepairStatisticVo searchIssueRepairStatisticByProjCategoryClsInAreaIdBeginOnEndOn(Integer projectId, List<Integer> categoryClsList, Integer areaId, Date beginOn1, Date endOn1) {
         String nowStr = DateUtil.getNowTimeStr("yyyy-MM-dd HH:mm:ss");
@@ -388,7 +386,7 @@ public class HouseqmStatisticServiceImpl implements IHouseqmStatisticService {
 
         if (areaId > 0) condiMap.put("areaPathAndId", "%/" + areaId + "/%");
         if (beginOn1.getTime() / 1000 > 0) condiMap.put("clientCreateAtGte", beginOn1);
-        if (endOn1.getTime() / 1000 > 0)condiMap.put("clientCreateAtLte", endOn1);
+        if (endOn1.getTime() / 1000 > 0) condiMap.put("clientCreateAtLte", endOn1);
         ArrayList<Integer> typs = Lists.newArrayList();
         typs.add(HouseQmCheckTaskIssueEnum.FindProblem.getId());
         typs.add(HouseQmCheckTaskIssueEnum.Difficult.getId());
@@ -400,10 +398,10 @@ public class HouseqmStatisticServiceImpl implements IHouseqmStatisticService {
         statusIn.add(HouseQmCheckTaskIssueStatusEnum.ReformNoCheck.getId());
         statusIn.add(HouseQmCheckTaskIssueStatusEnum.CheckYes.getId());
         condiMap.put("statusIn", statusIn);
-        List<IssueRepairCount> issueCounts=houseQmCheckTaskIssueService.selectIssueRepairCountByProjectIdAndCategoryClsAndTypInAndStatusInAndNoDeletedAndDongTai(condiMap);
+        List<IssueRepairCount> issueCounts = houseQmCheckTaskIssueService.selectIssueRepairCountByProjectIdAndCategoryClsAndTypInAndStatusInAndNoDeletedAndDongTai(condiMap);
         IssueRepairCount ic = issueCounts.get(0);
         IssueRepairStatisticVo item = new IssueRepairStatisticVo();
-        if (ic.getTotal()== 0) {
+        if (ic.getTotal() == 0) {
             // 防止除数为0。总之，total为0的时候，全部结果是0%
             ic.setTotal(1);
         }
@@ -531,17 +529,17 @@ public class HouseqmStatisticServiceImpl implements IHouseqmStatisticService {
         types.add(HouseQmCheckTaskIssueEnum.FindProblem.getId());
         types.add(HouseQmCheckTaskIssueEnum.Difficult.getId());
         HashMap<String, Object> condiMap = Maps.newHashMap();
-        condiMap.put("projectId",projectId);
-        condiMap.put("categoryKey",categoryKey);
-        condiMap.put("types",types);
+        condiMap.put("projectId", projectId);
+        condiMap.put("categoryKey", categoryKey);
+        condiMap.put("types", types);
         if (pageSize < 1) {
             pageSize = 10;
         }
         if (page < 1) {
             page = 1;
         }
-        condiMap.put("page",page);
-        condiMap.put("pageSize",pageSize);
+        condiMap.put("page", page);
+        condiMap.put("pageSize", pageSize);
         if (areaId > 0) {
             condiMap.put("areaId", areaId);
         }
@@ -564,7 +562,7 @@ public class HouseqmStatisticServiceImpl implements IHouseqmStatisticService {
             infos = fillHouseQmCheckTaskIssueOnlineInfoCategoryInfo(infos);
             infos = fillHouseQmCheckTaskIssueOnlineInfoFileInfo(infos);
         } catch (Exception e) {
-            throw new Exception("error:"+e);
+            throw new Exception("error:" + e);
         }
         return infos;
     }
@@ -587,12 +585,13 @@ public class HouseqmStatisticServiceImpl implements IHouseqmStatisticService {
             String[] split = infos.get(i).getAttachmentMd5List().split(",");
             for (int j = 0; j < split.length; j++) {
                 if (map.containsKey(split[j])) {
-
-                    infos.get(i).getAttachmentUrlList().add(map.get(split[j]));
-
+                    List<String> list = Lists.newArrayList();
+                    list.add( map.get(split[j]));
+                    infos.get(i).setAttachmentUrlList(list);
+                    }
                 }
             }
-        }
+
         return infos;
 
     }
@@ -657,16 +656,18 @@ public class HouseqmStatisticServiceImpl implements IHouseqmStatisticService {
 
     private AreaMapVo CreateAreasMapByAreaList(List<Area> areaList) {
         AreaMapVo vo = new AreaMapVo();
-        Map<Integer, Area> map = vo.GetAreas();
+        Map<Integer, Area> map = Maps.newHashMap();
         for (int i = 0; i < areaList.size(); i++) {
-            map.put(areaList.get(i).getId(), areaList.get(i));
+            Area area = areaList.get(i);
+            map.put(area.getId(), area);
         }
         vo.setList(areaList);
+        vo.setAreas(map);
         return vo;
     }
 
     private List<Area> SelectAllByLeaveIds(Set<Integer> areaIds) {
-        List<Integer> list= areaIds.stream().collect(Collectors.toList());
+        List<Integer> list = areaIds.stream().collect(Collectors.toList());
         List<Area> areaList = areaService.selectByAreaIds(list);
         ArrayList<Integer> totalIds = Lists.newArrayList();
         for (int i = 0; i < areaList.size(); i++) {
@@ -706,26 +707,26 @@ public class HouseqmStatisticServiceImpl implements IHouseqmStatisticService {
 
     private List<HouseQmCheckTaskIssueOnlineInfoVo> convertHouseQmCheckTaskIssueToOnlineInfo(List<HouseQmCheckTaskIssue> issueList) {
         ArrayList<HouseQmCheckTaskIssueOnlineInfoVo> infos = Lists.newArrayList();
-        for (int i = 0; i < infos.size(); i++) {
+        for (int i = 0; i < issueList.size(); i++) {
             HouseQmCheckTaskIssueOnlineInfoVo vo = new HouseQmCheckTaskIssueOnlineInfoVo();
-            vo.setId(infos.get(i).getId());
-            vo.setProjectId(infos.get(i).getProjectId());
-            vo.setTaskId(infos.get(i).getTaskId());
-            vo.setUuid(infos.get(i).getUuid());
-            vo.setTitle(infos.get(i).getTitle());
-            vo.setTyp(infos.get(i).getTyp());
-            vo.setContent(infos.get(i).getContent());
-            vo.setCondition(infos.get(i).getCondition());
-            vo.setStatus(infos.get(i).getStatus());
-            vo.setPlanEndOn(infos.get(i).getPlanEndOn());
-            vo.setAttachmentMd5List(infos.get(i).getAttachmentMd5List());
-            vo.setClientCreateAt(infos.get(i).getClientCreateAt());
-            vo.setUpdateAt(infos.get(i).getUpdateAt());
-            vo.setAreaId(infos.get(i).getAreaId());
-            vo.setCategoryKey(infos.get(i).getCategoryKey());
-            vo.setCategoryPathAndKey(infos.get(i).getCategoryPathAndKey());
-            vo.setCheckItemKey(infos.get(i).getCheckItemKey());
-            vo.setCheckItemPathAndKey(infos.get(i).getCheckItemPathAndKey());
+            vo.setId(issueList.get(i).getId());
+            vo.setProjectId(issueList.get(i).getProjectId());
+            vo.setTaskId(issueList.get(i).getTaskId());
+            vo.setUuid(issueList.get(i).getUuid());
+            vo.setTitle(issueList.get(i).getTitle());
+            vo.setTyp(issueList.get(i).getTyp());
+            vo.setContent(issueList.get(i).getContent());
+            vo.setCondition(issueList.get(i).getCondition());
+            vo.setStatus(issueList.get(i).getStatus());
+            vo.setPlanEndOn(issueList.get(i).getPlanEndOn());
+            vo.setAttachmentMd5List(issueList.get(i).getAttachmentMd5List());
+            vo.setClientCreateAt(issueList.get(i).getClientCreateAt());
+            vo.setUpdateAt(issueList.get(i).getUpdateAt());
+            vo.setAreaId(issueList.get(i).getAreaId());
+            vo.setCategoryKey(issueList.get(i).getCategoryKey());
+            vo.setCategoryPathAndKey(issueList.get(i).getCategoryPathAndKey());
+            vo.setCheckItemKey(issueList.get(i).getCheckItemKey());
+            vo.setCheckItemPathAndKey(issueList.get(i).getCheckItemPathAndKey());
             infos.add(vo);
         }
         return infos;
