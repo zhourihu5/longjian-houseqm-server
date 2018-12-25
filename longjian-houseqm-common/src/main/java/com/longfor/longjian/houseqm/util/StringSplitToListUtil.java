@@ -3,6 +3,7 @@ package com.longfor.longjian.houseqm.util;
 import com.google.common.collect.Lists;
 import org.apache.commons.lang.StringUtils;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.regex.Pattern;
@@ -45,7 +46,10 @@ public class StringSplitToListUtil {
      */
     public static List<String> splitToStringComma(String ids,String sep){
         String[] str = ids.split(sep);
-        List<String> list = Arrays.asList(str);
+        ArrayList<String> list = Lists.newArrayList();
+        for (String s : str) {
+            list.add(s);
+        }
         return list;
     }
 
@@ -76,6 +80,8 @@ public class StringSplitToListUtil {
         Pattern pattern = Pattern.compile("^[-\\+]?[\\d]*$");
         return pattern.matcher(str).matches();
     }
+
+
 
     /**
      *

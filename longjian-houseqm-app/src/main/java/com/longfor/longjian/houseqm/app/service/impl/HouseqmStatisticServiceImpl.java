@@ -1,5 +1,10 @@
 package com.longfor.longjian.houseqm.app.service.impl;
 
+import java.text.SimpleDateFormat;
+import java.util.Date;
+
+import java.lang.String;
+
 
 import com.github.pagehelper.PageInfo;
 import com.google.common.collect.Lists;
@@ -10,7 +15,12 @@ import com.longfor.longjian.houseqm.app.vo.*;
 import com.longfor.longjian.houseqm.consts.HouseQmCheckTaskIssueEnum;
 import com.longfor.longjian.houseqm.consts.HouseQmCheckTaskIssueStatusEnum;
 import com.longfor.longjian.houseqm.domain.internalService.*;
+import com.longfor.longjian.houseqm.app.vo.*;
+import com.longfor.longjian.houseqm.consts.*;
+import com.longfor.longjian.houseqm.domain.internalService.*;
 import com.longfor.longjian.houseqm.po.*;
+import com.longfor.longjian.houseqm.util.CollectionUtil;
+import com.longfor.longjian.houseqm.util.DateUtil;
 import com.longfor.longjian.houseqm.util.MathUtil;
 import com.longfor.longjian.houseqm.util.StringSplitToListUtil;
 import lombok.extern.slf4j.Slf4j;
@@ -20,6 +30,7 @@ import org.springframework.stereotype.Service;
 import javax.annotation.Resource;
 import java.text.DecimalFormat;
 import java.util.*;
+import java.util.stream.Collectors;
 import java.util.stream.Collectors;
 
 import static java.awt.SystemColor.info;
@@ -48,6 +59,15 @@ public class HouseqmStatisticServiceImpl implements IHouseqmStatisticService {
     @Resource
     FileResourceService fileService;
 
+
+    @Resource
+    FileResourceService fileResourceService;
+
+    @Resource
+    CategoryV3Service categoryV3Service;
+
+    @Resource
+    CheckItemV3Service checkItemV3Service;
 
     /**
      * @param taskId
@@ -161,71 +181,332 @@ public class HouseqmStatisticServiceImpl implements IHouseqmStatisticService {
         List<Integer> types = Lists.newArrayList();
         types.add(HouseQmCheckTaskIssueEnum.FindProblem.getId());
         types.add(HouseQmCheckTaskIssueEnum.Difficult.getId());
-
-        // 以下条件成立时调用对应成立时的方法。go代码较复杂
+        HashMap<String, Object> condiMap = Maps.newHashMap();
+        // 以下条件成立时调用对应成立时的方法。
         if (areaId > 0) {
-
-            HashMap<String, Object> condiMap = Maps.newHashMap();
-            // 以下条件成立时调用对应成立时的方法。
-            if (areaId > 0) {
-                condiMap.put("areaId", "%%/areaId/%%");//模糊查询 AreaPathAndId like '%%/ /areaId%%'
-            }
-            if (beginOn.getTime() / 1000 > 0) {
-
-                if (beginOn.getTime() / 1000 > 0) {
-                    condiMap.put("beginOn", beginOn);
-                }
-                if (endOn.getTime() / 1000 > 0) {
-
-                    if (endOn.getTime() / 1000 > 0) {
-                        condiMap.put("endOn", endOn);
-                    }
-                    //不成立时调用下面的业务方法
-                    Date now = new Date();
-                    condiMap.put("now", now);
-                    condiMap.put("projectId", projectId);
-                    condiMap.put("taskId", taskId);
-                    condiMap.put("types", types);
-                    condiMap.put("deleted", "false");
-                    issueCounts = houseQmCheckTaskIssueService.selectByProjectIdAndTaskIdAndTyeInAndDongTai(condiMap);
-                    IssueRepairCount ic = issueCounts.get(0);
-                    TaskRepairStatVo taskRepairStatVo = new TaskRepairStatVo();
-                    TaskRepairStatVo.TaskRepairVo item = taskRepairStatVo.new TaskRepairVo();
-                    if (ic.getTotal() == 0) {
-                        ic.setTotal(1);
-                    }
-                    DecimalFormat f = new DecimalFormat("0.00");
-                    String iniTimeFinish = MathUtil.getPercentage(ic.getInitimeFinish(), ic.getTotal());
-                    String iniTimeUnFinish = MathUtil.getPercentage(ic.getInitimeUnfinish(), ic.getTotal());
-                    String overTimeFinish = MathUtil.getPercentage(ic.getOvertimeFinish(), ic.getTotal());
-                    String overTimeUnFinish = MathUtil.getPercentage(ic.getOvertimeUnfinish(), ic.getTotal());
-                    String noPlanEndOn = MathUtil.getPercentage(ic.getNoPlanEndOn(), ic.getTotal());
-
-                    item.setInitime_finish(iniTimeFinish);
-                    item.setInitime_unfinish(iniTimeUnFinish);
-                    item.setOvertime_finish(overTimeFinish);
-                    item.setOvertime_unfinish(overTimeUnFinish);
-                    item.setNo_plan_end_on(noPlanEndOn);
-
-                    item.setInitime_finish_count(ic.getInitimeFinish());
-                    item.setInitime_unfinish_count(ic.getInitimeUnfinish());
-                    item.setOvertime_finish_count(ic.getOvertimeFinish());
-                    item.setOvertime_unfinish_count(ic.getOvertimeUnfinish());
-                    item.setNo_plan_end_on_count(ic.getNoPlanEndOn());
-                    item.setTotal_count(ic.getTotal());
-
-                    taskRepairStatVo.setItem(item);
-                    return taskRepairStatVo;
-                }
-            }
-
+            condiMap.put("areaId", "%/" + areaId + "/%");//模糊查询 AreaPathAndId like '%%/ /areaId%%'
         }
-        return null;
+        if (beginOn.getTime() / 1000 > 0) {
+            condiMap.put("beginOn", beginOn);
+        }
+        if (endOn.getTime() / 1000 > 0) {
+            condiMap.put("endOn", endOn);
+        }
+        Date now = new Date();
+        condiMap.put("now", now);
+        condiMap.put("projectId", projectId);
+        condiMap.put("taskId", taskId);
+        condiMap.put("types", types);
+        condiMap.put("deleted", "false");
+        issueCounts = houseQmCheckTaskIssueService.selectByProjectIdAndTaskIdAndTyeInAndDongTai(condiMap);
+        IssueRepairCount ic = issueCounts.get(0);
+        TaskRepairStatVo taskRepairStatVo = new TaskRepairStatVo();
+        TaskRepairStatVo.TaskRepairVo item = taskRepairStatVo.new TaskRepairVo();
+        if (ic.getTotal() == 0) {
+            ic.setTotal(1);
+        }
+        DecimalFormat f = new DecimalFormat("0.00");
+        String iniTimeFinish = MathUtil.getPercentage(ic.getInitimeFinish(), ic.getTotal());
+        String iniTimeUnFinish = MathUtil.getPercentage(ic.getInitimeUnfinish(), ic.getTotal());
+        String overTimeFinish = MathUtil.getPercentage(ic.getOvertimeFinish(), ic.getTotal());
+        String overTimeUnFinish = MathUtil.getPercentage(ic.getOvertimeUnfinish(), ic.getTotal());
+        String noPlanEndOn = MathUtil.getPercentage(ic.getNoPlanEndOn(), ic.getTotal());
+
+
+
+                item.setInitime_finish(iniTimeFinish);
+                item.setInitime_unfinish(iniTimeUnFinish);
+                item.setOvertime_finish(overTimeFinish);
+                item.setOvertime_unfinish(overTimeUnFinish);
+                item.setNo_plan_end_on(noPlanEndOn);
+
+                item.setInitime_finish_count(ic.getInitimeFinish());
+                item.setInitime_unfinish_count(ic.getInitimeUnfinish());
+                item.setOvertime_finish_count(ic.getOvertimeFinish());
+                item.setOvertime_unfinish_count(ic.getOvertimeUnfinish());
+                item.setNo_plan_end_on_count(ic.getNoPlanEndOn());
+                item.setTotal_count(ic.getTotal());
+
+                taskRepairStatVo.setItem(item);
+                return taskRepairStatVo;
+
+
+    }
+
+    /**
+     * @param
+     * @return com.longfor.longjian.houseqm.app.vo.ProjectDailyListVo
+     * @author hy
+     * @date 2018/12/22 0022
+     */
+    @Override
+    public HouseqmStatisticCategoryIssueListRspMsgVo taskIssueRepairList(Integer projectId, Integer taskId, Integer areaId, Integer beginOn, Integer endOn, Integer timestamp, Integer planStatus, String source, Integer page, Integer pageSize) {
+        Date beginOn1 = DateUtil.timeStampToDate(beginOn, "yyyy-MM-dd");
+        Date endOn1 = DateUtil.timeStampToDate(endOn, "yyyy-MM-dd");
+        if (beginOn > 0) {
+            beginOn1 = DateUtil.timeStampToDate(beginOn, "yyyy-MM-dd");
+        }
+        if (endOn > 0) {
+            Calendar c = Calendar.getInstance();
+            Date date = DateUtil.timeStampToDate(endOn, "yyyy-MM-dd");
+            c.setTime(date);
+            c.add(Calendar.DAY_OF_MONTH, 1);
+            endOn1 = DateUtil.timeStampToDate((int) (c.getTime().getTime() / 1000), "yyyy-MM-dd");
+        }
+
+        List<Integer> categoryClsList = getCategoryClsList(source);
+        HouseQmCheckTaskIssueListVo issueListVo = searchHouseQmCheckTaskIssueByProjTaskIdClsInAreaIdPlanStatusBeginOnEndOnPage(projectId, taskId, categoryClsList, areaId, planStatus, beginOn1, endOn1, page, pageSize);
+
+        List<Integer> areaIds = Lists.newArrayList();
+        List<String> categoryKeys = Lists.newArrayList();
+        List<String> checkItemKeys = Lists.newArrayList();
+        List<String> attachmentMd5List = Lists.newArrayList();
+
+        List<HouseQmCheckTaskIssue> resIssues = issueListVo.getHouseQmCheckTaskIssues();
+        resIssues.forEach(item -> {
+            areaIds.add(item.getAreaId());
+            categoryKeys.addAll(StringSplitToListUtil.removeStartAndEndStrAndSplit(item.getCategoryKey(), "/", "/"));
+            checkItemKeys.addAll(StringSplitToListUtil.removeStartAndEndStrAndSplit(item.getCheckItemPathAndKey(), "/", "/"));
+            attachmentMd5List.addAll(StringSplitToListUtil.splitToStringComma(item.getAttachmentMd5List(), ","));
+        });
+        //列表元素去重
+        List areaIdList = CollectionUtil.removeDuplicate(areaIds);
+        List categoryKeyList = CollectionUtil.removeDuplicate(categoryKeys);
+        List checkItemKeyList = CollectionUtil.removeDuplicate(checkItemKeys);
+
+        //调用file_resource service 方法 files
+        List<FileResource> files = fileResourceService.searchFileResourceByFileMd5InAndNoDeleted(attachmentMd5List);
+        HashMap<String, String> fileMap = Maps.newHashMap();
+        files.forEach(item -> {
+            fileMap.put(item.getFileMd5(), item.getStoreKey());
+        });
+
+        AreaMapVo areaMap = createAreasMapByLeaveIds(areaIdList);
+        List<CategoryV3> categorys = categoryV3Service.searchCategoryV3ByKeyInAndNoDeleted(categoryKeyList);
+
+        categorys.forEach(item -> {
+            List<String> list = StringSplitToListUtil.removeStartAndEndStrAndSplit(item.getPath(), "/", "/");
+            list.add(item.getKey());
+            categoryKeyList.addAll(list);
+        });
+        //去重 categoryKeyList
+        CollectionUtil.removeDuplicate(categoryKeyList);
+
+        List<CategoryV3> categoryV3s = categoryV3Service.searchCategoryV3ByKeyInAndNoDeleted(categoryKeyList);
+
+        CategoryV3MapVo categoryMap = newCategoryMap(categorys);
+
+        List<CheckItemV3> checkItems = checkItemV3Service.searchCheckItemyV3ByKeyInAndNoDeleted(checkItemKeyList);
+
+        CheckItemV3MapVo checkItemV3Map = newCheckItemMap(checkItems);
+        //
+        HouseqmStatisticCategoryIssueListRspMsgVo issueListRspMsgVo = new HouseqmStatisticCategoryIssueListRspMsgVo();
+        List<HouseqmStatisticCategoryIssueListRspMsgVo.ApiTaskIssueRepairListRsp> issueList = Lists.newArrayList();
+        resIssues.forEach(item -> {
+            HouseqmStatisticCategoryIssueListRspMsgVo.ApiTaskIssueRepairListRsp apiTaskIssueRepairListRsp = issueListRspMsgVo.new ApiTaskIssueRepairListRsp();
+            apiTaskIssueRepairListRsp.setId(item.getId());
+            apiTaskIssueRepairListRsp.setProjectId(item.getProjectId());
+            apiTaskIssueRepairListRsp.setTaskId(item.getTaskId());
+            apiTaskIssueRepairListRsp.setUuid(item.getUuid());
+            apiTaskIssueRepairListRsp.setTitle(item.getTitle());
+            apiTaskIssueRepairListRsp.setTyp(item.getTyp());
+            apiTaskIssueRepairListRsp.setContent(item.getContent());
+            apiTaskIssueRepairListRsp.setCondition(item.getCondition());
+            apiTaskIssueRepairListRsp.setStatus(item.getStatus());
+
+            apiTaskIssueRepairListRsp.setPlanEndOn(DateUtil.datetimeToTimeStamp(item.getPlanEndOn()));
+            apiTaskIssueRepairListRsp.setAttachmentMd5List(item.getAttachmentMd5List());
+            apiTaskIssueRepairListRsp.setClientCreateAt(DateUtil.datetimeToTimeStamp(item.getClientCreateAt()));
+            apiTaskIssueRepairListRsp.setUpdateAt(DateUtil.datetimeToTimeStamp(item.getUpdateAt()));
+
+            List<String> list = StringSplitToListUtil.splitToStringComma(item.getAttachmentMd5List(), ",");
+            apiTaskIssueRepairListRsp.setAttachmentUrlList(new ArrayList<String>());
+            list.forEach(fm -> {
+                if (fileMap.containsKey(fm)) {
+                    List<String> attachmentUrlList = apiTaskIssueRepairListRsp.getAttachmentUrlList();
+                    attachmentUrlList.add(fileMap.get(fm));
+                    apiTaskIssueRepairListRsp.setAttachmentUrlList(attachmentUrlList);
+                }
+            });
+            apiTaskIssueRepairListRsp.setAreaPathName(areaMap.getPathNames(item.getAreaId()));
+            apiTaskIssueRepairListRsp.setCategoryPathName(categoryMap.getFullNamesByKey(item.getCategoryKey()));
+            apiTaskIssueRepairListRsp.setCheckItemPathName(checkItemV3Map.getFullNamesByKey(item.getCheckItemKey()));
+            issueList.add(apiTaskIssueRepairListRsp);
+        });
+
+        issueListRspMsgVo.setIssue_list(issueList);
+        issueListRspMsgVo.setTotal(issueListVo.getTotal());
+        return issueListRspMsgVo;
+    }
+
+    /**
+     * @param projectId
+     * @param source
+     * @param areaId
+     * @param beginOn
+     * @param endOn
+     * @param timestamp
+     * @return com.longfor.longjian.houseqm.app.vo.IssueRepairStatisticVo
+     * @author hy
+     * @date 2018/12/24 0024
+     */
+    @Override
+    public IssueRepairStatisticVo projectIssueRepair(Integer projectId, String source, Integer areaId, Integer beginOn, Integer endOn, Integer timestamp) {
+        Date beginOn1 = DateUtil.timeStampToDate(beginOn, "yyyy-MM-dd");
+        Date endOn1 = DateUtil.timeStampToDate(endOn, "yyyy-MM-dd");
+        if (beginOn > 0) {
+            beginOn1 = DateUtil.timeStampToDate(beginOn, "yyyy-MM-dd");
+        }
+        if (endOn > 0) {
+            Calendar c = Calendar.getInstance();
+            Date date = DateUtil.timeStampToDate(endOn, "yyyy-MM-dd");
+            c.setTime(date);
+            c.add(Calendar.DAY_OF_MONTH, 1);
+            endOn1 = DateUtil.timeStampToDate((int) (c.getTime().getTime() / 1000), "yyyy-MM-dd");
+        }
+        List<Integer> categoryClsList = getCategoryClsList(source);
+        IssueRepairStatisticVo issueRepairStatisticVo = searchIssueRepairStatisticByProjCategoryClsInAreaIdBeginOnEndOn(projectId, categoryClsList, areaId, beginOn1, endOn1);
+        return issueRepairStatisticVo;
+    }
+
+    /**
+     *
+     * @author hy
+     * @date 2018/12/24 0024
+     * @param projectId
+     * @param categoryClsList
+     * @param areaId
+     * @param beginOn1
+     * @param endOn1
+     * @return com.longfor.longjian.houseqm.app.vo.IssueRepairStatisticVo
+     */
+    private IssueRepairStatisticVo searchIssueRepairStatisticByProjCategoryClsInAreaIdBeginOnEndOn(Integer projectId, List<Integer> categoryClsList, Integer areaId, Date beginOn1, Date endOn1) {
+        String nowStr = DateUtil.getNowTimeStr("yyyy-MM-dd HH:mm:ss");
+        HashMap<String, Object> condiMap = new HashMap<>();
+        condiMap.put("projectId", projectId);
+        condiMap.put("categoryClsList", categoryClsList);
+
+        if (areaId > 0) condiMap.put("areaPathAndId", "%/" + areaId + "/%");
+        if (beginOn1.getTime() / 1000 > 0) condiMap.put("clientCreateAtGte", beginOn1);
+        if (endOn1.getTime() / 1000 > 0)condiMap.put("clientCreateAtLte", endOn1);
+        ArrayList<Integer> typs = Lists.newArrayList();
+        typs.add(HouseQmCheckTaskIssueEnum.FindProblem.getId());
+        typs.add(HouseQmCheckTaskIssueEnum.Difficult.getId());
+        condiMap.put("typ", typs);
+        condiMap.put("now", nowStr);
+        condiMap.put("status", HouseQmCheckTaskIssueStatusEnum.AssignNoReform.getId());
+        ArrayList<Integer> statusIn = Lists.newArrayList();
+        statusIn.add(HouseQmCheckTaskIssueStatusEnum.AssignNoReform.getId());
+        statusIn.add(HouseQmCheckTaskIssueStatusEnum.ReformNoCheck.getId());
+        statusIn.add(HouseQmCheckTaskIssueStatusEnum.CheckYes.getId());
+        condiMap.put("statusIn", statusIn);
+        List<IssueRepairCount> issueCounts=houseQmCheckTaskIssueService.selectIssueRepairCountByProjectIdAndCategoryClsAndTypInAndStatusInAndNoDeletedAndDongTai(condiMap);
+        IssueRepairCount ic = issueCounts.get(0);
+        IssueRepairStatisticVo item = new IssueRepairStatisticVo();
+        if (ic.getTotal()== 0) {
+            // 防止除数为0。总之，total为0的时候，全部结果是0%
+            ic.setTotal(1);
+        }
+
+        item.setNoPlanEndOn(MathUtil.getPercentage(ic.getNoPlanEndOn(), ic.getTotal()));
+        item.setOvertimeUnfinish(MathUtil.getPercentage(ic.getOvertimeUnfinish(), ic.getTotal()));
+        item.setInitimeUnfinish(MathUtil.getPercentage(ic.getInitimeUnfinish(), ic.getTotal()));
+        item.setOvertimeFinish(MathUtil.getPercentage(ic.getOvertimeFinish(), ic.getTotal()));
+        item.setInitimeFinish(MathUtil.getPercentage(ic.getInitimeFinish(), ic.getTotal()));
+
+        item.setTotalCount(ic.getTotal());
+        item.setNoPlanEndOnCount(ic.getNoPlanEndOn());
+        item.setOvertimeUnfinishCount(ic.getOvertimeUnfinish());
+        item.setInitimeUnfinishCount(ic.getInitimeUnfinish());
+        item.setOvertimeFinishCount(ic.getOvertimeFinish());
+        item.setInitimeFinishCount(ic.getInitimeFinish());
+        return item;
+    }
+
+    /**
+     * @param projectId
+     * @param taskId
+     * @param categoryClsList
+     * @param areaId
+     * @param planStatus
+     * @param beginOn
+     * @param endOn
+     * @param page
+     * @param pageSize
+     * @return com.longfor.longjian.houseqm.app.vo.HouseQmCheckTaskIssueListVo
+     * @author hy
+     * @date 2018/12/22 0022
+     */
+    private HouseQmCheckTaskIssueListVo searchHouseQmCheckTaskIssueByProjTaskIdClsInAreaIdPlanStatusBeginOnEndOnPage(Integer projectId, Integer taskId, List<Integer> categoryClsList, Integer areaId, Integer planStatus, Date beginOn, Date endOn, Integer page, Integer pageSize) {
+        HashMap<String, Object> condiMap = Maps.newHashMap();
+        condiMap.put("projectId", projectId);
+        condiMap.put("categoryCls", categoryClsList);
+        if (taskId > 0) condiMap.put("taskId", taskId);
+        if (areaId > 0) condiMap.put("areaId", "/" + areaId + "/");
+        if (beginOn.getTime() / 1000 > 0) condiMap.put("clientCreateAtGte", beginOn);
+        if (endOn.getTime() / 1000 > 0) condiMap.put("clientCreateAtLte", endOn);
+        ArrayList<Integer> typs = Lists.newArrayList();
+        typs.add(HouseQmCheckTaskIssueEnum.FindProblem.getId());
+        typs.add(HouseQmCheckTaskIssueEnum.Difficult.getId());
+        condiMap.put("typs", typs);
+        String nowStr = DateUtil.getNowTimeStr("yyyy-MM-dd HH:mm:ss");
+        condiMap.put("now", nowStr);
+        if (planStatus == HouseQmIssuePlanStatusEnum.OnTimeFinish.getId()) {
+            condiMap.put("status1", true);
+        } else if (planStatus == HouseQmIssuePlanStatusEnum.UnOnTimeNotFinish.getId()) {
+            condiMap.put("status2", true);
+        } else if (planStatus == HouseQmIssuePlanStatusEnum.NoSettingTime.getId()) {
+            condiMap.put("status3", true);
+        } else if (planStatus == HouseQmIssuePlanStatusEnum.OverTimeFinish.getId()) {
+            condiMap.put("status4", true);
+        } else if (planStatus == HouseQmIssuePlanStatusEnum.OverTimeNotFinish.getId()) {
+            condiMap.put("status5", true);
+        }
+        int start = 0;
+        if (page > 0) {
+            start = (page - 1) * pageSize;
+        }
+        int total = houseQmCheckTaskIssueService.selectCountByProjectIdAndCategoryClsAndTypeAndStatusInAndDongTai(condiMap);
+        condiMap.put("start", start);
+        condiMap.put("pageSize", pageSize);
+        List<HouseQmCheckTaskIssue> houseQmCheckTaskIssues = houseQmCheckTaskIssueService.selectHouseQmCheckTaskIssueByProjectIdAndCategoryClsAndTypeAndStatusInAndOrderByDescAndPageDongTai(condiMap);
+
+        HouseQmCheckTaskIssueListVo houseQmCheckTaskIssueListVo = new HouseQmCheckTaskIssueListVo();
+        houseQmCheckTaskIssueListVo.setTotal(total);
+        houseQmCheckTaskIssueListVo.setHouseQmCheckTaskIssues(houseQmCheckTaskIssues);
+        return houseQmCheckTaskIssueListVo;
+    }
+
+    /**
+     * @param module
+     * @return java.util.List<java.lang.Integer>
+     * @author hy
+     * @date 2018/12/22 0022
+     */
+    private List<Integer> getCategoryClsList(String module) {
+        String source = null;
+        if ("gcgl".equals(module)) { //兼容app 端
+            source = CategoryClsConst.SOURCE_NAME_GCJC;
+        }
+        HashMap<String, List<Integer>> categoryClsMap = Maps.newHashMap();
+        ArrayList<Integer> ydyf = Lists.newArrayList();
+        ydyf.add(CategoryClsTypeEnum.FHYS.getId());
+        ydyf.add(CategoryClsTypeEnum.RHYF.getId());
+
+        ArrayList<Integer> gcjc = Lists.newArrayList();
+        gcjc.add(CategoryClsTypeEnum.RCJC.getId());
+        gcjc.add(CategoryClsTypeEnum.YDJC.getId());
+        gcjc.add(CategoryClsTypeEnum.JDJC.getId());
+        gcjc.add(CategoryClsTypeEnum.YB.getId());
+        gcjc.add(CategoryClsTypeEnum.FBFX.getId());
+        categoryClsMap.put(CategoryClsConst.SOURCE_NAME_YDYF, ydyf);
+        categoryClsMap.put(CategoryClsConst.SOURCE_NAME_GCJC, gcjc);
+
+        return categoryClsMap.get(source);
     }
 
     @Override
-    public List<HouseQmIssueCategoryStatVo> searchHouseQmIssueCategoryStatByProjTaskIdAreaIdBeginOnEndOn
-            (Integer projectId, Integer taskId, Integer areaId, Date begin, Date endOns) {
+    public List<HouseQmIssueCategoryStatVo> searchHouseQmIssueCategoryStatByProjTaskIdAreaIdBeginOnEndOn(Integer projectId, Integer taskId, Integer areaId, Date begin, Date endOns) {
         List<Integer> types = Lists.newArrayList();
         types.add(HouseQmCheckTaskIssueEnum.FindProblem.getId());
         types.add(HouseQmCheckTaskIssueEnum.Difficult.getId());
@@ -640,8 +921,8 @@ public class HouseqmStatisticServiceImpl implements IHouseqmStatisticService {
         return map;
     }
 
-//去重
 
+    //去重
     public static List removeDuplicate(List list) {
         HashSet h = new HashSet(list);
         list.clear();
@@ -663,6 +944,47 @@ public class HouseqmStatisticServiceImpl implements IHouseqmStatisticService {
 
         }
         return true;
+    }
+
+    /**
+     * @param areaIdList
+     * @return com.longfor.longjian.houseqm.app.vo.AreaMapVo
+     * @author hy
+     * @date 2018/12/23 0023
+     */
+    private AreaMapVo createAreasMapByLeaveIds(List<Integer> areaIdList) {
+        List<Area> areas = areaService.selectAreasByIdInAreaIds(areaIdList);
+        Map<Integer, Area> areaMap = areas.stream().collect(Collectors.toMap(Area::getId, a -> a, (k1, k2) -> k1));
+        AreaMapVo areaMapVo = new AreaMapVo();
+        areaMapVo.setAreas(areaMap);
+        areaMapVo.setList(areas);
+        return areaMapVo;
+    }
+
+    /**
+     * @param categorys
+     * @return com.longfor.longjian.houseqm.app.vo.CategoryV3MapVo
+     * @author hy
+     * @date 2018/12/23 0023
+     */
+    private CategoryV3MapVo newCategoryMap(List<CategoryV3> categorys) {
+        CategoryV3MapVo categoryV3MapVo = new CategoryV3MapVo();
+        Map<String, CategoryV3> categoryV3Map = categorys.stream().collect(Collectors.toMap(CategoryV3::getKey, a -> a, (k1, k2) -> k1));
+        categoryV3MapVo.setCategoryV3Map(categoryV3Map);
+        return categoryV3MapVo;
+    }
+
+    /**
+     * @param checkItemV3s
+     * @return com.longfor.longjian.houseqm.app.vo.CheckItemV3MapVo
+     * @author hy
+     * @date 2018/12/23 0023
+     */
+    private CheckItemV3MapVo newCheckItemMap(List<CheckItemV3> checkItemV3s) {
+        CheckItemV3MapVo checkItemV3MapVo = new CheckItemV3MapVo();
+        Map<String, CheckItemV3> checkItemV3Map = checkItemV3s.stream().collect(Collectors.toMap(CheckItemV3::getKey, a -> a, (k1, k2) -> k1));
+        checkItemV3MapVo.setCheckItemV3Map(checkItemV3Map);
+        return checkItemV3MapVo;
     }
 
     /**

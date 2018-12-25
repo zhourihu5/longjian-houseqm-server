@@ -1,5 +1,6 @@
 package com.longfor.longjian.houseqm.util;
 
+import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -52,6 +53,40 @@ public class DateUtil {
             }
         }
     }
+
+    /**
+     *  int -> Date
+     * @author hy
+     * @date 2018/12/22 0022
+     * @param
+     * @return java.util.Date
+     */
+    public static Date timeStampToDate(int timestamp,String partten){
+        long timeLong=new Long(timestamp).longValue()*1000;
+        DateFormat ymdhmsFormat = new SimpleDateFormat(partten);
+        String nowTimeStr = ymdhmsFormat.format(timeLong);
+        Date timeDate = null;
+        try {
+            timeDate = ymdhmsFormat.parse(nowTimeStr);
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+        return timeDate ;
+    }
+
+    /**
+     * 获得当前时间以 partten 格式
+     * @author hy
+     * @date 2018/12/24 0024
+     * @param partten
+     * @return java.lang.String
+     */
+    public static String getNowTimeStr(String partten){
+        Date now = new Date();
+        String nowStr = new SimpleDateFormat(partten).format(now);
+        return nowStr;
+    }
+
     // 时间戳转日期
     public static Date transForDate(Integer ms) {
         if (ms == null) {

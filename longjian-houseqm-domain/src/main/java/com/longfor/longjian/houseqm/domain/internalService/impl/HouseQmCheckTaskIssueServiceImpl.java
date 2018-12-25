@@ -265,6 +265,16 @@ public class HouseQmCheckTaskIssueServiceImpl implements HouseQmCheckTaskIssueSe
     }
 
     @Override
+    public Integer selectCountByProjectIdAndCategoryClsAndTypeAndStatusInAndDongTai(Map<String, Object> map) {
+        return null;
+    }
+
+    @Override
+    public List<HouseQmCheckTaskIssue> selectHouseQmCheckTaskIssueByProjectIdAndCategoryClsAndTypeAndStatusInAndOrderByDescAndPageDongTai(Map<String, Object> map) {
+        return null;
+    }
+
+    @Override
     @LFAssignDataSource("zhijian2")
     public List<HouseQmCheckTaskIssue> selectAreaIdByProjectIdAndTaskIdAndAreaIdInAndNoDeleted(Integer projectId, Integer taskId, List<Integer> areaIds) {
         return houseQmCheckTaskIssueMapper.selectAreaIdByProjectIdAndTaskIdAndAreaIdInAndNoDeleted(projectId,taskId,areaIds,"false");
@@ -283,10 +293,13 @@ public class HouseQmCheckTaskIssueServiceImpl implements HouseQmCheckTaskIssueSe
     }
 
     @Override
-    @LFAssignDataSource("zhijian2")
     public List<HouseQmCheckTaskIssue> searchHouseQmCheckTaskIssueByProjCategoryKeyAreaId(HashMap<String, Object> condiMap) {
-        return houseQmCheckTaskIssueMapper.searchHouseQmCheckTaskIssueByProjCategoryKeyAreaId(condiMap);
+        return null;
     }
 
+    @Override
+    public List<IssueRepairCount> selectIssueRepairCountByProjectIdAndCategoryClsAndTypInAndStatusInAndNoDeletedAndDongTai(HashMap<String, Object> condiMap) {
+        return null;
+    }
 
 }

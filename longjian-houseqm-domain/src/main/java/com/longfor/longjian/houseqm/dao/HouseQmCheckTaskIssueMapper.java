@@ -166,4 +166,14 @@ public interface HouseQmCheckTaskIssueMapper extends LFMySQLMapper<HouseQmCheckT
 
     List<HouseQmCheckTaskIssue> searchHouseQmCheckTaskIssueByProjCategoryKeyAreaId(HashMap<String, Object> condiMap);
 
-    }
+
+
+    /**
+     *
+     * @author hy
+     * @date 2018/12/24 0024
+     * @param condiMap
+     * @return java.util.List<com.longfor.longjian.houseqm.po.IssueRepairCount>
+     */
+    List<IssueRepairCount> selectIssueRepairCountByProjectIdAndCategoryClsAndTypInAndStatusInAndNoDeletedAndDongTai(HashMap<String, Object> condiMap);
+}

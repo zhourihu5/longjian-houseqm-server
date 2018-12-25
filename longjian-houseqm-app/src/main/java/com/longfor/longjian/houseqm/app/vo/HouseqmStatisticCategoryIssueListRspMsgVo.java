@@ -4,6 +4,12 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.io.Serializable;
+import java.util.Date;
+import java.util.List;
+
+/**
+ * @author Houyan
+ * @date 2018/12/22 0022 16:16
 import java.util.List;
 
 /**
@@ -35,4 +41,5 @@ public class HouseqmStatisticCategoryIssueListRspMsgVo implements Serializable {
         private Integer ClientCreateAt; // 客户端记录时间
         private Integer UpdateAt;// 更新时间
     }
+
 }

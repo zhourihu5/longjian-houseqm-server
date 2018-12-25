@@ -16,6 +16,7 @@ public class IssueRepairStatisticVo implements Serializable {
     private  String InitimeUnfinish;
     private  String OvertimeFinish ;
     private  String InitimeFinish ;
+
     private  Integer TotalCount  ;
     private Integer NoPlanEndOnCount  ;
     private  Integer OvertimeUnfinishCount ;

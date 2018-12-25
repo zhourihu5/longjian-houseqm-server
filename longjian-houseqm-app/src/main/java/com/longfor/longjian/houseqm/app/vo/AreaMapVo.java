@@ -46,4 +46,5 @@ public class AreaMapVo implements Serializable {
 public Map<Integer, Area>GetAreas(){
         return areas;
 }
+
 }
