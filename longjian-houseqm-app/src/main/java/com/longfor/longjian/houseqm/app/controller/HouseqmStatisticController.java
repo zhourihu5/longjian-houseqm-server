@@ -61,8 +61,6 @@ public class HouseqmStatisticController {
     AreaService areaService;
 
 
-
-
     @GetMapping(value = "task_stat", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     public LjBaseResponse<HouseqmStatisticTaskStatRspMsgVo> taskStat(@RequestParam(value = "project_id") Integer prodectId,
                                                                      @RequestParam(value = "task_id") Integer taskId,
@@ -193,11 +191,9 @@ public class HouseqmStatisticController {
         Date begin = DateUtil.transForDate(beginOn);
         Date endOns = DateUtil.transForDate(endOn);
         TaskRepairStatVo taskRepairStatVo = iHouseqmStatisticService.searchIssueRepairStatisticByProjTaskIdAreaIdBeginOnEndOn(projectId, taskId, areaId, begin, endOns);
-
         LjBaseResponse<TaskRepairStatVo> ljbr = new LjBaseResponse<>();
         ljbr.setData(taskRepairStatVo);
         return ljbr;
-
     }
 
 

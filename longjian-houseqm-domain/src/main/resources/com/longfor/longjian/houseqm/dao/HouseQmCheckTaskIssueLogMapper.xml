@@ -110,4 +110,16 @@
         )
         <![CDATA[order by hqctil.id ASC LIMIT ${start},${limit} ]]>
     </select>
+
+    <select id="selectIdByTaskIdAndIdAndUuidInAndUpdateAtGtAndNoDeletedOrderById" resultMap="BaseResultMap">
+        SELECT
+        <include refid="Base_Column_List"/>
+        FROM house_qm_check_task_issue_log
+        WHERE task_id=#{taskId} AND id >0 AND issue_uuid IN
+        <foreach collection="uuids" item="item" index="index" open="(" separator="," close=")">#{item}</foreach>
+        AND update_at &gt; #{updateAt}
+        <if test="deleted=='false'">AND delete_at IS NULL</if>
+        ORDER BY id DESC
+    </select>
+
 </mapper>

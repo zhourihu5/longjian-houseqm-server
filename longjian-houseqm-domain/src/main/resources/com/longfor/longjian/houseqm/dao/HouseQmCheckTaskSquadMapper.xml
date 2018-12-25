@@ -1,45 +1,45 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
-<mapper namespace="com.longfor.longjian.houseqm.dao.HouseQmCheckTaskSquadMapper" >
-  <resultMap id="BaseResultMap" type="com.longfor.longjian.houseqm.po.HouseQmCheckTaskSquad" >
-    <!--
-      WARNING - @mbg.generated
-    -->
-    <id column="id" property="id" jdbcType="INTEGER" />
-    <result column="project_id" property="projectId" jdbcType="INTEGER" />
-    <result column="task_id" property="taskId" jdbcType="INTEGER" />
-    <result column="squad_type" property="squadType" jdbcType="INTEGER" />
-    <result column="name" property="name" jdbcType="VARCHAR" />
-    <result column="create_at" property="createAt" jdbcType="TIMESTAMP" />
-    <result column="update_at" property="updateAt" jdbcType="TIMESTAMP" />
-    <result column="delete_at" property="deleteAt" jdbcType="TIMESTAMP" />
-  </resultMap>
-  <sql id="Base_Column_List" >
-    <!--
-      WARNING - @mbg.generated
-    -->
-    id, project_id, task_id, squad_type, name, create_at, update_at, delete_at
-  </sql>
-  <select id="selectByTaskIds" resultMap="BaseResultMap">
-    select
-    <include refid="Base_Column_List" />
-    from user_in_house_qm_check_task
-    where task_id in
-    <foreach close=")" collection="idList" index="index" item="id" open="(" separator=",">
-      #{id}
-    </foreach>
-    <if test="deleted =='false'">
-      and delete_at is null
-    </if>
-  </select>
-  <select id="searchByInId" resultMap="BaseResultMap">
-    select
-     id, project_id, task_id, squad_type, `name`, create_at, update_at, delete_at
-     from house_qm_check_task_squad
-     where
-     id in
-    <foreach collection="squadIds" index="index" item="item" open="(" separator="," close=")" >
-      #{item}
-    </foreach>
-  </select>
+<mapper namespace="com.longfor.longjian.houseqm.dao.HouseQmCheckTaskSquadMapper">
+    <resultMap id="BaseResultMap" type="com.longfor.longjian.houseqm.po.HouseQmCheckTaskSquad">
+        <!--
+          WARNING - @mbg.generated
+        -->
+        <id column="id" property="id" jdbcType="INTEGER"/>
+        <result column="project_id" property="projectId" jdbcType="INTEGER"/>
+        <result column="task_id" property="taskId" jdbcType="INTEGER"/>
+        <result column="squad_type" property="squadType" jdbcType="INTEGER"/>
+        <result column="name" property="name" jdbcType="VARCHAR"/>
+        <result column="create_at" property="createAt" jdbcType="TIMESTAMP"/>
+        <result column="update_at" property="updateAt" jdbcType="TIMESTAMP"/>
+        <result column="delete_at" property="deleteAt" jdbcType="TIMESTAMP"/>
+    </resultMap>
+    <sql id="Base_Column_List">
+        <!--
+          WARNING - @mbg.generated
+        -->
+        id, project_id, task_id, squad_type, name, create_at, update_at, delete_at
+    </sql>
+    <select id="selectByTaskIds" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from house_qm_check_task_squad
+        where task_id in
+        <foreach close=")" collection="idList" index="index" item="id" open="(" separator=",">
+            #{id}
+        </foreach>
+        <if test="deleted =='false'">
+            and delete_at is null
+        </if>
+    </select>
+    <select id="searchByInId" resultMap="BaseResultMap">
+        select
+        id, project_id, task_id, squad_type, `name`, create_at, update_at, delete_at
+        from house_qm_check_task_squad
+        where
+        id in
+        <foreach collection="squadIds" index="index" item="item" open="(" separator="," close=")">
+            #{item}
+        </foreach>
+    </select>
 </mapper>

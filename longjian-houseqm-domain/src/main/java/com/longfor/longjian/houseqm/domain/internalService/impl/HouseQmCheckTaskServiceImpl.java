@@ -8,8 +8,10 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
+import java.util.Date;
 import java.util.List;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 /**
  * @author lipeishuai
@@ -87,6 +89,19 @@ public class HouseQmCheckTaskServiceImpl implements HouseQmCheckTaskService {
     @LFAssignDataSource("zhijian2")
     public HouseQmCheckTask selectAreaIdsByProjectIdAndTaskIdAndNoDeleted(Integer projectId, Integer taskId) {
         return houseQmCheckTaskMapper.selectAreaIdsByProjectIdAndTaskIdAndNoDeleted(projectId,taskId,"false");
+    }
+
+    /**
+     *
+     * @author hy
+     * @date 2018/12/25 0025
+     * @param taskId
+     * @return com.longfor.longjian.houseqm.po.HouseQmCheckTask
+     */
+    @Override
+    @LFAssignDataSource("zhijian2")
+    public HouseQmCheckTask selectUpdateAtByTaskIdAndNoDeleted(Integer taskId) {
+        return houseQmCheckTaskMapper.selectUpdateAtByTaskIdAndNoDeleted(taskId,"false");
     }
 
 }

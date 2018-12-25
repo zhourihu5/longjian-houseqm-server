@@ -36,4 +36,31 @@ public class HouseQmCheckTaskIssueUserServiceImpl implements HouseQmCheckTaskIss
         return houseQmCheckTaskIssueUsers;
     }
 
+    /**
+     *
+     * @author hy
+     * @date 2018/12/25 0025
+     * @param uid
+     * @param task_id
+     * @return java.util.List<com.longfor.longjian.houseqm.po.HouseQmCheckTaskIssueUser>
+     */
+    @Override
+    @LFAssignDataSource(value = "zhijian2")
+    public List<HouseQmCheckTaskIssueUser> selectIssueUUIDByUserIdAndTaskIdAndNoDeleted(Integer uid, Integer task_id) {
+        return houseQmCheckTaskIssueUserMapper.selectIssueUUIDByUserIdAndTaskIdAndNoDeleted(uid,task_id,"false");
+    }
+
+    /**
+     *
+     * @author hy
+     * @date 2018/12/25 0025
+     * @param task_id
+     * @return com.longfor.longjian.houseqm.po.HouseQmCheckTaskIssueUser
+     */
+    @Override
+    @LFAssignDataSource(value = "zhijian2")
+    public List<HouseQmCheckTaskIssueUser> selectUpdateAtByTaskIdAndNoDeletedOrderByUpdateAt(Integer task_id) {
+        return houseQmCheckTaskIssueUserMapper.selectUpdateAtByTaskIdAndNoDeletedOrderByUpdateAt(task_id,"false");
+    }
+
 }

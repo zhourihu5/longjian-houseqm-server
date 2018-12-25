@@ -70,8 +70,6 @@ public class IssueListController {
         has_per = ucenter_api.check_project_permission(uid, req.project_id, '项目.工程检查.问题管理.查看')
         if not has_per:
         rsp = errors_utils.err(rsp, 'PermissionDenied')*/
-        IssueListVo issueListVo = new IssueListVo();
-
 
         PageInfo<IssueListVo> pageInfo = iIssueService.list(projectId,categoryCls,taskId,categoryKey,checkItemKey,
                                                             areaIds,statusIn,checkerId,repairerId,type,condition,keyWord,

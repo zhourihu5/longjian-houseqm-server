@@ -1,6 +1,5 @@
 package com.longfor.longjian.houseqm.app.controller;
 
-import com.longfor.gaia.gfs.web.mock.MockOperation;
 import com.longfor.longjian.houseqm.app.service.ITaskListService;
 import com.longfor.longjian.houseqm.app.vo.TaskList2Vo;
 import com.longfor.longjian.houseqm.app.vo.TaskResponse;
@@ -13,7 +12,6 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.annotation.Resource;
-import java.util.List;
 
 /**
  * http://192.168.37.159:3000/project/8/interface/api/226  获取项目下任务列表任务信息

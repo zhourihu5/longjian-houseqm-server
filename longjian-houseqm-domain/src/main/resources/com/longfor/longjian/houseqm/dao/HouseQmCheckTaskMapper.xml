@@ -35,7 +35,7 @@
         <!--
           WARNING - @mbg.generated
         -->
-        id, project_id, task_id, name, status, category_cls, root_category_key, area_types,
+        id, project_id, task_id, `name`, status, category_cls, root_category_key, area_types,
         plan_begin_on, plan_end_on, end_on, creator, editor, create_at, update_at, delete_at,
         config_info, delivery_begin_on, delivery_end_on
     </sql>
@@ -51,14 +51,17 @@
         <include refid="Base_Column_List"/>,
         <include refid="Blob_Column_List"/>
         from house_qm_check_task
-        where task_id in
-        <foreach collection="idList" item="id" index="index"
-                 open="(" close=")" separator=",">
-            #{id}
-        </foreach>
-        <if test="deleted =='false'">
-            and delete_at is null
-        </if>
+        <where>
+            <if test="taskIdList.size()!=0">
+                task_id IN
+                <foreach collection="taskIdList" item="item" index="index" open="(" separator="," close=")">
+                    #{item}
+                </foreach>
+            </if>
+            <if test="deleted =='false'">
+                and delete_at is null
+            </if>
+        </where>
     </select>
 
     <select id="selectByProjectIdAndCategoryClsAndStatus" resultMap="ResultMapWithBLOBs">
@@ -128,4 +131,17 @@
             AND delete_at IS NULL
         </if>
     </select>
+
+    <select id="selectUpdateAtByTaskIdAndNoDeleted" resultMap="ResultMapWithBLOBs">
+        SELECT
+        <include refid="Base_Column_List"/>
+        ,
+        <include refid="Blob_Column_List"/>
+        from house_qm_check_task
+        WHERE task_id=#{taskId}
+        <if test="deleted=='false'">
+            AND delete_at IS NULL
+        </if>
+    </select>
+
 </mapper>

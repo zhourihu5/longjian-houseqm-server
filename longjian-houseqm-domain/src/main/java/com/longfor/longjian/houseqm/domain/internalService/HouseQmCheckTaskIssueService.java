@@ -104,4 +104,29 @@ public interface HouseQmCheckTaskIssueService {
      * @return java.util.List<com.longfor.longjian.houseqm.po.IssueRepairCount>
      */
     List<IssueRepairCount> selectIssueRepairCountByProjectIdAndCategoryClsAndTypInAndStatusInAndNoDeletedAndDongTai(HashMap<String, Object> condiMap);
+
+    /**
+     *
+     * @author hy
+     * @date 2018/12/25 0025
+     * @param
+     * @param task_id
+     * @param issueUpdateTime
+     * @param userIds
+     * @param issueUuids
+     * @return java.util.List<com.longfor.longjian.houseqm.po.HouseQmCheckTaskIssue>
+     */
+    List<HouseQmCheckTaskIssue> selectIdByTaskIdAndIdGtAndUpdateAtGtAndSenderIdInOrUuidInAndNoDeletedOrderById(Integer task_id, Date issueUpdateTime, List<Integer> userIds, List<String> issueUuids);
+
+    /**
+     *
+     * @author hy
+     * @date 2018/12/25 0025
+     * @param userIds
+     * @param task_id
+     * @param issueUuids
+     * @return java.util.List<com.longfor.longjian.houseqm.po.HouseQmCheckTaskIssue>
+     */
+    List<HouseQmCheckTaskIssue> selectUuidBySenderIdInOrTaskIdAndUuidIn(List<Integer> userIds, Integer task_id, List<String> issueUuids);
+
 }

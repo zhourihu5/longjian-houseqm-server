@@ -319,4 +319,35 @@ public class HouseQmCheckTaskIssueServiceImpl implements HouseQmCheckTaskIssueSe
         return houseQmCheckTaskIssueMapper.selectIssueRepairCountByProjectIdAndCategoryClsAndTypInAndStatusInAndNoDeletedAndDongTai(condiMap);
     }
 
+    /**
+     *
+     * @author hy
+     * @date 2018/12/25 0025
+     * @param task_id
+     * @param issueUpdateTime
+     * @param userIds
+     * @param issueUuids
+     * @return com.longfor.longjian.houseqm.po.HouseQmCheckTaskIssue
+     */
+    @Override
+    @LFAssignDataSource("zhijian2")
+    public List<HouseQmCheckTaskIssue> selectIdByTaskIdAndIdGtAndUpdateAtGtAndSenderIdInOrUuidInAndNoDeletedOrderById(Integer task_id, Date issueUpdateTime, List<Integer> userIds, List<String> issueUuids) {
+        return houseQmCheckTaskIssueMapper.selectIdByTaskIdAndIdGtAndUpdateAtGtAndSenderIdInOrUuidInAndNoDeletedOrderById(task_id,issueUpdateTime,userIds,issueUuids,"false");
+    }
+
+    /**
+     *
+     * @author hy
+     * @date 2018/12/25 0025
+     * @param userIds
+     * @param task_id
+     * @param issueUuids
+     * @return java.util.List<com.longfor.longjian.houseqm.po.HouseQmCheckTaskIssue>
+     */
+    @Override
+    @LFAssignDataSource("zhijian2")
+    public List<HouseQmCheckTaskIssue> selectUuidBySenderIdInOrTaskIdAndUuidIn(List<Integer> userIds, Integer task_id, List<String> issueUuids) {
+        return houseQmCheckTaskIssueMapper.selectUuidBySenderIdInOrTaskIdAndUuidIn(userIds,task_id,issueUuids,"false");
+    }
+
 }

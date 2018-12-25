@@ -192,4 +192,31 @@ public interface HouseQmCheckTaskIssueMapper extends LFMySQLMapper<HouseQmCheckT
      * @return java.util.List<com.longfor.longjian.houseqm.po.IssueRepairCount>
      */
     List<IssueRepairCount> selectIssueRepairCountByProjectIdAndCategoryClsAndTypInAndStatusInAndNoDeletedAndDongTai(HashMap<String, Object> condiMap);
+
+    /**
+     *
+     * @author hy
+     * @date 2018/12/25 0025
+     * @param
+     * @param task_id
+     * @param issueUpdateTime
+     * @param userIds
+     * @param issueUuids
+     * @param aFalse
+     * @return java.util.List<com.longfor.longjian.houseqm.po.HouseQmCheckTaskIssue>
+     */
+    List<HouseQmCheckTaskIssue> selectIdByTaskIdAndIdGtAndUpdateAtGtAndSenderIdInOrUuidInAndNoDeletedOrderById(@Param("taskId") Integer task_id, @Param("updateAtTime") Date issueUpdateTime, @Param("userIds") List<Integer> userIds, @Param("uuids") List<String> issueUuids,@Param("deleted") String aFalse);
+
+    /**
+     *
+     * @author hy
+     * @date 2018/12/25 0025
+     * @param userIds
+     * @param task_id
+     * @param issueUuids
+     * @param aFalse
+     * @return java.util.List<com.longfor.longjian.houseqm.po.HouseQmCheckTaskIssue>
+     */
+    List<HouseQmCheckTaskIssue> selectUuidBySenderIdInOrTaskIdAndUuidIn(@Param("userIds") List<Integer> userIds, @Param("taskId") Integer task_id, @Param("uuids") List<String> issueUuids,@Param("deleted") String aFalse);
+
 }
