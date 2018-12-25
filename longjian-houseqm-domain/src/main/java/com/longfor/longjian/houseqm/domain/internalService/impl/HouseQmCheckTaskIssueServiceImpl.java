@@ -5,10 +5,12 @@ import com.longfor.longjian.houseqm.dao.*;
 import com.longfor.longjian.houseqm.domain.internalService.HouseQmCheckTaskIssueService;
 import com.longfor.longjian.houseqm.po.*;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.ibatis.annotations.Param;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
 import java.util.*;
+import java.util.ArrayList;
 
 /**
  * @author Houyan
@@ -240,7 +242,7 @@ public class HouseQmCheckTaskIssueServiceImpl implements HouseQmCheckTaskIssueSe
      *
      * @author hy
      * @date 2018/12/21 0021
-     * @param map
+     *  * @param map
      * @return java.lang.Integer
      */
     @Override
@@ -262,30 +264,14 @@ public class HouseQmCheckTaskIssueServiceImpl implements HouseQmCheckTaskIssueSe
         return houseQmCheckTaskIssueMapper.selectHouseQmCheckTaskIssueByPageAndProjectIdAndCategoryClsAndNoDeletedAndDongTai(map);
     }
 
-    /**
-     *
-     * @author hy
-     * @date 2018/12/22 0022
-     *  @param map
-     * @return java.lang.Integer
-     */
     @Override
-    @LFAssignDataSource("zhijian2")
     public Integer selectCountByProjectIdAndCategoryClsAndTypeAndStatusInAndDongTai(Map<String, Object> map) {
-        return houseQmCheckTaskIssueMapper.selectCountByProjectIdAndCategoryClsAndTypeAndStatusInAndDongTai(map);
+        return null;
     }
 
-    /**
-     *
-     * @author hy
-     * @date 2018/12/22 0022
-     * @param map
-     * @return java.util.List<com.longfor.longjian.houseqm.po.HouseQmCheckTaskIssue>
-     */
     @Override
-    @LFAssignDataSource("zhijian2")
     public List<HouseQmCheckTaskIssue> selectHouseQmCheckTaskIssueByProjectIdAndCategoryClsAndTypeAndStatusInAndOrderByDescAndPageDongTai(Map<String, Object> map) {
-        return houseQmCheckTaskIssueMapper.selectHouseQmCheckTaskIssueByProjectIdAndCategoryClsAndTypeAndStatusInAndOrderByDescAndPageDongTai(map);
+        return null;
     }
 
     @Override
@@ -306,13 +292,12 @@ public class HouseQmCheckTaskIssueServiceImpl implements HouseQmCheckTaskIssueSe
         return houseQmCheckTaskIssueMapper.searchhouseQmCheckTaskIssueByProTaskIdAreaidBegin(projectId,  taskId,  areaId,  begin,  endOns,  types,"false");
     }
 
-    /**
-     *
-     * @author hy
-     * @date 2018/12/24 0024
-     * @param condiMap
-     * @return java.util.List<com.longfor.longjian.houseqm.po.IssueRepairCount>
-     */
+    @Override
+    @LFAssignDataSource("zhijian2")
+    public List<HouseQmCheckTaskIssue> searchHouseQmCheckTaskIssueByProjCategoryKeyAreaId(HashMap<String, Object> condiMap) {
+        return houseQmCheckTaskIssueMapper.searchHouseQmCheckTaskIssueByProjCategoryKeyAreaId(condiMap);
+    }
+
     @Override
     @LFAssignDataSource("zhijian2")
     public List<IssueRepairCount> selectIssueRepairCountByProjectIdAndCategoryClsAndTypInAndStatusInAndNoDeletedAndDongTai(HashMap<String, Object> condiMap) {

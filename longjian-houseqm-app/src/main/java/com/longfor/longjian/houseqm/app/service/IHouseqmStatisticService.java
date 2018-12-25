@@ -1,5 +1,6 @@
 package com.longfor.longjian.houseqm.app.service;
 
+import com.longfor.longjian.houseqm.app.vo.HouseQmCheckTaskIssueOnlineInfoVo;
 import com.longfor.longjian.houseqm.app.vo.*;
 import com.longfor.longjian.houseqm.app.vo.HouseQmIssueCategoryStatVo;
 import com.longfor.longjian.houseqm.app.vo.TaskRepairStatVo;
@@ -17,6 +18,9 @@ public interface IHouseqmStatisticService {
     TaskRepairStatVo searchIssueRepairStatisticByProjTaskIdAreaIdBeginOnEndOn(Integer projectId, Integer taskId, Integer areaId, Date beginOn, Date endOn);
 
     List<HouseQmIssueCategoryStatVo> searchHouseQmIssueCategoryStatByProjTaskIdAreaIdBeginOnEndOn(Integer projectId, Integer taskId, Integer areaId, Date begin, Date endOns);
+
+    List<HouseQmCheckTaskIssueOnlineInfoVo> SearchHouseQmCheckTaskIssueOnlineInfoByProjCategoryKeyAreaIdPaged(Integer projectId, String categoryKey, Integer areaId, Integer page, Integer pageSize);
+
 
     HouseqmStatisticCategoryIssueListRspMsgVo taskIssueRepairList(Integer projectId,Integer taskId,Integer areaId,Integer beginOn,Integer endOn,Integer timestamp,Integer planStatus,String source,Integer page,Integer pageSize);
 

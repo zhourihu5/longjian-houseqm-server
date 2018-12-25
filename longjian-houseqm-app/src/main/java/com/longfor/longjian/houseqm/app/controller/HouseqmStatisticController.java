@@ -6,26 +6,23 @@ import com.longfor.longjian.houseqm.app.service.IHouseqmStatisticService;
 import com.longfor.longjian.houseqm.util.DateUtil;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-import com.longfor.gaia.gfs.web.mock.MockOperation;
 import com.longfor.longjian.common.base.LjBaseResponse;
 import com.longfor.longjian.houseqm.app.req.ProjectReq;
 import com.longfor.longjian.houseqm.app.service.HouseqmStaticService;
-import com.longfor.longjian.houseqm.app.service.IHouseqmStatisticService;
+
 import com.longfor.longjian.houseqm.app.vo.*;
 import com.longfor.longjian.houseqm.consts.TimeStauEnum;
 import com.longfor.longjian.houseqm.domain.internalService.AreaService;
 import com.longfor.longjian.houseqm.domain.internalService.HouseQmCheckTaskRspService;
-import com.longfor.longjian.houseqm.util.DateUtil;
+
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+
 
 import javax.annotation.Resource;
 import java.text.DecimalFormat;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
@@ -71,6 +68,11 @@ public class HouseqmStatisticController {
         houseStatVo.setHouseCheckedPercent(getPercentage(checkTaskHouseStatInfo.getCheckedCount(), checkTaskHouseStatInfo.getHouseCount()));
         houseStatVo.setHouseRepairedPercent(getPercentage(checkTaskHouseStatInfo.getRepairedCount(), checkTaskHouseStatInfo.getHasIssueCount()));
         houseStatVo.setHouseApprovededPercent(getPercentage(checkTaskHouseStatInfo.getApprovedCount(), checkTaskHouseStatInfo.getRepairedCount()));
+        houseStatVo.setApprovedCount(checkTaskHouseStatInfo.getApprovedCount());
+        houseStatVo.setHasIssueCount(checkTaskHouseStatInfo.getHasIssueCount());
+        houseStatVo.setRepairedCount(checkTaskHouseStatInfo.getRepairedCount());
+        houseStatVo.setCheckedCount(checkTaskHouseStatInfo.getCheckedCount());
+        houseStatVo.setHouseCount(checkTaskHouseStatInfo.getHouseCount());
         HouseqmStatisticTaskStatRspMsgVo vo = new HouseqmStatisticTaskStatRspMsgVo();
         vo.setItem(houseStatVo);
         LjBaseResponse<HouseqmStatisticTaskStatRspMsgVo> response = new LjBaseResponse<>();
@@ -190,6 +192,11 @@ public class HouseqmStatisticController {
                                                             @RequestParam(value = "timestamp") Integer timestamp) {
         Date begin = DateUtil.transForDate(beginOn);
         Date endOns = DateUtil.transForDate(endOn);
+      //endon加一天
+        Calendar c = Calendar.getInstance();
+        c.setTime(endOns);
+        c.add(Calendar.DAY_OF_MONTH, 1);// +1天
+         endOns = c.getTime();
         TaskRepairStatVo taskRepairStatVo = iHouseqmStatisticService.searchIssueRepairStatisticByProjTaskIdAreaIdBeginOnEndOn(projectId, taskId, areaId, begin, endOns);
         LjBaseResponse<TaskRepairStatVo> ljbr = new LjBaseResponse<>();
         ljbr.setData(taskRepairStatVo);
@@ -222,13 +229,47 @@ public class HouseqmStatisticController {
     }
 
     /**
-     * @param projectReq
+     * @param
      * @return
      */
-    @MockOperation
+
     @GetMapping(value = "category_issue_list", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
-    public LjBaseResponse<ProjectDailyListVo> categoryIssueList(ProjectReq projectReq) {
-        return null;
+    public LjBaseResponse<HouseqmStatisticCategoryIssueListRspMsgVo> categoryIssueList(@RequestParam(value = "project_id") Integer projectId,
+                                                                @RequestParam(value = "category_key") String categoryKey,
+                                                                @RequestParam(value = "area_id") Integer areaId,
+                                                                @RequestParam(value = "page") Integer page,
+                                                                @RequestParam(value = "page_size") Integer pageSize
+                                                                ) {
+     List<HouseQmCheckTaskIssueOnlineInfoVo>infoList= iHouseqmStatisticService.SearchHouseQmCheckTaskIssueOnlineInfoByProjCategoryKeyAreaIdPaged(projectId, categoryKey, areaId, page, pageSize);
+        ArrayList<HouseqmStatisticCategoryIssueListRspMsgVo.ApiTaskIssueRepairListRsp> objects = Lists.newArrayList();
+        for (int i = 0; i < infoList.size(); i++) {
+            HouseqmStatisticCategoryIssueListRspMsgVo.ApiTaskIssueRepairListRsp listRsp = new HouseqmStatisticCategoryIssueListRspMsgVo().new ApiTaskIssueRepairListRsp();
+            listRsp.setId(infoList.get(i).getId());
+            listRsp.setProjectId(infoList.get(i).getProjectId());
+            listRsp.setTaskId(infoList.get(i).getTaskId());
+            listRsp.setUuid(infoList.get(i).getUuid());
+            listRsp.setTitle(infoList.get(i).getTitle());
+            listRsp.setTyp(infoList.get(i).getTyp());
+            listRsp.setContent(infoList.get(i).getContent());
+            listRsp.setCondition(infoList.get(i).getCondition());
+            listRsp.setStatus(infoList.get(i).getStatus());
+            listRsp.setPlanEndOn(DateUtil.datetimeToTimeStamp( infoList.get(i).getPlanEndOn()));
+            listRsp.setAttachmentMd5List(infoList.get(i).getAttachmentMd5List());
+            listRsp.setClientCreateAt(DateUtil.datetimeToTimeStamp(infoList.get(i).getClientCreateAt()));
+            listRsp.setUpdateAt(DateUtil.datetimeToTimeStamp(infoList.get(i).getUpdateAt()));
+            listRsp.setAttachmentUrlList(infoList.get(i).getAttachmentUrlList());
+            listRsp.setAreaPathName(infoList.get(i).getAreaPathName());
+            listRsp.setCategoryPathName(infoList.get(i).getCategoryPathName());
+            listRsp.setCheckItemPathName(infoList.get(i).getCheckItemPathName());
+            objects.add(listRsp);
+
+        }
+        LjBaseResponse<HouseqmStatisticCategoryIssueListRspMsgVo> ljr = new LjBaseResponse<>();
+        HouseqmStatisticCategoryIssueListRspMsgVo vo = new HouseqmStatisticCategoryIssueListRspMsgVo();
+        vo.setIssue_list(objects);
+        vo.setTotal(infoList.size());
+        ljr.setData(vo);
+        return ljr;
     }
 
 

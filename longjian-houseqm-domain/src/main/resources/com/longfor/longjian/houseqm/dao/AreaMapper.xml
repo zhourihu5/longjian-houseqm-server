@@ -111,5 +111,4 @@
             AND delete_at IS NULL
         </if>
     </select>
-
 </mapper>

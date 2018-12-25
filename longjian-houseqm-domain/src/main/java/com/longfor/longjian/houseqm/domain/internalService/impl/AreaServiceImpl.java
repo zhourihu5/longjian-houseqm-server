@@ -11,6 +11,7 @@ import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
 import java.util.*;
+import java.util.stream.Collectors;
 
 /**
  * @author Houyan
@@ -132,6 +133,13 @@ public class AreaServiceImpl implements AreaService {
     public List<Area> searchAreaByIdInAndNoDeleted(List<Integer> areaPaths) {
         return areaMapper.selectAreaByIdInAndNoDeleted(areaPaths,"false");
     }
+
+  /*  @Override
+    @LFAssignDataSource("zhijian2")
+    public List<Area> selectAreaByIds(List<Integer> areaIds) {
+        return areaMapper.selectAreaByIds(areaIds);
+    }*/
+
 
     /**
      * 字符串筛选

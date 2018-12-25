@@ -162,27 +162,11 @@ public interface HouseQmCheckTaskIssueMapper extends LFMySQLMapper<HouseQmCheckT
      */
     List<HouseQmCheckTaskIssue> selectHouseQmCheckTaskIssueByPageAndProjectIdAndCategoryClsAndNoDeletedAndDongTai(Map<String,Object> map);
 
-
-    /**
-     *
-     * @author hy
-     * @date 2018/12/22 0022
-     *  @param map
-     * @return java.lang.Integer
-     */
-    Integer selectCountByProjectIdAndCategoryClsAndTypeAndStatusInAndDongTai(Map<String, Object> map);
-
-    /**
-     *
-     * @author hy
-     * @date 2018/12/22 0022
-     * @param map
-     * @return java.util.List<com.longfor.longjian.houseqm.po.HouseQmCheckTaskIssue>
-     */
-    List<HouseQmCheckTaskIssue> selectHouseQmCheckTaskIssueByProjectIdAndCategoryClsAndTypeAndStatusInAndOrderByDescAndPageDongTai(Map<String, Object> map);
-
-
     ArrayList<HouseQmCheckTaskIssue> searchhouseQmCheckTaskIssueByProTaskIdAreaidBegin(@Param("projectId")Integer projectId,  @Param("taskId")Integer taskId,@Param("areaId") Integer areaId, @Param("begin")Date begin, @Param("endOns")Date endOns,  @Param("types") List<Integer> types,@Param("deleted") String deleted);
+
+    List<HouseQmCheckTaskIssue> searchHouseQmCheckTaskIssueByProjCategoryKeyAreaId(HashMap<String, Object> condiMap);
+
+
 
     /**
      *
