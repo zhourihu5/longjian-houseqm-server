@@ -67,6 +67,7 @@ public class HouseqmStatController {
                                                          @RequestParam(value = "group_id") String groupId,
                                                          @RequestParam(value = "team_id") String teamId,
                                                          @RequestParam(value = "task_ids") String taskIds) {
+        ////TODO 鉴权  _, _, err := ctrl_tool.ProjPermMulti(c, []string{
         List<Integer> taskIdList = StringSplitToListUtil.splitToIdsComma(taskIds, ",");
         CheckerStatListVo checkerStatListVo = houseqmStatService.searchCheckerIssueStatisticByProjIdAndTaskId(projectId, taskIdList);
         LjBaseResponse<CheckerStatListVo> lbrsp = new LjBaseResponse<>();
@@ -101,7 +102,7 @@ public class HouseqmStatController {
                                                                  @Valid @Min(1)
                                                                  @RequestParam(value = "page_size", required = false, defaultValue = "10") Integer pageSize
     ) {
-
+        ////TODO 鉴权 _, _, err := ctrl_tool.ProjPermMulti(c, []string{"项目.移动验房.统计.查看", "项目.工程检查.统计.查看"})
         List<Integer> taskIdList = StringSplitToListUtil.splitToIdsComma(taskIds, ",");
         ProjectDailyListVo pdv = houseqmStatService.searchTaskSituationDailyByProjTaskIdInOnPage(projectId, taskIdList, pageNum, pageSize);
         LjBaseResponse<ProjectDailyListVo> lbrsp = new LjBaseResponse<>();
@@ -111,6 +112,7 @@ public class HouseqmStatController {
 
     /**
      * 项目任务信息汇总
+     *
      * @param projectId
      * @param categoryCls
      * @param pageLevel
@@ -126,6 +128,8 @@ public class HouseqmStatController {
                                                                     @RequestParam(value = "team_id") String teamId,
                                                                     @RequestParam(value = "task_ids") String taskIds,
                                                                     @RequestParam(value = "group_id") String groupId) {
+        ////TODO _, _, err := ctrl_tool.ProjPermMulti(c, []string{"项目.移动验房.统计.查看", "项目.工程检查.统计.查看"})
+
         List<Integer> taskIdList = StringSplitToListUtil.splitToIdsComma(taskIds, ",");
         ProjectOveralListVo projectOveralListVo = new ProjectOveralListVo();
         ProjectOveralListVo.ProjectOveralVo totalStat = projectOveralListVo.new ProjectOveralVo();
@@ -166,6 +170,7 @@ public class HouseqmStatController {
                                                        @RequestParam(value = "team_id") String teamId,
                                                        @RequestParam(value = "task_id") Integer taskId,
                                                        @RequestParam(value = "group_id") String groupId) {
+        ////TODO _, _, err := ctrl_tool.ProjPermMulti(c, []string{"项目.移动验房.统计.查看", "项目.工程检查.统计.查看"})
         TaskAreaListVo talv = houseqmStatService.searchAreasByProjTaskIdTyp(projectId, taskId);
         LjBaseResponse<TaskAreaListVo> ljbr = new LjBaseResponse<>();
         ljbr.setData(talv);
@@ -190,6 +195,7 @@ public class HouseqmStatController {
                                                                 @RequestParam(value = "team_id") String teamId,
                                                                 @RequestParam(value = "area_id") Integer areaId,
                                                                 @RequestParam(value = "group_id") String groupId) {
+        ////TODO _, _, err := ctrl_tool.ProjPermMulti(c, []string{"项目.移动验房.统计.查看", "项目.工程检查.统计.查看"})
         List<Integer> list = Lists.newArrayList();
         list.add(categoryCls);
         AreaTaskListVo areaTaskListVo = houseqmStatService.searchHouseQmCheckTaskByProjIdAreaIdCategoryClsIn(projectId, areaId, list);
@@ -218,7 +224,7 @@ public class HouseqmStatController {
                                                  @RequestParam(value = "task_id") Integer taskId,
                                                  @RequestParam(value = "group_id") String groupId,
                                                  @RequestParam(value = "area_id") Integer areaId) {
-
+        ////TODO _, _, err := ctrl_tool.ProjPermMulti(c, []string{"项目.移动验房.统计.查看", "项目.工程检查.统计.查看"})
         TaskStatVo.IssueStatVo issue = houseqmStatisticService.getCheckTaskIssueTypeStatByTaskIdAreaId(taskId, areaId);
         TaskStatVo.HouseStatVo house = houseqmStatisticService.getHouseQmCheckTaskHouseStatByTaskId(projectId, taskId, areaId);
         house.setHouse_checked_percent(MathUtil.getPercentage(house.getChecked_count(), house.getHouse_count()));
@@ -251,7 +257,7 @@ public class HouseqmStatController {
                                                                     @RequestParam(value = "team_id") String teamId,
                                                                     @RequestParam(value = "task_id") Integer taskId,
                                                                     @RequestParam(value = "group_id") String groupId) {
-
+        ////TODO _, _, err := ctrl_tool.ProjPermMulti(c, []string{"项目.移动验房.统计.查看", "项目.工程检查.统计.查看"})
         Date t = null;
         try {
             t = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").parse("0001-01-01 00:00:00");
@@ -263,7 +269,6 @@ public class HouseqmStatController {
         ljbr.setData(taskRepairStatVo);
         return ljbr;
     }
-
 
 
 }

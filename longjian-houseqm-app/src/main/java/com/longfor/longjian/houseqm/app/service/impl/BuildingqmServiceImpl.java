@@ -265,7 +265,7 @@ public class BuildingqmServiceImpl implements IBuildingqmService {
             task.setPlan_end_on((int) (item.getPlanEndOn().getTime() / 1000));
             task.setCreate_at((int) (item.getCreateAt().getTime() / 1000));
             task.setUpdate_at((int) (item.getUpdateAt().getTime() / 1000));
-            task.setDelete_at((int) (item.getDeleteAt().getTime() / 1000));
+            task.setDelete_at(DateUtil.datetimeToTimeStamp(item.getDeleteAt()));
 
             if (maps.containsKey(task.getTask_id())) {
 

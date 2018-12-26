@@ -50,9 +50,9 @@
         FROM
         user_in_house_qm_check_task
         WHERE user_id = #{userId}
-            AND task_id =#{task_id}
-            AND role_type=#{checker}
-            and delete_at is null
+        AND task_id =#{task_id}
+        AND role_type=#{checker}
+        and delete_at is null
     </select>
     <!--List<UserInHouseQmCheckTask> searchBySquadIdIn(@Param("squadIds") List<Integer> squadIds);-->
     <select id="searchBySquadIdIn" resultMap="BaseResultMap">
@@ -62,7 +62,7 @@
         user_in_house_qm_check_task
         WHERE
         squad_id in
-        <foreach collection="squadIds" index="index" item="item" open="(" separator="," close=")" >
+        <foreach collection="squadIds" index="index" item="item" open="(" separator="," close=")">
             #{item}
         </foreach>
         AND
@@ -87,7 +87,7 @@
         task_id =#{task_id}
         and
         squad_id in
-        <foreach collection="existsSquadIds" index="index" item="item" open="(" separator="," close=")" >
+        <foreach collection="existsSquadIds" index="index" item="item" open="(" separator="," close=")">
             #{item}
         </foreach>
     </select>
@@ -100,4 +100,42 @@
             AND delete_at IS NULL
         </if>
     </select>
+
+    <select id="selectSquadIdByTaskIdAndUserIdAndRoleTypeAndNoDeleted" resultMap="BaseResultMap">
+        SELECT
+        <include refid="Base_Column_List"/>
+        from user_in_house_qm_check_task
+        WHERE task_id=#{taskId} AND user_id =#{uid} AND role_type =#{checker}
+        <if test="deleted=='false'">
+            AND delete_at IS NULL
+        </if>
+    </select>
+
+    <select id="selectUserIdBySquadIdInAndNoDeleted" resultMap="BaseResultMap">
+        SELECT
+        <include refid="Base_Column_List"/>
+        from user_in_house_qm_check_task
+        <where>
+            <if test="squadIds.size()>0">squad_id IN
+                <foreach collection="squadIds" item="item" index="index" open="(" separator="," close=")">
+                    #{item}
+                </foreach>
+            </if>
+            <if test="deleted=='false'">
+                AND delete_at IS NULL
+            </if>
+        </where>
+    </select>
+
+    <select id="selectUpdateAtByTaskIdAndNoDeletedOrderByUpdateAt" resultMap="BaseResultMap">
+        SELECT
+        <include refid="Base_Column_List"/>
+        FROM user_in_house_qm_check_task
+        WHERE task_id=#{taskId}
+        <if test="deleted=='false'">
+            AND delete_at IS NULL
+        </if>
+        ORDER BY update_at DESC
+    </select>
+
 </mapper>

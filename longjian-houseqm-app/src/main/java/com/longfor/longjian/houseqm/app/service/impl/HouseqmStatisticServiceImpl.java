@@ -198,6 +198,7 @@ public class HouseqmStatisticServiceImpl implements IHouseqmStatisticService {
         condiMap.put("taskId", taskId);
         condiMap.put("types", types);
         condiMap.put("deleted", "false");
+        condiMap.put("status", HouseQmCheckTaskIssueStatusEnum.AssignNoReform.getId());
         issueCounts = houseQmCheckTaskIssueService.selectByProjectIdAndTaskIdAndTyeInAndDongTai(condiMap);
         IssueRepairCount ic = issueCounts.get(0);
         TaskRepairStatVo taskRepairStatVo = new TaskRepairStatVo();

@@ -18,6 +18,7 @@ public class UpdateDeviceReq implements Serializable {
     private Integer issue_update_time;
     private Integer task_members_update_time;
     private Integer task_update_time;
+    private Integer task_id;
 
     private Long device_id;
     private String token;

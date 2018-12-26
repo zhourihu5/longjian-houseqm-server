@@ -11,6 +11,7 @@ import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.Set;
 
@@ -63,5 +64,20 @@ public class HouseQmCheckTaskIssueLogServiceImpl implements HouseQmCheckTaskIssu
         }
 
         return houseQmCheckTaskIssueLogs;
+    }
+
+    /**
+     *
+     * @author hy
+     * @date 2018/12/25 0025
+     * @param task_id
+     * @param uuids
+     * @param issueLogUpdateTime
+     * @return com.longfor.longjian.houseqm.po.HouseQmCheckTaskIssueLog
+     */
+    @Override
+    @LFAssignDataSource("zhijian2")
+    public List<HouseQmCheckTaskIssueLog> selectIdByTaskIdAndIdAndUuidInAndUpdateAtGtAndNoDeletedOrderById(Integer task_id, List<String> uuids, Date issueLogUpdateTime) {
+        return houseQmCheckTaskIssueLogMapper.selectIdByTaskIdAndIdAndUuidInAndUpdateAtGtAndNoDeletedOrderById(task_id,uuids,issueLogUpdateTime,"false");
     }
 }

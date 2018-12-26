@@ -4,6 +4,7 @@ import com.longfor.gaia.gfs.data.mybatis.LFMySQLMapper;
 import com.longfor.longjian.houseqm.po.HouseQmCheckTask;
 import org.apache.ibatis.annotations.Param;
 
+import java.util.Date;
 import java.util.List;
 import java.util.Set;
 
@@ -15,7 +16,7 @@ public interface HouseQmCheckTaskMapper extends LFMySQLMapper<HouseQmCheckTask> 
      * @param deleted
      * @return
      */
-    List<HouseQmCheckTask> selectByTaskIds(@Param("idList")Set<Integer> taskIdList, @Param("deleted")String deleted);
+    List<HouseQmCheckTask> selectByTaskIds(@Param("taskIdList")Set<Integer> taskIdList, @Param("deleted")String deleted);
 
     /**
      *
@@ -47,4 +48,13 @@ public interface HouseQmCheckTaskMapper extends LFMySQLMapper<HouseQmCheckTask> 
 
     HouseQmCheckTask selectAreaIdsByProjectIdAndTaskIdAndNoDeleted(@Param("projectId") Integer projectId, @Param("taskId") Integer taskId,@Param("deleted") String deleted);
 
+    /**
+     *
+     * @author hy
+     * @date 2018/12/25 0025
+     * @param taskId
+     * @param deleted
+     * @return java.util.Date
+     */
+    HouseQmCheckTask selectUpdateAtByTaskIdAndNoDeleted(@Param("taskId") Integer taskId, @Param("deleted") String deleted);
 }

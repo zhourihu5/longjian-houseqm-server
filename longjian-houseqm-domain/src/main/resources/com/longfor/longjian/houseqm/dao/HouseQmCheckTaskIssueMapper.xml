@@ -234,12 +234,15 @@
             parameterType="java.util.Map">
         SELECT COUNT(1) as total,
         COUNT(CASE WHEN plan_end_on IS NULL OR plan_end_on &lt; '1970-01-02' THEN 1 ELSE NULL END) as no_plan_end_on,
-        COUNT(CASE WHEN status = 30 AND plan_end_on &gt; '1970-01-02' AND plan_end_on &lt; #{now} THEN 1 ELSE NULL END)
+        COUNT(CASE WHEN status = #{status} AND plan_end_on &gt; '1970-01-02' AND plan_end_on &lt; #{now} THEN 1 ELSE
+        NULL END)
         as overtime_unfinish,
-        COUNT(CASE WHEN status = 30 AND plan_end_on &gt; #{now} THEN 1 ELSE NULL END) as intime_unfinish,
-        COUNT(CASE WHEN status != 30 AND plan_end_on &gt; '1970-01-02' AND end_on &gt; plan_end_on THEN 1 ELSE NULL END)
+        COUNT(CASE WHEN status = #{status} AND plan_end_on &gt; #{now} THEN 1 ELSE NULL END) as intime_unfinish,
+        COUNT(CASE WHEN status != #{status} AND plan_end_on &gt; '1970-01-02' AND end_on &gt; plan_end_on THEN 1 ELSE
+        NULL END)
         as overtime_finish,
-        COUNT(CASE WHEN status != 30 AND plan_end_on &gt; '1970-01-02' AND end_on &lt;= plan_end_on THEN 1 ELSE NULL
+        COUNT(CASE WHEN status != #{status} AND plan_end_on &gt; '1970-01-02' AND end_on &lt;= plan_end_on THEN 1 ELSE
+        NULL
         END) as intime_finish
         FROM house_qm_check_task_issue
         <where>
@@ -248,7 +251,7 @@
             <foreach collection="types" item="type" index="index" open="(" separator="," close=")">
                 #{type}
             </foreach>
-            <if test="areaId!=null">and area_path_and_id like ${aredId}</if>
+            <if test="areaId!=null">and area_path_and_id like '${aredId}'</if>
             <if test="beginOn!=null">AND client_create_at &gt;= #{beginOn}</if>
             <if test="endOn!=null">AND client_create_at &lt;= #{endOn}</if>
         </where>
@@ -489,29 +492,34 @@
         order by update_at desc
         LIMIT #{start},#{pageSize}
     </select>
-    <select id="searchhouseQmCheckTaskIssueByProTaskIdAreaidBegin" resultMap="BaseResultMap" >
-        SELECT  check_item_key,check_item_path_and_key,category_key,category_path_and_key,count(*)as count
+
+    <select id="searchhouseQmCheckTaskIssueByProTaskIdAreaidBegin" resultMap="BaseResultMap">
+        SELECT check_item_key,check_item_path_and_key,category_key,category_path_and_key,count(*)as count
         from house_qm_check_task_issue
-        WHERE project_id=#{projectId} AND area_path_and_id LIKE concat('%', #{areaId},'%')  AND task_id=#{taskId} AND typ
+        WHERE project_id=#{projectId} AND area_path_and_id LIKE concat('%', #{areaId},'%') AND task_id=#{taskId} AND typ
         IN
         <foreach collection="types" item="type" open="(" separator="," close=")" index="index">
             #{type}
         </foreach>
         AND client_create_at &gt;= #{begin} AND
-        client_create_at  &lt;= DATE_ADD(#{endOns},INTERVAL 1 DAY)
+        client_create_at &lt;= DATE_ADD(#{endOns},INTERVAL 1 DAY)
         <if test="deleted =='false'">
             and delete_at is NULL
         </if>
         GROUP BY category_path_and_key,check_item_key
     </select>
 
-    <select id="selectIssueRepairCountByProjectIdAndCategoryClsAndTypInAndStatusInAndNoDeletedAndDongTai" resultMap="issueRepairCount" parameterType="java.util.Map">
+    <select id="selectIssueRepairCountByProjectIdAndCategoryClsAndTypInAndStatusInAndNoDeletedAndDongTai"
+            resultMap="issueRepairCount" parameterType="java.util.Map">
         SELECT COUNT(1) as total,
         COUNT(CASE WHEN plan_end_on IS NULL OR plan_end_on &lt; '1970-01-02' THEN 1 ELSE NULL END) as no_plan_end_on,
-        COUNT(CASE WHEN status = #{status} AND plan_end_on &gt; '1970-01-02' AND plan_end_on &lt; '${now}' THEN 1 ELSE NULL END) as overtime_unfinish,
+        COUNT(CASE WHEN status = #{status} AND plan_end_on &gt; '1970-01-02' AND plan_end_on &lt; '${now}' THEN 1 ELSE
+        NULL END) as overtime_unfinish,
         COUNT(CASE WHEN status = #{status} AND plan_end_on &gt; '${now}' THEN 1 ELSE NULL END) as intime_unfinish,
-        COUNT(CASE WHEN status != #{status} AND plan_end_on &gt; '1970-01-02' AND end_on &gt; plan_end_on THEN 1 ELSE NULL END) as overtime_finish,
-        COUNT(CASE WHEN status != #{status} AND plan_end_on &gt; '1970-01-02' AND end_on &lt;= plan_end_on THEN 1 ELSE NULL END) as intime_finish
+        COUNT(CASE WHEN status != #{status} AND plan_end_on &gt; '1970-01-02' AND end_on &gt; plan_end_on THEN 1 ELSE
+        NULL END) as overtime_finish,
+        COUNT(CASE WHEN status != #{status} AND plan_end_on &gt; '1970-01-02' AND end_on &lt;= plan_end_on THEN 1 ELSE
+        NULL END) as intime_finish
         FROM house_qm_check_task_issue
         <where>
             project_id=#{projectId} AND category_cls IN
@@ -521,8 +529,8 @@
             <if test="areaPathAndId!=null">
                 AND area_path_and_id LIKE '${areaPathAndId}'
             </if>
-            <if test="clientCreateAtGte!=null"> AND client_create_at &gt;=#{clientCreateAtGte} </if>
-            <if test="clientCreateAtLte!=null">AND client_create_at &lt;=#{clientCreateAtLte}  </if>
+            <if test="clientCreateAtGte!=null">AND client_create_at &gt;=#{clientCreateAtGte}</if>
+            <if test="clientCreateAtLte!=null">AND client_create_at &lt;=#{clientCreateAtLte}</if>
             AND typ IN
             <foreach collection="typ" item="type" open="(" separator="," close=")" index="index">
                 #{type}
@@ -533,6 +541,41 @@
             </foreach>
             AND delete_at IS NULL
         </where>
+    </select>
+
+    <select id="selectIdByTaskIdAndIdGtAndUpdateAtGtAndSenderIdInOrUuidInAndNoDeletedOrderById"
+            resultMap="BaseResultMap">
+        SELECT
+        <include refid="Base_Column_List"/>
+        FROM house_qm_check_task_issue
+        WHERE task_id =#{taskId} AND id &gt; 0 AND update_at &gt; #{updateAtTime}
+        AND sender_id IN
+        <foreach collection="userIds" item="item" index="index" open="(" separator="," close=")">
+            #{item}
+        </foreach>
+        OR uuid IN
+        <foreach collection="uuids" item="item" index="index" open="(" separator="," close=")">
+            #{item}
+        </foreach>
+        <if test="deleted=='false'">AND delete_at IS NULL</if>
+        ORDER BY id ASC
+    </select>
+
+    <select id="selectUuidBySenderIdInOrTaskIdAndUuidIn" resultMap="ResultMapWithBLOBs">
+        SELECT
+        <include refid="Base_Column_List"/>
+        ,
+        <include refid="Blob_Column_List"/>
+        FROM house_qm_check_task_issue
+        WHERE sender_id IN
+        <foreach collection="userIds" item="item" index="index" open="(" separator="," close=")">
+            #{item}
+        </foreach>
+        OR (task_id=#{taskId} AND uuid IN
+        <foreach collection="uuids" item="item" index="index" open="(" separator="," close=")">
+            #{item}
+        </foreach>)
+        <if test="deleted=='false'">AND delete_at IS NULL</if>
     </select>
 
     <select id="searchHouseQmCheckTaskIssueByProjCategoryKeyAreaId" resultMap="ResultMapWithBLOBs" parameterType="java.util.Map">

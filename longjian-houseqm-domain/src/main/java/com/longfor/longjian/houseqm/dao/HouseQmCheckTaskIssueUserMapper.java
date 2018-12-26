@@ -22,10 +22,33 @@ public interface HouseQmCheckTaskIssueUserMapper extends LFMySQLMapper<HouseQmCh
      * @param task_id
      * @param last_id
      * @param timestamp
-     * @param orderBy
+     * @param
      * @param start
      * @param limit
      * @return
      */
     List<HouseQmCheckTaskIssueUser> searchByConditionOrderByPageUnscoped(@Param("task_id") Integer task_id,@Param("last_id") Integer last_id, @Param("timestamp")Integer timestamp, @Param("start") Integer start, @Param("limit") Integer limit);
+
+    /**
+     *
+     * @author hy
+     * @date 2018/12/25 0025
+     *  @param
+     * @param uid
+     * @param task_id
+     * @param aFalse
+     * @return java.util.List<com.longfor.longjian.houseqm.po.HouseQmCheckTaskIssueUser>
+     */
+    List<HouseQmCheckTaskIssueUser> selectIssueUUIDByUserIdAndTaskIdAndNoDeleted(@Param("uid") Integer uid, @Param("taskId") Integer task_id, @Param("deleted") String aFalse);
+
+    /**
+     *
+     * @author hy
+     * @date 2018/12/25 0025
+     * @param task_id
+     * @param aFalse
+     * @return com.longfor.longjian.houseqm.po.HouseQmCheckTaskIssueUser
+     */
+    List<HouseQmCheckTaskIssueUser> selectUpdateAtByTaskIdAndNoDeletedOrderByUpdateAt(@Param("taskId") Integer task_id, @Param("deleted") String aFalse);
+
 }

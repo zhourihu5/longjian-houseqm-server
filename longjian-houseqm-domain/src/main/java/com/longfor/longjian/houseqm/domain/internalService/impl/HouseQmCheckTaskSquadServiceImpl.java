@@ -1,5 +1,6 @@
 package com.longfor.longjian.houseqm.domain.internalService.impl;
 
+import com.longfor.gaia.gfs.data.mybatis.datasource.LFAssignDataSource;
 import com.longfor.longjian.houseqm.dao.HouseQmCheckTaskSquadMapper;
 import com.longfor.longjian.houseqm.domain.internalService.HouseQmCheckTaskSquadService;
 import com.longfor.longjian.houseqm.po.HouseQmCheckTaskSquad;
@@ -28,6 +29,7 @@ public class HouseQmCheckTaskSquadServiceImpl implements HouseQmCheckTaskSquadSe
      * @param taskIdList
      * @return
      */
+    @LFAssignDataSource("zhijian2")
     public List<HouseQmCheckTaskSquad> selectByTaskIds(Set<Integer> taskIdList){
 
         return houseQmCheckTaskSquadMapper.selectByTaskIds(taskIdList,"false");
@@ -38,6 +40,7 @@ public class HouseQmCheckTaskSquadServiceImpl implements HouseQmCheckTaskSquadSe
      * @param taskIdList
      * @return
      */
+    @LFAssignDataSource("zhijian2")
     public List<HouseQmCheckTaskSquad> selectByTaskIdsEvenDeleted(Set<Integer> taskIdList){
 
         return houseQmCheckTaskSquadMapper.selectByTaskIds(taskIdList,"true");

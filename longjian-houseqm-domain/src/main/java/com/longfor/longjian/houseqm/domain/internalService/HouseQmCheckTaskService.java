@@ -2,6 +2,7 @@ package com.longfor.longjian.houseqm.domain.internalService;
 
 import com.longfor.longjian.houseqm.po.HouseQmCheckTask;
 
+import java.util.Date;
 import java.util.List;
 import java.util.Set;
 
@@ -20,4 +21,12 @@ public interface HouseQmCheckTaskService {
 
     HouseQmCheckTask selectAreaIdsByProjectIdAndTaskIdAndNoDeleted(Integer projectId, Integer taskId);
 
+    /**
+     *
+     * @author hy
+     * @date 2018/12/25 0025
+     * @param taskId
+     * @return java.util.Date
+     */
+    HouseQmCheckTask selectUpdateAtByTaskIdAndNoDeleted(Integer taskId);
 }
