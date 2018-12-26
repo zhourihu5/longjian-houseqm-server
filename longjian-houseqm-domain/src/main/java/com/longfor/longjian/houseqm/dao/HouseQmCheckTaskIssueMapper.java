@@ -203,4 +203,22 @@ public interface HouseQmCheckTaskIssueMapper extends LFMySQLMapper<HouseQmCheckT
      */
     List<HouseQmCheckTaskIssue> selectUuidBySenderIdInOrTaskIdAndUuidIn(@Param("userIds") List<Integer> userIds, @Param("taskId") Integer task_id, @Param("uuids") List<String> issueUuids,@Param("deleted") String aFalse);
 
+    /**
+     *
+     * @author hy
+     * @date 2018/12/26 0026
+     * @param map
+     * @return java.lang.Integer
+     */
+    Integer selectCountByProjectIdAndCategoryClsAndTypeAndStatusInAndDongTai(Map<String, Object> map);
+
+    /**
+     *
+     * @author hy
+     * @date 2018/12/26 0026
+     * @param map
+     * @return java.util.List<com.longfor.longjian.houseqm.po.HouseQmCheckTaskIssue>
+     */
+    List<HouseQmCheckTaskIssue> selectHouseQmCheckTaskIssueByProjectIdAndCategoryClsAndTypeAndStatusInAndOrderByDescAndPageDongTai(Map<String, Object> map);
+
 }
