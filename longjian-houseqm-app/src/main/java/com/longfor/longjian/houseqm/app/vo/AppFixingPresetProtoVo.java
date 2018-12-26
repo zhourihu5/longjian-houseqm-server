@@ -18,4 +18,5 @@ public class AppFixingPresetProtoVo implements Serializable {
     private String check_item_key;
     private String user_ids;
     private int days;
+    private int minutes;
 }
