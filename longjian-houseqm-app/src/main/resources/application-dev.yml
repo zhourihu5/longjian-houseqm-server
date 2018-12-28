@@ -102,22 +102,22 @@ longfor:
             maximum-pool-size: 10
         custom02:
           driver-class-name: com.mysql.jdbc.Driver
-          url: jdbc:mysql://192.168.36.95:3306/zhijian2_apisvr?useUnicode=true&characterEncoding=UTF8
+          url: jdbc:mysql://192.168.37.158:3306/zhijian2_apisvr?useUnicode=true&characterEncoding=UTF8 #192.168.36.95
           username: zhijian
           password: JM4tLp9u6pPANLhT
         zhijian2:
           driver-class-name: com.mysql.jdbc.Driver
-          url: jdbc:mysql://192.168.36.95:3306/zhijian2?useUnicode=true&characterEncoding=UTF8
+          url: jdbc:mysql://192.168.37.158:3306/zhijian2?useUnicode=true&characterEncoding=UTF8
           username: zhijian
           password: JM4tLp9u6pPANLhT
         zhijian2_notify:
           driver-class-name: com.mysql.jdbc.Driver
-          url: jdbc:mysql://192.168.36.95:3306/zhijian2_notify?useUnicode=true&characterEncoding=UTF8
+          url: jdbc:mysql://192.168.37.158:3306/zhijian2_notify?useUnicode=true&characterEncoding=UTF8
           username: zhijian
           password: JM4tLp9u6pPANLhT
         zhijian2_setting:
           driver-class-name: com.mysql.jdbc.Driver
-          url: jdbc:mysql://192.168.36.95:3306/zhijian2_setting?useUnicode=true&characterEncoding=UTF8
+          url: jdbc:mysql://192.168.37.158:3306/zhijian2_setting?useUnicode=true&characterEncoding=UTF8
           username: zhijian
           password: JM4tLp9u6pPANLhT
     redis:
