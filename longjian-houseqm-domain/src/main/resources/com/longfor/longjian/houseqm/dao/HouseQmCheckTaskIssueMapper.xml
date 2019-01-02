@@ -548,16 +548,19 @@
         SELECT
         <include refid="Base_Column_List"/>
         FROM house_qm_check_task_issue
-        WHERE task_id =#{taskId} AND id &gt; 0 AND update_at &gt; #{updateAtTime}
-        AND sender_id IN
-        <foreach collection="userIds" item="item" index="index" open="(" separator="," close=")">
-            #{item}
-        </foreach>
-        OR uuid IN
-        <foreach collection="uuids" item="item" index="index" open="(" separator="," close=")">
-            #{item}
-        </foreach>
-        <if test="deleted=='false'">AND delete_at IS NULL</if>
+        <where>task_id =#{taskId} AND id &gt; 0 AND update_at &gt; #{updateAtTime}
+            AND sender_id IN
+            <foreach collection="userIds" item="item" index="index" open="(" separator="," close=")">
+                #{item}
+            </foreach>
+            OR
+            <if test="uuids.size>0">uuid IN
+                <foreach collection="uuids" item="item" index="index" open="(" separator="," close=")">
+                    #{item}
+                </foreach>
+            </if>
+            <if test="deleted=='false'">AND delete_at IS NULL</if>
+        </where>
         ORDER BY id ASC
     </select>
 
@@ -578,20 +581,22 @@
         <if test="deleted=='false'">AND delete_at IS NULL</if>
     </select>
 
-    <select id="searchHouseQmCheckTaskIssueByProjCategoryKeyAreaId" resultMap="ResultMapWithBLOBs" parameterType="java.util.Map">
-        SELECT <include refid="Base_Column_List" />,<include refid="Blob_Column_List" />
+    <select id="searchHouseQmCheckTaskIssueByProjCategoryKeyAreaId" resultMap="ResultMapWithBLOBs"
+            parameterType="java.util.Map">
+        SELECT<include refid="Base_Column_List"/>,
+        <include refid="Blob_Column_List"/>
         FROM house_qm_check_task_issue
         WHERE project_id=#{projectId}
         <if test="categoryKey!=null">
-          AND category_path_and_key LIKE  concat('%', #{categoryKey},'%')
+            AND category_path_and_key LIKE concat('%', #{categoryKey},'%')
         </if>
         <if test="areaId!=null">
-        and  area_path_and_id like concat('%', #{areaId},'%')
+            and area_path_and_id like concat('%', #{areaId},'%')
         </if>
-                AND  typ in
-                <foreach collection="types" item="item" index="index" open="(" separator="," close=")">
-                   #{item}
-                </foreach>
+        AND typ in
+        <foreach collection="types" item="item" index="index" open="(" separator="," close=")">
+            #{item}
+        </foreach>
         limit #{page},#{pageSize}
     </select>
     <select id="selectByTaskIdAreaPathAndIdAndStatusIn"

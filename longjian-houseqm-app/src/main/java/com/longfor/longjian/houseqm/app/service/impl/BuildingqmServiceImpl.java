@@ -148,6 +148,9 @@ public class BuildingqmServiceImpl implements IBuildingqmService {
      */
     public MyIssuePatchListVo myIssuePathList(int userId, int taskId, int timestamp) {
         MyIssuePatchListVo myIssuePatchListVo = new MyIssuePatchListVo();
+        myIssuePatchListVo.setLog_list(Lists.newArrayList());
+        myIssuePatchListVo.setAttachment_list(Lists.newArrayList());
+
         // 获取所有问题的uuid
         List<HouseQmCheckTaskIssueUser> houseQmCheckTaskIssueUsers = houseQmCheckTaskIssueUserService.searchByUserIdAndTaskIdAndCreateAt(userId, taskId, timestamp);
         Set<String> issueUuids = Sets.newHashSet();
@@ -214,7 +217,7 @@ public class BuildingqmServiceImpl implements IBuildingqmService {
             logVo.setDeleteAt(DateUtil.datetimeToTimeStamp(issueLog.getDeleteAt()));
             logs.add(logVo);
         }
-        myIssuePatchListVo.setLog_list(logs);
+        if (!logs.isEmpty())myIssuePatchListVo.setLog_list(logs);
         //获取问题附件信息
         List<HouseQmCheckTaskIssueAttachment> houseQmCheckTaskIssueAttachments = houseQmCheckTaskIssueAttachmentService.searchByIssueUuid(taskIssueUuids);
         List<MyIssuePatchListVo.AttachmentVo> attachments = Lists.newArrayList();
@@ -233,7 +236,7 @@ public class BuildingqmServiceImpl implements IBuildingqmService {
             attachmentVo.setDelete_at(DateUtil.datetimeToTimeStamp(attachment.getDeleteAt()));
             attachments.add(attachmentVo);
         }
-        myIssuePatchListVo.setAttachment_list(attachments);
+        if (!attachments.isEmpty())myIssuePatchListVo.setAttachment_list(attachments);
         return myIssuePatchListVo;
     }
 

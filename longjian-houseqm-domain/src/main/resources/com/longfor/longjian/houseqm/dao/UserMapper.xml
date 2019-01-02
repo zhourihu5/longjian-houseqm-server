@@ -32,23 +32,28 @@
         SELECT
         <include refid="Base_Column_List"/>
         from user
-        WHERE user_id in
-        <foreach collection="users" index="index" item="userId" open="(" separator="," close=")">
-            #{userId}
-        </foreach>
+        <where>
+            <if test="users.size>0">user_id in
+                <foreach collection="users" index="index" item="userId" open="(" separator="," close=")">
+                    #{userId}
+                </foreach>
+            </if>
+        </where>
     </select>
 
     <select id="selectByUserIdInAndNoDeleted" resultMap="BaseResultMap">
         SELECT
         <include refid="Base_Column_List"/>
         FROM user
-        WHERE user_id in
-        <foreach collection="userIds" item="userId" index="index" open="(" separator="," close=")">
-            #{userId}
-        </foreach>
-        <if test="deleted=='false'">
-            AND delete_at IS NULL
-        </if>
-
+        <where>
+            <if test="userIds.size>0">user_id in
+                <foreach collection="userIds" item="userId" index="index" open="(" separator="," close=")">
+                    #{userId}
+                </foreach>
+            </if>
+            <if test="deleted=='false'">
+                AND delete_at IS NULL
+            </if>
+        </where>
     </select>
 </mapper>
