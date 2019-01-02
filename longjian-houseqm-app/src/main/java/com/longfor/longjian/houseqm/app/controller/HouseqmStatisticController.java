@@ -128,17 +128,16 @@ public class HouseqmStatisticController {
     }
 
     /**
-     *
-     * @author hy
-     * @date 2018/12/24 0024
      * @param
      * @return com.longfor.longjian.common.base.LjBaseResponse<com.longfor.longjian.houseqm.app.vo.ProjectDailyListVo>
+     * @author hy
+     * @date 2018/12/24 0024
      */
     @GetMapping(value = "project_issue_repair", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
-    public LjBaseResponse<IssueRepairStatisticVo> projectIssueRepair(@RequestParam(value = "project_id") Integer projectId,@RequestParam(value = "source")String source,
-                                                                 @RequestParam(value = "area_id") Integer areaId,@RequestParam(value = "begin_on",defaultValue = "0")Integer beginOn,
-                                                                @RequestParam(value = "end_on",defaultValue = "0")Integer endOn,@RequestParam(value = "timestamp",defaultValue = "0")Integer timestamp
-                                                                        ) {
+    public LjBaseResponse<IssueRepairStatisticVo> projectIssueRepair(@RequestParam(value = "project_id") Integer projectId, @RequestParam(value = "source") String source,
+                                                                     @RequestParam(value = "area_id") Integer areaId, @RequestParam(value = "begin_on", defaultValue = "0") Integer beginOn,
+                                                                     @RequestParam(value = "end_on", defaultValue = "0") Integer endOn, @RequestParam(value = "timestamp", defaultValue = "0") Integer timestamp
+    ) {
         IssueRepairStatisticVo issueRepairStatisticVo = iHouseqmStatisticService.projectIssueRepair(projectId, source, areaId, beginOn, endOn, timestamp);
         LjBaseResponse<IssueRepairStatisticVo> ljbr = new LjBaseResponse<>();
         ljbr.setData(issueRepairStatisticVo);
@@ -161,13 +160,13 @@ public class HouseqmStatisticController {
         Date endOns = DateUtil.transForDate(endOn);
         List<HouseQmIssueCategoryStatVo> categoryStatlist = iHouseqmStatisticService.searchHouseQmIssueCategoryStatByProjTaskIdAreaIdBeginOnEndOn(projectId, taskId, areaId, begin, endOns);
         HouseqmStatisticTaskCheckitemStatRspMsgVo vo = new HouseqmStatisticTaskCheckitemStatRspMsgVo();
-        List<HouseqmStatisticTaskCheckitemStatRspMsgVo.ApiHouseQmCheckItemIssueStat> issueStatList=Lists.newArrayList();
+        List<HouseqmStatisticTaskCheckitemStatRspMsgVo.ApiHouseQmCheckItemIssueStat> issueStatList = Lists.newArrayList();
         for (int i = 0; i < categoryStatlist.size(); i++) {
             HouseqmStatisticTaskCheckitemStatRspMsgVo.ApiHouseQmCheckItemIssueStat apiHouseQmCheckItemIssueStat = new HouseqmStatisticTaskCheckitemStatRspMsgVo().new ApiHouseQmCheckItemIssueStat();
-            apiHouseQmCheckItemIssueStat.setName( categoryStatlist.get(i).getName());
+            apiHouseQmCheckItemIssueStat.setName(categoryStatlist.get(i).getName());
             apiHouseQmCheckItemIssueStat.setKey(categoryStatlist.get(i).getKey());
             apiHouseQmCheckItemIssueStat.setFatherKey(categoryStatlist.get(i).getParentKey());
-            apiHouseQmCheckItemIssueStat.setIssueCount( categoryStatlist.get(i).getIssueCount());
+            apiHouseQmCheckItemIssueStat.setIssueCount(categoryStatlist.get(i).getIssueCount());
             issueStatList.add(apiHouseQmCheckItemIssueStat);
         }
         vo.setItems(issueStatList);
@@ -192,11 +191,11 @@ public class HouseqmStatisticController {
                                                             @RequestParam(value = "timestamp") Integer timestamp) {
         Date begin = DateUtil.transForDate(beginOn);
         Date endOns = DateUtil.transForDate(endOn);
-      //endon加一天
+        //endon加一天
         Calendar c = Calendar.getInstance();
         c.setTime(endOns);
         c.add(Calendar.DAY_OF_MONTH, 1);// +1天
-         endOns = c.getTime();
+        endOns = c.getTime();
         TaskRepairStatVo taskRepairStatVo = iHouseqmStatisticService.searchIssueRepairStatisticByProjTaskIdAreaIdBeginOnEndOn(projectId, taskId, areaId, begin, endOns);
         LjBaseResponse<TaskRepairStatVo> ljbr = new LjBaseResponse<>();
         ljbr.setData(taskRepairStatVo);
@@ -204,25 +203,20 @@ public class HouseqmStatisticController {
     }
 
 
-
-
-
-
-   /**
-    *
-    * @author hy
-    * @date 2018/12/22 0022
-    * @param
-    * @return com.longfor.longjian.common.base.LjBaseResponse<com.longfor.longjian.houseqm.app.vo.HouseqmStatisticCategoryIssueListRspMsgVo>
-    */
+    /**
+     * @param
+     * @return com.longfor.longjian.common.base.LjBaseResponse<com.longfor.longjian.houseqm.app.vo.HouseqmStatisticCategoryIssueListRspMsgVo>
+     * @author hy
+     * @date 2018/12/22 0022
+     */
     @GetMapping(value = "task_issue_repair_list", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
-    public LjBaseResponse<HouseqmStatisticCategoryIssueListRspMsgVo> taskIssueRepairList(@RequestParam(value = "project_id") Integer projectId,@RequestParam(value = "task_id")Integer taskId,
-                                                                                         @RequestParam(value = "area_id")Integer areaId,@RequestParam(value = "begin_on",defaultValue = "0")Integer beginOn,
-                                                                                         @RequestParam(value = "end_on",defaultValue = "0")Integer endOn,@RequestParam(value = "timestamp",defaultValue = "0")Integer timestamp,
-                                                                                         @RequestParam(value = "plan_status",defaultValue = "0")Integer planStatus,@RequestParam(value = "source") String source,
-                                                                                         @RequestParam(value = "page",defaultValue = "1")Integer page,@RequestParam(value = "page_size",defaultValue = "20")Integer pageSize) {
+    public LjBaseResponse<HouseqmStatisticCategoryIssueListRspMsgVo> taskIssueRepairList(@RequestParam(value = "project_id") Integer projectId, @RequestParam(value = "task_id") Integer taskId,
+                                                                                         @RequestParam(value = "area_id") Integer areaId, @RequestParam(value = "begin_on", defaultValue = "0") Integer beginOn,
+                                                                                         @RequestParam(value = "end_on", defaultValue = "0") Integer endOn, @RequestParam(value = "timestamp", defaultValue = "0") Integer timestamp,
+                                                                                         @RequestParam(value = "plan_status", defaultValue = "0") Integer planStatus, @RequestParam(value = "source") String source,
+                                                                                         @RequestParam(value = "page", defaultValue = "1") Integer page, @RequestParam(value = "page_size", defaultValue = "20") Integer pageSize) {
 
-        HouseqmStatisticCategoryIssueListRspMsgVo projectDailyListVo = iHouseqmStatisticService.taskIssueRepairList(projectId,taskId,areaId,beginOn,endOn,timestamp,planStatus,source,page,pageSize);
+        HouseqmStatisticCategoryIssueListRspMsgVo projectDailyListVo = iHouseqmStatisticService.taskIssueRepairList(projectId, taskId, areaId, beginOn, endOn, timestamp, planStatus, source, page, pageSize);
         LjBaseResponse<HouseqmStatisticCategoryIssueListRspMsgVo> ljbr = new LjBaseResponse<>();
         ljbr.setData(projectDailyListVo);
         return ljbr;
@@ -235,12 +229,12 @@ public class HouseqmStatisticController {
 
     @GetMapping(value = "category_issue_list", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     public LjBaseResponse<HouseqmStatisticCategoryIssueListRspMsgVo> categoryIssueList(@RequestParam(value = "project_id") Integer projectId,
-                                                                @RequestParam(value = "category_key") String categoryKey,
-                                                                @RequestParam(value = "area_id") Integer areaId,
-                                                                @RequestParam(value = "page") Integer page,
-                                                                @RequestParam(value = "page_size") Integer pageSize
-                                                                ) {
-     List<HouseQmCheckTaskIssueOnlineInfoVo>infoList= iHouseqmStatisticService.SearchHouseQmCheckTaskIssueOnlineInfoByProjCategoryKeyAreaIdPaged(projectId, categoryKey, areaId, page, pageSize);
+                                                                                       @RequestParam(value = "category_key") String categoryKey,
+                                                                                       @RequestParam(value = "area_id") Integer areaId,
+                                                                                       @RequestParam(value = "page") Integer page,
+                                                                                       @RequestParam(value = "page_size") Integer pageSize
+    ) {
+        List<HouseQmCheckTaskIssueOnlineInfoVo> infoList = iHouseqmStatisticService.SearchHouseQmCheckTaskIssueOnlineInfoByProjCategoryKeyAreaIdPaged(projectId, categoryKey, areaId, page, pageSize);
         ArrayList<HouseqmStatisticCategoryIssueListRspMsgVo.ApiTaskIssueRepairListRsp> objects = Lists.newArrayList();
         for (int i = 0; i < infoList.size(); i++) {
             HouseqmStatisticCategoryIssueListRspMsgVo.ApiTaskIssueRepairListRsp listRsp = new HouseqmStatisticCategoryIssueListRspMsgVo().new ApiTaskIssueRepairListRsp();
@@ -253,7 +247,7 @@ public class HouseqmStatisticController {
             listRsp.setContent(infoList.get(i).getContent());
             listRsp.setCondition(infoList.get(i).getCondition());
             listRsp.setStatus(infoList.get(i).getStatus());
-            listRsp.setPlanEndOn(DateUtil.datetimeToTimeStamp( infoList.get(i).getPlanEndOn()));
+            listRsp.setPlanEndOn(DateUtil.datetimeToTimeStamp(infoList.get(i).getPlanEndOn()));
             listRsp.setAttachmentMd5List(infoList.get(i).getAttachmentMd5List());
             listRsp.setClientCreateAt(DateUtil.datetimeToTimeStamp(infoList.get(i).getClientCreateAt()));
             listRsp.setUpdateAt(DateUtil.datetimeToTimeStamp(infoList.get(i).getUpdateAt()));
@@ -303,6 +297,30 @@ public class HouseqmStatisticController {
         response.setData(msgVo);
         return response;
     }
+
+    @GetMapping(value = "task_issue_stat", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+    public LjBaseResponse<HouseqmStatisticTaskIssueStatRspMsgVo> taskIssueStat(@RequestParam(value = "project_id") Integer projectId,
+                                                                               @RequestParam(value = "task_id") Integer taskId,
+                                                                               @RequestParam(value = "area_id") Integer areaId,
+                                                                               @RequestParam(value = "timestamp") Integer timestamp) {
+        TaskStatVo.IssueStatVo vo = iHouseqmStatisticService.getCheckTaskIssueTypeStatByTaskIdAreaId(taskId, areaId);
+        HouseQmCheckTaskHouseStatInfoVo infoVo = iHouseqmStatisticService.getHouseQmHouseQmCheckTaskHouseStatByTaskId(projectId, taskId, areaId);
+        ApiHouseQmTaskStatVo houseQmTaskStatVo = new ApiHouseQmTaskStatVo();
+        houseQmTaskStatVo.setIssueApprovededCount(vo.getIssue_approveded_count());
+        houseQmTaskStatVo.setIssueAssignedCount(vo.getIssue_assigned_count());
+        houseQmTaskStatVo.setIssueCount(vo.getIssue_count());
+        houseQmTaskStatVo.setIssueRecordedCount(vo.getIssue_recorded_count());
+        houseQmTaskStatVo.setIssueRepairedCount(vo.getIssue_repaired_count());
+        houseQmTaskStatVo.setRecordCount(vo.getRecord_count());
+        houseQmTaskStatVo.setHouseCount(infoVo.getHouseCount());
+        HouseqmStatisticTaskIssueStatRspMsgVo houseqmStatisticTaskIssueStatRspMsgVo = new HouseqmStatisticTaskIssueStatRspMsgVo();
+        houseqmStatisticTaskIssueStatRspMsgVo.setItem(houseQmTaskStatVo);
+        LjBaseResponse<HouseqmStatisticTaskIssueStatRspMsgVo> response = new LjBaseResponse<>();
+        response.setData(houseqmStatisticTaskIssueStatRspMsgVo);
+        return response;
+
+    }
+
 
     //用于计算百分比
     private String getPercentage(int a, int b) {

@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.longfor.longjian.houseqm.dao.RepossessionStatusMapper">
+    <resultMap id="BaseResultMap" type="com.longfor.longjian.houseqm.po.RepossessionStatus">
+        <!--
+          WARNING - @mbg.generated
+        -->
+        <id column="id" property="id" jdbcType="INTEGER"/>
+        <result column="project_id" property="projectId" jdbcType="INTEGER"/>
+        <result column="task_id" property="taskId" jdbcType="INTEGER"/>
+        <result column="area_id" property="areaId" jdbcType="INTEGER"/>
+        <result column="area_path_and_id" property="areaPathAndId" jdbcType="VARCHAR"/>
+        <result column="status" property="status" jdbcType="INTEGER"/>
+        <result column="status_client_update_at" property="statusClientUpdateAt" jdbcType="TIMESTAMP"/>
+        <result column="has_take_key" property="hasTakeKey" jdbcType="INTEGER"/>
+        <result column="trust_key_count" property="trustKeyCount" jdbcType="INTEGER"/>
+        <result column="key_client_update_at" property="keyClientUpdateAt" jdbcType="TIMESTAMP"/>
+        <result column="accompany_sign_md5_list" property="accompanySignMd5List" jdbcType="VARCHAR"/>
+        <result column="accompany_sign_client_update_at" property="accompanySignClientUpdateAt" jdbcType="TIMESTAMP"/>
+        <result column="sign_status" property="signStatus" jdbcType="INTEGER"/>
+        <result column="sign_comment" property="signComment" jdbcType="VARCHAR"/>
+        <result column="sign_md5_list" property="signMd5List" jdbcType="VARCHAR"/>
+        <result column="sign_client_update_at" property="signClientUpdateAt" jdbcType="TIMESTAMP"/>
+        <result column="remark" property="remark" jdbcType="VARCHAR"/>
+        <result column="expect_date" property="expectDate" jdbcType="TIMESTAMP"/>
+        <result column="repossession_check_status" property="repossessionCheckStatus" jdbcType="INTEGER"/>
+        <result column="repossession_check_status_client_update_at" property="repossessionCheckStatusClientUpdateAt" jdbcType="TIMESTAMP"/>
+        <result column="repair_status" property="repairStatus" jdbcType="INTEGER"/>
+        <result column="repair_sign_md5_list" property="repairSignMd5List" jdbcType="VARCHAR"/>
+        <result column="repair_client_update_at" property="repairClientUpdateAt" jdbcType="TIMESTAMP"/>
+        <result column="create_at" property="createAt" jdbcType="TIMESTAMP"/>
+        <result column="update_at" property="updateAt" jdbcType="TIMESTAMP"/>
+        <result column="delete_at" property="deleteAt" jdbcType="TIMESTAMP"/>
+        <result column="uuid" property="uuid" jdbcType="VARCHAR"/>
+        <result column="modify_user_id" property="modifyUserId" jdbcType="INTEGER"/>
+        <result column="satisfaction_score" property="satisfactionScore" jdbcType="INTEGER"/>
+    </resultMap>
+    <sql id="Base_Column_List">
+        <!--
+          WARNING - @mbg.generated
+        -->
+        id, project_id, task_id, area_id, area_path_and_id, status, status_client_update_at,has_take_key, trust_key_count,
+        key_client_update_at, accompany_sign_md5_list, accompany_sign_client_update_at, sign_status, sign_comment,sign_md5_list,
+        sign_client_update_at,remark,expect_date,repossession_check_status,repossession_check_status_client_update_at,repair_status,
+        repair_sign_md5_list,repair_client_update_at,create_at,update_at,delete_at,uuid,modify_user_id,satisfaction_score
+    </sql>
+    <select id="SearchByTaskIdAreaIdLike" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from repossession_status
+        WHERE task_id=#{taskId}
+        <if test= "areaId>0" >
+  and area_id 	LIKE concat('%', #{areaId},'%')
+        </if>
+    </select>
+</mapper>
