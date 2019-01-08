@@ -11,16 +11,16 @@ import java.io.Serializable;
 @Data
 @NoArgsConstructor
 public class IssueRepairStatisticVo implements Serializable {
-   private   String NoPlanEndOn;
-    private  String OvertimeUnfinish;
-    private  String InitimeUnfinish;
-    private  String OvertimeFinish ;
-    private  String InitimeFinish ;
+    private String no_plan_end_on;
+    private String overtime_unfinish;
+    private String initime_unfinish;
+    private String overtime_finish;
+    private String initime_finish;
 
-    private  Integer TotalCount  ;
-    private Integer NoPlanEndOnCount  ;
-    private  Integer OvertimeUnfinishCount ;
-    private  Integer InitimeUnfinishCount  ;
-    private  Integer OvertimeFinishCount  ;
-    private  Integer InitimeFinishCount  ;
+    private Integer total_count;
+    private Integer no_plan_end_on_count;
+    private Integer overtime_unfinish_count;
+    private Integer initime_unfinish_count;
+    private Integer overtime_finish_count;
+    private Integer initime_finish_count;
 }
