@@ -9,5 +9,6 @@ import java.util.List;
  */
 
 public interface RepossessionStatusService {
-    List<RepossessionStatus> SearchByTaskIdAreaIdLike(Integer taskId, Integer areaId);
+    List<RepossessionStatus> searchByTaskIdAreaIdLike(Integer taskId, Integer areaId);
+    List<RepossessionStatus> searchRepossessionStatusByTaskIdAreaIdLike(Integer taskId, Integer areaId);
 }

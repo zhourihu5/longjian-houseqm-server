@@ -11,6 +11,7 @@ import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
 import com.longfor.longjian.houseqm.app.service.HouseqmStaticService;
+import com.longfor.longjian.houseqm.app.service.IHouseqmService;
 import com.longfor.longjian.houseqm.app.service.IHouseqmStatisticService;
 import com.longfor.longjian.houseqm.app.vo.*;
 import com.longfor.longjian.houseqm.consts.HouseQmCheckTaskIssueEnum;
@@ -19,11 +20,13 @@ import com.longfor.longjian.houseqm.domain.internalService.*;
 import com.longfor.longjian.houseqm.app.vo.*;
 import com.longfor.longjian.houseqm.consts.*;
 import com.longfor.longjian.houseqm.domain.internalService.*;
+import com.longfor.longjian.houseqm.dto.HouseQmCheckTaskIssueAreaGroup;
 import com.longfor.longjian.houseqm.po.*;
 import com.longfor.longjian.houseqm.util.CollectionUtil;
 import com.longfor.longjian.houseqm.util.DateUtil;
 import com.longfor.longjian.houseqm.util.MathUtil;
 import com.longfor.longjian.houseqm.util.StringSplitToListUtil;
+import io.swagger.models.auth.In;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Repository;
 import org.springframework.stereotype.Service;
@@ -50,7 +53,10 @@ public class HouseqmStatisticServiceImpl implements IHouseqmStatisticService {
 
     @Resource
     HouseQmCheckTaskService houseQmCheckTaskService;
-
+    @Resource
+    IHouseqmService iHouseqmService;
+    @Resource
+    HouseqmStaticService houseqmStaticService;
     @Resource
     AreaService areaService;
     @Resource
@@ -70,7 +76,7 @@ public class HouseqmStatisticServiceImpl implements IHouseqmStatisticService {
     @Resource
     CheckItemV3Service checkItemV3Service;
     @Resource
-    HouseqmStaticService houseqmStaticService;
+    RepossessionStatusService repossessionStatusService;
 
     /**
      * @param taskId
@@ -379,10 +385,10 @@ public class HouseqmStatisticServiceImpl implements IHouseqmStatisticService {
         // 读取出正常检查任务的统计
         CheckTaskHouseStatInfoVo normalStat = houseqmStaticService.GetHouseQmCheckTaskHouseStatByTaskId(prodectId, taskId, areaId);
         // 读取出移动验房部分的统计
-        RepossessionTasksStatusInfoVo repossessionInfo=   houseqmStaticService.getRepossessionTasksStatusInfo(prodectId, taskIds, areaId);
+        RepossessionTasksStatusInfoVo repossessionInfo = houseqmStaticService.getRepossessionTasksStatusInfo(prodectId, taskIds, areaId);
         HouseQmCheckTaskHouseStatInfoVo result = new HouseQmCheckTaskHouseStatInfoVo();
         result.setCheckedCount(repossessionInfo.getCheckedCount());
-        result.setRepairConfirmCount(repossessionInfo.getRepairConfirmCount()) ;
+        result.setRepairConfirmCount(repossessionInfo.getRepairConfirmCount());
         result.setAcceptHasIssueCount(repossessionInfo.getAcceptHasIssueCount());
         result.setAcceptNoIssueCount(repossessionInfo.getAcceptNoIssueCount());
         result.setOnlyWatchCount(repossessionInfo.getOnlyWatch());
@@ -395,6 +401,127 @@ public class HouseqmStatisticServiceImpl implements IHouseqmStatisticService {
 
         return result;
     }
+
+    /*
+     * @Author hy
+     * @Description
+     * @Date 17:09 2019/1/8
+     * @Param [projectId, taskIds, areaId]
+     * @return com.longfor.longjian.houseqm.app.vo.RepossessionTasksStatusInfoVo
+     **/
+    @Override
+    public RepossessionTasksStatusInfoVo getRepossessionTasksStatusInfo(Integer projectId, List<Integer> taskIds, Integer areaId) {
+        RepossessionTasksStatusInfoVo info = new RepossessionTasksStatusInfoVo();
+        info.setTaskName("");
+        info.setTotal(0);
+        info.setCheckedCount(0);
+        info.setUncheckedCount(0);
+        info.setCheckedRate("");
+        info.setAcceptCount(0);
+        info.setUnacceptCount(0);
+        info.setHasIssueCount(0);
+        info.setNoIssueCount(0);
+        info.setAcceptHasIssueCount(0);
+        info.setAcceptNoIssueCount(0);
+        info.setAcceptHasIssueSignCount(0);
+        info.setAcceptNoIssueSignCount(0);
+        info.setRejectCount(0);
+        info.setOnlyWatch(0);
+        info.setRepairConfirmCount(0);
+        info.setAcceptApprovedCount(0);
+
+        taskIds.forEach(taskId -> {
+            List<Area> areas = iHouseqmService.searchTargetAreaByTaskId(projectId, taskId);
+            Integer total = areas.size();
+            List<RepossessionStatus> items = repossessionStatusService.searchRepossessionStatusByTaskIdAreaIdLike(taskId, areaId);
+            List<String> hasIssuePaths = houseqmStaticService.getHasIssueTaskCheckedAreaPathListByTaskId(taskId, true, null, areaId);
+            HashMap<Integer, Boolean> hasIssueAreaId = Maps.newHashMap();
+            for (String path : hasIssuePaths) {
+                List<Integer> ids = StringSplitToListUtil.strToInts(path, "/");
+                if (ids.size() > 0) {
+                    hasIssueAreaId.put(ids.get(ids.size() - 1), true);
+                }
+            }
+
+            List<Integer> statuses = Lists.newArrayList();
+            statuses.add(HouseQmCheckTaskIssueStatusEnum.NoteNoAssign.getId());
+            statuses.add(HouseQmCheckTaskIssueStatusEnum.AssignNoReform.getId());
+            statuses.add(HouseQmCheckTaskIssueStatusEnum.ReformNoCheck.getId());
+
+            // 有问题但是未销项完成的
+            List<String> hasIssueNoApprovedPaths = houseqmStaticService.getHasIssueTaskCheckedAreaPathListByTaskId(taskId, true, statuses, areaId);
+            HashMap<Integer, Boolean> hasIssueNoApprovedAreaId = Maps.newHashMap();
+            for (String path : hasIssuePaths) {
+                List<Integer> ids = StringSplitToListUtil.strToInts(path, "/");
+                if (ids.size() > 0) {
+                    hasIssueNoApprovedAreaId.put(ids.get(ids.size() - 1), true);
+                }
+            }
+            int checkedCount = 0;
+            HashMap<Integer, Boolean> rAreaId = Maps.newHashMap();
+            for (RepossessionStatus item : items) {
+                // 去重
+                if (rAreaId.containsKey(item.getAreaId())) continue;
+                else rAreaId.put(item.getAreaId(), true);
+
+                RepossessionStatusEnum senum = null;
+                for (RepossessionStatusEnum e : RepossessionStatusEnum.values()) {
+                    if (item.getStatus() == e.getId()) {
+                        senum = e;
+                        break;
+                    }
+                }
+                switch (senum) {
+                    case Accept: {
+                        checkedCount += 1;
+                        info.setAcceptCount(info.getAcceptCount() + 1);
+                        if (hasIssueAreaId.containsKey(item.getAreaId())) {
+                            info.setAcceptHasIssueCount(info.getAcceptHasIssueCount() + 1);
+                            if (item.getSignStatus() == 1) {
+                                info.setAcceptHasIssueSignCount(info.getAcceptHasIssueSignCount() + 1);
+                            }
+
+                            if (!hasIssueNoApprovedAreaId.containsKey(item.getAreaId())) {
+                                info.setAcceptApprovedCount(info.getAcceptApprovedCount() + 1);
+                            }
+
+                            if (item.getRepairStatus().equals(RepossessionRepairStatusEnum.Confirmed.getId())) {
+                                info.setRepairConfirmCount(info.getRepairConfirmCount() + 1);
+                            }
+
+                        } else {
+                            info.setAcceptNoIssueCount(info.getAcceptNoIssueCount() + 1);
+                            if (item.getSignStatus() == 1) {
+                                info.setAcceptNoIssueSignCount(info.getAcceptNoIssueSignCount() + 1);
+                            }
+                        }
+
+                    }
+                    break;
+                    case RejectAccept: {
+                        checkedCount += 1;
+                        info.setRejectCount(info.getRejectCount() + 1);
+                        info.setUnacceptCount(info.getUnacceptCount() + 1);
+                    }
+                    break;
+                    case OnlyCheck: {
+                        checkedCount += 1;
+                        info.setOnlyWatch(info.getOnlyWatch() + 1);
+                        info.setUnacceptCount(info.getUnacceptCount() + 1);
+                    }
+                    break;
+                    case None:break;
+                }
+
+            }
+            info.setTotal(info.getTotal()+total);
+            info.setCheckedCount(info.getCheckedCount()+checkedCount);
+            info.setUncheckedCount(info.getUncheckedCount()+(total-checkedCount));
+        });
+        info.setCheckedRate(MathUtil.getPercentageByPattern(info.getCheckedCount(),info.getTotal(),"0.0"));
+        return info;
+    }
+
 
     /**
      * @param projectId
@@ -434,18 +561,18 @@ public class HouseqmStatisticServiceImpl implements IHouseqmStatisticService {
             ic.setTotal(1);
         }
 
-        item.setNoPlanEndOn(MathUtil.getPercentage(ic.getNoPlanEndOn(), ic.getTotal()));
-        item.setOvertimeUnfinish(MathUtil.getPercentage(ic.getOvertimeUnfinish(), ic.getTotal()));
-        item.setInitimeUnfinish(MathUtil.getPercentage(ic.getInitimeUnfinish(), ic.getTotal()));
-        item.setOvertimeFinish(MathUtil.getPercentage(ic.getOvertimeFinish(), ic.getTotal()));
-        item.setInitimeFinish(MathUtil.getPercentage(ic.getInitimeFinish(), ic.getTotal()));
+        item.setNo_plan_end_on(MathUtil.getPercentage(ic.getNoPlanEndOn(), ic.getTotal()));
+        item.setOvertime_unfinish(MathUtil.getPercentage(ic.getOvertimeUnfinish(), ic.getTotal()));
+        item.setInitime_unfinish(MathUtil.getPercentage(ic.getInitimeUnfinish(), ic.getTotal()));
+        item.setOvertime_finish(MathUtil.getPercentage(ic.getOvertimeFinish(), ic.getTotal()));
+        item.setInitime_finish(MathUtil.getPercentage(ic.getInitimeFinish(), ic.getTotal()));
 
-        item.setTotalCount(ic.getTotal());
-        item.setNoPlanEndOnCount(ic.getNoPlanEndOn());
-        item.setOvertimeUnfinishCount(ic.getOvertimeUnfinish());
-        item.setInitimeUnfinishCount(ic.getInitimeUnfinish());
-        item.setOvertimeFinishCount(ic.getOvertimeFinish());
-        item.setInitimeFinishCount(ic.getInitimeFinish());
+        item.setTotal_count(ic.getTotal());
+        item.setNo_plan_end_on_count(ic.getNoPlanEndOn());
+        item.setOvertime_unfinish_count(ic.getOvertimeUnfinish());
+        item.setInitime_unfinish_count(ic.getInitimeUnfinish());
+        item.setOvertime_finish_count(ic.getOvertimeFinish());
+        item.setInitime_finish_count(ic.getInitimeFinish());
         return item;
     }
 
@@ -614,11 +741,11 @@ public class HouseqmStatisticServiceImpl implements IHouseqmStatisticService {
             for (int j = 0; j < split.length; j++) {
                 if (map.containsKey(split[j])) {
                     List<String> list = Lists.newArrayList();
-                    list.add( map.get(split[j]));
+                    list.add(map.get(split[j]));
                     infos.get(i).setAttachmentUrlList(list);
-                    }
                 }
             }
+        }
 
         return infos;
 

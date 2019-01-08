@@ -22,9 +22,11 @@ public interface IHouseqmStatisticService {
     List<HouseQmCheckTaskIssueOnlineInfoVo> SearchHouseQmCheckTaskIssueOnlineInfoByProjCategoryKeyAreaIdPaged(Integer projectId, String categoryKey, Integer areaId, Integer page, Integer pageSize);
 
 
-    HouseqmStatisticCategoryIssueListRspMsgVo taskIssueRepairList(Integer projectId,Integer taskId,Integer areaId,Integer beginOn,Integer endOn,Integer timestamp,Integer planStatus,String source,Integer page,Integer pageSize);
+    HouseqmStatisticCategoryIssueListRspMsgVo taskIssueRepairList(Integer projectId, Integer taskId, Integer areaId, Integer beginOn, Integer endOn, Integer timestamp, Integer planStatus, String source, Integer page, Integer pageSize);
 
-    IssueRepairStatisticVo projectIssueRepair(Integer projectId,String source,Integer areaId,Integer beginOn,Integer endOn,Integer timestamp);
+    IssueRepairStatisticVo projectIssueRepair(Integer projectId, String source, Integer areaId, Integer beginOn, Integer endOn, Integer timestamp);
 
     HouseQmCheckTaskHouseStatInfoVo getHouseQmHouseQmCheckTaskHouseStatByTaskId(Integer prodectId, Integer taskId, Integer areaId);
+
+    RepossessionTasksStatusInfoVo getRepossessionTasksStatusInfo(Integer projectId,List<Integer> taskIds,Integer areaId);
 }

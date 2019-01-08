@@ -7,6 +7,8 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.regex.Pattern;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 /**
  * @author Houyan
@@ -98,5 +100,56 @@ public class StringSplitToListUtil {
         List<String> strings = splitToStringComma(s1, splitSep);
         return strings;
     }
+
+    public static List<Integer> strToInts(String str, String split) {
+        if (org.apache.commons.lang3.StringUtils.isBlank(str)) {
+            return Lists.newArrayList();
+        }
+        split = ".".equals(split) ? "\\." : split;
+        Stream<String> sids = Arrays.stream(str.split(split));
+        return sids.filter(org.apache.commons.lang3.StringUtils::isNotBlank).map(Integer::parseInt).collect(Collectors.toList());
+    }
+
+    public static List<Float> strToFloats(String str, String split) {
+        if (org.apache.commons.lang3.StringUtils.isBlank(str)) {
+            return Lists.newArrayList();
+        }
+        split = ".".equals(split) ? "\\." : split;
+        Stream<String> sids = Arrays.stream(str.split(split));
+        return sids.filter(org.apache.commons.lang3.StringUtils::isNotBlank).map(Float::parseFloat).collect(Collectors.toList());
+    }
+
+    public static List<String> strToStrs(String str, String split) {
+        if (org.apache.commons.lang3.StringUtils.isBlank(str)) {
+            return Lists.newArrayList();
+        }
+        split = ".".equals(split) ? "\\." : split;
+        Stream<String> sids = Arrays.stream(str.split(split));
+        return sids.filter(org.apache.commons.lang3.StringUtils::isNotBlank).collect(Collectors.toList());
+    }
+
+    /**
+     * 去掉字符串首尾的指定字符
+     *
+     * @param source  需要处理的字符串
+     * @param element 需要去掉的字符
+     * @return
+     */
+    public static String trimFirstAndLastChar(String source, char element) {
+        if (source.equals(String.valueOf(element))) {
+            return source;
+        }
+        boolean beginIndexFlag;
+        boolean endIndexFlag;
+        do {
+            int beginIndex = source.indexOf(element) == 0 ? 1 : 0;
+            int endIndex = source.lastIndexOf(element) + 1 == source.length() ? source.lastIndexOf(element) : source.length();
+            source = source.substring(beginIndex, endIndex);
+            beginIndexFlag = (source.indexOf(element) == 0);
+            endIndexFlag = (source.lastIndexOf(element) + 1 == source.length());
+        } while (beginIndexFlag || endIndexFlag);
+        return source;
+    }
+
 
 }

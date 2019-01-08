@@ -211,7 +211,7 @@ public class HouseqmStaticService {
         for (int i = 0; i < taskIds.size(); i++) {
             List<Area> areas = searchTargetAreaByTaskId(prodectId, taskIds.get(i));
             int total = areas.size();
-            List<RepossessionStatus> items = repossessionStatusService.SearchByTaskIdAreaIdLike(taskIds.get(i), areaId);
+            List<RepossessionStatus> items = repossessionStatusService.searchByTaskIdAreaIdLike(taskIds.get(i), areaId);
             List<String> hasIssuePaths = getHasIssueTaskCheckedAreaPathListByTaskId(taskIds.get(i), true, null, areaId);
             HashMap<Integer, Boolean> hasIssueAreaId = Maps.newHashMap();
             for (int j = 0; j < hasIssuePaths.size(); j++) {
@@ -304,7 +304,7 @@ public class HouseqmStaticService {
         return info;
     }
 
-    private List<String> getHasIssueTaskCheckedAreaPathListByTaskId(Integer taskId, boolean b, ArrayList<Integer> statuses, Integer areaId) {
+    public List<String> getHasIssueTaskCheckedAreaPathListByTaskId(Integer taskId, boolean onlyIssue, List<Integer> statuses, Integer areaId) {
         List<HouseQmCheckTaskIssueAreaGroupModel> result = Lists.newArrayList();
         //通过问题状态，只取出里面相关部分(如果是无问题的，是取出所有，然后扣除掉有问题的)
         List<Integer> types = Lists.newArrayList();
@@ -313,7 +313,7 @@ public class HouseqmStaticService {
         types.add(HouseQmCheckTaskIssueTypeEnum.Difficult.getId());
         HashMap<String, Object> map = Maps.newHashMap();
         map.put("taskId",taskId);
-        if (b) {
+        if (onlyIssue) {
             map.put("types", types);
         }
         if (areaId > 0) {

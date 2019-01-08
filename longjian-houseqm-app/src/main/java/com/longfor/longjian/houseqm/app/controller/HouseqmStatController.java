@@ -1,7 +1,10 @@
 package com.longfor.longjian.houseqm.app.controller;
 
+import com.ctrip.framework.apollo.core.utils.StringUtils;
+import com.github.pagehelper.util.StringUtil;
 import com.google.common.collect.Lists;
 import com.longfor.longjian.common.base.LjBaseResponse;
+import com.longfor.longjian.houseqm.app.req.StatHouseqmTaskSituationOverallReq;
 import com.longfor.longjian.houseqm.app.service.IHouseqmStatService;
 import com.longfor.longjian.houseqm.app.service.IHouseqmStatisticService;
 import com.longfor.longjian.houseqm.app.vo.*;
@@ -10,10 +13,7 @@ import com.longfor.longjian.houseqm.util.StringSplitToListUtil;
 import io.swagger.annotations.ApiParam;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.MediaType;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
 import javax.validation.Valid;
@@ -268,6 +268,39 @@ public class HouseqmStatController {
         LjBaseResponse<TaskRepairStatVo> ljbr = new LjBaseResponse<>();
         ljbr.setData(taskRepairStatVo);
         return ljbr;
+    }
+
+    @GetMapping(value = "stat_houseqm/task_situation_overall", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+    public LjBaseResponse<StatHouseqmTaskSituationOverallRspVo> taskSituationOverall(@RequestBody @Valid StatHouseqmTaskSituationOverallReq req) {
+
+
+        //todo  鉴权  _, _, err := ctrl_tool.ProjPermMulti(c, []string{"项目.移动验房.统计.查看", "项目.工程检查.统计.查看"})
+        //	if err != nil {
+        //		log.Error(err.Error())
+        //		return err
+        //	}
+        List<Integer> taskIds = StringSplitToListUtil.strToInts(req.getTask_ids(), ",");
+        RepossessionTasksStatusInfoVo info = houseqmStatisticService.getRepossessionTasksStatusInfo(req.getProject_id(), taskIds, 0);
+
+        LjBaseResponse<StatHouseqmTaskSituationOverallRspVo> response = new LjBaseResponse<>();
+        response.setResult(0);
+        StatHouseqmTaskSituationOverallRspVo data = new StatHouseqmTaskSituationOverallRspVo();
+        HouseQmHouseQmStatTaskSituationOverallRspVo status = new HouseQmHouseQmStatTaskSituationOverallRspVo();
+        status.setAccept_has_issue_count(info.getAcceptHasIssueCount());
+        status.setAccept_has_issue_sign_count(info.getAcceptHasIssueSignCount());
+        status.setAccept_no_issue(info.getAcceptNoIssueCount());
+        status.setAccept_no_issue_sign_count(info.getAcceptNoIssueSignCount());
+        status.setChecked_count(info.getCheckedCount());
+        status.setChecked_rate(info.getCheckedRate());
+        status.setOnly_watch(info.getOnlyWatch());
+        status.setReject_count(info.getRejectCount());
+        status.setTask_name(info.getTaskName());
+        status.setTotal(info.getTotal());
+        status.setUnaccept_count(info.getUnacceptCount());
+        status.setUnchecked_count(info.getUncheckedCount());
+        data.setStatus(status);
+        response.setData(data);
+        return response;
     }
 
 

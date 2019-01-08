@@ -8,17 +8,18 @@ import com.longfor.longjian.houseqm.app.service.IHouseqmService;
 import com.longfor.longjian.houseqm.app.vo.*;
 import com.longfor.longjian.houseqm.consts.HouseQmCheckTaskIssueAttachmentPublicTypeEnum;
 import com.longfor.longjian.houseqm.consts.HouseQmUserInIssueRoleTypeEnum;
+import com.longfor.longjian.houseqm.domain.internalService.AreaService;
 import com.longfor.longjian.houseqm.domain.internalService.HouseQmCheckTaskIssueLogService;
 import com.longfor.longjian.houseqm.domain.internalService.HouseQmCheckTaskIssueService;
-import com.longfor.longjian.houseqm.po.HouseQmCheckTaskIssue;
-import com.longfor.longjian.houseqm.po.HouseQmCheckTaskIssueAttachment;
-import com.longfor.longjian.houseqm.po.HouseQmCheckTaskIssueLog;
-import com.longfor.longjian.houseqm.po.HouseQmCheckTaskIssueUser;
+import com.longfor.longjian.houseqm.domain.internalService.HouseQmCheckTaskService;
+import com.longfor.longjian.houseqm.po.*;
 import com.longfor.longjian.houseqm.util.JsonUtil;
+import com.longfor.longjian.houseqm.util.StringSplitToListUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 import java.util.*;
 
@@ -26,10 +27,13 @@ import java.util.*;
 @Slf4j
 public class HouseqmServiceImpl implements IHouseqmService {
     private static final Integer HOUSEQM_API_GET_PER_TIME = 5000;
+    @Resource
+    private AreaService areaService;
     @Autowired
     private HouseQmCheckTaskIssueLogService houseQmCheckTaskIssueLogService;
     @Autowired
     private HouseQmCheckTaskIssueService houseQmCheckTaskIssueService;
+    private HouseQmCheckTaskService houseQmCheckTaskService;
 
     @Override
     public TaskResponse<MyIssueListVo> myIssueLogList(DeviceReq deviceReq, HttpServletRequest request) {
@@ -232,6 +236,20 @@ public class HouseqmServiceImpl implements IHouseqmService {
         }
         return ljBaseResponse;
     }
+
+    @Override
+    public List<Area> searchTargetAreaByTaskId(Integer projectId, Integer taskId) {
+
+        //读取出任务
+        HouseQmCheckTask task = houseQmCheckTaskService.selectAreaIdsByProjectIdAndTaskIdAndNoDeleted(projectId, taskId);
+        //获取出任务下的区域与检验类型的交集
+        List<Integer> areaIds = StringSplitToListUtil.strToInts(task.getAreaIds(), ",");
+        List<Integer> areaTypes = StringSplitToListUtil.strToInts(task.getAreaTypes(), ",");
+        if (areaIds.size()==0||areaTypes.size()==0)return null;
+        List<Area> areas = areaService.searchAreaListByRootIdAndTypes(projectId, areaIds, areaTypes);
+        return areas;
+    }
+
 
     /**
      * lang类型转换Int类型

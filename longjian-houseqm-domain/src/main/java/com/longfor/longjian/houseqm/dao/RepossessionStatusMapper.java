@@ -11,5 +11,5 @@ import java.util.List;
  */
 
 public interface RepossessionStatusMapper extends LFMySQLMapper<RepossessionStatus> {
-    List<RepossessionStatus> SearchByTaskIdAreaIdLike(@Param("taskId") Integer taskId, @Param("areaId") Integer areaId);
+    List<RepossessionStatus> searchByTaskIdAreaIdLike(@Param("taskId") Integer taskId, @Param("areaId") Integer areaId);
 }

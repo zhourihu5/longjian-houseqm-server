@@ -24,7 +24,8 @@
         <result column="remark" property="remark" jdbcType="VARCHAR"/>
         <result column="expect_date" property="expectDate" jdbcType="TIMESTAMP"/>
         <result column="repossession_check_status" property="repossessionCheckStatus" jdbcType="INTEGER"/>
-        <result column="repossession_check_status_client_update_at" property="repossessionCheckStatusClientUpdateAt" jdbcType="TIMESTAMP"/>
+        <result column="repossession_check_status_client_update_at" property="repossessionCheckStatusClientUpdateAt"
+                jdbcType="TIMESTAMP"/>
         <result column="repair_status" property="repairStatus" jdbcType="INTEGER"/>
         <result column="repair_sign_md5_list" property="repairSignMd5List" jdbcType="VARCHAR"/>
         <result column="repair_client_update_at" property="repairClientUpdateAt" jdbcType="TIMESTAMP"/>
@@ -39,18 +40,20 @@
         <!--
           WARNING - @mbg.generated
         -->
-        id, project_id, task_id, area_id, area_path_and_id, status, status_client_update_at,has_take_key, trust_key_count,
-        key_client_update_at, accompany_sign_md5_list, accompany_sign_client_update_at, sign_status, sign_comment,sign_md5_list,
+        id, project_id, task_id, area_id, area_path_and_id, status, status_client_update_at,has_take_key,
+        trust_key_count,
+        key_client_update_at, accompany_sign_md5_list, accompany_sign_client_update_at, sign_status,
+        sign_comment,sign_md5_list,
         sign_client_update_at,remark,expect_date,repossession_check_status,repossession_check_status_client_update_at,repair_status,
         repair_sign_md5_list,repair_client_update_at,create_at,update_at,delete_at,uuid,modify_user_id,satisfaction_score
     </sql>
-    <select id="SearchByTaskIdAreaIdLike" resultMap="BaseResultMap">
+    <select id="searchByTaskIdAreaIdLike" resultMap="BaseResultMap">
         select
         <include refid="Base_Column_List"/>
         from repossession_status
         WHERE task_id=#{taskId}
-        <if test= "areaId>0" >
-  and area_id 	LIKE concat('%', #{areaId},'%')
+        <if test="areaId>0">
+            and area_id LIKE concat('%', #{areaId},'%')
         </if>
     </select>
 </mapper>
