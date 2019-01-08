@@ -76,7 +76,7 @@ public class HouseqmStatServiceImpl implements IHouseqmStatService {
             }
             CheckerStatListVo.CheckerStatVo stat = checkerMap.get(l.getUserId());
             // 以下应使用枚举类，由于未改动包结构 先写死
-            if (l.getTyp() == HouseQmCheckTaskIssueEnum.Record.getId()){
+            if (l.getTyp() == HouseQmCheckTaskIssueEnum.Record.getId()) {
                 stat.setRecords_count(l.getCount() + stat.getRecords_count());
             } else if (l.getTyp() == HouseQmCheckTaskIssueEnum.FindProblem.getId() || l.getTyp() == HouseQmCheckTaskIssueEnum.Difficult.getId()) {
                 stat.setIssue_count(l.getCount() + stat.getIssue_count());
@@ -103,7 +103,6 @@ public class HouseqmStatServiceImpl implements IHouseqmStatService {
     }
 
     /**
-     *
      * @param projectId
      * @param taskIdList
      * @param pageNum
@@ -124,23 +123,23 @@ public class HouseqmStatServiceImpl implements IHouseqmStatService {
         }
         int start = (pageNum - 1) * pageSize;
         //时间进行降序排列
-        String tmp="";
-        for(int i=1; i<totalDates.size(); i++){
+        String tmp = "";
+        for (int i = 1; i < totalDates.size(); i++) {
             tmp = totalDates.get(i);
-            int j=i-1;
-            for(; j>=0&&(DateUtil.dateCompare(tmp, totalDates.get(j))>0); j--){
-                totalDates.set(j+1, totalDates.get(j));
+            int j = i - 1;
+            for (; j >= 0 && (DateUtil.dateCompare(tmp, totalDates.get(j)) > 0); j--) {
+                totalDates.set(j + 1, totalDates.get(j));
             }
-            totalDates.set(j+1, tmp);
+            totalDates.set(j + 1, tmp);
         }
         List<String> dates = Lists.newArrayList();
-        if (totalDates.size() > start ){
-            if (totalDates.size()> (start+pageSize) ) {
-                for (int i=start;i<(start+pageSize);i++){
+        if (totalDates.size() > start) {
+            if (totalDates.size() > (start + pageSize)) {
+                for (int i = start; i < (start + pageSize); i++) {
                     dates.add(totalDates.get(i));
                 }
             } else {
-                for (int i=start;i<totalDates.size();i++){
+                for (int i = start; i < totalDates.size(); i++) {
                     dates.add(totalDates.get(i));
                 }
             }
@@ -148,7 +147,7 @@ public class HouseqmStatServiceImpl implements IHouseqmStatService {
         List<ProjectDailyListVo.ProjectDailyVo> list = Lists.newArrayList();
 
         for (String date : dates) {
-            List<CheckerIssueStat> checkerIssueStat=houseQmCheckTaskIssueService.getIssueSituationDailyByProjTaskIdInDate(projectId,taskIdList,date);
+            List<CheckerIssueStat> checkerIssueStat = houseQmCheckTaskIssueService.getIssueSituationDailyByProjTaskIdInDate(projectId, taskIdList, date);
             // 赋值 计算
             ProjectDailyListVo projectDailyListVo1 = new ProjectDailyListVo();
             ProjectDailyListVo.ProjectDailyVo stat = projectDailyListVo1.new ProjectDailyVo();
@@ -162,7 +161,7 @@ public class HouseqmStatServiceImpl implements IHouseqmStatService {
             for (CheckerIssueStat l : checkerIssueStat) {
                 String areapath = l.getAreaId() + "/";
                 String fatherPath = l.getAreaPathAndId().replace(areapath, "");
-                if (l.getTyp() == HouseQmCheckTaskIssueEnum.Record.getId()){
+                if (l.getTyp() == HouseQmCheckTaskIssueEnum.Record.getId()) {
                     stat.setRecords_count(l.getCount() + stat.getRecords_count());
                 } else if (l.getTyp() == HouseQmCheckTaskIssueEnum.FindProblem.getId() || l.getTyp() == HouseQmCheckTaskIssueEnum.Difficult.getId()) {
                     stat.setIssue_count(l.getCount() + stat.getIssue_count());
@@ -173,7 +172,7 @@ public class HouseqmStatServiceImpl implements IHouseqmStatService {
             //计算累计数量
             Map<String, Integer> areaMap2 = Maps.newHashMap();
 
-            List<CheckerIssueStat> totals =houseQmCheckTaskIssueService.searchByProjectIdAndTaskIdsAndClientCreateAt(projectId,taskIdList,date);
+            List<CheckerIssueStat> totals = houseQmCheckTaskIssueService.searchByProjectIdAndTaskIdsAndClientCreateAt(projectId, taskIdList, date);
 
             for (CheckerIssueStat l : totals) {
                 String areapath = l.getAreaId() + "/";
@@ -191,26 +190,26 @@ public class HouseqmStatServiceImpl implements IHouseqmStatService {
 
 
     /**
-     *
      * @param projectId
      * @param taskId
      * @return
      */
-    public ProjectOveralListVo.ProjectOveralVo getInspectTaskStatByProjTaskId(Integer projectId,Integer taskId){
-        List<CheckerIssueStat>  list=houseQmCheckTaskIssueService.searchByProjectIdAndTaskId(projectId,taskId);
+    public ProjectOveralListVo.ProjectOveralVo getInspectTaskStatByProjTaskId(Integer projectId, Integer taskId) {
+        List<CheckerIssueStat> list = houseQmCheckTaskIssueService.searchByProjectIdAndTaskId(projectId, taskId);
         //计算下检查户数据
         HouseQmCheckTask task = houseQmCheckTaskService.selectByProjectIdAndTaskId(projectId, taskId);
         ProjectOveralListVo.ProjectOveralVo item = new ProjectOveralListVo().new ProjectOveralVo();
         item.setChecked_count(0);
         item.setRecords_count(0);
         item.setIssue_count(0);
-        item.setTask_name(task.getName());
+        if (task != null) item.setTask_name(task.getName());
+        else item.setTask_name("");
         Map<String, Boolean> areaMap = Maps.newHashMap();
         for (CheckerIssueStat l : list) {
             String areapath = l.getAreaId() + "/";
             String fatherPath = l.getAreaPathAndId().replace(areapath, "");
             // 以下应使用枚举类，由于未改动包结构 先写死
-            if (l.getTyp() == HouseQmCheckTaskIssueEnum.Record.getId()){
+            if (l.getTyp() == HouseQmCheckTaskIssueEnum.Record.getId()) {
                 item.setRecords_count(l.getCount() + item.getRecords_count());
             } else if (l.getTyp() == HouseQmCheckTaskIssueEnum.FindProblem.getId() || l.getTyp() == HouseQmCheckTaskIssueEnum.Difficult.getId()) {
                 item.setIssue_count(l.getCount() + item.getIssue_count());
@@ -222,62 +221,68 @@ public class HouseqmStatServiceImpl implements IHouseqmStatService {
     }
 
     /**
-     *
      * @param projectId
      * @param taskId
      * @return
      */
-    public TaskAreaListVo searchAreasByProjTaskIdTyp(Integer projectId, Integer taskId){
-        HouseQmCheckTask task = houseQmCheckTaskService.selectByProjectIdAndTaskId(projectId, taskId);
-        String strAreaIds = task.getAreaIds();
-        String[] strAreaIdss = strAreaIds.split(",");
-        List<Integer> areaIds = Lists.newArrayList();
-        for (String item : strAreaIdss) {
-            areaIds.add(Integer.parseInt(item));
-        }
-        List<Area> res = areaService.selectAreasByIdInAreaIds(areaIds);
-        List<String> areaPathAndIds = Lists.newArrayList();
-        for (Area area : res) {
-            areaPathAndIds.add(area.getPath()+area.getId()+"/");
-        }
-        //getRootAreaIds()
-        Map<String, Boolean> mPath = Maps.newHashMap();
-        for (String v : areaPathAndIds) {
-            String[] names = v.split("/");
-            mPath.put(names[1],true);
-        }
-        areaIds.clear();
-        for (Map.Entry<String, Boolean> k : mPath.entrySet()) {
-            areaIds.add(Integer.parseInt(k.getKey()));
-        }
-        List<Area> areas = areaService.selectAreasByIdInAreaIds(areaIds);
+    public TaskAreaListVo searchAreasByProjTaskIdTyp(Integer projectId, Integer taskId) {
         TaskAreaListVo taskAreaListVo = new TaskAreaListVo();
-        List<TaskAreaListVo.TaskAreaVo> list = Lists.newArrayList();
-        for (Area item : areas) {
-            TaskAreaListVo.TaskAreaVo taskAreaVo = taskAreaListVo.new TaskAreaVo();
-            taskAreaVo.setId(item.getId());
-            taskAreaVo.setName(item.getName());
-            taskAreaVo.setFather_id(item.getFatherId());
-            taskAreaVo.setPath(item.getPath());
-            taskAreaVo.setTyp(item.getType());
-            list.add(taskAreaVo);
+        try {
+            HouseQmCheckTask task = houseQmCheckTaskService.selectByProjectIdAndTaskId(projectId, taskId);
+            String strAreaIds ="";
+            if (task != null)  strAreaIds = task.getAreaIds();
+            String[] strAreaIdss = strAreaIds.split(",");
+            List<Integer> areaIds = Lists.newArrayList();
+            for (String item : strAreaIdss) {
+                areaIds.add(Integer.parseInt(item));
+            }
+            List<Area> res = areaService.selectAreasByIdInAreaIds(areaIds);
+            List<String> areaPathAndIds = Lists.newArrayList();
+            for (Area area : res) {
+                areaPathAndIds.add(area.getPath() + area.getId() + "/");
+            }
+            //getRootAreaIds()
+            Map<String, Boolean> mPath = Maps.newHashMap();
+            for (String v : areaPathAndIds) {
+                String[] names = v.split("/");
+                mPath.put(names[1], true);
+            }
+            areaIds.clear();
+            for (Map.Entry<String, Boolean> k : mPath.entrySet()) {
+                areaIds.add(Integer.parseInt(k.getKey()));
+            }
+            List<Area> areas = areaService.selectAreasByIdInAreaIds(areaIds);
+
+            List<TaskAreaListVo.TaskAreaVo> list = Lists.newArrayList();
+            for (Area item : areas) {
+                TaskAreaListVo.TaskAreaVo taskAreaVo = taskAreaListVo.new TaskAreaVo();
+                taskAreaVo.setId(item.getId());
+                taskAreaVo.setName(item.getName());
+                taskAreaVo.setFather_id(item.getFatherId());
+                taskAreaVo.setPath(item.getPath());
+                taskAreaVo.setTyp(item.getType());
+                list.add(taskAreaVo);
+            }
+            taskAreaListVo.setAreas(list);
+        } catch (NumberFormatException e) {
+            e.printStackTrace();
+            taskAreaListVo.setAreas(new ArrayList<TaskAreaListVo.TaskAreaVo>());
+            return taskAreaListVo;
         }
-        taskAreaListVo.setAreas(list);
         return taskAreaListVo;
     }
 
     /**
-     *
      * @param projectId
      * @param areaId
      * @param categoryCls
      * @return
      */
-    public AreaTaskListVo searchHouseQmCheckTaskByProjIdAreaIdCategoryClsIn(Integer projectId, Integer areaId, List<Integer> categoryCls){
-        List<HouseQmCheckTask> tasks=houseQmCheckTaskService.searchByProjectIdAndCategoryClsIn(projectId,categoryCls);
-        List<Integer> areaIds= Lists.newArrayList();
+    public AreaTaskListVo searchHouseQmCheckTaskByProjIdAreaIdCategoryClsIn(Integer projectId, Integer areaId, List<Integer> categoryCls) {
+        List<HouseQmCheckTask> tasks = houseQmCheckTaskService.searchByProjectIdAndCategoryClsIn(projectId, categoryCls);
+        List<Integer> areaIds = Lists.newArrayList();
         for (HouseQmCheckTask item : tasks) {
-            List<Integer> areaList = StringSplitToListUtil.splitToIdsComma(item.getAreaIds(),",");
+            List<Integer> areaList = StringSplitToListUtil.splitToIdsComma(item.getAreaIds(), ",");
             for (Integer i : areaList) {
                 areaIds.add(i);
             }
@@ -289,17 +294,17 @@ public class HouseqmStatServiceImpl implements IHouseqmStatService {
         List<Area> areas = areaService.selectAreasByIdInAreaIds(areaIds);
         HashMap<Integer, String> areaMap = Maps.newHashMap();
         for (Area area : areas) {
-            areaMap.put(area.getId(), area.getPath()+area.getId()+"/");
+            areaMap.put(area.getId(), area.getPath() + area.getId() + "/");
         }
         AreaTaskListVo areaTaskListVo = new AreaTaskListVo();
         List<AreaTaskListVo.AreaTaskVo> list = Lists.newArrayList();
         for (HouseQmCheckTask item : tasks) {
             AreaTaskListVo.AreaTaskVo areaTaskVo = areaTaskListVo.new AreaTaskVo();
-            List<Integer> areaList = StringSplitToListUtil.splitToIdsComma(item.getAreaIds(),",");
-            if (checkRootAreaIntersectAreas(areaMap,areaId,areaList)){
+            List<Integer> areaList = StringSplitToListUtil.splitToIdsComma(item.getAreaIds(), ",");
+            if (checkRootAreaIntersectAreas(areaMap, areaId, areaList)) {
                 areaTaskVo.setId(item.getTaskId());
                 areaTaskVo.setName(item.getName());
-                areaTaskVo.setCategory_cls(""+item.getCategoryCls());
+                areaTaskVo.setCategory_cls("" + item.getCategoryCls());
                 list.add(areaTaskVo);
             }
         }
@@ -308,19 +313,18 @@ public class HouseqmStatServiceImpl implements IHouseqmStatService {
     }
 
     /**
-     *
      * @param areaMap
      * @param id
      * @param ids
      * @return
      */
-    private Boolean checkRootAreaIntersectAreas(Map<Integer,String> areaMap,Integer id,List<Integer> ids){
+    private Boolean checkRootAreaIntersectAreas(Map<Integer, String> areaMap, Integer id, List<Integer> ids) {
         for (Integer i : ids) {
-            if (i==id){
+            if (i == id) {
                 return true;
             }
-            if (areaMap.containsKey(i)){
-                if (areaMap.get(i).indexOf("/"+id+"/")!=-1){
+            if (areaMap.containsKey(i)) {
+                if (areaMap.get(i).indexOf("/" + id + "/") != -1) {
                     return true;
                 }
             }

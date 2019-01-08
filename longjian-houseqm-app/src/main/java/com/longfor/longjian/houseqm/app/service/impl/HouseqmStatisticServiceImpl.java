@@ -10,6 +10,7 @@ import com.github.pagehelper.PageInfo;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
+import com.longfor.longjian.houseqm.app.service.HouseqmStaticService;
 import com.longfor.longjian.houseqm.app.service.IHouseqmStatisticService;
 import com.longfor.longjian.houseqm.app.vo.*;
 import com.longfor.longjian.houseqm.consts.HouseQmCheckTaskIssueEnum;
@@ -68,6 +69,8 @@ public class HouseqmStatisticServiceImpl implements IHouseqmStatisticService {
 
     @Resource
     CheckItemV3Service checkItemV3Service;
+    @Resource
+    HouseqmStaticService houseqmStaticService;
 
     /**
      * @param taskId
@@ -367,6 +370,30 @@ public class HouseqmStatisticServiceImpl implements IHouseqmStatisticService {
         List<Integer> categoryClsList = getCategoryClsList(source);
         IssueRepairStatisticVo issueRepairStatisticVo = searchIssueRepairStatisticByProjCategoryClsInAreaIdBeginOnEndOn(projectId, categoryClsList, areaId, beginOn1, endOn1);
         return issueRepairStatisticVo;
+    }
+
+    @Override
+    public HouseQmCheckTaskHouseStatInfoVo getHouseQmHouseQmCheckTaskHouseStatByTaskId(Integer prodectId, Integer taskId, Integer areaId) {
+        ArrayList<Integer> taskIds = Lists.newArrayList();
+        taskIds.add(taskId);
+        // 读取出正常检查任务的统计
+        CheckTaskHouseStatInfoVo normalStat = houseqmStaticService.GetHouseQmCheckTaskHouseStatByTaskId(prodectId, taskId, areaId);
+        // 读取出移动验房部分的统计
+        RepossessionTasksStatusInfoVo repossessionInfo=   houseqmStaticService.getRepossessionTasksStatusInfo(prodectId, taskIds, areaId);
+        HouseQmCheckTaskHouseStatInfoVo result = new HouseQmCheckTaskHouseStatInfoVo();
+        result.setCheckedCount(repossessionInfo.getCheckedCount());
+        result.setRepairConfirmCount(repossessionInfo.getRepairConfirmCount()) ;
+        result.setAcceptHasIssueCount(repossessionInfo.getAcceptHasIssueCount());
+        result.setAcceptNoIssueCount(repossessionInfo.getAcceptNoIssueCount());
+        result.setOnlyWatchCount(repossessionInfo.getOnlyWatch());
+        result.setRejectCount(repossessionInfo.getRejectCount());
+        result.setAcceptApprovedCount(repossessionInfo.getAcceptApprovedCount());
+        result.setHouseCount(normalStat.getHouseCount());
+        result.setHasIssueCount(normalStat.getHasIssueCount());
+        result.setRepairedCount(normalStat.getRepairedCount());
+        result.setApprovedCount(normalStat.getApprovedCount());
+
+        return result;
     }
 
     /**

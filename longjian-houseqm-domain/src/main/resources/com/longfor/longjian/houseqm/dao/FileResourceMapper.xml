@@ -31,21 +31,30 @@
     <select id="selectFileResourceByFileMd5InAndNoDeleted" resultMap="BaseResultMap">
         SELECT
         <include refid="Base_Column_List"/>
-        FROM file_resource WHERE file_md5 IN
-        <foreach collection="attachments" item="item" index="index" open="(" separator="," close=")">
-            #{item}
-        </foreach>
-        <if test="deleted=='false'">
-            AND delete_at IS NULL
-        </if>
+        FROM file_resource
+        <where>
+            <if test="attachments.size>0">file_md5 IN
+                <foreach collection="attachments" item="item" index="index" open="(" separator="," close=")">
+                    #{item}
+                </foreach>
+            </if>
+            <if test="deleted=='false'">
+                AND delete_at IS NULL
+            </if>
+        </where>
     </select>
+
     <select id="searchByMd5In" resultMap="BaseResultMap">
         SELECT
         <include refid="Base_Column_List"/>
-        FROM file_resource WHERE file_md5 IN
-        <foreach collection="attachmentsList" item="item" index="index" open="(" separator="," close=")">
-            #{item}
-        </foreach>
+        FROM file_resource
+        <where>
+            <if test="attachmentsList.size>0">file_md5 IN
+                <foreach collection="attachmentsList" item="item" index="index" open="(" separator="," close=")">
+                    #{item}
+                </foreach>
+            </if>
+        </where>
 
     </select>
 

@@ -337,4 +337,10 @@ public class HouseQmCheckTaskIssueServiceImpl implements HouseQmCheckTaskIssueSe
         return houseQmCheckTaskIssueMapper.selectUuidBySenderIdInOrTaskIdAndUuidIn(userIds,task_id,issueUuids,"false");
     }
 
+    @Override
+    @LFAssignDataSource("zhijian2")
+    public List<HouseQmCheckTaskIssueAreaGroupModel> selectByTaskIdAreaPathAndIdAndStatusIn(HashMap<String, Object> map) {
+        return houseQmCheckTaskIssueMapper.selectByTaskIdAreaPathAndIdAndStatusIn(map);
+    }
+
 }
