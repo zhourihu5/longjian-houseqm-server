@@ -10,5 +10,4 @@ public interface UserService {
 
     List<User> searchByUserIdInAndNoDeleted(List<Integer> userIds);
 
-
 }

@@ -4,8 +4,11 @@ import com.longfor.gaia.gfs.data.mybatis.datasource.LFAssignDataSource;
 import com.longfor.longjian.houseqm.dao.HouseQmCheckTaskMapper;
 import com.longfor.longjian.houseqm.domain.internalService.HouseQmCheckTaskService;
 import com.longfor.longjian.houseqm.po.HouseQmCheckTask;
+import com.longfor.longjian.houseqm.po.HouseQmCheckTaskIssue;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+import tk.mybatis.mapper.entity.Example;
 
 import javax.annotation.Resource;
 import java.util.Date;
@@ -89,6 +92,16 @@ public class HouseQmCheckTaskServiceImpl implements HouseQmCheckTaskService {
     @LFAssignDataSource("zhijian2")
     public HouseQmCheckTask selectAreaIdsByProjectIdAndTaskIdAndNoDeleted(Integer projectId, Integer taskId) {
         return houseQmCheckTaskMapper.selectAreaIdsByProjectIdAndTaskIdAndNoDeleted(projectId,taskId,"false");
+    }
+
+    @Override
+    @LFAssignDataSource("zhijian2")
+    @Transactional
+    public void removeHouseQmCheckTaskByProjectIdAndTaskId(Integer project_id, Integer task_id) {
+        Example example = new Example(HouseQmCheckTask.class);
+        Example.Criteria criteria = example.createCriteria();
+        criteria.andEqualTo("projectId",project_id).andEqualTo("taskId",task_id);
+        houseQmCheckTaskMapper.deleteByExample(example);
     }
 
     /**

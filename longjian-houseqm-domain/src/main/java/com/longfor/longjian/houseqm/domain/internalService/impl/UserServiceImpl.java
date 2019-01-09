@@ -7,11 +7,13 @@ import com.longfor.longjian.houseqm.domain.internalService.UserService;
 import com.longfor.longjian.houseqm.po.User;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
+import tk.mybatis.mapper.entity.Example;
 
 import javax.annotation.Resource;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 
 /**
@@ -25,17 +27,17 @@ public class UserServiceImpl implements UserService {
     UserMapper userMapper;
 
     /**
-     *
+     * go 代码 unscoped = true
      * @param users
      * @return
      */
     @LFAssignDataSource("zhijian2_apisvr")
     public Map<Integer, User> selectByIds(List<Integer> users){
-        List<User> userList = userMapper.selectByUserIds(users);
-        HashMap<Integer, User> map = Maps.newHashMap();
-        for (User user : userList) {
-            map.put(user.getUserId(),user);
-        }
+        Example example = new Example(User.class);
+        Example.Criteria criteria = example.createCriteria();
+        criteria.andIn("id",users);
+        List<User> userList= userMapper.selectByExample(example);
+        Map<Integer, User> map = userList.stream().collect(Collectors.toMap(User::getUserId, u -> u));
         return map;
     }
 

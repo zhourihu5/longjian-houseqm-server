@@ -4,8 +4,11 @@ import com.longfor.gaia.gfs.data.mybatis.datasource.LFAssignDataSource;
 import com.longfor.longjian.houseqm.dao.UserInHouseQmCheckTaskMapper;
 import com.longfor.longjian.houseqm.domain.internalService.UserInHouseQmCheckTaskService;
 import com.longfor.longjian.houseqm.po.UserInHouseQmCheckTask;
+import com.longfor.longjian.houseqm.utils.ExampleUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+import tk.mybatis.mapper.entity.Example;
 
 import javax.annotation.Resource;
 import java.util.List;
@@ -57,7 +60,11 @@ public class UserInHouseQmCheckTaskServiceImpl implements UserInHouseQmCheckTask
     @Override
     @LFAssignDataSource("zhijian2")
     public List<UserInHouseQmCheckTask> searchByTaskIdAndNoDeleted(Integer taskId) {
-        return userInHouseQmCheckTaskMapper.selectByTaskIdAndNoDeleted(taskId, "false");
+        Example example = new Example(UserInHouseQmCheckTask.class);
+        Example.Criteria criteria = example.createCriteria();
+        criteria.andEqualTo("taskId",taskId);
+        ExampleUtil.addDeleteAtJudge(example);
+        return userInHouseQmCheckTaskMapper.selectByExample(example);
     }
 
     /**
@@ -99,6 +106,16 @@ public class UserInHouseQmCheckTaskServiceImpl implements UserInHouseQmCheckTask
     @LFAssignDataSource("zhijian2")
     public List<UserInHouseQmCheckTask> selectUpdateAtByTaskIdAndNoDeletedOrderByUpdateAt(Integer task_id) {
         return userInHouseQmCheckTaskMapper.selectUpdateAtByTaskIdAndNoDeletedOrderByUpdateAt(task_id,"false");
+    }
+
+    @Override
+    @LFAssignDataSource("zhijian2")
+    @Transactional
+    public void removeByTaskId(Integer task_id) {
+        Example example = new Example(UserInHouseQmCheckTask.class);
+        Example.Criteria criteria = example.createCriteria();
+        criteria.andEqualTo("taskId",task_id);
+        userInHouseQmCheckTaskMapper.deleteByExample(criteria);
     }
 
 }

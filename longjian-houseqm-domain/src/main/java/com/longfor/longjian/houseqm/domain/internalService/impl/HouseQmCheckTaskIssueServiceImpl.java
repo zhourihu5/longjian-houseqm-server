@@ -7,6 +7,8 @@ import com.longfor.longjian.houseqm.po.*;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.ibatis.annotations.Param;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+import tk.mybatis.mapper.entity.Example;
 
 import javax.annotation.Resource;
 import java.util.*;
@@ -341,6 +343,16 @@ public class HouseQmCheckTaskIssueServiceImpl implements HouseQmCheckTaskIssueSe
     @LFAssignDataSource("zhijian2")
     public List<HouseQmCheckTaskIssueAreaGroupModel> selectByTaskIdAreaPathAndIdAndStatusIn(HashMap<String, Object> map) {
         return houseQmCheckTaskIssueMapper.selectByTaskIdAreaPathAndIdAndStatusIn(map);
+    }
+
+    @Override
+    @LFAssignDataSource("zhijian2")
+    @Transactional
+    public void removeHouseQmCheckTaskIssueByProjectIdAndTaskId(Integer project_id, Integer task_id) {
+        Example example = new Example(HouseQmCheckTaskIssue.class);
+        Example.Criteria criteria = example.createCriteria();
+        criteria.andEqualTo("projectId",project_id).andEqualTo("taskId",task_id);
+        houseQmCheckTaskIssueMapper.deleteByExample(example);
     }
 
 }
