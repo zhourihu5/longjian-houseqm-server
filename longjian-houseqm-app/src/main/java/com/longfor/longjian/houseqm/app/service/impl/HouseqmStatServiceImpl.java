@@ -6,10 +6,13 @@ import com.google.common.collect.Sets;
 import com.longfor.longjian.houseqm.app.service.IHouseqmStatService;
 import com.longfor.longjian.houseqm.consts.HouseQmCheckTaskIssueEnum;
 import com.longfor.longjian.houseqm.app.vo.*;
+import com.longfor.longjian.houseqm.consts.HouseQmCheckTaskIssueStatusEnum;
+import com.longfor.longjian.houseqm.consts.HouseQmCheckTaskIssueTypeEnum;
 import com.longfor.longjian.houseqm.domain.internalService.AreaService;
 import com.longfor.longjian.houseqm.domain.internalService.HouseQmCheckTaskIssueService;
 import com.longfor.longjian.houseqm.domain.internalService.HouseQmCheckTaskService;
 import com.longfor.longjian.houseqm.domain.internalService.UserService;
+import com.longfor.longjian.houseqm.dto.CheckerIssueStatusStatDto;
 import com.longfor.longjian.houseqm.po.*;
 import com.longfor.longjian.houseqm.util.DateUtil;
 import com.longfor.longjian.houseqm.util.StringSplitToListUtil;
@@ -20,6 +23,7 @@ import org.springframework.stereotype.Service;
 import javax.annotation.Resource;
 import java.text.SimpleDateFormat;
 import java.util.*;
+import java.util.stream.Collectors;
 
 /**
  * @author Houyan
@@ -29,6 +33,7 @@ import java.util.*;
 @Service
 @Slf4j
 public class HouseqmStatServiceImpl implements IHouseqmStatService {
+
 
     @Resource
     HouseQmCheckTaskIssueService houseQmCheckTaskIssueService;
@@ -41,6 +46,47 @@ public class HouseqmStatServiceImpl implements IHouseqmStatService {
 
     @Resource
     AreaService areaService;
+
+    @Override
+    public List<HouseQmStatTaskDetailMemberCheckerRspVo> searchCheckerIssueStatusStatByProjTaskIdBetweenTime(Integer project_id, Integer task_id, Date start, Date end) {
+        Map<String, Object> condi = Maps.newHashMap();
+        condi.put("project_id", project_id);
+        condi.put("task_id", task_id);
+        condi.put("client_create_atlte", new SimpleDateFormat("yyyy-MM-dd").format(end));
+        condi.put("client_create_atgte", new SimpleDateFormat("yyyy-MM-dd").format(start));
+        List<Integer> typs = Lists.newArrayList();
+        typs.add(HouseQmCheckTaskIssueTypeEnum.FindProblem.getId());
+        typs.add(HouseQmCheckTaskIssueTypeEnum.Difficult.getId());
+        typs.add(HouseQmCheckTaskIssueTypeEnum.Record.getId());
+        typs.add(HouseQmCheckTaskIssueTypeEnum.Good.getId());
+        condi.put("typ", typs);
+        condi.put("status_issues_count", HouseQmCheckTaskIssueStatusEnum.NoProblem.getId());
+        condi.put("status_records_count", HouseQmCheckTaskIssueStatusEnum.NoProblem.getId());
+        condi.put("status_approveded_count", HouseQmCheckTaskIssueStatusEnum.CheckYes.getId());
+
+        List<CheckerIssueStatusStatDto> r = houseQmCheckTaskIssueService.searchCheckerIssueStatusStatDtoByProjIdAndTaskIdAndClientCreateAtAndTypInGroupByUserId(condi);
+        if (r.size() <= 0) return Lists.newArrayList();
+        List<Integer> userIds = r.stream().map(CheckerIssueStatusStatDto::getUser_id).collect(Collectors.toSet()).stream().collect(Collectors.toList());
+        Map<Integer, User> userInfos = userService.selectByIds(userIds);
+        for (CheckerIssueStatusStatDto item : r) {
+            if (userInfos.containsKey(item.getUser_id())) {
+                item.setReal_name(userInfos.get(item.getUser_id()).getRealName());
+            }
+        }
+        List<HouseQmStatTaskDetailMemberCheckerRspVo> result = Lists.newArrayList();
+        for (CheckerIssueStatusStatDto item : r) {
+            HouseQmStatTaskDetailMemberCheckerRspVo v = new HouseQmStatTaskDetailMemberCheckerRspVo();
+            v.setApproveded_count(item.getApproveded_count());
+            v.setIssue_count(item.getIssues_count());
+            v.setRecords_count(item.getRecords_count());
+            v.setReal_name(item.getReal_name());
+            v.setUser_id(item.getUser_id());
+            result.add(v);
+        }
+
+        return result;
+    }
+
 
     /**
      * @param projectId
@@ -229,8 +275,8 @@ public class HouseqmStatServiceImpl implements IHouseqmStatService {
         TaskAreaListVo taskAreaListVo = new TaskAreaListVo();
         try {
             HouseQmCheckTask task = houseQmCheckTaskService.selectByProjectIdAndTaskId(projectId, taskId);
-            String strAreaIds ="";
-            if (task != null)  strAreaIds = task.getAreaIds();
+            String strAreaIds = "";
+            if (task != null) strAreaIds = task.getAreaIds();
             String[] strAreaIdss = strAreaIds.split(",");
             List<Integer> areaIds = Lists.newArrayList();
             for (String item : strAreaIdss) {

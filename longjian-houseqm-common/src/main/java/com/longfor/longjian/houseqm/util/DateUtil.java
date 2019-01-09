@@ -3,6 +3,7 @@ package com.longfor.longjian.houseqm.util;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.Calendar;
 import java.util.Date;
 
 /**
@@ -24,7 +25,6 @@ public class DateUtil {
         }
         return date;
     }
-
 
     /**
      * 时间比较排序
@@ -124,4 +124,13 @@ public class DateUtil {
         }
         return temp;
     }
+
+    public static Date dateAddDay(Date date,int day){
+        Calendar c = Calendar.getInstance();
+        c.setTime(date);
+        c.add(Calendar.DAY_OF_MONTH,day);
+        Date time = c.getTime();
+        return time;
+    }
+
 }

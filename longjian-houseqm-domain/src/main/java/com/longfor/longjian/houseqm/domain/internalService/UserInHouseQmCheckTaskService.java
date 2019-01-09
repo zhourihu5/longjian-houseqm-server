@@ -44,6 +44,6 @@ public interface UserInHouseQmCheckTaskService {
      */
     List<UserInHouseQmCheckTask> selectUpdateAtByTaskIdAndNoDeletedOrderByUpdateAt(Integer task_id);
 
-    void removeByTaskId(Integer task_id);
+    int removeByTaskId(Integer task_id);
 
 }

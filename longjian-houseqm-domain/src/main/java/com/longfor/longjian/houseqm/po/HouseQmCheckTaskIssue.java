@@ -45,7 +45,7 @@ public class HouseQmCheckTaskIssue {
      */
     @Column(name = "end_on")
     private Date endOn;
-private int count;
+    private int count;
 
     public int getCount() {
         return count;
@@ -121,7 +121,7 @@ private int count;
     private String title;
 
     /**
-     * 99 普通记录；1 问题记录  
+     * 99 普通记录；1 问题记录
      */
     private Integer typ;
 
@@ -159,13 +159,13 @@ private int count;
     private Date clientCreateAt;
 
     /**
-     * 最后指派人 
+     * 最后指派人
      */
     @Column(name = "last_assigner")
     private Integer lastAssigner;
 
     /**
-     * 最后指派时间 
+     * 最后指派时间
      */
     @Column(name = "last_assign_at")
     private Date lastAssignAt;
@@ -566,18 +566,18 @@ private int count;
     }
 
     /**
-     * 获取99 普通记录；1 问题记录  
+     * 获取99 普通记录；1 问题记录
      *
-     * @return typ - 99 普通记录；1 问题记录  
+     * @return typ - 99 普通记录；1 问题记录
      */
     public Integer getTyp() {
         return typ;
     }
 
     /**
-     * 设置99 普通记录；1 问题记录  
+     * 设置99 普通记录；1 问题记录
      *
-     * @param typ 99 普通记录；1 问题记录  
+     * @param typ 99 普通记录；1 问题记录
      */
     public void setTyp(Integer typ) {
         this.typ = typ;
@@ -692,36 +692,36 @@ private int count;
     }
 
     /**
-     * 获取最后指派人 
+     * 获取最后指派人
      *
-     * @return last_assigner - 最后指派人 
+     * @return last_assigner - 最后指派人
      */
     public Integer getLastAssigner() {
         return lastAssigner;
     }
 
     /**
-     * 设置最后指派人 
+     * 设置最后指派人
      *
-     * @param lastAssigner 最后指派人 
+     * @param lastAssigner 最后指派人
      */
     public void setLastAssigner(Integer lastAssigner) {
         this.lastAssigner = lastAssigner;
     }
 
     /**
-     * 获取最后指派时间 
+     * 获取最后指派时间
      *
-     * @return last_assign_at - 最后指派时间 
+     * @return last_assign_at - 最后指派时间
      */
     public Date getLastAssignAt() {
         return lastAssignAt;
     }
 
     /**
-     * 设置最后指派时间 
+     * 设置最后指派时间
      *
-     * @param lastAssignAt 最后指派时间 
+     * @param lastAssignAt 最后指派时间
      */
     public void setLastAssignAt(Date lastAssignAt) {
         this.lastAssignAt = lastAssignAt;

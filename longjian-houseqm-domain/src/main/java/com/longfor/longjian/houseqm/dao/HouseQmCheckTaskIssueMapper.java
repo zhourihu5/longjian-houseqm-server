@@ -1,6 +1,7 @@
 package com.longfor.longjian.houseqm.dao;
 
 import com.longfor.gaia.gfs.data.mybatis.LFMySQLMapper;
+import com.longfor.longjian.houseqm.dto.CheckerIssueStatusStatDto;
 import com.longfor.longjian.houseqm.po.CheckerIssueStat;
 import com.longfor.longjian.houseqm.po.HouseQmCheckTaskIssue;
 import com.longfor.longjian.houseqm.po.HouseQmCheckTaskIssueAreaGroupModel;
@@ -222,4 +223,7 @@ public interface HouseQmCheckTaskIssueMapper extends LFMySQLMapper<HouseQmCheckT
     List<HouseQmCheckTaskIssue> selectHouseQmCheckTaskIssueByProjectIdAndCategoryClsAndTypeAndStatusInAndOrderByDescAndPageDongTai(Map<String, Object> map);
 
     List<HouseQmCheckTaskIssueAreaGroupModel> selectByTaskIdAreaPathAndIdAndStatusIn(HashMap<String, Object> map);
+
+    List<CheckerIssueStatusStatDto> selectCheckerIssueStatusStatDtoByProjIdAndTaskIdAndClientCreateAtAndTypInGroupByUserId(Map<String, Object> condi);
+
 }

@@ -82,6 +82,14 @@
         <result column="overtime_finish" property="overtimeFinish" jdbcType="INTEGER"/>
         <result column="intime_finish" property="initimeFinish" jdbcType="INTEGER"/>
     </resultMap>
+
+    <resultMap id="cissdto" type="com.longfor.longjian.houseqm.dto.CheckerIssueStatusStatDto">
+        <result column="user_id" property="user_id" jdbcType="INTEGER"/>
+        <result column="records_count" property="records_count" jdbcType="INTEGER"/>
+        <result column="issues_count" property="issues_count" jdbcType="INTEGER"/>
+        <result column="approveded_count" property="approveded_count" jdbcType="INTEGER"/>
+    </resultMap>
+
     <sql id="Base_Column_List">
         <!--
           WARNING - @mbg.generated
@@ -99,6 +107,53 @@
         -->
         attachment_md5_list, audio_md5_list, detail
     </sql>
+
+    <select id="selectCheckerIssueStatusStatDtoByProjIdAndTaskIdAndClientCreateAtAndTypInGroupByUserId"
+            resultMap="cissdto" parameterType="java.util.Map">
+        SELECT
+        sender_id AS user_id,
+        COUNT(
+        CASE
+        WHEN STATUS >#{status_issues_count} THEN
+        1
+        ELSE
+        NULL
+        END
+        ) AS issues_count,
+        COUNT(
+        CASE
+        WHEN STATUS =#{status_records_count} THEN
+        1
+        ELSE
+        NULL
+        END
+        ) AS records_count,
+        COUNT(
+        CASE
+        WHEN STATUS =#{status_approveded_count} THEN
+        1
+        ELSE
+        NULL
+        END
+        ) AS approveded_count
+        FROM
+        house_qm_check_task_issue
+        <where>
+            project_id =#{project_id}
+            AND task_id =#{task_id}
+            AND client_create_at &lt;= #{client_create_atlte}
+            AND client_create_at &gt;= #{client_create_atgte}
+            AND typ IN
+            <foreach collection="typ" item="item" open="(" separator="," close=")" index="index">
+                #{item}
+            </foreach>
+            AND delete_at IS NULL
+        </where>
+        GROUP BY
+        sender_id
+        ORDER BY
+        count(1) DESC
+    </select>
 
     <select id="selectByIssueUuidsAndclientCreateAt" resultMap="BaseResultMap">
         select uuid,title,pos_x,pos_y,typ,area_id from house_qm_check_task_issue
@@ -602,23 +657,23 @@
     <select id="selectByTaskIdAreaPathAndIdAndStatusIn"
             resultMap="houseQmCheckTaskIssueAreaGroupModel" parameterType="java.util.Map">
         SELECT LEFT(area_path_and_id,LENGTH(area_path_and_id)-LENGTH(area_id)-1) AS area_path,
-        Max(status)  AS extend_col
+        Max(status) AS extend_col
         FROM house_qm_check_task_issue
         WHERE task_id=#{taskId}
         <if test="types!=null">
             AND typ IN
-        <foreach collection="types" item="type" index="index" open="(" separator="," close=")">
-            #{type}
-        </foreach>
+            <foreach collection="types" item="type" index="index" open="(" separator="," close=")">
+                #{type}
+            </foreach>
         </if>
         <if test="statuses!=null">
             AND status in
             <foreach collection="statuses" item="item" index="index" open="(" separator="," close=")">
-            #{item}
+                #{item}
             </foreach>
         </if>
         AND area_path_and_id LIKE #{areaId}
-            AND delete_at IS NULL
+        AND delete_at IS NULL
         GROUP BY area_path
     </select>
 </mapper>

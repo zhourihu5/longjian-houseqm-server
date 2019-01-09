@@ -11,5 +11,5 @@ import java.io.Serializable;
 @Data
 @NoArgsConstructor
 public class HouseQmCheckTaskExOpsVo implements Serializable{
-    private  String  ExportIssue ;
+    private  String  export_issue ;
 }

@@ -30,5 +30,5 @@ public interface HouseQmCheckTaskService {
      */
     HouseQmCheckTask selectUpdateAtByTaskIdAndNoDeleted(Integer taskId);
 
-    void removeHouseQmCheckTaskByProjectIdAndTaskId(Integer project_id, Integer task_id);
+    int removeHouseQmCheckTaskByProjectIdAndTaskId(Integer project_id, Integer task_id);
 }

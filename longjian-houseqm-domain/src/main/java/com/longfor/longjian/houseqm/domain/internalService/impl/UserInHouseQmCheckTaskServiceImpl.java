@@ -111,11 +111,11 @@ public class UserInHouseQmCheckTaskServiceImpl implements UserInHouseQmCheckTask
     @Override
     @LFAssignDataSource("zhijian2")
     @Transactional
-    public void removeByTaskId(Integer task_id) {
+    public int removeByTaskId(Integer task_id) {
         Example example = new Example(UserInHouseQmCheckTask.class);
         Example.Criteria criteria = example.createCriteria();
         criteria.andEqualTo("taskId",task_id);
-        userInHouseQmCheckTaskMapper.deleteByExample(criteria);
+        return userInHouseQmCheckTaskMapper.deleteByExample(example);
     }
 
 }

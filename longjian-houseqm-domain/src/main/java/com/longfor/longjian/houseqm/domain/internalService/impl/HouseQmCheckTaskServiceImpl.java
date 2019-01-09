@@ -97,11 +97,11 @@ public class HouseQmCheckTaskServiceImpl implements HouseQmCheckTaskService {
     @Override
     @LFAssignDataSource("zhijian2")
     @Transactional
-    public void removeHouseQmCheckTaskByProjectIdAndTaskId(Integer project_id, Integer task_id) {
+    public int removeHouseQmCheckTaskByProjectIdAndTaskId(Integer project_id, Integer task_id) {
         Example example = new Example(HouseQmCheckTask.class);
         Example.Criteria criteria = example.createCriteria();
         criteria.andEqualTo("projectId",project_id).andEqualTo("taskId",task_id);
-        houseQmCheckTaskMapper.deleteByExample(example);
+        return houseQmCheckTaskMapper.deleteByExample(example);
     }
 
     /**

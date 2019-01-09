@@ -33,9 +33,10 @@ public class UserServiceImpl implements UserService {
      */
     @LFAssignDataSource("zhijian2_apisvr")
     public Map<Integer, User> selectByIds(List<Integer> users){
+        if (users==null||users.size()<=0)return Maps.newHashMap();
         Example example = new Example(User.class);
         Example.Criteria criteria = example.createCriteria();
-        criteria.andIn("id",users);
+        criteria.andIn("userId",users);
         List<User> userList= userMapper.selectByExample(example);
         Map<Integer, User> map = userList.stream().collect(Collectors.toMap(User::getUserId, u -> u));
         return map;
