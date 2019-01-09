@@ -29,4 +29,6 @@ public interface IHouseqmStatisticService {
     HouseQmCheckTaskHouseStatInfoVo getHouseQmHouseQmCheckTaskHouseStatByTaskId(Integer prodectId, Integer taskId, Integer areaId);
 
     RepossessionTasksStatusInfoVo getRepossessionTasksStatusInfo(Integer projectId,List<Integer> taskIds,Integer areaId);
+
+    StatHouseqmCompleteDailyRspVo searchRepossessionStatusCompleteDaily(Integer project_id, List<Integer> taskIds, int beginOn, int endOn, Integer page, Integer page_size);
 }

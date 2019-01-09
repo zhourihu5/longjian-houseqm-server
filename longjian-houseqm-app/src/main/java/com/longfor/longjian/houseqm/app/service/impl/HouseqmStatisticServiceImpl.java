@@ -1,12 +1,10 @@
 package com.longfor.longjian.houseqm.app.service.impl;
 
-import java.text.SimpleDateFormat;
 import java.util.Date;
 
 import java.lang.String;
 
 
-import com.github.pagehelper.PageInfo;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
@@ -17,16 +15,13 @@ import com.longfor.longjian.houseqm.app.vo.*;
 import com.longfor.longjian.houseqm.consts.HouseQmCheckTaskIssueEnum;
 import com.longfor.longjian.houseqm.consts.HouseQmCheckTaskIssueStatusEnum;
 import com.longfor.longjian.houseqm.domain.internalService.*;
-import com.longfor.longjian.houseqm.app.vo.*;
 import com.longfor.longjian.houseqm.consts.*;
-import com.longfor.longjian.houseqm.domain.internalService.*;
-import com.longfor.longjian.houseqm.dto.HouseQmCheckTaskIssueAreaGroup;
+import com.longfor.longjian.houseqm.dto.RepossessionStatusCompleteDailyCountDto;
 import com.longfor.longjian.houseqm.po.*;
 import com.longfor.longjian.houseqm.util.CollectionUtil;
 import com.longfor.longjian.houseqm.util.DateUtil;
 import com.longfor.longjian.houseqm.util.MathUtil;
 import com.longfor.longjian.houseqm.util.StringSplitToListUtil;
-import io.swagger.models.auth.In;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Repository;
 import org.springframework.stereotype.Service;
@@ -35,9 +30,6 @@ import javax.annotation.Resource;
 import java.text.DecimalFormat;
 import java.util.*;
 import java.util.stream.Collectors;
-import java.util.stream.Collectors;
-
-import static java.awt.SystemColor.info;
 
 /**
  * @author Houyan
@@ -432,7 +424,7 @@ public class HouseqmStatisticServiceImpl implements IHouseqmStatisticService {
 
         taskIds.forEach(taskId -> {
             List<Area> areas = iHouseqmService.searchTargetAreaByTaskId(projectId, taskId);
-            Integer total = areas.size();
+            int total = areas.size();
             List<RepossessionStatus> items = repossessionStatusService.searchRepossessionStatusByTaskIdAreaIdLike(taskId, areaId);
             List<String> hasIssuePaths = houseqmStaticService.getHasIssueTaskCheckedAreaPathListByTaskId(taskId, true, null, areaId);
             HashMap<Integer, Boolean> hasIssueAreaId = Maps.newHashMap();
@@ -464,9 +456,9 @@ public class HouseqmStatisticServiceImpl implements IHouseqmStatisticService {
                 if (rAreaId.containsKey(item.getAreaId())) continue;
                 else rAreaId.put(item.getAreaId(), true);
 
-                RepossessionStatusEnum senum = null;
+                RepossessionStatusEnum senum = RepossessionStatusEnum.valueOf("");
                 for (RepossessionStatusEnum e : RepossessionStatusEnum.values()) {
-                    if (item.getStatus() == e.getId()) {
+                    if (item.getStatus().equals(e.getId())) {
                         senum = e;
                         break;
                     }
@@ -520,6 +512,49 @@ public class HouseqmStatisticServiceImpl implements IHouseqmStatisticService {
         });
         info.setCheckedRate(MathUtil.getPercentageByPattern(info.getCheckedCount(),info.getTotal(),"0.0"));
         return info;
+    }
+
+    /*
+     * 统计-验房统计-每天的交付数
+     * @Author hy
+     * @Description
+     * @Date 20:47 2019/1/8
+     * @Param [project_id, taskIds, beginOn, endOn, page, page_size]
+     * @return com.longfor.longjian.houseqm.app.vo.StatHouseqmCompleteDailyRspVo
+     **/
+    @Override
+    public StatHouseqmCompleteDailyRspVo searchRepossessionStatusCompleteDaily(Integer project_id, List<Integer> taskIds, int beginOn, int endOn, Integer page, Integer page_size) {
+        // 计算总数量
+        List<RepossessionStatusCompleteDailyCountDto> list = Lists.newArrayList();
+        Map<String, Object> condi = Maps.newHashMap();
+        condi.put("task_id",taskIds);
+        condi.put("status",RepossessionStatusEnum.Accept.getId());
+        Date begin_on,end_on=null;
+        if (beginOn>0){
+            begin_on=DateUtil.timeStampToDate(beginOn,"yyyy-MM-dd hh:mm:ss");
+            condi.put("status_client_update_atgte",begin_on);
+        }
+        if (endOn>0){
+            end_on=DateUtil.timeStampToDate(endOn,"yyyy-MM-dd hh:mm:ss");
+            condi.put("status_client_update_atlte",end_on);
+        }
+        RepossessionStatusCompleteDailyCountDto bean=repossessionStatusService.searchByTaskIdInAndStatusAndNoDeletedOrStatusClientUpdateAt(condi);
+        int total=bean.getCount();
+        int offset=(page - 1) * page_size;
+        condi.put("page_size",page_size);
+        condi.put("offset",offset);
+        list=repossessionStatusService.searchByTaskIdInAndStatusAndNoDeletedGroupByDateOrderByDateByPage(condi);
+
+        StatHouseqmCompleteDailyRspVo result = new StatHouseqmCompleteDailyRspVo();
+        List<HouseQmHouseQmStatCompleteDailyRspVo> items = list.stream().map(RepossessionStatusCompleteDailyCountDto -> {
+            HouseQmHouseQmStatCompleteDailyRspVo hqs = new HouseQmHouseQmStatCompleteDailyRspVo();
+            hqs.setDate(RepossessionStatusCompleteDailyCountDto.getDate());
+            hqs.setCount(RepossessionStatusCompleteDailyCountDto.getCount());
+            return hqs;
+        }).collect(Collectors.toList());
+        result.setItems(items);
+        result.setTotal(total);
+        return result;
     }
 
 

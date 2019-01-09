@@ -4,10 +4,12 @@ import com.ctrip.framework.apollo.core.utils.StringUtils;
 import com.github.pagehelper.util.StringUtil;
 import com.google.common.collect.Lists;
 import com.longfor.longjian.common.base.LjBaseResponse;
+import com.longfor.longjian.houseqm.app.req.StatHouseqmCompleteDailyReq;
 import com.longfor.longjian.houseqm.app.req.StatHouseqmTaskSituationOverallReq;
 import com.longfor.longjian.houseqm.app.service.IHouseqmStatService;
 import com.longfor.longjian.houseqm.app.service.IHouseqmStatisticService;
 import com.longfor.longjian.houseqm.app.vo.*;
+import com.longfor.longjian.houseqm.util.DateUtil;
 import com.longfor.longjian.houseqm.util.MathUtil;
 import com.longfor.longjian.houseqm.util.StringSplitToListUtil;
 import io.swagger.annotations.ApiParam;
@@ -111,7 +113,7 @@ public class HouseqmStatController {
     }
 
     /**
-     * 项目任务信息汇总
+     * 项目任务信息汇总 统计-任务汇总-汇总
      *
      * @param projectId
      * @param categoryCls
@@ -270,6 +272,15 @@ public class HouseqmStatController {
         return ljbr;
     }
 
+    // todo 待测试
+    /*
+     * 统计-验房统计-任务总进度及交付情况
+     * @Author hy
+     * @Description
+     * @Date 20:12 2019/1/8
+     * @Param [req]
+     * @return com.longfor.longjian.common.base.LjBaseResponse<com.longfor.longjian.houseqm.app.vo.StatHouseqmTaskSituationOverallRspVo>
+     **/
     @GetMapping(value = "stat_houseqm/task_situation_overall", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     public LjBaseResponse<StatHouseqmTaskSituationOverallRspVo> taskSituationOverall(@RequestBody @Valid StatHouseqmTaskSituationOverallReq req) {
 
@@ -303,5 +314,35 @@ public class HouseqmStatController {
         return response;
     }
 
+    /*
+     * 统计-验房统计-每天的交付数
+     * @Author hy
+     * @Description
+     * @Date 20:16 2019/1/8
+     * @Param
+     * @return
+     **/
+    @GetMapping(value = "stat_houseqm/complete_daily", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+    public LjBaseResponse<StatHouseqmCompleteDailyRspVo> completeDaily(@Valid StatHouseqmCompleteDailyReq req) {
+
+        // todo  鉴权   _, _, err := ctrl_tool.ProjPermMulti(c, []string{"项目.移动验房.统计.查看", "项目.工程检查.统计.查看"})
+
+        List<Integer> taskIds = StringSplitToListUtil.strToInts(req.getTask_ids(), ",");
+
+        int beginOn = 0;
+        int endOn = 0;
+        if (req.getBegin_on().length() > 0) {
+            beginOn = DateUtil.datetimeToTimeStamp(DateUtil.strToDate(req.getBegin_on(), "yyyy-MM-dd hh:mm:ss"));
+        }
+        if (req.getEnd_on().length() > 0) {
+            endOn = DateUtil.datetimeToTimeStamp(DateUtil.strToDate(req.getEnd_on(), "yyyy-MM-dd hh:mm:ss"));
+        }
+
+        StatHouseqmCompleteDailyRspVo data=houseqmStatisticService.searchRepossessionStatusCompleteDaily(req.getProject_id(), taskIds, beginOn, endOn, req.getPage(), req.getPage_size());
+        LjBaseResponse<StatHouseqmCompleteDailyRspVo> response = new LjBaseResponse<>();
+        response.setData(data);
+
+        return response;
+    }
 
 }

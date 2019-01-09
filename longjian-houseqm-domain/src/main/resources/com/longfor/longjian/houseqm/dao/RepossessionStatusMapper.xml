@@ -36,6 +36,11 @@
         <result column="modify_user_id" property="modifyUserId" jdbcType="INTEGER"/>
         <result column="satisfaction_score" property="satisfactionScore" jdbcType="INTEGER"/>
     </resultMap>
+
+    <resultMap id="rscdcd" type="com.longfor.longjian.houseqm.dto.RepossessionStatusCompleteDailyCountDto">
+        <result column="date" property="date" jdbcType="VARCHAR"/>
+        <result column="count" property="count" jdbcType="INTEGER"/>
+    </resultMap>
     <sql id="Base_Column_List">
         <!--
           WARNING - @mbg.generated
@@ -56,4 +61,54 @@
             and area_id LIKE concat('%', #{areaId},'%')
         </if>
     </select>
+
+    <select id="selectByTaskIdInAndStatusAndNoDeletedOrStatusClientUpdateAt"
+            resultType="com.longfor.longjian.houseqm.dto.RepossessionStatusCompleteDailyCountDto"
+            parameterType="java.util.Map">
+        SELECT
+        COUNT(
+        DISTINCT LEFT (status_client_update_at, 10)
+        ) AS count
+        FROM
+        repossession_status
+        <where>
+            delete_at IS NULL
+            <if test="task_id!=null">AND task_id IN
+                <foreach collection="task_id" item="item" index="index" open="(" separator="," close=")">#{item}
+                </foreach>
+            </if>
+            <if test="status!=null">AND `status` =#{status}</if>
+            <if test="status_client_update_atgte!=null">AND status_client_update_at &gt;= #{status_client_update_atgte}
+            </if>
+            <if test="status_client_update_atlte!=null">AND status_client_update_at &lt;= #{status_client_update_atlte}
+            </if>
+        </where>
+    </select>
+    <select id="selectByTaskIdInAndStatusAndNoDeletedGroupByDateOrderByDateByPage" resultMap="rscdcd"
+            parameterType="java.util.Map">
+        SELECT
+        LEFT (status_client_update_at, 10) AS date,
+        COUNT(*) AS count
+        FROM
+        repossession_status
+        <where>
+            delete_at IS NULL
+            <if test="task_id!=null">AND task_id IN
+                <foreach collection="task_id" item="item" index="index" open="(" separator="," close=")">#{item}
+                </foreach>
+            </if>
+            <if test="status!=null">AND `status` =#{status}</if>
+            <if test="status_client_update_atgte!=null">AND status_client_update_at &gt;= #{status_client_update_atgte}
+            </if>
+            <if test="status_client_update_atlte!=null">AND status_client_update_at &lt;= #{status_client_update_atlte}
+            </if>
+            GROUP BY
+            date
+            ORDER BY
+            LEFT (status_client_update_at, 10) DESC
+            LIMIT #{page_size},#{offset}
+        </where>
+    </select>
+
+
 </mapper>
