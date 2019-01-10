@@ -1,7 +1,12 @@
 package com.longfor.longjian.houseqm.app.service;
 
 import com.longfor.gaia.gfs.core.bean.PageInfo;
+import com.longfor.longjian.common.base.LjBaseResponse;
+import com.longfor.longjian.houseqm.app.vo.HouseQmCheckTaskIssueHistoryLogVo;
 import com.longfor.longjian.houseqm.app.vo.IssueListVo;
+import com.longfor.longjian.houseqm.app.vo.TaskResponse;
+
+import java.util.ArrayList;
 
 
 /**
@@ -37,4 +42,11 @@ public interface IIssueService {
                                String areaIds,String statusIn,Integer checkerId,Integer repairerId,Integer type,Integer condition,String keyWord,
                                String createOnBegin,String createOnEnd,Boolean isOverDue,Integer pageNum,Integer pageSize);
 
+    ArrayList<HouseQmCheckTaskIssueHistoryLogVo> getHouseQmCheckTaskIssueActionLogByIssueUuid(String issueUuid);
+
+    void deleteHouseqmCheckTaskIssueByProjectAndUuid(Integer projectId, String issueUuid);
+
+    LjBaseResponse updeteIssueDescByUuid(Integer projectId, String issueUuid, Integer uid, String content);
+
+    LjBaseResponse updateIssuePlanEndOnByProjectAndUuid(Integer projectId, String issueUuid, Integer uid, Integer plan_end_on);
 }

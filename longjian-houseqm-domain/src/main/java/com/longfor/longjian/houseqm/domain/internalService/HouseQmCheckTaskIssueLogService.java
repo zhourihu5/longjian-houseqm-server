@@ -31,4 +31,7 @@ public interface HouseQmCheckTaskIssueLogService {
      */
     List<HouseQmCheckTaskIssueLog> selectIdByTaskIdAndIdAndUuidInAndUpdateAtGtAndNoDeletedOrderById(Integer task_id, List<String> uuids, Date issueLogUpdateTime);
 
+    List<HouseQmCheckTaskIssueLog> selectByUuidAndNotDelete(String issueUuid);
+
+    void add(HouseQmCheckTaskIssueLog new_issue_log);
 }

@@ -306,8 +306,8 @@ public class HouseqmStatisticServiceImpl implements IHouseqmStatisticService {
         resIssues.forEach(item -> {
             HouseqmStatisticCategoryIssueListRspMsgVo.ApiTaskIssueRepairListRsp apiTaskIssueRepairListRsp = issueListRspMsgVo.new ApiTaskIssueRepairListRsp();
             apiTaskIssueRepairListRsp.setId(item.getId());
-            apiTaskIssueRepairListRsp.setProjectId(item.getProjectId());
-            apiTaskIssueRepairListRsp.setTaskId(item.getTaskId());
+            apiTaskIssueRepairListRsp.setProject_id(item.getProjectId());
+            apiTaskIssueRepairListRsp.setTask_id(item.getTaskId());
             apiTaskIssueRepairListRsp.setUuid(item.getUuid());
             apiTaskIssueRepairListRsp.setTitle(item.getTitle());
             apiTaskIssueRepairListRsp.setTyp(item.getTyp());
@@ -315,23 +315,23 @@ public class HouseqmStatisticServiceImpl implements IHouseqmStatisticService {
             apiTaskIssueRepairListRsp.setCondition(item.getCondition());
             apiTaskIssueRepairListRsp.setStatus(item.getStatus());
 
-            apiTaskIssueRepairListRsp.setPlanEndOn(DateUtil.datetimeToTimeStamp(item.getPlanEndOn()));
-            apiTaskIssueRepairListRsp.setAttachmentMd5List(item.getAttachmentMd5List());
-            apiTaskIssueRepairListRsp.setClientCreateAt(DateUtil.datetimeToTimeStamp(item.getClientCreateAt()));
-            apiTaskIssueRepairListRsp.setUpdateAt(DateUtil.datetimeToTimeStamp(item.getUpdateAt()));
+            apiTaskIssueRepairListRsp.setPlan_end_on(DateUtil.datetimeToTimeStamp(item.getPlanEndOn()));
+            apiTaskIssueRepairListRsp.setAttachment_md5_list(item.getAttachmentMd5List());
+            apiTaskIssueRepairListRsp.setClient_create_at(DateUtil.datetimeToTimeStamp(item.getClientCreateAt()));
+            apiTaskIssueRepairListRsp.setUpdate_at(DateUtil.datetimeToTimeStamp(item.getUpdateAt()));
 
             List<String> list = StringSplitToListUtil.splitToStringComma(item.getAttachmentMd5List(), ",");
-            apiTaskIssueRepairListRsp.setAttachmentUrlList(new ArrayList<String>());
+            apiTaskIssueRepairListRsp.setAttachment_url_list(new ArrayList<String>());
             list.forEach(fm -> {
                 if (fileMap.containsKey(fm)) {
-                    List<String> attachmentUrlList = apiTaskIssueRepairListRsp.getAttachmentUrlList();
+                    List<String> attachmentUrlList = apiTaskIssueRepairListRsp.getAttachment_url_list();
                     attachmentUrlList.add(fileMap.get(fm));
-                    apiTaskIssueRepairListRsp.setAttachmentUrlList(attachmentUrlList);
+                    apiTaskIssueRepairListRsp.setAttachment_url_list(attachmentUrlList);
                 }
             });
-            apiTaskIssueRepairListRsp.setAreaPathName(areaMap.getPathNames(item.getAreaId()));
-            apiTaskIssueRepairListRsp.setCategoryPathName(categoryMap.getFullNamesByKey(item.getCategoryKey()));
-            apiTaskIssueRepairListRsp.setCheckItemPathName(checkItemV3Map.getFullNamesByKey(item.getCheckItemKey()));
+            apiTaskIssueRepairListRsp.setArea_path_name(areaMap.getPathNames(item.getAreaId()));
+            apiTaskIssueRepairListRsp.setCategory_path_name(categoryMap.getFullNamesByKey(item.getCategoryKey()));
+            apiTaskIssueRepairListRsp.setCheck_item_path_name(checkItemV3Map.getFullNamesByKey(item.getCheckItemKey()));
             issueList.add(apiTaskIssueRepairListRsp);
         });
 

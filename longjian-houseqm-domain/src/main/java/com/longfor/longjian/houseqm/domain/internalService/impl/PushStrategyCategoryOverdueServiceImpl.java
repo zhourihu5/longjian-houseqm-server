@@ -31,4 +31,10 @@ public class PushStrategyCategoryOverdueServiceImpl implements PushStrategyCateg
     public List<PushStrategyCategoryOverdue> searchByTaskIds(Set<Integer> taskIds){
         return pushStrategyCategoryOverdueMapper.selectByTaskIds(taskIds,"false");
     }
+
+    @Override
+    @LFAssignDataSource("zhijian2_notify")
+    public int add(PushStrategyCategoryOverdue pushStrategyCategoryOverdue) {
+        return pushStrategyCategoryOverdueMapper.insert(pushStrategyCategoryOverdue);
+    }
 }

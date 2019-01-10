@@ -142,4 +142,10 @@ public interface HouseQmCheckTaskIssueService {
     List<RepaireIssueStatusStatDto> searchRepaireIssueStatusStatDtoByProjIdAndTaskIdAndClientCreateAtAndTypInGroupByUserId(Map<String, Object> condi);
 
     List<HouseQmCheckTaskIssue> searchByProjIdAndCategoryClsAndAreaPathAndIdLikeGroupByStatus(Integer project_id, Integer category_cls, String areaPath);
+
+    HouseQmCheckTaskIssue selectByUuidAndNotDelete(String issueUuid);
+
+    HouseQmCheckTaskIssue getIssueByProjectIdAndUuid(Integer projectId, String issueUuid);
+
+    void update(HouseQmCheckTaskIssue issue_info);
 }

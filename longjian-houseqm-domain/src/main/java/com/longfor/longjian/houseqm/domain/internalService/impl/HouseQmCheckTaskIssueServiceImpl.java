@@ -20,6 +20,7 @@ import java.util.ArrayList;
  * @author Houyan
  * @date 2018/12/11 0011 15:39
  */
+@Transactional
 @Service
 @Slf4j
 @LFAssignDataSource("zhijian2")
@@ -374,4 +375,34 @@ public class HouseQmCheckTaskIssueServiceImpl implements HouseQmCheckTaskIssueSe
     public List<HouseQmCheckTaskIssue> searchByProjIdAndCategoryClsAndAreaPathAndIdLikeGroupByStatus(Integer project_id, Integer category_cls, String areaPath) {
         return houseQmCheckTaskIssueMapper.selectByProjIdAndCategoryClsAndAreaPathAndIdLikeGroupByStatus(project_id,category_cls,"%"+areaPath+"%");
     }
+    @Override
+    @LFAssignDataSource("zhijian2")
+    public HouseQmCheckTaskIssue selectByUuidAndNotDelete(String issueUuid) {
+        Example example = new Example(HouseQmCheckTaskIssue.class);
+        Example.Criteria criteria = example.createCriteria();
+        criteria .andEqualTo("uuid",issueUuid);
+        criteria.andIsNull("deleteAt");
+        return   houseQmCheckTaskIssueMapper.selectOneByExample(example);
+
+
+    }
+
+    @Override
+    @LFAssignDataSource("zhijian2")
+    public HouseQmCheckTaskIssue getIssueByProjectIdAndUuid(Integer projectId, String issueUuid) {
+        Example example = new Example(HouseQmCheckTaskIssue.class);
+        Example.Criteria criteria = example.createCriteria();
+        criteria .andEqualTo("projectId",projectId);
+        criteria .andEqualTo("uuid",issueUuid);
+        criteria.andIsNull("deleteAt");
+        return   houseQmCheckTaskIssueMapper.selectOneByExample(example);
+    }
+
+    @Override
+    @LFAssignDataSource("zhijian2")
+    public void update(HouseQmCheckTaskIssue issue_info) {
+        houseQmCheckTaskIssueMapper.updateByPrimaryKeySelective(issue_info);
+
+    }
+
 }

@@ -31,4 +31,10 @@ public class PushStrategyCategoryThresholdServiceImpl implements PushStrategyCat
     public List<PushStrategyCategoryThreshold> searchByTaskIds(Set<Integer> taskIds){
        return pushStrategyCategoryThresholdMapper.selectByTaskIds(taskIds,"false");
     }
+
+    @Override
+    @LFAssignDataSource("zhijian2_notify")
+    public int add(PushStrategyCategoryThreshold pushStrategyCategoryThreshold) {
+        return pushStrategyCategoryThresholdMapper.insert(pushStrategyCategoryThreshold);
+    }
 }

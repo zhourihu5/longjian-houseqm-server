@@ -19,9 +19,9 @@ public class HouseqmStatisticTaskCheckitemStatRspMsgVo implements Serializable {
     @Data
     @NoArgsConstructor
     public class ApiHouseQmCheckItemIssueStat implements  Serializable{
-     private  String  Key;// 检查项key
-        private  String  Name;   // 检查项名称
-        private String FatherKey;// 检查项父级key
-        private Integer IssueCount;// 问题数
+     private  String  key;// 检查项key
+        private  String  name;   // 检查项名称
+        private String father_key;// 检查项父级key
+        private Integer issue_count;// 问题数
     }
 }

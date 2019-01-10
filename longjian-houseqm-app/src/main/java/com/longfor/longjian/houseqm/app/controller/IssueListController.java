@@ -2,20 +2,20 @@ package com.longfor.longjian.houseqm.app.controller;
 
 import com.longfor.gaia.gfs.core.bean.PageInfo;
 import com.longfor.gaia.gfs.web.mock.MockOperation;
+import com.longfor.longjian.common.base.LjBaseResponse;
 import com.longfor.longjian.houseqm.app.service.IIssueService;
+import com.longfor.longjian.houseqm.app.vo.HouseQmCheckTaskIssueHistoryLogVo;
 import com.longfor.longjian.houseqm.app.vo.IssueListVo;
 import com.longfor.longjian.houseqm.app.vo.TaskResponse;
 import io.swagger.annotations.ApiParam;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.MediaType;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
 import javax.validation.Valid;
 import javax.validation.constraints.Min;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -78,4 +78,75 @@ public class IssueListController {
         taskResponse.setData(pageInfo);
         return taskResponse;
     }
+
+    @GetMapping(value = "detail_log", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+    public TaskResponse< ArrayList<HouseQmCheckTaskIssueHistoryLogVo>> detailLog(@RequestParam(value = "project_id",required = true) Integer projectId,
+                                                                     @RequestParam(value = "issue_uuid",required =true) String issueUuid){
+        ////todo session 取uid 权限
+        /*uid = session['uid']
+        has_per = ucenter_api.check_project_permission(uid, req.project_id, '项目.工程检查.问题管理.查看')
+        if not has_per:
+        rsp = errors_utils.err(rsp, 'PermissionDenied')*/
+        ArrayList<HouseQmCheckTaskIssueHistoryLogVo> result=  iIssueService.getHouseQmCheckTaskIssueActionLogByIssueUuid(issueUuid);
+        TaskResponse<ArrayList<HouseQmCheckTaskIssueHistoryLogVo>> response = new TaskResponse<>();
+        response.setData(result);
+        return response;
+    }
+    @PostMapping(value = "delete", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+    public TaskResponse delete(@RequestParam(value = "project_id",required = true) Integer projectId,
+                                                                                 @RequestParam(value = "issue_uuid",required =true) String issueUuid){
+            ////todo session 取uid 权限
+        /*uid = session['uid']
+        has_per = ucenter_api.check_project_permission(uid, req.project_id, '项目.工程检查.问题管理.查看')
+        if not has_per:
+        rsp = errors_utils.err(rsp, 'PermissionDenied')*/
+        iIssueService.deleteHouseqmCheckTaskIssueByProjectAndUuid(projectId,issueUuid);
+        return new TaskResponse();
+    }
+
+    @PostMapping(value = "add_desc", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+    public LjBaseResponse addDesc(@RequestParam(value = "project_id",required = true) Integer projectId,
+                               @RequestParam(value = "issue_uuid",required =true) String issueUuid,
+                                @RequestParam(value = "content",required =true) String content){
+        ////todo session 取uid 权限
+        /*uid = session['uid']
+        has_per = ucenter_api.check_project_permission(uid, req.project_id, '项目.工程检查.问题管理.查看')
+        if not has_per:
+        rsp = errors_utils.err(rsp, 'PermissionDenied')*/
+
+        Integer uid=1;
+        LjBaseResponse taskResponse=  iIssueService.updeteIssueDescByUuid(projectId,issueUuid,uid,content);
+        return  taskResponse;
+    }
+    @PostMapping(value = "edit_plan_end_on", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+    public LjBaseResponse editPlanEndOn(@RequestParam(value = "project_id",required = true) Integer projectId,
+                                  @RequestParam(value = "issue_uuid",required =true) String issueUuid,
+                                  @RequestParam(value = "plan_end_on",required =false, defaultValue = "0") Integer plan_end_on){
+        ////todo session 取uid 权限
+        /*uid = session['uid']
+        has_per = ucenter_api.check_project_permission(uid, req.project_id, '项目.工程检查.问题管理.查看')
+        if not has_per:
+        rsp = errors_utils.err(rsp, 'PermissionDenied')*/
+
+        Integer uid=1;
+        LjBaseResponse taskResponse=  iIssueService.updateIssuePlanEndOnByProjectAndUuid(projectId,issueUuid,uid,plan_end_on);
+        return  taskResponse;
+    }
+    @PostMapping(value = "edit_approve", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+    public LjBaseResponse editApprove(@RequestParam(value = "project_id",required = true) Integer projectId,
+                                        @RequestParam(value = "issue_uuid",required =true) String issueUuid,
+                                        @RequestParam(value = "plan_end_on",required =false, defaultValue = "0") Integer plan_end_on){
+        ////todo session 取uid 权限
+        /*uid = session['uid']
+        has_per = ucenter_api.check_project_permission(uid, req.project_id, '项目.工程检查.问题管理.查看')
+        if not has_per:
+        rsp = errors_utils.err(rsp, 'PermissionDenied')*/
+
+        Integer uid=1;
+        LjBaseResponse taskResponse=  iIssueService.updateIssuePlanEndOnByProjectAndUuid(projectId,issueUuid,uid,plan_end_on);
+        return  taskResponse;
+    }
+
+
+
 }

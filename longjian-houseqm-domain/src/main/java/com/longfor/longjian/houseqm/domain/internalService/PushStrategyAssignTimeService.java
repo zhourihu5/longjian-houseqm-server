@@ -7,4 +7,6 @@ import java.util.Set;
 
 public interface PushStrategyAssignTimeService {
     List<PushStrategyAssignTime> searchByTaskIds(Set<Integer> taskIds);
+
+    int add(PushStrategyAssignTime pushStrategyAssignTime);
 }

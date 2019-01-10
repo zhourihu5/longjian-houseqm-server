@@ -117,4 +117,16 @@ public class HouseQmCheckTaskServiceImpl implements HouseQmCheckTaskService {
         return houseQmCheckTaskMapper.selectUpdateAtByTaskIdAndNoDeleted(taskId,"false");
     }
 
+    @Override
+    @LFAssignDataSource("zhijian2")
+    public int add(HouseQmCheckTask houseQmCheckTask) {
+        return houseQmCheckTaskMapper.insert(houseQmCheckTask);
+    }
+
+    @Override
+    @LFAssignDataSource("zhijian2")
+    public HouseQmCheckTask selectById(int one) {
+        return houseQmCheckTaskMapper.selectByPrimaryKey(one);
+    }
+
 }

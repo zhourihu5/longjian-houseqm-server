@@ -1,21 +1,18 @@
 package com.longfor.longjian.houseqm.app.controller;
 
 import com.google.common.collect.Lists;
-import com.longfor.gaia.gfs.web.mock.MockOperation;
 import com.longfor.longjian.common.base.LjBaseResponse;
 import com.longfor.longjian.houseqm.app.req.DeviceReq;
+import com.longfor.longjian.houseqm.app.req.TaskReq;
 import com.longfor.longjian.houseqm.app.req.UpdateDeviceReq;
 import com.longfor.longjian.houseqm.app.service.IBuildingqmService;
 import com.longfor.longjian.houseqm.app.service.ICheckUpdateService;
 import com.longfor.longjian.houseqm.app.vo.*;
-import com.longfor.longjian.houseqm.po.HouseQmCheckTask;
+import com.longfor.longjian.houseqm.po.HouseQmCheckTaskSquad;
 import com.longfor.longjian.houseqm.util.DateUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.MediaType;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
 import java.util.ArrayList;
@@ -162,4 +159,69 @@ public class BuildingqmController {
         return ljBaseResponse;
     }
 
+
+
+    @PostMapping(value = "task/create", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+    public LjBaseResponse create(TaskReq taskReq) {
+        log.info("create, project_id="+taskReq.getProject_id()+"" +
+                " name="+taskReq.getName()+", " +
+                "category_cls="+taskReq.getCategory_cls()+"," +
+                " root_category_key="+taskReq.getRoot_category_key()+"," +
+                " area_ids="+taskReq.getArea_ids()+", area_types="+taskReq.getArea_types()+"," +
+                " plan_begin_on="+taskReq.getPlan_begin_on()+"," +
+                " plan_end_on="+taskReq.getPlan_end_on()+", " +
+                "repairer_ids="+taskReq.getRepairer_ids()+", " +
+                "checker_groups="+taskReq.getChecker_groups()+", " +
+                "repairer_refund_permission="+taskReq.getRepairer_refund_permission()+"," +
+                " repairer_follower_permission="+taskReq.getRepairer_follower_permission()+", " +
+                "checker_approve_permission="+taskReq.getChecker_approve_permission()+", " +
+                "repaired_picture_status="+taskReq.getRepaired_picture_status()+", " +
+                "issue_desc_status="+taskReq.getIssue_desc_status()+", " +
+                "issue_default_desc="+taskReq.getIssue_default_desc()+"," +
+                " push_strategy_config="+taskReq.getPush_strategy_config()+"");
+        ////todo c从session中获取uid
+/*
+        uid = session['uid']
+*/
+        Integer uid=1;
+        ////todo 鉴权
+       /* has_per = ucenter_api.check_project_permission(uid, req.project_id, '项目.工程检查.任务管理.新增')
+        if not has_per:
+        rsp = errors_utils.err(rsp, 'PermissionDenied')*/
+        buildingqmService.create(uid,taskReq);
+        LjBaseResponse<Object> response = new LjBaseResponse<>();
+        return response;
+    }
+
+    @GetMapping(value = "task/task_squad", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+    public LjBaseResponse< ArrayList<HouseQmCheckTaskSquadListRspVo>> taskSquad(@RequestParam(name = "project_id",required = true) String projectId,
+                                                        @RequestParam(name = "task_id",required = true) String taskId) {
+        ////todo c从session中获取uid
+/*
+        uid = session['uid']
+*/
+        Integer uid=1;
+        ////todo 鉴权
+       /* has_per = ucenter_api.check_project_permission(uid, req.project_id, '项目.工程检查.任务管理.新增')
+        if not has_per:
+        rsp = errors_utils.err(rsp, 'PermissionDenied')*/
+      List<HouseQmCheckTaskSquad>info=  buildingqmService.searchHouseqmCheckTaskSquad(projectId,taskId);
+        ArrayList<HouseQmCheckTaskSquadListRspVo> squad_list = Lists.newArrayList();
+        for (int i = 0; i < info.size(); i++) {
+            HouseQmCheckTaskSquadListRspVo rspVo = new HouseQmCheckTaskSquadListRspVo();
+            rspVo.setId(info.get(i).getId());
+            rspVo.setName(info.get(i).getName());
+            rspVo.setSquad_type(info.get(i).getSquadType());
+            squad_list.add(rspVo);
+        }
+        LjBaseResponse< ArrayList<HouseQmCheckTaskSquadListRspVo> > response = new LjBaseResponse<>();
+         response.setData(squad_list);
+        return response;
+    }
+
+    @PostMapping(value = "task/edit", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+    public LjBaseResponse<MyIssuePatchListVo> edit(DeviceReq deviceReq) {
+
+        return null;
+    }
 }

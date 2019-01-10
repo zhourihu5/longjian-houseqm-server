@@ -65,14 +65,14 @@ public class HouseqmStatisticController {
                                                                      @RequestParam(value = "timestamp") Integer timestamp) {
         CheckTaskHouseStatInfoVo checkTaskHouseStatInfo = houseqmStaticService.GetHouseQmCheckTaskHouseStatByTaskId(prodectId, taskId, areaId);
         HouseQmTaskHouseStatVo houseStatVo = new HouseQmTaskHouseStatVo();
-        houseStatVo.setHouseCheckedPercent(getPercentage(checkTaskHouseStatInfo.getCheckedCount(), checkTaskHouseStatInfo.getHouseCount()));
-        houseStatVo.setHouseRepairedPercent(getPercentage(checkTaskHouseStatInfo.getRepairedCount(), checkTaskHouseStatInfo.getHasIssueCount()));
-        houseStatVo.setHouseApprovededPercent(getPercentage(checkTaskHouseStatInfo.getApprovedCount(), checkTaskHouseStatInfo.getRepairedCount()));
-        houseStatVo.setApprovedCount(checkTaskHouseStatInfo.getApprovedCount());
-        houseStatVo.setHasIssueCount(checkTaskHouseStatInfo.getHasIssueCount());
-        houseStatVo.setRepairedCount(checkTaskHouseStatInfo.getRepairedCount());
-        houseStatVo.setCheckedCount(checkTaskHouseStatInfo.getCheckedCount());
-        houseStatVo.setHouseCount(checkTaskHouseStatInfo.getHouseCount());
+        houseStatVo.setHouse_checked_percent(getPercentage(checkTaskHouseStatInfo.getCheckedCount(), checkTaskHouseStatInfo.getHouseCount()));
+        houseStatVo.setHouse_repaired_percent(getPercentage(checkTaskHouseStatInfo.getRepairedCount(), checkTaskHouseStatInfo.getHasIssueCount()));
+        houseStatVo.setHouse_approveded_percent(getPercentage(checkTaskHouseStatInfo.getApprovedCount(), checkTaskHouseStatInfo.getRepairedCount()));
+        houseStatVo.setApproved_count(checkTaskHouseStatInfo.getApprovedCount());
+        houseStatVo.setHas_issue_count(checkTaskHouseStatInfo.getHasIssueCount());
+        houseStatVo.setRepaired_count(checkTaskHouseStatInfo.getRepairedCount());
+        houseStatVo.setChecked_count(checkTaskHouseStatInfo.getCheckedCount());
+        houseStatVo.setHouse_count(checkTaskHouseStatInfo.getHouseCount());
         HouseqmStatisticTaskStatRspMsgVo vo = new HouseqmStatisticTaskStatRspMsgVo();
         vo.setItem(houseStatVo);
         LjBaseResponse<HouseqmStatisticTaskStatRspMsgVo> response = new LjBaseResponse<>();
@@ -165,8 +165,8 @@ public class HouseqmStatisticController {
             HouseqmStatisticTaskCheckitemStatRspMsgVo.ApiHouseQmCheckItemIssueStat apiHouseQmCheckItemIssueStat = new HouseqmStatisticTaskCheckitemStatRspMsgVo().new ApiHouseQmCheckItemIssueStat();
             apiHouseQmCheckItemIssueStat.setName(categoryStatlist.get(i).getName());
             apiHouseQmCheckItemIssueStat.setKey(categoryStatlist.get(i).getKey());
-            apiHouseQmCheckItemIssueStat.setFatherKey(categoryStatlist.get(i).getParentKey());
-            apiHouseQmCheckItemIssueStat.setIssueCount(categoryStatlist.get(i).getIssueCount());
+            apiHouseQmCheckItemIssueStat.setFather_key(categoryStatlist.get(i).getParentKey());
+            apiHouseQmCheckItemIssueStat.setIssue_count(categoryStatlist.get(i).getIssueCount());
             issueStatList.add(apiHouseQmCheckItemIssueStat);
         }
         vo.setItems(issueStatList);
@@ -239,22 +239,22 @@ public class HouseqmStatisticController {
         for (int i = 0; i < infoList.size(); i++) {
             HouseqmStatisticCategoryIssueListRspMsgVo.ApiTaskIssueRepairListRsp listRsp = new HouseqmStatisticCategoryIssueListRspMsgVo().new ApiTaskIssueRepairListRsp();
             listRsp.setId(infoList.get(i).getId());
-            listRsp.setProjectId(infoList.get(i).getProjectId());
-            listRsp.setTaskId(infoList.get(i).getTaskId());
+            listRsp.setProject_id(infoList.get(i).getProjectId());
+            listRsp.setTask_id(infoList.get(i).getTaskId());
             listRsp.setUuid(infoList.get(i).getUuid());
             listRsp.setTitle(infoList.get(i).getTitle());
             listRsp.setTyp(infoList.get(i).getTyp());
             listRsp.setContent(infoList.get(i).getContent());
             listRsp.setCondition(infoList.get(i).getCondition());
             listRsp.setStatus(infoList.get(i).getStatus());
-            listRsp.setPlanEndOn(DateUtil.datetimeToTimeStamp(infoList.get(i).getPlanEndOn()));
-            listRsp.setAttachmentMd5List(infoList.get(i).getAttachmentMd5List());
-            listRsp.setClientCreateAt(DateUtil.datetimeToTimeStamp(infoList.get(i).getClientCreateAt()));
-            listRsp.setUpdateAt(DateUtil.datetimeToTimeStamp(infoList.get(i).getUpdateAt()));
-            listRsp.setAttachmentUrlList(infoList.get(i).getAttachmentUrlList());
-            listRsp.setAreaPathName(infoList.get(i).getAreaPathName());
-            listRsp.setCategoryPathName(infoList.get(i).getCategoryPathName());
-            listRsp.setCheckItemPathName(infoList.get(i).getCheckItemPathName());
+            listRsp.setPlan_end_on(DateUtil.datetimeToTimeStamp(infoList.get(i).getPlanEndOn()));
+            listRsp.setAttachment_md5_list(infoList.get(i).getAttachmentMd5List());
+            listRsp.setClient_create_at(DateUtil.datetimeToTimeStamp(infoList.get(i).getClientCreateAt()));
+            listRsp.setUpdate_at(DateUtil.datetimeToTimeStamp(infoList.get(i).getUpdateAt()));
+            listRsp.setAttachment_url_list(infoList.get(i).getAttachmentUrlList());
+            listRsp.setArea_path_name(infoList.get(i).getAreaPathName());
+            listRsp.setCategory_path_name(infoList.get(i).getCategoryPathName());
+            listRsp.setCheck_item_path_name(infoList.get(i).getCheckItemPathName());
             objects.add(listRsp);
 
         }

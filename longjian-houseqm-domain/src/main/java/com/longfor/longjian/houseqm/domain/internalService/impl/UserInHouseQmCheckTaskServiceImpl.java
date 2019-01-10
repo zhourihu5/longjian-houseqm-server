@@ -7,6 +7,7 @@ import com.longfor.longjian.houseqm.po.UserInHouseQmCheckTask;
 import com.longfor.longjian.houseqm.utils.ExampleUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
+import tk.mybatis.mapper.entity.Example;
 import org.springframework.transaction.annotation.Transactional;
 import tk.mybatis.mapper.entity.Example;
 
@@ -116,6 +117,21 @@ public class UserInHouseQmCheckTaskServiceImpl implements UserInHouseQmCheckTask
         Example.Criteria criteria = example.createCriteria();
         criteria.andEqualTo("taskId",task_id);
         return userInHouseQmCheckTaskMapper.deleteByExample(example);
+    }
+
+    @Override
+    @LFAssignDataSource("zhijian2")
+    public int add(UserInHouseQmCheckTask qmCheckTask) {
+        return userInHouseQmCheckTaskMapper.insert(qmCheckTask);
+    }
+
+    @Override
+    @LFAssignDataSource("zhijian2")
+    public UserInHouseQmCheckTask selectByTaskIdAndUserIdAndNotDel(Integer taskId, Integer uid) {
+        Example example = new Example(UserInHouseQmCheckTask.class);
+        Example.Criteria criteria = example.createCriteria();
+        criteria.andEqualTo("taskId",taskId).andEqualTo("userId",uid).andIsNull("deleteAt");
+        return userInHouseQmCheckTaskMapper.selectOneByExample(example);
     }
 
 }

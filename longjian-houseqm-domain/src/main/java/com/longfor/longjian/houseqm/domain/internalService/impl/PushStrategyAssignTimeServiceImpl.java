@@ -30,5 +30,10 @@ public class PushStrategyAssignTimeServiceImpl implements PushStrategyAssignTime
     public List<PushStrategyAssignTime> searchByTaskIds(Set<Integer> taskIds){
         return pushStrategyAssignTimeMapper.selectByTaskIds(taskIds,"false");
     }
+    @LFAssignDataSource("zhijian2_notify")
+    @Override
+    public int add(PushStrategyAssignTime pushStrategyAssignTime) {
+        return pushStrategyAssignTimeMapper.insert(pushStrategyAssignTime);
+    }
 
 }

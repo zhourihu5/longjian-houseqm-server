@@ -48,4 +48,14 @@ public class UserServiceImpl implements UserService {
         return userMapper.selectByUserIdInAndNoDeleted(userIds,"false");
     }
 
+    @Override
+    public User selectByUserIdAndNotDelete(Integer senderId) {
+        Example example = new Example(User.class);
+        Example.Criteria criteria = example.createCriteria();
+        criteria.andIsNull("deleteAt");
+        criteria.andEqualTo("userId",senderId);
+
+        return userMapper.selectOneByExample(example);
+    }
+
 }

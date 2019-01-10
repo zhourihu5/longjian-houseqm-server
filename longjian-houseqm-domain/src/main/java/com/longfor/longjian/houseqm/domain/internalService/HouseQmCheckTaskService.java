@@ -30,5 +30,9 @@ public interface HouseQmCheckTaskService {
      */
     HouseQmCheckTask selectUpdateAtByTaskIdAndNoDeleted(Integer taskId);
 
+    int add(HouseQmCheckTask houseQmCheckTask);
+
+    HouseQmCheckTask selectById(int one);
+
     int removeHouseQmCheckTaskByProjectIdAndTaskId(Integer project_id, Integer task_id);
 }
