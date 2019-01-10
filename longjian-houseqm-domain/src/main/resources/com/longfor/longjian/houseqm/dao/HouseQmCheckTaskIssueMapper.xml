@@ -90,6 +90,13 @@
         <result column="approveded_count" property="approveded_count" jdbcType="INTEGER"/>
     </resultMap>
 
+    <resultMap id="rissdto" type="com.longfor.longjian.houseqm.dto.RepaireIssueStatusStatDto">
+        <result column="user_id" property="user_id" jdbcType="INTEGER"/>
+        <result column="assigned_count" property="assigned_count" jdbcType="INTEGER"/>
+        <result column="repaired_count" property="repaired_count" jdbcType="INTEGER"/>
+        <result column="approveded_count" property="approveded_count" jdbcType="INTEGER"/>
+    </resultMap>
+
     <sql id="Base_Column_List">
         <!--
           WARNING - @mbg.generated
@@ -108,13 +115,54 @@
         attachment_md5_list, audio_md5_list, detail
     </sql>
 
+    <select id="selectRepaireIssueStatusStatDtoByProjIdAndTaskIdAndClientCreateAtAndTypInGroupByUserId"
+            resultMap="rissdto" parameterType="java.util.Map">
+        SELECT
+        repairer_id AS user_id,
+        COUNT(1) AS assigned_count,
+        COUNT(
+        CASE
+        WHEN STATUS &gt;= #{status_repaired_count} THEN
+        1
+        ELSE
+        NULL
+        END
+        ) AS repaired_count,
+        COUNT(
+        CASE
+        WHEN STATUS = #{status_approveded_count} THEN
+        1
+        ELSE
+        NULL
+        END
+        ) AS approveded_count
+        FROM
+        house_qm_check_task_issue
+        <where>
+            delete_at IS NULL
+            AND project_id = #{project_id}
+            AND task_id = #{task_id}
+            AND typ IN
+            <foreach collection="typ" item="item" open="(" separator="," close=")" index="index">
+                #{item}
+            </foreach>
+            AND end_on &gt;= #{end_ongte}
+            AND end_on &lt;= #{end_onlte}
+            AND repairer_id != 0
+        </where>
+        GROUP BY
+        repairer_id
+        ORDER BY
+        COUNT(1) DESC
+    </select>
+
     <select id="selectCheckerIssueStatusStatDtoByProjIdAndTaskIdAndClientCreateAtAndTypInGroupByUserId"
             resultMap="cissdto" parameterType="java.util.Map">
         SELECT
         sender_id AS user_id,
         COUNT(
         CASE
-        WHEN STATUS >#{status_issues_count} THEN
+        WHEN STATUS &gt; #{status_issues_count} THEN
         1
         ELSE
         NULL
@@ -122,7 +170,7 @@
         ) AS issues_count,
         COUNT(
         CASE
-        WHEN STATUS =#{status_records_count} THEN
+        WHEN STATUS = #{status_records_count} THEN
         1
         ELSE
         NULL
@@ -130,7 +178,7 @@
         ) AS records_count,
         COUNT(
         CASE
-        WHEN STATUS =#{status_approveded_count} THEN
+        WHEN STATUS = #{status_approveded_count} THEN
         1
         ELSE
         NULL
@@ -153,6 +201,22 @@
         sender_id
         ORDER BY
         count(1) DESC
+    </select>
+
+    <select id="selectByProjIdAndCategoryClsAndAreaPathAndIdLikeGroupByStatus" resultMap="BaseResultMap">
+        SELECT
+        `status`,
+        COUNT(*) AS pos_x
+        FROM
+        house_qm_check_task_issue
+        ,
+        <where>
+            project_id = #{project_id}
+            AND category_cls = #{category_cls}
+            AND area_path_and_id LIKE ${area_path_and_id}
+        </where>
+        GROUP BY
+        `status`
     </select>
 
     <select id="selectByIssueUuidsAndclientCreateAt" resultMap="BaseResultMap">

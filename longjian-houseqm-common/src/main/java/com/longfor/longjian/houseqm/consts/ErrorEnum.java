@@ -9,7 +9,9 @@ package com.longfor.longjian.houseqm.consts;
  * @CreateDate: 2019/1/9 19:25
  */
 public enum ErrorEnum {
-    //DB_ITEM_NOT_UPDATE  BizErrorType `const:"100001,未更新任何数据"`
+
+
+    DB_ITEM_UNFOUND(100000,"数据不存在"),
     DB_ITEM_NOT_UPDATE(100001,"未更新任何数据"),
     ;
     private Integer code;

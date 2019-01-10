@@ -1,6 +1,7 @@
 package com.longfor.longjian.houseqm.domain.internalService;
 
 import com.longfor.longjian.houseqm.dto.CheckerIssueStatusStatDto;
+import com.longfor.longjian.houseqm.dto.RepaireIssueStatusStatDto;
 import com.longfor.longjian.houseqm.po.*;
 
 import java.util.*;
@@ -137,4 +138,8 @@ public interface HouseQmCheckTaskIssueService {
 
     List<CheckerIssueStatusStatDto> searchCheckerIssueStatusStatDtoByProjIdAndTaskIdAndClientCreateAtAndTypInGroupByUserId(Map<String, Object> condi);
 
+
+    List<RepaireIssueStatusStatDto> searchRepaireIssueStatusStatDtoByProjIdAndTaskIdAndClientCreateAtAndTypInGroupByUserId(Map<String, Object> condi);
+
+    List<HouseQmCheckTaskIssue> searchByProjIdAndCategoryClsAndAreaPathAndIdLikeGroupByStatus(Integer project_id, Integer category_cls, String areaPath);
 }

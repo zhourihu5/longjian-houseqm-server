@@ -48,12 +48,6 @@
             #{areaId}
         </foreach>
     </select>
-    <select id="selectById" resultMap="BaseResultMap">
-        select
-        <include refid="Base_Column_List"/>
-        from area
-        where id =#{areaId}
-    </select>
 
     <select id="selectByProjectIdAndIdIn" resultMap="BaseResultMap">
         SELECT

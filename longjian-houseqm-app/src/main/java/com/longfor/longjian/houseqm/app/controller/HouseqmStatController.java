@@ -4,9 +4,7 @@ import com.ctrip.framework.apollo.core.utils.StringUtils;
 import com.github.pagehelper.util.StringUtil;
 import com.google.common.collect.Lists;
 import com.longfor.longjian.common.base.LjBaseResponse;
-import com.longfor.longjian.houseqm.app.req.StatHouseqmCompleteDailyReq;
-import com.longfor.longjian.houseqm.app.req.StatHouseqmTaskSituationOverallReq;
-import com.longfor.longjian.houseqm.app.req.StatTaskSituationMembersCheckerReq;
+import com.longfor.longjian.houseqm.app.req.*;
 import com.longfor.longjian.houseqm.app.service.IHouseqmStatService;
 import com.longfor.longjian.houseqm.app.service.IHouseqmStatisticService;
 import com.longfor.longjian.houseqm.app.vo.*;
@@ -379,6 +377,63 @@ public class HouseqmStatController {
         data.setItems(result);
         response.setData(data);
 
+        return response;
+    }
+
+    //todo 待测
+
+    /**
+     * @return com.longfor.longjian.common.base.LjBaseResponse<com.longfor.longjian.houseqm.app.vo.StatTaskSituationMembersRepairerRspVo>
+     * @Author hy
+     * @Description 项目下任务整改人员情况查询
+     * http://192.168.37.159:3000/project/8/interface/api/3416
+     * @Date 14:59 2019/1/10
+     * @Param [req]
+     **/
+    @GetMapping(value = "stat/task_situation_members_repairer/", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+    public LjBaseResponse<StatTaskSituationMembersRepairerRspVo> taskSituationMembersRepairer(@Valid StatTaskSituationMembersRepairerReq req) {
+        //todo 鉴权 _, _, err := ctrl_tool.ProjPermMulti(c, []string{"项目.移动验房.统计.查看", "项目.工程检查.统计.查看"})
+        if ("".equals(req.getBegin_on())) {
+            req.setBegin_on("1970-01-02");
+        }
+        Date start = DateUtil.strToDate(req.getBegin_on(), "yyyy-MM-dd");
+        Date end = null;
+        if ("".equals(req.getEnd_on())) {
+            end = new Date();
+        } else {
+            end = DateUtil.strToDate(req.getEnd_on(), "yyyy-MM-dd");
+        }
+        List<HouseQmStatTaskDetailMemberRepairerRspVo> res = houseqmStatService.searchRepaireIssueStatusStatByProjTaskIdBetweenTime(req.getProject_id(), req.getTask_id(), start, DateUtil.dateAddDay(end, 1));
+        LjBaseResponse<StatTaskSituationMembersRepairerRspVo> response = new LjBaseResponse<>();
+        StatTaskSituationMembersRepairerRspVo data = new StatTaskSituationMembersRepairerRspVo();
+        data.setItems(res);
+        response.setData(data);
+        return response;
+    }
+
+    /**
+     * @Author hy
+     * @Description 项目下日常检查区域概况
+     * http://192.168.37.159:3000/project/8/interface/api/3424
+     * @Date 16:55 2019/1/10
+     * @Param [req]
+     * @return com.longfor.longjian.common.base.LjBaseResponse<com.longfor.longjian.houseqm.app.vo.HouseQmStatAreaSituationIssueRspVo>
+     **/
+    @GetMapping(value = "stat/area_situation/", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+    public LjBaseResponse<HouseQmStatAreaSituationIssueRspVo> areaSituation(@Valid StatAreaSituationReq req) {
+
+        //todo 鉴权 _, _, err := ctrl_tool.ProjPermMulti(c, []string{"项目.移动验房.统计.查看", "项目.工程检查.统计.查看"})
+
+        HouseQmStatAreaSituationIssueRspVo data= null;
+        LjBaseResponse<HouseQmStatAreaSituationIssueRspVo> response = new LjBaseResponse<>();
+        try {
+            data = houseqmStatService.getAreaIssueTypeStatByProjectIdAreaIdCategoryCls(req.getProject_id(),req.getArea_id(),req.getCategory_cls());
+            response.setData(data);
+        } catch (Exception e) {
+            e.printStackTrace();
+            response.setMessage(e.getMessage());
+            response.setResult(1);
+        }
         return response;
     }
 
