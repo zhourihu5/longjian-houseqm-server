@@ -11,12 +11,12 @@ import java.io.Serializable;
 @Data
 @NoArgsConstructor
 public class HouseQmTaskHouseStatVo implements Serializable {
-    private Integer HouseCount; // 总户数
-    private Integer CheckedCount; // 查验户数
-    private Integer HasIssueCount;  // 查验有问题户数
-    private Integer RepairedCount;// 已整改户数
-    private Integer ApprovedCount;// 已销项户数
-    private String HouseCheckedPercent; // 户查验进度
-    private String HouseRepairedPercent;// 户整改进度
-    private String HouseApprovededPercent;// 户销项进度
+    private Integer house_count; // 总户数
+    private Integer checked_count; // 查验户数
+    private Integer has_issue_count;  // 查验有问题户数
+    private Integer repaired_count;// 已整改户数
+    private Integer approved_count;// 已销项户数
+    private String house_checked_percent; // 户查验进度
+    private String house_repaired_percent;// 户整改进度
+    private String house_approveded_percent;// 户销项进度
 }

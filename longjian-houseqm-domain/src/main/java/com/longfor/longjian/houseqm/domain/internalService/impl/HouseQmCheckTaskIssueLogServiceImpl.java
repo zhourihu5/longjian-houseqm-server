@@ -8,6 +8,7 @@ import com.longfor.longjian.houseqm.po.HouseQmCheckTaskIssueLog;
 import com.longfor.longjian.houseqm.po.UserInHouseQmCheckTask;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
+import tk.mybatis.mapper.entity.Example;
 
 import javax.annotation.Resource;
 import java.util.ArrayList;
@@ -79,5 +80,21 @@ public class HouseQmCheckTaskIssueLogServiceImpl implements HouseQmCheckTaskIssu
     @LFAssignDataSource("zhijian2")
     public List<HouseQmCheckTaskIssueLog> selectIdByTaskIdAndIdAndUuidInAndUpdateAtGtAndNoDeletedOrderById(Integer task_id, List<String> uuids, Date issueLogUpdateTime) {
         return houseQmCheckTaskIssueLogMapper.selectIdByTaskIdAndIdAndUuidInAndUpdateAtGtAndNoDeletedOrderById(task_id,uuids,issueLogUpdateTime,"false");
+    }
+
+    @Override
+    @LFAssignDataSource("zhijian2")
+    public List<HouseQmCheckTaskIssueLog>selectByUuidAndNotDelete(String issueUuid) {
+        Example example = new Example(HouseQmCheckTaskIssueLog.class);
+        Example.Criteria criteria = example.createCriteria();
+        criteria.andEqualTo("issueUuid",issueUuid);
+        criteria.andIsNull("deleteAt");
+      return  houseQmCheckTaskIssueLogMapper.selectByExample(example);
+    }
+
+    @Override
+    @LFAssignDataSource("zhijian2")
+    public void add(HouseQmCheckTaskIssueLog new_issue_log) {
+        houseQmCheckTaskIssueLogMapper.insert(new_issue_log);
     }
 }

@@ -1,18 +1,18 @@
-<?xml version="1.0" encoding="UTF-8" ?>
-<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.longfor.longjian.houseqm.dao.HouseQmCheckTaskSquadMapper">
     <resultMap id="BaseResultMap" type="com.longfor.longjian.houseqm.po.HouseQmCheckTaskSquad">
         <!--
           WARNING - @mbg.generated
         -->
-        <id column="id" property="id" jdbcType="INTEGER"/>
-        <result column="project_id" property="projectId" jdbcType="INTEGER"/>
-        <result column="task_id" property="taskId" jdbcType="INTEGER"/>
-        <result column="squad_type" property="squadType" jdbcType="INTEGER"/>
-        <result column="name" property="name" jdbcType="VARCHAR"/>
-        <result column="create_at" property="createAt" jdbcType="TIMESTAMP"/>
-        <result column="update_at" property="updateAt" jdbcType="TIMESTAMP"/>
-        <result column="delete_at" property="deleteAt" jdbcType="TIMESTAMP"/>
+        <id column="id" jdbcType="INTEGER" property="id" />
+        <result column="project_id" jdbcType="INTEGER" property="projectId" />
+        <result column="task_id" jdbcType="INTEGER" property="taskId" />
+        <result column="squad_type" jdbcType="INTEGER" property="squadType" />
+        <result column="name" jdbcType="VARCHAR" property="name" />
+        <result column="create_at" jdbcType="TIMESTAMP" property="createAt" />
+        <result column="update_at" jdbcType="TIMESTAMP" property="updateAt" />
+        <result column="delete_at" jdbcType="TIMESTAMP" property="deleteAt" />
     </resultMap>
     <sql id="Base_Column_List">
         <!--
@@ -22,7 +22,7 @@
     </sql>
     <select id="selectByTaskIds" resultMap="BaseResultMap">
         select
-        <include refid="Base_Column_List"/>
+        <include refid="Base_Column_List" />
         from house_qm_check_task_squad
         where task_id in
         <foreach close=")" collection="idList" index="index" item="id" open="(" separator=",">
@@ -38,8 +38,18 @@
         from house_qm_check_task_squad
         where
         id in
-        <foreach collection="squadIds" index="index" item="item" open="(" separator="," close=")">
+        <foreach close=")" collection="squadIds" index="index" item="item" open="(" separator=",">
             #{item}
         </foreach>
     </select>
+    <insert id="add" parameterType="com.longfor.longjian.houseqm.po.HouseQmCheckTaskSquad" useGeneratedKeys="true" keyProperty="id">
+insert into house_qm_check_task_squad (project_id, task_id,squad_type,name)
+values (#{projectId,jdbcType=INTEGER},
+#{taskId,jdbcType=INTEGER}
+#{squadType,jdbcType=INTEGER}
+#{name,jdbcType=VARCHAR}
+)
+</insert>
+
+
 </mapper>

@@ -9,4 +9,10 @@ public interface HouseQmCheckTaskSquadService {
     List<HouseQmCheckTaskSquad> selectByTaskIds(Set<Integer> taskIdList);
 
     List<HouseQmCheckTaskSquad> selectByTaskIdsEvenDeleted(Set<Integer> taskIdList);
+
+    int add(HouseQmCheckTaskSquad squad);
+
+    HouseQmCheckTaskSquad selectById(int squadInfo);
+
+    List<HouseQmCheckTaskSquad> searchHouseqmCheckTaskSquad(String projectId, String taskId);
 }

@@ -7,6 +7,8 @@ import com.longfor.longjian.houseqm.po.*;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.ibatis.annotations.Param;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+import tk.mybatis.mapper.entity.Example;
 
 import javax.annotation.Resource;
 import java.util.*;
@@ -16,6 +18,7 @@ import java.util.ArrayList;
  * @author Houyan
  * @date 2018/12/11 0011 15:39
  */
+@Transactional
 @Service
 @Slf4j
 @LFAssignDataSource("zhijian2")
@@ -341,6 +344,36 @@ public class HouseQmCheckTaskIssueServiceImpl implements HouseQmCheckTaskIssueSe
     @LFAssignDataSource("zhijian2")
     public List<HouseQmCheckTaskIssueAreaGroupModel> selectByTaskIdAreaPathAndIdAndStatusIn(HashMap<String, Object> map) {
         return houseQmCheckTaskIssueMapper.selectByTaskIdAreaPathAndIdAndStatusIn(map);
+    }
+
+    @Override
+    @LFAssignDataSource("zhijian2")
+    public HouseQmCheckTaskIssue selectByUuidAndNotDelete(String issueUuid) {
+        Example example = new Example(HouseQmCheckTaskIssue.class);
+        Example.Criteria criteria = example.createCriteria();
+        criteria .andEqualTo("uuid",issueUuid);
+        criteria.andIsNull("deleteAt");
+        return   houseQmCheckTaskIssueMapper.selectOneByExample(example);
+
+
+    }
+
+    @Override
+    @LFAssignDataSource("zhijian2")
+    public HouseQmCheckTaskIssue getIssueByProjectIdAndUuid(Integer projectId, String issueUuid) {
+        Example example = new Example(HouseQmCheckTaskIssue.class);
+        Example.Criteria criteria = example.createCriteria();
+        criteria .andEqualTo("projectId",projectId);
+        criteria .andEqualTo("uuid",issueUuid);
+        criteria.andIsNull("deleteAt");
+        return   houseQmCheckTaskIssueMapper.selectOneByExample(example);
+    }
+
+    @Override
+    @LFAssignDataSource("zhijian2")
+    public void update(HouseQmCheckTaskIssue issue_info) {
+        houseQmCheckTaskIssueMapper.updateByPrimaryKeySelective(issue_info);
+
     }
 
 }

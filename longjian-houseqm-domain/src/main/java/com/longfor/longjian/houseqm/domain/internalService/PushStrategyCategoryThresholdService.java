@@ -7,4 +7,6 @@ import java.util.Set;
 
 public interface PushStrategyCategoryThresholdService {
     List<PushStrategyCategoryThreshold> searchByTaskIds(Set<Integer> taskIds);
+
+    int add(PushStrategyCategoryThreshold pushStrategyCategoryThreshold);
 }

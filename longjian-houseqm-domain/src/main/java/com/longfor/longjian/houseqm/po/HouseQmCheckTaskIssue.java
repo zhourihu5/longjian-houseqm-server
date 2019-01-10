@@ -133,6 +133,7 @@ private int count;
     /**
      * 问题严重程度  1 严重 2 较差 3 轻微
      */
+    @Column(name = "`condition`")
     private Integer condition;
 
     /**

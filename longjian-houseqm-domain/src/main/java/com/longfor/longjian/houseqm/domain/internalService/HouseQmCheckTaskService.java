@@ -29,4 +29,8 @@ public interface HouseQmCheckTaskService {
      * @return java.util.Date
      */
     HouseQmCheckTask selectUpdateAtByTaskIdAndNoDeleted(Integer taskId);
+
+    int add(HouseQmCheckTask houseQmCheckTask);
+
+    HouseQmCheckTask selectById(int one);
 }

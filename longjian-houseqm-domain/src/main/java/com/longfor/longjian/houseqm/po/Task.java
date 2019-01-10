@@ -3,21 +3,25 @@ package com.longfor.longjian.houseqm.po;
 import java.util.Date;
 import javax.persistence.*;
 
-@Table(name = "house_qm_check_task_squad")
-public class HouseQmCheckTaskSquad {
+public class Task {
     @Id
     private Integer id;
 
+    /**
+     * 项目ID project.id
+     */
     @Column(name = "project_id")
     private Integer projectId;
 
-    @Column(name = "task_id")
-    private Integer taskId;
-
-    @Column(name = "squad_type")
-    private Integer squadType;
-
     private String name;
+
+    @Column(name = "creator_id")
+    private Integer creatorId;
+
+    private Integer typ;
+
+    @Column(name = "config_info")
+    private String configInfo;
 
     @Column(name = "create_at")
     private Date createAt;
@@ -43,45 +47,21 @@ public class HouseQmCheckTaskSquad {
     }
 
     /**
-     * @return project_id
+     * 获取项目ID project.id
+     *
+     * @return project_id - 项目ID project.id
      */
     public Integer getProjectId() {
         return projectId;
     }
 
     /**
-     * @param projectId
+     * 设置项目ID project.id
+     *
+     * @param projectId 项目ID project.id
      */
     public void setProjectId(Integer projectId) {
         this.projectId = projectId;
-    }
-
-    /**
-     * @return task_id
-     */
-    public Integer getTaskId() {
-        return taskId;
-    }
-
-    /**
-     * @param taskId
-     */
-    public void setTaskId(Integer taskId) {
-        this.taskId = taskId;
-    }
-
-    /**
-     * @return squad_type
-     */
-    public Integer getSquadType() {
-        return squadType;
-    }
-
-    /**
-     * @param squadType
-     */
-    public void setSquadType(Integer squadType) {
-        this.squadType = squadType;
     }
 
     /**
@@ -96,6 +76,48 @@ public class HouseQmCheckTaskSquad {
      */
     public void setName(String name) {
         this.name = name == null ? null : name.trim();
+    }
+
+    /**
+     * @return creator_id
+     */
+    public Integer getCreatorId() {
+        return creatorId;
+    }
+
+    /**
+     * @param creatorId
+     */
+    public void setCreatorId(Integer creatorId) {
+        this.creatorId = creatorId;
+    }
+
+    /**
+     * @return typ
+     */
+    public Integer getTyp() {
+        return typ;
+    }
+
+    /**
+     * @param typ
+     */
+    public void setTyp(Integer typ) {
+        this.typ = typ;
+    }
+
+    /**
+     * @return config_info
+     */
+    public String getConfigInfo() {
+        return configInfo;
+    }
+
+    /**
+     * @param configInfo
+     */
+    public void setConfigInfo(String configInfo) {
+        this.configInfo = configInfo == null ? null : configInfo.trim();
     }
 
     /**

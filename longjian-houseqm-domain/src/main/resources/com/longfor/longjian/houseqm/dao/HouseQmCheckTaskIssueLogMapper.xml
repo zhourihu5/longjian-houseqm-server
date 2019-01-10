@@ -44,7 +44,7 @@
         <!--
           WARNING - @mbg.generated
         -->
-        desc, attachment_md5_list, audio_md5_list, memo_audio_md5_list, detail
+        `desc`, attachment_md5_list, audio_md5_list, memo_audio_md5_list, detail
     </sql>
     <sql id="Full_Column_List">
     id, project_id, task_id, uuid, issue_uuid, sender_id, status, client_create_at, create_at,

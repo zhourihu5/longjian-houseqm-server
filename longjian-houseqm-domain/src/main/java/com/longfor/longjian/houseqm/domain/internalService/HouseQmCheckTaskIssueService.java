@@ -131,4 +131,10 @@ public interface HouseQmCheckTaskIssueService {
     List<HouseQmCheckTaskIssue> selectUuidBySenderIdInOrTaskIdAndUuidIn(List<Integer> userIds, Integer task_id, List<String> issueUuids);
 
     List<HouseQmCheckTaskIssueAreaGroupModel> selectByTaskIdAreaPathAndIdAndStatusIn(HashMap<String, Object> map);
+
+    HouseQmCheckTaskIssue selectByUuidAndNotDelete(String issueUuid);
+
+    HouseQmCheckTaskIssue getIssueByProjectIdAndUuid(Integer projectId, String issueUuid);
+//修改
+    void update(HouseQmCheckTaskIssue issue_info);
 }

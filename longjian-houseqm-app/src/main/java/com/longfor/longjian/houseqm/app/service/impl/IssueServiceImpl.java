@@ -1,5 +1,12 @@
 package com.longfor.longjian.houseqm.app.service.impl;
 
+import com.alibaba.fastjson.JSON;
+import com.longfor.longjian.common.base.LjBaseResponse;
+import com.longfor.longjian.common.consts.HouseQmCheckTaskActionLogType;
+import com.longfor.longjian.common.consts.HouseQmCheckTaskIssueLogStatus;
+import com.longfor.longjian.common.consts.checktask.CheckTaskIssueStatus;
+import com.longfor.longjian.common.exception.LjBaseRuntimeException;
+import com.longfor.longjian.houseqm.app.vo.HouseQmCheckTaskIssueHistoryLogVo;
 import com.longfor.longjian.houseqm.app.vo.IssueListVo.DetailVo;
 
 import com.google.common.collect.Lists;
@@ -7,9 +14,11 @@ import com.google.common.collect.Maps;
 import com.longfor.gaia.gfs.core.bean.PageInfo;
 import com.longfor.longjian.houseqm.app.service.IIssueService;
 import com.longfor.longjian.houseqm.app.vo.IssueListVo;
+import com.longfor.longjian.houseqm.app.vo.TaskResponse;
 import com.longfor.longjian.houseqm.consts.HouseQmCheckTaskIssueStatusEnum;
 import com.longfor.longjian.houseqm.domain.internalService.*;
 import com.longfor.longjian.houseqm.po.*;
+import com.longfor.longjian.houseqm.util.CollectionUtil;
 import com.longfor.longjian.houseqm.util.DateUtil;
 import com.longfor.longjian.houseqm.util.JsonUtil;
 import com.longfor.longjian.houseqm.util.StringSplitToListUtil;
@@ -32,9 +41,13 @@ public class IssueServiceImpl implements IIssueService {
 
     @Resource
     HouseQmCheckTaskIssueService houseQmCheckTaskIssueService;
+    @Resource
+    UserInHouseQmCheckTaskService userInHouseQmCheckTaskService;
 
     @Resource
     CategoryV3Service categoryV3Service;
+    @Resource
+    HouseQmCheckTaskIssueLogService houseQmCheckTaskIssueLogService;
 
     @Resource
     CheckItemV3Service checkItemV3Service;
@@ -257,6 +270,323 @@ public class IssueServiceImpl implements IIssueService {
         pageInfo.setTotal(total);
         pageInfo.setList(issueList);
         return pageInfo;
+    }
+
+    @Override
+    public ArrayList<HouseQmCheckTaskIssueHistoryLogVo>  getHouseQmCheckTaskIssueActionLogByIssueUuid(String issueUuid) {
+        HouseQmCheckTaskIssue issue_info= houseQmCheckTaskIssueService.selectByUuidAndNotDelete(issueUuid);
+            if(issue_info==null){
+                 throw  new LjBaseRuntimeException(272,"找不到此问题");
+            }
+        List<HouseQmCheckTaskIssueLog> issue_log_info=houseQmCheckTaskIssueLogService.selectByUuidAndNotDelete(issueUuid);
+        ArrayList<Integer> uids = Lists.newArrayList();
+        HashMap<Integer, String> user_id_real_name_map = Maps.newHashMap();
+        for (int i = 0; i < issue_log_info.size(); i++) {
+            uids.add(issue_log_info.get(i).getSenderId());
+            Map<String, Object> issue_log_detail =  JSON.parseObject(issue_log_info.get(i).getDetail(),Map.class);
+            if((Integer) issue_log_detail.get("RepairerId")>0){
+                        uids.add((Integer) issue_log_detail.get("RepairerId"));
+                }
+            if(((String)issue_log_detail.get("RepairerFollowerIds")).length()>0){
+                String replace = ((String) issue_log_detail.get("RepairerFollowerIds")).replace(",,", ",");
+                String[] split = replace.substring(1, replace.length() - 1).split(",");
+                for (int j = 0; j < split.length; j++) {
+                    uids.add(Integer.valueOf(split[j]));
+                }
+                List uidlist = CollectionUtil.removeDuplicate(uids);
+                List<User> user_info = userService.searchByUserIdInAndNoDeleted(uidlist);
+                for (int j = 0; j < user_info.size(); j++) {
+                    user_id_real_name_map.put(user_info.get(i).getUserId(),user_info.get(i).getRealName());
+                }
+
+            }
+        }
+        ArrayList<HouseQmCheckTaskIssueHistoryLogVo> result = Lists.newArrayList();
+        boolean  hasCreateLog =false;
+        for (int i = 0; i < issue_log_info.size(); i++) {
+
+            Map<String, Object> issue_log_detail =   JSON.parseObject(issue_log_info.get(i).getDetail(),Map.class);
+            HouseQmCheckTaskIssueHistoryLogVo single_item = new HouseQmCheckTaskIssueHistoryLogVo();
+            single_item.setUser_id(issue_log_info.get(i).getSenderId());
+            single_item.setUser_name(user_id_real_name_map.get(issue_log_info.get(i).getSenderId()));
+            single_item.setCreate_at(DateUtil.datetimeToTimeStamp(issue_log_info.get(i).getCreateAt()));
+            List<HouseQmCheckTaskIssueHistoryLogVo.HouseQmCheckTaskIssueHistoryLogItem> items= Lists.newArrayList();
+            if(issue_log_info.get(i).getStatus().equals(HouseQmCheckTaskIssueLogStatus.NoteNoAssign.getValue())){
+                hasCreateLog = true;
+                HouseQmCheckTaskIssueHistoryLogVo.HouseQmCheckTaskIssueHistoryLogItem log_item = new HouseQmCheckTaskIssueHistoryLogVo().new HouseQmCheckTaskIssueHistoryLogItem();
+                log_item.setLog_type(HouseQmCheckTaskActionLogType.Create.getValue());
+                items.add(log_item);
+                result.add(single_item);
+                continue;
+
+            }
+
+
+            if(issue_log_info.get(i).getStatus().equals(HouseQmCheckTaskIssueLogStatus.Repairing.getValue())){
+                HouseQmCheckTaskIssueHistoryLogVo.HouseQmCheckTaskIssueHistoryLogItem log_item = new HouseQmCheckTaskIssueHistoryLogVo().new HouseQmCheckTaskIssueHistoryLogItem();
+                log_item.setLog_type(HouseQmCheckTaskActionLogType.Assign.getValue());
+                log_item.setTarget_user_id((Integer) issue_log_detail.get("RepairerId"));
+                log_item.setTarget_user_name(user_id_real_name_map.get(issue_log_detail.get("RepairerId")));
+                ArrayList<String> followers = Lists.newArrayList();
+                if((Integer)issue_log_detail.get("RepairerFollowerIds")>0){
+
+                    List<Integer> followers_id = StringSplitToListUtil.splitToIdsComma((String) issue_log_detail.get("RepairerFollowerIds"), ",");
+                    for (int j = 0; j <followers_id.size() ; j++) {
+                            followers.add(user_id_real_name_map.get(followers_id.get(j)));
+                    }
+                }
+                HashMap<String, Object> log_data = Maps.newHashMap();
+                log_data.put("plan_end_on",issue_log_detail.get("PlanEndOn"));
+                log_data.put("followers",followers);
+                log_item.setData( JSON.toJSONString(log_data));
+                items.add(log_item);
+                result.add(single_item);
+                continue;
+            }
+
+            if(issue_log_info.get(i).getStatus().equals(HouseQmCheckTaskIssueLogStatus.ReformNoCheck.getValue())){
+                HouseQmCheckTaskIssueHistoryLogVo.HouseQmCheckTaskIssueHistoryLogItem log_item = new HouseQmCheckTaskIssueHistoryLogVo().new HouseQmCheckTaskIssueHistoryLogItem();
+                log_item.setLog_type(HouseQmCheckTaskActionLogType.Repair.getValue());
+               items.add(log_item);
+                result.add(single_item);
+                continue;
+            }
+
+            if(issue_log_info.get(i).getStatus().equals(HouseQmCheckTaskIssueLogStatus.CheckYes.getValue())){
+                HouseQmCheckTaskIssueHistoryLogVo.HouseQmCheckTaskIssueHistoryLogItem log_item = new HouseQmCheckTaskIssueHistoryLogVo().new HouseQmCheckTaskIssueHistoryLogItem();
+                log_item.setLog_type(HouseQmCheckTaskActionLogType.Approve.getValue());
+                items.add(log_item);
+                result.add(single_item);
+                continue;
+            }
+            if((Integer)issue_log_detail.get("PlanEndOn")!=-1 ||(Integer)issue_log_detail.get("RepairerId") > 0 || (
+                    !issue_log_detail.get("RepairerFollowerIds").equals("-1"))||
+                    ((String) issue_log_detail.get("RepairerFollowerIds")).length()>0){
+                HouseQmCheckTaskIssueHistoryLogVo.HouseQmCheckTaskIssueHistoryLogItem log_item = new HouseQmCheckTaskIssueHistoryLogVo().new HouseQmCheckTaskIssueHistoryLogItem();
+                log_item.setLog_type(HouseQmCheckTaskActionLogType.Assign.getValue());
+                log_item.setTarget_user_id((Integer) issue_log_detail.get("RepairerId"));
+                if((Integer)issue_log_detail.get("RepairerId")>0){
+                    log_item.setTarget_user_name(user_id_real_name_map.get(issue_log_detail.get("RepairerId")));
+                }else {
+                    log_item.setTarget_user_name("");
+                }
+                ArrayList<String> followers = Lists.newArrayList();
+
+                if(issue_log_info.get(i).getStatus().equals(HouseQmCheckTaskIssueLogStatus.Repairing.getValue())){
+
+                    if((Integer)issue_log_detail.get("RepairerFollowerIds")>0){
+                        List<Integer> followers_id = StringSplitToListUtil.splitToIdsComma((String) issue_log_detail.get("RepairerFollowerIds"), ",");
+                        for (int j = 0; j <followers_id.size() ; j++) {
+                            if(user_id_real_name_map.containsKey(followers_id.get(j))){
+                                followers.add(user_id_real_name_map.get(followers_id.get(j)));
+                            }
+
+                        }
+                    }
+                    HashMap<String, Object> log_data = Maps.newHashMap();
+                    log_data.put("plan_end_on",issue_log_detail.get("PlanEndOn"));
+                    log_data.put("followers",followers);
+                    log_item.setData( JSON.toJSONString(log_data));
+                    items.add(log_item);
+
+                }
+                if(issue_log_info.get(i).getDesc().length()>0){
+                    HouseQmCheckTaskIssueHistoryLogVo.HouseQmCheckTaskIssueHistoryLogItem log_items = new HouseQmCheckTaskIssueHistoryLogVo().new HouseQmCheckTaskIssueHistoryLogItem();
+                    log_items.setLog_type(HouseQmCheckTaskActionLogType.AddDesc.getValue());
+                                    items.add(log_items);
+
+                }
+                if(issue_log_info.get(i).getAttachmentMd5List().length()>0){
+                    HouseQmCheckTaskIssueHistoryLogVo.HouseQmCheckTaskIssueHistoryLogItem log_items = new HouseQmCheckTaskIssueHistoryLogVo().new HouseQmCheckTaskIssueHistoryLogItem();
+                    log_items.setLog_type(HouseQmCheckTaskActionLogType.AddAttachment.getValue());
+                    items.add(log_items);
+                }
+                if(items.size()>0){
+                        result.add(single_item);
+
+                }
+
+            }
+
+
+        }
+        if(!hasCreateLog){
+            HouseQmCheckTaskIssueHistoryLogVo history_log = new HouseQmCheckTaskIssueHistoryLogVo();
+            HouseQmCheckTaskIssue issue_infos = houseQmCheckTaskIssueService.selectByUuidAndNotDelete(issueUuid);
+            Integer senderId = issue_info.getSenderId();
+          User user_info=  userService.selectByUserIdAndNotDelete(senderId);
+            history_log.setUser_id(senderId);
+            history_log.setUser_name(user_info.getRealName());
+            history_log.setCreate_at(DateUtil.datetimeToTimeStamp(issue_infos.getCreateAt()));
+            HouseQmCheckTaskIssueHistoryLogVo.HouseQmCheckTaskIssueHistoryLogItem logItem = new HouseQmCheckTaskIssueHistoryLogVo().new HouseQmCheckTaskIssueHistoryLogItem();
+            logItem.setLog_type(HouseQmCheckTaskActionLogType.Create.getValue());
+            List<HouseQmCheckTaskIssueHistoryLogVo.HouseQmCheckTaskIssueHistoryLogItem> items = Lists.newArrayList();
+            items.add(logItem);
+            history_log.setItems(items);
+
+            result.add(history_log);
+
+        }
+
+        return result;
+    }
+
+    @Override
+    public void deleteHouseqmCheckTaskIssueByProjectAndUuid(Integer projectId, String issueUuid) {
+        HouseQmCheckTaskIssue issue_info= getIssueByProjectIdAndUuid(projectId,issueUuid);
+            if(issue_info==null){
+      throw new LjBaseRuntimeException(432,"找不到此问题");
+            }
+        issue_info.setUpdateAt(new Date());
+        issue_info.setDeleteAt(new Date());
+        houseQmCheckTaskIssueService.update(issue_info);
+    }
+
+    @Override
+    public LjBaseResponse updeteIssueDescByUuid(Integer projectId, String issueUuid, Integer uid,String content) {
+        HouseQmCheckTaskIssue issueInfo = getIssueByProjectIdAndUuid(projectId, issueUuid);
+            if(issueInfo==null){
+                LjBaseResponse<Object> response = new LjBaseResponse<>();
+                response.setResult(1);
+                response.setMessage("找不到此问题");
+                return  response;
+            }
+
+        Integer taskId = issueInfo.getTaskId();
+      UserInHouseQmCheckTask  usersInfo=   userInHouseQmCheckTaskService.selectByTaskIdAndUserIdAndNotDel(taskId,uid);
+
+        if(usersInfo==null){
+            LjBaseResponse<Object> response = new LjBaseResponse<>();
+            response.setResult(1);
+            response.setMessage("只有任务参与人员才可以操作");
+            return  response;
+        }
+        if (issueInfo.getContent().equals(content)){
+            LjBaseResponse<Object> response = new LjBaseResponse<>();
+            response.setResult(0);
+            response.setMessage("没有做改动");
+            return  response;
+        }
+        String[] split = issueInfo.getContent().replace(";;", ";").split(";");
+        List<String> strings = Arrays.asList(split);
+        strings.add(content);
+        String contentNew=";";
+        for (int i = 0; i <strings.size() ; i++) {
+            contentNew+=strings.get(i);
+        }
+        issueInfo.setUpdateAt(new Date());
+        issueInfo.setContent(contentNew);
+
+        houseQmCheckTaskIssueService.update(issueInfo);
+        String uuid = UUID.randomUUID().toString().replace("-", "");
+
+
+        HashMap<String, Object> logDetail = Maps.newHashMap();
+        logDetail.put( "PlanEndOn", -1);
+        logDetail.put("EndOn", -1);
+        logDetail.put( "RepairerId", -1);
+        logDetail.put( "RepairerFollowerIds","");
+        logDetail.put( "Condition", -1);
+        logDetail.put(  "AreaId", -1);
+        logDetail.put(  "PosX", -1);
+        logDetail.put(  "PosY",-1);
+        logDetail.put(   "Typ", -1);
+        logDetail.put(  "Title", "");
+        logDetail.put(  "CheckItemKey", "");
+        logDetail.put(   "CategoryCls", -1);
+        logDetail.put(   "CategoryKey", "");
+        logDetail.put(   "DrawingMD5", "");
+        logDetail.put(  "RemoveMemoAudioMd5List", "");
+        logDetail.put(    "IssueReason", -1);
+        logDetail.put(   "IssueReasonDetail", "");
+        logDetail.put(   "IssueSuggest","");
+        logDetail.put(   "PotentialRisk", "");
+        logDetail.put(  "PreventiveActionDetail","");
+
+        HouseQmCheckTaskIssueLog newIssueLog = new HouseQmCheckTaskIssueLog();
+        newIssueLog.setProjectId(projectId);
+        newIssueLog.setTaskId(taskId);
+        newIssueLog.setUuid(uuid);
+        newIssueLog.setIssueUuid(issueInfo.getUuid());
+        newIssueLog.setSenderId(uid);
+        newIssueLog.setDesc(content);
+        newIssueLog.setStatus(HouseQmCheckTaskIssueLogStatus.UpdateIssueInfo.getValue());
+        newIssueLog.setAttachmentMd5List("");
+        newIssueLog.setAudioMd5List("");
+        newIssueLog.setMemoAudioMd5List("");
+        newIssueLog.setClientCreateAt(new Date());
+        newIssueLog.setCreateAt(new Date());
+        newIssueLog.setUpdateAt( new Date());
+        newIssueLog.setDetail(JSON.toJSONString(logDetail));
+        houseQmCheckTaskIssueLogService.add(newIssueLog);
+        return  new LjBaseResponse();
+    }
+
+    @Override
+    public LjBaseResponse updateIssuePlanEndOnByProjectAndUuid(Integer projectId, String issueUuid, Integer uid, Integer plan_end_on) {
+        HouseQmCheckTaskIssue issueInfo = getIssueByProjectIdAndUuid(projectId, issueUuid);
+        if(issueInfo==null){
+            LjBaseResponse<Object> response = new LjBaseResponse<>();
+            response.setResult(1);
+            response.setMessage("找不到此问题");
+            return  response;
+        }
+        if(DateUtil.datetimeToTimeStamp(issueInfo.getPlanEndOn())
+                ==plan_end_on){
+            LjBaseResponse<Object> response = new LjBaseResponse<>();
+            response.setResult(0);
+            response.setMessage("没有改变");
+            return  response;
+        }
+        issueInfo.setPlanEndOn(DateUtil.transForDate(plan_end_on));
+        issueInfo.setUpdateAt(new Date());
+         houseQmCheckTaskIssueService.update(issueInfo);
+  int status=-1;
+  if(issueInfo.getStatus()== HouseQmCheckTaskIssueStatusEnum.NoteNoAssign.getId()){
+      status=HouseQmCheckTaskIssueStatusEnum.AssignNoReform.getId();
+  }
+        HashMap<String, Object> detail = Maps.newHashMap();
+        detail.put( "PlanEndOn", -1);
+        detail.put("EndOn", -1);
+        detail.put( "RepairerId", -1);
+        detail.put( "RepairerFollowerIds","");
+        detail.put( "Condition", -1);
+        detail.put(  "AreaId", -1);
+        detail.put(  "PosX", -1);
+        detail.put(  "PosY",-1);
+        detail.put(   "Typ", -1);
+        detail.put(  "Title", "");
+        detail.put(  "CheckItemKey", "");
+        detail.put(   "CategoryCls", -1);
+        detail.put(   "CategoryKey", "");
+        detail.put(   "DrawingMD5", "");
+        detail.put(  "RemoveMemoAudioMd5List", "");
+        detail.put(    "IssueReason", -1);
+        detail.put(   "IssueReasonDetail", "");
+        detail.put(   "IssueSuggest","");
+        detail.put(   "PotentialRisk", "");
+        detail.put(  "PreventiveActionDetail","");
+        HouseQmCheckTaskIssueLog issueLog = new HouseQmCheckTaskIssueLog();
+        issueLog.setProjectId(issueInfo.getProjectId());
+        issueLog.setTaskId(issueInfo.getTaskId());
+        issueLog.setUuid(UUID.randomUUID().toString().replace("-", ""));
+        issueLog.setIssueUuid(issueInfo.getUuid());
+        issueLog.setSenderId(uid);
+        issueLog.setStatus(status);
+        issueLog.setDesc("");
+        issueLog.setAttachmentMd5List("");
+        issueLog.setAudioMd5List("");
+        issueLog.setMemoAudioMd5List("");
+        issueLog.setClientCreateAt(new Date());
+        issueLog.setCreateAt(new Date());
+        issueLog.setUpdateAt( new Date());
+        issueLog.setDetail(JSON.toJSONString(detail));
+        houseQmCheckTaskIssueLogService.add(issueLog);
+        return  new LjBaseResponse();
+    }
+
+    private HouseQmCheckTaskIssue getIssueByProjectIdAndUuid(Integer projectId, String issueUuid) {
+     return  houseQmCheckTaskIssueService.getIssueByProjectIdAndUuid(projectId,issueUuid);
     }
 
 

@@ -42,20 +42,20 @@ public class TaskServiceImpl implements ITaskService {
     public HouseQmCheckTaskRspVo getHouseQmCheckTaskByProjTaskId(Integer projectId, Integer taskId) {
         HouseQmCheckTask houseQmCheckTask = houseQmCheckTaskRspService.getHouseQmCheckTaskByProjTaskId(projectId, taskId);
         HouseQmCheckTaskRspVo houseQmCheckTaskRspVo = new HouseQmCheckTaskRspVo();
-        houseQmCheckTaskRspVo.setProjectId(houseQmCheckTask.getProjectId());
-        houseQmCheckTaskRspVo.setTaskId(houseQmCheckTask.getTaskId());
+        houseQmCheckTaskRspVo.setProject_id(houseQmCheckTask.getProjectId());
+        houseQmCheckTaskRspVo.setTask_id(houseQmCheckTask.getTaskId());
         houseQmCheckTaskRspVo.setName(houseQmCheckTask.getName());
         houseQmCheckTaskRspVo.setStatus(houseQmCheckTask.getStatus());
-        houseQmCheckTaskRspVo.setCategoryCls(houseQmCheckTask.getCategoryCls());
-        houseQmCheckTaskRspVo.setRootCategoryKey(houseQmCheckTask.getRootCategoryKey());
-        houseQmCheckTaskRspVo.setAreaIds(houseQmCheckTask.getAreaIds());
-        houseQmCheckTaskRspVo.setAreaTypes(houseQmCheckTask.getAreaTypes());
-        houseQmCheckTaskRspVo.setAreaIds(houseQmCheckTask.getAreaIds());
-        houseQmCheckTaskRspVo.setPlanBeginOn(dateToInt(houseQmCheckTask.getPlanBeginOn()));
-        houseQmCheckTaskRspVo.setPlanEndOn(dateToInt(houseQmCheckTask.getPlanEndOn()));
-        houseQmCheckTaskRspVo.setCreateAt(dateToInt(houseQmCheckTask.getCreateAt()));
-        houseQmCheckTaskRspVo.setUpdateAt(dateToInt(houseQmCheckTask.getUpdateAt()));
-        houseQmCheckTaskRspVo.setDeleteAt(dateToInt(houseQmCheckTask.getDeleteAt()));
+        houseQmCheckTaskRspVo.setCategory_cls(houseQmCheckTask.getCategoryCls());
+        houseQmCheckTaskRspVo.setRoot_category_key(houseQmCheckTask.getRootCategoryKey());
+        houseQmCheckTaskRspVo.setArea_ids(houseQmCheckTask.getAreaIds());
+        houseQmCheckTaskRspVo.setArea_types(houseQmCheckTask.getAreaTypes());
+        houseQmCheckTaskRspVo.setArea_ids(houseQmCheckTask.getAreaIds());
+        houseQmCheckTaskRspVo.setPlan_begin_on(dateToInt(houseQmCheckTask.getPlanBeginOn()));
+        houseQmCheckTaskRspVo.setPlan_end_on(dateToInt(houseQmCheckTask.getPlanEndOn()));
+        houseQmCheckTaskRspVo.setCreate_at(dateToInt(houseQmCheckTask.getCreateAt()));
+        houseQmCheckTaskRspVo.setUpdate_at(dateToInt(houseQmCheckTask.getUpdateAt()));
+        houseQmCheckTaskRspVo.setDelete_at(dateToInt(houseQmCheckTask.getDeleteAt()));
         return houseQmCheckTaskRspVo;
     }
 

@@ -7,6 +7,7 @@ import com.longfor.longjian.houseqm.domain.internalService.UserService;
 import com.longfor.longjian.houseqm.po.User;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
+import tk.mybatis.mapper.entity.Example;
 
 import javax.annotation.Resource;
 import java.util.HashMap;
@@ -43,6 +44,16 @@ public class UserServiceImpl implements UserService {
     @LFAssignDataSource("zhijian2_apisvr")
     public List<User> searchByUserIdInAndNoDeleted(List<Integer> userIds) {
         return userMapper.selectByUserIdInAndNoDeleted(userIds,"false");
+    }
+
+    @Override
+    public User selectByUserIdAndNotDelete(Integer senderId) {
+        Example example = new Example(User.class);
+        Example.Criteria criteria = example.createCriteria();
+        criteria.andIsNull("deleteAt");
+        criteria.andEqualTo("userId",senderId);
+
+        return userMapper.selectOneByExample(example);
     }
 
 }

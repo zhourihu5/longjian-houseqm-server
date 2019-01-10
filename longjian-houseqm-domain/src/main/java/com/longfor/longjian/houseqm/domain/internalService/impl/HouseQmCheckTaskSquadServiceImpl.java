@@ -6,6 +6,7 @@ import com.longfor.longjian.houseqm.domain.internalService.HouseQmCheckTaskSquad
 import com.longfor.longjian.houseqm.po.HouseQmCheckTaskSquad;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
+import tk.mybatis.mapper.entity.Example;
 
 import javax.annotation.Resource;
 import java.util.List;
@@ -44,6 +45,27 @@ public class HouseQmCheckTaskSquadServiceImpl implements HouseQmCheckTaskSquadSe
     public List<HouseQmCheckTaskSquad> selectByTaskIdsEvenDeleted(Set<Integer> taskIdList){
 
         return houseQmCheckTaskSquadMapper.selectByTaskIds(taskIdList,"true");
+    }
+
+    @Override
+    @LFAssignDataSource("zhijian2")
+    public int add(HouseQmCheckTaskSquad squad) {
+        return houseQmCheckTaskSquadMapper.add(squad);
+    }
+
+    @Override
+    @LFAssignDataSource("zhijian2")
+    public HouseQmCheckTaskSquad selectById(int squadInfo) {
+        return houseQmCheckTaskSquadMapper.selectByPrimaryKey(squadInfo);
+    }
+
+    @Override
+    @LFAssignDataSource("zhijian2")
+    public List<HouseQmCheckTaskSquad> searchHouseqmCheckTaskSquad(String projectId, String taskId) {
+        Example example = new Example(HouseQmCheckTaskSquad.class);
+            example.createCriteria().andEqualTo("projectId",projectId).andEqualTo("taskId",taskId);
+        return  houseQmCheckTaskSquadMapper.selectByExample(example);
+
     }
 
 }

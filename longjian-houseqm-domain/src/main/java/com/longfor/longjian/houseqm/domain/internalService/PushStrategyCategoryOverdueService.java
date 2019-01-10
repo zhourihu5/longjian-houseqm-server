@@ -7,4 +7,6 @@ import java.util.Set;
 
 public interface PushStrategyCategoryOverdueService {
     List<PushStrategyCategoryOverdue> searchByTaskIds(Set<Integer> taskIds);
+
+    int add(PushStrategyCategoryOverdue pushStrategyCategoryOverdue);
 }
