@@ -6,8 +6,10 @@ import com.longfor.gaia.gfs.data.mybatis.datasource.LFAssignDataSource;
 import com.longfor.longjian.houseqm.dao.AreaMapper;
 import com.longfor.longjian.houseqm.domain.internalService.AreaService;
 import com.longfor.longjian.houseqm.po.Area;
+import com.longfor.longjian.houseqm.utils.ExampleUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
+import tk.mybatis.mapper.entity.Example;
 
 import javax.annotation.Resource;
 import java.util.*;
@@ -39,13 +41,17 @@ public class AreaServiceImpl implements AreaService {
     }
 
     /**
-     * 根据id查
+     * 根据id查 delete_at == null
      * @param areaId
      * @return
      */
     @LFAssignDataSource("zhijian2")
     public Area selectById(Integer areaId){
-        return areaMapper.selectById(areaId);
+        Example example = new Example(Area.class);
+        Example.Criteria criteria = example.createCriteria();
+        criteria.andEqualTo("areaId",areaId);
+        ExampleUtil.addDeleteAtJudge(example);
+        return areaMapper.selectOneByExample(example);
     }
 
     /**

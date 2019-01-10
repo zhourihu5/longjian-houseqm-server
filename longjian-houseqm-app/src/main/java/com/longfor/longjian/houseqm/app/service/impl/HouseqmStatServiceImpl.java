@@ -4,12 +4,17 @@ import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
 import com.longfor.longjian.houseqm.app.service.IHouseqmStatService;
+import com.longfor.longjian.houseqm.consts.ErrorEnum;
 import com.longfor.longjian.houseqm.consts.HouseQmCheckTaskIssueEnum;
 import com.longfor.longjian.houseqm.app.vo.*;
+import com.longfor.longjian.houseqm.consts.HouseQmCheckTaskIssueStatusEnum;
+import com.longfor.longjian.houseqm.consts.HouseQmCheckTaskIssueTypeEnum;
 import com.longfor.longjian.houseqm.domain.internalService.AreaService;
 import com.longfor.longjian.houseqm.domain.internalService.HouseQmCheckTaskIssueService;
 import com.longfor.longjian.houseqm.domain.internalService.HouseQmCheckTaskService;
 import com.longfor.longjian.houseqm.domain.internalService.UserService;
+import com.longfor.longjian.houseqm.dto.CheckerIssueStatusStatDto;
+import com.longfor.longjian.houseqm.dto.RepaireIssueStatusStatDto;
 import com.longfor.longjian.houseqm.po.*;
 import com.longfor.longjian.houseqm.util.DateUtil;
 import com.longfor.longjian.houseqm.util.StringSplitToListUtil;
@@ -20,6 +25,7 @@ import org.springframework.stereotype.Service;
 import javax.annotation.Resource;
 import java.text.SimpleDateFormat;
 import java.util.*;
+import java.util.stream.Collectors;
 
 /**
  * @author Houyan
@@ -30,17 +36,145 @@ import java.util.*;
 @Slf4j
 public class HouseqmStatServiceImpl implements IHouseqmStatService {
 
-    @Resource
-    HouseQmCheckTaskIssueService houseQmCheckTaskIssueService;
 
     @Resource
-    UserService userService;
-
+    private HouseQmCheckTaskIssueService houseQmCheckTaskIssueService;
     @Resource
-    HouseQmCheckTaskService houseQmCheckTaskService;
-
+    private UserService userService;
     @Resource
-    AreaService areaService;
+    private HouseQmCheckTaskService houseQmCheckTaskService;
+    @Resource
+    private AreaService areaService;
+
+    @Override
+    public HouseQmStatAreaSituationIssueRspVo getAreaIssueTypeStatByProjectIdAreaIdCategoryCls(Integer project_id, Integer area_id, Integer category_cls) throws Exception {
+        String areaPath = "";
+        if (area_id > 0) {
+            Area areaInfo = areaService.selectById(area_id);
+            if (areaInfo == null) throw new Exception(ErrorEnum.DB_ITEM_UNFOUND.getMessage());
+            areaPath = areaInfo.getPath() + areaInfo.getId() + "/%";
+        } else return null;
+        List<HouseQmCheckTaskIssue> issues = houseQmCheckTaskIssueService.searchByProjIdAndCategoryClsAndAreaPathAndIdLikeGroupByStatus(project_id, category_cls, areaPath);
+
+        HouseQmStatAreaSituationIssueRspVo result = new HouseQmStatAreaSituationIssueRspVo();
+        for (HouseQmCheckTaskIssue res : issues) {
+            //处理详细统计数
+            HouseQmCheckTaskIssueStatusEnum e = null;
+            for (HouseQmCheckTaskIssueStatusEnum value : HouseQmCheckTaskIssueStatusEnum.values()) {
+                if (res.getStatus().equals(value)) e = value;
+            }
+            switch (e) {
+                case NoteNoAssign:  //已记录未分配
+                    result.setIssue_recorded_count(res.getPosX());
+                    break;
+                case AssignNoReform://已分配未整改
+                    result.setIssue_assigned_count(res.getPosX());
+                    break;
+                case ReformNoCheck://已整改未验收
+                    result.setIssue_repaired_count(res.getPosX());
+                    break;
+                case CheckYes://已验收
+                    result.setIssue_approveded_count(res.getPosX());
+                    break;
+                default:
+                    break;
+            }
+
+            //处理状态统计
+            switch (e) {
+                case NoProblem:
+                    result.setRecord_count(result.getRecord_count() + res.getPosX());
+                    break;
+                case ReformNoCheck:
+                case AssignNoReform:
+                case CheckYes:
+                case NoteNoAssign:
+                    result.setIssue_count(result.getIssue_count() + res.getPosX());
+                    break;
+                default:
+                    break;
+            }
+        }
+
+        return result;
+    }
+
+    @Override
+    public List<HouseQmStatTaskDetailMemberRepairerRspVo> searchRepaireIssueStatusStatByProjTaskIdBetweenTime(Integer project_id, Integer task_id, Date start, Date end) {
+        Map<String, Object> condi = Maps.newHashMap();
+        condi.put("project_id", project_id);
+        condi.put("task_id", task_id);
+        condi.put("end_onlte", new SimpleDateFormat("yyyy-MM-dd").format(end));
+        condi.put("end_ongte", new SimpleDateFormat("yyyy-MM-dd").format(start));
+        List<Integer> typs = Lists.newArrayList();
+        typs.add(HouseQmCheckTaskIssueTypeEnum.FindProblem.getId());
+        typs.add(HouseQmCheckTaskIssueTypeEnum.Difficult.getId());
+        condi.put("typ", typs);
+        condi.put("status_repaired_count", HouseQmCheckTaskIssueStatusEnum.ReformNoCheck.getId());
+        condi.put("status_approveded_count", HouseQmCheckTaskIssueStatusEnum.CheckYes.getId());
+        List<RepaireIssueStatusStatDto> res = houseQmCheckTaskIssueService.searchRepaireIssueStatusStatDtoByProjIdAndTaskIdAndClientCreateAtAndTypInGroupByUserId(condi);
+        if (res.size() <= 0) return Lists.newArrayList();
+        List<Integer> userIds = res.stream().map(RepaireIssueStatusStatDto::getUser_id).collect(Collectors.toSet()).stream().collect(Collectors.toList());
+        Map<Integer, User> userInfos = userService.selectByIds(userIds);
+        for (RepaireIssueStatusStatDto item : res) {
+            if (userInfos.containsKey(item.getUser_id())) {
+                item.setReal_name(userInfos.get(item.getUser_id()).getRealName());
+            }
+        }
+
+        List<HouseQmStatTaskDetailMemberRepairerRspVo> result = Lists.newArrayList();
+        for (RepaireIssueStatusStatDto item : res) {
+            HouseQmStatTaskDetailMemberRepairerRspVo v = new HouseQmStatTaskDetailMemberRepairerRspVo();
+            v.setApproveded_count(item.getApproveded_count());
+            v.setAssigned_count(item.getAssigned_count());
+            v.setRepaired_count(item.getRepaired_count());
+            v.setReal_name(item.getReal_name());
+            v.setUser_id(item.getUser_id());
+            result.add(v);
+        }
+        return result;
+    }
+
+    @Override
+    public List<HouseQmStatTaskDetailMemberCheckerRspVo> searchCheckerIssueStatusStatByProjTaskIdBetweenTime(Integer project_id, Integer task_id, Date start, Date end) {
+        Map<String, Object> condi = Maps.newHashMap();
+        condi.put("project_id", project_id);
+        condi.put("task_id", task_id);
+        condi.put("client_create_atlte", new SimpleDateFormat("yyyy-MM-dd").format(end));
+        condi.put("client_create_atgte", new SimpleDateFormat("yyyy-MM-dd").format(start));
+        List<Integer> typs = Lists.newArrayList();
+        typs.add(HouseQmCheckTaskIssueTypeEnum.FindProblem.getId());
+        typs.add(HouseQmCheckTaskIssueTypeEnum.Difficult.getId());
+        typs.add(HouseQmCheckTaskIssueTypeEnum.Record.getId());
+        typs.add(HouseQmCheckTaskIssueTypeEnum.Good.getId());
+        condi.put("typ", typs);
+        condi.put("status_issues_count", HouseQmCheckTaskIssueStatusEnum.NoProblem.getId());
+        condi.put("status_records_count", HouseQmCheckTaskIssueStatusEnum.NoProblem.getId());
+        condi.put("status_approveded_count", HouseQmCheckTaskIssueStatusEnum.CheckYes.getId());
+
+        List<CheckerIssueStatusStatDto> r = houseQmCheckTaskIssueService.searchCheckerIssueStatusStatDtoByProjIdAndTaskIdAndClientCreateAtAndTypInGroupByUserId(condi);
+        if (r.size() <= 0) return Lists.newArrayList();
+        List<Integer> userIds = r.stream().map(CheckerIssueStatusStatDto::getUser_id).collect(Collectors.toSet()).stream().collect(Collectors.toList());
+        Map<Integer, User> userInfos = userService.selectByIds(userIds);
+        for (CheckerIssueStatusStatDto item : r) {
+            if (userInfos.containsKey(item.getUser_id())) {
+                item.setReal_name(userInfos.get(item.getUser_id()).getRealName());
+            }
+        }
+        List<HouseQmStatTaskDetailMemberCheckerRspVo> result = Lists.newArrayList();
+        for (CheckerIssueStatusStatDto item : r) {
+            HouseQmStatTaskDetailMemberCheckerRspVo v = new HouseQmStatTaskDetailMemberCheckerRspVo();
+            v.setApproveded_count(item.getApproveded_count());
+            v.setIssue_count(item.getIssues_count());
+            v.setRecords_count(item.getRecords_count());
+            v.setReal_name(item.getReal_name());
+            v.setUser_id(item.getUser_id());
+            result.add(v);
+        }
+
+        return result;
+    }
+
 
     /**
      * @param projectId
@@ -229,8 +363,8 @@ public class HouseqmStatServiceImpl implements IHouseqmStatService {
         TaskAreaListVo taskAreaListVo = new TaskAreaListVo();
         try {
             HouseQmCheckTask task = houseQmCheckTaskService.selectByProjectIdAndTaskId(projectId, taskId);
-            String strAreaIds ="";
-            if (task != null)  strAreaIds = task.getAreaIds();
+            String strAreaIds = "";
+            if (task != null) strAreaIds = task.getAreaIds();
             String[] strAreaIdss = strAreaIds.split(",");
             List<Integer> areaIds = Lists.newArrayList();
             for (String item : strAreaIdss) {

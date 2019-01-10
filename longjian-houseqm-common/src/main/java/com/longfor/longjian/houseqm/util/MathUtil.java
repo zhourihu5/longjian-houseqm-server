@@ -23,4 +23,14 @@ public class MathUtil {
         String result = df.format((float) a / (float) b * 100.0);
         return result;
     }
+
+    public static String getPercentageByPattern(int a, int b,String pattern) {
+        if (a == 0 || b == 0) {
+            return "0";
+        }
+        DecimalFormat df = new DecimalFormat(pattern);
+        String result = df.format((float) a / (float) b * 100.0);
+        return result;
+    }
+
 }

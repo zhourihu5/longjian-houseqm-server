@@ -3,6 +3,7 @@ package com.longfor.longjian.houseqm.util;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.Calendar;
 import java.util.Date;
 
 /**
@@ -11,8 +12,23 @@ import java.util.Date;
  */
 public class DateUtil {
 
+
+    public static Date strToDate(String str, String pattern) {
+        Date date = null;
+        try {
+            if (str.length()>0){
+                SimpleDateFormat sdf = new SimpleDateFormat(pattern);
+                date = sdf.parse(str);
+            }
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+        return date;
+    }
+
     /**
      * 时间比较排序
+     *
      * @param s1
      * @param s2
      * @return
@@ -30,14 +46,15 @@ public class DateUtil {
     }
 
     /**
-     *  Date to int
+     * Date to int
+     *
      * @param dt
      * @return
      */
-    public static int datetimeToTimeStamp(Date dt){
-        if (dt==null){
+    public static int datetimeToTimeStamp(Date dt) {
+        if (dt == null) {
             return 0;
-        }else {
+        } else {
             SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
             String strdt = formatter.format(dt);
             Date initDate = null;
@@ -46,23 +63,24 @@ public class DateUtil {
             } catch (ParseException e) {
                 e.printStackTrace();
             }
-            if (strdt.equals("0001-01-01 00:00:00")||strdt.equals("")||!dt.after(initDate)){
+            if (strdt.equals("0001-01-01 00:00:00") || strdt.equals("") || !dt.after(initDate)) {
                 return 0;
-            }else{
-                return (int) (dt.getTime()/1000);
+            } else {
+                return (int) (dt.getTime() / 1000);
             }
         }
     }
 
     /**
-     *  int -> Date
-     * @author hy
-     * @date 2018/12/22 0022
+     * int -> Date
+     *
      * @param
      * @return java.util.Date
+     * @author hy
+     * @date 2018/12/22 0022
      */
-    public static Date timeStampToDate(int timestamp,String partten){
-        long timeLong=new Long(timestamp).longValue()*1000;
+    public static Date timeStampToDate(int timestamp, String partten) {
+        long timeLong = new Long(timestamp).longValue() * 1000;
         DateFormat ymdhmsFormat = new SimpleDateFormat(partten);
         String nowTimeStr = ymdhmsFormat.format(timeLong);
         Date timeDate = null;
@@ -71,17 +89,18 @@ public class DateUtil {
         } catch (ParseException e) {
             e.printStackTrace();
         }
-        return timeDate ;
+        return timeDate;
     }
 
     /**
      * 获得当前时间以 partten 格式
-     * @author hy
-     * @date 2018/12/24 0024
+     *
      * @param partten
      * @return java.lang.String
+     * @author hy
+     * @date 2018/12/24 0024
      */
-    public static String getNowTimeStr(String partten){
+    public static String getNowTimeStr(String partten) {
         Date now = new Date();
         String nowStr = new SimpleDateFormat(partten).format(now);
         return nowStr;
@@ -105,4 +124,13 @@ public class DateUtil {
         }
         return temp;
     }
+
+    public static Date dateAddDay(Date date,int day){
+        Calendar c = Calendar.getInstance();
+        c.setTime(date);
+        c.add(Calendar.DAY_OF_MONTH,day);
+        Date time = c.getTime();
+        return time;
+    }
+
 }

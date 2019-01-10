@@ -1,19 +1,20 @@
 package com.longfor.longjian.houseqm.app.controller;
 
+import com.ctrip.framework.apollo.core.utils.StringUtils;
+import com.github.pagehelper.util.StringUtil;
 import com.google.common.collect.Lists;
 import com.longfor.longjian.common.base.LjBaseResponse;
+import com.longfor.longjian.houseqm.app.req.*;
 import com.longfor.longjian.houseqm.app.service.IHouseqmStatService;
 import com.longfor.longjian.houseqm.app.service.IHouseqmStatisticService;
 import com.longfor.longjian.houseqm.app.vo.*;
+import com.longfor.longjian.houseqm.util.DateUtil;
 import com.longfor.longjian.houseqm.util.MathUtil;
 import com.longfor.longjian.houseqm.util.StringSplitToListUtil;
 import io.swagger.annotations.ApiParam;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.MediaType;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
 import javax.validation.Valid;
@@ -111,7 +112,7 @@ public class HouseqmStatController {
     }
 
     /**
-     * 项目任务信息汇总
+     * 项目任务信息汇总 统计-任务汇总-汇总
      *
      * @param projectId
      * @param categoryCls
@@ -270,5 +271,170 @@ public class HouseqmStatController {
         return ljbr;
     }
 
+    // todo 待测试
+
+    /**
+     * 统计-验房统计-任务总进度及交付情况
+     *
+     * @return com.longfor.longjian.common.base.LjBaseResponse<com.longfor.longjian.houseqm.app.vo.StatHouseqmTaskSituationOverallRspVo>
+     * @Author hy
+     * @Description
+     * @Date 20:12 2019/1/8
+     * @Param [req]
+     **/
+    @GetMapping(value = "stat_houseqm/task_situation_overall", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+    public LjBaseResponse<StatHouseqmTaskSituationOverallRspVo> taskSituationOverall(@RequestBody @Valid StatHouseqmTaskSituationOverallReq req) {
+
+
+        //todo  鉴权  _, _, err := ctrl_tool.ProjPermMulti(c, []string{"项目.移动验房.统计.查看", "项目.工程检查.统计.查看"})
+        //	if err != nil {
+        //		log.Error(err.Error())
+        //		return err
+        //	}
+        List<Integer> taskIds = StringSplitToListUtil.strToInts(req.getTask_ids(), ",");
+        RepossessionTasksStatusInfoVo info = houseqmStatisticService.getRepossessionTasksStatusInfo(req.getProject_id(), taskIds, 0);
+
+        LjBaseResponse<StatHouseqmTaskSituationOverallRspVo> response = new LjBaseResponse<>();
+        response.setResult(0);
+        StatHouseqmTaskSituationOverallRspVo data = new StatHouseqmTaskSituationOverallRspVo();
+        HouseQmHouseQmStatTaskSituationOverallRspVo status = new HouseQmHouseQmStatTaskSituationOverallRspVo();
+        status.setAccept_has_issue_count(info.getAcceptHasIssueCount());
+        status.setAccept_has_issue_sign_count(info.getAcceptHasIssueSignCount());
+        status.setAccept_no_issue(info.getAcceptNoIssueCount());
+        status.setAccept_no_issue_sign_count(info.getAcceptNoIssueSignCount());
+        status.setChecked_count(info.getCheckedCount());
+        status.setChecked_rate(info.getCheckedRate());
+        status.setOnly_watch(info.getOnlyWatch());
+        status.setReject_count(info.getRejectCount());
+        status.setTask_name(info.getTaskName());
+        status.setTotal(info.getTotal());
+        status.setUnaccept_count(info.getUnacceptCount());
+        status.setUnchecked_count(info.getUncheckedCount());
+        data.setStatus(status);
+        response.setData(data);
+        return response;
+    }
+
+    // todo 待测试
+
+    /**
+     * 统计-验房统计-每天的交付数
+     *
+     * @return
+     * @Author hy
+     * @Description
+     * @Date 20:16 2019/1/8
+     * @Param
+     **/
+    @GetMapping(value = "stat_houseqm/complete_daily", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+    public LjBaseResponse<StatHouseqmCompleteDailyRspVo> completeDaily(@Valid StatHouseqmCompleteDailyReq req) {
+
+        // todo  鉴权   _, _, err := ctrl_tool.ProjPermMulti(c, []string{"项目.移动验房.统计.查看", "项目.工程检查.统计.查看"})
+
+        List<Integer> taskIds = StringSplitToListUtil.strToInts(req.getTask_ids(), ",");
+
+        int beginOn = 0;
+        int endOn = 0;
+        if (req.getBegin_on().length() > 0) {
+            beginOn = DateUtil.datetimeToTimeStamp(DateUtil.strToDate(req.getBegin_on(), "yyyy-MM-dd hh:mm:ss"));
+        }
+        if (req.getEnd_on().length() > 0) {
+            endOn = DateUtil.datetimeToTimeStamp(DateUtil.strToDate(req.getEnd_on(), "yyyy-MM-dd hh:mm:ss"));
+        }
+
+        StatHouseqmCompleteDailyRspVo data = houseqmStatisticService.searchRepossessionStatusCompleteDaily(req.getProject_id(), taskIds, beginOn, endOn, req.getPage(), req.getPage_size());
+        LjBaseResponse<StatHouseqmCompleteDailyRspVo> response = new LjBaseResponse<>();
+        response.setData(data);
+
+        return response;
+    }
+
+
+    /**
+     * @return com.longfor.longjian.common.base.LjBaseResponse<com.longfor.longjian.houseqm.app.vo.StatTaskSituationMembersCheckerRspVo>
+     * @Author hy
+     * @Description 统计-任务详情-人员情况-检查人
+     * @Date 14:50 2019/1/9
+     * @Param [req]
+     **/
+    @GetMapping(value = "stat/task_situation_members_checker", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+    public LjBaseResponse<StatTaskSituationMembersCheckerRspVo> taskSituationMembersChecker(@Valid StatTaskSituationMembersCheckerReq req) {
+        //todo 鉴权 _, _, err := ctrl_tool.ProjPermMulti(c, []string{"项目.移动验房.统计.查看", "项目.工程检查.统计.查看"})
+        if ("".equals(req.getBegin_on())) {
+            req.setBegin_on("1970-01-02");
+        }
+        Date start = DateUtil.strToDate(req.getBegin_on(), "yyyy-MM-dd");
+        Date end = null;
+        if ("".equals(req.getEnd_on())) {
+            end = new Date();
+        } else {
+            end = DateUtil.strToDate(req.getEnd_on(), "yyyy-MM-dd");
+        }
+        List<HouseQmStatTaskDetailMemberCheckerRspVo> result = houseqmStatService.searchCheckerIssueStatusStatByProjTaskIdBetweenTime(req.getProject_id(), req.getTask_id(), start, DateUtil.dateAddDay(end, 1));
+
+        LjBaseResponse<StatTaskSituationMembersCheckerRspVo> response = new LjBaseResponse<>();
+        StatTaskSituationMembersCheckerRspVo data = new StatTaskSituationMembersCheckerRspVo();
+        data.setItems(result);
+        response.setData(data);
+
+        return response;
+    }
+
+    //todo 待测
+
+    /**
+     * @return com.longfor.longjian.common.base.LjBaseResponse<com.longfor.longjian.houseqm.app.vo.StatTaskSituationMembersRepairerRspVo>
+     * @Author hy
+     * @Description 项目下任务整改人员情况查询
+     * http://192.168.37.159:3000/project/8/interface/api/3416
+     * @Date 14:59 2019/1/10
+     * @Param [req]
+     **/
+    @GetMapping(value = "stat/task_situation_members_repairer/", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+    public LjBaseResponse<StatTaskSituationMembersRepairerRspVo> taskSituationMembersRepairer(@Valid StatTaskSituationMembersRepairerReq req) {
+        //todo 鉴权 _, _, err := ctrl_tool.ProjPermMulti(c, []string{"项目.移动验房.统计.查看", "项目.工程检查.统计.查看"})
+        if ("".equals(req.getBegin_on())) {
+            req.setBegin_on("1970-01-02");
+        }
+        Date start = DateUtil.strToDate(req.getBegin_on(), "yyyy-MM-dd");
+        Date end = null;
+        if ("".equals(req.getEnd_on())) {
+            end = new Date();
+        } else {
+            end = DateUtil.strToDate(req.getEnd_on(), "yyyy-MM-dd");
+        }
+        List<HouseQmStatTaskDetailMemberRepairerRspVo> res = houseqmStatService.searchRepaireIssueStatusStatByProjTaskIdBetweenTime(req.getProject_id(), req.getTask_id(), start, DateUtil.dateAddDay(end, 1));
+        LjBaseResponse<StatTaskSituationMembersRepairerRspVo> response = new LjBaseResponse<>();
+        StatTaskSituationMembersRepairerRspVo data = new StatTaskSituationMembersRepairerRspVo();
+        data.setItems(res);
+        response.setData(data);
+        return response;
+    }
+
+    /**
+     * @Author hy
+     * @Description 项目下日常检查区域概况
+     * http://192.168.37.159:3000/project/8/interface/api/3424
+     * @Date 16:55 2019/1/10
+     * @Param [req]
+     * @return com.longfor.longjian.common.base.LjBaseResponse<com.longfor.longjian.houseqm.app.vo.HouseQmStatAreaSituationIssueRspVo>
+     **/
+    @GetMapping(value = "stat/area_situation/", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+    public LjBaseResponse<HouseQmStatAreaSituationIssueRspVo> areaSituation(@Valid StatAreaSituationReq req) {
+
+        //todo 鉴权 _, _, err := ctrl_tool.ProjPermMulti(c, []string{"项目.移动验房.统计.查看", "项目.工程检查.统计.查看"})
+
+        HouseQmStatAreaSituationIssueRspVo data= null;
+        LjBaseResponse<HouseQmStatAreaSituationIssueRspVo> response = new LjBaseResponse<>();
+        try {
+            data = houseqmStatService.getAreaIssueTypeStatByProjectIdAreaIdCategoryCls(req.getProject_id(),req.getArea_id(),req.getCategory_cls());
+            response.setData(data);
+        } catch (Exception e) {
+            e.printStackTrace();
+            response.setMessage(e.getMessage());
+            response.setResult(1);
+        }
+        return response;
+    }
 
 }

@@ -33,4 +33,6 @@ public interface HouseQmCheckTaskService {
     int add(HouseQmCheckTask houseQmCheckTask);
 
     HouseQmCheckTask selectById(int one);
+
+    int removeHouseQmCheckTaskByProjectIdAndTaskId(Integer project_id, Integer task_id);
 }

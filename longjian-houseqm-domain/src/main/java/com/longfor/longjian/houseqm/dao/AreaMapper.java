@@ -21,13 +21,6 @@ public interface AreaMapper extends LFMySQLMapper<Area> {
 
     /**
      *
-     * @param areaId
-     * @return
-     */
-    Area selectById(@Param("areaId") Integer areaId);
-
-    /**
-     *
      * @param projectId
      * @param areaIds
      * @return

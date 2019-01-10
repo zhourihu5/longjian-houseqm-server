@@ -81,7 +81,7 @@ public class TaskListController {
                                                  @RequestParam(value = "task_id") Integer taskId) {
 
         //todo session(uid)
-        //permission 根据uid 和projectid check_project
+        //todo 鉴权 permission 根据uid 和projectid check_project
 //        uid = session['uid']
 //        has_per = ucenter_api.check_project_permission(uid, req.project_id, '项目.工程检查.任务管理.查看')
 
