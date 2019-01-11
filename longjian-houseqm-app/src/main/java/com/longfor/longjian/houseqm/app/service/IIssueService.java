@@ -4,9 +4,12 @@ import com.longfor.gaia.gfs.core.bean.PageInfo;
 import com.longfor.longjian.common.base.LjBaseResponse;
 import com.longfor.longjian.houseqm.app.vo.HouseQmCheckTaskIssueHistoryLogVo;
 import com.longfor.longjian.houseqm.app.vo.IssueListVo;
+import com.longfor.longjian.houseqm.app.vo.RepairNotifyExportVo;
 import com.longfor.longjian.houseqm.app.vo.TaskResponse;
+import com.longfor.longjian.houseqm.po.ProjectSettingV2;
 
 import java.util.ArrayList;
+import java.util.List;
 
 
 /**
@@ -49,4 +52,10 @@ public interface IIssueService {
     LjBaseResponse updeteIssueDescByUuid(Integer projectId, String issueUuid, Integer uid, String content);
 
     LjBaseResponse updateIssuePlanEndOnByProjectAndUuid(Integer projectId, String issueUuid, Integer uid, Integer plan_end_on);
+
+    LjBaseResponse updateIssueApproveStatusByUuid(Integer projectId, String issueUuid, Integer uid, Integer status, String content);
+
+    RepairNotifyExportVo repairNotifyExport2(Integer uid, Integer projectId, String issueUuid);
+
+    List<ProjectSettingV2> getProjectSettingId(Integer projectId);
 }

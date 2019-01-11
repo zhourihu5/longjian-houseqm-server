@@ -104,6 +104,13 @@ public class HouseQmCheckTaskServiceImpl implements HouseQmCheckTaskService {
         return houseQmCheckTaskMapper.deleteByExample(example);
     }
 
+    @Override
+    public HouseQmCheckTask selectByTaskId(Integer integer) {
+
+
+        return null;
+    }
+
     /**
      *
      * @author hy

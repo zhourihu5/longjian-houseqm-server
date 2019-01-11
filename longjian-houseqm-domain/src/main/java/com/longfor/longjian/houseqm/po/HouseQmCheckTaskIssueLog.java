@@ -72,7 +72,7 @@ public class HouseQmCheckTaskIssueLog {
     /**
      * 问题描述
      */
-    @Column(name = "'desc'")
+    @Column(name = "`desc`")
     private String desc;
 
     /**

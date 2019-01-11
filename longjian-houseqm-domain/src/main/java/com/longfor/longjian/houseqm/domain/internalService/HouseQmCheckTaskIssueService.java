@@ -148,4 +148,6 @@ public interface HouseQmCheckTaskIssueService {
     HouseQmCheckTaskIssue getIssueByProjectIdAndUuid(Integer projectId, String issueUuid);
 
     void update(HouseQmCheckTaskIssue issue_info);
+
+    List<HouseQmCheckTaskIssue> selectHouseQmCheckTaskIssueByProIdAndIdAndStatus(Integer projectId, List<Integer> issueIds, ArrayList<Integer> statusList);
 }

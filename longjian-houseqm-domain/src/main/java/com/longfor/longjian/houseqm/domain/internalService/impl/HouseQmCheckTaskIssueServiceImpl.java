@@ -405,4 +405,15 @@ public class HouseQmCheckTaskIssueServiceImpl implements HouseQmCheckTaskIssueSe
 
     }
 
+    @Override
+    @LFAssignDataSource("zhijian2")
+    public List<HouseQmCheckTaskIssue> selectHouseQmCheckTaskIssueByProIdAndIdAndStatus(Integer projectId, List<Integer> issueIds, ArrayList<Integer> statusList) {
+        Example example = new Example(HouseQmCheckTaskIssue.class);
+        Example.Criteria criteria = example.createCriteria();
+        criteria.andEqualTo("projectId",projectId);
+        criteria.andIn("id",issueIds);
+        criteria.andIn("status",statusList);
+        return   houseQmCheckTaskIssueMapper.selectByExample(example);
+    }
+
 }
