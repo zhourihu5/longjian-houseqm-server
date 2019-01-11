@@ -48,7 +48,7 @@
     </sql>
     <sql id="Full_Column_List">
     id, project_id, task_id, uuid, issue_uuid, sender_id, status, client_create_at, create_at,
-    update_at, delete_at,'desc',attachment_md5_list, audio_md5_list, memo_audio_md5_list, detail
+    update_at, delete_at,`desc`,attachment_md5_list, audio_md5_list, memo_audio_md5_list, detail
   </sql>
     <select id="selectByIssueUuid" resultMap="ResultMapWithBLOBs">
         select
@@ -67,7 +67,7 @@
     <select id="searchHouseQmCheckTaskIssueLogByMyIdTaskIdLastIdUpdateAtGt" resultMap="BaseResultMap">
         SELECT
         id, project_id, task_id, uuid, issue_uuid, sender_id, status, client_create_at, create_at,
-        update_at, delete_at,'desc',attachment_md5_list, audio_md5_list, memo_audio_md5_list, detail
+        update_at, delete_at,`desc`,attachment_md5_list, audio_md5_list, memo_audio_md5_list, detail
         FROM
         house_qm_check_task_issue_log as hqctil
         WHERE

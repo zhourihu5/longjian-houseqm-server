@@ -1,18 +1,22 @@
 package com.longfor.longjian.houseqm.app.controller;
 
+import com.google.common.collect.Lists;
 import com.longfor.gaia.gfs.core.bean.PageInfo;
 import com.longfor.gaia.gfs.web.mock.MockOperation;
 import com.longfor.longjian.common.base.LjBaseResponse;
+import com.longfor.longjian.common.consts.CommonGlobal;
 import com.longfor.longjian.houseqm.app.service.IIssueService;
-import com.longfor.longjian.houseqm.app.vo.HouseQmCheckTaskIssueHistoryLogVo;
-import com.longfor.longjian.houseqm.app.vo.IssueListVo;
-import com.longfor.longjian.houseqm.app.vo.TaskResponse;
+import com.longfor.longjian.houseqm.app.vo.*;
+import com.longfor.longjian.houseqm.consts.CommonGlobalEnum;
+import com.longfor.longjian.houseqm.po.ProjectSettingV2;
 import io.swagger.annotations.ApiParam;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
 import javax.validation.constraints.Min;
 import java.util.ArrayList;
@@ -92,6 +96,90 @@ public class IssueListController {
         response.setData(result);
         return response;
     }
+
+    @GetMapping(value = "repair_notify_export2", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+    public LjBaseResponse< String> repairNotifyExport2(HttpServletRequest request, HttpServletResponse response,@RequestParam(value = "project_id",required = true) Integer projectId,
+                                                                                           @RequestParam(value = "issue_uuid",required =true) String issueUuid){
+            if(request.getMethod()=="POST"){
+                String project_id = request.getParameter("project_id");
+                String issue_ids = request.getParameter("issue_ids");
+            }
+        log.info("repair_notify_export2, project_id="+projectId+", issue_ids="+issueUuid+"");
+
+                //// todo 获取uid
+               /* uid = session['uid']*/
+        if(projectId==null||issueUuid==null){
+            LjBaseResponse<String> objectTaskResponse = new LjBaseResponse<>();
+            objectTaskResponse.setMessage("args error");
+            objectTaskResponse.setResult((Integer) CommonGlobalEnum.RES_ERROR.getId());
+            return objectTaskResponse;
+
+        }
+        Integer uid=1;
+        RepairNotifyExportVo repairNotifyExportVo= iIssueService.repairNotifyExport2(uid,projectId,issueUuid);
+        log.info("export repair notify, result="+repairNotifyExportVo.getResult()+", message="+repairNotifyExportVo.getMessage()+", path="+repairNotifyExportVo.getPath()+"");
+        if(repairNotifyExportVo.getResult()!=0){
+            LjBaseResponse<String> objectTaskResponse = new LjBaseResponse<>();
+            objectTaskResponse.setMessage(repairNotifyExportVo.getMessage());
+            objectTaskResponse.setResult(repairNotifyExportVo.getResult());
+            return objectTaskResponse;
+        }
+        return null;
+    }
+    @GetMapping(value = "configs", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+    public LjBaseResponse<ProjectSettingConfigVo> configs(@RequestParam(value = "project_id",required = true) Integer projectId){
+        ////todo session 取uid 权限
+        /*uid = session['uid']
+        has_per = ucenter_api.check_project_permission(uid, req.project_id, '项目.工程检查.问题管理.查看')
+        if not has_per:
+        rsp = errors_utils.err(rsp, 'PermissionDenied')*/
+        List<ProjectSettingConfigVo.HouseQmIssueReason> reason_list = Lists.newArrayList();
+        Integer reasonId=0;
+
+      List<ProjectSettingV2>projectSetting=  iIssueService.getProjectSettingId(projectId);
+        ProjectSettingConfigVo vo = new ProjectSettingConfigVo();
+        for (int i = 0; i < projectSetting.size(); i++) {
+            if(projectSetting.get(i).getsKey().equals("PROJ_ISSUE_REASON_SWITCH")){
+                vo.setHas_issue_reason(true);
+            }
+            if(projectSetting.get(i).getsKey().equals("PROJ_ISSUE_SUGGEST_SWITCH")){
+                vo.setHas_issue_suggest(true);
+            }
+            if(projectSetting.get(i).getsKey().equals("PROJ_POTENTIAL_RISK_SWITCH")){
+                vo.setHas_issue_potential_rist(true);
+            }
+            if(projectSetting.get(i).getsKey().equals("PROJ_PREVENTIVE_ACTION_SWITCH")){
+                vo.setHas_issue_preventive_action(true);
+            }
+            if(projectSetting.get(i).getsKey().equals("PROJ_ISSUE_REASON_NAME")){
+              reasonId=projectSetting.get(i).getId();
+            }
+            if(projectSetting.get(i).getsKey().equals("PROJ_ISSUE_REASON_LIST")){
+                ProjectSettingConfigVo.HouseQmIssueReason  single_reason= new ProjectSettingConfigVo(). new HouseQmIssueReason();
+                single_reason.setId(projectSetting.get(i).getId());
+                single_reason.setValue(projectSetting.get(i).getValue());
+                reason_list.add(single_reason);
+            }
+        }
+        if(reasonId>0){
+            for (int i = 0; i < projectSetting.size(); i++) {
+                if(projectSetting.get(i).getParentId().equals(reasonId)){
+                    ProjectSettingConfigVo.HouseQmIssueReason singleReason = new ProjectSettingConfigVo().new HouseQmIssueReason();
+                    singleReason.setId(projectSetting.get(i).getId());
+                    singleReason.setValue(projectSetting.get(i).getValue());
+                    reason_list.add(singleReason);
+                }
+            }
+        }
+        vo.setReason_list(reason_list);
+        LjBaseResponse<ProjectSettingConfigVo> response = new LjBaseResponse<>();
+        response.setData(vo);
+        return response;
+    }
+
+
+
+
     @PostMapping(value = "delete", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     public TaskResponse delete(@RequestParam(value = "project_id",required = true) Integer projectId,
                                                                                  @RequestParam(value = "issue_uuid",required =true) String issueUuid){
@@ -135,7 +223,8 @@ public class IssueListController {
     @PostMapping(value = "edit_approve", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     public LjBaseResponse editApprove(@RequestParam(value = "project_id",required = true) Integer projectId,
                                         @RequestParam(value = "issue_uuid",required =true) String issueUuid,
-                                        @RequestParam(value = "plan_end_on",required =false, defaultValue = "0") Integer plan_end_on){
+                                      @RequestParam(value = "status",required =true) Integer status,
+                                      @RequestParam(value = "content",required =true) String content){
         ////todo session 取uid 权限
         /*uid = session['uid']
         has_per = ucenter_api.check_project_permission(uid, req.project_id, '项目.工程检查.问题管理.查看')
@@ -143,7 +232,7 @@ public class IssueListController {
         rsp = errors_utils.err(rsp, 'PermissionDenied')*/
 
         Integer uid=1;
-        LjBaseResponse taskResponse=  iIssueService.updateIssuePlanEndOnByProjectAndUuid(projectId,issueUuid,uid,plan_end_on);
+        LjBaseResponse taskResponse=  iIssueService.updateIssueApproveStatusByUuid(projectId,issueUuid,uid,status,content);
         return  taskResponse;
     }
 

@@ -132,6 +132,13 @@ public class HouseQmCheckTaskServiceImpl implements HouseQmCheckTaskService {
         return houseQmCheckTaskMapper.deleteByExample(example);
     }
 
+    @Override
+    public HouseQmCheckTask selectByTaskId(Integer integer) {
+
+
+        return null;
+    }
+
     /**
      * @param taskId
      * @return com.longfor.longjian.houseqm.po.HouseQmCheckTask

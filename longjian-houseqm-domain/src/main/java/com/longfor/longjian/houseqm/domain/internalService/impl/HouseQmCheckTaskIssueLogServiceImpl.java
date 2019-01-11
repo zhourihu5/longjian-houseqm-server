@@ -8,6 +8,7 @@ import com.longfor.longjian.houseqm.po.HouseQmCheckTaskIssueLog;
 import com.longfor.longjian.houseqm.po.UserInHouseQmCheckTask;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import tk.mybatis.mapper.entity.Example;
 
 import javax.annotation.Resource;
@@ -20,6 +21,7 @@ import java.util.Set;
  * @author Houyan
  * @date 2018/12/11 0011 16:01
  */
+@Transactional
 @Service
 @Slf4j
 public class HouseQmCheckTaskIssueLogServiceImpl implements HouseQmCheckTaskIssueLogService {
