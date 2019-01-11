@@ -31,7 +31,7 @@ import java.util.Map;
 @Slf4j
 public class TaskServiceImpl implements ITaskService {
     @Resource
-    private HouseQmCheckTaskRspService houseQmCheckTaskRspService;
+    private HouseQmCheckTaskService houseQmCheckTaskRspService;
 
     @Resource
     private HouseQmCheckTaskService houseQmCheckTaskService;

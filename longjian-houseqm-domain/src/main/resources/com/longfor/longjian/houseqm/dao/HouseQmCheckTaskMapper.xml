@@ -110,19 +110,6 @@
         </if>
     </select>
 
-    <select id="getHouseQmCheckTaskByProjTaskId" resultMap="ResultMapWithBLOBs">
-        select
-        <include refid="Base_Column_List"/>,
-        <include refid="Blob_Column_List"/>
-        from house_qm_check_task
-        where
-        <if test="projectId !=null">
-            project_id=#{projectId}
-        </if>
-        <if test="taskId !=null">
-            and task_id=#{taskId}
-        </if>
-    </select>
 
     <select id="selectAreaIdsByProjectIdAndTaskIdAndNoDeleted" resultMap="ResultMapWithBLOBs">
         SELECT area_ids from house_qm_check_task

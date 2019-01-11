@@ -31,7 +31,7 @@ public class HouseqmStaticService {
     @Resource
     HouseQmCheckTaskService houseQmCheckTaskService;
     @Resource
-    HouseQmCheckTaskRspService houseQmCheckTaskRspService;
+    HouseQmCheckTaskService houseQmCheckTaskRspService;
     @Resource
     AreaService areaService;
     @Resource

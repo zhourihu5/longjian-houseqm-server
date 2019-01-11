@@ -7,6 +7,9 @@ import com.longfor.longjian.houseqm.po.*;
 import java.util.*;
 
 public interface HouseQmCheckTaskIssueService {
+
+    List<HouseQmCheckTaskIssue> searchByProjIdAndUuidIn(Integer project_id, List<String> uuids);
+
     List<HouseQmCheckTaskIssue> searchByIssueUuidsAndclientCreateAt(Set<String> issueUuids, int timestamp);
 
     List<CheckerIssueStat> searchCheckerIssueStatisticByProjIdAndTaskId(Integer projectId, List<Integer> taskIds);
@@ -96,7 +99,7 @@ public interface HouseQmCheckTaskIssueService {
      */
     List<HouseQmCheckTaskIssue> selectHouseQmCheckTaskIssueByProjectIdAndCategoryClsAndTypeAndStatusInAndOrderByDescAndPageDongTai(Map<String,Object> map);
 
-    ArrayList<HouseQmCheckTaskIssue> houseQmCheckTaskIssueByProTaskIdAreaidBegin(Integer projectId, Integer taskId, Integer areaId, Date begin, Date endOns, List<Integer> types);
+    List<HouseQmCheckTaskIssue> houseQmCheckTaskIssueByProTaskIdAreaidBegin(Integer projectId, Integer taskId, Integer areaId, Date begin, Date endOns, List<Integer> types);
 
     List<HouseQmCheckTaskIssue> searchHouseQmCheckTaskIssueByProjCategoryKeyAreaId(HashMap<String, Object> condiMap);
     /**
@@ -144,6 +147,8 @@ public interface HouseQmCheckTaskIssueService {
     List<HouseQmCheckTaskIssue> searchByProjIdAndCategoryClsAndAreaPathAndIdLikeGroupByStatus(Integer project_id, Integer category_cls, String areaPath);
 
     HouseQmCheckTaskIssue selectByUuidAndNotDelete(String issueUuid);
+
+    HouseQmCheckTaskIssue getByUuidUnscoped(String uuid);
 
     HouseQmCheckTaskIssue getIssueByProjectIdAndUuid(Integer projectId, String issueUuid);
 
