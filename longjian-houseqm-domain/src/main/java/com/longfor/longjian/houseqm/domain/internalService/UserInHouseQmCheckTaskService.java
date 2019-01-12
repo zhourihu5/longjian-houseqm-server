@@ -7,6 +7,11 @@ import java.util.List;
 import java.util.Set;
 
 public interface UserInHouseQmCheckTaskService {
+
+
+
+    List<UserInHouseQmCheckTask> searchByTaskIdUserIdRoleType(int taskId, int userId, Integer roleType);
+
     List<UserInHouseQmCheckTask> searchByUserId(Integer userId);
 
     List<UserInHouseQmCheckTask> selectByTaskIds(Set<Integer> taskIdList);
@@ -51,4 +56,5 @@ public interface UserInHouseQmCheckTaskService {
     UserInHouseQmCheckTask selectByTaskIdAndUserIdAndNotDel(Integer taskId, Integer uid);
     int removeByTaskId(Integer task_id);
 
+    List<UserInHouseQmCheckTask> searchBySquadIdIn(List<Integer> squadIds);
 }

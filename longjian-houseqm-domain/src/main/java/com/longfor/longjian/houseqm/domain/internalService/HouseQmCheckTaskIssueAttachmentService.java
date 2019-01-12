@@ -9,4 +9,8 @@ public interface HouseQmCheckTaskIssueAttachmentService {
 
     List<HouseQmCheckTaskIssueAttachment> searchByIssueUuid(Set<String> issueUuids);
 
+    int inseretBatch(List<HouseQmCheckTaskIssueAttachment> attachements);
+
+    int deleteByIssueUuidMd5(String issueUuid, String md5);
+
 }

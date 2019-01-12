@@ -8,6 +8,10 @@ import java.util.Set;
 
 public interface HouseQmCheckTaskIssueLogService {
 
+    int deleteIssueLogByUuids(List<String> uuids);
+
+    int addBatch(List<HouseQmCheckTaskIssueLog> hIssueLogs);
+
     List<HouseQmCheckTaskIssueLog> searchByIssueUuid(Set<String> issueUuids);
     /**
      *

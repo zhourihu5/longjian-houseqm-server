@@ -8,6 +8,8 @@ import java.util.*;
 
 public interface HouseQmCheckTaskIssueService {
 
+    int insertOneHouseQmCheckTaskIssue(HouseQmCheckTaskIssue issue);
+
     List<HouseQmCheckTaskIssue> searchByProjIdAndUuidIn(Integer project_id, List<String> uuids);
 
     List<HouseQmCheckTaskIssue> searchByIssueUuidsAndclientCreateAt(Set<String> issueUuids, int timestamp);

@@ -40,6 +40,12 @@ public class HouseQmCheckTaskIssueServiceImpl implements HouseQmCheckTaskIssueSe
 
     @Override
     @LFAssignDataSource("zhijian2")
+    public int insertOneHouseQmCheckTaskIssue(HouseQmCheckTaskIssue issue) {
+        return houseQmCheckTaskIssueMapper.insertSelective(issue);
+    }
+
+    @Override
+    @LFAssignDataSource("zhijian2")
     public List<HouseQmCheckTaskIssue> searchByProjIdAndUuidIn(Integer project_id, List<String> uuids) {
         Example example = new Example(HouseQmCheckTaskIssue.class);
         Example.Criteria criteria = example.createCriteria();
