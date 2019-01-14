@@ -6,7 +6,7 @@ import com.longfor.longjian.houseqm.app.vo.HouseQmCheckTaskIssueHelperVo;
 import com.longfor.longjian.houseqm.app.vo.issue.ApiHouseQmCheckTaskReportRsp;
 import com.longfor.longjian.houseqm.app.vo.url.ExportVo;
 import com.longfor.longjian.houseqm.consts.HouseQmCheckTaskIssueCheckStatusEnum;
-import com.longfor.longjian.houseqm.consts.HouseQmCheckTaskIssueStatusEnum;
+import com.longfor.longjian.common.consts.HouseQmCheckTaskIssueStatusEnum;
 import com.longfor.longjian.houseqm.domain.internalService.ExportFileRecordService;
 import com.longfor.longjian.houseqm.domain.internalService.HouseQmCheckTaskIssueService;
 import com.longfor.longjian.houseqm.domain.internalService.ProjectService;
