@@ -54,7 +54,12 @@
             <artifactId>longjian-houseqm-common</artifactId>
             <version>1.0.1-SNAPSHOT</version>
         </dependency>
-
+        <!--用于加载yaml文件里配置的参数 @Configuration -->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-configuration-processor</artifactId>
+            <optional>true</optional>
+        </dependency>
 
     </dependencies>
 

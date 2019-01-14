@@ -3,6 +3,7 @@ package com.longfor.longjian.houseqm.app.controller;
 import com.google.common.collect.Lists;
 import com.longfor.longjian.houseqm.app.vo.HouseqmStatisticTaskCheckitemStatRspMsgVo;
 import com.longfor.longjian.houseqm.app.service.IHouseqmStatisticService;
+import com.longfor.longjian.houseqm.domain.internalService.HouseQmCheckTaskService;
 import com.longfor.longjian.houseqm.util.DateUtil;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -13,7 +14,6 @@ import com.longfor.longjian.houseqm.app.service.HouseqmStaticService;
 import com.longfor.longjian.houseqm.app.vo.*;
 import com.longfor.longjian.houseqm.consts.TimeStauEnum;
 import com.longfor.longjian.houseqm.domain.internalService.AreaService;
-import com.longfor.longjian.houseqm.domain.internalService.HouseQmCheckTaskRspService;
 
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.MediaType;
@@ -51,7 +51,7 @@ public class HouseqmStatisticController {
     @Resource
     HouseqmStaticService houseqmStaticService;
     @Resource
-    HouseQmCheckTaskRspService houseQmCheckTaskRspService;
+    HouseQmCheckTaskService houseQmCheckTaskRspService;
     @Resource
     IHouseqmStatisticService iHouseqmStatisticService;
     @Resource

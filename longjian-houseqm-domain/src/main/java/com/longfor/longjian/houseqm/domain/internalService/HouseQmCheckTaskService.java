@@ -7,6 +7,13 @@ import java.util.List;
 import java.util.Set;
 
 public interface HouseQmCheckTaskService {
+    List<HouseQmCheckTask> searchHouseQmCheckTaskByTaskIdIn(List<Integer> taskIds);
+
+    HouseQmCheckTask getHouseQmCheckTaskByProjTaskId(Integer projectId, Integer taskId);
+
+    HouseQmCheckTask getHouseQmCheckTaskByProjTaskIdUnscoped(Integer projectId, Integer taskId);
+
+
     List<HouseQmCheckTask> selectByTaskIds(Set<Integer> taskIds);
 
     List<HouseQmCheckTask> selectByTaskIdsEvenDeleted(Set<Integer> taskIds);
@@ -22,11 +29,10 @@ public interface HouseQmCheckTaskService {
     HouseQmCheckTask selectAreaIdsByProjectIdAndTaskIdAndNoDeleted(Integer projectId, Integer taskId);
 
     /**
-     *
-     * @author hy
-     * @date 2018/12/25 0025
      * @param taskId
      * @return java.util.Date
+     * @author hy
+     * @date 2018/12/25 0025
      */
     HouseQmCheckTask selectUpdateAtByTaskIdAndNoDeleted(Integer taskId);
 

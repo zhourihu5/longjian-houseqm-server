@@ -51,7 +51,7 @@ longfor:
     mybatis:
       typeAliasesPackage: com.longfor.longjian.houseqmqm.dao
       mapperLocations:
-      - classpath:com/longfor/longjian/houseqm/dao/*.xml
+        - classpath:com/longfor/longjian/houseqm/dao/*.xml
     mapper:
       notEmpty: true
     #多数据源配置
@@ -138,6 +138,11 @@ env_info:
 spe:
   team_group_100194:
     export_issue: /v3stat/spec/qingshui/export_issue/
+# HouseqmIssueController exportPdf 导出 url
+stat_export_server_addr: http://192.168.96.132:9202/v3
+export:
+  base_dir: /data/zhijian/writable
+  base_uri: writable
 
 #消息推送
 push_config:

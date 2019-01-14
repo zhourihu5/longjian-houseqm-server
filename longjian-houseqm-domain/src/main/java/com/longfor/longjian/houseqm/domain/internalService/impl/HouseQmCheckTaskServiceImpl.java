@@ -5,6 +5,7 @@ import com.longfor.longjian.houseqm.dao.HouseQmCheckTaskMapper;
 import com.longfor.longjian.houseqm.domain.internalService.HouseQmCheckTaskService;
 import com.longfor.longjian.houseqm.po.HouseQmCheckTask;
 import com.longfor.longjian.houseqm.po.HouseQmCheckTaskIssue;
+import com.longfor.longjian.houseqm.utils.ExampleUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -28,70 +29,97 @@ public class HouseQmCheckTaskServiceImpl implements HouseQmCheckTaskService {
     @Resource
     HouseQmCheckTaskMapper houseQmCheckTaskMapper;
 
+    @Override
+    @LFAssignDataSource("zhijian2")
+    public List<HouseQmCheckTask> searchHouseQmCheckTaskByTaskIdIn(List<Integer> taskIds) {
+        Example example = new Example(HouseQmCheckTask.class);
+        Example.Criteria criteria = example.createCriteria();
+        criteria.andIn("taskId", taskIds);
+        ExampleUtil.addDeleteAtJudge(example);
+        return houseQmCheckTaskMapper.selectByExample(example);
+    }
 
+    @LFAssignDataSource("zhijian2")
+    public HouseQmCheckTask getHouseQmCheckTaskByProjTaskId(Integer projectId, Integer taskId) {
+        Example example = new Example(HouseQmCheckTask.class);
+        Example.Criteria criteria = example.createCriteria();
+        criteria.andEqualTo("projectId", projectId).andEqualTo("taskId", taskId);
+        ExampleUtil.addDeleteAtJudge(example);
+        return houseQmCheckTaskMapper.selectOneByExample(example);
+    }
+
+    @LFAssignDataSource("zhijian2")
+    public HouseQmCheckTask getHouseQmCheckTaskByProjTaskIdUnscoped(Integer projectId, Integer taskId) {//Unscoped true
+        Example example = new Example(HouseQmCheckTask.class);
+        Example.Criteria criteria = example.createCriteria();
+        criteria.andEqualTo("projectId", projectId).andEqualTo("taskId", taskId);
+        return houseQmCheckTaskMapper.selectOneByExample(example);
+    }
     /**
-     *  根据TaskID 只拿出 未删除的
+     * 根据TaskID 只拿出 未删除的
      *
      * @param taskIds
      * @return
      */
     @LFAssignDataSource("zhijian2")
-    public List<HouseQmCheckTask> selectByTaskIds(Set<Integer> taskIds){
-        return houseQmCheckTaskMapper.selectByTaskIds(taskIds,"false");
+    public List<HouseQmCheckTask> selectByTaskIds(Set<Integer> taskIds) {
+        return houseQmCheckTaskMapper.selectByTaskIds(taskIds, "false");
     }
 
 
     /**
-     *  不限制，即使删除的，也要取出来
+     * 不限制，即使删除的，也要取出来
      *
      * @param taskIds
      * @return
      */
     @LFAssignDataSource("zhijian2")
-    public List<HouseQmCheckTask> selectByTaskIdsEvenDeleted(Set<Integer> taskIds){
-        return houseQmCheckTaskMapper.selectByTaskIds(taskIds,"true");
+    public List<HouseQmCheckTask> selectByTaskIdsEvenDeleted(Set<Integer> taskIds) {
+        return houseQmCheckTaskMapper.selectByTaskIds(taskIds, "true");
     }
 
     @LFAssignDataSource("zhijian2")
     public List<HouseQmCheckTask> selectByProjectIdAndCategoryCls(Integer projectId, Integer categoryCls) {
         return houseQmCheckTaskMapper.selectByProjectIdAndCategoryCls(projectId, categoryCls, "false");
     }
+
     /**
      * 取未删除的数据
+     *
      * @param houseQmCheckTask
      * @return
      */
     @LFAssignDataSource("zhijian2")
-    public List<HouseQmCheckTask> selectByProjectIdAndCategoryClsAndStatus(HouseQmCheckTask houseQmCheckTask){
-        return houseQmCheckTaskMapper.selectByProjectIdAndCategoryClsAndStatus(houseQmCheckTask,"false");
+    public List<HouseQmCheckTask> selectByProjectIdAndCategoryClsAndStatus(HouseQmCheckTask houseQmCheckTask) {
+        return houseQmCheckTaskMapper.selectByProjectIdAndCategoryClsAndStatus(houseQmCheckTask, "false");
     }
 
     /**
-     *  根据项目id 任务id查
+     * 根据项目id 任务id查
+     *
      * @param projectId
      * @param taskId
      * @return
      */
     @LFAssignDataSource("zhijian2")
-    public HouseQmCheckTask selectByProjectIdAndTaskId(Integer projectId,Integer taskId){
-        return houseQmCheckTaskMapper.selectByProjectIdAndTaskId(projectId,taskId);
+    public HouseQmCheckTask selectByProjectIdAndTaskId(Integer projectId, Integer taskId) {
+        return houseQmCheckTaskMapper.selectByProjectIdAndTaskId(projectId, taskId);
     }
 
     /**
-     *
      * @param projectId
      * @param categoryCls
      * @return
      */
     @LFAssignDataSource("zhijian2")
-    public List<HouseQmCheckTask> searchByProjectIdAndCategoryClsIn(Integer projectId,List<Integer> categoryCls){
-        return houseQmCheckTaskMapper.selectByProjectIdAndCategoryClsIn(projectId,categoryCls);
+    public List<HouseQmCheckTask> searchByProjectIdAndCategoryClsIn(Integer projectId, List<Integer> categoryCls) {
+        return houseQmCheckTaskMapper.selectByProjectIdAndCategoryClsIn(projectId, categoryCls);
     }
 
     @Override
     @LFAssignDataSource("zhijian2")
     public HouseQmCheckTask selectAreaIdsByProjectIdAndTaskIdAndNoDeleted(Integer projectId, Integer taskId) {
-        return houseQmCheckTaskMapper.selectAreaIdsByProjectIdAndTaskIdAndNoDeleted(projectId,taskId,"false");
+        return houseQmCheckTaskMapper.selectAreaIdsByProjectIdAndTaskIdAndNoDeleted(projectId, taskId, "false");
     }
 
     @Override
@@ -100,7 +128,7 @@ public class HouseQmCheckTaskServiceImpl implements HouseQmCheckTaskService {
     public int removeHouseQmCheckTaskByProjectIdAndTaskId(Integer project_id, Integer task_id) {
         Example example = new Example(HouseQmCheckTask.class);
         Example.Criteria criteria = example.createCriteria();
-        criteria.andEqualTo("projectId",project_id).andEqualTo("taskId",task_id);
+        criteria.andEqualTo("projectId", project_id).andEqualTo("taskId", task_id);
         return houseQmCheckTaskMapper.deleteByExample(example);
     }
 
@@ -125,16 +153,15 @@ public class HouseQmCheckTaskServiceImpl implements HouseQmCheckTaskService {
     }
 
     /**
-     *
-     * @author hy
-     * @date 2018/12/25 0025
      * @param taskId
      * @return com.longfor.longjian.houseqm.po.HouseQmCheckTask
+     * @author hy
+     * @date 2018/12/25 0025
      */
     @Override
     @LFAssignDataSource("zhijian2")
     public HouseQmCheckTask selectUpdateAtByTaskIdAndNoDeleted(Integer taskId) {
-        return houseQmCheckTaskMapper.selectUpdateAtByTaskIdAndNoDeleted(taskId,"false");
+        return houseQmCheckTaskMapper.selectUpdateAtByTaskIdAndNoDeleted(taskId, "false");
     }
 
     @Override

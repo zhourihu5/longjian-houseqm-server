@@ -6,6 +6,7 @@ import com.longfor.longjian.houseqm.domain.internalService.HouseQmCheckTaskIssue
 import com.longfor.longjian.houseqm.dto.CheckerIssueStatusStatDto;
 import com.longfor.longjian.houseqm.dto.RepaireIssueStatusStatDto;
 import com.longfor.longjian.houseqm.po.*;
+import com.longfor.longjian.houseqm.utils.ExampleUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.ibatis.annotations.Param;
 import org.springframework.stereotype.Service;
@@ -36,6 +37,17 @@ public class HouseQmCheckTaskIssueServiceImpl implements HouseQmCheckTaskIssueSe
     private HouseQmCheckTaskSquadMapper houseQmCheckTaskSquadMapper;
     @Resource
     private HouseQmCheckTaskIssueAttachmentMapper houseQmCheckTaskIssueAttachmentMapper;
+
+    @Override
+    @LFAssignDataSource("zhijian2")
+    public List<HouseQmCheckTaskIssue> searchByProjIdAndUuidIn(Integer project_id, List<String> uuids) {
+        Example example = new Example(HouseQmCheckTaskIssue.class);
+        Example.Criteria criteria = example.createCriteria();
+        criteria.andEqualTo("projectId",project_id).andIn("uuid",uuids);
+        ExampleUtil.addDeleteAtJudge(example);
+        return houseQmCheckTaskIssueMapper.selectByExample(example);
+    }
+
     /**
      * 根据问题uuid 客户端创建时间 查 取 未删除的数据
      * @param issueUuids
@@ -383,9 +395,17 @@ public class HouseQmCheckTaskIssueServiceImpl implements HouseQmCheckTaskIssueSe
         criteria .andEqualTo("uuid",issueUuid);
         criteria.andIsNull("deleteAt");
         return   houseQmCheckTaskIssueMapper.selectOneByExample(example);
-
-
     }
+
+    @Override
+    @LFAssignDataSource("zhijian2")
+    public HouseQmCheckTaskIssue getByUuidUnscoped(String issueUuid) {//unscoped true
+        Example example = new Example(HouseQmCheckTaskIssue.class);
+        Example.Criteria criteria = example.createCriteria();
+        criteria .andEqualTo("uuid",issueUuid);
+        return   houseQmCheckTaskIssueMapper.selectOneByExample(example);
+    }
+
 
     @Override
     @LFAssignDataSource("zhijian2")
