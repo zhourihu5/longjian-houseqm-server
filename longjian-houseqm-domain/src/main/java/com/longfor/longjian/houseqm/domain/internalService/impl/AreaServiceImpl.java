@@ -6,6 +6,7 @@ import com.longfor.gaia.gfs.data.mybatis.datasource.LFAssignDataSource;
 import com.longfor.longjian.houseqm.dao.AreaMapper;
 import com.longfor.longjian.houseqm.domain.internalService.AreaService;
 import com.longfor.longjian.houseqm.po.Area;
+import com.longfor.longjian.houseqm.util.StringSplitToListUtil;
 import com.longfor.longjian.houseqm.utils.ExampleUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -29,6 +30,42 @@ public class AreaServiceImpl implements AreaService {
 
     @Resource
     AreaMapper areaMapper;
+
+
+    @Override
+    @LFAssignDataSource("zhijian2")
+    public List<Area> searchRelatedAreaByAreaIdIn(Integer project_id, List<Integer> areaIds) {
+        Example example = new Example(Area.class);
+        Example.Criteria criteria = example.createCriteria();
+        criteria.andEqualTo("projectId", project_id).andIn("id", areaIds);
+        ExampleUtil.addDeleteAtJudge(example);
+        List<Area> fAreas = areaMapper.selectByExample(example);
+
+        List<Integer> area_ids = Lists.newArrayList();
+        for (Area item : fAreas) {
+            if (item.getPath().startsWith("/")) {
+                List<String> paths = StringSplitToListUtil.splitToStringComma(item.getPath(), "/");
+                for (String path : paths) {
+                    if (path.length() <= 0) {
+                        continue;
+                    }
+                    Integer id = Integer.valueOf(path);
+                    area_ids.add(id);
+                }
+            }
+        }
+        area_ids.addAll(areaIds);
+        HashSet<Integer> set = new HashSet<>(area_ids);
+
+        Example example1 = new Example(Area.class);
+        Example.Criteria criteria1 = example1.createCriteria();
+        criteria1.andEqualTo("projectId", project_id).andIn("id", set);
+        for (Area item : fAreas) {
+            criteria1.orLike("path", item.getPath() + item.getId() + "/%%");
+        }
+        ExampleUtil.addDeleteAtJudge(example1);
+        return areaMapper.selectByExample(example1);
+    }
 
     /**
      * 查询区域列表

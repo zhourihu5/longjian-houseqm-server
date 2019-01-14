@@ -40,6 +40,24 @@ public class HouseQmCheckTaskIssueServiceImpl implements HouseQmCheckTaskIssueSe
 
     @Override
     @LFAssignDataSource("zhijian2")
+    @Transactional
+    public int deleteHouseQmCheckTaskIssueByProjUuid(Integer project_id, String issueUuid) {
+        try {
+            Example example = new Example(HouseQmCheckTaskIssue.class);
+            Example.Criteria criteria = example.createCriteria();
+            criteria.andEqualTo("projectId",project_id).andEqualTo("uuid",issueUuid);
+            ExampleUtil.addDeleteAtJudge(example);
+            return houseQmCheckTaskIssueMapper.deleteByExample(example);
+        } catch (Exception e) {
+            e.printStackTrace();
+            log.warn(e.getMessage());
+            return 0;
+        }
+    }
+
+    @Override
+    @LFAssignDataSource("zhijian2")
+    @Transactional
     public int insertOneHouseQmCheckTaskIssue(HouseQmCheckTaskIssue issue) {
         return houseQmCheckTaskIssueMapper.insertSelective(issue);
     }

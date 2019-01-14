@@ -8,6 +8,8 @@ import java.util.*;
 
 public interface HouseQmCheckTaskIssueService {
 
+    int deleteHouseQmCheckTaskIssueByProjUuid(Integer project_id, String issueUuid);
+
     int insertOneHouseQmCheckTaskIssue(HouseQmCheckTaskIssue issue);
 
     List<HouseQmCheckTaskIssue> searchByProjIdAndUuidIn(Integer project_id, List<String> uuids);
