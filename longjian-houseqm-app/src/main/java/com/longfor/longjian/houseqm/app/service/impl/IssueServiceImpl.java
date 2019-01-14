@@ -4,10 +4,12 @@ import com.alibaba.fastjson.JSON;
 import com.longfor.longjian.common.base.LjBaseResponse;
 import com.longfor.longjian.common.consts.HouseQmCheckTaskActionLogType;
 import com.longfor.longjian.common.consts.HouseQmCheckTaskIssueLogStatus;
-import com.longfor.longjian.common.consts.checktask.CheckTaskIssueCheckStatus;
-import com.longfor.longjian.common.consts.checktask.CheckTaskIssueStatus;
-import com.longfor.longjian.common.consts.checktask.CheckTaskIssueType;
+import com.longfor.longjian.common.consts.ModuleInfoEnum;
+import com.longfor.longjian.common.consts.UserInIssueRoleType;
+import com.longfor.longjian.common.consts.checktask.*;
 import com.longfor.longjian.common.exception.LjBaseRuntimeException;
+import com.longfor.longjian.common.push.UmPushUtil;
+import com.longfor.longjian.common.push.xiaomi.XmPushUtil;
 import com.longfor.longjian.houseqm.app.vo.*;
 import com.longfor.longjian.houseqm.app.vo.IssueListVo.DetailVo;
 
@@ -15,20 +17,22 @@ import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.longfor.gaia.gfs.core.bean.PageInfo;
 import com.longfor.longjian.houseqm.app.service.IIssueService;
+import com.longfor.longjian.houseqm.consts.AppPlatformTypeEnum;
 import com.longfor.longjian.houseqm.consts.HouseQmCheckTaskIssueStatusEnum;
 import com.longfor.longjian.houseqm.domain.internalService.*;
 import com.longfor.longjian.houseqm.po.*;
-import com.longfor.longjian.houseqm.util.CollectionUtil;
-import com.longfor.longjian.houseqm.util.DateUtil;
-import com.longfor.longjian.houseqm.util.JsonUtil;
-import com.longfor.longjian.houseqm.util.StringSplitToListUtil;
+import com.longfor.longjian.houseqm.util.*;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections.CollectionUtils;
+import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Repository;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
+import java.lang.management.MonitorInfo;
 import java.util.*;
 
 /**
@@ -39,6 +43,29 @@ import java.util.*;
 @Service
 @Slf4j
 public class IssueServiceImpl implements IIssueService {
+    @Value("${push_config.enterprise_id}")
+    private String ENTERPRISEID;
+
+    @Value("${push_config.gcgl.app_key_android}")
+    private String APP_KEY_ANDROID;
+    @Value("${push_config.gcgl.app_master_secret_android}")
+    private String APP_MASTER_SECRET_ANDROID;
+    @Value("${push_config.gcgl.app_key_ios}")
+    private String APP_KEY_IOS;
+    @Value("${push_config.gcgl.app_master_secret_ios}")
+    private String APP_MASTER_SECRET_IOS;
+    @Value("${push_config.gcgl.app_secret_xiao_mi}")
+    private String APP_SECRET_XIAO_MI;
+    @Value("${push_config.gcgl.package_name_xiao_mi}")
+    private String PACKAGE_NAME_XIAO_MI;
+
+
+    @Resource
+    HouseQmCheckTaskIssueAttachmentService houseQmCheckTaskIssueAttachmentService;
+    @Resource
+    HouseQmCheckTaskIssueUserService houseQmCheckTaskIssueUserService;
+    @Resource
+    HouseQmCheckTaskNotifyRecordService houseQmCheckTaskNotifyRecordService;
 
     @Resource
     HouseQmCheckTaskIssueService houseQmCheckTaskIssueService;
@@ -277,7 +304,7 @@ public class IssueServiceImpl implements IIssueService {
     }
 
     @Override
-    public ArrayList<HouseQmCheckTaskIssueHistoryLogVo> getHouseQmCheckTaskIssueActionLogByIssueUuid(String issueUuid) {
+    public List<HouseQmCheckTaskIssueHistoryLogVo> getHouseQmCheckTaskIssueActionLogByIssueUuid(String issueUuid) {
         HouseQmCheckTaskIssue issue_info = houseQmCheckTaskIssueService.selectByUuidAndNotDelete(issueUuid);
         if (issue_info == null) {
             throw new LjBaseRuntimeException(272, "找不到此问题");
@@ -293,14 +320,14 @@ public class IssueServiceImpl implements IIssueService {
             }
             if (((String) issue_log_detail.get("RepairerFollowerIds")).length() > 0) {
                 String replace = ((String) issue_log_detail.get("RepairerFollowerIds")).replace(",,", ",");
-                String[] split = replace.substring(1, replace.length() - 1).split(",");
-                for (int j = 0; j < split.length; j++) {
-                    uids.add(Integer.valueOf(split[j]));
+                List<String> split = StringSplitToListUtil.removeStartAndEndStrAndSplit(replace, ",", ",");
+                for (int j = 0; j < split.size(); j++) {
+                    uids.add(Integer.valueOf(split.get(j)));
                 }
                 List uidlist = CollectionUtil.removeDuplicate(uids);
                 List<User> user_info = userService.searchByUserIdInAndNoDeleted(uidlist);
                 for (int j = 0; j < user_info.size(); j++) {
-                    user_id_real_name_map.put(user_info.get(i).getUserId(), user_info.get(i).getRealName());
+                    user_id_real_name_map.put(user_info.get(j).getUserId(), user_info.get(j).getRealName());
                 }
 
             }
@@ -320,6 +347,7 @@ public class IssueServiceImpl implements IIssueService {
                 HouseQmCheckTaskIssueHistoryLogVo.HouseQmCheckTaskIssueHistoryLogItem log_item = new HouseQmCheckTaskIssueHistoryLogVo().new HouseQmCheckTaskIssueHistoryLogItem();
                 log_item.setLog_type(HouseQmCheckTaskActionLogType.Create.getValue());
                 items.add(log_item);
+                single_item.setItems(items);
                 result.add(single_item);
                 continue;
 
@@ -344,6 +372,7 @@ public class IssueServiceImpl implements IIssueService {
                 log_data.put("followers", followers);
                 log_item.setData(JSON.toJSONString(log_data));
                 items.add(log_item);
+                single_item.setItems(items);
                 result.add(single_item);
                 continue;
             }
@@ -352,7 +381,9 @@ public class IssueServiceImpl implements IIssueService {
                 HouseQmCheckTaskIssueHistoryLogVo.HouseQmCheckTaskIssueHistoryLogItem log_item = new HouseQmCheckTaskIssueHistoryLogVo().new HouseQmCheckTaskIssueHistoryLogItem();
                 log_item.setLog_type(HouseQmCheckTaskActionLogType.Repair.getValue());
                 items.add(log_item);
+                single_item.setItems(items);
                 result.add(single_item);
+
                 continue;
             }
 
@@ -360,6 +391,7 @@ public class IssueServiceImpl implements IIssueService {
                 HouseQmCheckTaskIssueHistoryLogVo.HouseQmCheckTaskIssueHistoryLogItem log_item = new HouseQmCheckTaskIssueHistoryLogVo().new HouseQmCheckTaskIssueHistoryLogItem();
                 log_item.setLog_type(HouseQmCheckTaskActionLogType.Approve.getValue());
                 items.add(log_item);
+                single_item.setItems(items);
                 result.add(single_item);
                 continue;
             }
@@ -392,18 +424,21 @@ public class IssueServiceImpl implements IIssueService {
                     log_data.put("followers", followers);
                     log_item.setData(JSON.toJSONString(log_data));
                     items.add(log_item);
+                    single_item.setItems(items);
 
                 }
                 if (issue_log_info.get(i).getDesc().length() > 0) {
                     HouseQmCheckTaskIssueHistoryLogVo.HouseQmCheckTaskIssueHistoryLogItem log_items = new HouseQmCheckTaskIssueHistoryLogVo().new HouseQmCheckTaskIssueHistoryLogItem();
                     log_items.setLog_type(HouseQmCheckTaskActionLogType.AddDesc.getValue());
                     items.add(log_items);
+                    single_item.setItems(items);
 
                 }
                 if (issue_log_info.get(i).getAttachmentMd5List().length() > 0) {
                     HouseQmCheckTaskIssueHistoryLogVo.HouseQmCheckTaskIssueHistoryLogItem log_items = new HouseQmCheckTaskIssueHistoryLogVo().new HouseQmCheckTaskIssueHistoryLogItem();
                     log_items.setLog_type(HouseQmCheckTaskActionLogType.AddAttachment.getValue());
                     items.add(log_items);
+                    single_item.setItems(items);
                 }
                 if (items.size() > 0) {
                     result.add(single_item);
@@ -659,10 +694,10 @@ public class IssueServiceImpl implements IIssueService {
         issueLog.setCreateAt(new Date());
         issueLog.setUpdateAt(new Date());
         issueLog.setDetail(JSON.toJSONString(logDetail));
-        if (status == CheckTaskIssueCheckStatus.CheckYes.getValue()) {
+        if (status.equals(CheckTaskIssueCheckStatus.CheckYes.getValue())) {
             issueLog.setStatus(CheckTaskIssueCheckStatus.CheckYes.getValue());
         }
-        if (status == CheckTaskIssueCheckStatus.CheckNo.getValue()) {
+        if (status.equals(CheckTaskIssueCheckStatus.CheckNo.getValue())) {
             issueLog.setStatus(CheckTaskIssueCheckStatus.CheckNo.getValue());
         }
         houseQmCheckTaskIssueLogService.add(issueLog);
@@ -711,6 +746,427 @@ public class IssueServiceImpl implements IIssueService {
         return  projectSettingV2Service.getProjectSettingId(projectId);
 
     }
+
+    @Override
+    public LjBaseResponse updateIssueRepairInfoByProjectAndUuid(Integer uid, Integer repairerId, String repairFollowerIds, Integer projectId, String issueUuid) {
+                        Integer tempRepairerId=0;
+        ArrayList<Integer> notifyUserIds = Lists.newArrayList();
+        HouseQmCheckTaskIssue issueInfo = getIssueByProjectIdAndUuid(projectId, issueUuid);
+        if (issueInfo == null) {
+            LjBaseResponse<Object> response = new LjBaseResponse<>();
+            response.setResult(1);
+            response.setMessage("找不到此问题");
+            return response;
+        }
+                    Integer status=-1;
+        if (issueInfo.getStatus() == HouseQmCheckTaskIssueStatusEnum.NoteNoAssign.getId()&&repairerId>0) {
+            status = HouseQmCheckTaskIssueStatusEnum.AssignNoReform.getId();
+            issueInfo.setStatus( CheckTaskIssueStatus.AssignNoReform.getValue());
+        }
+        List<String> followers = StringSplitToListUtil.removeStartAndEndStrAndSplit(repairFollowerIds, ",", ",");
+        if(!followers.contains(issueInfo.getRepairerId())&&repairerId>0&&!repairerId.equals(issueInfo.getRepairerId())){
+                followers.add(String.valueOf(issueInfo.getRepairerId()));
+            tempRepairerId=issueInfo.getRepairerId();
+        }
+        if(followers.size()>0){
+            List<String> strings = StringSplitToListUtil.removeStartAndEndStrAndSplit(StringUtils.join(followers, ","), ",", ",");
+            Collections.replaceAll(strings, ",,", ",");
+            repairFollowerIds=","+strings.toString()+",";
+        }
+        HashMap<String, Object> logDetail = Maps.newHashMap();
+        logDetail.put("PlanEndOn", -1);
+        logDetail.put("EndOn", -1);
+        logDetail.put("RepairerId", -1);
+        logDetail.put("RepairerFollowerIds", "");
+        logDetail.put("Condition", -1);
+        logDetail.put("AreaId", -1);
+        logDetail.put("PosX", -1);
+        logDetail.put("PosY", -1);
+        logDetail.put("Typ", -1);
+        logDetail.put("Title", "");
+        logDetail.put("CheckItemKey", "-1");
+        logDetail.put("CategoryCls", -1);
+        logDetail.put("CategoryKey", "-1");
+        logDetail.put("DrawingMD5", "-1");
+        logDetail.put("RemoveMemoAudioMd5List", "-1");
+        logDetail.put("IssueReason", -1);
+        logDetail.put("IssueReasonDetail", "-1");
+        logDetail.put("IssueSuggest", "-1");
+        logDetail.put("PotentialRisk", "-1");
+        logDetail.put("PreventiveActionDetail", "-1");
+                if(repairerId.equals(issueInfo.getRepairerId())&&repairFollowerIds.equals(issueInfo.getRepairerFollowerIds())){
+                    LjBaseResponse<Object> response = new LjBaseResponse<>();
+                    response.setMessage("没有改变");
+                    return response;
+                }
+               if(!issueInfo.getRepairerId().equals(repairerId)){
+                   if(issueInfo.getRepairerId().equals(0)){
+                       issueInfo.setStatus(HouseQmCheckTaskIssueLogStatus.AssignNoReform.getValue());
+                   }
+                   if(!issueInfo.getRepairerId().equals(0)){
+                       issueInfo.setStatus(HouseQmCheckTaskIssueLogStatus.EditBaseInfo.getValue());
+                   }
+                   issueInfo.setRepairerId(repairerId);
+                    notifyUserIds.add(repairerId);
+                   logDetail.put("RepairerId",issueInfo.getRepairerId());
+               }
+                if(issueInfo.getRepairerId().equals(0)){
+                        issueInfo.setStatus(CheckTaskIssueStatus.NoteNoAssign.getValue());
+                }
+                if(!issueInfo.getRepairerFollowerIds().equals(repairFollowerIds)){
+                // # 增加待办问题埋点
+                    List<Integer> oldRepairerFollowerIdList = StringSplitToListUtil.splitToIdsComma(issueInfo.getRepairerFollowerIds(), ",");
+                    List<Integer> userIds = StringSplitToListUtil.splitToIdsComma(issueInfo.getRepairerFollowerIds(), ",");
+
+                    for (int i = 0; i <  userIds.size(); i++) {
+                        if(!oldRepairerFollowerIdList.contains(userIds.get(i))&&!userIds.get(i).equals(tempRepairerId)){
+                            notifyUserIds.add(userIds.get(i));
+                        }
+                    }
+                    logDetail.put("RepairerFollowerIds",repairFollowerIds);
+                    issueInfo.setRepairerFollowerIds(repairFollowerIds);
+
+                }
+                issueInfo.setUpdateAt(new Date());
+                houseQmCheckTaskIssueService.update(issueInfo);
+                //# 处理代办事项消息推送
+                if(CollectionUtils.isNotEmpty(notifyUserIds)){
+                    String title="新的待处理问题";
+                    String msg="您在［工程检查］有新的待处理问题，请进入App同步更新。";
+                    pushBaseMessage(issueInfo.getTaskId(),notifyUserIds,title,msg);
+
+                    // # 写入待办记录
+                }
+        HouseQmCheckTaskNotifyRecord record = new HouseQmCheckTaskNotifyRecord();
+                record.setProjectId(issueInfo.getProjectId());
+                record.setTaskId(issueInfo.getTaskId());
+                record.setSrcUserId(0);
+                record.setDesUserIds(StringUtils.join(followers, ","));
+                record.setModuleId(ModuleInfoEnum.GCGL.getValue());
+                record.setIssueId(issueInfo.getId());
+                record.setIssueStatus(CheckTaskIssueStatus.NoteNoAssign.getValue());
+                record.setExtraInfo("");
+
+        int one=  houseQmCheckTaskNotifyRecordService.add(record);
+            if(one<0){
+                log.info("insert new notify failed, data="+JsonUtil.GsonString(record)+"");
+            }
+        HouseQmCheckTaskIssueLog houseQmCheckTaskIssueLog = new HouseQmCheckTaskIssueLog();
+        houseQmCheckTaskIssueLog.setProjectId(issueInfo.getProjectId());
+        houseQmCheckTaskIssueLog.setTaskId(issueInfo.getTaskId());
+        houseQmCheckTaskIssueLog.setUuid(UUID.randomUUID().toString().replace("-", ""));
+        houseQmCheckTaskIssueLog.setIssueUuid(issueInfo.getUuid());
+        houseQmCheckTaskIssueLog.setSenderId(uid);
+        houseQmCheckTaskIssueLog.setStatus(status);
+        houseQmCheckTaskIssueLog.setAttachmentMd5List("");
+        houseQmCheckTaskIssueLog.setAudioMd5List("");
+        houseQmCheckTaskIssueLog.setMemoAudioMd5List("");
+        houseQmCheckTaskIssueLog.setClientCreateAt(new Date());
+        houseQmCheckTaskIssueLog.setCreateAt(new Date());
+        houseQmCheckTaskIssueLog.setUpdateAt(new Date());
+        houseQmCheckTaskIssueLog.setDetail(JSON.toJSONString(logDetail));
+        houseQmCheckTaskIssueLog.setDesc("");
+        houseQmCheckTaskIssueLogService.add(houseQmCheckTaskIssueLog);
+        if(repairerId>0){
+            HouseQmCheckTaskIssueUser repairerUserInfo=    houseQmCheckTaskIssueUserService.selectByIssueUUidAndUserIdAndRoleTypeAndNotDel(issueInfo.getUuid(),repairerId, UserInIssueRoleType.Repairer.getValue());
+                if(repairerUserInfo==null){
+                    HouseQmCheckTaskIssueUser repairerUserInfos = new HouseQmCheckTaskIssueUser();
+                    repairerUserInfos.setTaskId(issueInfo.getTaskId());
+                    repairerUserInfos.setIssueUuid(issueInfo.getUuid());
+                    repairerUserInfos.setUserId(repairerId);
+                    repairerUserInfos.setRoleType(UserInIssueRoleType.Repairer.getValue());
+                    repairerUserInfos.setCreateAt(new Date());
+                    repairerUserInfos.setUpdateAt(new Date());
+                    houseQmCheckTaskIssueUserService.add(repairerUserInfos);
+                }else{
+                    repairerUserInfo.setUpdateAt(new Date());
+                }
+            houseQmCheckTaskIssueUserService.update(repairerUserInfo);
+        }
+        List<HouseQmCheckTaskIssueUser> userFollowersInfo=null;
+        ArrayList<Integer> intFollowers=null;
+        if(followers.size()>0){
+          intFollowers = Lists.newArrayList();
+            for (int i = 0; i <followers.size() ; i++) {
+                   intFollowers.add(Integer.valueOf(followers.get(i)));
+            }
+            userFollowersInfo= houseQmCheckTaskIssueUserService.selectByRoleTypeAndUserIdAndIssueUuid(UserInIssueRoleType.RepairerFollower.getValue(),intFollowers,issueInfo.getUuid());
+        }
+        ArrayList<HouseQmCheckTaskIssueUser> insertData = Lists.newArrayList();
+        HashMap<Object, Object> baseData = Maps.newHashMap();
+        baseData.put("task_id",issueInfo.getTaskId());
+        baseData.put("issue_uuid",issueInfo.getUuid());
+        baseData.put("role_type",UserInIssueRoleType.RepairerFollower.getValue());
+        baseData.put("create_at",new Date());
+        baseData.put("update_at",new Date());
+
+        ArrayList<Integer> dataBaseFollowers = Lists.newArrayList();
+        for (int i = 0; i <userFollowersInfo.size(); i++) {
+            dataBaseFollowers.add(userFollowersInfo.get(i).getUserId());
+            userFollowersInfo.get(i).setUpdateAt(new Date());
+            houseQmCheckTaskIssueUserService.update(userFollowersInfo.get(i));
+        }
+        for (int i = 0; i <intFollowers.size(); i++) {
+                    if(!dataBaseFollowers.contains(intFollowers.get(i))){
+                    baseData.put("user_id",intFollowers.get(i));
+                        HouseQmCheckTaskIssueUser houseQmCheckTaskIssueUser = JsonUtil.GsonToBean(JSON.toJSONString(baseData), HouseQmCheckTaskIssueUser.class);
+
+                        insertData.add(houseQmCheckTaskIssueUser);
+                    }
+        }
+        if(CollectionUtils.isNotEmpty(insertData)){
+            houseQmCheckTaskIssueUserService.insertMany(insertData);
+            
+        }
+
+        return new LjBaseResponse();
+    }
+
+    @Override
+    public LjBaseResponse<List<HouseQmCheckTaskIssueDetailRepairLogVo>>  getDetailRepairLogByIssueUuid(String issueUuid) {
+        HouseQmCheckTaskIssue issueInfo = houseQmCheckTaskIssueService.selectByUuidAndNotDelete(issueUuid);
+        if (issueInfo == null) {
+            throw new LjBaseRuntimeException(272, "找不到此问题");
+        }
+        ArrayList<Integer> issueLogStatus = Lists.newArrayList();
+        issueLogStatus.add( HouseQmCheckTaskIssueLogStatus.ReformNoCheck.getValue());
+        issueLogStatus.add( HouseQmCheckTaskIssueLogStatus.Repairing.getValue());
+        List<HouseQmCheckTaskIssueDetailRepairLogVo> result = Lists.newArrayList();
+               int one= houseQmCheckTaskIssueLogService.selectByIssueUuIdAndStatusNotDelAndCount(issueUuid,issueLogStatus);
+                if(one<1){
+                    LjBaseResponse<List<HouseQmCheckTaskIssueDetailRepairLogVo>>  response = new LjBaseResponse<>();
+                    response.setResult(0);
+                    response.setMessage("找不到此问题");
+                    return response;
+
+                }
+              List< HouseQmCheckTaskIssueLog> issueLogInfo= houseQmCheckTaskIssueLogService.selectByIssueUuIdAndStatusNotDel(issueUuid,issueLogStatus);
+        ArrayList<Integer> issueLogUsersId = Lists.newArrayList();
+        for (int i = 0; i < issueLogInfo.size(); i++) {
+            Integer senderId = issueLogInfo.get(i).getSenderId();
+            issueLogUsersId.add(senderId);
+        }
+       List<User> userInfo= userService.searchByUserIdInAndNoDeleted(issueLogUsersId);
+        HashMap<Integer, String> userIdRealNameMap = Maps.newHashMap();
+        for (int i = 0; i < userInfo.size(); i++) {
+            userIdRealNameMap.put(userInfo.get(i).getUserId(),userInfo.get(i).getRealName());
+        }
+        for (int i = 0; i <issueLogInfo.size() ; i++) {
+            HouseQmCheckTaskIssueDetailRepairLogVo single = new HouseQmCheckTaskIssueDetailRepairLogVo();
+            single.setContent(issueLogInfo.get(i).getDesc());
+            single.setUser_id(issueLogInfo.get(i).getSenderId());
+            single.setCreate_at(DateUtil.datetimeToTimeStamp(  issueLogInfo.get(i).getCreateAt()));
+                if(issueLogInfo.get(i).getAttachmentMd5List().length()>0){
+                    List<String> attachmentMdeList = StringSplitToListUtil.removeStartAndEndStrAndSplit(issueLogInfo.get(i).getAttachmentMd5List(), ",", ",");
+                    single.setAttachment_md5_list(attachmentMdeList.toString());
+                }else {
+                    single.setAttachment_md5_list("");
+                }
+               single.setUser_name(userIdRealNameMap.get(issueLogInfo.get(i).getSenderId()));
+                result.add(single);
+        }
+        LjBaseResponse<List<HouseQmCheckTaskIssueDetailRepairLogVo>>  response = new LjBaseResponse<>();
+        response.setData(result);
+        return response;
+    }
+
+    @Override
+    public LjBaseResponse<IssueInfoVo> getHouseQmCheckTaskIssueDetailBaseByProjectAndUuid(Integer uid, Integer projectId, String issueUuid) {
+        Date limitTime = new Date(0);
+     HouseQmCheckTaskIssue issueInfo=  houseQmCheckTaskIssueService.getIssueByProjectIdAndUuid(projectId,issueUuid);
+        Map issueDetail = JSON.parseObject(issueInfo.getDetail(), Map.class);
+        if(issueInfo==null){
+            LjBaseResponse<IssueInfoVo>  response = new LjBaseResponse<>();
+            response.setResult(1);
+            response.setMessage("找不到此问题");
+            return response;
+        }
+        Integer taskId = issueInfo.getTaskId();
+        List<String> attachmentMd5List = StringSplitToListUtil.removeStartAndEndStrAndSplit(issueInfo.getAttachmentMd5List(), ",", ",");
+        HouseQmCheckTask taskInfo = houseQmCheckTaskService.selectByProjectIdAndTaskIdAndDel(projectId, taskId);
+        if(taskInfo==null){
+            LjBaseResponse<IssueInfoVo>  response = new LjBaseResponse<>();
+            response.setResult(1);
+            response.setMessage("问题数据错误");
+            return response;
+        }
+        String taskName = taskInfo.getName();
+        ArrayList<Object> categoryNames = Lists.newArrayList();
+        if(!issueInfo.getCategoryPathAndKey().equals("/")){
+            List<String> categoryKeys = StringSplitToListUtil.removeStartAndEndStrAndSplit(issueInfo.getCategoryPathAndKey(), "/", "/");
+            List<CategoryV3> categoryInfo = categoryV3Service.searchCategoryV3ByKeyInAndNoDeleted(categoryKeys);
+            HashMap<String, String> categoryKeyNameMap = Maps.newHashMap();
+            for (int i = 0; i <categoryInfo.size() ; i++) {
+                categoryKeyNameMap.put(categoryInfo.get(i).getKey(),categoryInfo.get(i).getName());
+            }
+            for (int i = 0; i < categoryKeys.size(); i++) {
+                categoryNames.add(categoryKeyNameMap.get(categoryKeys.get(i)));
+            }
+        }
+        ArrayList<Object> checkItemNames = Lists.newArrayList();
+        if(!issueInfo.getCheckItemPathAndKey().equals("/")){
+            List<String> checkItemKeys = StringSplitToListUtil.removeStartAndEndStrAndSplit(issueInfo.getCheckItemPathAndKey(), "/", "/");
+            List<CheckItemV3> checkItemInfo = checkItemV3Service.searchCheckItemyV3ByKeyInAndNoDeleted(checkItemKeys);
+            HashMap<String, String> checkItemKeyNameMap = Maps.newHashMap();
+            for (int i = 0; i <checkItemInfo.size() ; i++) {
+                checkItemKeyNameMap.put(checkItemInfo.get(i).getKey(),checkItemInfo.get(i).getName());
+            }
+            for (int i = 0; i <checkItemKeys.size(); i++) {
+                checkItemNames.add(checkItemKeyNameMap.get(checkItemKeys.get(i)));
+            }
+        }
+        ArrayList<Object> areaNames = Lists.newArrayList();
+        if(!issueInfo.getAreaPathAndId().equals("/")) {
+            List<String> areaIds = StringSplitToListUtil.removeStartAndEndStrAndSplit(issueInfo.getAreaPathAndId().replace("//", "/"), "/", "/");
+            ArrayList<Integer> areaIdsList = Lists.newArrayList();
+            for (int i = 0; i < areaIds.size(); i++) {
+                areaIdsList.add(Integer.valueOf(areaIds.get(i)));
+            }
+            List<Area> areaInfo = areaService.selectByAreaIds(areaIdsList);
+            HashMap<Integer, String> areaIdNameMap = Maps.newHashMap();
+            for (int i = 0; i < areaInfo.size(); i++) {
+                areaIdNameMap.put(areaInfo.get(i).getId(), areaInfo.get(i).getName());
+            }
+            for (int i = 0; i < areaIdsList.size(); i++) {
+                areaNames.add(areaIdNameMap.get(areaIdsList.get(i)));
+            }
+        }
+            ArrayList<Object> allUserId = Lists.newArrayList();
+            if (issueInfo.getRepairerId()>0){
+                allUserId.add(issueInfo.getRepairerId());
+            }
+            if (issueInfo.getSenderId()>0){
+                allUserId.add(issueInfo.getSenderId());
+            }
+            List<Integer> repairerFollowerIds=null;
+            if (!StringUtils.isEmpty( issueInfo.getRepairerFollowerIds())){
+                 if(issueInfo.getRepairerFollowerIds().length()>0){
+                   repairerFollowerIds = StringSplitToListUtil.splitToIdsComma(issueInfo.getRepairerFollowerIds(), ",");
+                    if(repairerFollowerIds.contains(0)){
+                        repairerFollowerIds.remove(0);
+                    }
+                     if(repairerFollowerIds.size()>0){
+                         for (int i = 0; i < repairerFollowerIds.size(); i++) {
+                             allUserId.add(repairerFollowerIds.get(i));
+                         }
+
+                     }
+                 }
+            }
+            List allUserIdList = CollectionUtil.removeDuplicate(allUserId);
+            List<User> allUserInfo = userService.searchByUserIdInAndNoDeleted(allUserIdList);
+            HashMap<Object, Object> userIdRealNameMap = Maps.newHashMap();
+            for (int i = 0; i <allUserInfo.size() ; i++) {
+                userIdRealNameMap.put(allUserInfo.get(i).getUserId(),allUserInfo.get(i).getRealName());
+            }
+            List<HouseQmCheckTaskIssueAttachment>   myAudiosInfo= houseQmCheckTaskIssueAttachmentService.selectByissueUuidAnduserIdAndpublicTypeAndattachmentTypeAndNotDel(issueUuid,uid, CheckTaskIssueAttachmentPublicType.Private.getValue(), CheckTaskIssueAttachmentAttachmentType.Audio.getValue());
+            ArrayList<IssueInfoVo.HouseQmCheckTaskIssueAttachmentVo> myAudios = Lists.newArrayList();
+            for (int i = 0; i <myAudiosInfo.size() ; i++) {
+                IssueInfoVo.HouseQmCheckTaskIssueAttachmentVo houseQmCheckTaskIssueAttachment = new IssueInfoVo(). new HouseQmCheckTaskIssueAttachmentVo();
+                houseQmCheckTaskIssueAttachment.setMd5(myAudiosInfo.get(i).getMd5());
+                houseQmCheckTaskIssueAttachment.setTyp( CheckTaskIssueAttachmentAttachmentType.Audio.getValue());
+                houseQmCheckTaskIssueAttachment.setCreate_at(DateUtil.datetimeToTimeStamp( myAudiosInfo.get(i).getClientCreateAt()));
+                myAudios.add(houseQmCheckTaskIssueAttachment);
+            }
+            ArrayList<IssueInfoVo.HouseQmCheckTaskIssueAttachmentVo> audios = Lists.newArrayList();
+            List<HouseQmCheckTaskIssueAttachment> audiosInfo=houseQmCheckTaskIssueAttachmentService.selectByIssueUuidAndpublicTypeAndattachmentTypeAndNotDel(issueUuid,CheckTaskIssueAttachmentPublicType.Public.getValue(),CheckTaskIssueAttachmentAttachmentType.Audio.getValue());
+            for (int i = 0; i <audiosInfo.size(); i++) {
+                IssueInfoVo.HouseQmCheckTaskIssueAttachmentVo houseQmCheckTaskIssueAttachment = new IssueInfoVo().new HouseQmCheckTaskIssueAttachmentVo();
+                houseQmCheckTaskIssueAttachment.setMd5(audiosInfo.get(i).getMd5());
+                houseQmCheckTaskIssueAttachment.setTyp( CheckTaskIssueAttachmentAttachmentType.Audio.getValue());
+                houseQmCheckTaskIssueAttachment.setCreate_at(DateUtil.datetimeToTimeStamp( audiosInfo.get(i).getClientCreateAt()));
+                audios.add(houseQmCheckTaskIssueAttachment);
+            }
+        List<IssueInfoVo.HouseQmCheckTaskIssueDetail> detailList = Lists.newArrayList();
+        IssueInfoVo.HouseQmCheckTaskIssueDetail detail = new IssueInfoVo().new HouseQmCheckTaskIssueDetail();
+            detail.setIssue_reason((Integer) issueDetail.get("IssueReason"));
+            detail.setIssue_reason_detail((String) issueDetail.get("IssueReasonDetail"));
+            detail.setIssue_suggest((String) issueDetail.get("IssueSuggest"));
+            detail.setPotential_risk((String) issueDetail.get("PotentialRisk"));
+            detail.setPreventive_action_detail((String) issueDetail.get("PreventiveActionDetail"));
+        detailList.add(detail);
+            ArrayList<IssueInfoVo.HouseQmCheckTaskIssueDetailEditLog> editLogs = Lists.newArrayList();
+
+        //  # 为什么是-1？不知道，照着之前能到写的
+        ArrayList<Integer> logStatus = Lists.newArrayList();
+        for (int i = -1; i <= HouseQmCheckTaskIssueLogStatus.EditBaseInfo.getValue() ; i++) {
+            logStatus.add(i);
+        }
+        List<HouseQmCheckTaskIssueLog> issueLogInfo = houseQmCheckTaskIssueLogService.selectByIssueUuIdAndStatusNotDel(issueUuid, logStatus);
+        ArrayList<Integer> logUserIds = Lists.newArrayList();
+        for (int i = 0; i < issueLogInfo.size(); i++) {
+            logUserIds.add(issueLogInfo.get(i).getSenderId());
+        }
+
+        List<User> logUserInfo = userService.searchByUserIdInAndNoDeleted(logUserIds);
+        HashMap<Object, Object> logUserIdNameMap = Maps.newHashMap();
+        for (int i = 0; i <logUserInfo.size(); i++) {
+            logUserIdNameMap.put(logUserInfo.get(i).getUserId(),logUserInfo.get(i).getRealName());
+        }
+        for (int i = 0; i < issueLogInfo.size(); i++) {
+                if(issueLogInfo.get(i).getDesc().length()<1&&issueLogInfo.get(i).getAttachmentMd5List().length()<1){
+                            continue;
+                }
+            IssueInfoVo.HouseQmCheckTaskIssueDetailEditLog singleLog = new IssueInfoVo().new HouseQmCheckTaskIssueDetailEditLog();
+            singleLog.setContent(issueLogInfo.get(i).getDesc());
+            singleLog.setUser_id(issueLogInfo.get(i).getSenderId());
+            singleLog.setCreate_at(DateUtil.datetimeToTimeStamp( issueLogInfo.get(i).getCreateAt()));
+            if(issueLogInfo.get(i).getAttachmentMd5List().length()>0){
+                singleLog.setAttachment_md5_list(StringSplitToListUtil.removeStartAndEndStrAndSplit(issueLogInfo.get(i).getAttachmentMd5List(),",",",").toString());
+            }
+            singleLog.setUser_name((String) logUserIdNameMap.get(issueLogInfo.get(i).getSenderId()));
+            editLogs.add(singleLog);
+        }
+        int   planEndOn = -1;
+        if(DateUtil.datetimeToTimeStamp(issueInfo.getPlanEndOn())>DateUtil.datetimeToTimeStamp(limitTime)){
+            planEndOn=DateUtil.datetimeToTimeStamp(issueInfo.getPlanEndOn());
+        }
+        IssueInfoVo vo = new IssueInfoVo();
+        vo.setTask_id(taskId);
+        vo.setTask_name(taskName);
+        vo.setCreate_at(DateUtil.datetimeToTimeStamp(issueInfo.getCreateAt()));
+        vo.setCategory_path_names(categoryNames.toString());
+        vo.setCheck_item_path_names(checkItemNames.toString());
+        vo.setArea_path_names(areaNames.toString());
+        vo.setIssue_type(issueInfo.getTyp());
+        vo.setPos_x(issueInfo.getPosX());
+        vo.setPos_y(issueInfo.getPosY());
+        vo.setDrawing_md5(issueInfo.getDrawingMD5());
+        vo.setAttachment_md5_list(attachmentMd5List.toString());
+        vo.setClose_status(0);
+        vo.setRepair_follower_ids(repairerFollowerIds);
+        vo.setRepairer_id(issueInfo.getRepairerId());
+        vo.setSender_name((String) userIdRealNameMap.get(issueInfo.getSenderId()));
+        vo.setPlan_end_on(planEndOn);
+        vo.setContent(issueInfo.getContent());
+        vo.setAudios(audios);
+        vo.setMy_audio(myAudios);
+        vo.setEdit_logs(editLogs);
+        vo.setDetail(detailList);
+        vo.setStatus(issueInfo.getStatus());
+        LjBaseResponse<IssueInfoVo> response = new LjBaseResponse<>();
+        response.setData(vo);
+        return response;
+    }
+
+
+    private void  pushBaseMessage(Integer taskId, ArrayList<Integer> notifyUserIds, String title, String msg) {
+            ArrayList<String> alias = Lists.newArrayList();
+            for (int i = 0; i <notifyUserIds.size() ; i++) {
+                alias.add("user_id_"+ENTERPRISEID+"_"+notifyUserIds.get(i)+"");
+            }
+
+        String alia = StringUtils.join(alias, ",");
+            UmPushUtil.sendAndroidCustomizedcast(APP_KEY_ANDROID,APP_MASTER_SECRET_ANDROID,
+                    alia, AppPlatformTypeEnum.PUSH_PLATFORM_UMENG_ANDROID.getValue(),
+                    "Android",title,msg,msg, String.valueOf(taskId));
+            UmPushUtil.sendIOSCustomizedcast(APP_KEY_IOS,APP_MASTER_SECRET_IOS,alia,
+                    AppPlatformTypeEnum.PUSH_PLATFORM_UMENG_IOS.getValue(),msg, String.valueOf(taskId));
+            XmPushUtil.sendMessageToUserAccounts(APP_SECRET_XIAO_MI,PACKAGE_NAME_XIAO_MI,title,msg,alias);
+        }
+
+
+
 
     private HouseQmCheckTaskIssue getIssueByProjectIdAndUuid(Integer projectId, String issueUuid) {
         return houseQmCheckTaskIssueService.getIssueByProjectIdAndUuid(projectId, issueUuid);

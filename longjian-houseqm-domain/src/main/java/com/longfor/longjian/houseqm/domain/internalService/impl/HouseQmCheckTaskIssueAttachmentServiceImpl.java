@@ -6,6 +6,7 @@ import com.longfor.longjian.houseqm.domain.internalService.HouseQmCheckTaskIssue
 import com.longfor.longjian.houseqm.po.HouseQmCheckTaskIssueAttachment;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
+import tk.mybatis.mapper.entity.Example;
 
 import javax.annotation.Resource;
 import java.util.List;
@@ -31,5 +32,30 @@ public class HouseQmCheckTaskIssueAttachmentServiceImpl implements HouseQmCheckT
     public List<HouseQmCheckTaskIssueAttachment> searchByIssueUuid(Set<String> issueUuids){
         List<HouseQmCheckTaskIssueAttachment> houseQmCheckTaskIssueAttachments = houseQmCheckTaskIssueAttachmentMapper.selectByIssueUuid(issueUuids, "false");
         return houseQmCheckTaskIssueAttachments;
+    }
+
+    @Override
+    @LFAssignDataSource(value = "zhijian2")
+    public List<HouseQmCheckTaskIssueAttachment> selectByissueUuidAnduserIdAndpublicTypeAndattachmentTypeAndNotDel(String issueUuid,Integer uid, Integer value, Integer value1) {
+        Example example = new Example(HouseQmCheckTaskIssueAttachment.class);
+        Example.Criteria criteria = example.createCriteria();
+        criteria.andEqualTo("issueUuid",issueUuid);
+        criteria.andEqualTo("userId",uid);
+        criteria.andEqualTo("publicType",value);
+        criteria.andEqualTo("attachmentType",value1);
+        criteria.andIsNull("deleteAt");
+        return  houseQmCheckTaskIssueAttachmentMapper.selectByExample(example);
+    }
+
+    @Override
+    @LFAssignDataSource(value = "zhijian2")
+    public List<HouseQmCheckTaskIssueAttachment> selectByIssueUuidAndpublicTypeAndattachmentTypeAndNotDel(String issueUuid, Integer value, Integer value1) {
+        Example example = new Example(HouseQmCheckTaskIssueAttachment.class);
+        Example.Criteria criteria = example.createCriteria();
+        criteria.andEqualTo("issueUuid",issueUuid);
+        criteria.andEqualTo("publicType",value);
+        criteria.andEqualTo("attachmentType",value1);
+        criteria.andIsNull("deleteAt");
+        return  houseQmCheckTaskIssueAttachmentMapper.selectByExample(example);
     }
 }

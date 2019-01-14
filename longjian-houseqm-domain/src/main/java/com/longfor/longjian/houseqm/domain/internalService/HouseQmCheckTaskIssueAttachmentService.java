@@ -9,4 +9,7 @@ public interface HouseQmCheckTaskIssueAttachmentService {
 
     List<HouseQmCheckTaskIssueAttachment> searchByIssueUuid(Set<String> issueUuids);
 
+    List<HouseQmCheckTaskIssueAttachment> selectByissueUuidAnduserIdAndpublicTypeAndattachmentTypeAndNotDel(String issueUuid,Integer uid, Integer value, Integer value1);
+
+    List<HouseQmCheckTaskIssueAttachment> selectByIssueUuidAndpublicTypeAndattachmentTypeAndNotDel(String issueUuid, Integer value, Integer value1);
 }

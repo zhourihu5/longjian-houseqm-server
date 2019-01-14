@@ -79,6 +79,7 @@
                 #{id}
             </foreach>
         </where>
+        AND delete_at IS NULL
     </select>
     <select id="selectByFatherId" resultMap="BaseResultMap">
         select

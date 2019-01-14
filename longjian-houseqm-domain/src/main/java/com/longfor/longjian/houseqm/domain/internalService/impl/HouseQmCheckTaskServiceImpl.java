@@ -105,10 +105,23 @@ public class HouseQmCheckTaskServiceImpl implements HouseQmCheckTaskService {
     }
 
     @Override
+    @LFAssignDataSource("zhijian2")
     public HouseQmCheckTask selectByTaskId(Integer integer) {
+        Example example = new Example(HouseQmCheckTask.class);
+        Example.Criteria criteria = example.createCriteria();
+        criteria.andEqualTo("taskId",integer);
+        criteria.andIsNull("deleteAt");
+        return houseQmCheckTaskMapper.selectOneByExample(example);
+    }
 
 
-        return null;
+    @Override
+    @LFAssignDataSource("zhijian2")
+    public HouseQmCheckTask selectByProjectIdAndTaskIdAndDel(Integer projectId, Integer taskId) {
+        Example example = new Example(HouseQmCheckTask.class);
+        Example.Criteria criteria = example.createCriteria();
+        criteria.andEqualTo("projectId",projectId).andEqualTo("taskId",taskId).andIsNull("deleteAt");
+        return houseQmCheckTaskMapper.selectOneByExample(example);
     }
 
     /**

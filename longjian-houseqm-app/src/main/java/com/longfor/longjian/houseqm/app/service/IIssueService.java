@@ -2,10 +2,7 @@ package com.longfor.longjian.houseqm.app.service;
 
 import com.longfor.gaia.gfs.core.bean.PageInfo;
 import com.longfor.longjian.common.base.LjBaseResponse;
-import com.longfor.longjian.houseqm.app.vo.HouseQmCheckTaskIssueHistoryLogVo;
-import com.longfor.longjian.houseqm.app.vo.IssueListVo;
-import com.longfor.longjian.houseqm.app.vo.RepairNotifyExportVo;
-import com.longfor.longjian.houseqm.app.vo.TaskResponse;
+import com.longfor.longjian.houseqm.app.vo.*;
 import com.longfor.longjian.houseqm.po.ProjectSettingV2;
 
 import java.util.ArrayList;
@@ -45,7 +42,7 @@ public interface IIssueService {
                                String areaIds,String statusIn,Integer checkerId,Integer repairerId,Integer type,Integer condition,String keyWord,
                                String createOnBegin,String createOnEnd,Boolean isOverDue,Integer pageNum,Integer pageSize);
 
-    ArrayList<HouseQmCheckTaskIssueHistoryLogVo> getHouseQmCheckTaskIssueActionLogByIssueUuid(String issueUuid);
+    List<HouseQmCheckTaskIssueHistoryLogVo> getHouseQmCheckTaskIssueActionLogByIssueUuid(String issueUuid);
 
     void deleteHouseqmCheckTaskIssueByProjectAndUuid(Integer projectId, String issueUuid);
 
@@ -58,4 +55,10 @@ public interface IIssueService {
     RepairNotifyExportVo repairNotifyExport2(Integer uid, Integer projectId, String issueUuid);
 
     List<ProjectSettingV2> getProjectSettingId(Integer projectId);
+
+    LjBaseResponse updateIssueRepairInfoByProjectAndUuid(Integer uid, Integer repairerId, String repairFollowerIds, Integer projectId, String issueUuid);
+
+    LjBaseResponse<List<HouseQmCheckTaskIssueDetailRepairLogVo>>  getDetailRepairLogByIssueUuid(String issueUuid);
+
+    LjBaseResponse<IssueInfoVo> getHouseQmCheckTaskIssueDetailBaseByProjectAndUuid(Integer uid, Integer projectId, String issueUuid);
 }

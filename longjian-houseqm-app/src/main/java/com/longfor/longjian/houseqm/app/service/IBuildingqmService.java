@@ -1,5 +1,6 @@
 package com.longfor.longjian.houseqm.app.service;
 
+import com.longfor.longjian.houseqm.app.req.TaskEditReq;
 import com.longfor.longjian.houseqm.app.req.TaskReq;
 import com.longfor.longjian.houseqm.app.vo.MyIssuePatchListVo;
 import com.longfor.longjian.houseqm.app.vo.TaskListVo;
@@ -19,4 +20,6 @@ public interface IBuildingqmService {
     void create(Integer uid, TaskReq taskReq);
 
     List<HouseQmCheckTaskSquad> searchHouseqmCheckTaskSquad(String projectId, String taskId);
+
+    void edit(Integer uid, TaskEditReq taskEditReq);
 }

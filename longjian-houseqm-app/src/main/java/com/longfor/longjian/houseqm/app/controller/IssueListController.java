@@ -91,7 +91,7 @@ public class IssueListController {
         has_per = ucenter_api.check_project_permission(uid, req.project_id, '项目.工程检查.问题管理.查看')
         if not has_per:
         rsp = errors_utils.err(rsp, 'PermissionDenied')*/
-        ArrayList<HouseQmCheckTaskIssueHistoryLogVo> result=  iIssueService.getHouseQmCheckTaskIssueActionLogByIssueUuid(issueUuid);
+        List<HouseQmCheckTaskIssueHistoryLogVo> result=  iIssueService.getHouseQmCheckTaskIssueActionLogByIssueUuid(issueUuid);
         TaskResponse<ArrayList<HouseQmCheckTaskIssueHistoryLogVo>> response = new TaskResponse<>();
         response.setData(result);
         return response;
@@ -182,8 +182,8 @@ public class IssueListController {
 
     @PostMapping(value = "delete", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     public TaskResponse delete(@RequestParam(value = "project_id",required = true) Integer projectId,
-                                                                                 @RequestParam(value = "issue_uuid",required =true) String issueUuid){
-            ////todo session 取uid 权限
+                               @RequestParam(value = "issue_uuid",required =true) String issueUuid){
+        ////todo session 取uid 权限
         /*uid = session['uid']
         has_per = ucenter_api.check_project_permission(uid, req.project_id, '项目.工程检查.问题管理.查看')
         if not has_per:
@@ -191,6 +191,24 @@ public class IssueListController {
         iIssueService.deleteHouseqmCheckTaskIssueByProjectAndUuid(projectId,issueUuid);
         return new TaskResponse();
     }
+
+    @PostMapping(value = "edit_repairer", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+    public LjBaseResponse editRepairer(@RequestParam(value = "project_id",required = true) Integer projectId,
+                               @RequestParam(value = "issue_uuid",required =true) String issueUuid,
+                                    @RequestParam(value = "repairer_id",required = false,defaultValue = "0") Integer repairerId,
+                                     @RequestParam(value = "repair_follower_ids",required =false,defaultValue = "") String repairFollowerIds ){
+        ////todo session 取uid 权限
+        /*uid = session['uid']
+        has_per = ucenter_api.check_project_permission(uid, req.project_id, '项目.工程检查.问题管理.查看')
+        if not has_per:
+        rsp = errors_utils.err(rsp, 'PermissionDenied')*/
+        Integer uid=1;
+        LjBaseResponse taskResponse = iIssueService.updateIssueRepairInfoByProjectAndUuid(uid,repairerId,repairFollowerIds,projectId,issueUuid);
+        return taskResponse;
+    }
+
+
+
 
     @PostMapping(value = "add_desc", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     public LjBaseResponse addDesc(@RequestParam(value = "project_id",required = true) Integer projectId,
@@ -236,6 +254,32 @@ public class IssueListController {
         return  taskResponse;
     }
 
+    @GetMapping(value = "detail_repair_log", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+    public LjBaseResponse<List<HouseQmCheckTaskIssueDetailRepairLogVo>> detailRepairLog(@RequestParam(value = "project_id",required = true) Integer projectId,
+                                                                                 @RequestParam(value = "issue_uuid",required =true) String issueUuid){
+        ////todo session 取uid 权限
+        /*uid = session['uid']
+        has_per = ucenter_api.check_project_permission(uid, req.project_id, '项目.工程检查.问题管理.查看')
+        if not has_per:
+        rsp = errors_utils.err(rsp, 'PermissionDenied')*/
+        LjBaseResponse<List<HouseQmCheckTaskIssueDetailRepairLogVo>>  result=  iIssueService.getDetailRepairLogByIssueUuid(issueUuid);
 
+        return result;
+    }
+
+
+    @GetMapping(value = "detail_base", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+    public LjBaseResponse<IssueInfoVo> detailBase(@RequestParam(value = "project_id",required = true) Integer projectId,
+                                                                                        @RequestParam(value = "issue_uuid",required =true) String issueUuid){
+        ////todo session 取uid 权限
+        /*uid = session['uid']
+        has_per = ucenter_api.check_project_permission(uid, req.project_id, '项目.工程检查.问题管理.查看')
+        if not has_per:
+        rsp = errors_utils.err(rsp, 'PermissionDenied')*/
+        Integer  uid=1;
+        LjBaseResponse<IssueInfoVo>  result=  iIssueService.getHouseQmCheckTaskIssueDetailBaseByProjectAndUuid(uid,projectId,issueUuid);
+
+        return result;
+    }
 
 }

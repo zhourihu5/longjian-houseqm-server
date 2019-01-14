@@ -1,24 +1,24 @@
-<?xml version="1.0" encoding="UTF-8" ?>
-<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
-<mapper namespace="com.longfor.longjian.houseqm.dao.HouseQmCheckTaskNotifyRecordMapper" >
-  <resultMap id="BaseResultMap" type="com.longfor.longjian.houseqm.po.HouseQmCheckTaskNotifyRecord" >
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.longfor.longjian.houseqm.dao.HouseQmCheckTaskNotifyRecordMapper">
+  <resultMap id="BaseResultMap" type="com.longfor.longjian.houseqm.po.HouseQmCheckTaskNotifyRecord">
     <!--
       WARNING - @mbg.generated
     -->
-    <id column="id" property="id" jdbcType="INTEGER" />
-    <result column="project_id" property="projectId" jdbcType="INTEGER" />
-    <result column="task_id" property="taskId" jdbcType="INTEGER" />
-    <result column="src_user_id" property="srcUserId" jdbcType="INTEGER" />
-    <result column="des_user_ids" property="desUserIds" jdbcType="VARCHAR" />
-    <result column="module_id" property="moduleId" jdbcType="INTEGER" />
-    <result column="issue_id" property="issueId" jdbcType="INTEGER" />
-    <result column="issue_status" property="issueStatus" jdbcType="INTEGER" />
-    <result column="extra_info" property="extraInfo" jdbcType="VARCHAR" />
-    <result column="create_at" property="createAt" jdbcType="TIMESTAMP" />
-    <result column="update_at" property="updateAt" jdbcType="TIMESTAMP" />
-    <result column="delete_at" property="deleteAt" jdbcType="TIMESTAMP" />
+    <id column="id" jdbcType="INTEGER" property="id" />
+    <result column="project_id" jdbcType="INTEGER" property="projectId" />
+    <result column="task_id" jdbcType="INTEGER" property="taskId" />
+    <result column="src_user_id" jdbcType="INTEGER" property="srcUserId" />
+    <result column="des_user_ids" jdbcType="VARCHAR" property="desUserIds" />
+    <result column="module_id" jdbcType="INTEGER" property="moduleId" />
+    <result column="issue_id" jdbcType="INTEGER" property="issueId" />
+    <result column="issue_status" jdbcType="INTEGER" property="issueStatus" />
+    <result column="extra_info" jdbcType="VARCHAR" property="extraInfo" />
+    <result column="create_at" jdbcType="TIMESTAMP" property="createAt" />
+    <result column="update_at" jdbcType="TIMESTAMP" property="updateAt" />
+    <result column="delete_at" jdbcType="TIMESTAMP" property="deleteAt" />
   </resultMap>
-  <sql id="Base_Column_List" >
+  <sql id="Base_Column_List">
     <!--
       WARNING - @mbg.generated
     -->
