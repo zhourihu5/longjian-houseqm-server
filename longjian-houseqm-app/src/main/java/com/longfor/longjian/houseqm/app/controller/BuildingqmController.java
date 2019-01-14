@@ -3,6 +3,7 @@ package com.longfor.longjian.houseqm.app.controller;
 import com.google.common.collect.Lists;
 import com.longfor.longjian.common.base.LjBaseResponse;
 import com.longfor.longjian.houseqm.app.req.DeviceReq;
+import com.longfor.longjian.houseqm.app.req.TaskEditReq;
 import com.longfor.longjian.houseqm.app.req.TaskReq;
 import com.longfor.longjian.houseqm.app.req.UpdateDeviceReq;
 import com.longfor.longjian.houseqm.app.service.IBuildingqmService;
@@ -220,8 +221,34 @@ public class BuildingqmController {
     }
 
     @PostMapping(value = "task/edit", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
-    public LjBaseResponse<MyIssuePatchListVo> edit(DeviceReq deviceReq) {
+    public LjBaseResponse edit(TaskEditReq taskEditReq) {
+        log.info("edit, project_id="+taskEditReq.getProject_id()+"" +
+                " name="+taskEditReq.getName()+", " +
+                "task_id="+taskEditReq.getTask_id()+"," +
+                " area_ids="+taskEditReq.getArea_ids()+", area_types="+taskEditReq.getArea_types()+"," +
+                " plan_begin_on="+taskEditReq.getPlan_begin_on()+"," +
+                " plan_end_on="+taskEditReq.getPlan_end_on()+", " +
+                "repairer_ids="+taskEditReq.getRepairer_ids()+", " +
+                "checker_groups="+taskEditReq.getChecker_groups()+", " +
+                "repairer_refund_permission="+taskEditReq.getRepairer_refund_permission()+"," +
+                " repairer_follower_permission="+taskEditReq.getRepairer_follower_permission()+", " +
+                "checker_approve_permission="+taskEditReq.getChecker_approve_permission()+", " +
+                "repaired_picture_status="+taskEditReq.getRepaired_picture_status()+", " +
+                "issue_desc_status="+taskEditReq.getIssue_desc_status()+", " +
+                "issue_default_desc="+taskEditReq.getIssue_default_desc()+"," +
+                " push_strategy_config="+taskEditReq.getPush_strategy_config()+"");
+        ////todo c从session中获取uid
+/*
+        uid = session['uid']
+*/
+        Integer uid=1;
+        ////todo 鉴权
+       /* has_per = ucenter_api.check_project_permission(uid, req.project_id, '项目.工程检查.任务管理.新增')
+        if not has_per:
+        rsp = errors_utils.err(rsp, 'PermissionDenied')*/
 
-        return null;
+        buildingqmService.edit(uid,taskEditReq);
+        LjBaseResponse<Object> response = new LjBaseResponse<>();
+        return response;
     }
 }

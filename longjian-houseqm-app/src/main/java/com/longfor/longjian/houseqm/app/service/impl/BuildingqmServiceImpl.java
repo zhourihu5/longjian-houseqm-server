@@ -9,6 +9,7 @@ import com.longfor.longjian.common.consts.CategoryClsTypeEnum;
 import com.longfor.longjian.common.consts.ModuleInfoEnum;
 import com.longfor.longjian.common.consts.checktask.*;
 import com.longfor.longjian.common.exception.LjBaseRuntimeException;
+import com.longfor.longjian.houseqm.app.req.TaskEditReq;
 import com.longfor.longjian.houseqm.app.req.TaskReq;
 import com.longfor.longjian.houseqm.app.service.IBuildingqmService;
 import com.longfor.longjian.houseqm.app.vo.*;
@@ -277,8 +278,8 @@ public class BuildingqmServiceImpl implements IBuildingqmService {
         List<ApiBuildingQmTaskMemberGroupVo> repairerGroups = createRepairerGroups("整改人组", repairerIds);
 
         ConfigVo config = unmarshPushStrategy(taskReq.getPush_strategy_config());
-        String planBeginOn = taskReq.getPlan_begin_on() + "00:00:00";
-        String planEndOn = taskReq.getPlan_end_on() + "23:59:59";
+        String planBeginOn = taskReq.getPlan_begin_on() + " 00:00:00";
+        String planEndOn = taskReq.getPlan_end_on() + " 23:59:59";
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
         try {
             Date begin = sdf.parse(planBeginOn);
@@ -297,6 +298,43 @@ public class BuildingqmServiceImpl implements IBuildingqmService {
     @Override
     public List<HouseQmCheckTaskSquad> searchHouseqmCheckTaskSquad(String projectId, String taskId) {
       return  houseQmCheckTaskSquadService.searchHouseqmCheckTaskSquad(projectId,taskId);
+    }
+
+    @Override
+    public void edit(Integer uid, TaskEditReq taskEditReq) {
+        List<Integer> areaIds = StringSplitToListUtil.splitToIdsComma(taskEditReq.getArea_ids(), ",");
+        if (CollectionUtils.isEmpty(areaIds)) {
+            throw new LjBaseRuntimeException(305, "区域不能为空");
+        }
+        List<Integer> areaTypes = StringSplitToListUtil.splitToIdsComma(taskEditReq.getArea_types(), ",");
+        if (CollectionUtils.isEmpty(areaTypes)) {
+            throw new LjBaseRuntimeException(310, "区域类型不能为空");
+        }
+        List<ApiBuildingQmCheckTaskSquadObjVo> groupsInfo = unmarshCheckerGroups(taskEditReq.getChecker_groups());
+        if (CollectionUtils.isEmpty(groupsInfo)) {
+            throw new LjBaseRuntimeException(315, "检查人组不能为空");
+        }
+        List<ApiBuildingQmTaskMemberGroupVo> checkerGroups = createCheckerGroups(groupsInfo);
+        List<Integer> repairerIds = StringSplitToListUtil.splitToIdsComma(taskEditReq.getRepairer_ids(), ",");
+        if (CollectionUtils.isEmpty(repairerIds)) {
+            throw new LjBaseRuntimeException(318, "整改人不能为空");
+        }
+        List<ApiBuildingQmTaskMemberGroupVo> repairerGroups = createRepairerGroups("整改人组", repairerIds);
+
+        ConfigVo config = unmarshPushStrategy(taskEditReq.getPush_strategy_config());
+        String planBeginOn = taskEditReq.getPlan_begin_on() + " 00:00:00";
+        String planEndOn = taskEditReq.getPlan_end_on() + " 23:59:59";
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        try {
+            Date begin = sdf.parse(planBeginOn);
+            Date endon = sdf.parse(planEndOn);
+            if (DateUtil.datetimeToTimeStamp(endon) < DateUtil.datetimeToTimeStamp(begin)) {
+                throw new LjBaseRuntimeException(331, "计划结束时间有误");
+            }
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+
     }
 
     private List<ApiBuildingQmTaskMemberGroupVo> createCheckerGroups(List<ApiBuildingQmCheckTaskSquadObjVo> groupsInfo) {
@@ -456,7 +494,7 @@ public class BuildingqmServiceImpl implements IBuildingqmService {
 
         }
         //  # 超期问题发起推送配置
-        if (config.getConfig_category_overdue() == null) {
+        if (config.getConfig_category_overdue() != null) {
             PushStrategyCategoryOverdue pushStrategyCategoryOverdue = new PushStrategyCategoryOverdue();
             pushStrategyCategoryOverdue.setProjectId(taskReq.getProject_id());
             pushStrategyCategoryOverdue.setTaskId(One);
@@ -472,7 +510,7 @@ public class BuildingqmServiceImpl implements IBuildingqmService {
 
         }
         //  # 高发问题发起推送配置
-        if (config.getConfig_category_threshold() == null) {
+        if (config.getConfig_category_threshold() != null) {
             PushStrategyCategoryThreshold pushStrategyCategoryThreshold = new PushStrategyCategoryThreshold();
             pushStrategyCategoryThreshold.setProjectId(taskReq.getProject_id());
             pushStrategyCategoryThreshold.setTaskId(One);
@@ -521,10 +559,10 @@ public class BuildingqmServiceImpl implements IBuildingqmService {
 
     private ConfigVo unmarshPushStrategy(String push_strategy_config) {
         ConfigVo configVo = new ConfigVo();
-        if (push_strategy_config == null) {
+        if (StringUtils.isEmpty(push_strategy_config)) {
             return new ConfigVo();
         }
-        Map<String, Object> push_strategys_config = JsonUtil.GsonToMaps(push_strategy_config);
+        Map<String, Object> push_strategys_config =   JSON.parseObject(push_strategy_config,Map.class);
         Map assign_time = (Map) push_strategys_config.get("assign_time");
         Map category_overdue = (Map) push_strategys_config.get("category_overdue");
         Map category_threshold = (Map) push_strategys_config.get("category_threshold");
@@ -580,7 +618,7 @@ public class BuildingqmServiceImpl implements IBuildingqmService {
     }
 
     private List<ApiBuildingQmCheckTaskSquadObjVo> unmarshCheckerGroups(String checker_groups) {
-        Map<String, Object> checkergroups = JsonUtil.GsonToMaps(checker_groups);
+        Map<String, Object> checkergroups = JSON.parseObject(checker_groups,Map.class);
         ApiBuildingQmCheckTaskSquadObjVo objVo = new ApiBuildingQmCheckTaskSquadObjVo();
         objVo.setId((Integer) checkergroups.get("id"));
         objVo.setName((String) checkergroups.get("name"));
@@ -598,7 +636,7 @@ public class BuildingqmServiceImpl implements IBuildingqmService {
             log.info("name not exist, data='unmarshCheckerGroups'");
             throw new LjBaseRuntimeException(285, "approve_ids not exist");
         }
-        objVo.setDirect_approve_ids((String) checkergroups.get("'direct_approve_ids'"));
+        objVo.setDirect_approve_ids((String) checkergroups.get("direct_approve_ids"));
         if (objVo.getDirect_approve_ids() == null) {
             log.info("name not exist, data='unmarshCheckerGroups'");
             throw new LjBaseRuntimeException(290, "direct_approve_ids not exist");
@@ -656,7 +694,7 @@ public class BuildingqmServiceImpl implements IBuildingqmService {
                 task.setChecker_approve_permission(CheckerApprovePermission.No.getValue());
                 task.setRepaired_picture_status(CheckTaskRepairedPictureEnum.UnForcePicture.getValue());
                 task.setIssue_desc_status(CheckTaskIssueDescEnum.Arbitrary.getValue());
-                task.setIssue_default_desc("(该问题无文字描述)");
+                task.setIssue_default_desc("该问题无文字描述");
             }
             vos.add(task);
         }

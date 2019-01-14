@@ -24,8 +24,8 @@
   <insert id="add" parameterType="com.longfor.longjian.houseqm.po.Task" useGeneratedKeys="true" keyProperty="id">
 insert into task (project_id, name,creator_id,typ)
 values (#{projectId,jdbcType=INTEGER},
-#{name,jdbcType=VARCHAR}
-#{creatorId,jdbcType=INTEGER}
+#{name,jdbcType=VARCHAR},
+#{creatorId,jdbcType=INTEGER},
 #{typ,jdbcType=INTEGER}
 )
 </insert>

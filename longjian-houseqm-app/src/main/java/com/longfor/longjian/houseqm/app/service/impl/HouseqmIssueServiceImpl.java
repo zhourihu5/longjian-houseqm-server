@@ -73,7 +73,11 @@ public class HouseqmIssueServiceImpl implements IHouseqmIssueService {
                         setDetailField(eInt, eInt, eInt, eInt, eInt, eInt, eStr, eInt, eInt, eStr, eStr, eStr, eInt, eStr, eStr, eStr, eStr, eStr, eInt).done();
             }
         }
-        helper.execute();
+        try {
+            helper.execute();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
         List<String> dropUuids = Lists.newArrayList();
         List<ApiHouseQmCheckTaskReportRsp> droppedIssue = helper.getDroppedIssue();
         for (ApiHouseQmCheckTaskReportRsp drop : droppedIssue) {
@@ -114,7 +118,11 @@ public class HouseqmIssueServiceImpl implements IHouseqmIssueService {
             helper.start().setNormalField(issue.getTaskId(), uuid, issue.getUuid(), senderId, eStr, status, eStr, eStr, nowTimestamp, eStr)
                     .setDetailField(eInt, eInt, eInt, plan_end_on, eInt, repairer_id, issueRepairerFollowerIds, eInt, eInt, eStr, eStr, eStr, eInt, eStr, eStr, eStr, eStr, eStr, eInt).done();
         }
-        helper.execute();
+        try {
+            helper.execute();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
         List<String> dropUuids = Lists.newArrayList();
         List<ApiHouseQmCheckTaskReportRsp> droppedIssue = helper.getDroppedIssue();
         for (ApiHouseQmCheckTaskReportRsp drop : droppedIssue) {

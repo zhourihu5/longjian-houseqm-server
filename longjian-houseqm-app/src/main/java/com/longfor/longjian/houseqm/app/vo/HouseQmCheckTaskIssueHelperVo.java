@@ -328,7 +328,7 @@ public class HouseQmCheckTaskIssueHelperVo implements Serializable {
     }
 
     //执行
-    public void execute() {
+    public void execute() throws Exception {
         //执行前补全各种数据
         this.beforeExecute();
         for (HouseQmCheckTaskIssueVo issue : this.needInsertIssueMap.values()) {

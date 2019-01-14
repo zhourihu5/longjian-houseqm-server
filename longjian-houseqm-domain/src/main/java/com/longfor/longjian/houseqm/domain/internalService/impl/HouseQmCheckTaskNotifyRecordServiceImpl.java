@@ -1,4 +1,5 @@
 package com.longfor.longjian.houseqm.domain.internalService.impl;
+
 import java.util.Date;
 
 import com.longfor.gaia.gfs.data.mybatis.datasource.LFAssignDataSource;
@@ -12,18 +13,20 @@ import org.springframework.transaction.annotation.Transactional;
 import javax.annotation.Resource;
 
 /**
- * @ProjectName: longjian-houseqm-server
- * @Package: com.longfor.longjian.houseqm.domain.internalService.impl
- * @ClassName: HouseQmCheckTaskNotifyRecordServiceImpl
- * @Description: java类作用描述
- * @Author: hy
- * @CreateDate: 2019/1/12 15:52
+ * Created by Dongshun on 2019/1/11.
  */
+@Transactional
 @Service
 @Slf4j
+
 public class HouseQmCheckTaskNotifyRecordServiceImpl implements HouseQmCheckTaskNotifyRecordService {
     @Resource
-    private HouseQmCheckTaskNotifyRecordMapper houseQmCheckTaskNotifyRecordMapper;
+    HouseQmCheckTaskNotifyRecordMapper houseQmCheckTaskNotifyRecordMapper;
+    @Override
+    @LFAssignDataSource("zhijian2")
+    public int add(HouseQmCheckTaskNotifyRecord record) {
+        return houseQmCheckTaskNotifyRecordMapper.insert(record);
+    }
 
     @Override
     @LFAssignDataSource("zhijian2")

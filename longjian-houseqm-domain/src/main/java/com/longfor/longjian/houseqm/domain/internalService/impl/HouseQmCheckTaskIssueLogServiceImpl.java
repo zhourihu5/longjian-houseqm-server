@@ -119,4 +119,26 @@ public class HouseQmCheckTaskIssueLogServiceImpl implements HouseQmCheckTaskIssu
     public void add(HouseQmCheckTaskIssueLog new_issue_log) {
         houseQmCheckTaskIssueLogMapper.insert(new_issue_log);
     }
+
+    @Override
+    @LFAssignDataSource("zhijian2")
+    public List<HouseQmCheckTaskIssueLog> selectByIssueUuIdAndStatusNotDel(String issueUuid, ArrayList<Integer> issueLogStatus) {
+        Example example = new Example(HouseQmCheckTaskIssueLog.class);
+        Example.Criteria criteria = example.createCriteria();
+        criteria.andEqualTo("issueUuid",issueUuid);
+        criteria.andIn("status",issueLogStatus);
+        criteria.andIsNull("deleteAt");
+        return houseQmCheckTaskIssueLogMapper.selectByExample(example);
+    }
+
+    @Override
+    @LFAssignDataSource("zhijian2")
+    public int selectByIssueUuIdAndStatusNotDelAndCount(String issueUuid, ArrayList<Integer> issueLogStatus) {
+        Example example = new Example(HouseQmCheckTaskIssueLog.class);
+        Example.Criteria criteria = example.createCriteria();
+        criteria.andEqualTo("issueUuid",issueUuid);
+        criteria.andIn("status",issueLogStatus);
+        criteria.andIsNull("deleteAt");
+        return houseQmCheckTaskIssueLogMapper.selectCountByExample(example);
+    }
 }

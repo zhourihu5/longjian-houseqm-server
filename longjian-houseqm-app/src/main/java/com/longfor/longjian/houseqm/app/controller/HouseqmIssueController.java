@@ -57,8 +57,8 @@ public class HouseqmIssueController {
     private HouseQmCheckTaskService houseQmCheckTaskService;
     @Resource
     private HouseQmCheckTaskIssueService houseQmCheckTaskIssueService;
-    @Resource
-    private CtrlTool ctrlTool;
+//    @Resource
+//    private CtrlTool ctrlTool;
 
     @Value("${stat_export_server_addr}")
     String statExportServerAddr;

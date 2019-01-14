@@ -8,8 +8,11 @@ import com.longfor.longjian.houseqm.po.HouseQmCheckTaskIssueUser;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.transaction.annotation.Transactional;
+import tk.mybatis.mapper.entity.Example;
 
 import javax.annotation.Resource;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 
@@ -17,6 +20,7 @@ import java.util.Set;
  * @author houyan
  * @date 2018/12/11 0011 14:00
  */
+@Transactional
 @Service
 @Slf4j
 public class HouseQmCheckTaskIssueUserServiceImpl implements HouseQmCheckTaskIssueUserService {
@@ -70,6 +74,42 @@ public class HouseQmCheckTaskIssueUserServiceImpl implements HouseQmCheckTaskIss
     @LFAssignDataSource(value = "zhijian2")
     public List<HouseQmCheckTaskIssueUser> selectUpdateAtByTaskIdAndNoDeletedOrderByUpdateAt(Integer task_id) {
         return houseQmCheckTaskIssueUserMapper.selectUpdateAtByTaskIdAndNoDeletedOrderByUpdateAt(task_id,"false");
+    }
+
+    @Override
+    public HouseQmCheckTaskIssueUser selectByIssueUUidAndUserIdAndRoleTypeAndNotDel(String uuid, Integer repairerId, Integer value) {
+        Example example = new Example(HouseQmCheckTaskIssueUser.class);
+        Example.Criteria criteria = example.createCriteria();
+        criteria.andEqualTo("issueUuid",uuid);
+        criteria.andEqualTo("userId",repairerId);
+        criteria.andEqualTo("roleType",value);
+        return houseQmCheckTaskIssueUserMapper.selectOneByExample(example);
+    }
+
+    @Override
+    public void add(HouseQmCheckTaskIssueUser repairerUserInfos) {
+        houseQmCheckTaskIssueUserMapper.insert(repairerUserInfos);
+
+    }
+
+    @Override
+    public void update(HouseQmCheckTaskIssueUser repairerUserInfo) {
+        houseQmCheckTaskIssueUserMapper.updateByPrimaryKeySelective(repairerUserInfo);
+    }
+
+    @Override
+    public List<HouseQmCheckTaskIssueUser> selectByRoleTypeAndUserIdAndIssueUuid(Integer value, ArrayList<Integer> intFollowers, String uuid) {
+        Example example = new Example(HouseQmCheckTaskIssueUser.class);
+        Example.Criteria criteria = example.createCriteria();
+        criteria.andEqualTo("roleType",value);
+        criteria.andIn("userId",intFollowers);
+        criteria.andEqualTo("issueUuid",uuid);
+        return houseQmCheckTaskIssueUserMapper.selectByExample(example);
+    }
+
+    @Override
+    public void insertMany(ArrayList<HouseQmCheckTaskIssueUser> insertData) {
+        houseQmCheckTaskIssueUserMapper.insertList(insertData);
     }
 
 }
