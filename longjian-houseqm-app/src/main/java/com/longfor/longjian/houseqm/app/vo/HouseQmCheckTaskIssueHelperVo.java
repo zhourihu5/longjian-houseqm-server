@@ -1,9 +1,8 @@
 package com.longfor.longjian.houseqm.app.vo;
 
-import java.util.Date;
-
 import com.longfor.longjian.common.consts.EventQueueEnum;
 import com.longfor.longjian.common.consts.HouseQmCheckTaskIssueLogStatus;
+import com.longfor.longjian.common.consts.HouseQmCheckTaskIssueStatusEnum;
 import com.longfor.longjian.common.kafka.KafkaProducer;
 import com.longfor.longjian.houseqm.app.service.PushService;
 import com.longfor.longjian.houseqm.app.vo.issue.HouseQmCheckTaskIssueDetail;
@@ -17,11 +16,9 @@ import com.longfor.longjian.houseqm.po.*;
 import com.longfor.longjian.houseqm.util.DateUtil;
 import com.longfor.longjian.houseqm.util.JsonUtil;
 import com.longfor.longjian.houseqm.util.StringSplitToListUtil;
-import com.sun.org.apache.regexp.internal.RE;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import sun.nio.cs.ext.IBM037;
 
 import javax.annotation.Resource;
 import java.io.Serializable;
