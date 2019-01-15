@@ -91,7 +91,12 @@ public class HouseqmIssueController {
             taskList.add(houseQmCheckTask);
         } else if (req.getUuids().length() > 0) {
             // 按uuid提取
-            List<HouseQmCheckTaskIssue> issueList = iHouseqmIssueService.searchHouseQmIssueListByProjUuidIn(req.getProject_id(), uuids);
+            List<HouseQmCheckTaskIssue> issueList = null;
+            try {
+                issueList = iHouseqmIssueService.searchHouseQmIssueListByProjUuidIn(req.getProject_id(), uuids);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
             HashMap<Integer, Boolean> taskMap = Maps.newHashMap();
             issueList.forEach(issue -> taskMap.put(issue.getTaskId(), true));
             List<Integer> taskIds = taskMap.keySet().stream().collect(Collectors.toList());

@@ -1,6 +1,7 @@
 package com.longfor.longjian.houseqm.domain.internalService;
 
 import com.longfor.longjian.houseqm.po.Category;
+import com.longfor.longjian.houseqm.po.CategoryV3;
 
 import java.util.List;
 
@@ -9,7 +10,7 @@ import java.util.List;
  */
 
 public interface CategoryService {
-    List<Category> SearchCategoryByKeyIn(List<String> keys);
+    List<CategoryV3> SearchCategoryByKeyIn(List<String> keys);
 
-    List<Category> SearchCategoryByFatherKey(String categoryRootKey);
+    List<CategoryV3> SearchCategoryByFatherKey(String categoryRootKey);
 }

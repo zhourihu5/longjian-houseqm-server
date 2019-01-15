@@ -55,7 +55,7 @@ public class HouseqmIssueServiceImpl implements IHouseqmIssueService {
 
     // 批量销项问题
     @Override
-    public List<String> updateBatchIssueApproveStatusByUuids(List<String> uuids, int projectId, int senderId, int status, String desc, String attachmentMd5List) {
+    public List<String> updateBatchIssueApproveStatusByUuids(List<String> uuids, int projectId, int senderId, int status, String desc, String attachmentMd5List) throws Exception {
         int eInt = -1;
         String eStr = "";
         List<HouseQmCheckTaskIssue> issues = houseQmCheckTaskIssueService.searchByProjIdAndUuidIn(projectId, uuids);
@@ -87,7 +87,7 @@ public class HouseqmIssueServiceImpl implements IHouseqmIssueService {
     }
 
     @Override
-    public List<String> updateBatchIssueRepairInfoByUuids(List<String> uuids, Integer project_id, int senderId, Integer repairer_id, String repair_follower_ids, Integer plan_end_on) {
+    public List<String> updateBatchIssueRepairInfoByUuids(List<String> uuids, Integer project_id, int senderId, Integer repairer_id, String repair_follower_ids, Integer plan_end_on) throws Exception {
         int eInt = -1;
         String eStr = "";
         List<HouseQmCheckTaskIssue> issues = houseQmCheckTaskIssueService.searchByProjIdAndUuidIn(project_id, uuids);
@@ -166,7 +166,7 @@ public class HouseqmIssueServiceImpl implements IHouseqmIssueService {
     }
 
     @Override
-    public List<HouseQmCheckTaskIssue> searchHouseQmIssueListByProjUuidIn(Integer project_id, List<String> uuids) {
+    public List<HouseQmCheckTaskIssue> searchHouseQmIssueListByProjUuidIn(Integer project_id, List<String> uuids) throws Exception {
         return houseQmCheckTaskIssueService.searchByProjIdAndUuidIn(project_id, uuids);
     }
 

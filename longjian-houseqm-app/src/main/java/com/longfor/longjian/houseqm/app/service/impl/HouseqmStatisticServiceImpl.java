@@ -802,7 +802,7 @@ public class HouseqmStatisticServiceImpl implements IHouseqmStatisticService {
         }
         removeDuplicate(categoryKeys);
         removeDuplicate(checkItemKeys);
-        List<Category> categoryList = categoryService.SearchCategoryByKeyIn(categoryKeys);
+        List<CategoryV3> categoryList = categoryService.SearchCategoryByKeyIn(categoryKeys);
         CategoryMapVo categoryMap = new CategoryMapVo().NewCategoryMap(categoryList);
 
         List<CheckItem> checkItemList = checkItemService.SearchCheckItemByKeyIn(checkItemKeys);
@@ -844,7 +844,7 @@ public class HouseqmStatisticServiceImpl implements IHouseqmStatisticService {
 
     }
 
-    private AreaMapVo CreateAreasMapByAreaList(List<Area> areaList) {
+    public AreaMapVo CreateAreasMapByAreaList(List<Area> areaList) {
         AreaMapVo vo = new AreaMapVo();
         Map<Integer, Area> map = Maps.newHashMap();
         for (int i = 0; i < areaList.size(); i++) {
@@ -927,7 +927,7 @@ public class HouseqmStatisticServiceImpl implements IHouseqmStatisticService {
             (ArrayList<SimpleHouseQmCheckTaskIssueStatVo> issueStatVoList) {
         ArrayList<HouseQmIssueCategoryStatVo> objects = Lists.newArrayList();
         Map<String, Object> map = groupIssueStatByCategoryAndCheckItem(issueStatVoList);
-        Map<String, Category> categoryMap = null;
+        Map<String, CategoryV3> categoryMap = null;
         Map<String, CheckItem> checkItemMap = null;
         boolean isStatLevel3 = false;
         for (Map.Entry<String, Object> entrys : map.entrySet()) {
@@ -941,7 +941,7 @@ public class HouseqmStatisticServiceImpl implements IHouseqmStatisticService {
             }
             if (categoryMap.size() > 0) {
                 String rootKey = "";
-                for (Map.Entry<String, Category> entry : categoryMap.entrySet()) {
+                for (Map.Entry<String, CategoryV3> entry : categoryMap.entrySet()) {
                     String newStr = entry.getValue().getPath().substring(1, entry.getValue().getPath().length());
                     String[] split = newStr.split("/");
 /*
@@ -955,7 +955,7 @@ public class HouseqmStatisticServiceImpl implements IHouseqmStatisticService {
                 HashMap<String, HouseQmIssueCategoryStatVo> categoryStatMap = (HashMap<String, HouseQmIssueCategoryStatVo>) entrys.getValue();
 
                 for (Map.Entry<String, HouseQmIssueCategoryStatVo> entry : categoryStatMap.entrySet()) {
-                    for (Map.Entry<String, Category> Entry : categoryMap.entrySet()) {
+                    for (Map.Entry<String, CategoryV3> Entry : categoryMap.entrySet()) {
 
                         if (entry.getValue().getKey().equals(Entry.getKey())) {
                             boolean isRoot = false;
@@ -1029,9 +1029,9 @@ public class HouseqmStatisticServiceImpl implements IHouseqmStatisticService {
         return map;
     }
 
-    private Map<String, Category> getCategoryMapByCategoryKeys(List<String> keys) {
-        List<Category> categoryList = categoryService.SearchCategoryByKeyIn(keys);
-        HashMap<String, Category> map = Maps.newHashMap();
+    private Map<String, CategoryV3> getCategoryMapByCategoryKeys(List<String> keys) {
+        List<CategoryV3> categoryList = categoryService.SearchCategoryByKeyIn(keys);
+        HashMap<String, CategoryV3> map = Maps.newHashMap();
         for (int i = 0; i < categoryList.size(); i++) {
             map.put(categoryList.get(i).getKey(), categoryList.get(i));
 
@@ -1123,7 +1123,7 @@ public class HouseqmStatisticServiceImpl implements IHouseqmStatisticService {
 
     // 判断检查项的统计级别。部分检查项的顶级
     public boolean isCategoryStatLevelThree(String categoryRootKey) {
-        List<Category> categoryList = categoryService.SearchCategoryByFatherKey(categoryRootKey);
+        List<CategoryV3> categoryList = categoryService.SearchCategoryByFatherKey(categoryRootKey);
 
         try {
             if (categoryList.size() > 2) {

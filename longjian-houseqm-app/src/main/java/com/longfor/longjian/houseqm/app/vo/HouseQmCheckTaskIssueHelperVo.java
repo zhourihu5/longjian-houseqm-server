@@ -199,13 +199,15 @@ public class HouseQmCheckTaskIssueHelperVo implements Serializable {
             this.taskMap.put(this.currentLog.getTaskId(), task);
         }
         HouseQmCheckTask task = this.taskMap.get(this.currentLog.getTaskId());
-        if (task.getDeleteAt() != null) {
-            log.debug("HouseQm Task Has Delete ");
-            String name = ApiDropDataReasonEnum.HouseQmTaskRemoved.getName();
-            int value = ApiDropDataReasonEnum.HouseQmTaskRemoved.getValue();
-            this.setDroppedIssue(issueUuid, value, name);
-            this.setDroppedIssueLog(this.currentLog.getUuid(), value, name);
-            return this;
+        if (task!=null){
+            if (task.getDeleteAt() != null) {
+                log.debug("HouseQm Task Has Delete ");
+                String name = ApiDropDataReasonEnum.HouseQmTaskRemoved.getName();
+                int value = ApiDropDataReasonEnum.HouseQmTaskRemoved.getValue();
+                this.setDroppedIssue(issueUuid, value, name);
+                this.setDroppedIssueLog(this.currentLog.getUuid(), value, name);
+                return this;
+            }
         }
         issue = this.needInsertIssueMap.get(issueUuid);
         if (issue != null) inNew = true;

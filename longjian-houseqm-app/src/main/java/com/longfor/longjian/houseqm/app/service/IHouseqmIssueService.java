@@ -20,13 +20,13 @@ public interface IHouseqmIssueService {
 
     Project getProjectByProjId(Integer project_id);
 
-    List<HouseQmCheckTaskIssue> searchHouseQmIssueListByProjUuidIn(Integer project_id, List<String> uuids);
+    List<HouseQmCheckTaskIssue> searchHouseQmIssueListByProjUuidIn(Integer project_id, List<String> uuids) throws Exception;
 
     ExportFileRecord create(int userId, Integer teamId, Integer project_id, int exportType, Map<String, String> args, String exportName, Date executeAt);
 
-    List<String> updateBatchIssueRepairInfoByUuids(List<String> uuids, Integer project_id, int uid, Integer repairer_id, String repair_follower_ids, Integer plan_end_on);
+    List<String> updateBatchIssueRepairInfoByUuids(List<String> uuids, Integer project_id, int uid, Integer repairer_id, String repair_follower_ids, Integer plan_end_on) throws Exception;
 
-    List<String> updateBatchIssueApproveStatusByUuids(List<String> uuids, int projectId, int senderId, int status, String desc, String attachmentMd5List);
+    List<String> updateBatchIssueApproveStatusByUuids(List<String> uuids, int projectId, int senderId, int status, String desc, String attachmentMd5List) throws Exception;
 
     void deleteHouseQmCheckTaskIssueByProjUuid(Integer project_id, String issueUuid) throws Exception;
 

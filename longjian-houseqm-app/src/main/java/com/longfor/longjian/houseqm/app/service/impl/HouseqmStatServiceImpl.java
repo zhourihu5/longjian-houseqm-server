@@ -57,11 +57,17 @@ public class HouseqmStatServiceImpl implements IHouseqmStatService {
         List<HouseQmCheckTaskIssue> issues = houseQmCheckTaskIssueService.searchByProjIdAndCategoryClsAndAreaPathAndIdLikeGroupByStatus(project_id, category_cls, areaPath);
 
         HouseQmStatAreaSituationIssueRspVo result = new HouseQmStatAreaSituationIssueRspVo();
+        result.setIssue_approveded_count(0);
+        result.setIssue_assigned_count(0);
+        result.setIssue_count(0);
+        result.setIssue_recorded_count(0);
+        result.setIssue_repaired_count(0);
+        result.setRecord_count(0);
         for (HouseQmCheckTaskIssue res : issues) {
             //处理详细统计数
             HouseQmCheckTaskIssueStatusEnum e = null;
             for (HouseQmCheckTaskIssueStatusEnum value : HouseQmCheckTaskIssueStatusEnum.values()) {
-                if (res.getStatus().equals(value)) e = value;
+                if (res.getStatus().equals(value.getId())) e = value;
             }
             switch (e) {
                 case NoteNoAssign:  //已记录未分配

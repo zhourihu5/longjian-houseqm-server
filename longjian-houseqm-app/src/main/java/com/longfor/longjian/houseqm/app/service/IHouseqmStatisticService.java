@@ -5,6 +5,7 @@ import com.longfor.longjian.houseqm.app.vo.*;
 import com.longfor.longjian.houseqm.app.vo.HouseQmIssueCategoryStatVo;
 import com.longfor.longjian.houseqm.app.vo.TaskRepairStatVo;
 import com.longfor.longjian.houseqm.app.vo.TaskStatVo;
+import com.longfor.longjian.houseqm.po.Area;
 
 import java.util.Date;
 import java.util.List;
@@ -31,4 +32,7 @@ public interface IHouseqmStatisticService {
     RepossessionTasksStatusInfoVo getRepossessionTasksStatusInfo(Integer projectId,List<Integer> taskIds,Integer areaId);
 
     StatHouseqmCompleteDailyRspVo searchRepossessionStatusCompleteDaily(Integer project_id, List<Integer> taskIds, int beginOn, int endOn, Integer page, Integer page_size);
+
+    AreaMapVo CreateAreasMapByAreaList(List<Area> areaList);
+
 }

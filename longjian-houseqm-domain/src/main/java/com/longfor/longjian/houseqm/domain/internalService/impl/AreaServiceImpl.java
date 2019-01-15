@@ -88,7 +88,7 @@ public class AreaServiceImpl implements AreaService {
     public Area selectById(Integer areaId) {
         Example example = new Example(Area.class);
         Example.Criteria criteria = example.createCriteria();
-        criteria.andEqualTo("areaId", areaId);
+        criteria.andEqualTo("id", areaId);
         ExampleUtil.addDeleteAtJudge(example);
         return areaMapper.selectOneByExample(example);
     }

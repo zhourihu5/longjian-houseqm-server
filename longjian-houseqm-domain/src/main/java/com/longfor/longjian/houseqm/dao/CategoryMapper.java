@@ -2,6 +2,7 @@ package com.longfor.longjian.houseqm.dao;
 
 import com.longfor.gaia.gfs.data.mybatis.LFMySQLMapper;
 import com.longfor.longjian.houseqm.po.Category;
+import com.longfor.longjian.houseqm.po.CategoryV3;
 import org.apache.ibatis.annotations.Param;
 
 import java.util.List;
@@ -11,7 +12,7 @@ import java.util.List;
  */
 
 public interface CategoryMapper extends LFMySQLMapper<Category> {
-    List<Category> searchCategoryByKeyIn(@Param("idList")List<String> keys);
+    List<CategoryV3> searchCategoryByKeyIn(@Param("idList")List<String> keys);
 
-    List<Category> searchCategoryByFatherKey(@Param("fatherKey") String categoryRootKey);
+    List<CategoryV3> searchCategoryByFatherKey(@Param("fatherKey") String categoryRootKey);
 }
