@@ -22,7 +22,7 @@ import java.util.List;
  */
 
 @RestController
-@RequestMapping("buildingqm/v3/papi/task/checked_areas/")
+@RequestMapping("buildingqm/v3/papi/task/")
 @Slf4j
 public class TaskCheckedAreasController {
 
@@ -40,7 +40,7 @@ public class TaskCheckedAreasController {
      * @param taskId
      * @return
      */
-    @GetMapping(value = "checked_areas", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+    @GetMapping(value = "checked_areas/", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     public TaskResponse<String> doAction(@RequestParam(value = "project_id") Integer projectId,
                                          @RequestParam(value = "category_cls") String categoryCls,
                                          @RequestParam(value = "page_level") String pageLevel,

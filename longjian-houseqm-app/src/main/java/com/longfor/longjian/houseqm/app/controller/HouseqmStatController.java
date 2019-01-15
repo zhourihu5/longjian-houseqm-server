@@ -23,6 +23,7 @@ import java.text.DecimalFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 
@@ -197,9 +198,7 @@ public class HouseqmStatController {
                                                                 @RequestParam(value = "area_id") Integer areaId,
                                                                 @RequestParam(value = "group_id") String groupId) {
         ////TODO _, _, err := ctrl_tool.ProjPermMulti(c, []string{"项目.移动验房.统计.查看", "项目.工程检查.统计.查看"})
-        List<Integer> list = Lists.newArrayList();
-        list.add(categoryCls);
-        AreaTaskListVo areaTaskListVo = houseqmStatService.searchHouseQmCheckTaskByProjIdAreaIdCategoryClsIn(projectId, areaId, list);
+        AreaTaskListVo areaTaskListVo = houseqmStatService.searchHouseQmCheckTaskByProjIdAreaIdCategoryClsIn(projectId, areaId, Arrays.asList(categoryCls));
         LjBaseResponse<AreaTaskListVo> ljbr = new LjBaseResponse<>();
         ljbr.setData(areaTaskListVo);
         return ljbr;
@@ -251,14 +250,14 @@ public class HouseqmStatController {
      * @param groupId
      * @return
      */
-    @GetMapping(value = "stat/task_situation_repair_stat", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+    @GetMapping(value = "stat/task_situation_repair_stat/", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     public LjBaseResponse<TaskRepairStatVo> taskSituationRepairStat(@RequestParam(value = "project_id") Integer projectId,
                                                                     @RequestParam(value = "category_cls") String categoryCls,
                                                                     @RequestParam(value = "page_level") String pageLevel,
                                                                     @RequestParam(value = "team_id") String teamId,
                                                                     @RequestParam(value = "task_id") Integer taskId,
                                                                     @RequestParam(value = "group_id") String groupId) {
-        ////TODO _, _, err := ctrl_tool.ProjPermMulti(c, []string{"项目.移动验房.统计.查看", "项目.工程检查.统计.查看"})
+        ////TODO 鉴权 _, _, err := ctrl_tool.ProjPermMulti(c, []string{"项目.移动验房.统计.查看", "项目.工程检查.统计.查看"})
         Date t = null;
         try {
             t = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").parse("0001-01-01 00:00:00");
@@ -266,21 +265,18 @@ public class HouseqmStatController {
             e.printStackTrace();
         }
         TaskRepairStatVo taskRepairStatVo = houseqmStatisticService.searchIssueRepairStatisticByProjTaskIdAreaIdBeginOnEndOn(projectId, taskId, 0, t, t);
-        LjBaseResponse<TaskRepairStatVo> ljbr = new LjBaseResponse<>();
-        ljbr.setData(taskRepairStatVo);
-        return ljbr;
+        LjBaseResponse<TaskRepairStatVo> response = new LjBaseResponse<>();
+        response.setData(taskRepairStatVo);
+        return response;
     }
 
-    // todo 待测试
-
     /**
-     * 统计-验房统计-任务总进度及交付情况
-     *
      * @return com.longfor.longjian.common.base.LjBaseResponse<com.longfor.longjian.houseqm.app.vo.StatHouseqmTaskSituationOverallRspVo>
      * @Author hy
-     * @Description
+     * @Description 统计-验房统计-任务总进度及交付情况
      * @Date 20:12 2019/1/8
      * @Param [req]
+     * ////该接口不用了，废弃
      **/
     @GetMapping(value = "stat_houseqm/task_situation_overall", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     public LjBaseResponse<StatHouseqmTaskSituationOverallRspVo> taskSituationOverall(@RequestBody @Valid StatHouseqmTaskSituationOverallReq req) {
@@ -315,16 +311,13 @@ public class HouseqmStatController {
         return response;
     }
 
-    // todo 待测试
-
     /**
-     * 统计-验房统计-每天的交付数
-     *
      * @return
      * @Author hy
-     * @Description
+     * @Description 统计-验房统计-每天的交付数
      * @Date 20:16 2019/1/8
      * @Param
+     * //// 该接口不用了，废弃
      **/
     @GetMapping(value = "stat_houseqm/complete_daily", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     public LjBaseResponse<StatHouseqmCompleteDailyRspVo> completeDaily(@Valid StatHouseqmCompleteDailyReq req) {

@@ -183,9 +183,10 @@ public class HouseqmStatisticServiceImpl implements IHouseqmStatisticService {
         types.add(HouseQmCheckTaskIssueEnum.FindProblem.getId());
         types.add(HouseQmCheckTaskIssueEnum.Difficult.getId());
         HashMap<String, Object> condiMap = Maps.newHashMap();
-        // 以下条件成立时调用对应成立时的方法。
+        condiMap.put("projectId", projectId);
+        condiMap.put("taskId", taskId);
         if (areaId > 0) {
-            condiMap.put("areaId", "%/" + areaId + "/%");//模糊查询 AreaPathAndId like '%%/ /areaId%%'
+            condiMap.put("areaId", "%/" + areaId + "/%");
         }
         if (beginOn.getTime() / 1000 > 0) {
             condiMap.put("beginOn", beginOn);
@@ -194,12 +195,13 @@ public class HouseqmStatisticServiceImpl implements IHouseqmStatisticService {
             condiMap.put("endOn", endOn);
         }
         Date now = new Date();
-        condiMap.put("now", now);
-        condiMap.put("projectId", projectId);
-        condiMap.put("taskId", taskId);
+        String nowStr = com.longfor.longjian.common.util.DateUtil.dateToString(now);
+        condiMap.put("now", nowStr);
         condiMap.put("types", types);
         condiMap.put("deleted", "false");
         condiMap.put("status", HouseQmCheckTaskIssueStatusEnum.AssignNoReform.getId());
+        //todo 为了保持数据一致 不加该条件时数据能与源码保持一致，加该条件时不一致。
+        // condiMap.put("statusIn",Arrays.asList(HouseQmCheckTaskIssueStatusEnum.AssignNoReform.getId(),HouseQmCheckTaskIssueStatusEnum.ReformNoCheck.getId(),HouseQmCheckTaskIssueStatusEnum.CheckYes.getId()));
         issueCounts = houseQmCheckTaskIssueService.selectByProjectIdAndTaskIdAndTyeInAndDongTai(condiMap);
         IssueRepairCount ic = issueCounts.get(0);
         TaskRepairStatVo taskRepairStatVo = new TaskRepairStatVo();
@@ -207,13 +209,11 @@ public class HouseqmStatisticServiceImpl implements IHouseqmStatisticService {
         if (ic.getTotal() == 0) {
             ic.setTotal(1);
         }
-        DecimalFormat f = new DecimalFormat("0.00");
         String iniTimeFinish = MathUtil.getPercentage(ic.getInitimeFinish(), ic.getTotal());
         String iniTimeUnFinish = MathUtil.getPercentage(ic.getInitimeUnfinish(), ic.getTotal());
         String overTimeFinish = MathUtil.getPercentage(ic.getOvertimeFinish(), ic.getTotal());
         String overTimeUnFinish = MathUtil.getPercentage(ic.getOvertimeUnfinish(), ic.getTotal());
         String noPlanEndOn = MathUtil.getPercentage(ic.getNoPlanEndOn(), ic.getTotal());
-
 
         item.setInitime_finish(iniTimeFinish);
         item.setInitime_unfinish(iniTimeUnFinish);

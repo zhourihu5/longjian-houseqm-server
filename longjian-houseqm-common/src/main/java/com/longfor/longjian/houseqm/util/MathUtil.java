@@ -1,5 +1,6 @@
 package com.longfor.longjian.houseqm.util;
 
+import java.math.BigDecimal;
 import java.text.DecimalFormat;
 
 /**
@@ -9,8 +10,9 @@ import java.text.DecimalFormat;
 public class MathUtil {
 
     /**
-     *  用于taskDetail() 计算百分比
-     *  四舍五入
+     * 用于taskDetail() 计算百分比
+     * 四舍五入
+     *
      * @param a
      * @param b
      * @return
@@ -19,12 +21,18 @@ public class MathUtil {
         if (a == 0 || b == 0) {
             return "0";
         }
-        DecimalFormat df = new DecimalFormat("0.00");
-        String result = df.format((float) a / (float) b * 100.0);
-        return result;
+        BigDecimal decimal = new BigDecimal(a);
+        BigDecimal decimalb= new BigDecimal(b);
+        BigDecimal divide = decimal.divide(decimalb,5,BigDecimal.ROUND_HALF_DOWN);
+        BigDecimal perc = new BigDecimal(100);
+        perc.setScale(2,BigDecimal.ROUND_HALF_UP);
+        BigDecimal multiply = divide.multiply(perc);
+        /*DecimalFormat df = new DecimalFormat("0.00");
+        String result = df.format((float) a / (float) b * 100.0);*/
+        return  formatToNumber(multiply);
     }
 
-    public static String getPercentageByPattern(int a, int b,String pattern) {
+    public static String getPercentageByPattern(int a, int b, String pattern) {
         if (a == 0 || b == 0) {
             return "0";
         }
@@ -32,5 +40,24 @@ public class MathUtil {
         String result = df.format((float) a / (float) b * 100.0);
         return result;
     }
+
+    /**
+     * @Author hy
+     * @Description 格式化数字 0.00
+     * @Date 16:04 2019/1/15
+     * @Param [obj]
+     * @return java.lang.String
+     **/
+    public static String formatToNumber(BigDecimal obj) {
+        DecimalFormat df = new DecimalFormat("#.00");
+        if(obj.compareTo(BigDecimal.ZERO)==0) {
+            return "0.00";
+        }else if(obj.compareTo(BigDecimal.ZERO)>0&&obj.compareTo(new BigDecimal(1))<0){
+            return "0"+df.format(obj);
+        }else {
+            return df.format(obj);
+        }
+    }
+
 
 }

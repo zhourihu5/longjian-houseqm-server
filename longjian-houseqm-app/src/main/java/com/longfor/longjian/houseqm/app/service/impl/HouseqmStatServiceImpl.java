@@ -3,6 +3,7 @@ package com.longfor.longjian.houseqm.app.service.impl;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
+import com.longfor.longjian.common.util.StringUtil;
 import com.longfor.longjian.houseqm.app.service.IHouseqmStatService;
 import com.longfor.longjian.houseqm.consts.ErrorEnum;
 import com.longfor.longjian.houseqm.consts.HouseQmCheckTaskIssueEnum;
@@ -417,12 +418,14 @@ public class HouseqmStatServiceImpl implements IHouseqmStatService {
      * @param areaId
      * @param categoryCls
      * @return
+     *
      */
     public AreaTaskListVo searchHouseQmCheckTaskByProjIdAreaIdCategoryClsIn(Integer projectId, Integer areaId, List<Integer> categoryCls) {
+        // 未 设置deleted_at is null
         List<HouseQmCheckTask> tasks = houseQmCheckTaskService.searchByProjectIdAndCategoryClsIn(projectId, categoryCls);
         List<Integer> areaIds = Lists.newArrayList();
         for (HouseQmCheckTask item : tasks) {
-            List<Integer> areaList = StringSplitToListUtil.splitToIdsComma(item.getAreaIds(), ",");
+            List<Integer> areaList = StringUtil.strToInts(item.getAreaIds(), ",");
             for (Integer i : areaList) {
                 areaIds.add(i);
             }
@@ -431,6 +434,7 @@ public class HouseqmStatServiceImpl implements IHouseqmStatService {
         HashSet<Integer> set = Sets.newHashSet(areaIds);
         areaIds.clear();
         areaIds.addAll(set);
+        // 未 设置deleted_at is null
         List<Area> areas = areaService.selectAreasByIdInAreaIds(areaIds);
         HashMap<Integer, String> areaMap = Maps.newHashMap();
         for (Area area : areas) {

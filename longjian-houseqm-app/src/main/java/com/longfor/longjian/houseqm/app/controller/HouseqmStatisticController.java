@@ -128,6 +128,7 @@ public class HouseqmStatisticController {
     }
 
     /**
+     * http://192.168.37.159:3000/project/8/interface/api/380
      * @param
      * @return com.longfor.longjian.common.base.LjBaseResponse<com.longfor.longjian.houseqm.app.vo.ProjectDailyListVo>
      * @author hy
@@ -147,6 +148,7 @@ public class HouseqmStatisticController {
     /**
      * @param
      * @return
+     * http://192.168.37.159:3000/project/8/interface/api/384
      */
     @GetMapping(value = "task_checkitem_stat", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     public LjBaseResponse<HouseqmStatisticTaskCheckitemStatRspMsgVo> taskCheckitemStat(@RequestParam(value = "project_id") Integer projectId,
@@ -181,6 +183,7 @@ public class HouseqmStatisticController {
     /**
      * @param
      * @return
+     * http://192.168.37.159:3000/project/8/interface/api/388
      */
     @GetMapping(value = "task_issue_repair", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     public LjBaseResponse<TaskRepairStatVo> taskIssueRepair(@RequestParam(value = "project_id") Integer projectId,
@@ -204,6 +207,7 @@ public class HouseqmStatisticController {
 
 
     /**
+     * http://192.168.37.159:3000/project/8/interface/api/392
      * @param
      * @return com.longfor.longjian.common.base.LjBaseResponse<com.longfor.longjian.houseqm.app.vo.HouseqmStatisticCategoryIssueListRspMsgVo>
      * @author hy

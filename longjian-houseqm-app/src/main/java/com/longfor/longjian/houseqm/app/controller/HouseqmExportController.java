@@ -40,6 +40,7 @@ public class HouseqmExportController {
      * @Date 10:08 2019/1/14
      * @Param [req]
      * @return com.longfor.longjian.common.base.LjBaseResponse
+     * ////该接口不用了，废弃
      **/
     @GetMapping(value = "project_orders",produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     public LjBaseResponse projectOrders(ProjectOrdersReq req, HttpServletResponse resp){

@@ -150,9 +150,9 @@ public class HouseqmIssueServiceImpl implements IHouseqmIssueService {
 
         //记录导出的内容到数据库
         String resultFilePath = cfg_base_uri + "/" + outputFileName;
-        exportFileRecordService.insertFull(userId, teamId, project_id, exportType, inputFileName + " " + outputFileName, resultFilePath, exportName, 0, "", executeAt);
-
-        return null;
+        ExportFileRecord exportFileRecord = exportFileRecordService.insertFull(userId, teamId, project_id, exportType, inputFileName + " " + outputFileName,
+                resultFilePath, exportName, 0, "", executeAt);
+        return exportFileRecord;
     }
 
     //todo
