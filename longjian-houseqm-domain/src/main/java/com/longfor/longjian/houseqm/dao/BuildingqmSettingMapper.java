@@ -16,5 +16,5 @@ import java.util.List;
 public interface BuildingqmSettingMapper extends LFMySQLMapper<IssueFieldSetting> {
 
 
-    List<IssueFieldSetting> findProjectIdsAndModuleId(@Param(value = "projectIdList") ArrayList<Integer> projectIdList);
+    List<IssueFieldSetting> findProjectIdsAndModuleId(@Param(value = "projectIdList") List<Integer> projectIdList);
 }

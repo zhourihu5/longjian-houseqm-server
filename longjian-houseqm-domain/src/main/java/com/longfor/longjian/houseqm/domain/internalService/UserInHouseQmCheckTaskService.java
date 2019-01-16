@@ -1,5 +1,6 @@
 package com.longfor.longjian.houseqm.domain.internalService;
 
+import com.longfor.longjian.houseqm.po.HouseQmCheckTask;
 import com.longfor.longjian.houseqm.po.UserInHouseQmCheckTask;
 
 import java.util.ArrayList;
@@ -57,4 +58,15 @@ public interface UserInHouseQmCheckTaskService {
     int removeByTaskId(Integer task_id);
 
     List<UserInHouseQmCheckTask> searchBySquadIdIn(List<Integer> squadIds);
+    UserInHouseQmCheckTask selectBysquadIdAnduserIdAndtaskIdAndNotDel(Integer squadId, Integer userId, Integer taskId);
+
+    int update(UserInHouseQmCheckTask dbItem);
+
+    List<UserInHouseQmCheckTask> selectByIdAndTaskId(Object o, Integer task_id);
+
+    int delete(UserInHouseQmCheckTask userInHouseQmCheckTask);
+
+    List<UserInHouseQmCheckTask> selectByTaskIdAndRoleType(Integer task_id, Integer value);
+
+    List<UserInHouseQmCheckTask> selectBysquadIdAndtaskId(Object o, Integer task_id);
 }

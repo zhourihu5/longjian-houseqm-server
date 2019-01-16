@@ -52,7 +52,7 @@ public class IusseTaskListController {
         rsp = errors_utils.err(rsp, 'PermissionDenied')
         return
       */
-        //获取sessionid
+        //// todo 获取sessionid
         //通过id projectId 判断
         TaskResponse<HouseQmCheckTaskSimpleRspVo> response = new TaskResponse<>();
         List<HouseQmCheckTaskSimpleRspVo> vos = iusseTaskListService.selectByProjectIdAndCategoryCls(projectId, categoryCls);

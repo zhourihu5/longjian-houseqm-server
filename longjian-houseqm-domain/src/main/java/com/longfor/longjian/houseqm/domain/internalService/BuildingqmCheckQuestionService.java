@@ -9,6 +9,6 @@ public interface BuildingqmCheckQuestionService {
 
     List<IssueFieldSetting> selectByProjectId(Integer projectId);
 
-    List<IssueFieldSetting> findProjectIdsAndModuleId(ArrayList<Integer> projectIdList);
+    List<IssueFieldSetting> findProjectIdsAndModuleId(List<Integer> projectIdList);
 
 }

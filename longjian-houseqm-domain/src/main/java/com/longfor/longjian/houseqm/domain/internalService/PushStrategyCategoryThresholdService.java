@@ -9,4 +9,10 @@ public interface PushStrategyCategoryThresholdService {
     List<PushStrategyCategoryThreshold> searchByTaskIds(Set<Integer> taskIds);
 
     int add(PushStrategyCategoryThreshold pushStrategyCategoryThreshold);
+
+    PushStrategyCategoryThreshold selectTaskIdAndNotDel(Integer task_id);
+
+    int update(PushStrategyCategoryThreshold dbConfigCategoryThreshold);
+
+    int delete(PushStrategyCategoryThreshold dbConfigCategoryThreshold);
 }

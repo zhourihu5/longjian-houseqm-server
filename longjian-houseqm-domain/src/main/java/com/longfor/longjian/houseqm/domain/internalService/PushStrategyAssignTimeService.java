@@ -9,4 +9,10 @@ public interface PushStrategyAssignTimeService {
     List<PushStrategyAssignTime> searchByTaskIds(Set<Integer> taskIds);
 
     int add(PushStrategyAssignTime pushStrategyAssignTime);
+
+    PushStrategyAssignTime selectByIdAndNotDel(Integer task_id);
+
+    int update(PushStrategyAssignTime dbConfigAssignTime);
+
+    int delete(PushStrategyAssignTime dbConfigAssignTime);
 }

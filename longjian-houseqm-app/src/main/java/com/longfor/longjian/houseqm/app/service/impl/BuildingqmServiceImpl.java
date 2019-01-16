@@ -6,6 +6,7 @@ import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
 import com.longfor.longjian.common.consts.CategoryClsTypeEnum;
+import com.longfor.longjian.common.consts.CommonGlobal;
 import com.longfor.longjian.common.consts.ModuleInfoEnum;
 import com.longfor.longjian.common.consts.checktask.*;
 import com.longfor.longjian.common.exception.LjBaseRuntimeException;
@@ -326,16 +327,479 @@ public class BuildingqmServiceImpl implements IBuildingqmService {
         String planBeginOn = taskEditReq.getPlan_begin_on() + " 00:00:00";
         String planEndOn = taskEditReq.getPlan_end_on() + " 23:59:59";
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        Date begin=null;
+        Date endon=null;
         try {
-            Date begin = sdf.parse(planBeginOn);
-            Date endon = sdf.parse(planEndOn);
+             begin = sdf.parse(planBeginOn);
+             endon = sdf.parse(planEndOn);
             if (DateUtil.datetimeToTimeStamp(endon) < DateUtil.datetimeToTimeStamp(begin)) {
                 throw new LjBaseRuntimeException(331, "计划结束时间有误");
             }
         } catch (ParseException e) {
             e.printStackTrace();
         }
+        editExecute(begin,endon,uid, taskEditReq, areaIds, areaTypes, planBeginOn, planEndOn, checkerGroups, repairerGroups, config);
 
+    }
+
+    private void editExecute(Date begin,Date endon,Integer uid, TaskEditReq taskEditReq, List<Integer> areaIds, List<Integer> areaTypes,
+                             String planBeginOn, String planEndOn, List<ApiBuildingQmTaskMemberGroupVo> checkerGroups,
+                             List<ApiBuildingQmTaskMemberGroupVo> repairerGroups, ConfigVo config) {
+        List<ApiBuildingQmTaskMemberGroupVo> checkerGroupsAdd = Lists.newArrayList();
+        List<ApiBuildingQmTaskMemberGroupVo> checkerGroupsEdit = Lists.newArrayList();
+        List<Object> checkerGroupsDel = Lists.newArrayList();
+        List<ApiBuildingQmTaskMemberInsertVo> needInsertCheckTaskSquadUser = Lists.newArrayList();
+        List< UserInHouseQmCheckTask> needUpdateCheckTaskSquadUser = Lists.newArrayList();
+        Map<Object, Object> doNotNeedDeleteSquaduserPkId = Maps.newHashMap();
+        beforeExecute(checkerGroupsAdd,checkerGroupsEdit,checkerGroupsDel,needInsertCheckTaskSquadUser,needUpdateCheckTaskSquadUser,doNotNeedDeleteSquaduserPkId, uid,  taskEditReq, areaIds, areaTypes,  planBeginOn,  planEndOn,  checkerGroups,  repairerGroups,  config);
+                //    # 更新验房任务
+        HouseQmCheckTask taskInfo = houseQmCheckTaskService.selectByTaskId(taskEditReq.getTask_id());
+                        if(taskInfo==null){
+                            throw new LjBaseRuntimeException(352, "'任务信息不存在'");
+                        }
+                taskInfo.setName(taskEditReq.getName());
+                taskInfo.setAreaIds(StringUtils.join(areaIds,","));
+                taskInfo.setAreaTypes(StringUtils.join(areaTypes,","));
+                taskInfo.setPlanBeginOn(begin);
+                taskInfo.setPlanEndOn(endon);
+                taskInfo.setEditor(uid);
+        if(taskInfo.getConfigInfo()==null){
+            HashMap<String, Object> configMap = Maps.newHashMap();
+            configMap.put("repairer_refund_permission", taskEditReq.getRepairer_refund_permission());
+            configMap.put("repairer_follower_permission", taskEditReq.getRepairer_follower_permission());
+            configMap.put("checker_approve_permission", taskEditReq.getChecker_approve_permission());
+            configMap.put("repaired_picture_status", taskEditReq.getRepaired_picture_status());
+            configMap.put("issue_desc_status", taskEditReq.getIssue_desc_status());
+            configMap.put("issue_default_desc", taskEditReq.getIssue_default_desc());
+            taskInfo.setConfigInfo(JSON.toJSONString(configMap));
+        }else{
+            Map configInfo = JSON.parseObject(taskInfo.getConfigInfo(), Map.class);
+            if(!taskEditReq.getRepairer_refund_permission().equals(configInfo.get("repairer_refund_permission"))||
+                    !taskEditReq.getRepairer_follower_permission().equals(configInfo.get("repairer_follower_permission"))||
+                    !taskEditReq.getChecker_approve_permission().equals(configInfo.get("checker_approve_permission"))||
+                    !taskEditReq.getRepaired_picture_status().equals(configInfo.get("repaired_picture_status"))||
+                    !taskEditReq.getIssue_desc_status().equals(configInfo.get("issue_desc_status"))||
+                    !taskEditReq.getIssue_default_desc().equals(configInfo.get("issue_default_desc"))
+               ){
+                configInfo.put("repairer_refund_permission", taskEditReq.getRepairer_refund_permission());
+                configInfo.put("repairer_follower_permission", taskEditReq.getRepairer_follower_permission());
+                configInfo.put("checker_approve_permission", taskEditReq.getChecker_approve_permission());
+                configInfo.put("repaired_picture_status", taskEditReq.getRepaired_picture_status());
+                configInfo.put("issue_desc_status", taskEditReq.getIssue_desc_status());
+                configInfo.put("issue_default_desc", taskEditReq.getIssue_default_desc());
+                taskInfo.setConfigInfo(JSON.toJSONString(configInfo));
+            }
+        }
+        //修改
+        int add = houseQmCheckTaskService.update(taskInfo);
+        if(add<0){
+            throw new LjBaseRuntimeException(352, "'任务信息更新失败'");
+        }
+           //# 更新检查人组信息
+           // # 新增人组 及其 人员
+        if(CollectionUtils.isNotEmpty(checkerGroupsAdd) ){
+            for (int i = 0; i < checkerGroupsAdd.size(); i++) {
+                HouseQmCheckTaskSquad squad = new HouseQmCheckTaskSquad();
+                squad.setProjectId(taskEditReq.getProject_id());
+                squad.setTaskId(taskEditReq.getTask_id());
+                squad.setSquadType(checkerGroupsAdd.get(i).getGroup_role());
+                squad.setName(checkerGroupsAdd.get(i).getGroup_name());
+                squad.setCreateAt(new Date());
+                squad.setUpdateAt(new Date());
+                int squadInfo = houseQmCheckTaskSquadService.add(squad);
+                if(squadInfo<=0){
+                    log.info("create task squad failed");
+                    throw new LjBaseRuntimeException(402, "'创建任务组失败'");
+                }
+                List<Integer> user_ids = checkerGroups.get(i).getUser_ids();
+                for (int j = 0; j <user_ids.size() ; j++) {
+                    Integer canApprove = CheckTaskRoleCanApproveType.No.getValue();
+                    Integer canDirectApprove = CheckTaskRoleCanDirectApproveType.No.getValue();
+                    Integer canReassign = CheckTaskRoleCanReassignType.No.getValue();
+                    if (checkerGroups.get(i).getApprove_ids().contains(user_ids.get(j))) {
+                        canApprove = CheckTaskRoleCanApproveType.Yes.getValue();
+                    }
+                    if (checkerGroups.get(i).getApprove_ids().contains(user_ids.get(j)) && checkerGroups.get(i).getDirect_approve_ids().contains(user_ids.get(j))) {
+                        canDirectApprove = CheckTaskRoleCanDirectApproveType.Yes.getValue();
+                    }
+                    if ((checkerGroups.get(i).getReassign_ids().contains(user_ids.get(j)))) {
+                        canReassign = CheckTaskRoleCanReassignType.Yes.getValue();
+                    }
+                    UserInHouseQmCheckTask qmCheckTask = new UserInHouseQmCheckTask();
+                    qmCheckTask.setSquadId(squadInfo);
+                    qmCheckTask.setUserId(user_ids.get(j));
+                    qmCheckTask.setRoleType(checkerGroups.get(i).getGroup_role());
+                    qmCheckTask.setProjectId(taskEditReq.getProject_id());
+                    qmCheckTask.setTaskId(taskEditReq.getTask_id());
+                    qmCheckTask.setCanApprove(canApprove);
+                    qmCheckTask.setCanDirectApprove(canDirectApprove);
+                    qmCheckTask.setCanReassign(canReassign);
+                    int num = userInHouseQmCheckTaskService.add(qmCheckTask);
+                    if (num <= 0) {
+                        log.info("create task user failed");
+                        throw new LjBaseRuntimeException(389, "创建任务组人员失败");
+                    }
+                }
+                }
+        }
+        //    # 删除人组 及其 人员
+        if(CollectionUtils.isNotEmpty(checkerGroupsDel)){
+            for (int i = 0; i <checkerGroupsDel.size() ; i++) {
+                HouseQmCheckTaskSquad dbItem = houseQmCheckTaskSquadService.selectById((Integer) checkerGroupsDel.get(i));
+                if(dbItem!=null){
+                    int  one=houseQmCheckTaskSquadService.delete(dbItem);
+                    if(one<=0){
+                        log.info("HouseQmCheckTaskSquadDao().delete failed, squad_id="+checkerGroupsDel.get(i)+"");
+                        throw new LjBaseRuntimeException(447, "删除人组失败");
+                    }
+                }
+               List<UserInHouseQmCheckTask> userlist= userInHouseQmCheckTaskService.selectBysquadIdAndtaskId(checkerGroupsDel.get(i),taskEditReq.getTask_id());
+                for (int j = 0; j < userlist.size(); j++) {
+                    int  one=userInHouseQmCheckTaskService.delete(userlist.get(j));
+                    if(one<=0){
+                        log.info("HouseQmCheckTaskDao().delete failed, squad_id="+checkerGroupsDel.get(i)+"");
+                        throw new LjBaseRuntimeException(457, "删除人组失败");
+                    }
+
+                }
+
+
+            }
+        }
+//    # 更新人组 及其 人员
+        if(CollectionUtils.isNotEmpty(checkerGroupsEdit)){
+            for (int i = 0; i <checkerGroupsEdit.size() ; i++) {
+               HouseQmCheckTaskSquad dbItem=  houseQmCheckTaskSquadService.selectById(checkerGroupsEdit.get(i).getGroup_id());
+                if(dbItem!=null){
+                    dbItem.setProjectId(taskEditReq.getProject_id());
+                    dbItem.setTaskId(taskEditReq.getTask_id());
+                    dbItem.setSquadType(CheckTaskRoleType.Checker.getValue());
+                    dbItem.setName(checkerGroupsEdit.get(i).getGroup_name());
+                  int one=  houseQmCheckTaskSquadService.update(dbItem);
+                    if(one<=0){
+                        log.info("HouseQmCheckTaskSquadDao().update failed");
+                        throw new LjBaseRuntimeException(457, "更新人组失败");
+                    }
+                }
+            }
+        }
+// # 更新有变动的成员信息
+            if(CollectionUtils.isNotEmpty(needUpdateCheckTaskSquadUser)){
+                for (int i = 0; i < needUpdateCheckTaskSquadUser.size(); i++) {
+                    UserInHouseQmCheckTask   dbItem= userInHouseQmCheckTaskService.selectBysquadIdAnduserIdAndtaskIdAndNotDel(needUpdateCheckTaskSquadUser.get(i).getSquadId(),needUpdateCheckTaskSquadUser.get(i).getUserId(),needUpdateCheckTaskSquadUser.get(i).getTaskId());
+                    dbItem.setCanApprove(needUpdateCheckTaskSquadUser.get(i).getCanApprove());
+                    dbItem.setCanDirectApprove(needUpdateCheckTaskSquadUser.get(i).getCanDirectApprove());
+                    dbItem.setCanReassign(needUpdateCheckTaskSquadUser.get(i).getCanReassign());
+                   int one= userInHouseQmCheckTaskService.update(dbItem);
+                    if(one<=0){
+                        log.info("UserInHouseQmCheckTaskDao().update failed");
+                        throw new LjBaseRuntimeException(457, "更新变动成员信息失败");
+                    }
+                }
+            }
+
+
+// # 要增加的人员信息
+                if(!CollectionUtils.isEmpty(needInsertCheckTaskSquadUser)){
+                    for (int i = 0; i <needInsertCheckTaskSquadUser.size(); i++) {
+                        UserInHouseQmCheckTask item = new UserInHouseQmCheckTask();
+                        item.setSquadId(needInsertCheckTaskSquadUser.get(i).getSquad_id());
+                        item.setUserId(needInsertCheckTaskSquadUser.get(i).getUser_id());
+                        item.setRoleType(needInsertCheckTaskSquadUser.get(i).getGroup_role());
+                        item.setProjectId(taskEditReq.getProject_id());
+                        item.setTaskId(taskEditReq.getTask_id());
+                        item.setCanApprove(needInsertCheckTaskSquadUser.get(i).getCan_approve());
+                        item.setCanDirectApprove(needInsertCheckTaskSquadUser.get(i).getCan_direct_approve());
+                        item.setCanReassign(needInsertCheckTaskSquadUser.get(i).getCan_reassign());
+                        int one = userInHouseQmCheckTaskService.add(item);
+                        if(one<=0){
+                            log.info("create task user failed");
+                            throw new LjBaseRuntimeException(505, "增加人员信息失败");
+                        }
+                    }
+
+                }
+
+
+        //  # 要删除的人员信息
+            if(doNotNeedDeleteSquaduserPkId.size()>0){
+                ArrayList<Object> needDeleteIds = Lists.newArrayList();
+                for (Map.Entry<Object, Object> entry : doNotNeedDeleteSquaduserPkId.entrySet()) {
+                    if(entry.getValue()==null){
+                        needDeleteIds.add(entry.getKey());
+                    }
+                }
+                if (CollectionUtils.isNotEmpty(needDeleteIds)){
+                    for (int i = 0; i <needDeleteIds.size() ; i++) {
+                       List<UserInHouseQmCheckTask>  userlist=  userInHouseQmCheckTaskService.selectByIdAndTaskId(needDeleteIds.get(i),taskEditReq.getTask_id());
+                        for (int j = 0; j <userlist.size() ; j++) {
+                           int one= userInHouseQmCheckTaskService.delete(userlist.get(i));
+                            if(one<=0){
+                                log.info("UserInHouseQmCheckTaskDao().delete failed");
+                                throw new LjBaseRuntimeException(528, "删除人员失败");
+                            }
+                        }
+                    }
+
+                }
+
+            }
+
+
+         //  # 指定日期发起推送配置
+        PushStrategyAssignTime   dbConfigAssignTime= pushStrategyAssignTimeService.selectByIdAndNotDel(taskEditReq.getTask_id());
+                if(config.getConfig_assign_time() !=null){
+                    if(dbConfigAssignTime==null){
+                        PushStrategyAssignTime item = new PushStrategyAssignTime();
+                        item.setProjectId(taskEditReq.getProject_id());
+                        item.setTaskId(taskEditReq.getTask_id());
+                        item.setModuleId(convertCategoryCls(taskInfo.getCategoryCls()));
+                        item.setTyp(1);
+                        item.setPushTime(stringToDate(config.getConfig_assign_time().getPush_time()));
+                        item.setUserIds(config.getConfig_assign_time().getUser_ids());
+                     int one=   pushStrategyAssignTimeService.add(item);
+                     if(one<=0){
+                         log.info("PushStrategyAssignTimeDao().add failed");
+                     }
+                    }else if(!dbConfigAssignTime.getPushTime().equals(stringToDate(config.getConfig_assign_time().getPush_time()))||
+                            !dbConfigAssignTime.getUserIds().equals(config.getConfig_assign_time().getUser_ids())
+                    ){
+                        dbConfigAssignTime.setPushTime(stringToDate(config.getConfig_assign_time().getPush_time()));
+                        dbConfigAssignTime.setUserIds(config.getConfig_assign_time().getUser_ids());
+                       int one= pushStrategyAssignTimeService.update(dbConfigAssignTime);
+                       if(one==0){
+                           log.info("PushStrategyAssignTimeDao().update failed");
+                       }
+                    }else {
+                        log.info("task push strategy assign time config not change");
+                    }
+
+                }else{
+                    if(dbConfigAssignTime!=null){
+                           int  one=  pushStrategyAssignTimeService.delete(dbConfigAssignTime);
+                            if(one<=0){
+                                log.info("PushStrategyAssignTimeDao().delete failed");
+                            }
+
+                            }else{
+                        log.info("task push strategy assign time config not set");
+                    }
+                }
+
+
+        //    # 超期问题发起推送配置
+       PushStrategyCategoryOverdue  dbConfigCategoryOverdue= pushStrategyCategoryOverdueService.selectByTaskIdAndNotDel(taskEditReq.getTask_id());
+                    if(config.getConfig_category_overdue()!=null){
+                            if(dbConfigCategoryOverdue==null){
+                                PushStrategyCategoryOverdue item = new PushStrategyCategoryOverdue();
+
+                                item.setProjectId(taskEditReq.getProject_id());
+                                item.setTaskId(taskEditReq.getTask_id());
+                                item.setModuleId(convertCategoryCls(taskInfo.getCategoryCls()));
+                                item.setTyp(1);
+                                item.setCategoryKeys(config.getConfig_category_overdue().getCategory_keys());
+                                item.setUserIds(config.getConfig_category_overdue().getUser_ids());
+                                item.setScanEndOn(DateUtil.timeStampToDate(DateUtil.datetimeToTimeStamp(taskInfo.getPlanEndOn())+ ( 30 * 24 * 60 * 60)," yyyy-MM-dd HH-mm-ss"));
+                                int one = pushStrategyCategoryOverdueService.add(item);
+                                if(one<=0){
+                                    log.info("PushStrategyCategoryOverdueDao().add failed");
+                                }
+
+                            }else if(!dbConfigCategoryOverdue.getCategoryKeys().equals(config.getConfig_category_overdue().getCategory_keys())||
+                                    !dbConfigCategoryOverdue.getUserIds().equals(config.getConfig_category_overdue().getUser_ids())
+                            ){
+                                dbConfigCategoryOverdue.setCategoryKeys(config.getConfig_category_overdue().getCategory_keys());
+                                dbConfigCategoryOverdue.setUserIds(config.getConfig_category_overdue().getUser_ids());
+                                    int one= pushStrategyCategoryOverdueService.update(dbConfigCategoryOverdue);
+                                    if(one<=0){
+                                        log.info("PushStrategyCategoryOverdueDao().update failed");
+                                    }
+
+                        }else{
+                                if(dbConfigCategoryOverdue!=null){
+                                   int one= pushStrategyCategoryOverdueService.delete(dbConfigCategoryOverdue);
+                                    if(one<=0){
+                                        log.info("PushStrategyCategoryOverdueDao().delete failed");
+                                    }
+                                }else{
+                                    log.info("task push strategy category overdue config not set");
+                                }
+                            }
+                    }
+
+
+
+        // # 高发问题发起推送配置
+        PushStrategyCategoryThreshold   dbConfigCategoryThreshold=  pushStrategyCategoryThresholdService.selectTaskIdAndNotDel(taskEditReq.getTask_id());
+                        if(config.getConfig_category_threshold()!=null){
+                            if(dbConfigCategoryThreshold==null){
+                                PushStrategyCategoryThreshold item = new PushStrategyCategoryThreshold();
+                                item.setProjectId(taskEditReq.getProject_id());
+                                item.setTaskId(taskEditReq.getTask_id());
+                                item.setModuleId(convertCategoryCls(taskInfo.getCategoryCls()));
+                                item.setTyp(1);
+                                item.setCategoryKeys(config.getConfig_category_threshold().getCategory_keys());
+                                item.setUserIds(config.getConfig_category_threshold().getUser_ids());
+                                item.setThreshold(config.getConfig_category_threshold().getThreshold());
+                                item.setScanEndOn(DateUtil.timeStampToDate(DateUtil.datetimeToTimeStamp(taskInfo.getPlanEndOn())+ ( 30 * 24 * 60 * 60)," yyyy-MM-dd HH-mm-ss"));
+                                int Num = pushStrategyCategoryThresholdService.add(item);
+                                if (Num <= 0) {
+                                    log.info("PushStrategyCategoryOverdueDao().add failed");
+                                }
+
+                            }else if(!dbConfigCategoryThreshold.getCategoryKeys().equals(config.getConfig_category_threshold().getCategory_keys())||
+                                    !dbConfigCategoryThreshold.getUserIds().equals(config.getConfig_category_threshold().getUser_ids())||
+                                    !dbConfigCategoryThreshold.getThreshold().equals(config.getConfig_category_threshold().getThreshold())
+                            ){
+                                dbConfigCategoryThreshold.setCategoryKeys(config.getConfig_category_threshold().getCategory_keys());
+                                dbConfigCategoryThreshold.setUserIds(config.getConfig_category_threshold().getUser_ids());
+                                dbConfigCategoryThreshold.setThreshold(config.getConfig_category_threshold().getThreshold());
+                              int one=  pushStrategyCategoryThresholdService.update(dbConfigCategoryThreshold);
+                              if(one<=0){
+                                  log.info("PushStrategyCategoryThresholdDao().update failed");
+                              }
+                            }else{
+                    if(dbConfigCategoryThreshold!=null){
+                        int one=  pushStrategyCategoryThresholdService.delete(dbConfigCategoryThreshold);
+                        if(one<=0){
+                            log.info("PushStrategyCategoryThresholdDao().delete failed");
+                        }
+                    }else{
+                        log.info("task push strategy category threshold config not set");
+                    }
+
+                            }
+                        }
+
+
+
+    }
+
+    private void beforeExecute( List<ApiBuildingQmTaskMemberGroupVo>checkerGroupsAdd,  List<ApiBuildingQmTaskMemberGroupVo>checkerGroupsEdit,  List<Object>checkerGroupsDel,  List<ApiBuildingQmTaskMemberInsertVo>needInsertCheckTaskSquadUser,  List<UserInHouseQmCheckTask>needUpdateCheckTaskSquadUser,  Map doNotNeedDeleteSquaduserPkId,Integer uid, TaskEditReq taskEditReq, List<Integer> areaIds, List<Integer> areaTypes, String planBeginOn, String planEndOn, List<ApiBuildingQmTaskMemberGroupVo> checkerGroups, List<ApiBuildingQmTaskMemberGroupVo> repairerGroups, ConfigVo config) {
+        checkSquads( needUpdateCheckTaskSquadUser,needInsertCheckTaskSquadUser,doNotNeedDeleteSquaduserPkId, checkerGroupsDel,checkerGroupsEdit,checkerGroupsAdd,uid,  taskEditReq, areaIds, areaTypes,  planBeginOn,  planEndOn,  checkerGroups,  repairerGroups,  config);
+
+
+    }
+
+    private void compareSquadCheckers(List<ApiBuildingQmTaskMemberGroupVo> repairerGroups, List<UserInHouseQmCheckTask>needUpdateCheckTaskSquadUser,List<ApiBuildingQmTaskMemberInsertVo> needInsertCheckTaskSquadUser,List<ApiBuildingQmTaskMemberGroupVo> checkerGroups, List<Object> checkerGroupsDel, Map doNotNeedDeleteSquaduserPkId, TaskEditReq taskEditReq) {
+      List<UserInHouseQmCheckTask>dbItems=  userInHouseQmCheckTaskService.selectByTaskIdAndRoleType(taskEditReq.getTask_id(), CheckTaskRoleType.Checker.getValue());
+        HashMap<Object, Map<Integer,UserInHouseQmCheckTask>> squadUserMap = Maps.newHashMap();
+        for (int i = 0; i <dbItems.size() ; i++) {
+            if(!squadUserMap.containsKey(dbItems.get(i).getSquadId())){
+                squadUserMap.put(dbItems.get(i).getSquadId(), new HashMap<Integer,UserInHouseQmCheckTask>());
+            }
+            squadUserMap.get(dbItems.get(i).getSquadId()).put(dbItems.get(i).getUserId(),dbItems.get(i));
+            doNotNeedDeleteSquaduserPkId.put(dbItems.get(i).getId(),false);
+        }
+        HashMap<Object, Object> ignoreSquadIdsMap = Maps.newHashMap();
+        for (int i = 0; i < checkerGroupsDel.size(); i++) {
+            ignoreSquadIdsMap.put(checkerGroupsDel.get(i),true);
+        }
+        for (int i = 0; i < checkerGroups.size(); i++) {
+            Integer groupId = checkerGroups.get(i).getGroup_id();
+            if(groupId.equals(0)){
+                continue;
+            }
+            if (ignoreSquadIdsMap.containsKey(checkerGroups.get(i).getGroup_id())) {
+                continue;
+            }
+            List<Integer> userIds = checkerGroups.get(i).getUser_ids();
+            for (int j = 0; j < userIds.size(); j++) {
+                Integer  squadId = checkerGroups.get(i).getGroup_id();
+                Integer canApprove = CheckTaskRoleCanApproveType.No.getValue();
+                Integer canDirectApprove = CheckTaskRoleCanDirectApproveType.No.getValue();
+                Integer  canReassign = CheckTaskRoleCanReassignType.No.getValue();
+                if(checkerGroups.get(i).getApprove_ids().contains(userIds.get(j))){
+                    canApprove = CheckTaskRoleCanApproveType.Yes.getValue();
+                }
+                if(checkerGroups.get(i).getDirect_approve_ids().contains(userIds.get(j))&&checkerGroups.get(i).getApprove_ids().contains(userIds.get(j))){
+                    canDirectApprove = CheckTaskRoleCanDirectApproveType.Yes.getValue();
+                }
+                if(checkerGroups.get(i).getReassign_ids().contains(userIds.get(j))){
+                    canReassign = CheckTaskRoleCanReassignType.Yes.getValue();
+                }
+                if(!squadUserMap.get(squadId).containsKey(userIds.get(j))){
+                    ApiBuildingQmTaskMemberInsertVo vo = new ApiBuildingQmTaskMemberInsertVo();
+                    vo.setSquad_id(squadId);
+                    vo.setGroup_role(CheckTaskRoleType.Checker.getValue());
+                    vo.setUser_id(userIds.get(j));
+                    vo.setCan_approve(canApprove);
+                    vo.setCan_direct_approve(canDirectApprove);
+                    vo.setCan_reassign(canReassign);
+                    needInsertCheckTaskSquadUser.add(vo);
+                            continue;
+                }
+                UserInHouseQmCheckTask dbItem = squadUserMap.get(squadId).get(userIds.get(j));
+                doNotNeedDeleteSquaduserPkId.put(dbItem.getId(),true);
+                if(!dbItem.getCanApprove().equals(canApprove)||
+                        !dbItem.getCanDirectApprove().equals(canDirectApprove)||
+                        !dbItem.getCanReassign().equals(canReassign)
+                ){
+                    dbItem.setCanApprove(canApprove);
+                    dbItem.setCanDirectApprove(canDirectApprove);
+                    dbItem.setCanReassign(canReassign);
+                    needUpdateCheckTaskSquadUser.add(dbItem);
+                }
+
+
+            }
+
+        }
+        compareSquadRepairers(repairerGroups,taskEditReq,needInsertCheckTaskSquadUser,doNotNeedDeleteSquaduserPkId);
+    }
+
+    private void compareSquadRepairers(List<ApiBuildingQmTaskMemberGroupVo> repairerGroups, TaskEditReq taskEditReq, List<ApiBuildingQmTaskMemberInsertVo> needInsertCheckTaskSquadUser, Map doNotNeedDeleteSquaduserPkId) {
+        List<UserInHouseQmCheckTask>dbItems= userInHouseQmCheckTaskService.selectByTaskIdAndRoleType(taskEditReq.getTask_id(),CheckTaskRoleType.Repairer.getValue());
+                Integer squadId=0;
+        HashMap<Object, Object> squadUserMap = Maps.newHashMap();
+        for (int i = 0; i < dbItems.size(); i++) {
+            squadId=dbItems.get(i).getSquadId();
+            squadUserMap.put(dbItems.get(i).getUserId(),dbItems.get(i));
+            doNotNeedDeleteSquaduserPkId.put(dbItems.get(i).getId(),false);
+        }
+        for (int i = 0; i <repairerGroups.size() ; i++) {
+            for (int j = 0; j < repairerGroups.get(i).getUser_ids().size(); j++) {
+                if(!squadUserMap.containsKey(repairerGroups.get(i).getUser_ids().get(j))){
+                   Integer canApprove = CheckTaskRoleCanApproveType.No.getValue();
+                    Integer  canDirectApprove = CheckTaskRoleCanDirectApproveType.No.getValue();
+                    Integer canReassign = CheckTaskRoleCanReassignType.No.getValue();
+                    ApiBuildingQmTaskMemberInsertVo vo = new ApiBuildingQmTaskMemberInsertVo();
+                    vo.setSquad_id(squadId);
+                    vo.setGroup_role(CheckTaskRoleType.Checker.getValue());
+                    vo.setUser_id(repairerGroups.get(i).getUser_ids().get(j));
+                    vo.setCan_approve(canApprove);
+                    vo.setCan_direct_approve(canDirectApprove);
+                    vo.setCan_reassign(canReassign);
+                    needInsertCheckTaskSquadUser.add(vo);
+                    continue;
+                }
+            }
+        }
+
+    }
+
+    private void checkSquads( List<UserInHouseQmCheckTask>needUpdateCheckTaskSquadUser,List<ApiBuildingQmTaskMemberInsertVo>needInsertCheckTaskSquadUser, Map doNotNeedDeleteSquaduserPkId,List<Object>checkerGroupsDel, List<ApiBuildingQmTaskMemberGroupVo>checkerGroupsEdit,List<ApiBuildingQmTaskMemberGroupVo>checkerGroupsAdd,Integer uid, TaskEditReq taskEditReq, List<Integer> areaIds, List<Integer> areaTypes, String planBeginOn, String planEndOn, List<ApiBuildingQmTaskMemberGroupVo> checkerGroups, List<ApiBuildingQmTaskMemberGroupVo> repairerGroups, ConfigVo config) {
+        HashMap<Object, ApiBuildingQmTaskMemberGroupVo> squadMap = Maps.newHashMap();
+        for (int i = 0; i < checkerGroups.size(); i++) {
+            if(checkerGroups.get(i).getGroup_id().equals(0)){
+                checkerGroupsAdd.add(checkerGroups.get(i));
+            }else {
+                squadMap.put(checkerGroups.get(i).getGroup_id(),checkerGroups.get(i));
+            }
+        }
+
+      List<HouseQmCheckTaskSquad>dbItems=  houseQmCheckTaskSquadService.selectByProjectIdAndTaskIdAndSquadType(taskEditReq.getProject_id(),taskEditReq.getTask_id(),CheckTaskRoleType.Checker.getValue());
+        for (int i = 0; i < dbItems.size(); i++) {
+
+        if(squadMap.containsKey(dbItems.get(i).getId())){
+             if( !squadMap.get(dbItems.get(i).getId()).getGroup_name().equals(dbItems.get(i).getName())){
+                checkerGroupsEdit.add(squadMap.get(dbItems.get(i).getId()));
+             }
+        }else{
+            checkerGroupsDel.add(dbItems.get(i).getId());
+        }
+        }
+        compareSquadCheckers(repairerGroups, needUpdateCheckTaskSquadUser,needInsertCheckTaskSquadUser,checkerGroups,checkerGroupsDel,doNotNeedDeleteSquaduserPkId, taskEditReq);
     }
 
     private List<ApiBuildingQmTaskMemberGroupVo> createCheckerGroups(List<ApiBuildingQmCheckTaskSquadObjVo> groupsInfo) {
@@ -350,10 +814,10 @@ public class BuildingqmServiceImpl implements IBuildingqmService {
             groupVo.setGroup_name(groupsInfo.get(i).getName());
             groupVo.setGroup_role(CheckTaskRoleType.Checker.getValue());
             //去重
-            groupVo.setUser_ids((Integer) CollectionUtil.removeDuplicate(userIds).get(0));
-            groupVo.setApprove_ids((Integer) CollectionUtil.removeDuplicate(approveIds).get(0));
-            groupVo.setDirect_approve_ids((Integer) CollectionUtil.removeDuplicate(directApproveIds).get(0));
-            groupVo.setReassign_ids((Integer) CollectionUtil.removeDuplicate(reassignIds).get(0));
+            groupVo.setUser_ids( CollectionUtil.removeDuplicate(userIds));
+            groupVo.setApprove_ids(CollectionUtil.removeDuplicate(approveIds));
+            groupVo.setDirect_approve_ids( CollectionUtil.removeDuplicate(directApproveIds));
+            groupVo.setReassign_ids( CollectionUtil.removeDuplicate(reassignIds));
             objects.add(groupVo);
 
         }
@@ -392,8 +856,14 @@ public class BuildingqmServiceImpl implements IBuildingqmService {
         houseQmCheckTask.setEditor(0);
         houseQmCheckTask.setPlanBeginOn(stringToDate(planBeginOn));
         houseQmCheckTask.setPlanEndOn(stringToDate(planEndOn));
-        houseQmCheckTask.setAreaIds(areaIds.toString());
-        houseQmCheckTask.setAreaTypes(areaTypes.toString());
+        String stringAreaIds = areaIds.toString();
+        String s = StringUtils.removeStart(stringAreaIds, "[");
+        String s1 = StringUtils.removeEnd(s, "]");
+        houseQmCheckTask.setAreaIds(s1.replaceAll(" ", ""));
+        String stringAreaTypes = areaTypes.toString();
+        String s2 = StringUtils.removeStart(stringAreaTypes, "[");
+        String s3 = StringUtils.removeEnd(s2, "]");
+        houseQmCheckTask.setAreaTypes(s3.replaceAll(" ", ""));
         //返回主键
         int one = houseQmCheckTaskService.add(houseQmCheckTask);
         HouseQmCheckTask checktaskObj=  houseQmCheckTaskService.selectById(one);
@@ -406,6 +876,8 @@ public class BuildingqmServiceImpl implements IBuildingqmService {
             HouseQmCheckTaskSquad squad = new HouseQmCheckTaskSquad();
             squad.setProjectId(taskReq.getProject_id());
             squad.setTaskId(One);
+            squad.setCreateAt(new Date());
+            squad.setUpdateAt(new Date());
             squad.setName(checkerGroups.get(i).getGroup_name());
             squad.setSquadType(checkerGroups.get(i).getGroup_role());
             //返回主键
@@ -414,34 +886,40 @@ public class BuildingqmServiceImpl implements IBuildingqmService {
                 log.info("create task squad failed");
                 throw new LjBaseRuntimeException(361, "'创建任务组失败'");
             }
-            Integer user_ids = checkerGroups.get(i).getUser_ids();
+            List<Integer> user_ids = checkerGroups.get(i).getUser_ids();
+            for (int j = 0; j <user_ids.size() ; j++) {
 
-            Integer canApprove = CheckTaskRoleCanApproveType.No.getValue();
-            Integer canDirectApprove = CheckTaskRoleCanDirectApproveType.No.getValue();
-            Integer canReassign = CheckTaskRoleCanReassignType.No.getValue();
-            if (user_ids.equals(checkerGroups.get(i).getApprove_ids())) {
-                canApprove = CheckTaskRoleCanApproveType.Yes.getValue();
+                Integer canApprove = CheckTaskRoleCanApproveType.No.getValue();
+                Integer canDirectApprove = CheckTaskRoleCanDirectApproveType.No.getValue();
+                Integer canReassign = CheckTaskRoleCanReassignType.No.getValue();
+                if (checkerGroups.get(i).getApprove_ids().contains(user_ids.get(j))) {
+                    canApprove = CheckTaskRoleCanApproveType.Yes.getValue();
+                }
+                if (checkerGroups.get(i).getApprove_ids().contains(user_ids.get(j)) && checkerGroups.get(i).getDirect_approve_ids().contains(user_ids.get(j))) {
+                    canDirectApprove = CheckTaskRoleCanDirectApproveType.Yes.getValue();
+                }
+                if ((checkerGroups.get(i).getReassign_ids().contains(user_ids.get(j)))) {
+                    canReassign = CheckTaskRoleCanReassignType.Yes.getValue();
+                }
+                UserInHouseQmCheckTask qmCheckTask = new UserInHouseQmCheckTask();
+                qmCheckTask.setSquadId(squadInfo);
+                qmCheckTask.setUserId(user_ids.get(j));
+                qmCheckTask.setRoleType(checkerGroups.get(i).getGroup_role());
+                qmCheckTask.setProjectId(taskReq.getProject_id());
+                qmCheckTask.setTaskId(One);
+                qmCheckTask.setCanApprove(canApprove);
+                qmCheckTask.setCanDirectApprove(canDirectApprove);
+                qmCheckTask.setCanReassign(canReassign);
+                int num = userInHouseQmCheckTaskService.add(qmCheckTask);
+                if (num <= 0) {
+                    log.info("create task user failed");
+                    throw new LjBaseRuntimeException(389, "创建任务组人员失败");
+                }
+
             }
-            if (user_ids.equals(checkerGroups.get(i).getApprove_ids()) && user_ids.equals(checkerGroups.get(i).getDirect_approve_ids())) {
-                canDirectApprove = CheckTaskRoleCanDirectApproveType.Yes.getValue();
-            }
-            if (user_ids.equals(checkerGroups.get(i).getReassign_ids())) {
-                canReassign = CheckTaskRoleCanReassignType.Yes.getValue();
-            }
-            UserInHouseQmCheckTask qmCheckTask = new UserInHouseQmCheckTask();
-            qmCheckTask.setSquadId(squadInfo);
-            qmCheckTask.setUserId(user_ids);
-            qmCheckTask.setRoleType(checkerGroups.get(i).getGroup_role());
-            qmCheckTask.setProjectId(taskReq.getProject_id());
-            qmCheckTask.setTaskId(One);
-            qmCheckTask.setCanApprove(canApprove);
-            qmCheckTask.setCanDirectApprove(canDirectApprove);
-            qmCheckTask.setCanReassign(canReassign);
-            int num = userInHouseQmCheckTaskService.add(qmCheckTask);
-            if (num <= 0) {
-                log.info("create task user failed");
-                throw new LjBaseRuntimeException(389, "创建任务组人员失败");
-            }
+
+
+
         }
 
         for (int i = 0; i < repairerGroups.size(); i++) {//group
@@ -449,33 +927,38 @@ public class BuildingqmServiceImpl implements IBuildingqmService {
             HouseQmCheckTaskSquad squad = new HouseQmCheckTaskSquad();
             squad.setProjectId(taskReq.getProject_id());
             squad.setTaskId(One);
-            squad.setName(checkerGroups.get(i).getGroup_name());
-            squad.setSquadType(checkerGroups.get(i).getGroup_role());
+            squad.setName(repairerGroups.get(i).getGroup_name());
+            squad.setSquadType(repairerGroups.get(i).getGroup_role());
+            squad.setCreateAt(new Date());
+            squad.setUpdateAt(new Date());
             int squadInfo = houseQmCheckTaskSquadService.add(squad);
             if (squadInfo <= 0) {
                 log.info("create task squad failed");
                 throw new LjBaseRuntimeException(402, "'创建任务组失败'");
             }
-            Integer userId = checkerGroups.get(i).getUser_ids();
+            List<Integer> userId = repairerGroups.get(i).getUser_ids();
+            for (int j = 0; j < userId.size(); j++) {
+                Integer canApprove = CheckTaskRoleCanApproveType.No.getValue();
+                Integer canDirectApprove = CheckTaskRoleCanDirectApproveType.No.getValue();
+                Integer canReassign = CheckTaskRoleCanReassignType.No.getValue();
 
-            Integer canApprove = CheckTaskRoleCanApproveType.No.getValue();
-            Integer canDirectApprove = CheckTaskRoleCanDirectApproveType.No.getValue();
-            Integer canReassign = CheckTaskRoleCanReassignType.No.getValue();
-
-            UserInHouseQmCheckTask qmCheckTask = new UserInHouseQmCheckTask();
-            qmCheckTask.setSquadId(squadInfo);
-            qmCheckTask.setUserId(userId);
-            qmCheckTask.setRoleType(checkerGroups.get(i).getGroup_role());
-            qmCheckTask.setProjectId(taskReq.getProject_id());
-            qmCheckTask.setTaskId(One);
-            qmCheckTask.setCanApprove(canApprove);
-            qmCheckTask.setCanDirectApprove(canDirectApprove);
-            qmCheckTask.setCanReassign(canReassign);
-            int num = userInHouseQmCheckTaskService.add(qmCheckTask);
-            if (num <= 0) {
-                log.info("create task user failed");
-                throw new LjBaseRuntimeException(422, "创建任务组人员失败");
+                UserInHouseQmCheckTask qmCheckTask = new UserInHouseQmCheckTask();
+                qmCheckTask.setSquadId(squadInfo);
+                qmCheckTask.setUserId(userId.get(j));
+                qmCheckTask.setRoleType(repairerGroups.get(i).getGroup_role());
+                qmCheckTask.setProjectId(taskReq.getProject_id());
+                qmCheckTask.setTaskId(One);
+                qmCheckTask.setCanApprove(canApprove);
+                qmCheckTask.setCanDirectApprove(canDirectApprove);
+                qmCheckTask.setCanReassign(canReassign);
+                int num = userInHouseQmCheckTaskService.add(qmCheckTask);
+                if (num <= 0) {
+                    log.info("create task user failed");
+                    throw new LjBaseRuntimeException(422, "创建任务组人员失败");
+                }
             }
+
+
         }
 
         //  # 指定日期发起推送配置
@@ -503,7 +986,7 @@ public class BuildingqmServiceImpl implements IBuildingqmService {
             pushStrategyCategoryOverdue.setTyp(1);
             pushStrategyCategoryOverdue.setCategoryKeys(config.getConfig_category_overdue().getCategory_keys());
             pushStrategyCategoryOverdue.setUserIds(config.getConfig_category_overdue().getUser_ids());
-            pushStrategyCategoryOverdue.setScanEndOn(DateUtil.timeStampToDate(DateUtil.datetimeToTimeStamp(checktaskObj.getPlanEndOn())+ ( 30 * 24 * 60 * 60)," yyyy-MM-dd-HH-mm-ss"));
+            pushStrategyCategoryOverdue.setScanEndOn(DateUtil.timeStampToDate(DateUtil.datetimeToTimeStamp(checktaskObj.getPlanEndOn())+ ( 30 * 24 * 60 * 60)," yyyy-MM-dd HH-mm-ss"));
             int Num = pushStrategyCategoryOverdueService.add(pushStrategyCategoryOverdue);
             if (Num <= 0) {
                 log.info("PushStrategyCategoryOverdueDao().add failed");
@@ -520,7 +1003,7 @@ public class BuildingqmServiceImpl implements IBuildingqmService {
             pushStrategyCategoryThreshold.setCategoryKeys(config.getConfig_category_threshold().getCategory_keys());
             pushStrategyCategoryThreshold.setUserIds(config.getConfig_category_threshold().getUser_ids());
             pushStrategyCategoryThreshold.setThreshold(config.getConfig_category_threshold().getThreshold());
-            pushStrategyCategoryThreshold.setScanEndOn(DateUtil.timeStampToDate(DateUtil.datetimeToTimeStamp(checktaskObj.getPlanEndOn())+ ( 30 * 24 * 60 * 60)," yyyy-MM-dd-HH-mm-ss"));
+            pushStrategyCategoryThreshold.setScanEndOn(DateUtil.timeStampToDate(DateUtil.datetimeToTimeStamp(checktaskObj.getPlanEndOn())+ ( 30 * 24 * 60 * 60)," yyyy-MM-dd HH-mm-ss"));
             int Num = pushStrategyCategoryThresholdService.add(pushStrategyCategoryThreshold);
             if (Num <= 0) {
                 log.info("PushStrategyCategoryOverdueDao().add failed");
@@ -611,15 +1094,13 @@ public class BuildingqmServiceImpl implements IBuildingqmService {
         vo.setGroup_name(name);
         vo.setGroup_role(CheckTaskRoleType.Repairer.getValue());
         List<Integer> list = CollectionUtil.removeDuplicate(repairerIds);
-        for (int i = 0; i < list.size(); i++) {
-            vo.setUser_ids(list.get(i));
-        }
+            vo.setUser_ids(list);
         result.add(vo);
         return result;
     }
 
     private List<ApiBuildingQmCheckTaskSquadObjVo> unmarshCheckerGroups(String checker_groups) {
-        Map<String, Object> checkergroups = JSON.parseObject(checker_groups,Map.class);
+        Map<Object, Object> checkergroups = JSON.parseObject(checker_groups,Map.class);
         ApiBuildingQmCheckTaskSquadObjVo objVo = new ApiBuildingQmCheckTaskSquadObjVo();
         objVo.setId((Integer) checkergroups.get("id"));
         objVo.setName((String) checkergroups.get("name"));

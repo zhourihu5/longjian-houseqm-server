@@ -8,6 +8,7 @@ package com.longfor.longjian.houseqm.app.controller;
 import com.longfor.gaia.gfs.web.mock.MockOperation;
 import com.longfor.longjian.common.base.LjBaseResponse;
 import com.longfor.longjian.houseqm.app.service.BuildingqmSettingService;
+import com.longfor.longjian.houseqm.app.vo.ApiIssueFiledSettingMsg;
 import com.longfor.longjian.houseqm.po.IssueFieldSetting;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.MediaType;
@@ -42,13 +43,10 @@ public class BuildingqmSettingController {
      * @return
      */
     @GetMapping(value = "get_issuefiled_setting", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
-    public LjBaseResponse<IssueFieldSetting> getIssuefiledSetting(@RequestParam List<String> projectIds, @RequestParam(required = false) Integer timestamp) {
-        LjBaseResponse<IssueFieldSetting> esponse = null;
-        try {
-            esponse = buildingqmSettingService.get_issuefiled_setting(projectIds, timestamp);
-        } catch (ParseException e) {
-            e.printStackTrace();
-        }
-        return esponse;
+    public LjBaseResponse<List<ApiIssueFiledSettingMsg>> getIssuefiledSetting(@RequestParam(value = "project_id")   String  projectIds, @RequestParam(value = "timestamp" ,required = false,defaultValue = "0") Integer timestamp) {
+
+        LjBaseResponse<List<ApiIssueFiledSettingMsg>> response = buildingqmSettingService.getIssuefiledSetting(projectIds, timestamp);
+
+        return response;
     }
 }

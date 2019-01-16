@@ -4,6 +4,8 @@ import com.google.common.collect.Lists;
 import com.longfor.gaia.gfs.data.mybatis.datasource.LFAssignDataSource;
 import com.longfor.longjian.houseqm.dao.UserInHouseQmCheckTaskMapper;
 import com.longfor.longjian.houseqm.domain.internalService.UserInHouseQmCheckTaskService;
+import com.longfor.longjian.houseqm.po.HouseQmCheckTask;
+import com.longfor.longjian.houseqm.po.HouseQmCheckTaskSquad;
 import com.longfor.longjian.houseqm.po.UserInHouseQmCheckTask;
 import com.longfor.longjian.houseqm.utils.ExampleUtil;
 import lombok.extern.slf4j.Slf4j;
@@ -21,6 +23,7 @@ import java.util.stream.Collectors;
  * @author lipeishuai
  * @date 2018/11/23 11:37
  */
+@Transactional
 @Service
 @Slf4j
 public class UserInHouseQmCheckTaskServiceImpl implements UserInHouseQmCheckTaskService {
@@ -152,6 +155,56 @@ public class UserInHouseQmCheckTaskServiceImpl implements UserInHouseQmCheckTask
         Example.Criteria criteria = example.createCriteria();
         criteria.andEqualTo("taskId",task_id);
         return userInHouseQmCheckTaskMapper.deleteByExample(example);
+    }
+
+    @Override
+    @LFAssignDataSource("zhijian2")
+    public UserInHouseQmCheckTask selectBysquadIdAnduserIdAndtaskIdAndNotDel(Integer squadId, Integer userId, Integer taskId) {
+        Example example = new Example(UserInHouseQmCheckTask.class);
+        Example.Criteria criteria = example.createCriteria();
+        criteria.andEqualTo("squadId",squadId).andEqualTo("userId",userId).andEqualTo("taskId",taskId).andIsNull("deleteAt");
+        return userInHouseQmCheckTaskMapper.selectOneByExample(example);
+    }
+
+    @Override
+    @LFAssignDataSource("zhijian2")
+    public int update(UserInHouseQmCheckTask dbItem) {
+        return userInHouseQmCheckTaskMapper.updateByPrimaryKey(dbItem);
+    }
+
+    @Override
+    @LFAssignDataSource("zhijian2")
+    public List<UserInHouseQmCheckTask> selectByIdAndTaskId(Object o, Integer task_id) {
+        Example example = new Example(UserInHouseQmCheckTask.class);
+        Example.Criteria criteria = example.createCriteria();
+        criteria.andEqualTo("id",o).andEqualTo("taskId",task_id);
+        return userInHouseQmCheckTaskMapper.selectByExample(example);
+    }
+
+    @Override
+    @LFAssignDataSource("zhijian2")
+    public int delete(UserInHouseQmCheckTask userInHouseQmCheckTask) {
+        return userInHouseQmCheckTaskMapper.delete(userInHouseQmCheckTask);
+    }
+
+    @Override
+    @LFAssignDataSource("zhijian2")
+    public List<UserInHouseQmCheckTask> selectByTaskIdAndRoleType(Integer task_id, Integer value) {
+        Example example = new Example(UserInHouseQmCheckTask.class);
+        Example.Criteria criteria = example.createCriteria();
+        criteria.andEqualTo("taskId",task_id).andEqualTo("roleType",value);
+        return userInHouseQmCheckTaskMapper.selectByExample(example);
+    }
+
+    @Override
+    @LFAssignDataSource("zhijian2")
+    public List<UserInHouseQmCheckTask> selectBysquadIdAndtaskId(Object o, Integer task_id) {
+            Example example = new Example(UserInHouseQmCheckTask.class);
+            Example.Criteria criteria = example.createCriteria();
+            criteria.andEqualTo("squadId",o);
+            criteria.andEqualTo("taskId",task_id);
+            return userInHouseQmCheckTaskMapper.selectByExample(example);
+
     }
 
     @Override

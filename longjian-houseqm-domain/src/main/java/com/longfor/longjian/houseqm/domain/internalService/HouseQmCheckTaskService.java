@@ -45,4 +45,10 @@ public interface HouseQmCheckTaskService {
     HouseQmCheckTask selectByTaskId(Integer integer);
 
     HouseQmCheckTask selectByProjectIdAndTaskIdAndDel(Integer projectId, Integer taskId);
+
+    int update(HouseQmCheckTask taskInfo);
+
+
+
+    int delete(HouseQmCheckTask houseQmCheckTask);
 }

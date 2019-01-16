@@ -642,14 +642,14 @@ public class IssueServiceImpl implements IIssueService {
             response.setMessage("状态为记录，不能更改");
             return response;
         }
-        if (status == CheckTaskIssueCheckStatus.CheckYes.getValue()) {
-            if (issueInfo.getStatus() == CheckTaskIssueStatus.NoteNoAssign.getValue() ||
-                    issueInfo.getStatus() == CheckTaskIssueStatus.AssignNoReform.getValue()
+        if (status.equals(CheckTaskIssueCheckStatus.CheckYes.getValue())) {
+            if (issueInfo.getStatus().equals(CheckTaskIssueStatus.NoteNoAssign.getValue()) ||
+                    issueInfo.getStatus().equals(CheckTaskIssueStatus.AssignNoReform.getValue())
             ) {
                 issueInfo.setStatus(CheckTaskIssueStatus.CheckYes.getValue());
             }
         }
-        if (status == CheckTaskIssueCheckStatus.CheckNo.getValue()) {
+        if (status.equals(CheckTaskIssueCheckStatus.CheckNo.getValue())) {
             issueInfo.setStatus(CheckTaskIssueStatus.AssignNoReform.getValue());
         }
         issueInfo.setUpdateAt(new Date());
