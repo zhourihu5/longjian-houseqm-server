@@ -100,8 +100,18 @@ public class HouseQmCheckTaskIssueLogServiceImpl implements HouseQmCheckTaskIssu
      */
     @Override
     @LFAssignDataSource("zhijian2")
-    public List<HouseQmCheckTaskIssueLog> selectIdByTaskIdAndIdAndUuidInAndUpdateAtGtAndNoDeletedOrderById(Integer task_id, List<String> uuids, Date issueLogUpdateTime) {
-        return houseQmCheckTaskIssueLogMapper.selectIdByTaskIdAndIdAndUuidInAndUpdateAtGtAndNoDeletedOrderById(task_id,uuids,issueLogUpdateTime,"false");
+    public HouseQmCheckTaskIssueLog selectIdByTaskIdAndIdAndUuidInAndUpdateAtGtAndNoDeletedOrderById(Integer task_id, List<String> uuids, Date issueLogUpdateTime) {
+        Example example = new Example(HouseQmCheckTaskIssueLog.class);
+        Example.Criteria criteria = example.createCriteria();
+        criteria.andEqualTo("taskId",task_id).andGreaterThan("id",0);
+        Example.Criteria criteria1 = example.createCriteria();
+        if (uuids.size()>0)criteria1.andIn("issueUuid",uuids);
+        Example.Criteria criteria2 = example.createCriteria();
+        criteria2.andGreaterThan("updateAt",issueLogUpdateTime);
+        example.and(criteria);
+        example.and(criteria1);
+        example.and(criteria2);
+        return houseQmCheckTaskIssueLogMapper.selectOneByExample(example);
     }
 
     @Override

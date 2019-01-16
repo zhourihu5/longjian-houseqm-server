@@ -2,6 +2,8 @@ package com.longfor.longjian.houseqm.app.controller;
 
 import com.google.common.collect.Lists;
 import com.longfor.longjian.common.base.LjBaseResponse;
+import com.longfor.longjian.common.entity.UserBase;
+import com.longfor.longjian.common.util.SessionInfo;
 import com.longfor.longjian.houseqm.app.req.DeviceReq;
 import com.longfor.longjian.houseqm.app.req.TaskEditReq;
 import com.longfor.longjian.houseqm.app.req.TaskReq;
@@ -16,6 +18,7 @@ import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
+import javax.validation.Valid;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -37,40 +40,43 @@ public class BuildingqmController {
 
     @Resource
     IBuildingqmService buildingqmService;
-
     @Resource
     ICheckUpdateService iCheckUpdateService;
 
     /**
      * 项目下获取我的任务列表
+     * http://192.168.37.159:3000/project/8/interface/api/626
      *
      * @param deviceId
      * @param token
      * @return
      */
-    @GetMapping(value = "buildingqm/my_task_list", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+    @GetMapping(value = "buildingqm/my_task_list/", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     public TaskResponse<TaskListVo> myTaskList(@RequestParam(value = "device_id") String deviceId,
                                                @RequestParam(value = "token") String token) {
-        //// TODO: 2018/11/24
-        Integer uid = null;
+        //// TODO: 2018/11/24 uid = session['uid']
 
+        int uid = 7556;
         TaskListVo vo = buildingqmService.myTaskList(uid);
         TaskResponse<TaskListVo> response = new TaskResponse();
+        response.setResult(0);
+        response.setMessage("success");
         response.setData(vo);
-
         return response;
     }
 
     /**
      * 检查任务更新
+     * http://192.168.37.159:3000/project/8/interface/api/658
      *
      * @param updateDeviceReq
      * @return com.longfor.longjian.common.base.LjBaseResponse<com.longfor.longjian.houseqm.app.vo.TaskIssueListVo>
      * @author hy
      * @date 2018/12/25 0025
      */
-    @GetMapping(value = "check_update/check", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
-    public LjBaseResponse<TaskIssueListVo> check(UpdateDeviceReq updateDeviceReq) {
+    @GetMapping(value = "check_update/check/", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+    public LjBaseResponse<TaskIssueListVo> check(@Valid UpdateDeviceReq updateDeviceReq) {
+
         Date taskUpdateTime = DateUtil.timeStampToDate(updateDeviceReq.getTask_update_time(), "yyyy-MM-dd");
         Date issueUpdateTime = DateUtil.timeStampToDate(updateDeviceReq.getIssue_update_time(), "yyyy-MM-dd");
         Date issueLogUpdateTime = DateUtil.timeStampToDate(updateDeviceReq.getIssue_log_update_time(), "yyyy-MM-dd");
@@ -87,7 +93,7 @@ public class BuildingqmController {
             item.setTask(0);
         }
         ////TODO uid = int(session['uid'])
-        Integer uid = 7566;
+        Integer uid = 7556;
         //  根据userid，taskid，issue_log_update_time查找最后一个issue单的id
         Integer newLastIssueId = iCheckUpdateService.getHouseqmCheckTaskIssueLastId(uid, updateDeviceReq.getTask_id(), issueUpdateTime);
         if (newLastIssueId > 0) {
@@ -107,9 +113,9 @@ public class BuildingqmController {
             Date issueLastUpdateTime = iCheckUpdateService.getHouseQmCheckTaskIssueUserLastUpdateTime(updateDeviceReq.getTask_id());
             if (issueLastUpdateTime.after(issueMembersUpdateTime)) {
                 item.setIssue_members(1);
-            } else {
-                item.setIssue_members(0);
             }
+        }else {
+            item.setIssue_members(0);
         }
 
         Date taskLastUpdateTime = iCheckUpdateService.getHouseQmCheckTaskLastUpdateTime(updateDeviceReq.getTask_id());
@@ -128,6 +134,7 @@ public class BuildingqmController {
     }
 
     /**
+     *  http://192.168.37.159:3000/project/8/interface/api/670  获取任务角色列表
      * @param deviceId
      * @param taskIds
      * @param token
@@ -153,7 +160,6 @@ public class BuildingqmController {
     public LjBaseResponse<MyIssuePatchListVo> myIssuePatchList(DeviceReq deviceReq) {
         //// Todo: 获取uid 为了测试改为0，
         Integer uid = 7556;
-        //调用业务方法
         MyIssuePatchListVo miplv = buildingqmService.myIssuePathList(uid, deviceReq.getTask_id(), deviceReq.getTimestamp());
         LjBaseResponse<MyIssuePatchListVo> ljBaseResponse = new LjBaseResponse<>();
         ljBaseResponse.setData(miplv);
@@ -161,52 +167,51 @@ public class BuildingqmController {
     }
 
 
-
     @PostMapping(value = "task/create", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     public LjBaseResponse create(TaskReq taskReq) {
-        log.info("create, project_id="+taskReq.getProject_id()+"" +
-                " name="+taskReq.getName()+", " +
-                "category_cls="+taskReq.getCategory_cls()+"," +
-                " root_category_key="+taskReq.getRoot_category_key()+"," +
-                " area_ids="+taskReq.getArea_ids()+", area_types="+taskReq.getArea_types()+"," +
-                " plan_begin_on="+taskReq.getPlan_begin_on()+"," +
-                " plan_end_on="+taskReq.getPlan_end_on()+", " +
-                "repairer_ids="+taskReq.getRepairer_ids()+", " +
-                "checker_groups="+taskReq.getChecker_groups()+", " +
-                "repairer_refund_permission="+taskReq.getRepairer_refund_permission()+"," +
-                " repairer_follower_permission="+taskReq.getRepairer_follower_permission()+", " +
-                "checker_approve_permission="+taskReq.getChecker_approve_permission()+", " +
-                "repaired_picture_status="+taskReq.getRepaired_picture_status()+", " +
-                "issue_desc_status="+taskReq.getIssue_desc_status()+", " +
-                "issue_default_desc="+taskReq.getIssue_default_desc()+"," +
-                " push_strategy_config="+taskReq.getPush_strategy_config()+"");
+        log.info("create, project_id=" + taskReq.getProject_id() + "" +
+                " name=" + taskReq.getName() + ", " +
+                "category_cls=" + taskReq.getCategory_cls() + "," +
+                " root_category_key=" + taskReq.getRoot_category_key() + "," +
+                " area_ids=" + taskReq.getArea_ids() + ", area_types=" + taskReq.getArea_types() + "," +
+                " plan_begin_on=" + taskReq.getPlan_begin_on() + "," +
+                " plan_end_on=" + taskReq.getPlan_end_on() + ", " +
+                "repairer_ids=" + taskReq.getRepairer_ids() + ", " +
+                "checker_groups=" + taskReq.getChecker_groups() + ", " +
+                "repairer_refund_permission=" + taskReq.getRepairer_refund_permission() + "," +
+                " repairer_follower_permission=" + taskReq.getRepairer_follower_permission() + ", " +
+                "checker_approve_permission=" + taskReq.getChecker_approve_permission() + ", " +
+                "repaired_picture_status=" + taskReq.getRepaired_picture_status() + ", " +
+                "issue_desc_status=" + taskReq.getIssue_desc_status() + ", " +
+                "issue_default_desc=" + taskReq.getIssue_default_desc() + "," +
+                " push_strategy_config=" + taskReq.getPush_strategy_config() + "");
         ////todo c从session中获取uid
 /*
         uid = session['uid']
 */
-        Integer uid=1;
+        Integer uid = 1;
         ////todo 鉴权
        /* has_per = ucenter_api.check_project_permission(uid, req.project_id, '项目.工程检查.任务管理.新增')
         if not has_per:
         rsp = errors_utils.err(rsp, 'PermissionDenied')*/
-        buildingqmService.create(uid,taskReq);
+        buildingqmService.create(uid, taskReq);
         LjBaseResponse<Object> response = new LjBaseResponse<>();
         return response;
     }
 
     @GetMapping(value = "task/task_squad", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
-    public LjBaseResponse< ArrayList<HouseQmCheckTaskSquadListRspVo>> taskSquad(@RequestParam(name = "project_id",required = true) String projectId,
-                                                        @RequestParam(name = "task_id",required = true) String taskId) {
+    public LjBaseResponse<ArrayList<HouseQmCheckTaskSquadListRspVo>> taskSquad(@RequestParam(name = "project_id", required = true) String projectId,
+                                                                               @RequestParam(name = "task_id", required = true) String taskId) {
         ////todo c从session中获取uid
 /*
         uid = session['uid']
 */
-        Integer uid=1;
+        Integer uid = 1;
         ////todo 鉴权
        /* has_per = ucenter_api.check_project_permission(uid, req.project_id, '项目.工程检查.任务管理.新增')
         if not has_per:
         rsp = errors_utils.err(rsp, 'PermissionDenied')*/
-      List<HouseQmCheckTaskSquad>info=  buildingqmService.searchHouseqmCheckTaskSquad(projectId,taskId);
+        List<HouseQmCheckTaskSquad> info = buildingqmService.searchHouseqmCheckTaskSquad(projectId, taskId);
         ArrayList<HouseQmCheckTaskSquadListRspVo> squad_list = Lists.newArrayList();
         for (int i = 0; i < info.size(); i++) {
             HouseQmCheckTaskSquadListRspVo rspVo = new HouseQmCheckTaskSquadListRspVo();
@@ -215,39 +220,39 @@ public class BuildingqmController {
             rspVo.setSquad_type(info.get(i).getSquadType());
             squad_list.add(rspVo);
         }
-        LjBaseResponse< ArrayList<HouseQmCheckTaskSquadListRspVo> > response = new LjBaseResponse<>();
-         response.setData(squad_list);
+        LjBaseResponse<ArrayList<HouseQmCheckTaskSquadListRspVo>> response = new LjBaseResponse<>();
+        response.setData(squad_list);
         return response;
     }
 
     @PostMapping(value = "task/edit", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     public LjBaseResponse edit(TaskEditReq taskEditReq) {
-        log.info("edit, project_id="+taskEditReq.getProject_id()+"" +
-                " name="+taskEditReq.getName()+", " +
-                "task_id="+taskEditReq.getTask_id()+"," +
-                " area_ids="+taskEditReq.getArea_ids()+", area_types="+taskEditReq.getArea_types()+"," +
-                " plan_begin_on="+taskEditReq.getPlan_begin_on()+"," +
-                " plan_end_on="+taskEditReq.getPlan_end_on()+", " +
-                "repairer_ids="+taskEditReq.getRepairer_ids()+", " +
-                "checker_groups="+taskEditReq.getChecker_groups()+", " +
-                "repairer_refund_permission="+taskEditReq.getRepairer_refund_permission()+"," +
-                " repairer_follower_permission="+taskEditReq.getRepairer_follower_permission()+", " +
-                "checker_approve_permission="+taskEditReq.getChecker_approve_permission()+", " +
-                "repaired_picture_status="+taskEditReq.getRepaired_picture_status()+", " +
-                "issue_desc_status="+taskEditReq.getIssue_desc_status()+", " +
-                "issue_default_desc="+taskEditReq.getIssue_default_desc()+"," +
-                " push_strategy_config="+taskEditReq.getPush_strategy_config()+"");
+        log.info("edit, project_id=" + taskEditReq.getProject_id() + "" +
+                " name=" + taskEditReq.getName() + ", " +
+                "task_id=" + taskEditReq.getTask_id() + "," +
+                " area_ids=" + taskEditReq.getArea_ids() + ", area_types=" + taskEditReq.getArea_types() + "," +
+                " plan_begin_on=" + taskEditReq.getPlan_begin_on() + "," +
+                " plan_end_on=" + taskEditReq.getPlan_end_on() + ", " +
+                "repairer_ids=" + taskEditReq.getRepairer_ids() + ", " +
+                "checker_groups=" + taskEditReq.getChecker_groups() + ", " +
+                "repairer_refund_permission=" + taskEditReq.getRepairer_refund_permission() + "," +
+                " repairer_follower_permission=" + taskEditReq.getRepairer_follower_permission() + ", " +
+                "checker_approve_permission=" + taskEditReq.getChecker_approve_permission() + ", " +
+                "repaired_picture_status=" + taskEditReq.getRepaired_picture_status() + ", " +
+                "issue_desc_status=" + taskEditReq.getIssue_desc_status() + ", " +
+                "issue_default_desc=" + taskEditReq.getIssue_default_desc() + "," +
+                " push_strategy_config=" + taskEditReq.getPush_strategy_config() + "");
         ////todo c从session中获取uid
 /*
         uid = session['uid']
 */
-        Integer uid=1;
+        Integer uid = 1;
         ////todo 鉴权
        /* has_per = ucenter_api.check_project_permission(uid, req.project_id, '项目.工程检查.任务管理.新增')
         if not has_per:
         rsp = errors_utils.err(rsp, 'PermissionDenied')*/
 
-        buildingqmService.edit(uid,taskEditReq);
+        buildingqmService.edit(uid, taskEditReq);
         LjBaseResponse<Object> response = new LjBaseResponse<>();
         return response;
     }

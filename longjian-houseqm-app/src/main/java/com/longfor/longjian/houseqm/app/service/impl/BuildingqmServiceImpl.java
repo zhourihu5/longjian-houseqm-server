@@ -129,8 +129,9 @@ public class BuildingqmServiceImpl implements IBuildingqmService {
             vo.setTask_id(task.getTaskId());
             vo.setSquad_type(task.getSquadType());
             vo.setName(task.getName());
-            vo.setUpdate_at((int) (task.getCreateAt().getTime() / 1000));
-            vo.setDelete_at((int) (task.getCreateAt().getTime() / 1000));
+            vo.setUpdate_at((int) (DateUtil.datetimeToTimeStamp(task.getUpdateAt())));
+            vo.setDelete_at((int) (DateUtil.datetimeToTimeStamp(task.getDeleteAt())));
+
             squaListVo.add(vo);
         }
 
@@ -144,8 +145,8 @@ public class BuildingqmServiceImpl implements IBuildingqmService {
             vo.setCan_direct_approve(task.getCanDirectApprove());
             vo.setCan_reassign(task.getCanReassign());
             vo.setTask_id(task.getTaskId());
-            vo.setUpdate_at((int) (task.getCreateAt().getTime() / 1000));
-            vo.setDelete_at((int) (task.getCreateAt().getTime() / 1000));
+            vo.setUpdate_at((int) (DateUtil.datetimeToTimeStamp(task.getUpdateAt())));
+            vo.setDelete_at((int) (DateUtil.datetimeToTimeStamp(task.getDeleteAt())));
             memberListVo.add(vo);
         }
 

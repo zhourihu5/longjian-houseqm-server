@@ -74,8 +74,10 @@ public class UserInHouseQmCheckTaskServiceImpl implements UserInHouseQmCheckTask
      */
     @LFAssignDataSource("zhijian2")
     public List<UserInHouseQmCheckTask> selectByTaskIdsEvenDeleted(Set<Integer> taskIdList) {
-        List<Integer> list = taskIdList.stream().collect(Collectors.toList());
-        return userInHouseQmCheckTaskMapper.selectByTaskIds(list, "true");
+        Example example = new Example(UserInHouseQmCheckTask.class);
+        Example.Criteria criteria = example.createCriteria();
+        criteria.andIn("taskId",taskIdList);
+        return userInHouseQmCheckTaskMapper.selectByExample(example);
     }
 
     @Override
@@ -100,7 +102,11 @@ public class UserInHouseQmCheckTaskServiceImpl implements UserInHouseQmCheckTask
     @Override
     @LFAssignDataSource("zhijian2")
     public List<UserInHouseQmCheckTask> selectSquadIdByTaskIdAndUserIdAndRoleTypeAndNoDeleted(Integer checker, Integer uid, Integer task_id) {
-        return userInHouseQmCheckTaskMapper.selectSquadIdByTaskIdAndUserIdAndRoleTypeAndNoDeleted(uid,task_id,"false",checker);
+        Example example = new Example(UserInHouseQmCheckTask.class);
+        Example.Criteria criteria = example.createCriteria();
+        criteria.andEqualTo("userId",uid).andEqualTo("taskId",task_id).andEqualTo("roleType",checker);
+        ExampleUtil.addDeleteAtJudge(example);
+        return userInHouseQmCheckTaskMapper.selectByExample(example);
     }
 
     /**
@@ -113,7 +119,11 @@ public class UserInHouseQmCheckTaskServiceImpl implements UserInHouseQmCheckTask
     @Override
     @LFAssignDataSource("zhijian2")
     public List<UserInHouseQmCheckTask> selectUserIdBySquadIdInAndNoDeleted(List<Integer> squadIds) {
-        return userInHouseQmCheckTaskMapper.selectUserIdBySquadIdInAndNoDeleted(squadIds,"false");
+        Example example = new Example(UserInHouseQmCheckTask.class);
+        Example.Criteria criteria = example.createCriteria();
+        if (squadIds.size()>0)criteria.andIn("squadId",squadIds);
+        ExampleUtil.addDeleteAtJudge(example);
+        return userInHouseQmCheckTaskMapper.selectByExample(example);
     }
 
     /**
@@ -126,7 +136,12 @@ public class UserInHouseQmCheckTaskServiceImpl implements UserInHouseQmCheckTask
     @Override
     @LFAssignDataSource("zhijian2")
     public List<UserInHouseQmCheckTask> selectUpdateAtByTaskIdAndNoDeletedOrderByUpdateAt(Integer task_id) {
-        return userInHouseQmCheckTaskMapper.selectUpdateAtByTaskIdAndNoDeletedOrderByUpdateAt(task_id,"false");
+        Example example = new Example(UserInHouseQmCheckTask.class);
+        Example.Criteria criteria = example.createCriteria();
+        criteria.andEqualTo("taskId",task_id);
+        ExampleUtil.addDeleteAtJudge(example);
+        example.orderBy("updateAt").desc();
+        return userInHouseQmCheckTaskMapper.selectByExample(example);
     }
 
     @Override

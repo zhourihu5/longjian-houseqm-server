@@ -5,6 +5,7 @@ import com.longfor.longjian.houseqm.dao.HouseQmCheckTaskIssueUserMapper;
 import com.longfor.longjian.houseqm.domain.internalService.HouseQmCheckTaskIssueUserService;
 import com.longfor.longjian.houseqm.po.HouseQmCheckTaskIssue;
 import com.longfor.longjian.houseqm.po.HouseQmCheckTaskIssueUser;
+import com.longfor.longjian.houseqm.utils.ExampleUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -73,7 +74,13 @@ public class HouseQmCheckTaskIssueUserServiceImpl implements HouseQmCheckTaskIss
     @Override
     @LFAssignDataSource(value = "zhijian2")
     public List<HouseQmCheckTaskIssueUser> selectUpdateAtByTaskIdAndNoDeletedOrderByUpdateAt(Integer task_id) {
-        return houseQmCheckTaskIssueUserMapper.selectUpdateAtByTaskIdAndNoDeletedOrderByUpdateAt(task_id,"false");
+        Example example = new Example(HouseQmCheckTaskIssueUser.class);
+        Example.Criteria criteria = example.createCriteria();
+        criteria.andEqualTo("taskId",task_id);
+        ExampleUtil.addDeleteAtJudge(example);
+        example.orderBy("updateAt").desc();
+
+        return houseQmCheckTaskIssueUserMapper.selectByExample(example);
     }
 
     @Override

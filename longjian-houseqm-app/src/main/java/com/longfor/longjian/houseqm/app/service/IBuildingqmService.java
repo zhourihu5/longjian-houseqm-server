@@ -3,6 +3,7 @@ package com.longfor.longjian.houseqm.app.service;
 import com.longfor.longjian.houseqm.app.req.TaskEditReq;
 import com.longfor.longjian.houseqm.app.req.TaskReq;
 import com.longfor.longjian.houseqm.app.vo.MyIssuePatchListVo;
+import com.longfor.longjian.houseqm.app.vo.TaskList2Vo;
 import com.longfor.longjian.houseqm.app.vo.TaskListVo;
 import com.longfor.longjian.houseqm.app.vo.TaskMemberListVo;
 import com.longfor.longjian.houseqm.po.HouseQmCheckTaskSquad;

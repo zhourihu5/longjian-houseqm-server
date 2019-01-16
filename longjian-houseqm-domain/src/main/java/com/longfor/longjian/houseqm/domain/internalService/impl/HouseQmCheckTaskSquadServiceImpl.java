@@ -4,6 +4,7 @@ import com.longfor.gaia.gfs.data.mybatis.datasource.LFAssignDataSource;
 import com.longfor.longjian.houseqm.dao.HouseQmCheckTaskSquadMapper;
 import com.longfor.longjian.houseqm.domain.internalService.HouseQmCheckTaskSquadService;
 import com.longfor.longjian.houseqm.po.HouseQmCheckTaskSquad;
+import com.longfor.longjian.houseqm.po.UserInHouseQmCheckTask;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import tk.mybatis.mapper.entity.Example;
@@ -26,25 +27,25 @@ public class HouseQmCheckTaskSquadServiceImpl implements HouseQmCheckTaskSquadSe
 
 
     /**
-     *
      * @param taskIdList
      * @return
      */
     @LFAssignDataSource("zhijian2")
-    public List<HouseQmCheckTaskSquad> selectByTaskIds(Set<Integer> taskIdList){
+    public List<HouseQmCheckTaskSquad> selectByTaskIds(Set<Integer> taskIdList) {
 
-        return houseQmCheckTaskSquadMapper.selectByTaskIds(taskIdList,"false");
+        return houseQmCheckTaskSquadMapper.selectByTaskIds(taskIdList, "false");
     }
 
     /**
-     *
      * @param taskIdList
      * @return
      */
     @LFAssignDataSource("zhijian2")
-    public List<HouseQmCheckTaskSquad> selectByTaskIdsEvenDeleted(Set<Integer> taskIdList){
-
-        return houseQmCheckTaskSquadMapper.selectByTaskIds(taskIdList,"true");
+    public List<HouseQmCheckTaskSquad> selectByTaskIdsEvenDeleted(Set<Integer> taskIdList) {
+        Example example = new Example(HouseQmCheckTaskSquad.class);
+        Example.Criteria criteria = example.createCriteria();
+        criteria.andIn("taskId",taskIdList);
+        return houseQmCheckTaskSquadMapper.selectByExample(example);
     }
 
     @Override
@@ -63,8 +64,8 @@ public class HouseQmCheckTaskSquadServiceImpl implements HouseQmCheckTaskSquadSe
     @LFAssignDataSource("zhijian2")
     public List<HouseQmCheckTaskSquad> searchHouseqmCheckTaskSquad(String projectId, String taskId) {
         Example example = new Example(HouseQmCheckTaskSquad.class);
-            example.createCriteria().andEqualTo("projectId",projectId).andEqualTo("taskId",taskId);
-        return  houseQmCheckTaskSquadMapper.selectByExample(example);
+        example.createCriteria().andEqualTo("projectId", projectId).andEqualTo("taskId", taskId);
+        return houseQmCheckTaskSquadMapper.selectByExample(example);
 
     }
 

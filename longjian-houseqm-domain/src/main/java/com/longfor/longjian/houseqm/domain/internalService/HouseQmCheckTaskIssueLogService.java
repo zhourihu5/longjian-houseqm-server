@@ -34,7 +34,7 @@ public interface HouseQmCheckTaskIssueLogService {
      * @param issueLogUpdateTime
      * @return com.longfor.longjian.houseqm.po.HouseQmCheckTaskIssueLog
      */
-    List<HouseQmCheckTaskIssueLog> selectIdByTaskIdAndIdAndUuidInAndUpdateAtGtAndNoDeletedOrderById(Integer task_id, List<String> uuids, Date issueLogUpdateTime);
+    HouseQmCheckTaskIssueLog selectIdByTaskIdAndIdAndUuidInAndUpdateAtGtAndNoDeletedOrderById(Integer task_id, List<String> uuids, Date issueLogUpdateTime);
 
     List<HouseQmCheckTaskIssueLog> selectByUuidAndNotDelete(String issueUuid);
 
