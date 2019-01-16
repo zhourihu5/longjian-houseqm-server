@@ -9,4 +9,10 @@ public interface PushStrategyCategoryOverdueService {
     List<PushStrategyCategoryOverdue> searchByTaskIds(Set<Integer> taskIds);
 
     int add(PushStrategyCategoryOverdue pushStrategyCategoryOverdue);
+
+    PushStrategyCategoryOverdue selectByTaskIdAndNotDel(Integer task_id);
+
+    int update(PushStrategyCategoryOverdue dbConfigCategoryOverdue);
+
+    int delete(PushStrategyCategoryOverdue dbConfigCategoryOverdue);
 }

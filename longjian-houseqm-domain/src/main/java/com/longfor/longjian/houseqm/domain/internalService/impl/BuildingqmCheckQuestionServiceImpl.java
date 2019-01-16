@@ -33,7 +33,7 @@ public class BuildingqmCheckQuestionServiceImpl implements BuildingqmCheckQuesti
 
 
     @LFAssignDataSource("zhijian2_setting")
-    public List<IssueFieldSetting> findProjectIdsAndModuleId(ArrayList<Integer> projectIdList) {
+    public List<IssueFieldSetting> findProjectIdsAndModuleId(List<Integer> projectIdList) {
                 return buildingqmSettingMapper.findProjectIdsAndModuleId(projectIdList);
     }
 }

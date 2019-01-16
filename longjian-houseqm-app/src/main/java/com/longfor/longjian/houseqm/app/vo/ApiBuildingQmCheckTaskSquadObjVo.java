@@ -9,7 +9,7 @@ import lombok.NoArgsConstructor;
 @Data
 @NoArgsConstructor
 public class ApiBuildingQmCheckTaskSquadObjVo {
-  private Integer id=0;
+    private Integer id=0;
     private String name="";
     private String user_ids="" ;
     private String approve_ids="" ;

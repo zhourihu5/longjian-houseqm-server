@@ -16,11 +16,11 @@ import java.util.Map;
 @Data
 @NoArgsConstructor
 public class HouseQmCheckTaskSimpleRspVo implements Serializable {
-    private Integer projectId;
-    private Integer taskId;
+    private Integer  project_id;
+    private Integer task_id;
     private String name;
-    private Integer areaTypes;
-    private Date planBeginOn;
-    private Date planEndOn;
-    private Date createAt;
+    private List<Integer> area_types;
+    private Integer plan_begin_on;
+    private Integer plan_end_on;
+    private Integer create_at;
 }

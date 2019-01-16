@@ -15,4 +15,10 @@ public interface HouseQmCheckTaskSquadService {
     HouseQmCheckTaskSquad selectById(int squadInfo);
 
     List<HouseQmCheckTaskSquad> searchHouseqmCheckTaskSquad(String projectId, String taskId);
+
+    int delete(HouseQmCheckTaskSquad dbItem);
+
+    int update(HouseQmCheckTaskSquad dbItem);
+
+    List<HouseQmCheckTaskSquad> selectByProjectIdAndTaskIdAndSquadType(Integer project_id, Integer task_id, Integer value);
 }

@@ -5,6 +5,7 @@ import com.longfor.longjian.houseqm.dao.HouseQmCheckTaskMapper;
 import com.longfor.longjian.houseqm.domain.internalService.HouseQmCheckTaskService;
 import com.longfor.longjian.houseqm.po.HouseQmCheckTask;
 import com.longfor.longjian.houseqm.po.HouseQmCheckTaskIssue;
+import com.longfor.longjian.houseqm.po.HouseQmCheckTaskSquad;
 import com.longfor.longjian.houseqm.utils.ExampleUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -21,6 +22,7 @@ import java.util.stream.Collectors;
  * @author lipeishuai
  * @date 2018/11/23 11:37
  */
+@Transactional
 @Service
 @Slf4j
 public class HouseQmCheckTaskServiceImpl implements HouseQmCheckTaskService {
@@ -150,6 +152,20 @@ public class HouseQmCheckTaskServiceImpl implements HouseQmCheckTaskService {
         Example.Criteria criteria = example.createCriteria();
         criteria.andEqualTo("projectId",projectId).andEqualTo("taskId",taskId).andIsNull("deleteAt");
         return houseQmCheckTaskMapper.selectOneByExample(example);
+    }
+
+    @Override
+    @LFAssignDataSource("zhijian2")
+    public int update(HouseQmCheckTask taskInfo) {
+        return houseQmCheckTaskMapper.updateByPrimaryKey(taskInfo);
+    }
+
+
+
+    @Override
+    @LFAssignDataSource("zhijian2")
+    public int delete(HouseQmCheckTask houseQmCheckTask) {
+        return houseQmCheckTaskMapper.delete(houseQmCheckTask);
     }
 
     /**

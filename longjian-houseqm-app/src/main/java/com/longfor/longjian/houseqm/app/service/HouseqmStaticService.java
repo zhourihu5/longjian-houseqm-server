@@ -10,10 +10,12 @@ import com.longfor.longjian.houseqm.po.Area;
 import com.longfor.longjian.houseqm.po.HouseQmCheckTask;
 import com.longfor.longjian.houseqm.po.HouseQmCheckTaskIssueAreaGroupModel;
 import com.longfor.longjian.houseqm.po.RepossessionStatus;
+import com.longfor.longjian.houseqm.util.DateUtil;
 import com.longfor.longjian.houseqm.util.StringSplitToListUtil;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.collections.CollectionUtils;
 import org.springframework.stereotype.Repository;
 import org.springframework.stereotype.Service;
 
@@ -43,15 +45,15 @@ public class HouseqmStaticService {
         List<HouseQmCheckTask> houseQmCheckTasks = houseQmCheckTaskService.selectByProjectIdAndCategoryCls(project_id, category_cls);
         ArrayList<HouseQmCheckTaskSimpleRspVo> hQCTSRlist = new ArrayList<>();
         for (int i = 0; i < houseQmCheckTasks.size(); i++) {
-            String[] split = houseQmCheckTasks.get(i).getAreaTypes().split(",");
             HouseQmCheckTaskSimpleRspVo rspVo = new HouseQmCheckTaskSimpleRspVo();
-            rspVo.setProjectId(houseQmCheckTasks.get(i).getProjectId());
-            rspVo.setTaskId(houseQmCheckTasks.get(i).getTaskId());
-            rspVo.setAreaTypes(Integer.parseInt(split[0]));
+            rspVo.setProject_id(houseQmCheckTasks.get(i).getProjectId());
+            rspVo.setTask_id(houseQmCheckTasks.get(i).getTaskId());
+            List<Integer> split = StringSplitToListUtil.splitToIdsComma(houseQmCheckTasks.get(i).getAreaTypes(), ",");
+            rspVo.setArea_types(split);
             rspVo.setName(houseQmCheckTasks.get(i).getName());
-            rspVo.setPlanEndOn(houseQmCheckTasks.get(i).getPlanEndOn());
-            rspVo.setCreateAt(houseQmCheckTasks.get(i).getCreateAt());
-            rspVo.setPlanBeginOn(houseQmCheckTasks.get(i).getPlanBeginOn());
+            rspVo.setPlan_end_on(DateUtil.datetimeToTimeStamp(houseQmCheckTasks.get(i).getPlanEndOn()));
+            rspVo.setCreate_at(DateUtil.datetimeToTimeStamp(houseQmCheckTasks.get(i).getCreateAt()));
+            rspVo.setPlan_begin_on(DateUtil.datetimeToTimeStamp(houseQmCheckTasks.get(i).getPlanBeginOn()));
             hQCTSRlist.add(rspVo);
         }
         return hQCTSRlist;
@@ -70,7 +72,7 @@ public class HouseqmStaticService {
             // 获取出任务下的区域与检验类型的交集
             List<Integer> areaIds = splitToIdsComma(taskByProjTaskId.getAreaIds(), ",");
             List<Integer> areaTypes = splitToIdsComma(taskByProjTaskId.getAreaTypes(), ",");
-            if (areaIds.size() == 0 || areaTypes.size() == 0) {
+            if (CollectionUtils.isEmpty(areaIds)||CollectionUtils.isEmpty(areaTypes)) {
                 return null;
             }
             List<Integer> areaIdsList = Lists.newArrayList();
@@ -94,10 +96,10 @@ public class HouseqmStaticService {
             vo.setCheckedCount(checkedAreaIssueMap.size());
             for (Map.Entry<Integer, IssueMinStatus> status : areaIssueMap.entrySet()) {
                 vo.setHasIssueCount(vo.getHasIssueCount() + 1);
-                if (status.getValue().getMinStatus() == HouseQmCheckTaskIssueStatusEnum.ReformNoCheck.getId()) {
+                if (status.getValue().getMinStatus().equals(HouseQmCheckTaskIssueStatusEnum.ReformNoCheck.getId())) {
                     vo.setRepairedCount(vo.getRepairedCount() + 1);
                 }
-                if (status.getValue().getMinStatus() == HouseQmCheckTaskIssueStatusEnum.CheckYes.getId()) {
+                if (status.getValue().getMinStatus().equals(HouseQmCheckTaskIssueStatusEnum.CheckYes.getId())) {
                     vo.setRepairedCount(vo.getRepairedCount() + 1);
                     vo.setApprovedCount(vo.getApprovedCount() + 1);
                 }
@@ -175,7 +177,7 @@ public class HouseqmStaticService {
         HashMap<Integer, IssueMinStatus> maps = Maps.newHashMap();
         for (HouseQmCheckTaskIssueAreaGroupModel area : result) {
             List<Integer> aIds = splitToIdsComma(area.getAreaPath(), "/");
-            if (aIds.size() > 0) {
+            if (CollectionUtils.isNotEmpty(aIds)) {
                 IssueMinStatus minStatus = new IssueMinStatus();
                 minStatus.setCount(area.getExtendCol());
                 minStatus.setMinStatus(area.getStatus());
@@ -216,7 +218,7 @@ public class HouseqmStaticService {
             HashMap<Integer, Boolean> hasIssueAreaId = Maps.newHashMap();
             for (int j = 0; j < hasIssuePaths.size(); j++) {
                 List<Integer> ids = StringSplitToListUtil.splitToIdsComma(hasIssuePaths.get(j), "/");
-                if (ids.size() > 0) {
+                if (CollectionUtils.isNotEmpty(ids)) {
                     for (int k = 0; k < ids.size(); k++) {
                         hasIssueAreaId.put(ids.get(ids.size() - 1), true);
                     }
@@ -232,7 +234,7 @@ public class HouseqmStaticService {
             HashMap<Integer, Boolean> hasIssueNoApprovedAreaId = Maps.newHashMap();
             for (int j = 0; j < hasIssueNoApprovedPaths.size(); j++) {
                 List<Integer> ids = StringSplitToListUtil.splitToIdsComma(hasIssueNoApprovedPaths.get(j), "/");
-                if (ids.size() > 0) {
+                if (CollectionUtils.isNotEmpty(ids)) {
                     for (int k = 0; k < ids.size(); k++) {
                         hasIssueNoApprovedAreaId.put(ids.get(ids.size() - 1), true);
                     }
@@ -263,7 +265,7 @@ public class HouseqmStaticService {
                 info.setCheckedCount(0);
                 info.setUncheckedCount(0);
 
-                if (items.get(j).getStatus() == RepossessionStatusEnum.Accept.getId()) {
+                if (items.get(j).getStatus().equals(RepossessionStatusEnum.Accept.getId())) {
                     checkedCount += 1;
                     info.setAcceptCount(info.getAcceptCount() + 1);
                     if (hasIssueAreaId.containsKey(items.get(j).getAreaId())) {
@@ -274,7 +276,7 @@ public class HouseqmStaticService {
                         if (!hasIssueNoApprovedAreaId.containsKey(items.get(j).getAreaId())) {
                             info.setAcceptApprovedCount(info.getAcceptApprovedCount() + 1);
                         }
-                        if (items.get(j).getRepairStatus() == RepossessionRepairStatusEnum.Confirmed.getId()) {
+                        if (items.get(j).getRepairStatus().equals(RepossessionRepairStatusEnum.Confirmed.getId())) {
                             info.setRepairConfirmCount(info.getRepairConfirmCount() + 1);
                         }
                     } else {
@@ -284,12 +286,12 @@ public class HouseqmStaticService {
                         }
                     }
                 }
-                if (items.get(j).getStatus() == RepossessionStatusEnum.RejectAccept.getId()) {
+                if (items.get(j).getStatus().equals(RepossessionStatusEnum.RejectAccept.getId())) {
                     checkedCount += 1;
                     info.setRejectCount(info.getRejectCount() + 1);
                     info.setUnacceptCount(info.getRejectCount() + 1);
                 }
-                if (items.get(j).getStatus() == RepossessionStatusEnum.OnlyCheck.getId()) {
+                if (items.get(j).getStatus().equals(RepossessionStatusEnum.OnlyCheck.getId())) {
                     checkedCount += 1;
                     info.setOnlyWatch(info.getOnlyWatch() + 1);
                     info.setUnacceptCount(info.getUnacceptCount() + 1);
@@ -337,7 +339,7 @@ public class HouseqmStaticService {
         // 获取出任务下的区域与检验类型的交集
         List<Integer> areaIds = splitToIdsComma(taskByProjTaskId.getAreaIds(), ",");
         List<Integer> areaTypes = splitToIdsComma(taskByProjTaskId.getAreaTypes(), ",");
-        if (areaIds.size() == 0 || areaTypes.size() == 0) {
+        if (CollectionUtils.isEmpty(areaIds) || CollectionUtils.isEmpty(areaTypes)) {
             return null;
         }
         List<Area> areas = areaService.searchAreaListByRootIdAndTypes(prodectId, areaIds, areaTypes);
