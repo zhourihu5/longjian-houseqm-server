@@ -29,25 +29,25 @@ public class HouseQmCheckTaskSquadServiceImpl implements HouseQmCheckTaskSquadSe
 
 
     /**
-     *
      * @param taskIdList
      * @return
      */
     @LFAssignDataSource("zhijian2")
-    public List<HouseQmCheckTaskSquad> selectByTaskIds(Set<Integer> taskIdList){
+    public List<HouseQmCheckTaskSquad> selectByTaskIds(Set<Integer> taskIdList) {
 
-        return houseQmCheckTaskSquadMapper.selectByTaskIds(taskIdList,"false");
+        return houseQmCheckTaskSquadMapper.selectByTaskIds(taskIdList, "false");
     }
 
     /**
-     *
      * @param taskIdList
      * @return
      */
     @LFAssignDataSource("zhijian2")
-    public List<HouseQmCheckTaskSquad> selectByTaskIdsEvenDeleted(Set<Integer> taskIdList){
-
-        return houseQmCheckTaskSquadMapper.selectByTaskIds(taskIdList,"true");
+    public List<HouseQmCheckTaskSquad> selectByTaskIdsEvenDeleted(Set<Integer> taskIdList) {
+        Example example = new Example(HouseQmCheckTaskSquad.class);
+        Example.Criteria criteria = example.createCriteria();
+        criteria.andIn("taskId",taskIdList);
+        return houseQmCheckTaskSquadMapper.selectByExample(example);
     }
 
     @Override
@@ -69,8 +69,8 @@ public class HouseQmCheckTaskSquadServiceImpl implements HouseQmCheckTaskSquadSe
     @LFAssignDataSource("zhijian2")
     public List<HouseQmCheckTaskSquad> searchHouseqmCheckTaskSquad(String projectId, String taskId) {
         Example example = new Example(HouseQmCheckTaskSquad.class);
-            example.createCriteria().andEqualTo("projectId",projectId).andEqualTo("taskId",taskId);
-        return  houseQmCheckTaskSquadMapper.selectByExample(example);
+        example.createCriteria().andEqualTo("projectId", projectId).andEqualTo("taskId", taskId);
+        return houseQmCheckTaskSquadMapper.selectByExample(example);
 
     }
 

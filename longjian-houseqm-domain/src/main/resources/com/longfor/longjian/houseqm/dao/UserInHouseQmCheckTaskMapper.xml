@@ -25,6 +25,7 @@
         id, squad_id, user_id, role_type, project_id, task_id, create_at, update_at, delete_at,
         can_approve, can_direct_approve, can_reassign
     </sql>
+
     <select id="selectByUserId" parameterType="java.lang.Integer" resultMap="BaseResultMap">
         select
         <include refid="Base_Column_List"/>

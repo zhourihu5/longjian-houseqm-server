@@ -380,8 +380,22 @@ public class HouseQmCheckTaskIssueServiceImpl implements HouseQmCheckTaskIssueSe
      */
     @Override
     @LFAssignDataSource("zhijian2")
-    public List<HouseQmCheckTaskIssue> selectIdByTaskIdAndIdGtAndUpdateAtGtAndSenderIdInOrUuidInAndNoDeletedOrderById(Integer task_id, Date issueUpdateTime, List<Integer> userIds, List<String> issueUuids) {
-        return houseQmCheckTaskIssueMapper.selectIdByTaskIdAndIdGtAndUpdateAtGtAndSenderIdInOrUuidInAndNoDeletedOrderById(task_id,issueUpdateTime,userIds,issueUuids,"false");
+    public HouseQmCheckTaskIssue selectIdByTaskIdAndIdGtAndUpdateAtGtAndSenderIdInOrUuidInAndNoDeletedOrderById(Integer task_id, Date issueUpdateTime, List<Integer> userIds, List<String> issueUuids) {
+        Example example = new Example(HouseQmCheckTaskIssue.class);
+        Example.Criteria criteria = example.createCriteria();
+        criteria.andEqualTo("taskId",task_id).andGreaterThan("id",0).andGreaterThan("updateAt",issueUpdateTime);
+        Example.Criteria criteria1 = example.createCriteria();
+        if (userIds.size()>0){
+            criteria1.andIn("senderId",userIds);
+        }
+        if (issueUuids.size()>0){
+            criteria1.orIn("uuid",issueUuids);
+        }
+        example.and(criteria);
+        example.and(criteria1);
+        ExampleUtil.addDeleteAtJudge(example);
+        example.orderBy("id").asc();
+        return houseQmCheckTaskIssueMapper.selectOneByExample(example);
     }
 
     /**
@@ -396,7 +410,15 @@ public class HouseQmCheckTaskIssueServiceImpl implements HouseQmCheckTaskIssueSe
     @Override
     @LFAssignDataSource("zhijian2")
     public List<HouseQmCheckTaskIssue> selectUuidBySenderIdInOrTaskIdAndUuidIn(List<Integer> userIds, Integer task_id, List<String> issueUuids) {
-        return houseQmCheckTaskIssueMapper.selectUuidBySenderIdInOrTaskIdAndUuidIn(userIds,task_id,issueUuids,"false");
+        Example example = new Example(HouseQmCheckTaskIssue.class);
+        Example.Criteria criteria = example.createCriteria();
+        if (userIds.size()>0)criteria.andIn("senderId",userIds);
+        Example.Criteria criteria1 = example.createCriteria();
+        criteria1.andEqualTo("taskId",task_id);
+        if (issueUuids.size()>0)criteria1.andIn("uuid",issueUuids);
+        example.and(criteria);
+        example.or(criteria1);
+        return houseQmCheckTaskIssueMapper.selectByExample(example);
     }
 
     @Override

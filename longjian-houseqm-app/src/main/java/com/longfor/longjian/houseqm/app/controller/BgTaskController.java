@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import javax.annotation.Resource;
 import java.util.Date;
 
 /**
@@ -26,7 +27,8 @@ import java.util.Date;
 @Slf4j
 public class BgTaskController {
 
-    
+
+
     /**
      * @Author hy
      * @Description 导出问题报告PPT http://192.168.37.159:3000/project/8/interface/api/3360
