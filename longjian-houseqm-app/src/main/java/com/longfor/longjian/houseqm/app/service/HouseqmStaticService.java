@@ -34,8 +34,6 @@ public class HouseqmStaticService {
     @Resource
     HouseQmCheckTaskService houseQmCheckTaskService;
     @Resource
-    HouseQmCheckTaskService houseQmCheckTaskRspService;
-    @Resource
     AreaService areaService;
     @Resource
     HouseQmCheckTaskIssueService houseQmCheckTaskIssueService;
@@ -69,7 +67,7 @@ public class HouseqmStaticService {
             vo.setCheckedCount(0);
             vo.setHouseCount(0);
             //读取任务
-            HouseQmCheckTask taskByProjTaskId = houseQmCheckTaskRspService.getHouseQmCheckTaskByProjTaskId(prodectId, taskId);
+            HouseQmCheckTask taskByProjTaskId = houseQmCheckTaskService.getHouseQmCheckTaskByProjTaskId(prodectId, taskId);
             // 获取出任务下的区域与检验类型的交集
             List<Integer> areaIds = splitToIdsComma(taskByProjTaskId.getAreaIds(), ",");
             List<Integer> areaTypes = splitToIdsComma(taskByProjTaskId.getAreaTypes(), ",");
@@ -115,7 +113,7 @@ public class HouseqmStaticService {
 
     public HouseqmStatisticTaskBuildingListRspMsgVo taskBuildingList(Integer prodectId, Integer taskId) {
 
-        HouseQmCheckTask taskByProjTask = houseQmCheckTaskRspService.getHouseQmCheckTaskByProjTaskId(prodectId, taskId);
+        HouseQmCheckTask taskByProjTask = houseQmCheckTaskService.getHouseQmCheckTaskByProjTaskId(prodectId, taskId);
 
         if (taskByProjTask == null) {
             return null;
@@ -336,7 +334,7 @@ public class HouseqmStaticService {
     private List<Area> searchTargetAreaByTaskId(Integer prodectId, Integer taskId) {
 
         //读取任务
-        HouseQmCheckTask taskByProjTaskId = houseQmCheckTaskRspService.getHouseQmCheckTaskByProjTaskId(prodectId, taskId);
+        HouseQmCheckTask taskByProjTaskId = houseQmCheckTaskService.getHouseQmCheckTaskByProjTaskId(prodectId, taskId);
         // 获取出任务下的区域与检验类型的交集
         List<Integer> areaIds = splitToIdsComma(taskByProjTaskId.getAreaIds(), ",");
         List<Integer> areaTypes = splitToIdsComma(taskByProjTaskId.getAreaTypes(), ",");
