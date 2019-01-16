@@ -1,8 +1,10 @@
 package com.longfor.longjian.houseqm.app.service.impl;
 
 import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONObject;
 import com.alibaba.fastjson.TypeReference;
 import com.google.common.collect.Lists;
+import com.google.gson.JsonObject;
 import com.longfor.longjian.common.base.LjBaseResponse;
 import com.longfor.longjian.houseqm.app.req.DeviceReq;
 import com.longfor.longjian.houseqm.app.service.IHouseqmService;
@@ -191,7 +193,7 @@ public class HouseqmServiceImpl implements IHouseqmService {
     public LjBaseResponse<MyIssueMemberListVo> issueMembers(DeviceReq deviceReq) {
         LjBaseResponse<MyIssueMemberListVo> ljBaseResponse = new LjBaseResponse<>();
         MyIssueMemberListVo myIssueMemberListVo = new MyIssueMemberListVo();
-        List<String> memberList = new ArrayList<>();
+        List<ApiHouseQmCheckTaskIssueMemberRspVo> memberList = new ArrayList<>();
         Integer start = 0;
         Integer limit = HOUSEQM_API_GET_PER_TIME;
         Integer lastId = 0;
@@ -201,13 +203,14 @@ public class HouseqmServiceImpl implements IHouseqmService {
             houseQmCheckTaskIssueUsers.forEach(houseQmCheckTaskIssueUser -> {
                 ApiHouseQmCheckTaskIssueMemberRspVo apiHouseQmCheckTaskIssueMemberRspVo = new ApiHouseQmCheckTaskIssueMemberRspVo();
                 apiHouseQmCheckTaskIssueMemberRspVo.setId(houseQmCheckTaskIssueUser.getId());
+                apiHouseQmCheckTaskIssueMemberRspVo.setUserId(houseQmCheckTaskIssueUser.getUserId());
                 apiHouseQmCheckTaskIssueMemberRspVo.setTaskId(houseQmCheckTaskIssueUser.getTaskId());
                 apiHouseQmCheckTaskIssueMemberRspVo.setRoleType(houseQmCheckTaskIssueUser.getRoleType());
                 apiHouseQmCheckTaskIssueMemberRspVo.setIssueUuid(houseQmCheckTaskIssueUser.getIssueUuid());
                 apiHouseQmCheckTaskIssueMemberRspVo.setUpdateAt(DateToInt(houseQmCheckTaskIssueUser.getUpdateAt()));
                 apiHouseQmCheckTaskIssueMemberRspVo.setDeleteAt(houseQmCheckTaskIssueUser.getDeleteAt() == null ? 0 : DateToInt(houseQmCheckTaskIssueUser.getDeleteAt()));
-                String rspVoJson = JsonUtil.GsonString(apiHouseQmCheckTaskIssueMemberRspVo);
-                memberList.add(rspVoJson);
+                //String rspVoJson = JSON.toJSONString(apiHouseQmCheckTaskIssueMemberRspVo);
+                memberList.add(apiHouseQmCheckTaskIssueMemberRspVo);
             });
             myIssueMemberListVo.setMember_list(memberList);
             myIssueMemberListVo.setLast_id(lastId);
@@ -222,7 +225,7 @@ public class HouseqmServiceImpl implements IHouseqmService {
     public LjBaseResponse<MyIssueAttachListVo> myIssueAttachementList(DeviceReq deviceReq) {
         LjBaseResponse<MyIssueAttachListVo> ljBaseResponse = new LjBaseResponse<>();
         MyIssueAttachListVo myIssueAttachListVo = new MyIssueAttachListVo();
-        List<String> houseQmCheckTaskIssueJsons = new ArrayList<>();
+        List<ApiHouseQmCheckTaskIssueAttachmentRspVo> houseQmCheckTaskIssueJsons = new ArrayList<>();
         //Integer userId = (Integer)request.getSession().getAttribute("uid");
         //todo 暂时获取不到uid
         Integer userId = 6;
@@ -245,8 +248,8 @@ public class HouseqmServiceImpl implements IHouseqmService {
                 apiHouseQmCheckTaskIssueAttachmentRspVo.setStatus(houseQmCheckTaskIssueAttachment.getStatus());
                 apiHouseQmCheckTaskIssueAttachmentRspVo.setUpdateAt(DateToInt(houseQmCheckTaskIssueAttachment.getUpdateAt()));
                 apiHouseQmCheckTaskIssueAttachmentRspVo.setDeleteAt(houseQmCheckTaskIssueAttachment.getDeleteAt() == null ? 0 : DateToInt(houseQmCheckTaskIssueAttachment.getDeleteAt()));
-                String rspVoJson = JsonUtil.GsonString(apiHouseQmCheckTaskIssueAttachmentRspVo);
-                houseQmCheckTaskIssueJsons.add(rspVoJson);
+                //JSONObject jsonObject = JSON.parseObject(JSON.toJSONString(apiHouseQmCheckTaskIssueAttachmentRspVo));
+                houseQmCheckTaskIssueJsons.add(apiHouseQmCheckTaskIssueAttachmentRspVo);
             });
             myIssueAttachListVo.setAttachment_list(houseQmCheckTaskIssueJsons);
             myIssueAttachListVo.setLast_id(lastId);

@@ -1,5 +1,6 @@
 package com.longfor.longjian.houseqm.app.vo;
 
+import com.alibaba.fastjson.JSONObject;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
@@ -14,7 +15,7 @@ import java.util.List;
 @NoArgsConstructor
 public class MyIssueAttachListVo implements Serializable{
 
-    private List<String> attachment_list;
+    private List<ApiHouseQmCheckTaskIssueAttachmentRspVo> attachment_list;
     private Integer last_id;
 
 

@@ -14,7 +14,7 @@ import java.util.List;
 @NoArgsConstructor
 public class MyIssueMemberListVo implements Serializable{
 
-    private List<String> member_list;
+    private List<ApiHouseQmCheckTaskIssueMemberRspVo> member_list;
     private Integer last_id;
 
 
