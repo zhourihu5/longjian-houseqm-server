@@ -18,12 +18,10 @@ import com.google.common.collect.Maps;
 import com.longfor.gaia.gfs.core.bean.PageInfo;
 import com.longfor.longjian.houseqm.app.service.IIssueService;
 import com.longfor.longjian.houseqm.consts.AppPlatformTypeEnum;
-import com.longfor.longjian.houseqm.consts.HouseQmCheckTaskIssueStatusEnum;
+import com.longfor.longjian.common.consts.HouseQmCheckTaskIssueStatusEnum;
 import com.longfor.longjian.houseqm.domain.internalService.*;
 import com.longfor.longjian.houseqm.po.*;
 import com.longfor.longjian.houseqm.util.*;
-import lombok.Data;
-import lombok.NoArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang.StringUtils;
@@ -32,7 +30,6 @@ import org.springframework.stereotype.Repository;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
-import java.lang.management.MonitorInfo;
 import java.util.*;
 
 /**

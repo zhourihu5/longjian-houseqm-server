@@ -144,9 +144,9 @@ export:
   base_dir: /data/zhijian/writable
   base_uri: writable
 
-#消息推送
+# todo 消息推送 python 和 go 代码 中给的以下推送参数不一致
 push_config:
-  enterprise_id: t8
+  enterprise_id: t8 #go longhu  python(dongshun)  t8对应的?
   rhapp:
     app_key_android: "5a1fdb14a40fa353430000d8"
     app_master_secret_android: "wzqmrawvme9qfmv8mveyawxldbmyv7kf"
@@ -168,3 +168,34 @@ push_config:
     app_master_secret_ios: "lw2dyruwghscsdqjkwxs3mnef7bhc4kg"
     app_secret_xiao_mi: "MUhJVuiHkecIdZ5rupmetg=="
     package_name_xiao_mi: "cn.smartinspection.houseqm3.debug"
+      #     go
+      #    ydyf:
+      #        app_key_android: "58fda806f5ade478aa000973"
+      #        app_master_secrect_android: "wgi95oajkiuoygw3xuoxkfstmshkubu5"
+      #        app_key_ios: "59151453677baa73ba0022ef"
+      #        app_master_secrect_ios: "lw2dyruwghscsdqjkwxs3mnef7bhc4kg"
+      #        app_secret_xiao_mi: "wYBuYU7pBci+B7WdIOEHCA=="
+      #        package_name_xiao_mi: "cn.smartinspection.houseqm3"
+      #    gcgl:
+      #        app_key_android: "58fdaad39f06fd31f7000b05"
+      #        app_master_secrect_android: "b9xmdal2wbqlledcpsqhnsu2zvznayrg"
+      #        app_key_ios: "591514d48f4a9d1942000494"
+      #        app_master_secrect_ios: "wglml5rrrpkhhsmiudlqobfl1vhacjri"
+      #        app_secret_xiao_mi: "lL0grnNDGdoRIeTqa4EUXA=="
+      #        package_name_xiao_mi:  "cn.smartinspection.buildingqm3"
+      #    gxgl:
+      #        app_key_android: "57ecce9de0f55acbe6001f68"
+      #        app_master_secrect_android: "2iaweb5ssaceme9yol7hrtbwbyq0ngix"
+      #        app_key_ios: "580712d6e0f55a4d61002de8"
+      #        app_master_secrect_ios: "xvxrx1rqaaulmfw5yfuei9cppptkery2"
+      #        app_secret_xiao_mi: "vdvG+lOHl8yY7bZR8VRXug=="
+      #        package_name_xiao_mi:  "cn.smartinspection.keyprocedure.keyprocedure"
+    #
+    #    notify_report_addr: https://longjianapp.longhu.net/core_srv_notify/data/report/
+  gxgl:
+    app_key_android: "57ecce9de0f55acbe6001f68"
+    app_master_secrect_android: "2iaweb5ssaceme9yol7hrtbwbyq0ngix"
+    app_key_ios: "580712d6e0f55a4d61002de8"
+    app_master_secrect_ios: "xvxrx1rqaaulmfw5yfuei9cppptkery2"
+    app_secret_xiao_mi: "vdvG+lOHl8yY7bZR8VRXug=="
+    package_name_xiao_mi:  "cn.smartinspection.keyprocedure.keyprocedure"

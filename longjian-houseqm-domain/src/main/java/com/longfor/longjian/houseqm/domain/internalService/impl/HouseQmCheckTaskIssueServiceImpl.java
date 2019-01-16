@@ -38,12 +38,57 @@ public class HouseQmCheckTaskIssueServiceImpl implements HouseQmCheckTaskIssueSe
     @Resource
     private HouseQmCheckTaskIssueAttachmentMapper houseQmCheckTaskIssueAttachmentMapper;
 
+
     @Override
     @LFAssignDataSource("zhijian2")
-    public List<HouseQmCheckTaskIssue> searchByProjIdAndUuidIn(Integer project_id, List<String> uuids) {
+    public List<HouseQmCheckTaskIssue> searchByProjIdAndTaskIdAndAreaIdInAndRepairedIdAndClientCreateAt(Integer project_id, Integer task_id, List<Integer> subAreaIds, Integer repairer_id, Date begin_on, Date end_on) {
         Example example = new Example(HouseQmCheckTaskIssue.class);
         Example.Criteria criteria = example.createCriteria();
-        criteria.andEqualTo("projectId",project_id).andIn("uuid",uuids);
+        criteria.andEqualTo("projectId",project_id).andEqualTo("taskId",task_id).andIn("areaId",subAreaIds);
+        if (repairer_id>0){
+            criteria.andEqualTo("repairerId",repairer_id);
+        }
+        if (begin_on.getTime()>0){
+            criteria.andLessThanOrEqualTo("clientCreateAt",begin_on);
+        }
+        if (end_on.getTime()>0){
+            criteria.andLessThanOrEqualTo("clientCreateAt",end_on);
+        }
+        ExampleUtil.addDeleteAtJudge(example);
+        return houseQmCheckTaskIssueMapper.selectByExample(example);
+    }
+
+    @Override
+    @LFAssignDataSource("zhijian2")
+    @Transactional
+    public int deleteHouseQmCheckTaskIssueByProjUuid(Integer project_id, String issueUuid) {
+        try {
+            Example example = new Example(HouseQmCheckTaskIssue.class);
+            Example.Criteria criteria = example.createCriteria();
+            criteria.andEqualTo("projectId",project_id).andEqualTo("uuid",issueUuid);
+            ExampleUtil.addDeleteAtJudge(example);
+            return houseQmCheckTaskIssueMapper.deleteByExample(example);
+        } catch (Exception e) {
+            e.printStackTrace();
+            log.warn(e.getMessage());
+            return 0;
+        }
+    }
+
+    @Override
+    @LFAssignDataSource("zhijian2")
+    @Transactional
+    public int insertOneHouseQmCheckTaskIssue(HouseQmCheckTaskIssue issue) {
+        return houseQmCheckTaskIssueMapper.insertSelective(issue);
+    }
+
+    @Override
+    @LFAssignDataSource("zhijian2")
+    public List<HouseQmCheckTaskIssue> searchByProjIdAndUuidIn(Integer project_id, List<String> uuids)  {
+        Example example = new Example(HouseQmCheckTaskIssue.class);
+        Example.Criteria criteria = example.createCriteria();
+        criteria.andEqualTo("projectId",project_id);
+        if (uuids.size()>0)criteria.andIn("uuid",uuids);
         ExampleUtil.addDeleteAtJudge(example);
         return houseQmCheckTaskIssueMapper.selectByExample(example);
     }
@@ -385,7 +430,7 @@ public class HouseQmCheckTaskIssueServiceImpl implements HouseQmCheckTaskIssueSe
     @Override
     @LFAssignDataSource("zhijian2")
     public List<HouseQmCheckTaskIssue> searchByProjIdAndCategoryClsAndAreaPathAndIdLikeGroupByStatus(Integer project_id, Integer category_cls, String areaPath) {
-        return houseQmCheckTaskIssueMapper.selectByProjIdAndCategoryClsAndAreaPathAndIdLikeGroupByStatus(project_id,category_cls,"%"+areaPath+"%");
+        return houseQmCheckTaskIssueMapper.selectByProjIdAndCategoryClsAndAreaPathAndIdLikeGroupByStatus(project_id,category_cls,areaPath);
     }
     @Override
     @LFAssignDataSource("zhijian2")

@@ -209,12 +209,10 @@
         COUNT(*) AS pos_x
         FROM
         house_qm_check_task_issue
-        ,
-        <where>
+       where
             project_id = #{project_id}
             AND category_cls = #{category_cls}
-            AND area_path_and_id LIKE ${area_path_and_id}
-        </where>
+            AND area_path_and_id LIKE #{area_path_and_id}
         GROUP BY
         `status`
     </select>
@@ -373,6 +371,11 @@
             <if test="areaId!=null">and area_path_and_id like '${aredId}'</if>
             <if test="beginOn!=null">AND client_create_at &gt;= #{beginOn}</if>
             <if test="endOn!=null">AND client_create_at &lt;= #{endOn}</if>
+            <if test="statusIn!=null">and `status` in
+                <foreach collection="statusIn" item="item" index="index" open="(" separator="," close=")">
+                    #{item}
+                </foreach>
+            </if>
         </where>
         <if test="deleted=='false'">
             AND delete_at IS NULL

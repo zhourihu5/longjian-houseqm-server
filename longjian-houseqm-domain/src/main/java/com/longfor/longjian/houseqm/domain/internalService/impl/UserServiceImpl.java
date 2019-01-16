@@ -28,6 +28,7 @@ public class UserServiceImpl implements UserService {
 
     /**
      * go 代码 unscoped = true
+     * getUsersByIds()
      * @param users
      * @return
      */

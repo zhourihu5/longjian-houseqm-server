@@ -5,7 +5,8 @@ import com.longfor.longjian.houseqm.app.service.IHouseqmIssueService;
 import com.longfor.longjian.houseqm.app.vo.HouseQmCheckTaskIssueHelperVo;
 import com.longfor.longjian.houseqm.app.vo.issue.ApiHouseQmCheckTaskReportRsp;
 import com.longfor.longjian.houseqm.app.vo.url.ExportVo;
-import com.longfor.longjian.houseqm.consts.HouseQmCheckTaskIssueStatusEnum;
+import com.longfor.longjian.houseqm.consts.HouseQmCheckTaskIssueCheckStatusEnum;
+import com.longfor.longjian.common.consts.HouseQmCheckTaskIssueStatusEnum;
 import com.longfor.longjian.houseqm.domain.internalService.ExportFileRecordService;
 import com.longfor.longjian.houseqm.domain.internalService.HouseQmCheckTaskIssueService;
 import com.longfor.longjian.houseqm.domain.internalService.ProjectService;
@@ -43,8 +44,50 @@ public class HouseqmIssueServiceImpl implements IHouseqmIssueService {
     private ExportFileRecordService exportFileRecordService;
 
 
+    // 删除问题
     @Override
-    public List<String> updateBatchIssueRepairInfoByUuids(List<String> uuids, Integer project_id, int senderId, Integer repairer_id, String repair_follower_ids, Integer plan_end_on) {
+    public void deleteHouseQmCheckTaskIssueByProjUuid(Integer project_id, String issueUuid) throws Exception {
+        int affect = houseQmCheckTaskIssueService.deleteHouseQmCheckTaskIssueByProjUuid(project_id, issueUuid);
+        if (affect <= 0) {
+            throw new Exception("删除问题失败");
+        }
+    }
+
+    // 批量销项问题
+    @Override
+    public List<String> updateBatchIssueApproveStatusByUuids(List<String> uuids, int projectId, int senderId, int status, String desc, String attachmentMd5List) throws Exception {
+        int eInt = -1;
+        String eStr = "";
+        List<HouseQmCheckTaskIssue> issues = houseQmCheckTaskIssueService.searchByProjIdAndUuidIn(projectId, uuids);
+        HouseQmCheckTaskIssueHelperVo helper = new HouseQmCheckTaskIssueHelperVo();
+        helper.init(projectId);
+        for (HouseQmCheckTaskIssue issue : issues) {
+            String uuid = UUID.randomUUID().toString().replace("-", "");
+            int nowTimestamp = DateUtil.datetimeToTimeStamp(new Date());
+            if (HouseQmCheckTaskIssueCheckStatusEnum.CheckYes.getId().equals(status)) {
+                // 审核通过
+                helper.start().setNormalField(issue.getTaskId(), uuid, issue.getUuid(), senderId, desc, HouseQmCheckTaskIssueStatusEnum.CheckYes.getId(), eStr, eStr, nowTimestamp, eStr).
+                        setDetailField(eInt, eInt, eInt, eInt, eInt, eInt, eStr, eInt, eInt, eStr, eStr, eStr, eInt, eStr, eStr, eStr, eStr, eStr, eInt).done();
+            } else if (HouseQmCheckTaskIssueCheckStatusEnum.CheckNo.getId().equals(status)) {
+                helper.start().setNormalField(issue.getTaskId(), uuid, issue.getUuid(), senderId, desc, HouseQmCheckTaskIssueStatusEnum.AssignNoReform.getId(), attachmentMd5List, eStr, nowTimestamp, eStr).
+                        setDetailField(eInt, eInt, eInt, eInt, eInt, eInt, eStr, eInt, eInt, eStr, eStr, eStr, eInt, eStr, eStr, eStr, eStr, eStr, eInt).done();
+            }
+        }
+        try {
+            helper.execute();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        List<String> dropUuids = Lists.newArrayList();
+        List<ApiHouseQmCheckTaskReportRsp> droppedIssue = helper.getDroppedIssue();
+        for (ApiHouseQmCheckTaskReportRsp drop : droppedIssue) {
+            dropUuids.add(drop.getUuid());
+        }
+        return dropUuids;
+    }
+
+    @Override
+    public List<String> updateBatchIssueRepairInfoByUuids(List<String> uuids, Integer project_id, int senderId, Integer repairer_id, String repair_follower_ids, Integer plan_end_on) throws Exception {
         int eInt = -1;
         String eStr = "";
         List<HouseQmCheckTaskIssue> issues = houseQmCheckTaskIssueService.searchByProjIdAndUuidIn(project_id, uuids);
@@ -65,18 +108,22 @@ public class HouseqmIssueServiceImpl implements IHouseqmIssueService {
                 for (Integer f : followers) {
                     if (f.equals(issue.getRepairerId())) flag = false;
                 }
-                if (flag)followers.add(issue.getRepairerId());
-                issueRepairerFollowerIds=StringSplitToListUtil.dataToString(followers,",");
+                if (flag) followers.add(issue.getRepairerId());
+                issueRepairerFollowerIds = StringSplitToListUtil.dataToString(followers, ",");
             }
 
             // 变更类型
-            String uuid = UUID.randomUUID().toString().replace("-","");
+            String uuid = UUID.randomUUID().toString().replace("-", "");
             int nowTimestamp = DateUtil.datetimeToTimeStamp(new Date());
-            helper.start().setNormalField(issue.getTaskId(),uuid,issue.getUuid(),senderId,eStr,status,eStr,eStr,nowTimestamp,eStr)
+            helper.start().setNormalField(issue.getTaskId(), uuid, issue.getUuid(), senderId, eStr, status, eStr, eStr, nowTimestamp, eStr)
                     .setDetailField(eInt, eInt, eInt, plan_end_on, eInt, repairer_id, issueRepairerFollowerIds, eInt, eInt, eStr, eStr, eStr, eInt, eStr, eStr, eStr, eStr, eStr, eInt).done();
         }
-        helper.execute();
-        List<String> dropUuids=Lists.newArrayList();
+        try {
+            helper.execute();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        List<String> dropUuids = Lists.newArrayList();
         List<ApiHouseQmCheckTaskReportRsp> droppedIssue = helper.getDroppedIssue();
         for (ApiHouseQmCheckTaskReportRsp drop : droppedIssue) {
             dropUuids.add(drop.getUuid());
@@ -103,9 +150,9 @@ public class HouseqmIssueServiceImpl implements IHouseqmIssueService {
 
         //记录导出的内容到数据库
         String resultFilePath = cfg_base_uri + "/" + outputFileName;
-        exportFileRecordService.insertFull(userId, teamId, project_id, exportType, inputFileName + " " + outputFileName, resultFilePath, exportName, 0, "", executeAt);
-
-        return null;
+        ExportFileRecord exportFileRecord = exportFileRecordService.insertFull(userId, teamId, project_id, exportType, inputFileName + " " + outputFileName,
+                resultFilePath, exportName, 0, "", executeAt);
+        return exportFileRecord;
     }
 
     //todo
@@ -119,7 +166,7 @@ public class HouseqmIssueServiceImpl implements IHouseqmIssueService {
     }
 
     @Override
-    public List<HouseQmCheckTaskIssue> searchHouseQmIssueListByProjUuidIn(Integer project_id, List<String> uuids) {
+    public List<HouseQmCheckTaskIssue> searchHouseQmIssueListByProjUuidIn(Integer project_id, List<String> uuids) throws Exception {
         return houseQmCheckTaskIssueService.searchByProjIdAndUuidIn(project_id, uuids);
     }
 

@@ -22,39 +22,40 @@ import java.util.Map;
 @NoArgsConstructor
 public class CategoryMapVo implements Serializable {
 
-    private Map<String, Category> categoryV3Map;
+    private Map<String, CategoryV3> categoryV3Map;
 
-    public List<String> getFullNamesByKey(String key){
-        if (categoryV3Map.containsKey(key)){
+    public List<String> getFullNamesByKey(String key) {
+        if (categoryV3Map.containsKey(key)) {
             return getFullNames(categoryV3Map.get(key));
         }
         return Lists.newArrayList();
     }
-    public CategoryMapVo  NewCategoryMap(List<Category> c){
+
+    public static CategoryMapVo NewCategoryMap(List<CategoryV3> c) {
         CategoryMapVo categoryV3MapVo = new CategoryMapVo();
-        HashMap<String, Category> map = Maps.newHashMap();
+        HashMap<String, CategoryV3> map = Maps.newHashMap();
         for (int i = 0; i < c.size(); i++) {
-            map.put(c.get(i).getKey(),c.get(i));
+            map.put(c.get(i).getKey(), c.get(i));
         }
         categoryV3MapVo.setCategoryV3Map(map);
         return categoryV3MapVo;
     }
 
-    public List<String> getFullNames(Category categoryV3){
+    public List<String> getFullNames(CategoryV3 categoryV3) {
         List<String> r = Lists.newArrayList();
         List<String> list = StringSplitToListUtil.removeStartAndEndStrAndSplit(categoryV3.getPath(), "/", "/");
         list.add(categoryV3.getKey());
         list.forEach(key -> {
-           if (categoryV3Map.containsKey(key)){
-               r.add(categoryV3Map.get(key).getName());
-           }
+            if (categoryV3Map.containsKey(key)) {
+                r.add(categoryV3Map.get(key).getName());
+            }
         });
         return r;
     }
 
     public String getNameByKey(String categoryKey) {
-        if (categoryV3Map.containsKey(categoryKey)){
-            return   categoryV3Map.get(categoryKey).getName();
+        if (categoryV3Map.containsKey(categoryKey)) {
+            return categoryV3Map.get(categoryKey).getName();
         }
         return "";
     }

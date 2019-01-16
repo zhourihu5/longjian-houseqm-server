@@ -7,6 +7,8 @@ import java.util.List;
 
 public interface HouseQmCheckTaskIssueUserService {
 
+    int insertBatch(List<HouseQmCheckTaskIssueUser> issueUsers);
+
     List<HouseQmCheckTaskIssueUser> searchByUserIdAndTaskIdAndCreateAt(int userId, int taskId, int timestamp);
 
     /**

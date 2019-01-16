@@ -1,5 +1,7 @@
 package com.longfor.longjian.houseqm.domain.internalService.impl;
 
+import java.util.Date;
+
 import com.longfor.gaia.gfs.data.mybatis.datasource.LFAssignDataSource;
 import com.longfor.longjian.houseqm.dao.HouseQmCheckTaskNotifyRecordMapper;
 import com.longfor.longjian.houseqm.domain.internalService.HouseQmCheckTaskNotifyRecordService;
@@ -24,5 +26,24 @@ public class HouseQmCheckTaskNotifyRecordServiceImpl implements HouseQmCheckTask
     @LFAssignDataSource("zhijian2")
     public int add(HouseQmCheckTaskNotifyRecord record) {
         return houseQmCheckTaskNotifyRecordMapper.insert(record);
+    }
+
+    @Override
+    @LFAssignDataSource("zhijian2")
+    @Transactional
+    public int insertFull(Integer projectId, Integer taskId, Integer srcUserId, String desUserIds, int moduleId, Integer issueId, Integer issueStatus, String extraInfo) {
+        HouseQmCheckTaskNotifyRecord item = new HouseQmCheckTaskNotifyRecord();
+        item.setProjectId(projectId);
+        item.setTaskId(taskId);
+        item.setSrcUserId(srcUserId);
+        item.setDesUserIds(desUserIds);
+        item.setModuleId(moduleId);
+        item.setIssueId(issueId);
+        item.setIssueStatus(issueStatus);
+        item.setExtraInfo(extraInfo);
+        item.setCreateAt(new Date());
+        item.setUpdateAt(new Date());
+
+        return houseQmCheckTaskNotifyRecordMapper.insertSelective(item);
     }
 }

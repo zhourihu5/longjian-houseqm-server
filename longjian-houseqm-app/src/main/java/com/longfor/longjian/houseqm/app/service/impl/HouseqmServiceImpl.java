@@ -2,16 +2,14 @@ package com.longfor.longjian.houseqm.app.service.impl;
 
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.TypeReference;
+import com.google.common.collect.Lists;
 import com.longfor.longjian.common.base.LjBaseResponse;
 import com.longfor.longjian.houseqm.app.req.DeviceReq;
 import com.longfor.longjian.houseqm.app.service.IHouseqmService;
 import com.longfor.longjian.houseqm.app.vo.*;
 import com.longfor.longjian.houseqm.consts.HouseQmCheckTaskIssueAttachmentPublicTypeEnum;
 import com.longfor.longjian.houseqm.consts.HouseQmUserInIssueRoleTypeEnum;
-import com.longfor.longjian.houseqm.domain.internalService.AreaService;
-import com.longfor.longjian.houseqm.domain.internalService.HouseQmCheckTaskIssueLogService;
-import com.longfor.longjian.houseqm.domain.internalService.HouseQmCheckTaskIssueService;
-import com.longfor.longjian.houseqm.domain.internalService.HouseQmCheckTaskService;
+import com.longfor.longjian.houseqm.domain.internalService.*;
 import com.longfor.longjian.houseqm.po.*;
 import com.longfor.longjian.houseqm.util.JsonUtil;
 import com.longfor.longjian.houseqm.util.StringSplitToListUtil;
@@ -22,6 +20,7 @@ import org.springframework.stereotype.Service;
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 import java.util.*;
+import java.util.stream.Collectors;
 
 @Service
 @Slf4j
@@ -33,7 +32,28 @@ public class HouseqmServiceImpl implements IHouseqmService {
     private HouseQmCheckTaskIssueLogService houseQmCheckTaskIssueLogService;
     @Autowired
     private HouseQmCheckTaskIssueService houseQmCheckTaskIssueService;
+    @Resource
     private HouseQmCheckTaskService houseQmCheckTaskService;
+    @Resource
+    private UserInHouseQmCheckTaskService userInHouseQmCheckTaskService;
+
+    @Override
+    public List<Integer> searchHouseQmApproveUserIdInMyCheckSquad(int userId, int taskId) {
+        List<UserInHouseQmCheckTask> rs=userInHouseQmCheckTaskService.searchByTaskIdUserIdRoleType(taskId,userId,HouseQmUserInIssueRoleTypeEnum.Checker.getId());
+        List<Integer> squadIds = rs.stream().map(UserInHouseQmCheckTask::getSquadId).collect(Collectors.toSet()).stream().collect(Collectors.toList());
+        List<UserInHouseQmCheckTask> rrs=userInHouseQmCheckTaskService.searchBySquadIdIn(squadIds);
+        List<Integer> userIds= Lists.newArrayList();
+        for (UserInHouseQmCheckTask r : rrs) {
+            if (r.getCanApprove()>0){
+                userIds.add(r.getUserId());
+            }
+        }
+        if (userIds.isEmpty()){
+            userIds.add(userId);
+            return userIds;
+        }
+        return userIds;
+    }
 
     @Override
     public TaskResponse<MyIssueListVo> myIssueLogList(DeviceReq deviceReq, HttpServletRequest request) {

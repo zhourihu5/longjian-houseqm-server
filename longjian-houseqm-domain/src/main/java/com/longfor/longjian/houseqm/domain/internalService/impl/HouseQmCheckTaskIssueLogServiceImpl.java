@@ -6,6 +6,7 @@ import com.longfor.longjian.houseqm.dao.UserInHouseQmCheckTaskMapper;
 import com.longfor.longjian.houseqm.domain.internalService.HouseQmCheckTaskIssueLogService;
 import com.longfor.longjian.houseqm.po.HouseQmCheckTaskIssueLog;
 import com.longfor.longjian.houseqm.po.UserInHouseQmCheckTask;
+import com.longfor.longjian.houseqm.utils.ExampleUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -29,6 +30,25 @@ public class HouseQmCheckTaskIssueLogServiceImpl implements HouseQmCheckTaskIssu
     HouseQmCheckTaskIssueLogMapper houseQmCheckTaskIssueLogMapper;
     @Resource
     private UserInHouseQmCheckTaskMapper userInHouseQmCheckTaskMapper;
+
+    @Override
+    @LFAssignDataSource("zhijian2")
+    @Transactional
+    public int deleteIssueLogByUuids(List<String> uuids) {
+        Example example = new Example(HouseQmCheckTaskIssueLog.class);
+        Example.Criteria criteria = example.createCriteria();
+        criteria.andIn("uuid",uuids);
+        ExampleUtil.addDeleteAtJudge(example);
+        return houseQmCheckTaskIssueLogMapper.deleteByExample(example);
+    }
+
+    @Override
+    @LFAssignDataSource("zhijian2")
+    @Transactional
+    public int addBatch(List<HouseQmCheckTaskIssueLog> hIssueLogs) {
+        return houseQmCheckTaskIssueLogMapper.insertList(hIssueLogs);
+    }
+
     /**
      * 根据issueUuid 查 取未删除的，并按客户端创建时间升序排序
      *

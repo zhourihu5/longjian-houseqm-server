@@ -12,6 +12,10 @@ import javax.servlet.http.HttpServletRequest;
 import java.util.List;
 
 public interface IHouseqmService {
+
+
+    List<Integer> searchHouseQmApproveUserIdInMyCheckSquad(int userId, int taskId);
+
     /**
      * 获取问题人员列表
      *

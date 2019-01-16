@@ -4,8 +4,11 @@ import com.longfor.gaia.gfs.data.mybatis.datasource.LFAssignDataSource;
 import com.longfor.longjian.houseqm.dao.HouseQmCheckTaskIssueAttachmentMapper;
 import com.longfor.longjian.houseqm.domain.internalService.HouseQmCheckTaskIssueAttachmentService;
 import com.longfor.longjian.houseqm.po.HouseQmCheckTaskIssueAttachment;
+import com.longfor.longjian.houseqm.utils.ExampleUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+import tk.mybatis.mapper.entity.Example;
 import tk.mybatis.mapper.entity.Example;
 
 import javax.annotation.Resource;
@@ -22,6 +25,25 @@ public class HouseQmCheckTaskIssueAttachmentServiceImpl implements HouseQmCheckT
 
     @Resource
     HouseQmCheckTaskIssueAttachmentMapper houseQmCheckTaskIssueAttachmentMapper;
+
+
+    @Override
+    @LFAssignDataSource(value = "zhijian2")
+    @Transactional
+    public int inseretBatch(List<HouseQmCheckTaskIssueAttachment> attachements) {
+        return houseQmCheckTaskIssueAttachmentMapper.insertList(attachements);
+    }
+
+    @Override
+    @LFAssignDataSource(value = "zhijian2")
+    @Transactional
+    public int deleteByIssueUuidMd5(String issueUuid, String md5) {
+        Example example = new Example(HouseQmCheckTaskIssueAttachment.class);
+        Example.Criteria criteria = example.createCriteria();
+        criteria.andEqualTo("issueUuid",issueUuid).andEqualTo("md5",md5);
+        ExampleUtil.addDeleteAtJudge(example);
+        return houseQmCheckTaskIssueAttachmentMapper.deleteByExample(example);
+    }
 
     /**
      * 根据问题uuid 查 取 未删除的 数据

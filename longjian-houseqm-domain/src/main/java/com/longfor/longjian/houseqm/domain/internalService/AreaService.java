@@ -7,6 +7,8 @@ import java.util.Set;
 
 public interface AreaService {
 
+    List<Area> searchRelatedAreaByAreaIdIn(Integer project_id, List<Integer> areaIds);
+
     List<Area> selectAreasByIdInAreaIds(List<Integer> areaIds);
 
     Area selectById(Integer areaId);

@@ -1,26 +1,21 @@
 package com.longfor.longjian.houseqm.app.vo;
 
-import java.util.Date;
-
+import com.longfor.longjian.common.consts.EventQueueEnum;
 import com.longfor.longjian.common.consts.HouseQmCheckTaskIssueLogStatus;
+import com.longfor.longjian.common.consts.HouseQmCheckTaskIssueStatusEnum;
+import com.longfor.longjian.common.kafka.KafkaProducer;
+import com.longfor.longjian.houseqm.app.service.PushService;
 import com.longfor.longjian.houseqm.app.vo.issue.HouseQmCheckTaskIssueDetail;
 
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.longfor.longjian.houseqm.app.vo.issue.*;
-import com.longfor.longjian.houseqm.consts.ApiDropDataReasonEnum;
-import com.longfor.longjian.houseqm.consts.HouseQmCheckTaskIssueLogStatusEnum;
-import com.longfor.longjian.houseqm.consts.HouseQmCheckTaskIssueStatusEnum;
-import com.longfor.longjian.houseqm.consts.HouseQmUserInIssueRoleTypeEnum;
-import com.longfor.longjian.houseqm.domain.internalService.AreaService;
-import com.longfor.longjian.houseqm.domain.internalService.CheckItemV3Service;
-import com.longfor.longjian.houseqm.domain.internalService.HouseQmCheckTaskIssueService;
-import com.longfor.longjian.houseqm.domain.internalService.HouseQmCheckTaskService;
+import com.longfor.longjian.houseqm.consts.*;
+import com.longfor.longjian.houseqm.domain.internalService.*;
 import com.longfor.longjian.houseqm.po.*;
 import com.longfor.longjian.houseqm.util.DateUtil;
 import com.longfor.longjian.houseqm.util.JsonUtil;
 import com.longfor.longjian.houseqm.util.StringSplitToListUtil;
-import com.sun.org.apache.regexp.internal.RE;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -30,6 +25,7 @@ import java.io.Serializable;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 /**
  * @ProjectName: longjian-houseqm-server
@@ -55,9 +51,21 @@ public class HouseQmCheckTaskIssueHelperVo implements Serializable {
     @Resource
     private HouseQmCheckTaskIssueService houseQmCheckTaskIssueService;
     @Resource
+    private HouseQmCheckTaskIssueLogService houseQmCheckTaskIssueLogService;
+    @Resource
+    private HouseQmCheckTaskNotifyRecordService houseQmCheckTaskNotifyRecordService;
+    @Resource
+    private PushService pushService;
+    @Resource
     private AreaService areaService;
     @Resource
     private CheckItemV3Service checkItemV3Service;
+    @Resource
+    private CategoryV3Service categoryV3Service;
+    @Resource
+    private HouseQmCheckTaskIssueUserService houseQmCheckTaskIssueUserService;
+    @Resource
+    private HouseQmCheckTaskIssueAttachmentService houseQmCheckTaskIssueAttachmentService;
 
     private Map<String, CategoryV3> categoryMap;
     private Map<Integer, Area> areaMap;
@@ -188,13 +196,15 @@ public class HouseQmCheckTaskIssueHelperVo implements Serializable {
             this.taskMap.put(this.currentLog.getTaskId(), task);
         }
         HouseQmCheckTask task = this.taskMap.get(this.currentLog.getTaskId());
-        if (task.getDeleteAt() != null) {
-            log.debug("HouseQm Task Has Delete ");
-            String name = ApiDropDataReasonEnum.HouseQmTaskRemoved.getName();
-            int value = ApiDropDataReasonEnum.HouseQmTaskRemoved.getValue();
-            this.setDroppedIssue(issueUuid, value, name);
-            this.setDroppedIssueLog(this.currentLog.getUuid(), value, name);
-            return this;
+        if (task!=null){
+            if (task.getDeleteAt() != null) {
+                log.debug("HouseQm Task Has Delete ");
+                String name = ApiDropDataReasonEnum.HouseQmTaskRemoved.getName();
+                int value = ApiDropDataReasonEnum.HouseQmTaskRemoved.getValue();
+                this.setDroppedIssue(issueUuid, value, name);
+                this.setDroppedIssueLog(this.currentLog.getUuid(), value, name);
+                return this;
+            }
         }
         issue = this.needInsertIssueMap.get(issueUuid);
         if (issue != null) inNew = true;
@@ -266,7 +276,17 @@ public class HouseQmCheckTaskIssueHelperVo implements Serializable {
             if (HouseQmCheckTaskIssueStatusEnum.CheckYes.getId().equals(tempIssue.getStatus())) {
                 setDroppedIssueLog(this.currentLog.getUuid(), ApiDropDataReasonEnum.Other.getValue(), "问题已销项");
             } else {
-                // todo modifyIssue(tempIssue);
+                Map<String, Object> map = modifyIssue(tempIssue);
+                Boolean changed = (Boolean) map.get("changed");
+                HouseQmCheckTaskIssueVo modifiedIssue = (HouseQmCheckTaskIssueVo) map.get("issue");
+                UserInIssue newIssueRole = (UserInIssue) map.get("issueRole");
+                if (changed) {
+                    this.needUpdateIssueMap.put(issueUuid, modifiedIssue);
+                }
+                if (newIssueRole.isModified()) {
+                    this.issueMembers.put(tempIssueUid, newIssueRole);
+                }
+
             }
         } else if (inUpdate) {
             //已经存在于需要更新的列表中
@@ -276,21 +296,468 @@ public class HouseQmCheckTaskIssueHelperVo implements Serializable {
                 setDroppedIssueLog(this.currentLog.getUuid(), ApiDropDataReasonEnum.Other.getValue(), "问题已销项");
             } else {
                 String tempIssueUid = this.currentLog.getIssueUuid();
-                //todo modifyIssue(tempIssue);
+                Map<String, Object> map = this.modifyIssue(tempIssue);
+                Boolean changed = (Boolean) map.get("changed");
+                HouseQmCheckTaskIssueVo modifiedIssue = (HouseQmCheckTaskIssueVo) map.get("issue");
+                UserInIssue newIssueRole = (UserInIssue) map.get("issueRole");
+                if (changed) {
+                    this.needUpdateIssueMap.put(issueUuid, modifiedIssue);
+                }
+                if (newIssueRole.isModified()) {
+                    this.issueMembers.put(tempIssueUid, newIssueRole);
+                }
             }
 
         } else if (inNew) {
             //已经存在于需要新增的列表中
             HouseQmCheckTaskIssueVo tempIssue = this.needInsertIssueMap.get(issueUuid);
             String tempIssueUid = this.currentLog.getIssueUuid();
-            //todo modifyIssue(tempIssue);
+            Map<String, Object> map = this.modifyIssue(tempIssue);
+            Boolean changed = (Boolean) map.get("changed");
+            HouseQmCheckTaskIssueVo modifiedIssue = (HouseQmCheckTaskIssueVo) map.get("issue");
+            UserInIssue newIssueRole = (UserInIssue) map.get("issueRole");
+            if (changed) {
+                this.needUpdateIssueMap.put(issueUuid, modifiedIssue);
+            }
+            if (newIssueRole.isModified()) {
+                this.issueMembers.put(tempIssueUid, newIssueRole);
+            }
         }
         return this;
     }
 
     //执行
-    public void execute() {
+    public void execute() throws Exception {
+        //执行前补全各种数据
+        this.beforeExecute();
+        for (HouseQmCheckTaskIssueVo issue : this.needInsertIssueMap.values()) {
+            HouseQmCheckTaskIssue issue1 = new HouseQmCheckTaskIssue();
+            issue1.setProjectId(issue.getProjectId());
+            issue1.setTaskId(issue.getTaskId());
+            issue1.setUuid(issue.getUuid());
+            issue1.setSenderId(issue.getSenderId());
+            issue1.setPlanEndOn(issue.getPlanEndOn());
+            issue1.setEndOn(issue.getEndOn());
+            issue1.setAreaId(issue.getAreaId());
+            issue1.setAreaPathAndId(issue.getAreaPathAndId());
+            issue1.setCategoryCls(issue.getCategoryCls());
+            issue1.setCategoryKey(issue.getCategoryKey());
+            issue1.setCategoryPathAndKey(issue.getCategoryPathAndKey());
+            issue1.setCheckItemKey(issue.getCheckItemKey());
+            issue1.setCheckItemPathAndKey(issue.getCheckItemPathAndKey());
+            issue1.setDrawingMD5(issue.getDrawingMD5());
+            issue1.setPosX(issue.getPosX());
+            issue1.setPosY(issue.getPosY());
+            issue1.setTitle(issue.getTitle());
+            issue1.setTyp(issue.getTyp());
+            issue1.setContent(issue.getContent());
+            issue1.setCondition(issue.getCondition());
+            issue1.setStatus(issue.getStatus());
+            issue1.setRepairerId(issue.getRepairerId());
+            issue1.setRepairerFollowerIds(issue.getRepairerFollowerIds());
+            issue1.setClientCreateAt(issue.getClientCreateAt());
+            issue1.setLastAssigner(issue.getLastAssigner());
+            issue1.setLastAssignAt(issue.getLastAssignAt());
+            issue1.setLastRepairer(issue.getLastRepairer());
+            issue1.setLastRepairerAt(issue.getLastRepairerAt());
+            issue1.setDestroyUser(issue.getDestroyUser());
+            issue1.setDestroyAt(issue.getDestroyAt());
+            issue1.setDeleteUser(issue.getDeleteUser());
+            issue1.setDeleteTime(issue.getDeleteTime());
+            issue1.setCreateAt(issue.getCreateAt());
+            issue1.setUpdateAt(issue.getUpdateAt());
+            issue1.setDeleteAt(issue.getDeleteAt());
+            issue1.setAttachmentMd5List(issue.getAttachmentMd5List());
+            issue1.setAudioMd5List(issue.getAudioMd5List());
+            HouseQmCheckTaskIssueDetail detail = issue.getDetail();
+            issue1.setDetail(JsonUtil.GsonString(detail));
+            //插入
+            int affect = houseQmCheckTaskIssueService.insertOneHouseQmCheckTaskIssue(issue1);
+        }
+        //更新issue
+        for (HouseQmCheckTaskIssueVo issue : this.needUpdateIssueMap.values()) {
+            HouseQmCheckTaskIssue issue1 = new HouseQmCheckTaskIssue();
+            issue1.setId(issue.getId());
+            issue1.setProjectId(issue.getProjectId());
+            issue1.setTaskId(issue.getTaskId());
+            issue1.setUuid(issue.getUuid());
+            issue1.setSenderId(issue.getSenderId());
+            issue1.setPlanEndOn(issue.getPlanEndOn());
+            issue1.setEndOn(issue.getEndOn());
+            issue1.setAreaId(issue.getAreaId());
+            issue1.setAreaPathAndId(issue.getAreaPathAndId());
+            issue1.setCategoryCls(issue.getCategoryCls());
+            issue1.setCategoryKey(issue.getCategoryKey());
+            issue1.setCategoryPathAndKey(issue.getCategoryPathAndKey());
+            issue1.setCheckItemKey(issue.getCheckItemKey());
+            issue1.setCheckItemPathAndKey(issue.getCheckItemPathAndKey());
+            issue1.setDrawingMD5(issue.getDrawingMD5());
+            issue1.setPosX(issue.getPosX());
+            issue1.setPosY(issue.getPosY());
+            issue1.setTitle(issue.getTitle());
+            issue1.setTyp(issue.getTyp());
+            issue1.setContent(issue.getContent());
+            issue1.setCondition(issue.getCondition());
+            issue1.setStatus(issue.getStatus());
+            issue1.setAttachmentMd5List(issue.getAttachmentMd5List());
+            issue1.setAudioMd5List(issue.getAudioMd5List());
+            issue1.setRepairerId(issue.getRepairerId());
+            issue1.setRepairerFollowerIds(issue.getRepairerFollowerIds());
+            issue1.setClientCreateAt(issue.getClientCreateAt());
+            issue1.setLastAssigner(issue.getLastAssigner());
+            issue1.setLastAssignAt(issue.getLastAssignAt());
+            issue1.setLastRepairer(issue.getLastRepairer());
+            issue1.setLastRepairerAt(issue.getLastRepairerAt());
+            issue1.setDestroyUser(issue.getDestroyUser());
+            issue1.setDestroyAt(issue.getDestroyAt());
+            issue1.setDeleteUser(issue.getDeleteUser());
+            issue1.setDeleteTime(issue.getDeleteTime());
+            HouseQmCheckTaskIssueDetail detail = issue.getDetail();
+            issue1.setDetail(JsonUtil.GsonString(detail));
+            houseQmCheckTaskIssueService.update(issue1);
+        }
+        //issue log 入库
+        List<HouseQmCheckTaskIssueLog> hIssueLogs = Lists.newArrayList();
+        for (HouseQmCheckTaskIssueLogVo issueLog : this.issueLogs) {
+            HouseQmCheckTaskIssueLog hIssueLog = new HouseQmCheckTaskIssueLog();
+            hIssueLog.setId(issueLog.getId());
+            hIssueLog.setProjectId(issueLog.getProjectId());
+            hIssueLog.setTaskId(issueLog.getTaskId());
+            hIssueLog.setUuid(issueLog.getUuid());
+            hIssueLog.setIssueUuid(issueLog.getIssueUuid());
+            hIssueLog.setSenderId(issueLog.getSenderId());
+            hIssueLog.setStatus(issueLog.getStatus());
+            hIssueLog.setClientCreateAt(issueLog.getClientCreateAt());
+            hIssueLog.setCreateAt(issueLog.getCreateAt());
+            hIssueLog.setUpdateAt(issueLog.getUpdateAt());
+            hIssueLog.setDeleteAt(issueLog.getDeleteAt());
+            hIssueLog.setDesc(issueLog.getDesc());
+            hIssueLog.setAttachmentMd5List(issueLog.getAttachmentMd5List());
+            hIssueLog.setAudioMd5List(issueLog.getAudioMd5List());
+            hIssueLog.setMemoAudioMd5List(issueLog.getMemoAudioMd5List());
+            HouseQmCheckTaskIssueLogDetailStruct detail = issueLog.getDetail();
+            String detailStr = JsonUtil.GsonString(detail);
+            hIssueLog.setDetail(detailStr);
+        }
+        houseQmCheckTaskIssueLogService.addBatch(hIssueLogs);
+        //处理要删除的issue log
+        List<String> needDeleteIssueLog = Lists.newArrayList();
+        for (String tempIssueLogUuid : this.needDeleteAtIssueLogMap.keySet()) {
+            needDeleteIssueLog.add(tempIssueLogUuid);
+        }
+        if (needDeleteIssueLog.size() > 0) {
+            houseQmCheckTaskIssueLogService.deleteIssueLogByUuids(needDeleteIssueLog);
+        }
 
+        // TODO uuid or id go源码写的todo 不太明白 ?
+        // needDeleteIssueLog转换为map 用于查询
+        Map<String, Boolean> needDeleteIssueLogSet = Maps.newHashMap();
+        for (String uuid : needDeleteIssueLog) {
+            needDeleteIssueLogSet.put(uuid, true);//得到删除的集合
+        }
+        Map<String, Boolean> needPushIds = Maps.newHashMap();
+        for (HouseQmCheckTaskIssueLogVo issue : this.issueLogs) {
+            if (!needDeleteIssueLogSet.get(issue.getIssueUuid()).equals(true)
+                    && (HouseQmCheckTaskIssueStatusEnum.AssignNoReform.getId().equals(issue.getStatus()) ||
+                    HouseQmCheckTaskIssueStatusEnum.ReformNoCheck.getId().equals(issue.getStatus()) || issue.getDetail().getRepairerId() > 0)) {
+                needPushIds.put(issue.getIssueUuid(), true);//排除删除，得到需要推送的uuid集合
+            }
+        }
+
+        log.info("cnt_of_helper_issue: ", this.issueLogs);
+        log.info("cnt_of_helper_NeedUpdateIssueMap: ", this.needUpdateIssueMap);
+        log.info("cnt_of_helper_NeedInsertIssueMap: ", this.needInsertIssueMap);
+        log.info("cnt_of_needDeleteIssueLog: ", needDeleteIssueLog);
+        log.info("need_push_id: ", needPushIds);
+        List<HouseQmCheckTaskIssueVo> upushIssues = Lists.newArrayList();
+        for (HouseQmCheckTaskIssueVo issue : this.needUpdateIssueMap.values()) {
+            if (needPushIds.containsKey(issue.getUuid())) {
+                upushIssues.add(issue);
+            }
+        }
+        for (HouseQmCheckTaskIssueVo issue : this.needInsertIssueMap.values()) {
+            if (needPushIds.containsKey(issue.getUuid())) {
+                upushIssues.add(issue);
+            }
+        }
+        //处理issue member
+        List<HouseQmCheckTaskIssueUser> issueUsers = Lists.newArrayList();
+        for (Map.Entry<String, UserInIssue> entry : this.issueMembers.entrySet()) {
+            String issueUuid = entry.getKey();
+            UserInIssue userInIssue = entry.getValue();
+            for (Map.Entry<Integer, Integer> userEntry : userInIssue.getUserRole().entrySet()) {
+                HouseQmCheckTaskIssueUser obj = new HouseQmCheckTaskIssueUser();
+                obj.setTaskId(userInIssue.getTaskId());
+                obj.setIssueUuid(issueUuid);
+                obj.setUserId(userEntry.getKey());
+                obj.setRoleType(userEntry.getValue());
+                issueUsers.add(obj);
+            }
+        }
+        if (issueUsers.size() > 0) {
+            houseQmCheckTaskIssueUserService.insertBatch(issueUsers);
+        }
+        //处理issue attachment
+        if (this.needInsertAttachement.size() > 0) {
+            houseQmCheckTaskIssueAttachmentService.inseretBatch(this.needInsertAttachement);
+        }
+        //移除 私有 附件
+        if (this.needRemoveAttachement.size() > 0) {
+            for (RemoveAttachement obj : this.needRemoveAttachement) {
+                houseQmCheckTaskIssueAttachmentService.deleteByIssueUuidMd5(obj.getIssueUuid(), obj.getMd5());
+            }
+        }
+        // PUSH
+        pushService.sendUPushByIssues(upushIssues);
+
+        this.appendNotifyRecord(upushIssues);
+        // PUSH Kafka Logs
+        this.pushKafkaMsg();
+
+
+    }
+
+    public HouseQmCheckTaskIssueHelperVo beforeExecute() {
+        //补全数据
+        List<Integer> existsAreaIds = Lists.newArrayList();
+        List<String> existsCategoryKeys = Lists.newArrayList();
+        List<String> existsCheckItemKeys = Lists.newArrayList();
+        for (HouseQmCheckTaskIssueVo tempIssue : this.needInsertIssueMap.values()) {
+            existsAreaIds.add(tempIssue.getAreaId());
+            existsCategoryKeys.add(tempIssue.getCategoryKey());
+            existsCheckItemKeys.add(tempIssue.getCheckItemKey());
+        }
+        this.initArea(existsAreaIds).initCheckItem(existsCheckItemKeys).initCategory(existsCategoryKeys);
+        for (HouseQmCheckTaskIssueVo tempIssue : this.needInsertIssueMap.values()) {
+            tempIssue.setCategoryPathAndKey(this.getCategoryPathAndKey(tempIssue.getCategoryKey()));
+            tempIssue.setCheckItemPathAndKey(this.getCheckItemPathAndKey(tempIssue.getCheckItemKey()));
+            tempIssue.setAreaPathAndId(this.getAreaPathAndId(tempIssue.getAreaId()));
+        }
+        //处理附件
+        //这里的处理方式不严谨，存在一个隐患
+        //如果3个log中 1->添加A 2->删除A 3->又重新添加了A
+        //这样子的话就会导致3中重新添加的A无效
+        //但因为客户端不存在选择录音添加，所以暂时不考虑更严谨的处理方式
+        this.needInsertAttachement = Lists.newArrayList();
+        this.needRemoveAttachement = Lists.newArrayList();
+        for (HouseQmCheckTaskIssueLogVo issueLog : this.issueLogs) {
+            //公有录音
+            List<String> md5List = StringSplitToListUtil.splitToStringComma(issueLog.getAudioMd5List(), ",");
+            if (md5List.size() > 0) {
+                for (String md5 : md5List) {
+                    HouseQmCheckTaskIssueAttachment obj = new HouseQmCheckTaskIssueAttachment();
+                    obj.setProjectId(this.currentProjectId);
+                    obj.setTaskId(issueLog.getTaskId());
+                    obj.setIssueUuid(issueLog.getIssueUuid());
+                    obj.setUserId(issueLog.getSenderId());
+                    obj.setPublicType(HouseQmCheckTaskIssueAttachmentPublicTypeEnum.Public.getId());
+                    obj.setAttachmentType(HouseQmCheckTaskIssueAttachmentAttachmentTypeEnum.Audio.getId());
+                    obj.setMd5(md5);
+                    obj.setStatus(HouseQmCheckTaskIssueAttachmentStatusEnum.Enable.getId());
+                    obj.setClientCreateAt(issueLog.getClientCreateAt());
+                    this.needInsertAttachement.add(obj);
+                }
+            }
+            // 私有录音
+            List<String> memoMd5List = StringSplitToListUtil.splitToStringComma(issueLog.getMemoAudioMd5List(), ",");
+            if (memoMd5List.size() > 0) {
+                for (String md5 : memoMd5List) {
+                    HouseQmCheckTaskIssueAttachment obj = new HouseQmCheckTaskIssueAttachment();
+                    obj.setProjectId(this.currentProjectId);
+                    obj.setTaskId(issueLog.getTaskId());
+                    obj.setIssueUuid(issueLog.getIssueUuid());
+                    obj.setUserId(issueLog.getSenderId());
+                    obj.setPublicType(HouseQmCheckTaskIssueAttachmentPublicTypeEnum.Private.getId());
+                    obj.setAttachmentType(HouseQmCheckTaskIssueAttachmentAttachmentTypeEnum.Audio.getId());
+                    obj.setMd5(md5);
+                    obj.setStatus(HouseQmCheckTaskIssueAttachmentStatusEnum.Enable.getId());
+                    obj.setClientCreateAt(issueLog.getClientCreateAt());
+                    this.needInsertAttachement.add(obj);
+                }
+            }
+            // 要移除的私有录音
+            List<String> removeMemoAudioMd5List = StringSplitToListUtil.splitToStringComma(issueLog.getDetail().getRemoveMemoAudioMd5List(), ",");
+            if (removeMemoAudioMd5List.size() > 0) {
+                for (String md5 : removeMemoAudioMd5List) {
+                    RemoveAttachement obj = new RemoveAttachement();
+                    obj.setIssueUuid(issueLog.getIssueUuid());
+                    obj.setMd5(md5);
+                    this.needRemoveAttachement.add(obj);
+                }
+            }
+        }
+
+        return this;
+    }
+
+    public void pushKafkaMsg() {
+        HouseQmIssueReportMsg msgPkg = new HouseQmIssueReportMsg();
+        msgPkg.setCreated_issues(Lists.newArrayList());
+        msgPkg.setAssigned_issues(Lists.newArrayList());
+        msgPkg.setReformed_issues(Lists.newArrayList());
+        msgPkg.setChecked_issues(Lists.newArrayList());
+
+        for (HouseQmCheckTaskIssueVo issue : this.needInsertIssueMap.values()) {
+            // 如果某条问题不是工程的日常检查问题，说明是另外类型的推送问题，不需要处理。目前只支持工程部门的统计
+            if (!CategoryClsTypeEnum.RCJC.getId().equals(issue.getCategoryCls())) return;
+            msgPkg.appendCreated(
+                    issue.getUuid(), issue.getProjectId(), issue.getTaskId(), issue.getSenderId(), 0,
+                    issue.getAreaId(), issue.getAreaPathAndId(), issue.getCategoryKey(),
+                    issue.getCategoryPathAndKey(), issue.getSenderId(), issue.getClientCreateAt());
+            if (HouseQmCheckTaskIssueStatusEnum.AssignNoReform.getId().equals(issue.getStatus())) {
+                msgPkg.appendAssigned(
+                        issue.getUuid(), issue.getProjectId(), issue.getTaskId(), issue.getSenderId(), issue.getRepairerId(),
+                        issue.getAreaId(), issue.getAreaPathAndId(), issue.getCategoryKey(),
+                        issue.getCategoryPathAndKey(), issue.getSenderId(), issue.getClientCreateAt()
+                );
+            }
+        }
+
+        for (HouseQmCheckTaskIssueLogVo log : this.issueLogs) {
+            if (this.needDeleteAtIssueLogMap.get(log.getUuid())) {
+                continue;
+            }
+            HouseQmCheckTaskIssueVo issue = this.needUpdateIssueMap.get(log.getIssueUuid());
+
+            if (issue != null) {
+                // 如果某条问题不是工程的日常检查问题，说明是另外类型的推送问题，不需要处理。目前只支持工程部门的统计
+                if (CategoryClsTypeEnum.RCJC.getId().equals(issue.getCategoryCls())) {
+                    return;
+                }
+                HouseQmCheckTaskIssueStatusEnum e = null;
+                for (HouseQmCheckTaskIssueStatusEnum value : HouseQmCheckTaskIssueStatusEnum.values()) {
+                    if (value.getId().equals(log.getStatus())) {
+                        e = value;
+                    }
+                }
+                switch (e) {
+                    case AssignNoReform:
+                        msgPkg.appendAssigned(
+                                issue.getUuid(), issue.getProjectId(), issue.getTaskId(), issue.getSenderId(), log.getDetail().getRepairerId(),
+                                issue.getAreaId(), issue.getAreaPathAndId(), issue.getCategoryKey(),
+                                issue.getCategoryPathAndKey(), log.getSenderId(), log.getClientCreateAt()
+                        );
+                        break;
+                    case ReformNoCheck:
+                        msgPkg.appendReformed(
+                                issue.getUuid(), issue.getProjectId(), issue.getTaskId(), issue.getSenderId(), log.getDetail().getRepairerId(),
+                                issue.getAreaId(), issue.getAreaPathAndId(), issue.getCategoryKey(),
+                                issue.getCategoryPathAndKey(), log.getSenderId(), log.getClientCreateAt()
+                        );
+                        break;
+                    case CheckYes:
+                        msgPkg.appendChecked(
+                                issue.getUuid(), issue.getProjectId(), issue.getTaskId(), issue.getSenderId(), issue.getRepairerId(),
+                                issue.getAreaId(), issue.getAreaPathAndId(), issue.getCategoryKey(),
+                                issue.getCategoryPathAndKey(), log.getSenderId(), log.getClientCreateAt()
+                        );
+                        break;
+                    default:
+                        break;
+                }
+            }
+        }
+        //utils.KafkaProducer.Produce(consts.EventQueue.PKG_HOUSEQM_ISSUE_REPORTED.Value, msgPkg)
+        KafkaProducer producer = new KafkaProducer();
+        producer.produce(EventQueueEnum.PKG_HOUSEQM_ISSUE_REPORTED.getValue(),msgPkg);
+
+    }
+
+    public void appendNotifyRecord(List<HouseQmCheckTaskIssueVo> issueList) {
+        int moduleId = 1001;
+        // cache
+        HouseqmSquadUserCache cache = new HouseqmSquadUserCache();
+        cache.setCache(Maps.newHashMap());
+
+        for (HouseQmCheckTaskIssueVo issue : issueList) {
+            if (CategoryClsTypeEnum.RCJC.getId().equals(issue.getCategoryCls())) {
+                continue;
+            }
+            HouseQmCheckTaskIssueStatusEnum e = null;
+            for (HouseQmCheckTaskIssueStatusEnum value : HouseQmCheckTaskIssueStatusEnum.values()) {
+                if (value.getId().equals(issue.getStatus())) {
+                    e = value;
+                }
+            }
+            switch (e) {
+                case AssignNoReform: {
+                    List<Integer> userIds = Lists.newArrayList();
+                    userIds.add(issue.getRepairerId());
+                    List<Integer> fids = StringSplitToListUtil.strToInts(issue.getRepairerFollowerIds(), ",");
+                    userIds.addAll(fids);
+                    houseQmCheckTaskNotifyRecordService.insertFull(issue.getProjectId(), issue.getTaskId(), issue.getLastAssigner(), StringSplitToListUtil.dataToString(userIds, ","), moduleId, issue.getId(), issue.getStatus(), "");
+                    break;
+                }
+                case ReformNoCheck: {
+                    List<Integer> approveUserIds = cache.getResolveUserList(issue.getTaskId(), issue.getSenderId());
+                    houseQmCheckTaskNotifyRecordService.insertFull(issue.getProjectId(), issue.getTaskId(), issue.getLastAssigner(), StringSplitToListUtil.dataToString(approveUserIds, ","), moduleId, issue.getId(), issue.getStatus(), "");
+                    break;
+                }
+                default:
+                    break;
+            }
+        }
+    }
+
+
+    public String getCategoryPathAndKey(String categoryKey) {
+        CategoryV3 categoryV3 = this.categoryMap.get(categoryKey);
+        if (categoryV3 == null) return "";
+        return categoryV3.getPath() + categoryV3.getKey() + "/";
+    }
+
+    public String getCheckItemPathAndKey(String checkItemKey) {
+        CheckItemV3 checkItemV3 = this.checkItemMap.get(checkItemKey);
+        if (checkItemV3 == null) return "";
+        return checkItemV3.getPath() + checkItemV3.getKey() + "/";
+    }
+
+    public String getAreaPathAndId(int areaId) {
+        Area area = this.areaMap.get(areaId);
+        if (area == null) return "";
+        return area.getPath() + area.getId() + "/";
+    }
+
+    //初始化所需要的area信息
+    public HouseQmCheckTaskIssueHelperVo initArea(List<Integer> areaIds) {
+        this.areaMap = Maps.newHashMap();
+        try {
+            List<Area> areas = areaService.selectByAreaIds(areaIds);
+            for (Area area : areas) {
+                this.areaMap.put(area.getId(), area);
+            }
+        } catch (Exception e) {
+            log.warn("helper init area error: " + e.getMessage());
+            return this;
+        }
+
+        return this;
+    }
+
+    //初始化所需要的checkitem信息
+    public HouseQmCheckTaskIssueHelperVo initCheckItem(List<String> checkitemKeys) {
+        List<CheckItemV3> checkItemV3s = null;
+        try {
+            checkItemV3s = checkItemV3Service.searchCheckItemyV3ByKeyInAndNoDeleted(checkitemKeys);
+        } catch (Exception e) {
+            log.warn("helper init checkitem error: " + e.getMessage());
+            return this;
+        }
+        this.checkItemMap = checkItemV3s.stream().collect(Collectors.toMap(CheckItemV3::getKey, checkItemV3 -> checkItemV3));
+        return this;
+    }
+
+    //初始化所需要的category信息
+    public HouseQmCheckTaskIssueHelperVo initCategory(List<String> categoryKeys) {
+        List<CategoryV3> categoryV3s = null;
+        try {
+            categoryV3s = categoryV3Service.searchCategoryV3ByKeyInAndNoDeleted(categoryKeys);
+        } catch (Exception e) {
+            log.warn("helper init category error: " + e.getMessage());
+            return this;
+        }
+        this.categoryMap = categoryV3s.stream().collect(Collectors.toMap(CategoryV3::getKey, categoryV3 -> categoryV3));
+        return this;
     }
 
     public Map<String, Object> modifyIssue(HouseQmCheckTaskIssueVo issue) {
@@ -305,20 +772,124 @@ public class HouseQmCheckTaskIssueHelperVo implements Serializable {
         Integer oldStatus = issue.getStatus();
         if (this.currentLog.getStatus() != -1) {
             //操作状态是否为需要修改issue状态的操作
-            if (!ignoreIssueLogStatus(this.currentLog.getStatus())){
-                changed=true;
+            if (!ignoreIssueLogStatus(this.currentLog.getStatus())) {
+                changed = true;
                 int newStatus = logToIssueStatus(this.currentLog.getStatus());
-                if (newStatus>0){
+                if (newStatus > 0) {
                     issue.setStatus(newStatus);
                 }
             }
-            //todo 2019/1/10 ing
+            if (HouseQmCheckTaskIssueLogStatusEnum.ReformNoCheck.getId().equals(this.currentLog.getStatus())) {
+                //整改完成
+                issue.setEndOn(this.currentLog.getClientCreateAt());
+            } else if (HouseQmCheckTaskIssueLogStatusEnum.CheckYes.getId().equals(this.currentLog.getStatus())) {
+                //消项
+                issue.setDeleteUser(this.currentLog.getSenderId());
+                issue.setDestroyAt(this.currentLog.getClientCreateAt());
+                // 销项前问题状态是待整改的，表示是直接销项，需要把EndOn补充上去
+                if (HouseQmCheckTaskIssueStatusEnum.AssignNoReform.getId().equals(oldStatus)) {
+                    issue.setEndOn(this.currentLog.getClientCreateAt());
+                }
+            } else if (HouseQmCheckTaskIssueLogStatusEnum.AssignNoReform.getId().equals(this.currentLog.getStatus())) {
+                //分配issue
+                if (HouseQmCheckTaskIssueLogStatusEnum.AssignNoReform.getId().equals(this.currentLog.getStatus())) {
+                    issue.setLastAssigner(this.currentLog.getSenderId());
+                    issue.setLastAssignAt(this.currentLog.getClientCreateAt());
+                }
+            } else if (HouseQmCheckTaskIssueLogStatusEnum.UpdateIssueInfo.getId().equals(this.currentLog.getStatus())) {
+                if (this.currentLog.getDesc().length() > 0) {
+                    issue.setContent(issue.getContent() + ":" + this.currentLog.getDesc());
+                }
+            }
 
         }
         //这里不与状态一同判断
         //最后整改负责人
+        if (this.currentLog.getDetail().getRepairerId() != -1) {
+            changed = true;
+            issue.setLastAssigner(this.currentLog.getDetail().getRepairerId());
+            issue.setLastAssignAt(this.currentLog.getClientCreateAt());
+        }
+        //计划结束时间
+        if (this.currentLog.getDetail().getPlanEndOn() != -1) {
+            changed = true;
+            issue.setPlanEndOn(DateUtil.timeStampToDate(this.currentLog.getDetail().getPlanEndOn(), "yyyy-MM-dd hh:mm:ss"));
+        }
+        //结束时间
+        if (this.currentLog.getDetail().getEndOn() != -1) {
+            changed = true;
+            issue.setEndOn(DateUtil.timeStampToDate(this.currentLog.getDetail().getEndOn(), "yyyy-MM-dd hh:mm:ss"));
+        }
+        //严重程度
+        if (this.currentLog.getDetail().getCondition() != -1) {
+            changed = true;
+            issue.setCondition(this.currentLog.getDetail().getCondition());
+        }
+        //问题类型
+        boolean ok = false;
+        for (HouseQmCheckTaskIssueTypeEnum value : HouseQmCheckTaskIssueTypeEnum.values()) {
+            if (value.getId().equals(this.currentLog.getDetail().getTyp())) {
+                ok = true;
+            }
+        }
+        if (this.currentLog.getDetail().getTyp() != -1 && ok) {
+            changed = true;
+            issue.setTyp(this.currentLog.getDetail().getTyp());
+        }
+        UserInIssue issueRole = new UserInIssue();
+        HashMap<Integer, Integer> userRole = Maps.newHashMap();
+        issueRole.setUserRole(userRole);
+        issueRole.setModified(false);
+        if (-1 != this.currentLog.getDetail().getRepairerId() && !this.currentLog.getDetail().getRepairerFollowerIds().equals("-1")) {
+            //检查人
+            userRole.put(issue.getSenderId(), HouseQmUserInIssueRoleTypeEnum.Checker.getId());
+            //整改负责人
+            userRole.put(this.currentLog.getDetail().getRepairerId(), HouseQmUserInIssueRoleTypeEnum.Repairer.getId());
+            //整改参与人
+            List<Integer> follower = StringSplitToListUtil.strToInts(this.currentLog.getDetail().getRepairerFollowerIds(), ",");
+            for (Integer uid : follower) {
+                userRole.put(uid, HouseQmUserInIssueRoleTypeEnum.RepairerFollower.getId());
+            }
+            //写入issue中的冗余字段
+            issue.setRepairerId(this.currentLog.getDetail().getRepairerId());
+            if (follower.size() > 0) {
+                issue.setRepairerFollowerIds("," + StringSplitToListUtil.dataToString(follower, ",") + ",");
+            } else {
+                issue.setRepairerFollowerIds("");
+            }
+            issueRole.setTaskId(issue.getTaskId());
+            issueRole.setModified(true);
+            changed = true;
+        }
+        //编辑问题的detail字段
+        HouseQmCheckTaskIssueDetail detail = new HouseQmCheckTaskIssueDetail();
+        if (this.currentLog.getDetail().getIssueReason() != -1) {
+            changed = true;
+            detail.setIssueReason(this.currentLog.getDetail().getIssueReason());
+        }
+        if (!"-1".equals(this.currentLog.getDetail().getIssueReasonDetail())) {
+            changed = true;
+            detail.setIssueReasonDetail(this.currentLog.getDetail().getIssueReasonDetail());
+        }
+        if (!"-1".equals(this.currentLog.getDetail().getIssueSuggest())) {
+            changed = true;
+            detail.setIssueSuggest(this.currentLog.getDetail().getIssueSuggest());
+        }
+        if (!"-1".equals(this.currentLog.getDetail().getPotentialRisk())) {
+            changed = true;
+            detail.setPotentialRisk(this.currentLog.getDetail().getPotentialRisk());
+        }
+        if (!"-1".equals(this.currentLog.getDetail().getPreventiveActionDetail())) {
+            changed = true;
+            detail.setPreventiveActionDetail(this.currentLog.getDetail().getPreventiveActionDetail());
+        }
+        issue.setDetail(detail);
+
 
         HashMap<String, Object> map = Maps.newHashMap();
+        map.put("issue", issue);
+        map.put("changed", changed);
+        map.put("issueRole", issueRole);
 
         return map;
     }

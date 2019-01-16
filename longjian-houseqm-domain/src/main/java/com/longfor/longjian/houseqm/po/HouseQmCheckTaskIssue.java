@@ -139,6 +139,7 @@ public class HouseQmCheckTaskIssue {
     /**
      * 整改状态：当前issue状态 10 没有问题 20 已记录未分配 30 已分配未整改 50 已整改未审核 60 已审核（消项） 70已取消 6=整改中（介乎于2和3之间）
      */
+    @Column(name = "`status`")
     private Integer status;
 
     /**

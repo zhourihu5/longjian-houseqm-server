@@ -34,7 +34,7 @@ public class TaskController {
     @Resource
     ITaskService taskService;
 
-    @GetMapping(value = "view", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+    @GetMapping(value = "view/", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     public LjBaseResponse<HouseQmCheckTaskRspVo> view(@RequestParam(value = "project_id") Integer projectId,
                                                       @RequestParam(value = "task_id") Integer taskId) {
 
@@ -80,7 +80,7 @@ public class TaskController {
      * @Param [req]
      * @return com.longfor.longjian.common.base.LjBaseResponse<com.longfor.longjian.houseqm.app.vo.TaskTaskRoleRspVo>
      **/
-    @GetMapping(value = "task_role", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+    @GetMapping(value = "task_role/", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     public LjBaseResponse<TaskTaskRoleRspVo> taskRole(@Valid TaskTaskRoleReq req) {
         //todo 鉴权 _, _, err := ctrl_tool.ProjPermMulti(c, []string{"项目.移动验房.任务管理.查看", "项目.工程检查.任务管理.查看"})
 
@@ -98,6 +98,7 @@ public class TaskController {
             role.setRole_type(item.getRoleType());
             role.setCan_approve(item.getCanApprove());
             role.setTask_id(item.getTaskId());
+            role.setReal_name("");
             if (userMap.containsKey(role.getUser_id())) {
                 role.setReal_name(userMap.get(role.getUser_id()).getRealName());
             }

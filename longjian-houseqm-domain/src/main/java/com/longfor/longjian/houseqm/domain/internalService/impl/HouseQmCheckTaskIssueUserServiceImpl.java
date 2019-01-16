@@ -8,6 +8,7 @@ import com.longfor.longjian.houseqm.po.HouseQmCheckTaskIssueUser;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.transaction.annotation.Transactional;
 import tk.mybatis.mapper.entity.Example;
 
 import javax.annotation.Resource;
@@ -26,6 +27,14 @@ public class HouseQmCheckTaskIssueUserServiceImpl implements HouseQmCheckTaskIss
 
     @Resource
     HouseQmCheckTaskIssueUserMapper houseQmCheckTaskIssueUserMapper;
+
+
+    @Override
+    @LFAssignDataSource(value = "zhijian2")
+    @Transactional
+    public int insertBatch(List<HouseQmCheckTaskIssueUser> issueUsers) {
+        return houseQmCheckTaskIssueUserMapper.insertList(issueUsers);
+    }
 
     /**
      * 根据userId taskId createAt时间 查 取未删除的
