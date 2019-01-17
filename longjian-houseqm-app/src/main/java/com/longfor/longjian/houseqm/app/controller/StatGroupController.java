@@ -3,7 +3,8 @@ package com.longfor.longjian.houseqm.app.controller;
 import com.longfor.longjian.common.base.LjBaseResponse;
 import com.longfor.longjian.common.exception.LjBaseRuntimeException;
 import com.longfor.longjian.houseqm.app.req.StatGroupReq;
-import com.longfor.longjian.houseqm.app.service.StatGroupService;
+import com.longfor.longjian.houseqm.app.service.GraphqlExecuteService;
+import com.longfor.longjian.houseqm.graphql.schema.StatGroupSchema;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
@@ -29,8 +30,16 @@ import javax.annotation.Resource;
 @Slf4j
 public class StatGroupController {
 
+    private final static String teamRankStat_tip = "teamRankStat";
+    private final static String progressStat_tip = "progressStat";
+    private final static String projectStat_tip = "projectStat";
+    private final static String projectRankStat_tip = "projectRankStat";
+    private final static String categoryStat_tip = "categoryStat";
+
+
+
     @Resource
-    private StatGroupService statGroupService;
+    private GraphqlExecuteService graphqlExecuteService;
 
     /**
      * @param groupId
@@ -48,7 +57,24 @@ public class StatGroupController {
         LjBaseResponse response = new LjBaseResponse();
         try {
 
-            Object statListVo = statGroupService.execute(statGroupReq.getQuery(), statGroupReq.getVariables());
+            Object statListVo = null;
+            switch(tip){
+                case teamRankStat_tip:
+                    break;
+                case progressStat_tip:
+                    statListVo = graphqlExecuteService.execute(teamRankStat_tip, statGroupReq.getQuery(),
+                            statGroupReq.getVariables(), StatGroupSchema.statGroupSchema);
+                    break;
+                case projectStat_tip:
+                    break;
+                case projectRankStat_tip:
+                    break;
+                case categoryStat_tip:
+                    break;
+                default:
+                    break;
+            }
+
             response.setData(statListVo);
 
         } catch (LjBaseRuntimeException ex) {
