@@ -13,9 +13,9 @@ import com.longfor.longjian.houseqm.app.service.IHouseqmIssueService;
 import com.longfor.longjian.houseqm.app.vo.IssueBatchAppointRspVo;
 import com.longfor.longjian.houseqm.app.vo.issue.IssueBatchApproveRspVo;
 import com.longfor.longjian.houseqm.app.vo.issue.IssueBatchDeleteRspVo;
+import com.longfor.longjian.houseqm.app.vo.url.UrlUtils;
 import com.longfor.longjian.houseqm.consts.ErrorEnum;
 import com.longfor.longjian.houseqm.consts.HouseQmCheckTaskIssueCheckStatusEnum;
-import com.longfor.longjian.common.consts.HouseQmCheckTaskIssueStatusEnum;
 import com.longfor.longjian.houseqm.domain.internalService.HouseQmCheckTaskIssueService;
 import com.longfor.longjian.houseqm.domain.internalService.HouseQmCheckTaskService;
 import com.longfor.longjian.houseqm.po.HouseQmCheckTask;
@@ -23,8 +23,6 @@ import com.longfor.longjian.houseqm.po.HouseQmCheckTaskIssue;
 import com.longfor.longjian.houseqm.po.zj2db.Project;
 import com.longfor.longjian.houseqm.util.DateUtil;
 import com.longfor.longjian.houseqm.util.StringSplitToListUtil;
-import com.longfor.longjian.houseqm.app.vo.url.UrlUtils;
-import com.sun.jndi.toolkit.url.UrlUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.MediaType;
@@ -35,7 +33,10 @@ import org.springframework.web.bind.annotation.RestController;
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
-import java.util.*;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 /**
@@ -167,9 +168,9 @@ public class HouseqmIssueController {
         List<HouseQmCheckTaskIssue> issues = houseQmCheckTaskIssueService.searchHouseQmCheckTaskIssueByTaskIdUuidIn(req.getTask_id(), issueUuids);
         List<String> uuids = Lists.newArrayList();
         for (HouseQmCheckTaskIssue issue : issues) {
-            if (issue.getStatus().equals(HouseQmCheckTaskIssueStatusEnum.CheckYes.getId())) {
-                throw new Exception("有问题已销项，不能被指派");
-            }
+//            if (issue.getStatus().equals(HouseQmCheckTaskIssueStatusEnum.CheckYes.getId())) {
+//                throw new Exception("有问题已销项，不能被指派");
+//            }
             if (req.getProject_id().equals(issue.getProjectId())) {
                 uuids.add(issue.getUuid());
             }

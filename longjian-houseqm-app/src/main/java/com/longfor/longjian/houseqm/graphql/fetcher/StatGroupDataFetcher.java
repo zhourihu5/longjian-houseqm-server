@@ -15,6 +15,9 @@ import java.util.Date;
 import java.util.List;
 
 /**
+ *
+ *  DataFetcher类是获取数据的服务
+ *
  * @author lipeishuai
  * @date 2018/11/29 14:48
  */

@@ -11,7 +11,6 @@ import graphql.schema.idl.TypeDefinitionRegistry;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.Resource;
-import org.springframework.stereotype.Service;
 import org.springframework.util.ResourceUtils;
 
 import java.io.*;
@@ -23,15 +22,13 @@ import java.io.*;
  */
 @Slf4j
 //@Service
-public class StatGroupSchema {
+public class GroupProgressStatSchema {
 
 
     public static final GraphQLScalarType DateField = new DateScalarType();
 
-    @Value("classpath:graphql/stat_group.graphqls")
+    @Value("classpath:graphql/progressStat.graphqls")
     private static Resource schemaResource;
-
-    public static GraphQLSchema statGroupSchema = buildSchema();
 
 
     /**
@@ -52,48 +49,26 @@ public class StatGroupSchema {
                 .build();
     }
 
+
     /**
+     *  1. 解析Schema文件
+     *  2. buildRuntimeWiring：Schema中定义的类型-获取数据
      *
      * @return
      */
-    public  GraphQLSchema buildSchema1(){
+    public static GraphQLSchema buildSchema(){
 
-        SchemaGenerator schemaGenerator = new SchemaGenerator();
-
-        InputStreamReader schemaReader = null;
-        try {
-
-            InputStream pipelineConfigSchema = getClass().getResourceAsStream("/graphql/pipelineConfig.graphqls");
-            schemaReader = new InputStreamReader(schemaResource.getInputStream());
-        } catch (IOException e) {
-            log.error("buildSchema FileNotFoundException:classpath:graphql/stat_group.graphqls");
-        }
-        TypeDefinitionRegistry typeRegistry = new SchemaParser().parse(schemaReader);
-
-        RuntimeWiring wiring = buildRuntimeWiring();
-        GraphQLSchema graphQLSchema = schemaGenerator.makeExecutableSchema(
-                typeRegistry, wiring);
-
-        return graphQLSchema;
-    }
-
-    /**
-     *
-     * @return
-     */
-    private static GraphQLSchema buildSchema(){
-
-        log.info("StatGroupSchema#buildSchema ing");
+        log.info("GroupProgressStatSchema#buildSchema ing");
 
         SchemaParser schemaParser = new SchemaParser();
         SchemaGenerator schemaGenerator = new SchemaGenerator();
 
         File schemaFile=null;
         try {
-            schemaFile = ResourceUtils.getFile("classpath:graphql/stat_group.graphqls");
+            schemaFile = ResourceUtils.getFile("classpath:graphql/progressStat.graphqls");
 
         } catch (FileNotFoundException e) {
-            log.error("FileNotFoundException:classpath:graphql/stat_group.graphqls");
+            log.error("FileNotFoundException:classpath:graphql/progressStat.graphqls");
         }
 
         TypeDefinitionRegistry typeRegistry = schemaParser.parse(schemaFile);

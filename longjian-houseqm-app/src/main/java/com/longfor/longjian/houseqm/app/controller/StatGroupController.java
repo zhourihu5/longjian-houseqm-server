@@ -4,7 +4,7 @@ import com.longfor.longjian.common.base.LjBaseResponse;
 import com.longfor.longjian.common.exception.LjBaseRuntimeException;
 import com.longfor.longjian.houseqm.app.req.StatGroupReq;
 import com.longfor.longjian.houseqm.app.service.GraphqlExecuteService;
-import com.longfor.longjian.houseqm.graphql.schema.StatGroupSchema;
+import com.longfor.longjian.houseqm.graphql.schema.GroupProgressStatSchema;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
@@ -49,7 +49,8 @@ public class StatGroupController {
      * @return
      */
     @PostMapping(value = "group", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
-    public LjBaseResponse<Object> group(@RequestParam(value = "group_id") String groupId,
+    public LjBaseResponse<Object> group(@RequestParam(value = "token") String token,
+                                        @RequestParam(value = "group_id") String groupId,
                                         @RequestParam(value = "page_level") String pageLevel,
                                         @RequestParam(value = "tip") String tip,
                                         @RequestBody StatGroupReq statGroupReq) {
@@ -62,8 +63,8 @@ public class StatGroupController {
                 case teamRankStat_tip:
                     break;
                 case progressStat_tip:
-                    statListVo = graphqlExecuteService.execute(teamRankStat_tip, statGroupReq.getQuery(),
-                            statGroupReq.getVariables(), StatGroupSchema.statGroupSchema);
+                    statListVo = graphqlExecuteService.execute(progressStat_tip, statGroupReq.getQuery(),
+                            statGroupReq.getVariables(), GroupProgressStatSchema.buildSchema());
                     break;
                 case projectStat_tip:
                     break;
