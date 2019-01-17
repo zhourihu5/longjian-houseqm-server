@@ -43,7 +43,7 @@ public class BuildingqmSettingController {
      * @return
      */
     @GetMapping(value = "get_issuefiled_setting", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
-    public LjBaseResponse<List<ApiIssueFiledSettingMsg>> getIssuefiledSetting(@RequestParam(value = "project_id")   String  projectIds, @RequestParam(value = "timestamp" ,required = false,defaultValue = "0") Integer timestamp) {
+    public LjBaseResponse<List<ApiIssueFiledSettingMsg>> getIssuefiledSetting(@RequestParam(value = "project_ids")   String  projectIds, @RequestParam(value = "timestamp" ,required = false,defaultValue = "0") Integer timestamp) {
 
         LjBaseResponse<List<ApiIssueFiledSettingMsg>> response = buildingqmSettingService.getIssuefiledSetting(projectIds, timestamp);
 

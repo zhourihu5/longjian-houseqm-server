@@ -3,6 +3,7 @@ package com.longfor.longjian.houseqm.app.controller;
 import com.google.common.collect.Lists;
 import com.longfor.longjian.common.base.LjBaseResponse;
 import com.longfor.longjian.common.entity.UserBase;
+import com.longfor.longjian.common.util.CtrlTool;
 import com.longfor.longjian.common.util.SessionInfo;
 import com.longfor.longjian.houseqm.app.req.DeviceReq;
 import com.longfor.longjian.houseqm.app.req.TaskEditReq;
@@ -54,8 +55,8 @@ public class BuildingqmController {
     @GetMapping(value = "buildingqm/my_task_list/", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     public TaskResponse<TaskListVo> myTaskList(@RequestParam(value = "device_id") String deviceId,
                                                @RequestParam(value = "token") String token) {
+        log.info("my_task_list");
         //// TODO: 2018/11/24 uid = session['uid']
-
         int uid = 7556;
         TaskListVo vo = buildingqmService.myTaskList(uid);
         TaskResponse<TaskListVo> response = new TaskResponse();
@@ -114,7 +115,7 @@ public class BuildingqmController {
             if (issueLastUpdateTime.after(issueMembersUpdateTime)) {
                 item.setIssue_members(1);
             }
-        }else {
+        } else {
             item.setIssue_members(0);
         }
 
@@ -134,7 +135,8 @@ public class BuildingqmController {
     }
 
     /**
-     *  http://192.168.37.159:3000/project/8/interface/api/670  获取任务角色列表
+     * http://192.168.37.159:3000/project/8/interface/api/670  获取任务角色列表
+     *
      * @param deviceId
      * @param taskIds
      * @param token
@@ -142,8 +144,9 @@ public class BuildingqmController {
      */
     @GetMapping(value = "buildingqm/task_squads_members", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     public LjBaseResponse<TaskMemberListVo> taskSquadsMembers(@RequestParam(value = "device_id") String deviceId,
-                                                              @RequestParam(value = "task_ids") String taskIds,
+                                                              @RequestParam(value = "task_ids",required = true) String taskIds,
                                                               @RequestParam(value = "token") String token) {
+        log.info("task_squads_members, task_id= " +taskIds);
         LjBaseResponse<TaskMemberListVo> vos = new LjBaseResponse<>();
         TaskMemberListVo vo = buildingqmService.taskSquadsMembers(taskIds);
         vos.setData(vo);
@@ -158,7 +161,8 @@ public class BuildingqmController {
      */
     @GetMapping(value = "buildingqm/my_issue_patch_list/", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     public LjBaseResponse<MyIssuePatchListVo> myIssuePatchList(DeviceReq deviceReq) {
-        //// Todo: 获取uid 为了测试改为0，
+        log.info("my_issue_patch_list, task_id= "+deviceReq.getTask_id()+", timestamp= " + deviceReq.getTimestamp());
+        //// Todo: uid = session['uid'] 获取uid 为了测试改为0，
         Integer uid = 7556;
         MyIssuePatchListVo miplv = buildingqmService.myIssuePathList(uid, deviceReq.getTask_id(), deviceReq.getTimestamp());
         LjBaseResponse<MyIssuePatchListVo> ljBaseResponse = new LjBaseResponse<>();
@@ -189,6 +193,7 @@ public class BuildingqmController {
 /*
         uid = session['uid']
 */
+
         Integer uid = 1;
         ////todo 鉴权
        /* has_per = ucenter_api.check_project_permission(uid, req.project_id, '项目.工程检查.任务管理.新增')

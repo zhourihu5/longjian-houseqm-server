@@ -116,7 +116,7 @@ public class IssueServiceImpl implements IIssueService {
      * @date 2018/12/21 0021
      */
     @Override
-    public PageInfo<IssueListVo> list(Integer projectId, String categoryCls, Integer taskId, String categoryKey, String checkItemKey, String areaIds, String statusIn,
+    public PageInfo<IssueListVo> list(Integer projectId, int categoryCls, Integer taskId, String categoryKey, String checkItemKey, String areaIds, String statusIn,
                                       Integer checkerId, Integer repairerId, Integer type, Integer condition, String keyWord, String createOnBegin,
                                       String createOnEnd, Boolean isOverDue, Integer pageNum, Integer pageSize) {
 
