@@ -1,9 +1,15 @@
 package com.longfor.longjian.houseqm.app.controller;
 
+import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.google.common.collect.Lists;
+import com.google.common.collect.Maps;
 import com.longfor.longjian.houseqm.app.vo.HouseqmStatisticTaskCheckitemStatRspMsgVo;
 import com.longfor.longjian.houseqm.app.service.IHouseqmStatisticService;
+import com.longfor.longjian.houseqm.consts.CategoryClsTypeEnum;
+import com.longfor.longjian.houseqm.consts.HouseQmCheckTaskRoleTypeEnum;
 import com.longfor.longjian.houseqm.domain.internalService.HouseQmCheckTaskService;
+import com.longfor.longjian.houseqm.po.HouseQmCheckTask;
+import com.longfor.longjian.houseqm.po.UserInHouseQmCheckTask;
 import com.longfor.longjian.houseqm.util.DateUtil;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -23,10 +29,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 
 import javax.annotation.Resource;
 import java.text.DecimalFormat;
-import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.Date;
-import java.util.List;
+import java.util.*;
 
 /**
  * http://192.168.37.159:3000/project/8/interface/api/368
@@ -56,6 +59,7 @@ public class HouseqmStatisticController {
     IHouseqmStatisticService iHouseqmStatisticService;
     @Resource
     AreaService areaService;
+    private  static final String _SOURCE_NAME_GCJC  = "gcjc";
 
 
     @GetMapping(value = "task_stat", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
@@ -110,22 +114,72 @@ public class HouseqmStatisticController {
         return response;
     }
 
-    /**
-     * @param projectId
-     * @param categoryCl
-     * @return
-     */
-    @GetMapping(value = "task_list", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
-    public LjBaseResponse<IssueTaskListRspMsgVo> taskList(@RequestParam(value = "project_id") Integer projectId,
-                                                          @RequestParam(value = "category_cls") Integer categoryCl) {
 
-        List<HouseQmCheckTaskSimpleRspVo> vos = houseqmStaticService.SearchHouseQmCheckTaskByProjCategoryCls(projectId, categoryCl);
-        IssueTaskListRspMsgVo vo = new IssueTaskListRspMsgVo();
-        vo.setTaskList(vos);
-        LjBaseResponse<IssueTaskListRspMsgVo> response = new LjBaseResponse<>();
-        response.setData(vo);
+    @GetMapping(value = "task_list", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+    public LjBaseResponse<HouseqmStatisticTaskListRspMsgVo> taskList(@RequestParam(value = "project_id") Integer projectId,
+                                                          @RequestParam(value = "source") String source,
+                                                          @RequestParam(value = "timestamp") Integer timestamp,
+                                                          @RequestParam(value = "area_id") Integer areaId) {
+        /// todo  session 获取uid
+        Integer uid=1;
+
+       List<UserInHouseQmCheckTask>checkers= houseqmStaticService.searchUserInHouseQmCheckTaskByUserIdRoleType(uid, HouseQmCheckTaskRoleTypeEnum.Checker.getId());
+        HashMap<Integer, Boolean> checkMap = Maps.newHashMap();
+        for (int i = 0; i <checkers.size() ; i++) {
+            checkMap.put(checkers.get(i).getTaskId(),true);
+        }
+        List<HouseQmCheckTask> resTask = Lists.newArrayList();
+
+
+        if(areaId>0){
+            List<HouseQmCheckTask>res=    houseqmStaticService.searchHouseQmCheckTaskByProjIdAreaIdCategoryClsIn(projectId,areaId,  getCategoryClsList(source));
+            resTask.addAll(res);
+        }else{
+        List<HouseQmCheckTask>res=    houseqmStaticService.searchHouseQmCheckTaskByProjCategoryClsIn(projectId,  getCategoryClsList(source));
+            resTask.addAll(res);
+        }
+        List<ApiTaskInfo>items= Lists.newArrayList();
+        for (int i = 0; i <resTask.size() ; i++) {
+            if(checkMap.containsKey(resTask.get(i).getTaskId())){
+            continue;
+            }
+            ApiTaskInfo info = new ApiTaskInfo();
+            info.setId(resTask.get(i).getTaskId());
+            info.setName(resTask.get(i).getName());
+            info.setCategory_cls(resTask.get(i).getCategoryCls());
+            items.add(info);
+        }
+        HouseqmStatisticTaskListRspMsgVo vo1 = new HouseqmStatisticTaskListRspMsgVo();
+        vo1.setItems(items);
+        LjBaseResponse<HouseqmStatisticTaskListRspMsgVo> response = new LjBaseResponse<>();
+        response.setData(vo1);
         return response;
+
+}
+
+    private List<Integer> getCategoryClsList(String source) {
+        if (source.equals("gcgl")){
+            source=_SOURCE_NAME_GCJC;
+        }
+
+        if(source.equals("ydyf")){
+            ArrayList<Integer> objects = Lists.newArrayList();
+            objects.add(CategoryClsTypeEnum.FHYS.getId());
+            objects.add(CategoryClsTypeEnum.RHYF.getId());
+            return objects;
+        }
+        if( source.equals("gcjc")){
+            ArrayList<Integer> objects = Lists.newArrayList();
+            objects.add(CategoryClsTypeEnum.RCJC.getId());
+            objects.add(CategoryClsTypeEnum.YDJC.getId());
+            objects.add(CategoryClsTypeEnum.JDJC.getId());
+            objects.add(CategoryClsTypeEnum.YB.getId());
+            objects.add(CategoryClsTypeEnum.FBFX.getId());
+            return objects;
+        }
+        return new ArrayList<>();
     }
+
 
     /**
      * http://192.168.37.159:3000/project/8/interface/api/380

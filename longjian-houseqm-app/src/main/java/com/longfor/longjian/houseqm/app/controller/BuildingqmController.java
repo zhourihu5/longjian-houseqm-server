@@ -170,7 +170,11 @@ public class BuildingqmController {
         return ljBaseResponse;
     }
 
-
+    /**
+     * 项目下创建任务
+     * @param taskReq
+     * @return
+     */
     @PostMapping(value = "task/create", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     public LjBaseResponse create(TaskReq taskReq) {
         log.info("create, project_id=" + taskReq.getProject_id() + "" +
@@ -204,6 +208,12 @@ public class BuildingqmController {
         return response;
     }
 
+    /**
+     * 项目下获取检查组信息
+     * @param projectId
+     * @param taskId
+     * @return
+     */
     @GetMapping(value = "task/task_squad", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     public LjBaseResponse<ArrayList<HouseQmCheckTaskSquadListRspVo>> taskSquad(@RequestParam(name = "project_id", required = true) String projectId,
                                                                                @RequestParam(name = "task_id", required = true) String taskId) {
@@ -230,6 +240,11 @@ public class BuildingqmController {
         return response;
     }
 
+    /**
+     * 项目下任务内容修改
+     * @param taskEditReq
+     * @return
+     */
     @PostMapping(value = "task/edit", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     public LjBaseResponse edit(TaskEditReq taskEditReq) {
         log.info("edit, project_id=" + taskEditReq.getProject_id() + "" +

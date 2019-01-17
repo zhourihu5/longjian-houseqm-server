@@ -25,7 +25,7 @@ public class FixingPresetAppServiceImpl implements FixingPresetAppService {
         if (limit == null) {
             limit = 2000;
         }
-        if (timestamp != null) {
+        if (timestamp == null) {
          return   fixingPresetService.selectByProAndIdAndUIdsAndminutes(projectId,lastId,limit);
         }else{
             //int 转成date

@@ -26,6 +26,7 @@ public class HouseQmCheckTask {
     /**
      * 任务名称
      */
+    @Column(name = "`name`")
     private String name;
 
     /**
