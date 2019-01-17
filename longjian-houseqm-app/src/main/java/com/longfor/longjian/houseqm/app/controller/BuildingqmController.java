@@ -3,6 +3,7 @@ package com.longfor.longjian.houseqm.app.controller;
 import com.google.common.collect.Lists;
 import com.longfor.longjian.common.base.LjBaseResponse;
 import com.longfor.longjian.common.entity.UserBase;
+import com.longfor.longjian.common.util.CtrlTool;
 import com.longfor.longjian.common.util.SessionInfo;
 import com.longfor.longjian.houseqm.app.req.DeviceReq;
 import com.longfor.longjian.houseqm.app.req.TaskEditReq;
@@ -189,6 +190,7 @@ public class BuildingqmController {
 /*
         uid = session['uid']
 */
+
         Integer uid = 1;
         ////todo 鉴权
        /* has_per = ucenter_api.check_project_permission(uid, req.project_id, '项目.工程检查.任务管理.新增')
