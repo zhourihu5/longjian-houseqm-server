@@ -4,6 +4,7 @@ import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.longfor.longjian.common.base.LjBaseResponse;
 import com.longfor.longjian.common.exception.LjBaseRuntimeException;
+import com.longfor.longjian.common.util.CtrlTool;
 import com.longfor.longjian.houseqm.app.req.issue.IssueBatchAppointReq;
 import com.longfor.longjian.houseqm.app.req.issue.IssueBatchApproveReq;
 import com.longfor.longjian.houseqm.app.req.issue.IssueBatchDeleteReq;
@@ -56,11 +57,11 @@ public class HouseqmIssueController {
     private HouseQmCheckTaskService houseQmCheckTaskService;
     @Resource
     private HouseQmCheckTaskIssueService houseQmCheckTaskIssueService;
-//    @Resource
-//    private CtrlTool ctrlTool;
+    @Resource
+    private CtrlTool ctrlTool;
 
     @Value("${stat_export_server_addr}")
-    String statExportServerAddr;
+    private String statExportServerAddr;
 
     /**
      * @return com.longfor.longjian.common.base.LjBaseResponse
@@ -71,8 +72,14 @@ public class HouseqmIssueController {
      * @Param [req]
      **/
     @PostMapping(value = "export_pdf/", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
-    public LjBaseResponse exportPdf(@Valid IssueExportPdfReq req) {
+    public LjBaseResponse exportPdf(HttpServletRequest request, @Valid IssueExportPdfReq req) {
         //todo 鉴权 _, _, err = ctrl_tool.ProjPermMulti(c, []string{"项目.移动验房.问题管理.查看", "项目.工程检查.问题管理.查看"})
+        /*try {
+            ctrlTool.projPermMulti(request,new String[]{"项目.移动验房.问题管理.查看", "项目.工程检查.问题管理.查看"});
+        } catch (Exception e) {
+            e.printStackTrace();
+            log.error(e.getMessage());
+        }*/
         Project proj = iHouseqmIssueService.getProjectByProjId(req.getProject_id());
         if (proj == null)
             throw new LjBaseRuntimeException(ErrorEnum.DB_ITEM_UNFOUND.getCode(), ErrorEnum.DB_ITEM_UNFOUND.getMessage());
@@ -147,9 +154,14 @@ public class HouseqmIssueController {
      * @Param [req]
      **/
     @PostMapping(value = "batch_appoint/", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
-    public LjBaseResponse<IssueBatchAppointRspVo> batchAppoint(@Valid IssueBatchAppointReq req) throws Exception {
+    public LjBaseResponse<IssueBatchAppointRspVo> batchAppoint(HttpServletRequest request, @Valid IssueBatchAppointReq req) throws Exception {
         //todo 鉴权 _, _, err := ctrl_tool.ProjPermMulti(c, []string{"项目.移动验房.问题管理.编辑", "项目.工程检查.问题管理.编辑"})
-
+       /* try {
+            ctrlTool.projPermMulti(request,new String[]{"项目.移动验房.问题管理.编辑", "项目.工程检查.问题管理.编辑"});
+        } catch (Exception e) {
+            e.printStackTrace();
+            log.error(e.getMessage());
+        }*/
         // 过滤掉不同task下的问题，感觉有点多余，不过还是处理下
         List<String> issueUuids = StringSplitToListUtil.splitToStringComma(req.getIssue_uuids(), ",");
         List<HouseQmCheckTaskIssue> issues = houseQmCheckTaskIssueService.searchHouseQmCheckTaskIssueByTaskIdUuidIn(req.getTask_id(), issueUuids);
@@ -183,15 +195,20 @@ public class HouseqmIssueController {
     @PostMapping(value = "batch_approve/", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     public LjBaseResponse<IssueBatchApproveRspVo> batchApprove(HttpServletRequest request, IssueBatchApproveReq req) throws Exception {
         //todo 鉴权 String[] perms=new String[]{"项目.移动验房.问题管理.编辑","项目.工程检查.问题管理.编辑"};
-        //ctrlTool.projPermMulti(request,perms);
+        /*try {
+            ctrlTool.projPermMulti(request,new String[]{"项目.移动验房.问题管理.编辑", "项目.工程检查.问题管理.编辑"});
+        } catch (Exception e) {
+            e.printStackTrace();
+            log.error(e.getMessage());
+        }*/
 
         // 过滤掉不同task下的问题，感觉有点多余，不过还是处理下
         List<String> uuids = filterIssueUuidByProjIdTaskIdUuids(req.getProject_id(), req.getTask_id(), req.getIssue_uuids());
 
         //todo uid  uId := getCurUid(c)
-        int uid=7556;
+        int uid = 7556;
 
-        List<String> fails = iHouseqmIssueService.updateBatchIssueApproveStatusByUuids(uuids,req.getProject_id(),uid, HouseQmCheckTaskIssueCheckStatusEnum.CheckYes.getId(),"","");
+        List<String> fails = iHouseqmIssueService.updateBatchIssueApproveStatusByUuids(uuids, req.getProject_id(), uid, HouseQmCheckTaskIssueCheckStatusEnum.CheckYes.getId(), "", "");
         LjBaseResponse<IssueBatchApproveRspVo> response = new LjBaseResponse<>();
         IssueBatchApproveRspVo data = new IssueBatchApproveRspVo();
         data.setFails(fails);
@@ -208,16 +225,21 @@ public class HouseqmIssueController {
      * @Param [req]
      **/
     @PostMapping(value = "batch_delete/", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
-    public LjBaseResponse<IssueBatchDeleteRspVo> batchDelete(IssueBatchDeleteReq req) {
+    public LjBaseResponse<IssueBatchDeleteRspVo> batchDelete(HttpServletRequest request, IssueBatchDeleteReq req) {
         //todo 鉴权 String[] perms=new String[]{"项目.移动验房.问题管理.编辑","项目.工程检查.问题管理.编辑"};
-        //ctrlTool.projPermMulti(request,perms);
+        /*try {
+            ctrlTool.projPermMulti(request,new String[]{"项目.移动验房.问题管理.编辑", "项目.工程检查.问题管理.编辑"});
+        } catch (Exception e) {
+            e.printStackTrace();
+            log.error(e.getMessage());
+        }*/
         List<String> issueUuids = StringSplitToListUtil.splitToStringComma(req.getIssue_uuids(), ",");
         LjBaseResponse<IssueBatchDeleteRspVo> response = new LjBaseResponse<>();
         IssueBatchDeleteRspVo data = new IssueBatchDeleteRspVo();
         List<String> fails = Lists.newArrayList();
         for (String issueUuid : issueUuids) {
             try {
-                iHouseqmIssueService.deleteHouseQmCheckTaskIssueByProjUuid(req.getProject_id(),issueUuid);
+                iHouseqmIssueService.deleteHouseQmCheckTaskIssueByProjUuid(req.getProject_id(), issueUuid);
             } catch (Exception e) {
                 fails.add(issueUuid);
             }

@@ -5,6 +5,8 @@ import com.longfor.gaia.gfs.core.bean.PageInfo;
 import com.longfor.gaia.gfs.web.mock.MockOperation;
 import com.longfor.longjian.common.base.LjBaseResponse;
 import com.longfor.longjian.common.consts.CommonGlobal;
+import com.longfor.longjian.common.util.CtrlTool;
+import com.longfor.longjian.houseqm.app.req.IssueListDoActionReq;
 import com.longfor.longjian.houseqm.app.service.IIssueService;
 import com.longfor.longjian.houseqm.app.vo.*;
 import com.longfor.longjian.houseqm.consts.CommonGlobalEnum;
@@ -36,48 +38,34 @@ public class IssueListController {
 
     @Resource
     private IIssueService iIssueService;
+    @Resource
+    private CtrlTool ctrlTool;
 
     /**
      * 问题检索
-     * @param projectId
-     * @param categoryCls
-     * @param pageLevel
-     * @param taskId
-     * @param areaIds
-     * @param statusIn
-     * @param isOverDue
-     * @param keyWord
-     * @param pageNum
-     * @param pageSize
+     * http://192.168.37.159:3000/project/8/interface/api/286
+     * @param req
      * @return
      */
     @GetMapping(value = "list", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
-    public TaskResponse<PageInfo<IssueListVo>> doAction(@RequestParam(value = "project_id") Integer projectId,@RequestParam(value = "category_cls") String categoryCls,
-                                                        @RequestParam(value = "task_id",defaultValue ="0") Integer taskId,@RequestParam(value = "category_key",defaultValue = "") String categoryKey,
-                                                        @RequestParam(value = "check_item_key",defaultValue = "") String checkItemKey,@RequestParam(value = "area_ids",defaultValue = "") String areaIds,
-                                                        @RequestParam(value = "status_in",defaultValue = "") String statusIn,@RequestParam(value = "checker_id",defaultValue ="0") Integer checkerId,
-                                                        @RequestParam(value = "repairer_id",defaultValue ="0")Integer repairerId,@RequestParam(value = "type",defaultValue ="0")Integer type,
-                                                        @RequestParam(value = "condition",defaultValue ="0")Integer condition,@RequestParam(value = "key_word",defaultValue = "") String keyWord,
-                                                        @RequestParam(value = "create_on_begin",defaultValue = "") String createOnBegin,@RequestParam(value = "create_on_end",defaultValue = "") String createOnEnd,
-                                                        @RequestParam(value = "is_overdue",defaultValue = "false") Boolean isOverDue,
-                                                        @RequestParam(value = "page_level") String pageLevel,
-                                                        @ApiParam(value = "当前页码", required = false)
-                                                        @Valid @Min(0)
-                                                        @RequestParam(value = "page", required = false, defaultValue = "0") Integer pageNum,
-                                                        @ApiParam(value = "分页大小", required = false)
-                                                        @Valid @Min(1)
-                                                        @RequestParam(value = "page_size", required = false, defaultValue = "10") Integer pageSize
-    ) {
-
-        ////todo session 取uid 权限
-        /*uid = session['uid']
+    public TaskResponse<PageInfo<IssueListVo>> doAction(HttpServletRequest request,@Valid IssueListDoActionReq req) {
+        log.info("list, project_id=%d, category_cls=%d, task_id=%d, category_key=%s, check_item_key=%s, area_ids=%s, status_in=%s, checker_id=%d, repairer_id=%d," +
+                        " type=%d, condition=%d, key_word=%s, create_on_begin=%s, create_on_end=%s, is_overdue=%d, page=%d, page_size=%d"
+                       );
+        ////todo session 取uid 权限 uid = session['uid']
+        try {
+            ctrlTool.projPerm(request,"项目.工程检查.问题管理.查看");
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        /*
         has_per = ucenter_api.check_project_permission(uid, req.project_id, '项目.工程检查.问题管理.查看')
         if not has_per:
         rsp = errors_utils.err(rsp, 'PermissionDenied')*/
 
-        PageInfo<IssueListVo> pageInfo = iIssueService.list(projectId,categoryCls,taskId,categoryKey,checkItemKey,
-                                                            areaIds,statusIn,checkerId,repairerId,type,condition,keyWord,
-                                                            createOnBegin,createOnEnd,isOverDue,pageNum,pageSize);
+        PageInfo<IssueListVo> pageInfo = iIssueService.list(req.getProject_id(), req.getCategory_cls(),req.getTask_id(),req.getCategory_key(),req.getCheck_item_key(),
+                                                            req.getArea_ids(),req.getStatus_in(),req.getChecker_id(),req.getRepairer_id(),req.getType(),req.getCondition(),req.getKey_word(),
+                                                            req.getCreate_on_begin(),req.getCreate_on_end(),req.is_overdue(),req.getPage(),req.getPage_size());
         TaskResponse<PageInfo<IssueListVo>> taskResponse = new TaskResponse<>();
         taskResponse.setData(pageInfo);
         return taskResponse;
