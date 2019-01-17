@@ -4,12 +4,12 @@ import com.github.benmanes.caffeine.cache.Cache;
 import com.longfor.longjian.common.exception.LjBaseRuntimeException;
 import com.longfor.longjian.houseqm.app.vo.VariableVo;
 import com.longfor.longjian.houseqm.graphql.schema.CachingPreparsedDocumentProvider;
-import com.longfor.longjian.houseqm.graphql.schema.StatGroupSchema;
 import graphql.ExecutionInput;
 import graphql.ExecutionResult;
 import graphql.GraphQL;
 import graphql.GraphQLError;
 import graphql.execution.preparsed.PreparsedDocumentEntry;
+import graphql.schema.GraphQLSchema;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.beanutils.PropertyUtils;
 import org.apache.commons.collections.CollectionUtils;
@@ -20,42 +20,45 @@ import java.util.List;
 import java.util.Map;
 
 /**
+ *
+ *  Graphql的执行服务，每个微服务可以使用一个这个服务即可
+ *
  * @author lipeishuai
  * @date 2018/11/29 16:04
  */
 
 @Slf4j
 @Service
-public class StatGroupService {
-
-//    @Resource
-//    private StatGroupSchema statGroupSchema;
+public class GraphqlExecuteService {
 
     @Resource
     private CachingPreparsedDocumentProvider cachingPreparsedDocumentProvider;
 
-
-
     /**
+     *  1. 将VariableVO转为Map
+     *  2. 解析Schema并缓存
+     *  3. Graphql执行Schema
      *
-     * @param query
-     * @param variableVo
+     * @param serviceName: 仅用于标记不同的Service和日志
+     * @param query : query
+     * @param variableVo : 参数值对
+     * @param graphQLSchema ：绑定和执行的Schema
      * @return
      */
-    public Object execute(String query, VariableVo variableVo ) {
+    public Object execute(String serviceName, String query, VariableVo variableVo, GraphQLSchema graphQLSchema) {
 
         Map<String, Object> variables = null;
         try {
             variables = PropertyUtils.describe(variableVo);
         } catch (Exception e) {
-            log.error("StatGroupService to map: error {}",e);
+            log.error("{} to map: error {}",serviceName,e);
             throw new LjBaseRuntimeException(410, "to map error");
         }
 
-        log.debug("StatGroupService#execute - variableVo categoryKey :{}", variableVo.getCategoryKey());
+        log.debug("{}#execute - variableVo categoryKey :{}", serviceName, variableVo.getCategoryKey());
 
         Cache<String, PreparsedDocumentEntry> cache = cachingPreparsedDocumentProvider.getCache();
-        GraphQL graphQL = GraphQL.newGraphQL(StatGroupSchema.statGroupSchema)
+        GraphQL graphQL = GraphQL.newGraphQL(graphQLSchema)
                 .preparsedDocumentProvider(cache::get)
                 .build();
 
@@ -68,12 +71,13 @@ public class StatGroupService {
 
         if(CollectionUtils.isNotEmpty(errors)){
             for(GraphQLError error: errors){
-                log.error("StatGroupService graphql error {} details:{}",error.getErrorType(), error.getMessage());
+                log.error("{}#graphql error {} details:{}", serviceName, error.getErrorType(), error.getMessage());
                 throw new LjBaseRuntimeException(410, error.getMessage());
             }
         }
 
-        log.debug("StatGroupService#execute - data: {}", data);
+        log.debug("{}#execute - data: {}",serviceName, data);
         return data;
     }
+
 }

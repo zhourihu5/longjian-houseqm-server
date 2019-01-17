@@ -2,6 +2,7 @@ package com.longfor.longjian.houseqm.app.controller;
 
 import com.longfor.gaia.gfs.web.mock.MockOperation;
 import com.longfor.longjian.common.base.LjBaseResponse;
+import com.longfor.longjian.houseqm.app.service.GraphqlExecuteService;
 import com.longfor.longjian.houseqm.app.vo.StatListVo;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.MediaType;
@@ -9,6 +10,8 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+
+import javax.annotation.Resource;
 
 /**
  * http://192.168.37.159:3000/project/8/interface/api/1540 项目统计分析总览获取本周和上周统计数据
@@ -30,6 +33,9 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("gapi/v3/stat_houseqm/stat/")
 @Slf4j
 public class StatProjectController {
+
+    @Resource
+    private GraphqlExecuteService graphqlExecuteService;
 
 
     /**
