@@ -38,7 +38,7 @@ public interface IIssueService {
      * @param pageSize
      * @return com.longfor.gaia.gfs.core.bean.PageInfo<com.longfor.longjian.houseqm.app.vo.IssueListVo>
      */
-    PageInfo<IssueListVo> list(Integer projectId,String categoryCls,Integer taskId,String categoryKey,String checkItemKey,
+    PageInfo<IssueListVo> list(Integer projectId,int categoryCls,Integer taskId,String categoryKey,String checkItemKey,
                                String areaIds,String statusIn,Integer checkerId,Integer repairerId,Integer type,Integer condition,String keyWord,
                                String createOnBegin,String createOnEnd,Boolean isOverDue,Integer pageNum,Integer pageSize);
 

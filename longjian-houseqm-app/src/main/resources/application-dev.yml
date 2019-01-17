@@ -6,8 +6,8 @@ spring:
     name: longjian-houseqm-app
   cloud:
     consul:
-      enabled: false
-      host: 192.168.37.218
+      enabled: false # true
+      host: 192.168.37.218 # 127.0.0.1
       port: 8500
       discovery:
         register: true
@@ -43,6 +43,23 @@ longfor:
       logs:
         enabled: true # default false
         reportFrequency: 600 # default 60
+    feign:
+      clients:
+        longjian-basic-server:
+          permission:
+            url: http://172.17.96.88:8082/uc/inner/
+        config:
+          permission:
+            connectTimeout: 5000
+            readTimeout: 5000
+        cas-server:
+          cas:
+            url: http://api.longfor.uat/cas-server-uat
+            apikey: ddd
+          config:
+            cas:
+              connectTimeout: 5000
+              readTimeout: 5000
   data:
     pagehelper:
       helperDialect: mysql
@@ -132,6 +149,36 @@ longfor:
           pool:
             minIdle: 50
             maxActive: 50
+kafka:
+  kafka_prefix: 32_lhone
+  producer:
+    servers: 192.168.36.94:9092,192.168.36.94:9093,192.168.36.94:9094
+    retries: 0
+    batch:
+      size: 4096
+    linger: 1
+    buffer:
+      # 为生产者提供的可控制的内存大小 单位为字节 此处暂时设置为128MB
+      memory: 134217728
+  consumer:
+    zookeeper:
+      connect: 192.68.36.94:2181
+    servers:  192.168.36.94:9092,192.168.36.94:9093,192.168.36.94:9094
+    enable:
+      auto:
+        commit: false
+    session:
+      timeout: 6000
+    auto:
+      commit:
+        interval: 100
+      offset:
+        reset: latest
+    group:
+      id: event_unpkg
+    concurrency: 10
+
+# 第三方配置
 #IssueListController /buildingqm/v3/papi/issue/list/ 引入配置host_list
 env_info:
   host_list: longjianapp.longhu.net lh.zj.com
@@ -190,7 +237,7 @@ push_config:
       #        app_key_ios: "580712d6e0f55a4d61002de8"
       #        app_master_secrect_ios: "xvxrx1rqaaulmfw5yfuei9cppptkery2"
       #        app_secret_xiao_mi: "vdvG+lOHl8yY7bZR8VRXug=="
-      #        package_name_xiao_mi:  "cn.smartinspection.keyprocedure.keyprocedure"
+    #        package_name_xiao_mi:  "cn.smartinspection.keyprocedure.keyprocedure"
     #
     #    notify_report_addr: https://longjianapp.longhu.net/core_srv_notify/data/report/
   gxgl:

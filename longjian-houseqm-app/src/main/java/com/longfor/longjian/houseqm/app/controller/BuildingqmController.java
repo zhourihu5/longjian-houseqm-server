@@ -55,8 +55,8 @@ public class BuildingqmController {
     @GetMapping(value = "buildingqm/my_task_list/", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     public TaskResponse<TaskListVo> myTaskList(@RequestParam(value = "device_id") String deviceId,
                                                @RequestParam(value = "token") String token) {
+        log.info("my_task_list");
         //// TODO: 2018/11/24 uid = session['uid']
-
         int uid = 7556;
         TaskListVo vo = buildingqmService.myTaskList(uid);
         TaskResponse<TaskListVo> response = new TaskResponse();
@@ -115,7 +115,7 @@ public class BuildingqmController {
             if (issueLastUpdateTime.after(issueMembersUpdateTime)) {
                 item.setIssue_members(1);
             }
-        }else {
+        } else {
             item.setIssue_members(0);
         }
 
@@ -135,7 +135,8 @@ public class BuildingqmController {
     }
 
     /**
-     *  http://192.168.37.159:3000/project/8/interface/api/670  获取任务角色列表
+     * http://192.168.37.159:3000/project/8/interface/api/670  获取任务角色列表
+     *
      * @param deviceId
      * @param taskIds
      * @param token
@@ -143,8 +144,9 @@ public class BuildingqmController {
      */
     @GetMapping(value = "buildingqm/task_squads_members", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     public LjBaseResponse<TaskMemberListVo> taskSquadsMembers(@RequestParam(value = "device_id") String deviceId,
-                                                              @RequestParam(value = "task_ids") String taskIds,
+                                                              @RequestParam(value = "task_ids",required = true) String taskIds,
                                                               @RequestParam(value = "token") String token) {
+        log.info("task_squads_members, task_id= " +taskIds);
         LjBaseResponse<TaskMemberListVo> vos = new LjBaseResponse<>();
         TaskMemberListVo vo = buildingqmService.taskSquadsMembers(taskIds);
         vos.setData(vo);
@@ -159,7 +161,8 @@ public class BuildingqmController {
      */
     @GetMapping(value = "buildingqm/my_issue_patch_list/", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     public LjBaseResponse<MyIssuePatchListVo> myIssuePatchList(DeviceReq deviceReq) {
-        //// Todo: 获取uid 为了测试改为0，
+        log.info("my_issue_patch_list, task_id= "+deviceReq.getTask_id()+", timestamp= " + deviceReq.getTimestamp());
+        //// Todo: uid = session['uid'] 获取uid 为了测试改为0，
         Integer uid = 7556;
         MyIssuePatchListVo miplv = buildingqmService.myIssuePathList(uid, deviceReq.getTask_id(), deviceReq.getTimestamp());
         LjBaseResponse<MyIssuePatchListVo> ljBaseResponse = new LjBaseResponse<>();
