@@ -75,7 +75,11 @@ public class AreaServiceImpl implements AreaService {
      */
     @LFAssignDataSource("zhijian2")
     public List<Area> selectAreasByIdInAreaIds(List<Integer> areaIds) {
-        return areaMapper.selectByIdInAreaIds(areaIds);
+        Example example = new Example(Area.class);
+        Example.Criteria criteria = example.createCriteria();
+        criteria.andIn("id", areaIds);
+        ExampleUtil.addDeleteAtJudge(example);
+        return areaMapper.selectByExample(example);
     }
 
     /**

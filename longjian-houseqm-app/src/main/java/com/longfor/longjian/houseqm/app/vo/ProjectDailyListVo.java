@@ -14,17 +14,17 @@ import java.util.List;
 @NoArgsConstructor
 public class ProjectDailyListVo implements Serializable {
 
-  private List<ProjectDailyVo> items;
-  private Integer total;
+    private List<ProjectDailyVo> items;
+    private Integer total;
 
-  @Data
-  @NoArgsConstructor
-  public class ProjectDailyVo implements Serializable {
+    @Data
+    @NoArgsConstructor
+    public class ProjectDailyVo implements Serializable {
 
-    private Integer  checked_count;
-    private Integer  issue_count;
-    private String date;
-    private Integer records_count;
-    private Integer total_checked_count;
-  }
+        private Integer checked_count;
+        private String date;
+        private Integer issue_count;
+        private Integer records_count;
+        private Integer total_checked_count;
+    }
 }

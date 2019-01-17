@@ -6,6 +6,7 @@ import com.longfor.longjian.houseqm.domain.internalService.HouseQmCheckTaskServi
 import com.longfor.longjian.houseqm.po.HouseQmCheckTask;
 import com.longfor.longjian.houseqm.po.HouseQmCheckTaskIssue;
 import com.longfor.longjian.houseqm.po.HouseQmCheckTaskSquad;
+import com.longfor.longjian.houseqm.po.Task;
 import com.longfor.longjian.houseqm.utils.ExampleUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -105,7 +106,11 @@ public class HouseQmCheckTaskServiceImpl implements HouseQmCheckTaskService {
      */
     @LFAssignDataSource("zhijian2")
     public HouseQmCheckTask selectByProjectIdAndTaskId(Integer projectId, Integer taskId) {
-        return houseQmCheckTaskMapper.selectByProjectIdAndTaskId(projectId, taskId);
+        Example example = new Example(HouseQmCheckTask.class);
+        Example.Criteria criteria = example.createCriteria();
+        criteria.andEqualTo("projectId",projectId).andEqualTo("taskId",taskId);
+        ExampleUtil.addDeleteAtJudge(example);
+        return houseQmCheckTaskMapper.selectOneByExample(example);
     }
 
     /**
@@ -115,7 +120,11 @@ public class HouseQmCheckTaskServiceImpl implements HouseQmCheckTaskService {
      */
     @LFAssignDataSource("zhijian2")
     public List<HouseQmCheckTask> searchByProjectIdAndCategoryClsIn(Integer projectId, List<Integer> categoryCls) {
-        return houseQmCheckTaskMapper.selectByProjectIdAndCategoryClsIn(projectId, categoryCls);
+        Example example = new Example(HouseQmCheckTask.class);
+        Example.Criteria criteria = example.createCriteria();
+        criteria.andEqualTo("projectId", projectId).andIn("categoryCls", categoryCls);
+        ExampleUtil.addDeleteAtJudge(example);
+        return houseQmCheckTaskMapper.selectByExample(example);
     }
 
     @Override

@@ -1,5 +1,8 @@
 package com.longfor.longjian.houseqm.app.controller;
 
+import com.longfor.longjian.common.req.feignClientReq.ProjectPermissionReq;
+import com.longfor.longjian.common.util.CtrlTool;
+import com.longfor.longjian.houseqm.app.feginClient.IPermissionFeignService;
 import com.longfor.longjian.houseqm.app.service.ITaskListService;
 import com.longfor.longjian.houseqm.app.vo.TaskList2Vo;
 import com.longfor.longjian.houseqm.app.vo.TaskResponse;
@@ -12,6 +15,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.annotation.Resource;
+import javax.servlet.http.HttpServletRequest;
 
 /**
  * http://192.168.37.159:3000/project/8/interface/api/226  获取项目下任务列表任务信息
@@ -28,7 +32,9 @@ public class TaskListController {
 
 
     @Resource
-    ITaskListService taskListService;
+    private ITaskListService taskListService;
+    @Resource
+    private IPermissionFeignService iPermissionFeignService;
 
     /**
      * 获取项目下任务列表任务信息
@@ -41,19 +47,27 @@ public class TaskListController {
      * @param status
      * @return
      */
-
-    @GetMapping(value = "list", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
-    public TaskResponse<TaskList2Vo> list(@RequestParam(value = "project_id") Integer projectId,
+    @GetMapping(value = "list/", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+    public TaskResponse<TaskList2Vo> list(HttpServletRequest request, @RequestParam(value = "project_id") Integer projectId,
                                           @RequestParam(value = "category_cls") Integer categoryCls,
                                           @RequestParam(value = "page_level") String pageLevel,
                                           @RequestParam(value = "group_id") String groupId,
                                           @RequestParam(value = "team_id") Integer teamId,
                                           @RequestParam(value = "status") Integer status) {
 
-        ////Todo uid
+        log.info("team_id=" + teamId + ", project_id=" + projectId + ", category_cls=" + categoryCls + ", status=" + status);
+        ////Todo uid  uid = session['uid']
         Integer uid = null;
-        ////Todo 根据uid、project_id判断权限
-
+        ////Todo 鉴权 has_per = ucenter_api.check_project_permission(uid, req.project_id, '项目.工程检查.任务管理.查看')
+        ProjectPermissionReq ppreq = new ProjectPermissionReq();
+        ppreq.setUser_id(uid);
+        ppreq.setProj_id(projectId);
+        ppreq.setPer_title("项目.工程检查.任务管理.查看");
+        try {
+            iPermissionFeignService.projectPermission(ppreq);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
         TaskList2Vo taskListVo = taskListService.list(teamId, projectId, categoryCls, status);
         TaskResponse<TaskList2Vo> taskResponse = new TaskResponse<>();
         taskResponse.setMessage("success");
@@ -72,7 +86,7 @@ public class TaskListController {
      * @param teamId
      * @return
      */
-    @GetMapping(value = "task_role", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+    @GetMapping(value = "task_role/", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     public TaskResponse<TaskRoleListVo> taskRole(@RequestParam(value = "project_id") Integer projectId,
                                                  @RequestParam(value = "category_cls") String categoryCls,
                                                  @RequestParam(value = "page_level") String pageLevel,

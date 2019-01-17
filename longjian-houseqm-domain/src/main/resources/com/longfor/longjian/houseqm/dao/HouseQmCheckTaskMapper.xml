@@ -75,14 +75,6 @@
         </if>
     </select>
 
-    <select id="selectByProjectIdAndTaskId" resultMap="ResultMapWithBLOBs">
-        select
-        <include refid="Base_Column_List"/>,
-        <include refid="Blob_Column_List"/>
-        FROM house_qm_check_task
-        WHERE task_id=#{taskId} and project_id=#{projectId}
-    </select>
-
     <select id="selectByProjectIdAndCategoryClsIn" resultMap="ResultMapWithBLOBs">
         SELECT<include refid="Base_Column_List"/>,
         <include refid="Blob_Column_List"/>

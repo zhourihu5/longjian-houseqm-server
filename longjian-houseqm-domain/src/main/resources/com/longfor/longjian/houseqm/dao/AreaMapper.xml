@@ -39,15 +39,6 @@
         -->
         location
     </sql>
-    <select id="selectByIdInAreaIds" resultMap="BaseResultMap">
-        select
-        <include refid="Base_Column_List"/>
-        from area
-        WHERE id IN
-        <foreach collection="areaIds" item="areaId" index="index" open="(" separator="," close=")">
-            #{areaId}
-        </foreach>
-    </select>
 
     <select id="selectByProjectIdAndIdIn" resultMap="BaseResultMap">
         SELECT

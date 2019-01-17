@@ -175,7 +175,7 @@ public class HouseqmIssueController {
             }
         }
         //todo 获取userid
-        int uid = 7556;
+        int uid = 7566;
         List<String> fails = iHouseqmIssueService.updateBatchIssueRepairInfoByUuids(uuids, req.getProject_id(), uid, req.getRepairer_id(), req.getRepair_follower_ids(), req.getPlan_end_on());
         LjBaseResponse<IssueBatchAppointRspVo> response = new LjBaseResponse<>();
         IssueBatchAppointRspVo data = new IssueBatchAppointRspVo();

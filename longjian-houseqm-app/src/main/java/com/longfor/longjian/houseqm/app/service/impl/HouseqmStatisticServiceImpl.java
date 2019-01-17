@@ -200,8 +200,8 @@ public class HouseqmStatisticServiceImpl implements IHouseqmStatisticService {
         condiMap.put("types", types);
         condiMap.put("deleted", "false");
         condiMap.put("status", HouseQmCheckTaskIssueStatusEnum.AssignNoReform.getId());
-        //todo 为了保持数据一致 不加该条件时数据能与源码保持一致，加该条件时不一致。
-        // condiMap.put("statusIn",Arrays.asList(HouseQmCheckTaskIssueStatusEnum.AssignNoReform.getId(),HouseQmCheckTaskIssueStatusEnum.ReformNoCheck.getId(),HouseQmCheckTaskIssueStatusEnum.CheckYes.getId()));
+
+        condiMap.put("statusIn",Arrays.asList(HouseQmCheckTaskIssueStatusEnum.AssignNoReform.getId(),HouseQmCheckTaskIssueStatusEnum.ReformNoCheck.getId(),HouseQmCheckTaskIssueStatusEnum.CheckYes.getId()));
         issueCounts = houseQmCheckTaskIssueService.selectByProjectIdAndTaskIdAndTyeInAndDongTai(condiMap);
         IssueRepairCount ic = issueCounts.get(0);
         TaskRepairStatVo taskRepairStatVo = new TaskRepairStatVo();
