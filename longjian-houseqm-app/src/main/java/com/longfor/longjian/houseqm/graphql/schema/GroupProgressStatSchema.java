@@ -8,14 +8,15 @@ import graphql.schema.idl.RuntimeWiring;
 import graphql.schema.idl.SchemaGenerator;
 import graphql.schema.idl.SchemaParser;
 import graphql.schema.idl.TypeDefinitionRegistry;
+import lombok.Cleanup;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.Resource;
 import org.springframework.stereotype.Service;
 import org.springframework.util.ResourceUtils;
 
-import java.io.File;
-import java.io.FileNotFoundException;
+import java.io.*;
+import java.net.URL;
 
 /**
  *    typeWiring -> typeWiring.dataFetcher
@@ -27,6 +28,8 @@ import java.io.FileNotFoundException;
 @Service
 public class GroupProgressStatSchema {
 
+
+    public static final String JAR_TYPE ="jar";
 
     public static final GraphQLScalarType DateField = new DateScalarType();
 
@@ -54,31 +57,38 @@ public class GroupProgressStatSchema {
                 .build();
     }
 
-
     /**
      *  1. 解析Schema文件
      *  2. buildRuntimeWiring：Schema中定义的类型-获取数据
      *
+     *  Cleanup：注解在输入输出流等需要释放资源的变量上，不需要写额外繁琐而重复的释放资源代码
+     *
      * @return
      */
-    public GraphQLSchema buildSchema(){
+    public GraphQLSchema buildSchema() throws IOException{
 
         log.info("GroupProgressStatSchema#buildSchema ing");
 
         SchemaParser schemaParser = new SchemaParser();
         SchemaGenerator schemaGenerator = new SchemaGenerator();
+        TypeDefinitionRegistry typeRegistry = null;
 
-        File schemaFile=null;
-        try {
-            schemaFile = ResourceUtils.getFile("classpath:graphql/progressStat.graphqls");
 
-        } catch (FileNotFoundException e) {
-            log.error("FileNotFoundException:classpath:graphql/progressStat.graphqls");
+        URL url = this.getClass().getResource("");
+        String protocol = url.getProtocol();
+        if(JAR_TYPE.equals(protocol)){
+
+            @Cleanup InputStream in = this.getClass().getResourceAsStream("graphql/progressStat.graphqls");
+            @Cleanup BufferedReader reader = new BufferedReader(new InputStreamReader(in));
+            typeRegistry = schemaParser.parse(reader);
+
+        }else{
+            File schemaFile = ResourceUtils.getFile("classpath:graphql/progressStat.graphqls");
+            typeRegistry = schemaParser.parse(schemaFile);
         }
 
-        TypeDefinitionRegistry typeRegistry = schemaParser.parse(schemaFile);
-        RuntimeWiring wiring = buildRuntimeWiring();
 
+        RuntimeWiring wiring = buildRuntimeWiring();
         GraphQLSchema graphQLSchema = schemaGenerator.makeExecutableSchema(typeRegistry, wiring);
 
         return graphQLSchema;

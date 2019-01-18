@@ -10,6 +10,7 @@ import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
+import java.io.IOException;
 
 /**
  * http://192.168.37.159:3000/project/8/interface/api/594  获取集团下项目统计信息
@@ -56,7 +57,7 @@ public class StatGroupController {
      * @return
      */
     @PostMapping(value = "group", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
-    public LjBaseResponse<Object> group(@RequestParam(value = "token") String token,
+    public LjBaseResponse<Object> group(@RequestParam(value = "token", required =false) String token,
                                         @RequestParam(value = "group_id") String groupId,
                                         @RequestParam(value = "page_level") String pageLevel,
                                         @RequestParam(value = "tip") String tip,
@@ -85,7 +86,10 @@ public class StatGroupController {
 
             response.setData(statListVo);
 
-        } catch (LjBaseRuntimeException ex) {
+        }catch (IOException e){
+            log.error("StatGroupController#group IOException,{}", e);
+        }
+        catch (LjBaseRuntimeException ex) {
 
             response.setResult(ex.getErrorCode());
             response.setMessage(ex.getErrorMsg());
