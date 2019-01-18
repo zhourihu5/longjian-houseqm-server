@@ -31,6 +31,10 @@ import javax.annotation.Resource;
 public class StatGroupController {
 
     private final static String teamRankStat_tip = "teamRankStat";
+
+    /**
+     * 项目进度统计
+     */
     private final static String progressStat_tip = "progressStat";
     private final static String projectStat_tip = "projectStat";
     private final static String projectRankStat_tip = "projectRankStat";
@@ -40,6 +44,9 @@ public class StatGroupController {
 
     @Resource
     private GraphqlExecuteService graphqlExecuteService;
+
+    @Resource
+    private GroupProgressStatSchema groupProgressStatSchema;
 
     /**
      * @param groupId
@@ -64,7 +71,7 @@ public class StatGroupController {
                     break;
                 case progressStat_tip:
                     statListVo = graphqlExecuteService.execute(progressStat_tip, statGroupReq.getQuery(),
-                            statGroupReq.getVariables(), GroupProgressStatSchema.buildSchema());
+                            statGroupReq.getVariables(), groupProgressStatSchema.buildSchema());
                     break;
                 case projectStat_tip:
                     break;

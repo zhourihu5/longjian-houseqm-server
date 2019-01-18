@@ -1,7 +1,7 @@
 package com.longfor.longjian.houseqm.graphql.schema;
 
 import com.longfor.longjian.houseqm.graphql.data.DateScalarType;
-import com.longfor.longjian.houseqm.graphql.fetcher.StatGroupDataFetcher;
+import com.longfor.longjian.houseqm.graphql.fetcher.GroupProgressStatDataFetcher;
 import graphql.schema.GraphQLScalarType;
 import graphql.schema.GraphQLSchema;
 import graphql.schema.idl.RuntimeWiring;
@@ -11,17 +11,20 @@ import graphql.schema.idl.TypeDefinitionRegistry;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.Resource;
+import org.springframework.stereotype.Service;
 import org.springframework.util.ResourceUtils;
 
-import java.io.*;
+import java.io.File;
+import java.io.FileNotFoundException;
 
 /**
- *
+ *    typeWiring -> typeWiring.dataFetcher
+ *    JDK1.8 特殊语法： -> 前面是参数，后面是返回
  * @author lipeishuai
  * @date 2018/11/29 11:20
  */
 @Slf4j
-//@Service
+@Service
 public class GroupProgressStatSchema {
 
 
@@ -30,21 +33,23 @@ public class GroupProgressStatSchema {
     @Value("classpath:graphql/progressStat.graphqls")
     private static Resource schemaResource;
 
+    @javax.annotation.Resource
+    GroupProgressStatDataFetcher statGroupDataFetcher;
 
     /**
      * wiring时只将需要dataFetcher的非普通Field
      *
      * @return
      */
-    public static RuntimeWiring buildRuntimeWiring(){
+    public RuntimeWiring buildRuntimeWiring(){
         return RuntimeWiring.newRuntimeWiring().scalar(DateField)
                 .type("gapiQuery", typeWiring -> typeWiring
-                        .dataFetcher("progressStat",StatGroupDataFetcher.progressStatDataFetcher)
+                        .dataFetcher("progressStat",statGroupDataFetcher.progressStatDataFetcher)
                 )
                 .type("StatGroupItem", typeWiring -> typeWiring
-                        .dataFetcher("items",StatGroupDataFetcher.statGroupItemDataFetcher)
+                        .dataFetcher("items", statGroupDataFetcher.statGroupItemDataFetcher)
                 ).type("timeFrameType",typeWiring -> typeWiring
-                        .enumValues(StatGroupDataFetcher.timeFrameTypeResolver)
+                        .enumValues(GroupProgressStatDataFetcher.timeFrameTypeResolver)
                 )
                 .build();
     }
@@ -56,7 +61,7 @@ public class GroupProgressStatSchema {
      *
      * @return
      */
-    public static GraphQLSchema buildSchema(){
+    public GraphQLSchema buildSchema(){
 
         log.info("GroupProgressStatSchema#buildSchema ing");
 

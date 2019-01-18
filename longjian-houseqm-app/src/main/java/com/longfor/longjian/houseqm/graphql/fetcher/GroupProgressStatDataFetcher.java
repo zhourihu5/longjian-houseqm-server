@@ -3,6 +3,7 @@ package com.longfor.longjian.houseqm.graphql.fetcher;
 import com.google.common.collect.Lists;
 import com.longfor.longjian.houseqm.app.vo.StatDataVo;
 import com.longfor.longjian.houseqm.app.vo.StatItemsVo;
+import com.longfor.longjian.houseqm.domain.internalService.stat.StatHouseQmProjectDailyStatService;
 import com.longfor.longjian.houseqm.graphql.data.PassedVariableVo;
 import com.longfor.longjian.houseqm.graphql.data.TimeFrameTypeEnum;
 import graphql.schema.DataFetcher;
@@ -11,6 +12,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections.CollectionUtils;
 import org.springframework.stereotype.Service;
 
+import javax.annotation.Resource;
 import java.util.Date;
 import java.util.List;
 
@@ -24,16 +26,19 @@ import java.util.List;
 
 @Slf4j
 @Service
-public class StatGroupDataFetcher{
+public class GroupProgressStatDataFetcher {
 
+    @Resource
+    StatHouseQmProjectDailyStatService statHouseQmProjectDailyStatService;
 
     public static EnumValuesProvider timeFrameTypeResolver = TimeFrameTypeEnum::valueOf;
 
 
     /**
+     *  将schema的progressStat方法中参数值缓存到environment的source中
      * itemsFetcher
      */
-    public static DataFetcher<StatItemsVo> progressStatDataFetcher = environment -> {
+    public  DataFetcher<StatItemsVo> progressStatDataFetcher = environment -> {
 
         /*
         envionment中的参数只能是progressStat中的， 在statGroupItemDataFetcher中就没有了
@@ -67,15 +72,28 @@ public class StatGroupDataFetcher{
     };
 
     /**
+     *  对应zhijian_server_stat_houseqm\app\graphqls\ats\group_stat\stat_group_progress_ast.py的方法resolve_progress_stat()
+     *
      * itemsFetcher
      */
-    public static DataFetcher<List<StatDataVo>> statGroupItemDataFetcher = environment -> {
+    public  DataFetcher<List<StatDataVo>> statGroupItemDataFetcher = environment -> {
 
 
         List<StatDataVo>  statDataVos = Lists.newArrayList();
 
+        // T getSource()是父Field的对象
         StatItemsVo statItemsVo = environment.getSource();
-        log.debug("StatGroupDataFetcher - statGroupItemDataFetcher - categoryKey:{}", statItemsVo.getVariableVo().getCategoryKey());
+
+        String categoryKey =  statItemsVo.getVariableVo().getCategoryKey();
+        String timeFrameType = statItemsVo.getVariableVo().getTimeFrameType();
+        List<Integer> teamIds = statItemsVo.getVariableVo().getTeamIds();
+        Date dateField = statItemsVo.getVariableVo().getDateField();
+
+
+        log.debug("StatGroupDataFetcher - statGroupItemDataFetcher - categoryKey:{}", categoryKey);
+
+
+        statHouseQmProjectDailyStatService.searchStat(categoryKey,timeFrameType,teamIds,dateField);
 
         StatDataVo statDataVo = new StatDataVo();
         statDataVo.setIssueCount(100);

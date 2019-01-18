@@ -34,14 +34,15 @@ public class GraphqlExecuteService {
     @Resource
     private CachingPreparsedDocumentProvider cachingPreparsedDocumentProvider;
 
+
     /**
-     *  1. 将VariableVO转为Map
-     *  2. 解析Schema并缓存
-     *  3. Graphql执行Schema
+     * 1. 将VariableVO转为Map
+     * 2. 解析Schema并缓存
+     * 3. Graphql执行Schema
      *
-     * @param serviceName: 仅用于标记不同的Service和日志
-     * @param query : query
-     * @param variableVo : 参数值对
+     * @param serviceName:  仅用于标记不同的Service和日志
+     * @param query         : query
+     * @param variableVo    : 参数值对
      * @param graphQLSchema ：绑定和执行的Schema
      * @return
      */
@@ -51,32 +52,33 @@ public class GraphqlExecuteService {
         try {
             variables = PropertyUtils.describe(variableVo);
         } catch (Exception e) {
-            log.error("{} to map: error {}",serviceName,e);
+            log.error("{} to map: error {}", serviceName, e);
             throw new LjBaseRuntimeException(410, "to map error");
         }
 
         log.debug("{}#execute - variableVo categoryKey :{}", serviceName, variableVo.getCategoryKey());
+
 
         Cache<String, PreparsedDocumentEntry> cache = cachingPreparsedDocumentProvider.getCache();
         GraphQL graphQL = GraphQL.newGraphQL(graphQLSchema)
                 .preparsedDocumentProvider(cache::get)
                 .build();
 
-        ExecutionInput executionInput =  ExecutionInput.newExecutionInput().query(query).variables(variables).build();
+        ExecutionInput executionInput = ExecutionInput.newExecutionInput().query(query).variables(variables).build();
         ExecutionResult executionResult = graphQL.execute(executionInput);
 
         Object data = executionResult.getData();
         List<GraphQLError> errors = executionResult.getErrors();
 
 
-        if(CollectionUtils.isNotEmpty(errors)){
-            for(GraphQLError error: errors){
+        if (CollectionUtils.isNotEmpty(errors)) {
+            for (GraphQLError error : errors) {
                 log.error("{}#graphql error {} details:{}", serviceName, error.getErrorType(), error.getMessage());
                 throw new LjBaseRuntimeException(410, error.getMessage());
             }
         }
 
-        log.debug("{}#execute - data: {}",serviceName, data);
+        log.debug("{}#execute - data: {}", serviceName, data);
         return data;
     }
 
