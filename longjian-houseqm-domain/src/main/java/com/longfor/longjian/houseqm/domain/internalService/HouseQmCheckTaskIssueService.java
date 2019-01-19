@@ -1,6 +1,7 @@
 package com.longfor.longjian.houseqm.domain.internalService;
 
 import com.longfor.longjian.houseqm.dto.CheckerIssueStatusStatDto;
+import com.longfor.longjian.houseqm.dto.HouseQmCheckTaskIssueListDto;
 import com.longfor.longjian.houseqm.dto.RepaireIssueStatusStatDto;
 import com.longfor.longjian.houseqm.po.*;
 
@@ -92,7 +93,7 @@ public interface HouseQmCheckTaskIssueService {
      * @date 2018/12/22 0022
      */
     Integer selectCountByProjectIdAndCategoryClsAndTypeAndStatusInAndDongTai(Map<String, Object> map);
-
+    HouseQmCheckTaskIssueListDto selectCountByProjectIdAndCategoryClsAndTypeAndStatusInAndDongTai2(Integer projectId, Integer taskId, List<Integer> categoryClsList, Integer areaId, Integer planStatus, Date beginOn, Date endOn, Integer page, Integer pageSize);
     /**
      * @param map
      * @return java.util.List<com.longfor.longjian.houseqm.po.HouseQmCheckTaskIssue>

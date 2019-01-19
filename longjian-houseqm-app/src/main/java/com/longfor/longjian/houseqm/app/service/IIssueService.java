@@ -3,6 +3,7 @@ package com.longfor.longjian.houseqm.app.service;
 import com.longfor.gaia.gfs.core.bean.PageInfo;
 import com.longfor.longjian.common.base.LjBaseResponse;
 import com.longfor.longjian.houseqm.app.vo.*;
+import com.longfor.longjian.houseqm.app.vo.issuelist.IssueListRsp;
 import com.longfor.longjian.houseqm.po.ProjectSettingV2;
 
 import java.util.ArrayList;
@@ -38,9 +39,9 @@ public interface IIssueService {
      * @param pageSize
      * @return com.longfor.gaia.gfs.core.bean.PageInfo<com.longfor.longjian.houseqm.app.vo.IssueListVo>
      */
-    PageInfo<IssueListVo> list(Integer projectId,int categoryCls,Integer taskId,String categoryKey,String checkItemKey,
-                               String areaIds,String statusIn,Integer checkerId,Integer repairerId,Integer type,Integer condition,String keyWord,
-                               String createOnBegin,String createOnEnd,Boolean isOverDue,Integer pageNum,Integer pageSize);
+    IssueListRsp list(Integer projectId, Integer categoryCls, Integer taskId, String categoryKey, String checkItemKey,
+                      String areaIds, String statusIn, Integer checkerId, Integer repairerId, Integer type, Integer condition, String keyWord,
+                      String createOnBegin, String createOnEnd, Boolean isOverDue, Integer pageNum, Integer pageSize);
 
     List<HouseQmCheckTaskIssueHistoryLogVo> getHouseQmCheckTaskIssueActionLogByIssueUuid(String issueUuid);
 

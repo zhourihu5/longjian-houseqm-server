@@ -9,6 +9,7 @@ import com.longfor.longjian.common.util.CtrlTool;
 import com.longfor.longjian.houseqm.app.req.IssueListDoActionReq;
 import com.longfor.longjian.houseqm.app.service.IIssueService;
 import com.longfor.longjian.houseqm.app.vo.*;
+import com.longfor.longjian.houseqm.app.vo.issuelist.IssueListRsp;
 import com.longfor.longjian.houseqm.consts.CommonGlobalEnum;
 import com.longfor.longjian.houseqm.po.ProjectSettingV2;
 import io.swagger.annotations.ApiParam;
@@ -44,34 +45,37 @@ public class IssueListController {
     /**
      * 问题检索
      * http://192.168.37.159:3000/project/8/interface/api/286
+     * //PageInfo<IssueListVo>
      * @param req
      * @return
      */
-    @GetMapping(value = "list", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
-    public TaskResponse<PageInfo<IssueListVo>> doAction(HttpServletRequest request,@Valid IssueListDoActionReq req) {
+    @GetMapping(value = "list/", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+    public TaskResponse<IssueListRsp> doAction(HttpServletRequest request, @Valid IssueListDoActionReq req) {
         log.info("list, project_id=%d, category_cls=%d, task_id=%d, category_key=%s, check_item_key=%s, area_ids=%s, status_in=%s, checker_id=%d, repairer_id=%d," +
                         " type=%d, condition=%d, key_word=%s, create_on_begin=%s, create_on_end=%s, is_overdue=%d, page=%d, page_size=%d"
                        );
         ////todo session 取uid 权限 uid = session['uid']
+        /*
+        has_per = ucenter_api.check_project_permission(uid, req.project_id, '项目.工程检查.问题管理.查看')
+        if not has_per:
+        rsp = errors_utils.err(rsp, 'PermissionDenied')*/
+        //todo 鉴权
         try {
             ctrlTool.projPerm(request,"项目.工程检查.问题管理.查看");
         } catch (Exception e) {
             e.printStackTrace();
         }
-        /*
-        has_per = ucenter_api.check_project_permission(uid, req.project_id, '项目.工程检查.问题管理.查看')
-        if not has_per:
-        rsp = errors_utils.err(rsp, 'PermissionDenied')*/
 
-        PageInfo<IssueListVo> pageInfo = iIssueService.list(req.getProject_id(), req.getCategory_cls(),req.getTask_id(),req.getCategory_key(),req.getCheck_item_key(),
+        IssueListRsp result = iIssueService.list(req.getProject_id(), req.getCategory_cls(),req.getTask_id(),req.getCategory_key(),req.getCheck_item_key(),
                                                             req.getArea_ids(),req.getStatus_in(),req.getChecker_id(),req.getRepairer_id(),req.getType(),req.getCondition(),req.getKey_word(),
                                                             req.getCreate_on_begin(),req.getCreate_on_end(),req.is_overdue(),req.getPage(),req.getPage_size());
-        TaskResponse<PageInfo<IssueListVo>> taskResponse = new TaskResponse<>();
-        taskResponse.setData(pageInfo);
-        return taskResponse;
+
+        TaskResponse<IssueListRsp> response = new TaskResponse<>();
+        response.setData(result);
+        return response;
     }
 
-    @GetMapping(value = "detail_log", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+    @GetMapping(value = "detail_log/", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     public TaskResponse< ArrayList<HouseQmCheckTaskIssueHistoryLogVo>> detailLog(@RequestParam(value = "project_id",required = true) Integer projectId,
                                                                      @RequestParam(value = "issue_uuid",required =true) String issueUuid){
         ////todo session 取uid 权限
@@ -85,7 +89,7 @@ public class IssueListController {
         return response;
     }
 
-    @GetMapping(value = "repair_notify_export2", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+    @GetMapping(value = "repair_notify_export2/", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     public LjBaseResponse< String> repairNotifyExport2(HttpServletRequest request, HttpServletResponse response,@RequestParam(value = "project_id",required = true) Integer projectId,
                                                                                            @RequestParam(value = "issue_uuid",required =true) String issueUuid){
             if(request.getMethod()=="POST"){
@@ -114,7 +118,7 @@ public class IssueListController {
         }
         return null;
     }
-    @GetMapping(value = "configs", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+    @GetMapping(value = "configs/", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     public LjBaseResponse<ProjectSettingConfigVo> configs(@RequestParam(value = "project_id",required = true) Integer projectId){
         ////todo session 取uid 权限
         /*uid = session['uid']
@@ -242,7 +246,7 @@ public class IssueListController {
         return  taskResponse;
     }
 
-    @GetMapping(value = "detail_repair_log", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+    @GetMapping(value = "detail_repair_log/", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     public LjBaseResponse<List<HouseQmCheckTaskIssueDetailRepairLogVo>> detailRepairLog(@RequestParam(value = "project_id",required = true) Integer projectId,
                                                                                  @RequestParam(value = "issue_uuid",required =true) String issueUuid){
         ////todo session 取uid 权限
@@ -256,7 +260,7 @@ public class IssueListController {
     }
 
 
-    @GetMapping(value = "detail_base", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+    @GetMapping(value = "detail_base/", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     public LjBaseResponse<IssueInfoVo> detailBase(@RequestParam(value = "project_id",required = true) Integer projectId,
                                                                                         @RequestParam(value = "issue_uuid",required =true) String issueUuid){
         ////todo session 取uid 权限

@@ -14,7 +14,7 @@ import java.util.List;
 @NoArgsConstructor
 public class TaskIssueListVo implements Serializable{
 
-    private List<TaskIussueVo> items;
+    private List<TaskIussueVo> item;
 
     @Data
     @NoArgsConstructor

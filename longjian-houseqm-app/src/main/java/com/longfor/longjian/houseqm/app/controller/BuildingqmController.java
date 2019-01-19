@@ -126,7 +126,7 @@ public class BuildingqmController {
         LjBaseResponse<TaskIssueListVo> ljbr = new LjBaseResponse<>();
         List<TaskIssueListVo.TaskIussueVo> list = Lists.newArrayList();
         list.add(item);
-        taskIssueListVo.setItems(list);
+        taskIssueListVo.setItem(list);
         ljbr.setData(taskIssueListVo);
         return ljbr;
     }
@@ -137,7 +137,7 @@ public class BuildingqmController {
      * @param taskIds
      * @return
      */
-    @GetMapping(value = "buildingqm/task_squads_members", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+    @GetMapping(value = "buildingqm/task_squads_members/", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     public LjBaseResponse<TaskMemberListVo> taskSquadsMembers(@RequestParam(value = "task_ids", required = true) String taskIds) {
         log.info("task_squads_members, task_id= " + taskIds);
         LjBaseResponse<TaskMemberListVo> vos = new LjBaseResponse<>();
@@ -157,7 +157,7 @@ public class BuildingqmController {
     public LjBaseResponse<MyIssuePatchListVo> myIssuePatchList(DeviceReq deviceReq) {
         log.info("my_issue_patch_list, task_id= " + deviceReq.getTask_id() + ", timestamp= " + deviceReq.getTimestamp());
         //// Todo: uid = session['uid']
-        Integer uid = 7566;
+        Integer uid = 9;
         //int uid = (int) sessionInfo.getBaseInfo("uid");
         MyIssuePatchListVo miplv = buildingqmService.myIssuePathList(uid, deviceReq.getTask_id(), deviceReq.getTimestamp());
         LjBaseResponse<MyIssuePatchListVo> ljBaseResponse = new LjBaseResponse<>();
@@ -166,7 +166,7 @@ public class BuildingqmController {
     }
 
 
-    @PostMapping(value = "task/create", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+    @PostMapping(value = "task/create/", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     public LjBaseResponse create(TaskReq taskReq) {
         log.info("create, project_id=" + taskReq.getProject_id() + "" +
                 " name=" + taskReq.getName() + ", " +
@@ -198,7 +198,7 @@ public class BuildingqmController {
         return response;
     }
 
-    @GetMapping(value = "task/task_squad", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+    @GetMapping(value = "task/task_squad/", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     public LjBaseResponse<ArrayList<HouseQmCheckTaskSquadListRspVo>> taskSquad(@RequestParam(name = "project_id", required = true) String projectId,
                                                                                @RequestParam(name = "task_id", required = true) String taskId) {
         ////todo c从session中获取uid
@@ -224,7 +224,7 @@ public class BuildingqmController {
         return response;
     }
 
-    @PostMapping(value = "task/edit", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+    @PostMapping(value = "task/edit/", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     public LjBaseResponse edit(TaskEditReq taskEditReq) {
         log.info("edit, project_id=" + taskEditReq.getProject_id() + "" +
                 " name=" + taskEditReq.getName() + ", " +

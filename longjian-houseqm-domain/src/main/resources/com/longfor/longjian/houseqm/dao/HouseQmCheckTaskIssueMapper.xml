@@ -24,7 +24,7 @@
         <result column="pos_y" property="posY" jdbcType="SMALLINT"/>
         <result column="title" property="title" jdbcType="VARCHAR"/>
         <result column="typ" property="typ" jdbcType="INTEGER"/>
-        <result column="content" property="content" jdbcType="VARCHAR"/>
+        <result column="content" property="content" jdbcType="VARCHAR" />
         <result column="condition" property="condition" jdbcType="INTEGER"/>
         <result column="status" property="status" jdbcType="INTEGER"/>
         <result column="repairer_id" property="repairerId" jdbcType="INTEGER"/>
