@@ -3,6 +3,7 @@ package com.longfor.longjian.houseqm.app.controller;
 import com.google.common.collect.Lists;
 import com.longfor.longjian.common.base.LjBaseResponse;
 import com.longfor.longjian.common.entity.UserBase;
+import com.longfor.longjian.common.util.CtrlTool;
 import com.longfor.longjian.common.util.SessionInfo;
 import com.longfor.longjian.houseqm.app.req.DeviceReq;
 import com.longfor.longjian.houseqm.app.req.TaskEditReq;
@@ -165,7 +166,11 @@ public class BuildingqmController {
         return ljBaseResponse;
     }
 
-
+    /**
+     * 项目下创建任务
+     * @param taskReq
+     * @return
+     */
     @PostMapping(value = "task/create/", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     public LjBaseResponse create(TaskReq taskReq) {
         log.info("create, project_id=" + taskReq.getProject_id() + "" +
@@ -188,6 +193,7 @@ public class BuildingqmController {
 /*
         uid = session['uid']
 */
+
         Integer uid = 1;
         ////todo 鉴权
        /* has_per = ucenter_api.check_project_permission(uid, req.project_id, '项目.工程检查.任务管理.新增')
@@ -198,6 +204,12 @@ public class BuildingqmController {
         return response;
     }
 
+    /**
+     * 项目下获取检查组信息
+     * @param projectId
+     * @param taskId
+     * @return
+     */
     @GetMapping(value = "task/task_squad/", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     public LjBaseResponse<ArrayList<HouseQmCheckTaskSquadListRspVo>> taskSquad(@RequestParam(name = "project_id", required = true) String projectId,
                                                                                @RequestParam(name = "task_id", required = true) String taskId) {
@@ -224,6 +236,11 @@ public class BuildingqmController {
         return response;
     }
 
+    /**
+     * 项目下任务内容修改
+     * @param taskEditReq
+     * @return
+     */
     @PostMapping(value = "task/edit/", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     public LjBaseResponse edit(TaskEditReq taskEditReq) {
         log.info("edit, project_id=" + taskEditReq.getProject_id() + "" +

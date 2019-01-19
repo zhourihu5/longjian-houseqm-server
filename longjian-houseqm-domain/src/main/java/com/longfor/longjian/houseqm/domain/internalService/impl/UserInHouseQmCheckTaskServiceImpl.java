@@ -210,6 +210,16 @@ public class UserInHouseQmCheckTaskServiceImpl implements UserInHouseQmCheckTask
 
     @Override
     @LFAssignDataSource("zhijian2")
+    public List<UserInHouseQmCheckTask> searchUserInHouseQmCheckTaskByUserIdRoleType(Integer uid, Integer id) {
+        Example example = new Example(UserInHouseQmCheckTask.class);
+        Example.Criteria criteria = example.createCriteria();
+        criteria.andEqualTo("userId",uid).andEqualTo("roleType",id);
+        return  userInHouseQmCheckTaskMapper.selectByExample(example);
+
+    }
+
+    @Override
+    @LFAssignDataSource("zhijian2")
     public int add(UserInHouseQmCheckTask qmCheckTask) {
         return userInHouseQmCheckTaskMapper.insert(qmCheckTask);
     }

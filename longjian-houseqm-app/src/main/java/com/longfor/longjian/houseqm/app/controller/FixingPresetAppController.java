@@ -41,10 +41,10 @@ public class FixingPresetAppController {
 
     @GetMapping(value = "check_item/fixing_preset_app/app_list_fixing_preset", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     public LjBaseResponse<AppListFixingPresetVo> appListFixingPreset(
-            @RequestParam(value = "project_id", required = false, defaultValue = "1") Integer projectId,
-            @RequestParam(value = "last_id", required = false, defaultValue = "1") Integer lastId,
+            @RequestParam(value = "project_id", required = true, defaultValue = "0") Integer projectId,
+            @RequestParam(value = "last_id", required = true, defaultValue = "0") Integer lastId,
             @RequestParam(value = "timestamp", required = true) Integer timestamp,
-            @RequestParam(value = "limit", required = true, defaultValue = "2000") Integer limit
+            @RequestParam(value = "limit", required = false, defaultValue = "2000") Integer limit
     ) {
         List<FixingPreset> fixingPresetData = fixingPresetService.appGetFixingPreset(projectId, lastId, timestamp, limit);
 

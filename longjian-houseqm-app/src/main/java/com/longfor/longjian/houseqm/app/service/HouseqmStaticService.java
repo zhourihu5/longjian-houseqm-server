@@ -7,10 +7,8 @@ import com.longfor.longjian.common.consts.HouseQmCheckTaskIssueStatusEnum;
 import com.longfor.longjian.houseqm.app.vo.*;
 import com.longfor.longjian.houseqm.consts.*;
 import com.longfor.longjian.houseqm.domain.internalService.*;
-import com.longfor.longjian.houseqm.po.Area;
-import com.longfor.longjian.houseqm.po.HouseQmCheckTask;
-import com.longfor.longjian.houseqm.po.HouseQmCheckTaskIssueAreaGroupModel;
-import com.longfor.longjian.houseqm.po.RepossessionStatus;
+import com.longfor.longjian.houseqm.po.*;
+import com.longfor.longjian.houseqm.util.CollectionUtil;
 import com.longfor.longjian.houseqm.util.DateUtil;
 import com.longfor.longjian.houseqm.util.StringSplitToListUtil;
 import lombok.Data;
@@ -19,6 +17,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections.CollectionUtils;
 import org.springframework.stereotype.Repository;
 import org.springframework.stereotype.Service;
+import sun.reflect.generics.tree.ReturnType;
 
 import javax.annotation.Resource;
 
@@ -39,6 +38,8 @@ public class HouseqmStaticService {
     HouseQmCheckTaskIssueService houseQmCheckTaskIssueService;
     @Resource
     RepossessionStatusService repossessionStatusService;
+    @Resource
+    UserInHouseQmCheckTaskService userInHouseQmCheckTaskService;
 
     public List<HouseQmCheckTaskSimpleRspVo> SearchHouseQmCheckTaskByProjCategoryCls(Integer project_id, Integer category_cls) {
         List<HouseQmCheckTask> houseQmCheckTasks = houseQmCheckTaskService.selectByProjectIdAndCategoryCls(project_id, category_cls);
@@ -343,6 +344,55 @@ public class HouseqmStaticService {
         }
         List<Area> areas = areaService.searchAreaListByRootIdAndTypes(prodectId, areaIds, areaTypes);
         return areas;
+    }
+
+    public List<UserInHouseQmCheckTask> searchUserInHouseQmCheckTaskByUserIdRoleType(Integer uid, Integer id) {
+      return  userInHouseQmCheckTaskService.searchUserInHouseQmCheckTaskByUserIdRoleType(uid,id);
+
+    }
+
+    public List<HouseQmCheckTask> searchHouseQmCheckTaskByProjCategoryClsIn(Integer projectId, List<Integer> categoryClsList) {
+       return  houseQmCheckTaskService.searchByProjectIdAndCategoryClsIn(projectId,categoryClsList);
+
+    }
+
+    public List<HouseQmCheckTask> searchHouseQmCheckTaskByProjIdAreaIdCategoryClsIn(Integer projectId, Integer areaId, List<Integer> categoryClsList) {
+        List<HouseQmCheckTask> tasks = houseQmCheckTaskService.searchByProjectIdAndCategoryClsIn(projectId, categoryClsList);
+        ArrayList<Integer> areaIds = Lists.newArrayList();
+        for (int i = 0; i <tasks.size() ; i++) {
+            List<Integer> ids = StringSplitToListUtil.splitToIdsComma(tasks.get(i).getAreaIds(), ",");
+            areaIds.addAll(ids);
+        }
+        List list = CollectionUtil.removeDuplicate(areaIds);
+        List<Area> areas = areaService.selectByAreaIds(list);
+        HashMap<Integer, String> areaMap = Maps.newHashMap();
+        for (int i = 0; i <areas.size() ; i++) {
+            areaMap.put(areas.get(i).getId(),areas.get(i).getPath()+areas.get(i).getId());
+        }
+        for (int i = 0; i <tasks.size() ; i++) {
+            List<Integer> comma = StringSplitToListUtil.splitToIdsComma(tasks.get(i).getAreaIds(), ",");
+           Boolean b= checkRootAreaIntersectAreas(areaMap,areaId,comma);
+           if(b){
+                return tasks;
+           }
+        }
+
+        return null;
+    }
+
+    private Boolean checkRootAreaIntersectAreas(HashMap<Integer, String> areaMap, Integer areaId, List<Integer> comma) {
+        for (int i = 0; i <comma.size() ; i++) {
+            if(comma.get(i).equals(areaId)){
+                return true;
+            }
+            if(areaMap.containsKey(comma.get(i))){
+                  if(  areaMap.get(comma.get(i)).contains(String.valueOf(areaId))){
+                      return true;
+                  }
+            }
+        }
+
+        return false;
     }
 
     /**

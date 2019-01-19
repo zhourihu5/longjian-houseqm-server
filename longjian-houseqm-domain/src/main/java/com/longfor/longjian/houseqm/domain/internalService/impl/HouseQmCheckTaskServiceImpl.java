@@ -106,11 +106,7 @@ public class HouseQmCheckTaskServiceImpl implements HouseQmCheckTaskService {
      */
     @LFAssignDataSource("zhijian2")
     public HouseQmCheckTask selectByProjectIdAndTaskId(Integer projectId, Integer taskId) {
-        Example example = new Example(HouseQmCheckTask.class);
-        Example.Criteria criteria = example.createCriteria();
-        criteria.andEqualTo("projectId",projectId).andEqualTo("taskId",taskId);
-        ExampleUtil.addDeleteAtJudge(example);
-        return houseQmCheckTaskMapper.selectOneByExample(example);
+        return houseQmCheckTaskMapper.selectByProjectIdAndTaskId(projectId, taskId);
     }
 
     /**

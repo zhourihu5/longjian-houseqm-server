@@ -75,6 +75,12 @@ public class IssueListController {
         return response;
     }
 
+    /**
+     * 项目下问题详情中历史信息
+     * @param projectId
+     * @param issueUuid
+     * @return
+     */
     @GetMapping(value = "detail_log/", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     public TaskResponse< ArrayList<HouseQmCheckTaskIssueHistoryLogVo>> detailLog(@RequestParam(value = "project_id",required = true) Integer projectId,
                                                                      @RequestParam(value = "issue_uuid",required =true) String issueUuid){
@@ -118,6 +124,12 @@ public class IssueListController {
         }
         return null;
     }
+
+    /**
+     * 项目下问题详情
+     * @param projectId
+     * @return
+     */
     @GetMapping(value = "configs/", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     public LjBaseResponse<ProjectSettingConfigVo> configs(@RequestParam(value = "project_id",required = true) Integer projectId){
         ////todo session 取uid 权限
@@ -170,8 +182,12 @@ public class IssueListController {
     }
 
 
-
-
+    /**
+     * 删除问题
+     * @param projectId
+     * @param issueUuid
+     * @return
+     */
     @PostMapping(value = "delete", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     public TaskResponse delete(@RequestParam(value = "project_id",required = true) Integer projectId,
                                @RequestParam(value = "issue_uuid",required =true) String issueUuid){
@@ -184,6 +200,14 @@ public class IssueListController {
         return new TaskResponse();
     }
 
+    /**
+     * 项目下问题详情修改整改责任人
+     * @param projectId
+     * @param issueUuid
+     * @param repairerId
+     * @param repairFollowerIds
+     * @return
+     */
     @PostMapping(value = "edit_repairer", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     public LjBaseResponse editRepairer(@RequestParam(value = "project_id",required = true) Integer projectId,
                                @RequestParam(value = "issue_uuid",required =true) String issueUuid,
@@ -200,8 +224,13 @@ public class IssueListController {
     }
 
 
-
-
+    /**
+     * 项目下问题详情追加描述
+     * @param projectId
+     * @param issueUuid
+     * @param content
+     * @return
+     */
     @PostMapping(value = "add_desc", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     public LjBaseResponse addDesc(@RequestParam(value = "project_id",required = true) Integer projectId,
                                @RequestParam(value = "issue_uuid",required =true) String issueUuid,
@@ -216,6 +245,14 @@ public class IssueListController {
         LjBaseResponse taskResponse=  iIssueService.updeteIssueDescByUuid(projectId,issueUuid,uid,content);
         return  taskResponse;
     }
+
+    /**
+     * 更新issue计划整改完成时间
+     * @param projectId
+     * @param issueUuid
+     * @param plan_end_on
+     * @return
+     */
     @PostMapping(value = "edit_plan_end_on", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     public LjBaseResponse editPlanEndOn(@RequestParam(value = "project_id",required = true) Integer projectId,
                                   @RequestParam(value = "issue_uuid",required =true) String issueUuid,
@@ -230,6 +267,15 @@ public class IssueListController {
         LjBaseResponse taskResponse=  iIssueService.updateIssuePlanEndOnByProjectAndUuid(projectId,issueUuid,uid,plan_end_on);
         return  taskResponse;
     }
+
+    /**
+     * 项目下问题详情销项问题
+     * @param projectId
+     * @param issueUuid
+     * @param status
+     * @param content
+     * @return
+     */
     @PostMapping(value = "edit_approve", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     public LjBaseResponse editApprove(@RequestParam(value = "project_id",required = true) Integer projectId,
                                         @RequestParam(value = "issue_uuid",required =true) String issueUuid,
@@ -246,7 +292,13 @@ public class IssueListController {
         return  taskResponse;
     }
 
-    @GetMapping(value = "detail_repair_log/", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+    /**
+     * 项目下问题修复记录
+     * @param projectId
+     * @param issueUuid
+     * @return
+     */
+    @GetMapping(value = "detail_repair_log", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     public LjBaseResponse<List<HouseQmCheckTaskIssueDetailRepairLogVo>> detailRepairLog(@RequestParam(value = "project_id",required = true) Integer projectId,
                                                                                  @RequestParam(value = "issue_uuid",required =true) String issueUuid){
         ////todo session 取uid 权限
@@ -259,8 +311,13 @@ public class IssueListController {
         return result;
     }
 
-
-    @GetMapping(value = "detail_base/", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+    /**
+     * 项目下问题详情
+     * @param projectId
+     * @param issueUuid
+     * @return
+     */
+    @GetMapping(value = "detail_base", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     public LjBaseResponse<IssueInfoVo> detailBase(@RequestParam(value = "project_id",required = true) Integer projectId,
                                                                                         @RequestParam(value = "issue_uuid",required =true) String issueUuid){
         ////todo session 取uid 权限

@@ -3,12 +3,14 @@ package com.longfor.longjian.houseqm.app.controller;
 import com.longfor.longjian.common.base.LjBaseResponse;
 import com.longfor.longjian.common.exception.LjBaseRuntimeException;
 import com.longfor.longjian.houseqm.app.req.StatGroupReq;
-import com.longfor.longjian.houseqm.app.service.StatGroupService;
+import com.longfor.longjian.houseqm.app.service.GraphqlExecuteService;
+import com.longfor.longjian.houseqm.graphql.schema.GroupProgressStatSchema;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
+import java.io.IOException;
 
 /**
  * http://192.168.37.159:3000/project/8/interface/api/594  获取集团下项目统计信息
@@ -29,8 +31,23 @@ import javax.annotation.Resource;
 @Slf4j
 public class StatGroupController {
 
+    private final static String teamRankStat_tip = "teamRankStat";
+
+    /**
+     * 项目进度统计
+     */
+    private final static String progressStat_tip = "progressStat";
+    private final static String projectStat_tip = "projectStat";
+    private final static String projectRankStat_tip = "projectRankStat";
+    private final static String categoryStat_tip = "categoryStat";
+
+
+
     @Resource
-    private StatGroupService statGroupService;
+    private GraphqlExecuteService graphqlExecuteService;
+
+    @Resource
+    private GroupProgressStatSchema groupProgressStatSchema;
 
     /**
      * @param groupId
@@ -40,7 +57,8 @@ public class StatGroupController {
      * @return
      */
     @PostMapping(value = "group", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
-    public LjBaseResponse<Object> group(@RequestParam(value = "group_id") String groupId,
+    public LjBaseResponse<Object> group(@RequestParam(value = "token", required =false) String token,
+                                        @RequestParam(value = "group_id") String groupId,
                                         @RequestParam(value = "page_level") String pageLevel,
                                         @RequestParam(value = "tip") String tip,
                                         @RequestBody StatGroupReq statGroupReq) {
@@ -48,10 +66,30 @@ public class StatGroupController {
         LjBaseResponse response = new LjBaseResponse();
         try {
 
-            Object statListVo = statGroupService.execute(statGroupReq.getQuery(), statGroupReq.getVariables());
+            Object statListVo = null;
+            switch(tip){
+                case teamRankStat_tip:
+                    break;
+                case progressStat_tip:
+                    statListVo = graphqlExecuteService.execute(progressStat_tip, statGroupReq.getQuery(),
+                            statGroupReq.getVariables(), groupProgressStatSchema.buildSchema());
+                    break;
+                case projectStat_tip:
+                    break;
+                case projectRankStat_tip:
+                    break;
+                case categoryStat_tip:
+                    break;
+                default:
+                    break;
+            }
+
             response.setData(statListVo);
 
-        } catch (LjBaseRuntimeException ex) {
+        }catch (IOException e){
+            log.error("StatGroupController#group IOException,{}", e);
+        }
+        catch (LjBaseRuntimeException ex) {
 
             response.setResult(ex.getErrorCode());
             response.setMessage(ex.getErrorMsg());
