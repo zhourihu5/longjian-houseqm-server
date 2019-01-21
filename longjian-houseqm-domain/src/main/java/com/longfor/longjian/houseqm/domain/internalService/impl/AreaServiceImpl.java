@@ -181,7 +181,10 @@ public class AreaServiceImpl implements AreaService {
 
     @LFAssignDataSource("zhijian2")
     public List<Area> selectByAreaIds(List<Integer> integers) {
-        return areaMapper.selectByAreaIds(integers);
+        Example example = new Example(Area.class);
+        Example.Criteria criteria = example.createCriteria();
+        criteria.andIn("id",integers).andIsNull("deleteAt");
+        return areaMapper.selectByExample(example);
 
 
     }
@@ -189,7 +192,10 @@ public class AreaServiceImpl implements AreaService {
 
     @LFAssignDataSource("zhijian2")
     public List<Area> selectByFatherId(Integer prodectId, Integer i) {
-        return areaMapper.selectByFatherId(prodectId, 0);
+        Example example = new Example(Area.class);
+        Example.Criteria criteria = example.createCriteria();
+        criteria.andEqualTo("projectId",prodectId).andEqualTo("fatherId",i).andEqualTo("deleteAt");
+        return areaMapper.selectByExample(example);
     }
 
     /**

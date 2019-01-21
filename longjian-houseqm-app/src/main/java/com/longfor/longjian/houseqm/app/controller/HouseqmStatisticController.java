@@ -10,6 +10,7 @@ import com.longfor.longjian.houseqm.app.vo.HouseqmStatisticTaskCheckitemStatRspM
 import com.longfor.longjian.houseqm.app.service.IHouseqmStatisticService;
 import com.longfor.longjian.houseqm.app.vo.houseqmstatistic.HouseqmStatisticProjectIssueRepairRsp;
 import com.longfor.longjian.houseqm.app.vo.houseqmstatistic.HouseqmStatisticTaskIssueRepairListRsp;
+import com.longfor.longjian.houseqm.app.vo.issue.HouseQmCheckTaskIssueVo;
 import com.longfor.longjian.houseqm.consts.CategoryClsTypeEnum;
 import com.longfor.longjian.houseqm.consts.HouseQmCheckTaskRoleTypeEnum;
 import com.longfor.longjian.houseqm.domain.internalService.HouseQmCheckTaskService;
@@ -307,7 +308,10 @@ public class HouseqmStatisticController {
                                                                                        @RequestParam(value = "page") Integer page,
                                                                                        @RequestParam(value = "page_size") Integer pageSize
     ) {
-        List<HouseQmCheckTaskIssueOnlineInfoVo> infoList = iHouseqmStatisticService.SearchHouseQmCheckTaskIssueOnlineInfoByProjCategoryKeyAreaIdPaged(projectId, categoryKey, areaId, page, pageSize);
+
+
+        HouseQmCheckTaskIssueVoRsp issueVo = iHouseqmStatisticService.searchHouseQmCheckTaskIssueOnlineInfoByProjCategoryKeyAreaIdPaged(projectId, categoryKey, areaId, page, pageSize);
+        List<HouseQmCheckTaskIssueOnlineInfoVo> infoList=issueVo.getItems();
         ArrayList<HouseqmStatisticCategoryIssueListRspMsgVo.ApiTaskIssueRepairListRsp> objects = Lists.newArrayList();
         for (int i = 0; i < infoList.size(); i++) {
             HouseqmStatisticCategoryIssueListRspMsgVo.ApiTaskIssueRepairListRsp listRsp = new HouseqmStatisticCategoryIssueListRspMsgVo().new ApiTaskIssueRepairListRsp();
@@ -334,7 +338,7 @@ public class HouseqmStatisticController {
         LjBaseResponse<HouseqmStatisticCategoryIssueListRspMsgVo> ljr = new LjBaseResponse<>();
         HouseqmStatisticCategoryIssueListRspMsgVo vo = new HouseqmStatisticCategoryIssueListRspMsgVo();
         vo.setIssue_list(objects);
-        vo.setTotal(infoList.size());
+        vo.setTotal(issueVo.getTotal());
         ljr.setData(vo);
         return ljr;
     }
@@ -379,13 +383,13 @@ public class HouseqmStatisticController {
         TaskStatVo.IssueStatVo vo = iHouseqmStatisticService.getCheckTaskIssueTypeStatByTaskIdAreaId(taskId, areaId);
         HouseQmCheckTaskHouseStatInfoVo infoVo = iHouseqmStatisticService.getHouseQmHouseQmCheckTaskHouseStatByTaskId(projectId, taskId, areaId);
         ApiHouseQmTaskStatVo houseQmTaskStatVo = new ApiHouseQmTaskStatVo();
-        houseQmTaskStatVo.setIssueApprovededCount(vo.getIssue_approveded_count());
-        houseQmTaskStatVo.setIssueAssignedCount(vo.getIssue_assigned_count());
-        houseQmTaskStatVo.setIssueCount(vo.getIssue_count());
-        houseQmTaskStatVo.setIssueRecordedCount(vo.getIssue_recorded_count());
-        houseQmTaskStatVo.setIssueRepairedCount(vo.getIssue_repaired_count());
-        houseQmTaskStatVo.setRecordCount(vo.getRecord_count());
-        houseQmTaskStatVo.setHouseCount(infoVo.getHouseCount());
+        houseQmTaskStatVo.setIssue_approveded_count(vo.getIssue_approveded_count());
+        houseQmTaskStatVo.setIssue_assigned_count(vo.getIssue_assigned_count());
+        houseQmTaskStatVo.setIssue_count(vo.getIssue_count());
+        houseQmTaskStatVo.setIssue_recorded_count(vo.getIssue_recorded_count());
+        houseQmTaskStatVo.setIssue_repaired_count(vo.getIssue_repaired_count());
+        houseQmTaskStatVo.setRecord_count(vo.getRecord_count());
+        houseQmTaskStatVo.setHouse_count(infoVo.getHouseCount());
         HouseqmStatisticTaskIssueStatRspMsgVo houseqmStatisticTaskIssueStatRspMsgVo = new HouseqmStatisticTaskIssueStatRspMsgVo();
         houseqmStatisticTaskIssueStatRspMsgVo.setItem(houseQmTaskStatVo);
         LjBaseResponse<HouseqmStatisticTaskIssueStatRspMsgVo> response = new LjBaseResponse<>();

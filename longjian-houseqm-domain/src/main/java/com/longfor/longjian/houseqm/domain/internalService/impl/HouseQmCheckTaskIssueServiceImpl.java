@@ -1,6 +1,8 @@
 package com.longfor.longjian.houseqm.domain.internalService.impl;
 
 import com.google.common.collect.Lists;
+import com.github.pagehelper.Page;
+import com.github.pagehelper.PageHelper;
 import com.longfor.gaia.gfs.data.mybatis.datasource.LFAssignDataSource;
 import com.longfor.longjian.common.consts.HouseQmCheckTaskIssueStatusEnum;
 import com.longfor.longjian.houseqm.consts.HouseQmCheckTaskIssueEnum;
@@ -8,6 +10,7 @@ import com.longfor.longjian.houseqm.consts.HouseQmIssuePlanStatusEnum;
 import com.longfor.longjian.houseqm.dao.*;
 import com.longfor.longjian.houseqm.domain.internalService.HouseQmCheckTaskIssueService;
 import com.longfor.longjian.houseqm.dto.CheckerIssueStatusStatDto;
+import com.longfor.longjian.houseqm.dto.HouseQmCheckTaskIssueDto;
 import com.longfor.longjian.houseqm.dto.HouseQmCheckTaskIssueListDto;
 import com.longfor.longjian.houseqm.dto.RepaireIssueStatusStatDto;
 import com.longfor.longjian.houseqm.po.*;
@@ -426,8 +429,21 @@ public class HouseQmCheckTaskIssueServiceImpl implements HouseQmCheckTaskIssueSe
 
     @Override
     @LFAssignDataSource("zhijian2")
-    public List<HouseQmCheckTaskIssue> searchHouseQmCheckTaskIssueByProjCategoryKeyAreaId(HashMap<String, Object> condiMap) {
-        return houseQmCheckTaskIssueMapper.searchHouseQmCheckTaskIssueByProjCategoryKeyAreaId(condiMap);
+    public HouseQmCheckTaskIssueDto searchHouseQmCheckTaskIssueByProjCategoryKeyAreaId(HashMap<String, Object> condiMap) {
+        Example example = new Example(HouseQmCheckTaskIssue.class);
+        Example.Criteria criteria = example.createCriteria();
+        criteria.andEqualTo("projectId",condiMap.get("projectId")).andIn("typ",(List<Integer>)condiMap.get("types")).andLike("categoryPathAndKey","%"+(String) condiMap.get("categoryKey")+"%");
+        if(condiMap.get("areaId")!=null){
+            criteria.andLike("areaPathAndId", "%"+String.valueOf((Integer) condiMap.get("areaId"))+"%");
+        }
+        HouseQmCheckTaskIssueDto dto = new HouseQmCheckTaskIssueDto();
+        int i = houseQmCheckTaskIssueMapper.selectCountByExample(example);
+        example.orderBy("clientCreateAt");
+        PageHelper.startPage((Integer) condiMap.get("page"), (Integer) condiMap.get("pageSize"));
+        List<HouseQmCheckTaskIssue> qmCheckTaskIssueList = houseQmCheckTaskIssueMapper.selectByExample(example);
+        dto.setTotal(i);
+        dto.setItems(qmCheckTaskIssueList);
+        return dto;
     }
 
     @Override
