@@ -12,6 +12,7 @@ import com.longfor.longjian.houseqm.po.HouseQmCheckTask;
 import com.longfor.longjian.houseqm.po.HouseQmCheckTaskIssue;
 import com.longfor.longjian.houseqm.po.User;
 import com.longfor.longjian.houseqm.po.UserInHouseQmCheckTask;
+import com.longfor.longjian.houseqm.util.DateUtil;
 import com.longfor.longjian.houseqm.util.StringSplitToListUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Repository;
@@ -59,11 +60,11 @@ public class TaskServiceImpl implements ITaskService {
         houseQmCheckTaskRspVo.setRoot_category_key(houseQmCheckTask.getRootCategoryKey());
         houseQmCheckTaskRspVo.setArea_ids(houseQmCheckTask.getAreaIds());
         houseQmCheckTaskRspVo.setArea_types(houseQmCheckTask.getAreaTypes());
-        houseQmCheckTaskRspVo.setPlan_begin_on(dateToInt(houseQmCheckTask.getPlanBeginOn()));
-        houseQmCheckTaskRspVo.setPlan_end_on(dateToInt(houseQmCheckTask.getPlanEndOn()));
-        houseQmCheckTaskRspVo.setCreate_at(dateToInt(houseQmCheckTask.getCreateAt()));
-        houseQmCheckTaskRspVo.setUpdate_at(dateToInt(houseQmCheckTask.getUpdateAt()));
-        houseQmCheckTaskRspVo.setDelete_at(dateToInt(houseQmCheckTask.getDeleteAt()));
+        houseQmCheckTaskRspVo.setPlan_begin_on(DateUtil.datetimeToTimeStamp(houseQmCheckTask.getPlanBeginOn()));
+        houseQmCheckTaskRspVo.setPlan_end_on(DateUtil.datetimeToTimeStamp(houseQmCheckTask.getPlanEndOn()));
+        houseQmCheckTaskRspVo.setCreate_at(DateUtil.datetimeToTimeStamp(houseQmCheckTask.getCreateAt()));
+        houseQmCheckTaskRspVo.setUpdate_at(DateUtil.datetimeToTimeStamp(houseQmCheckTask.getUpdateAt()));
+        houseQmCheckTaskRspVo.setDelete_at(DateUtil.datetimeToTimeStamp(houseQmCheckTask.getDeleteAt()));
         return houseQmCheckTaskRspVo;
     }
 
@@ -122,12 +123,5 @@ public class TaskServiceImpl implements ITaskService {
 
     }
 
-    //date 转int
-    private Integer dateToInt(Date date) {
-        if (date == null) {
-            return null;
-        }
-        return (int) date.getTime() / 1000;
-    }
 
 }

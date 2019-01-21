@@ -38,9 +38,8 @@ public interface AreaMapper extends LFMySQLMapper<Area> {
     List<Area> selectByProjectIdAndPathLikeOrIdAndTypeIn(@Param("projectId") Integer projectId,@Param("likePath") String likePath,@Param("id") Integer id,@Param("types") List<Integer> types);
 
 
-    List<Area> selectByAreaIds(@Param(value = "idList") List<Integer> integers);
 
-    List<Area> selectByFatherId(@Param(value="projectId")Integer prodectId, @Param(value="fatherId")int i);
+
 
     /**
      *

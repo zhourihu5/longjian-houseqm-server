@@ -68,33 +68,6 @@
         </foreach>
     </select>
 
-    <select id="selectByAreaIds" resultMap="ResultMapWithBLOBs">
-        select
-        <include refid="Base_Column_List"/>,
-        <include refid="Blob_Column_List"/>
-        from area
-        <where>
-            id in
-            <foreach collection="idList" open="(" close=")" item="id" separator=",">
-                #{id}
-            </foreach>
-        </where>
-        AND delete_at IS NULL
-    </select>
-    <select id="selectByFatherId" resultMap="BaseResultMap">
-        select
-        <include refid="Base_Column_List"/>,
-        <include refid="Blob_Column_List"/>
-        from area
-        where
-        <if test="projectId !=null">
-            project_id=#{projectId}
-        </if>
-
-        <if test="fatherId !=null">
-            and father_id=#{fatherId}
-        </if>
-    </select>
     <select id="selectAreaByIdInAndNoDeleted" resultMap="ResultMapWithBLOBs">
         SELECT<include refid="Base_Column_List"/>,
         <include refid="Blob_Column_List"/>

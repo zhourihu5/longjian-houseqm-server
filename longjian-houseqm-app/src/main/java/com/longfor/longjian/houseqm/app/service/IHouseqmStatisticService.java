@@ -5,6 +5,7 @@ import com.longfor.longjian.houseqm.app.vo.*;
 import com.longfor.longjian.houseqm.app.vo.HouseQmIssueCategoryStatVo;
 import com.longfor.longjian.houseqm.app.vo.TaskRepairStatVo;
 import com.longfor.longjian.houseqm.app.vo.TaskStatVo;
+import com.longfor.longjian.houseqm.app.vo.issue.HouseQmCheckTaskIssueVo;
 import com.longfor.longjian.houseqm.po.Area;
 
 import java.util.Date;
@@ -20,7 +21,7 @@ public interface IHouseqmStatisticService {
 
     List<HouseQmIssueCategoryStatVo> searchHouseQmIssueCategoryStatByProjTaskIdAreaIdBeginOnEndOn(Integer projectId, Integer taskId, Integer areaId, Date begin, Date endOns);
 
-    List<HouseQmCheckTaskIssueOnlineInfoVo> SearchHouseQmCheckTaskIssueOnlineInfoByProjCategoryKeyAreaIdPaged(Integer projectId, String categoryKey, Integer areaId, Integer page, Integer pageSize);
+    HouseQmCheckTaskIssueVoRsp searchHouseQmCheckTaskIssueOnlineInfoByProjCategoryKeyAreaIdPaged(Integer projectId, String categoryKey, Integer areaId, Integer page, Integer pageSize);
 
 
     HouseqmStatisticCategoryIssueListRspMsgVo taskIssueRepairList(Integer projectId, Integer taskId, Integer areaId, Integer beginOn, Integer endOn, Integer timestamp, Integer planStatus, String source, Integer page, Integer pageSize);

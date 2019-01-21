@@ -5,6 +5,7 @@ import java.util.Date;
 import java.lang.String;
 
 
+import com.github.pagehelper.PageHelper;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
@@ -12,10 +13,12 @@ import com.longfor.longjian.houseqm.app.service.HouseqmStaticService;
 import com.longfor.longjian.houseqm.app.service.IHouseqmService;
 import com.longfor.longjian.houseqm.app.service.IHouseqmStatisticService;
 import com.longfor.longjian.houseqm.app.vo.*;
+import com.longfor.longjian.houseqm.app.vo.issue.HouseQmCheckTaskIssueVo;
 import com.longfor.longjian.houseqm.consts.HouseQmCheckTaskIssueEnum;
 import com.longfor.longjian.common.consts.HouseQmCheckTaskIssueStatusEnum;
 import com.longfor.longjian.houseqm.domain.internalService.*;
 import com.longfor.longjian.houseqm.consts.*;
+import com.longfor.longjian.houseqm.dto.HouseQmCheckTaskIssueDto;
 import com.longfor.longjian.houseqm.dto.RepossessionStatusCompleteDailyCountDto;
 import com.longfor.longjian.houseqm.po.*;
 import com.longfor.longjian.houseqm.util.CollectionUtil;
@@ -714,7 +717,7 @@ public class HouseqmStatisticServiceImpl implements IHouseqmStatisticService {
     }
 
     @Override
-    public List<HouseQmCheckTaskIssueOnlineInfoVo> SearchHouseQmCheckTaskIssueOnlineInfoByProjCategoryKeyAreaIdPaged(Integer projectId, String categoryKey, Integer areaId, Integer page, Integer pageSize) {
+    public HouseQmCheckTaskIssueVoRsp searchHouseQmCheckTaskIssueOnlineInfoByProjCategoryKeyAreaIdPaged(Integer projectId, String categoryKey, Integer areaId, Integer page, Integer pageSize) {
         List<Integer> types = Lists.newArrayList();
         types.add(HouseQmCheckTaskIssueEnum.FindProblem.getId());
         types.add(HouseQmCheckTaskIssueEnum.Difficult.getId());
@@ -725,24 +728,28 @@ public class HouseqmStatisticServiceImpl implements IHouseqmStatisticService {
         if (pageSize < 1) {
             pageSize = 10;
         }
+        condiMap.put("pageSize", pageSize);
         if (page < 1) {
             page = 1;
         }
         condiMap.put("page", page);
-        condiMap.put("pageSize", pageSize);
         if (areaId > 0) {
             condiMap.put("areaId", areaId);
         }
 
-
-        List<HouseQmCheckTaskIssue> issueList = houseQmCheckTaskIssueService.searchHouseQmCheckTaskIssueByProjCategoryKeyAreaId(condiMap);
+        HouseQmCheckTaskIssueDto dto = houseQmCheckTaskIssueService.searchHouseQmCheckTaskIssueByProjCategoryKeyAreaId(condiMap);
+        List<HouseQmCheckTaskIssue> issueList=dto.getItems();
         List<HouseQmCheckTaskIssueOnlineInfoVo> vos = null;
+        HouseQmCheckTaskIssueVoRsp houseQmCheckTaskIssueVo=null;
         try {
             vos = formatHouseQmCheckTaskIssueOnlineInfo(issueList);
+             houseQmCheckTaskIssueVo = new HouseQmCheckTaskIssueVoRsp();
+            houseQmCheckTaskIssueVo.setTotal(dto.getTotal());
+            houseQmCheckTaskIssueVo.setItems(vos);
         } catch (Exception e) {
             e.printStackTrace();
         }
-        return vos;
+        return houseQmCheckTaskIssueVo;
     }
 
     private List<HouseQmCheckTaskIssueOnlineInfoVo> formatHouseQmCheckTaskIssueOnlineInfo(List<HouseQmCheckTaskIssue> issueList) throws Exception {
@@ -1047,8 +1054,6 @@ public class HouseqmStatisticServiceImpl implements IHouseqmStatisticService {
         ArrayList<String> categoryKeys = Lists.newArrayList();
         ArrayList<String> checkItemKeys = Lists.newArrayList();
         for (int i = 0; i < issueStatVoList.size(); i++) {
-            //切空格and“/”
-            //String[] categoryPathKeys = issueStatVoList.get(i).getCategoryPathAndKey().trim().split("/");
 
             String[] categoryPathKeys = issueStatVoList.get(i).getCategoryPathAndKey().split("/");
             for (int j = 0; j < categoryPathKeys.length; j++) {
