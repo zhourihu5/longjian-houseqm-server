@@ -65,7 +65,7 @@ public class GroupProgressStatDataFetcher {
         vo.setCategoryKey(categoryKey);
         vo.setTimeFrameType(timeFrameType);
         vo.setTeamIds(teamIds);
-        vo.setDateField(dateField);
+//        vo.setDateField(dateField);
 
         statItemsVo.setVariableVo(vo);
         return statItemsVo;
@@ -102,7 +102,7 @@ public class GroupProgressStatDataFetcher {
 
         }else{
             //day
-            statHouseQmProjectDailyStatService.searchStat(categoryKey,timeFrameType,teamIds,timeFrameEnd);
+//            statHouseQmProjectDailyStatService.searchStat(categoryKey,timeFrameType,teamIds,timeFrameEnd);
 
         }
 
