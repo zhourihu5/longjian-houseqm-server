@@ -26,8 +26,8 @@ public class UpdateDeviceReq implements Serializable {
     @NotNull
     private Integer task_id;
 
-    private Long device_id;
+    //private Long device_id;
 
-    private String token;
+    //private String token;
 
 }

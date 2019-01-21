@@ -75,6 +75,16 @@
         </if>
     </select>
 
+    <select id="selectByProjectIdAndCategoryClsIn" resultMap="ResultMapWithBLOBs">
+        SELECT<include refid="Base_Column_List"/>,
+        <include refid="Blob_Column_List"/>
+        from house_qm_check_task
+        WHERE project_id= #{projectId} AND category_cls in
+        <foreach collection="categoryCls" item="category" index="index" open="(" separator="," close=")">
+            #{category}
+        </foreach>
+    </select>
+
     <select id="selectByProjectIdAndTaskId" resultMap="ResultMapWithBLOBs">
         select
         <include refid="Base_Column_List"/>,

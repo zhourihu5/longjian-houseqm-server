@@ -19,7 +19,7 @@ public class MathUtil {
      */
     public static String getPercentage(int a, int b) {
         if (a == 0 || b == 0) {
-            return "0";
+            return "0.00";
         }
         BigDecimal decimal = new BigDecimal(a);
         BigDecimal decimalb= new BigDecimal(b);

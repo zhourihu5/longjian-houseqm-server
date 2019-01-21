@@ -1,7 +1,10 @@
 package com.longfor.longjian.houseqm.app.controller;
 
+import com.longfor.longjian.common.util.CtrlTool;
+import com.longfor.longjian.houseqm.app.req.taskcheckedareas.CheckedAreasReq;
 import com.longfor.longjian.houseqm.app.service.ITaskService;
 import com.longfor.longjian.houseqm.app.vo.TaskResponse;
+import com.longfor.longjian.houseqm.app.vo.taskcheckedareas.CheckedAreasRsp;
 import com.longfor.longjian.houseqm.util.StringSplitToListUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.MediaType;
@@ -11,6 +14,8 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.annotation.Resource;
+import javax.servlet.http.HttpServletRequest;
+import javax.validation.Valid;
 import java.util.Collections;
 import java.util.List;
 
@@ -27,47 +32,42 @@ import java.util.List;
 public class TaskCheckedAreasController {
 
     @Resource
-    ITaskService taskService;
+    private ITaskService taskService;
+    @Resource
+    private CtrlTool ctrlTool;
 
     /**
      * 获取任务区域信息
      *
-     * @param projectId
-     * @param categoryCls
-     * @param pageLevel
-     * @param groupId
-     * @param teamId
-     * @param taskId
+     * @param req
      * @return
      */
     @GetMapping(value = "checked_areas/", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
-    public TaskResponse<String> doAction(@RequestParam(value = "project_id") Integer projectId,
-                                         @RequestParam(value = "category_cls") String categoryCls,
-                                         @RequestParam(value = "page_level") String pageLevel,
-                                         @RequestParam(value = "group_id") String groupId,
-                                         @RequestParam(value = "team_id") String teamId,
-                                         @RequestParam(value = "task_id") Integer taskId) {
+    public TaskResponse<CheckedAreasRsp> doAction(HttpServletRequest request, @Valid CheckedAreasReq req) {
 
-        //todo session uid  权限验证
-        /*uid = session['uid']
+        //todo session uid  权限验证 uid = session['uid']
+        int uid = 7566;
+        /*
         has_per = ucenter_api.check_project_permission(uid, req.project_id, '项目.工程检查.任务管理.查看')
-        if not has_per:
-        rsp = errors_utils.err(rsp, 'PermissionDenied')*/
-
-        List<Integer> areaIds = taskService.getHouseqmCheckTaskCheckedAreas(projectId, taskId);
-        //数据处理成
-        TaskResponse<String> taskResponse = new TaskResponse<>();
+       */
+        try {
+            ctrlTool.projPerm(request,"项目.工程检查.任务管理.查看");
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        List<Integer> areaIds = taskService.getHouseqmCheckTaskCheckedAreas(req.getProject_id(), req.getTask_id());
+        TaskResponse<CheckedAreasRsp> taskResponse = new TaskResponse<>();
         String checkAreaIds = null;
         if (areaIds.isEmpty()) {
             checkAreaIds = "";
-        }else{
+        } else {
             //对areaIds进行排序并转换成字符 元素间加逗号隔开
             Collections.sort(areaIds);
-            checkAreaIds=StringSplitToListUtil.dataToString(areaIds, ",");
+            checkAreaIds = StringSplitToListUtil.dataToString(areaIds, ",");
         }
-
-        taskResponse.setData(checkAreaIds);
-
+        CheckedAreasRsp data = new CheckedAreasRsp();
+        data.setCheck_area_ids(checkAreaIds);
+        taskResponse.setData(data);
         return taskResponse;
     }
 

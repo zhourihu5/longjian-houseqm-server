@@ -5,7 +5,9 @@ import com.alibaba.fastjson.JSONObject;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
+import com.google.gson.JsonObject;
 import com.longfor.longjian.common.consts.checktask.*;
+import com.longfor.longjian.common.util.JSONUtil;
 import com.longfor.longjian.houseqm.app.service.ITaskListService;
 import com.longfor.longjian.houseqm.app.vo.TaskList2Vo;
 import com.longfor.longjian.houseqm.app.vo.TaskPushStrategyVo;
@@ -70,13 +72,14 @@ public class TaskListServiceImpl implements ITaskListService {
         houseQmCheckTask.setProjectId(projectId);
         houseQmCheckTask.setCategoryCls(categoryCls);
         houseQmCheckTask.setStatus(status);
-        List<HouseQmCheckTask> houseQmCheckTasks = houseQmCheckTaskService.selectByProjectIdAndCategoryClsAndStatus(houseQmCheckTask);
-        if (houseQmCheckTasks.isEmpty()) {
+        List<HouseQmCheckTask> checktasklist = houseQmCheckTaskService.selectByProjectIdAndCategoryClsAndStatus(houseQmCheckTask);
+        if (checktasklist.isEmpty()) {
             return taskListVo;
         }
         Set<Integer> taskIds = Sets.newHashSet();
-        for (HouseQmCheckTask qmCheckTask : houseQmCheckTasks) {
-            taskIds.add(qmCheckTask.getTaskId());
+        for (HouseQmCheckTask item : checktasklist) {
+            //if (!taskIds.contains(item.getTaskId()))
+            taskIds.add(item.getTaskId());
         }
         Map<Integer, ApiBuildingQmCheckTaskConfig> taskMap = creatTaskMap(taskIds);
         Team team = getTopTeam(teamId);
@@ -88,7 +91,7 @@ public class TaskListServiceImpl implements ITaskListService {
         Map<Integer, PushStrategyCategoryOverdue> categoryOverdueMap = pushStrategyVo.getCategoryOverdueMap();
         Map<Integer, PushStrategyCategoryThreshold> categoryThresholdMap = pushStrategyVo.getCategoryThresholdMap();
 
-        for (HouseQmCheckTask checkTask : houseQmCheckTasks) {
+        for (HouseQmCheckTask checkTask : checktasklist) {
             ApiBuildingQmCheckTaskMsg task = new ApiBuildingQmCheckTaskMsg();
             //TaskVo task = new TaskVo();
             task.setProject_id(checkTask.getProjectId());
@@ -217,7 +220,6 @@ public class TaskListServiceImpl implements ITaskListService {
                 item.setRepaired_picture_status(CheckTaskRepairedPictureEnum.UnForcePicture.getValue());
                 item.setIssue_desc_status(CheckTaskIssueDescEnum.Arbitrary.getValue());
                 item.setIssue_default_desc("(该问题无文字描述)");
-                taskMap.put(task.getTaskId(), item);
             } else {
                 JSONObject configData = JSON.parseObject(task.getConfigInfo());
                 item.setRepairer_refund_permission(configData.getIntValue("repairer_refund_permission"));
@@ -226,8 +228,9 @@ public class TaskListServiceImpl implements ITaskListService {
                 item.setRepaired_picture_status(configData.getIntValue("repaired_picture_status"));
                 item.setIssue_desc_status(configData.getIntValue("issue_desc_status"));
                 item.setIssue_default_desc(configData.getString("issue_default_desc"));
-                taskMap.put(task.getTaskId(), item);
             }
+            taskMap.put(task.getTaskId(), item);
+
         }
         return taskMap;
     }
@@ -249,21 +252,21 @@ public class TaskListServiceImpl implements ITaskListService {
     }
 
     @Value("${spe.team_group_100194.export_issue}")
-    String svrCfg;
+    private String svrCfg;
 
     @Value("team_group_100194")
-    String teamGrop;
+    private String teamGrop;
+
     /**
+     * //读取生成配置的auto.yaml
+     *
      * @param teamId
      * @return
      */
     private String getExportIssueConfig(int teamId) {
-        //读取生成配置的auto.yaml
-        String export_issue=null;
-        if (teamGrop.equals("team_group_" + teamId)){
-            export_issue= svrCfg;
-        }else {
-            export_issue="";
+        String export_issue = null;
+        if (teamGrop.equals("team_group_" + teamId)) {
+            export_issue = svrCfg;
         }
         return export_issue;
     }

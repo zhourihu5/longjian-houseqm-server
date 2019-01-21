@@ -1,7 +1,11 @@
 package com.longfor.longjian.houseqm.app.vo;
 
+import com.google.common.collect.Lists;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+
+import java.io.Serializable;
+import java.util.List;
 
 /**
  * @author lipeishuai
@@ -9,57 +13,56 @@ import lombok.NoArgsConstructor;
  */
 @Data
 @NoArgsConstructor
-public class IssueListVo {
+public class IssueListVo implements Serializable {
 
-    private int id;
-    private int project_id;
-    private int task_id;
-    private String uuid;
-    private int sender_id;
-    private int plan_end_on;
-    private int end_on;
-    private int area_id;
-    private String area_path_and_id;
-    private int category_cls;
-    private String category_key;
-    private String category_path_and_key;
-    private String category_name;
-    private String check_item_key;
-    private String check_item_path_and_key;
-    private String check_item_name;
-    private String drawing_md5;
-    private int pos_x;
-    private int pos_y;
-    private String title;
-    private int typ;
-    private String content;
-    private int condition;
-    private int status;
-    private String attachment_md5_list;
-    private int client_create_at;
-    private int last_assigner;
-    private int last_assigner_at;
-    private int last_repairer;
-    private int last_repairer_at;
-    private int destroy_user;
-    private int destroy_at;
-    private int delete_user;
-    private int delete_time;
-    private DetailVo detail;
-    private String [] pictures;
-    private String item;
-    private String area_path_name;
-    private String check_item_name_path;
-    private String last_repairer_name;
+    private int id=0;//id
+    private int project_id=0;//项目名
+    private int task_id=0;//任务id
+    private String uuid="";//问题Uuid
+    private int sender_id=0;//提交人user_id
+    private int plan_end_on=0;//计划整改完成时间
+    private int end_on=0;//实际整改完成时间
+    private int area_id=0;//区域ID
+    private String area_path_and_id="";//区域路径和id
+    private int category_cls=0;//模块类型
+    private String category_key="";//任务类型key
+    private String category_path_and_key="";//任务类型路径和Key
+    private String category_name="";//任务类型名称
+    private String check_item_key="";//检查项key
+    private String check_item_path_and_key="";//检查项路径和key
+    private String check_item_name="";//检查项名字
+    private String drawing_md5="";//图纸文件MD5
+    private int pos_x=0;//在图纸上的位置X
+    private int pos_y=0;//在图纸上的位置Y
+    private String title="";//问题标题
+    private int typ=0;//0 普通记录；1 问题记录
+    private String content="";//问题描述
+    private int condition=0;//问题严重程度  1 严重 2 较差 3 轻微
+    private int status=0;//整改状态：当前issue状态 0没有问题 1已记录未分配 2已分配未整改 3已整改未审核 4已审核（消项） 5已取消 6=整改中（介乎于2和3之间）
+    private String attachment_md5_list="";//产生Issue时的现场照片,多个用半角都好“,”分隔
+    private int client_create_at=0;//客户端记录时间
+    private int last_assigner=0;//最后指派人
+    private int last_assigner_at=0;//最后指派时间
+    private int last_repairer=0;//最后整改人
+    private int last_repairer_at=0;//最后整改时间
+    private int destroy_user=0;//最后消项人
+    private int destroy_at=0;//最后消项时间
+    private int delete_user=0;//删除人
+    private int delete_time=0;//删除时间
+    private DetailVo detail;//其它数据
+    private List<String> pictures= Lists.newArrayList();//issue图片列表
+    private String area_path_name="";//区域名称
+    private String check_item_name_path="";//检查项名称
+    private String last_repairer_name="";//最后整改人姓名
 
     @Data
     @NoArgsConstructor
     public class DetailVo{
-       private int issue_reason;
-       private String issue_reason_detail;
-       private String  issue_suggest;
-       private String potential_risk;
-       private String preventive_action_detail;
+       private int issue_reason=0;//产生问题的原因,需要检索project_setting表此project的PROJ_ISSUE_REASON_LIST记录
+       private String issue_reason_detail="";//产生问题原因的文字描述
+       private String  issue_suggest="";//措施建议
+       private String potential_risk="";//潜在风险
+       private String preventive_action_detail="";//预防措施
     }
 
 }

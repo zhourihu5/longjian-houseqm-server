@@ -26,6 +26,7 @@ public class IssueListDoActionReq implements Serializable {
     private Integer project_id;//项目ID
     @NotNull
     private Integer category_cls;//模块类型
+
     private Integer task_id=0;//任务ID
     private String category_key="";//任务类型
     private String check_item_key="";//检查项类型

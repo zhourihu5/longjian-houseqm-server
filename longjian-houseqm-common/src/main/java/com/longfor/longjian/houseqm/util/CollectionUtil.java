@@ -1,25 +1,21 @@
 package com.longfor.longjian.houseqm.util;
 
+import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 /**
  * @author Houyan
- * @date 2018/12/22 0022 15:13
  */
 public class CollectionUtil {
 
     /**
      *  集合去重
      * @author hy
-     * @date 2018/12/22 0022
-     * @param list
      * @return java.util.List
      */
-    public static List removeDuplicate(List list) {
-        HashSet h = new HashSet(list);
-        list.clear();
-        list.addAll(h);
-        return list;
+    public static <T> List<T> removeDuplicate(List<T> list) {
+        return new ArrayList<T>(new HashSet<T>(list));
     }
 }

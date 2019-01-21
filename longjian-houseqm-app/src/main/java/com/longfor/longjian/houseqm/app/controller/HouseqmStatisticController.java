@@ -1,10 +1,15 @@
 package com.longfor.longjian.houseqm.app.controller;
+import com.longfor.longjian.houseqm.app.vo.houseqmstatistic.HouseqmStatisticProjectIssueRepairRsp.ApiHouseQmIssueRepairStat;
 
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.google.common.collect.Lists;
+import com.longfor.longjian.houseqm.app.req.houseqmstatistic.HouseqmStatisticProjectIssueRepairReq;
+import com.longfor.longjian.houseqm.app.req.houseqmstatistic.HouseqmStatisticTaskIssueRepairListReq;
 import com.google.common.collect.Maps;
 import com.longfor.longjian.houseqm.app.vo.HouseqmStatisticTaskCheckitemStatRspMsgVo;
 import com.longfor.longjian.houseqm.app.service.IHouseqmStatisticService;
+import com.longfor.longjian.houseqm.app.vo.houseqmstatistic.HouseqmStatisticProjectIssueRepairRsp;
+import com.longfor.longjian.houseqm.app.vo.houseqmstatistic.HouseqmStatisticTaskIssueRepairListRsp;
 import com.longfor.longjian.houseqm.app.vo.issue.HouseQmCheckTaskIssueVo;
 import com.longfor.longjian.houseqm.consts.CategoryClsTypeEnum;
 import com.longfor.longjian.houseqm.consts.HouseQmCheckTaskRoleTypeEnum;
@@ -29,6 +34,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 
 
 import javax.annotation.Resource;
+import javax.validation.Valid;
 import java.text.DecimalFormat;
 import java.util.*;
 
@@ -190,14 +196,25 @@ public class HouseqmStatisticController {
      * @date 2018/12/24 0024
      */
     @GetMapping(value = "project_issue_repair", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
-    public LjBaseResponse<IssueRepairStatisticVo> projectIssueRepair(@RequestParam(value = "project_id") Integer projectId, @RequestParam(value = "source") String source,
-                                                                     @RequestParam(value = "area_id") Integer areaId, @RequestParam(value = "begin_on", defaultValue = "0") Integer beginOn,
-                                                                     @RequestParam(value = "end_on", defaultValue = "0") Integer endOn, @RequestParam(value = "timestamp", defaultValue = "0") Integer timestamp
-    ) {
-        IssueRepairStatisticVo issueRepairStatisticVo = iHouseqmStatisticService.projectIssueRepair(projectId, source, areaId, beginOn, endOn, timestamp);
-        LjBaseResponse<IssueRepairStatisticVo> ljbr = new LjBaseResponse<>();
-        ljbr.setData(issueRepairStatisticVo);
-        return ljbr;
+    public LjBaseResponse<HouseqmStatisticProjectIssueRepairRsp> projectIssueRepair(@Valid HouseqmStatisticProjectIssueRepairReq req) {
+        IssueRepairStatisticVo result = iHouseqmStatisticService.projectIssueRepair(req.getProject_id(), req.getSource(), req.getArea_id(), req.getBegin_on(), req.getEnd_on(), req.getTimestamp());
+        LjBaseResponse<HouseqmStatisticProjectIssueRepairRsp> response = new LjBaseResponse<>();
+        HouseqmStatisticProjectIssueRepairRsp data = new HouseqmStatisticProjectIssueRepairRsp();
+        ApiHouseQmIssueRepairStat item = data.new ApiHouseQmIssueRepairStat();
+        item.setInitime_finish(result.getInitime_finish());
+        item.setInitime_finish_count(result.getInitime_finish_count());
+        item.setInitime_unfinish(result.getInitime_unfinish());
+        item.setInitime_unfinish_count(result.getInitime_unfinish_count());
+        item.setNo_plan_end_on(result.getNo_plan_end_on());
+        item.setNo_plan_end_on_count(result.getNo_plan_end_on_count());
+        item.setOvertime_finish(result.getOvertime_finish());
+        item.setOvertime_finish_count(result.getOvertime_finish_count());
+        item.setOvertime_unfinish(result.getOvertime_unfinish());
+        item.setOvertime_unfinish_count(result.getOvertime_unfinish_count());
+
+        data.setItem(item);
+        response.setData(data);
+        return response;
     }
 
     /**
@@ -269,16 +286,14 @@ public class HouseqmStatisticController {
      * @date 2018/12/22 0022
      */
     @GetMapping(value = "task_issue_repair_list", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
-    public LjBaseResponse<HouseqmStatisticCategoryIssueListRspMsgVo> taskIssueRepairList(@RequestParam(value = "project_id") Integer projectId, @RequestParam(value = "task_id") Integer taskId,
-                                                                                         @RequestParam(value = "area_id") Integer areaId, @RequestParam(value = "begin_on", defaultValue = "0") Integer beginOn,
-                                                                                         @RequestParam(value = "end_on", defaultValue = "0") Integer endOn, @RequestParam(value = "timestamp", defaultValue = "0") Integer timestamp,
-                                                                                         @RequestParam(value = "plan_status", defaultValue = "0") Integer planStatus, @RequestParam(value = "source") String source,
-                                                                                         @RequestParam(value = "page", defaultValue = "1") Integer page, @RequestParam(value = "page_size", defaultValue = "20") Integer pageSize) {
-
-        HouseqmStatisticCategoryIssueListRspMsgVo projectDailyListVo = iHouseqmStatisticService.taskIssueRepairList(projectId, taskId, areaId, beginOn, endOn, timestamp, planStatus, source, page, pageSize);
-        LjBaseResponse<HouseqmStatisticCategoryIssueListRspMsgVo> ljbr = new LjBaseResponse<>();
-        ljbr.setData(projectDailyListVo);
-        return ljbr;
+    public LjBaseResponse<HouseqmStatisticTaskIssueRepairListRsp> taskIssueRepairList(HouseqmStatisticTaskIssueRepairListReq req) {
+        HouseqmStatisticCategoryIssueListRspMsgVo result = iHouseqmStatisticService.taskIssueRepairList(req.getProject_id(), req.getTask_id(), req.getArea_id(), req.getBegin_on(), req.getEnd_on(), req.getTimestamp(), req.getPlan_status(), req.getSource(), req.getPage(), req.getPage_size());
+        LjBaseResponse<HouseqmStatisticTaskIssueRepairListRsp> response = new LjBaseResponse<>();
+        HouseqmStatisticTaskIssueRepairListRsp data = new HouseqmStatisticTaskIssueRepairListRsp();
+        data.setIssue_list(result.getIssue_list());
+        data.setTotal(result.getTotal());
+        response.setData(data);
+        return response;
     }
 
     /**
