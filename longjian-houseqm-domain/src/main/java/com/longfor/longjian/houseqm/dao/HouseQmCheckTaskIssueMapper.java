@@ -156,7 +156,6 @@ public interface HouseQmCheckTaskIssueMapper extends LFMySQLMapper<HouseQmCheckT
 
     ArrayList<HouseQmCheckTaskIssue> searchhouseQmCheckTaskIssueByProTaskIdAreaidBegin(@Param("projectId") Integer projectId, @Param("taskId") Integer taskId, @Param("areaId") Integer areaId, @Param("begin") Date begin, @Param("endOns") Date endOns, @Param("types") List<Integer> types, @Param("deleted") String deleted);
 
-    List<HouseQmCheckTaskIssue> searchHouseQmCheckTaskIssueByProjCategoryKeyAreaId(HashMap<String, Object> condiMap);
 
 
     /**

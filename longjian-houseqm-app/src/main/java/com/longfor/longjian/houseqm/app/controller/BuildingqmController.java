@@ -40,24 +40,22 @@ public class BuildingqmController {
 
 
     @Resource
-    IBuildingqmService buildingqmService;
+    private IBuildingqmService buildingqmService;
     @Resource
-    ICheckUpdateService iCheckUpdateService;
+    private ICheckUpdateService iCheckUpdateService;
+    @Resource
+    private SessionInfo sessionInfo;
 
     /**
      * 项目下获取我的任务列表
      * http://192.168.37.159:3000/project/8/interface/api/626
-     *
-     * @param deviceId
-     * @param token
      * @return
      */
-    @GetMapping(value = "buildingqm/my_task_list/", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
-    public TaskResponse<TaskListVo> myTaskList(@RequestParam(value = "device_id") String deviceId,
-                                               @RequestParam(value = "token") String token) {
+    @RequestMapping(value = "buildingqm/my_task_list/", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+    public TaskResponse<TaskListVo> myTaskList() {
         log.info("my_task_list");
         //// TODO: 2018/11/24 uid = session['uid']
-        int uid = 7556;
+        int uid = 7566;
         TaskListVo vo = buildingqmService.myTaskList(uid);
         TaskResponse<TaskListVo> response = new TaskResponse();
         response.setResult(0);
@@ -94,7 +92,7 @@ public class BuildingqmController {
             item.setTask(0);
         }
         ////TODO uid = int(session['uid'])
-        Integer uid = 7556;
+        Integer uid = 7566;
         //  根据userid，taskid，issue_log_update_time查找最后一个issue单的id
         Integer newLastIssueId = iCheckUpdateService.getHouseqmCheckTaskIssueLastId(uid, updateDeviceReq.getTask_id(), issueUpdateTime);
         if (newLastIssueId > 0) {
@@ -129,24 +127,20 @@ public class BuildingqmController {
         LjBaseResponse<TaskIssueListVo> ljbr = new LjBaseResponse<>();
         List<TaskIssueListVo.TaskIussueVo> list = Lists.newArrayList();
         list.add(item);
-        taskIssueListVo.setItems(list);
+        taskIssueListVo.setItem(list);
         ljbr.setData(taskIssueListVo);
         return ljbr;
     }
 
     /**
      * http://192.168.37.159:3000/project/8/interface/api/670  获取任务角色列表
-     *
-     * @param deviceId
+     * //@RequestParam(value = "device_id") String deviceId,@RequestParam(value = "token") String token
      * @param taskIds
-     * @param token
      * @return
      */
-    @GetMapping(value = "buildingqm/task_squads_members", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
-    public LjBaseResponse<TaskMemberListVo> taskSquadsMembers(@RequestParam(value = "device_id") String deviceId,
-                                                              @RequestParam(value = "task_ids",required = true) String taskIds,
-                                                              @RequestParam(value = "token") String token) {
-        log.info("task_squads_members, task_id= " +taskIds);
+    @GetMapping(value = "buildingqm/task_squads_members/", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+    public LjBaseResponse<TaskMemberListVo> taskSquadsMembers(@RequestParam(value = "task_ids", required = true) String taskIds) {
+        log.info("task_squads_members, task_id= " + taskIds);
         LjBaseResponse<TaskMemberListVo> vos = new LjBaseResponse<>();
         TaskMemberListVo vo = buildingqmService.taskSquadsMembers(taskIds);
         vos.setData(vo);
@@ -155,15 +149,17 @@ public class BuildingqmController {
 
     /**
      * 补全与我相关问题信息
+     * http://192.168.37.159:3000/project/8/interface/api/678
      *
      * @param deviceReq
      * @return
      */
     @GetMapping(value = "buildingqm/my_issue_patch_list/", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     public LjBaseResponse<MyIssuePatchListVo> myIssuePatchList(DeviceReq deviceReq) {
-        log.info("my_issue_patch_list, task_id= "+deviceReq.getTask_id()+", timestamp= " + deviceReq.getTimestamp());
-        //// Todo: uid = session['uid'] 获取uid 为了测试改为0，
-        Integer uid = 7556;
+        log.info("my_issue_patch_list, task_id= " + deviceReq.getTask_id() + ", timestamp= " + deviceReq.getTimestamp());
+        //// Todo: uid = session['uid']
+        Integer uid = 9;
+        //int uid = (int) sessionInfo.getBaseInfo("uid");
         MyIssuePatchListVo miplv = buildingqmService.myIssuePathList(uid, deviceReq.getTask_id(), deviceReq.getTimestamp());
         LjBaseResponse<MyIssuePatchListVo> ljBaseResponse = new LjBaseResponse<>();
         ljBaseResponse.setData(miplv);
@@ -175,7 +171,7 @@ public class BuildingqmController {
      * @param taskReq
      * @return
      */
-    @PostMapping(value = "task/create", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+    @PostMapping(value = "task/create/", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     public LjBaseResponse create(TaskReq taskReq) {
         log.info("create, project_id=" + taskReq.getProject_id() + "" +
                 " name=" + taskReq.getName() + ", " +
@@ -214,7 +210,7 @@ public class BuildingqmController {
      * @param taskId
      * @return
      */
-    @GetMapping(value = "task/task_squad", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+    @GetMapping(value = "task/task_squad/", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     public LjBaseResponse<ArrayList<HouseQmCheckTaskSquadListRspVo>> taskSquad(@RequestParam(name = "project_id", required = true) String projectId,
                                                                                @RequestParam(name = "task_id", required = true) String taskId) {
         ////todo c从session中获取uid
@@ -245,7 +241,7 @@ public class BuildingqmController {
      * @param taskEditReq
      * @return
      */
-    @PostMapping(value = "task/edit", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+    @PostMapping(value = "task/edit/", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     public LjBaseResponse edit(TaskEditReq taskEditReq) {
         log.info("edit, project_id=" + taskEditReq.getProject_id() + "" +
                 " name=" + taskEditReq.getName() + ", " +

@@ -25,22 +25,21 @@ public class AreaMapVo implements Serializable {
 
 
     public List<String> getPathNames(Integer id) {
-        List<String> nams = Lists.newArrayList();
-
-        Area area = get(id);
+        List<String> names = Lists.newArrayList();
+        Area area = this.get(id);
         List<Integer> ids = StringSplitToListUtil.splitToIdsComma(area.getPath(), "/");
         ids.add(area.getId());
         ids.forEach(aid -> {
-            nams.add(getName(aid));
+            names.add(getName(aid));
         });
-        return nams;
+        return names;
     }
 
     public String getName(Integer id) {
         if (areas.containsKey(id)) {
             return areas.get(id).getName();
-        }
-        return "";
+        } else
+            return "";
     }
 
     public Map<String, String> getAllNames(int id) {
@@ -60,37 +59,42 @@ public class AreaMapVo implements Serializable {
                 for (AreaTypeEnum value : AreaTypeEnum.values()) {
                     if (value.getId().equals(area.getType())) e = value;
                 }
-                switch (e) {
-                    case ROOM:
-                        room = area.getName();
-                        break;
-                    case HOUSE:
-                    case FLOOR_PUBLIC:
-                        house = area.getName();
-                        break;
-                    case FLOOR:
-                        floor= area.getName();
-                        break;
-                    case BUILDING:
-                    case VILLA:
-                        building= area.getName();
-                        break;
+                if (e != null) {
+                    switch (e) {
+                        case ROOM:
+                            room = area.getName();
+                            break;
+                        case HOUSE:
+                        case FLOOR_PUBLIC:
+                            house = area.getName();
+                            break;
+                        case FLOOR:
+                            floor = area.getName();
+                            break;
+                        case BUILDING:
+                        case VILLA:
+                            building = area.getName();
+                            break;
+                    }
                 }
             }
         }
-        map.put("room",room);
-        map.put("house",house);
-        map.put("floor",floor);
-        map.put("building",building);
+        map.put("room", room);
+        map.put("house", house);
+        map.put("floor", floor);
+        map.put("building", building);
         return map;
     }
 
     public Area get(Integer id) {
+        if (this.areas == null) return null;
         return areas.get(id);
     }
 
     public Map<Integer, Area> GetAreas() {
-        return areas;
+        if (areas == null)
+            return new HashMap<Integer, Area>();
+        else return areas;
     }
 
 }

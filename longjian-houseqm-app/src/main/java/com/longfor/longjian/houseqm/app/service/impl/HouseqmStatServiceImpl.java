@@ -252,7 +252,7 @@ public class HouseqmStatServiceImpl implements IHouseqmStatService {
      */
     public ProjectDailyListVo searchTaskSituationDailyByProjTaskIdInOnPage(Integer projectId, List<Integer> taskIdList, Integer pageNum, Integer pageSize) {
         ProjectDailyListVo projectDailyListVo = new ProjectDailyListVo();
-
+        //读取出所有日期
         List<CheckerIssueStat> taskIssues = houseQmCheckTaskIssueService.searchHouseQmCheckTaskIssueActiveDateByProjTaskIdIn(projectId, taskIdList);
         List<String> totalDates = Lists.newArrayList();
         for (CheckerIssueStat issue : taskIssues) {
@@ -366,12 +366,12 @@ public class HouseqmStatServiceImpl implements IHouseqmStatService {
      * @param taskId
      * @return
      */
-    public TaskAreaListVo searchAreasByProjTaskIdTyp(Integer projectId, Integer taskId) {
+    public TaskAreaListVo searchAreasByProjTaskIdTyp(Integer projectId, Integer taskId, int typ) {
         TaskAreaListVo taskAreaListVo = new TaskAreaListVo();
         try {
             HouseQmCheckTask task = houseQmCheckTaskService.selectByProjectIdAndTaskId(projectId, taskId);
-            String strAreaIds = "";
-            if (task != null) strAreaIds = task.getAreaIds();
+            if (task == null) return null;
+            String strAreaIds = task.getAreaIds();
             String[] strAreaIdss = strAreaIds.split(",");
             List<Integer> areaIds = Lists.newArrayList();
             for (String item : strAreaIdss) {
@@ -405,10 +405,9 @@ public class HouseqmStatServiceImpl implements IHouseqmStatService {
                 list.add(taskAreaVo);
             }
             taskAreaListVo.setAreas(list);
-        } catch (NumberFormatException e) {
+        } catch (Exception e) {
             e.printStackTrace();
             taskAreaListVo.setAreas(new ArrayList<TaskAreaListVo.TaskAreaVo>());
-            return taskAreaListVo;
         }
         return taskAreaListVo;
     }
@@ -418,10 +417,8 @@ public class HouseqmStatServiceImpl implements IHouseqmStatService {
      * @param areaId
      * @param categoryCls
      * @return
-     *
      */
     public AreaTaskListVo searchHouseQmCheckTaskByProjIdAreaIdCategoryClsIn(Integer projectId, Integer areaId, List<Integer> categoryCls) {
-        // 未 设置deleted_at is null
         List<HouseQmCheckTask> tasks = houseQmCheckTaskService.searchByProjectIdAndCategoryClsIn(projectId, categoryCls);
         List<Integer> areaIds = Lists.newArrayList();
         for (HouseQmCheckTask item : tasks) {
@@ -434,7 +431,7 @@ public class HouseqmStatServiceImpl implements IHouseqmStatService {
         HashSet<Integer> set = Sets.newHashSet(areaIds);
         areaIds.clear();
         areaIds.addAll(set);
-        // 未 设置deleted_at is null
+
         List<Area> areas = areaService.selectAreasByIdInAreaIds(areaIds);
         HashMap<Integer, String> areaMap = Maps.newHashMap();
         for (Area area : areas) {

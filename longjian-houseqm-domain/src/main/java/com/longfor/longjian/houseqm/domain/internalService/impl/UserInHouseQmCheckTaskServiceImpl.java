@@ -125,6 +125,7 @@ public class UserInHouseQmCheckTaskServiceImpl implements UserInHouseQmCheckTask
         Example example = new Example(UserInHouseQmCheckTask.class);
         Example.Criteria criteria = example.createCriteria();
         if (squadIds.size()>0)criteria.andIn("squadId",squadIds);
+        else return Lists.newArrayList();
         ExampleUtil.addDeleteAtJudge(example);
         return userInHouseQmCheckTaskMapper.selectByExample(example);
     }

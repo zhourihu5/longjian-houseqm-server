@@ -13,7 +13,7 @@ spring:
         register: true
         healthCheckInterval: 600s
         fail-fast: false
-        prefer-ip-address: true
+        #preferIpAddress: true
     sleuth:
       enabled: true
 
@@ -187,7 +187,7 @@ kafka:
 # 第三方配置
 #IssueListController /buildingqm/v3/papi/issue/list/ 引入配置host_list
 env_info:
-  host_list: longjianapp.longhu.net lh.zj.com
+  host_list: devlongjian.longhu.net longjianapp.longhu.net lh.zj.com
 #TaskListController buildingqm/v3/papi/task/list  getExportIssueConfig() 导入配置信息
 spe:
   team_group_100194:

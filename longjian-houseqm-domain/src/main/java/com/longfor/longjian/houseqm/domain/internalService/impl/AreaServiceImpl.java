@@ -6,9 +6,11 @@ import com.longfor.gaia.gfs.data.mybatis.datasource.LFAssignDataSource;
 import com.longfor.longjian.houseqm.dao.AreaMapper;
 import com.longfor.longjian.houseqm.domain.internalService.AreaService;
 import com.longfor.longjian.houseqm.po.Area;
+import com.longfor.longjian.houseqm.util.CollectionUtil;
 import com.longfor.longjian.houseqm.util.StringSplitToListUtil;
 import com.longfor.longjian.houseqm.utils.ExampleUtil;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.collections.CollectionUtils;
 import org.springframework.stereotype.Service;
 import tk.mybatis.mapper.entity.Example;
 
@@ -75,7 +77,11 @@ public class AreaServiceImpl implements AreaService {
      */
     @LFAssignDataSource("zhijian2")
     public List<Area> selectAreasByIdInAreaIds(List<Integer> areaIds) {
-        return areaMapper.selectByIdInAreaIds(areaIds);
+        Example example = new Example(Area.class);
+        Example.Criteria criteria = example.createCriteria();
+        criteria.andIn("id", areaIds);
+        ExampleUtil.addDeleteAtJudge(example);
+        return areaMapper.selectByExample(example);
     }
 
     /**
@@ -103,12 +109,22 @@ public class AreaServiceImpl implements AreaService {
         List<Integer> result = Lists.newArrayList();
         List<String> pathsA = Lists.newArrayList();
         List<String> pathsB = Lists.newArrayList();
-        List<Area> areaA = areaMapper.selectByIdInAreaIds(areaIds);
+        Example example = new Example(Area.class);
+        Example.Criteria criteria = example.createCriteria();
+        if (areaIds.size() > 0) criteria.andIn("id", areaIds);
+        else return result;
+        ExampleUtil.addDeleteAtJudge(example);
+        List<Area> areaA = areaMapper.selectByExample(example);
         for (Area area : areaA) {
             pathsA.add(area.getPath() + area.getId() + "/");
         }
         List<String> pathA = getUnionPaths(pathsA);
-        List<Area> areaB = areaMapper.selectByIdInAreaIds(areaList);
+        Example example1 = new Example(Area.class);
+        Example.Criteria criteria1 = example1.createCriteria();
+        if (areaList.size() > 0) criteria1.andIn("id", areaList);
+        else return result;
+        ExampleUtil.addDeleteAtJudge(example1);
+        List<Area> areaB = areaMapper.selectByExample(example1);
         for (Area area : areaB) {
             pathsB.add(area.getPath() + area.getId() + "/");
         }
@@ -118,17 +134,18 @@ public class AreaServiceImpl implements AreaService {
             for (String pB : pathB) {
                 if (pA.startsWith(pB)) {
                     List<Integer> ids = splitToIds(pA, "/");
-                    result.add(ids.get(ids.size() - 1));
+                    if (ids.size() > 0) result.add(ids.get(ids.size() - 1));
                     continue;
                 }
                 if (pB.startsWith(pA)) {
                     List<Integer> ids = splitToIds(pB, "/");
-                    result.add(ids.get(ids.size() - 1));
+                    if (ids.size() > 0) result.add(ids.get(ids.size() - 1));
                     continue;
                 }
             }
         }
-        return result;
+        List<Integer> list = result.stream().collect(Collectors.toSet()).stream().collect(Collectors.toList());
+        return list;
     }
 
     /**
@@ -139,12 +156,23 @@ public class AreaServiceImpl implements AreaService {
      */
     @LFAssignDataSource("zhijian2")
     public List<Area> searchAreaListByRootIdAndTypes(Integer projectId, List<Integer> rootIds, List<Integer> types) {
-        List<Area> areas = areaMapper.selectByProjectIdAndIdIn(projectId, rootIds);
-        List<Area> items = Lists.newArrayList();
+        Example example = new Example(Area.class);
+        Example.Criteria criteria = example.createCriteria();
+        criteria.andEqualTo("projectId", projectId);
+        if (rootIds.size() > 0) criteria.andIn("id", rootIds);
+        ExampleUtil.addDeleteAtJudge(example);
+        List<Area> areas = areaMapper.selectByExample(example);
         List<Area> areaList = remainTopAreas(areas);
+
+        List<Area> items = Lists.newArrayList();
         for (Area area : areaList) {
             String likePath = area.getPath() + area.getId() + "/%%";
-            List<Area> areas1 = areaMapper.selectByProjectIdAndPathLikeOrIdAndTypeIn(projectId, likePath, area.getId(), types);
+            Example example1 = new Example(Area.class);
+            Example.Criteria criteria1 = example1.createCriteria();
+            criteria1.andEqualTo("projectId", projectId).andLike("path", likePath).orEqualTo("id", area.getId());
+            if (types.size()>0)criteria1.andIn("type", types);
+            ExampleUtil.addDeleteAtJudge(example1);
+            List<Area> areas1 = areaMapper.selectByExample(example1);
             items.addAll(areas1);
         }
         return items;
@@ -153,7 +181,10 @@ public class AreaServiceImpl implements AreaService {
 
     @LFAssignDataSource("zhijian2")
     public List<Area> selectByAreaIds(List<Integer> integers) {
-        return areaMapper.selectByAreaIds(integers);
+        Example example = new Example(Area.class);
+        Example.Criteria criteria = example.createCriteria();
+        criteria.andIn("id",integers).andIsNull("deleteAt");
+        return areaMapper.selectByExample(example);
 
 
     }
@@ -161,7 +192,10 @@ public class AreaServiceImpl implements AreaService {
 
     @LFAssignDataSource("zhijian2")
     public List<Area> selectByFatherId(Integer prodectId, Integer i) {
-        return areaMapper.selectByFatherId(prodectId, 0);
+        Example example = new Example(Area.class);
+        Example.Criteria criteria = example.createCriteria();
+        criteria.andEqualTo("projectId",prodectId).andEqualTo("fatherId",i).andEqualTo("deleteAt");
+        return areaMapper.selectByExample(example);
     }
 
     /**
@@ -194,7 +228,7 @@ public class AreaServiceImpl implements AreaService {
         String lastPath = "Nothing";
         List<String> result = Lists.newArrayList();
         for (String p : paths) {
-            if (p.startsWith(lastPath)) {//不包含
+            if (!p.startsWith(lastPath)) {//不包含
                 lastPath = p;
                 result.add(p);
             }

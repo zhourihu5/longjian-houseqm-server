@@ -24,6 +24,11 @@
     <dependencies>
         <dependency>
             <groupId>com.longfor.longjian</groupId>
+            <artifactId>longjian-common</artifactId>
+            <version>1.0.3-SNAPSHOT</version>
+        </dependency>
+        <dependency>
+            <groupId>com.longfor.longjian</groupId>
             <artifactId>longjian-houseqm-common</artifactId>
             <version>1.0.1-SNAPSHOT</version>
         </dependency>
