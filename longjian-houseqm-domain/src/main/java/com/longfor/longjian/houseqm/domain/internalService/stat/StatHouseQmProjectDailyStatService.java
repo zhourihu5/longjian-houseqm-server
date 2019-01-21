@@ -23,8 +23,29 @@ public class StatHouseQmProjectDailyStatService {
     StatHouseQmProjectDailyStatMapper statHouseQmProjectDailyStatMapper;
 
 
+    /**
+     *
+     * @param categoryKey
+     * @param timeFrameType
+     * @param teamIds
+     * @param timeFrameBegin
+     * @param timeFrameEnd
+     * @param timeFrameMax
+     */
     @LFAssignDataSource("zhijian2_stat")
-    public void searchStat(String categoryKey, String timeFrameType, List<Integer> teamIds, Date dateField){
+    public void searchStat(String categoryKey, String timeFrameType, List<Integer> teamIds, Date timeFrameBegin,
+                           Date timeFrameEnd, Integer timeFrameMax){
+
+
+        if(timeFrameMax == null){
+            timeFrameMax =1 ;
+        }
+
+        //默认是昨天
+        if(timeFrameEnd==null){
+            timeFrameEnd = new Date();
+        }
+
 
 
     }
