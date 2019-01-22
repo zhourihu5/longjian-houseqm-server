@@ -9,7 +9,7 @@ import java.util.List;
 
 /**
  * @ProjectName: longjian-houseqm-server
- * @Package: com.longfor.longjian.houseqm.app.vo.houseqmstatistic
+ * @Package: com.longfor.longjian.houseqm.app.vo.houseqmstatisticapp
  * @ClassName: HouseqmStatisticTaskIssueRepairListRsp
  * @Description: java类作用描述
  * @Author: hy

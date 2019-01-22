@@ -185,8 +185,6 @@ public class AreaServiceImpl implements AreaService {
         Example.Criteria criteria = example.createCriteria();
         criteria.andIn("id",integers).andIsNull("deleteAt");
         return areaMapper.selectByExample(example);
-
-
     }
 
 

@@ -15,8 +15,11 @@ import java.io.Serializable;
  */
 @Data
 @NoArgsConstructor
-public class ExportPicExcelRspVo implements Serializable {
+public class ExportRsp implements Serializable {
 
     private String id;//后台任务ID
 
+    public ExportRsp(String id) {
+        this.id = id;
+    }
 }

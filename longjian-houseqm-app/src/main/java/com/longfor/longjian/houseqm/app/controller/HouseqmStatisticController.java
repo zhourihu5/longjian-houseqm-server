@@ -1,4 +1,7 @@
 package com.longfor.longjian.houseqm.app.controller;
+
+import com.longfor.longjian.houseqm.app.vo.houseqmstatistic.ApiHouseQmRhyfTaskHouseStatVo;
+import com.longfor.longjian.houseqm.app.req.houseqmstatistic.HouseqmStatisticRhyfTaskStatReq;
 import com.longfor.longjian.houseqm.app.vo.houseqmstatistic.HouseqmStatisticProjectIssueRepairRsp.ApiHouseQmIssueRepairStat;
 
 import com.fasterxml.jackson.databind.node.ObjectNode;
@@ -9,6 +12,7 @@ import com.google.common.collect.Maps;
 import com.longfor.longjian.houseqm.app.vo.HouseqmStatisticTaskCheckitemStatRspMsgVo;
 import com.longfor.longjian.houseqm.app.service.IHouseqmStatisticService;
 import com.longfor.longjian.houseqm.app.vo.houseqmstatistic.HouseqmStatisticProjectIssueRepairRsp;
+import com.longfor.longjian.houseqm.app.vo.houseqmstatistic.HouseqmStatisticRhyfTaskStatRspVo;
 import com.longfor.longjian.houseqm.app.vo.houseqmstatistic.HouseqmStatisticTaskIssueRepairListRsp;
 import com.longfor.longjian.houseqm.app.vo.issue.HouseQmCheckTaskIssueVo;
 import com.longfor.longjian.houseqm.consts.CategoryClsTypeEnum;
@@ -17,6 +21,7 @@ import com.longfor.longjian.houseqm.domain.internalService.HouseQmCheckTaskServi
 import com.longfor.longjian.houseqm.po.HouseQmCheckTask;
 import com.longfor.longjian.houseqm.po.UserInHouseQmCheckTask;
 import com.longfor.longjian.houseqm.util.DateUtil;
+import com.longfor.longjian.houseqm.util.MathUtil;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import com.longfor.longjian.common.base.LjBaseResponse;
@@ -66,7 +71,52 @@ public class HouseqmStatisticController {
     IHouseqmStatisticService iHouseqmStatisticService;
     @Resource
     AreaService areaService;
-    private  static final String _SOURCE_NAME_GCJC  = "gcjc";
+    private static final String _SOURCE_NAME_GCJC = "gcjc";
+
+    /**
+     * @return com.longfor.longjian.common.base.LjBaseResponse<com.longfor.longjian.houseqm.app.vo.houseqmstatistic.HouseqmStatisticRhyfTaskStatRspVo>
+     * @Author hy
+     * @Description 任务概况页统计（入伙验房单独接口）
+     * http://192.168.37.159:3000/project/8/interface/api/3284
+     * @Date 14:42 2019/1/22
+     * @Param [req]
+     **/
+    @GetMapping(value = "rhyf_task_stat/", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+    public LjBaseResponse<HouseqmStatisticRhyfTaskStatRspVo> rhyfTaskStat(@Valid HouseqmStatisticRhyfTaskStatReq req) {
+        LjBaseResponse<HouseqmStatisticRhyfTaskStatRspVo> response = new LjBaseResponse<>();
+        HouseQmCheckTaskHouseStatInfoVo house = null;
+        try {
+            house = iHouseqmStatisticService.getHouseQmHouseQmCheckTaskHouseStatByTaskId(req.getProject_id(), req.getTask_id(), req.getArea_id());
+            HouseqmStatisticRhyfTaskStatRspVo item = new HouseqmStatisticRhyfTaskStatRspVo();
+            ApiHouseQmRhyfTaskHouseStatVo result = new ApiHouseQmRhyfTaskHouseStatVo();
+            result.setHouse_count(house.getHouseCount());
+            result.setChecked_count(house.getCheckedCount());
+            result.setHas_issue_count(house.getHasIssueCount());
+            result.setRepaired_count(house.getRepairedCount());
+            result.setApproved_count(house.getApprovedCount());
+            result.setRepair_confirm_count(house.getRepairConfirmCount());
+            result.setAccept_has_issue_count(house.getAcceptHasIssueCount());
+            result.setAccept_no_issue_count(house.getAcceptNoIssueCount());
+            result.setAccept_approved_count(house.getAcceptApprovedCount());
+            result.setOnly_watch_count(house.getOnlyWatchCount());
+            result.setReject_count(house.getRejectCount());
+
+            result.setHouse_checked_percent(MathUtil.getPercentage(house.getCheckedCount(), house.getHouseCount()));
+            result.setHouse_repaired_percent(MathUtil.getPercentage(house.getRepairedCount(), house.getHasIssueCount()));
+            result.setHouse_approveded_percent(MathUtil.getPercentage(house.getApprovedCount(), house.getRepairedCount()));
+            result.setHouse_repair_confirm_percent(MathUtil.getPercentage(house.getRepairConfirmCount(), house.getApprovedCount()));
+            //缺少repair_confirm_count
+            item.setItem(result);
+            response.setData(item);
+            response.setMessage("success");
+            response.setResult(0);
+        } catch (Exception e) {
+            e.printStackTrace();
+            response.setMessage(e.getMessage());
+            response.setResult(500);
+        }
+        return response;
+    }
 
 
     @GetMapping(value = "task_stat", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
@@ -124,31 +174,31 @@ public class HouseqmStatisticController {
 
     @GetMapping(value = "task_list", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     public LjBaseResponse<HouseqmStatisticTaskListRspMsgVo> taskList(@RequestParam(value = "project_id") Integer projectId,
-                                                          @RequestParam(value = "source") String source,
-                                                          @RequestParam(value = "timestamp") Integer timestamp,
-                                                          @RequestParam(value = "area_id") Integer areaId) {
+                                                                     @RequestParam(value = "source") String source,
+                                                                     @RequestParam(value = "timestamp") Integer timestamp,
+                                                                     @RequestParam(value = "area_id") Integer areaId) {
         /// todo  session 获取uid
-        Integer uid=1;
+        Integer uid = 1;
 
-       List<UserInHouseQmCheckTask>checkers= houseqmStaticService.searchUserInHouseQmCheckTaskByUserIdRoleType(uid, HouseQmCheckTaskRoleTypeEnum.Checker.getId());
+        List<UserInHouseQmCheckTask> checkers = houseqmStaticService.searchUserInHouseQmCheckTaskByUserIdRoleType(uid, HouseQmCheckTaskRoleTypeEnum.Checker.getId());
         HashMap<Integer, Boolean> checkMap = Maps.newHashMap();
-        for (int i = 0; i <checkers.size() ; i++) {
-            checkMap.put(checkers.get(i).getTaskId(),true);
+        for (int i = 0; i < checkers.size(); i++) {
+            checkMap.put(checkers.get(i).getTaskId(), true);
         }
         List<HouseQmCheckTask> resTask = Lists.newArrayList();
 
 
-        if(areaId>0){
-            List<HouseQmCheckTask>res=    houseqmStaticService.searchHouseQmCheckTaskByProjIdAreaIdCategoryClsIn(projectId,areaId,  getCategoryClsList(source));
+        if (areaId > 0) {
+            List<HouseQmCheckTask> res = houseqmStaticService.searchHouseQmCheckTaskByProjIdAreaIdCategoryClsIn(projectId, areaId, getCategoryClsList(source));
             resTask.addAll(res);
-        }else{
-        List<HouseQmCheckTask>res=    houseqmStaticService.searchHouseQmCheckTaskByProjCategoryClsIn(projectId,  getCategoryClsList(source));
+        } else {
+            List<HouseQmCheckTask> res = houseqmStaticService.searchHouseQmCheckTaskByProjCategoryClsIn(projectId, getCategoryClsList(source));
             resTask.addAll(res);
         }
-        List<ApiTaskInfo>items= Lists.newArrayList();
-        for (int i = 0; i <resTask.size() ; i++) {
-            if(checkMap.containsKey(resTask.get(i).getTaskId())){
-            continue;
+        List<ApiTaskInfo> items = Lists.newArrayList();
+        for (int i = 0; i < resTask.size(); i++) {
+            if (checkMap.containsKey(resTask.get(i).getTaskId())) {
+                continue;
             }
             ApiTaskInfo info = new ApiTaskInfo();
             info.setId(resTask.get(i).getTaskId());
@@ -162,20 +212,20 @@ public class HouseqmStatisticController {
         response.setData(vo1);
         return response;
 
-}
+    }
 
     private List<Integer> getCategoryClsList(String source) {
-        if (source.equals("gcgl")){
-            source=_SOURCE_NAME_GCJC;
+        if (source.equals("gcgl")) {
+            source = _SOURCE_NAME_GCJC;
         }
 
-        if(source.equals("ydyf")){
+        if (source.equals("ydyf")) {
             ArrayList<Integer> objects = Lists.newArrayList();
             objects.add(CategoryClsTypeEnum.FHYS.getId());
             objects.add(CategoryClsTypeEnum.RHYF.getId());
             return objects;
         }
-        if( source.equals("gcjc")){
+        if (source.equals("gcjc")) {
             ArrayList<Integer> objects = Lists.newArrayList();
             objects.add(CategoryClsTypeEnum.RCJC.getId());
             objects.add(CategoryClsTypeEnum.YDJC.getId());
@@ -190,6 +240,7 @@ public class HouseqmStatisticController {
 
     /**
      * http://192.168.37.159:3000/project/8/interface/api/380
+     *
      * @param
      * @return com.longfor.longjian.common.base.LjBaseResponse<com.longfor.longjian.houseqm.app.vo.ProjectDailyListVo>
      * @author hy
@@ -219,8 +270,7 @@ public class HouseqmStatisticController {
 
     /**
      * @param
-     * @return
-     * http://192.168.37.159:3000/project/8/interface/api/384
+     * @return http://192.168.37.159:3000/project/8/interface/api/384
      */
     @GetMapping(value = "task_checkitem_stat", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     public LjBaseResponse<HouseqmStatisticTaskCheckitemStatRspMsgVo> taskCheckitemStat(@RequestParam(value = "project_id") Integer projectId,
@@ -254,8 +304,7 @@ public class HouseqmStatisticController {
 
     /**
      * @param
-     * @return
-     * http://192.168.37.159:3000/project/8/interface/api/388
+     * @return http://192.168.37.159:3000/project/8/interface/api/388
      */
     @GetMapping(value = "task_issue_repair", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     public LjBaseResponse<TaskRepairStatVo> taskIssueRepair(@RequestParam(value = "project_id") Integer projectId,
@@ -280,6 +329,7 @@ public class HouseqmStatisticController {
 
     /**
      * http://192.168.37.159:3000/project/8/interface/api/392
+     *
      * @param
      * @return com.longfor.longjian.common.base.LjBaseResponse<com.longfor.longjian.houseqm.app.vo.HouseqmStatisticCategoryIssueListRspMsgVo>
      * @author hy
@@ -311,7 +361,7 @@ public class HouseqmStatisticController {
 
 
         HouseQmCheckTaskIssueVoRsp issueVo = iHouseqmStatisticService.searchHouseQmCheckTaskIssueOnlineInfoByProjCategoryKeyAreaIdPaged(projectId, categoryKey, areaId, page, pageSize);
-        List<HouseQmCheckTaskIssueOnlineInfoVo> infoList=issueVo.getItems();
+        List<HouseQmCheckTaskIssueOnlineInfoVo> infoList = issueVo.getItems();
         ArrayList<HouseqmStatisticCategoryIssueListRspMsgVo.ApiTaskIssueRepairListRsp> objects = Lists.newArrayList();
         for (int i = 0; i < infoList.size(); i++) {
             HouseqmStatisticCategoryIssueListRspMsgVo.ApiTaskIssueRepairListRsp listRsp = new HouseqmStatisticCategoryIssueListRspMsgVo().new ApiTaskIssueRepairListRsp();

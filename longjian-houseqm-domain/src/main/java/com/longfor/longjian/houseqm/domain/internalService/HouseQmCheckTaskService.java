@@ -2,11 +2,15 @@ package com.longfor.longjian.houseqm.domain.internalService;
 
 import com.longfor.longjian.houseqm.po.HouseQmCheckTask;
 
-import java.util.Date;
 import java.util.List;
 import java.util.Set;
 
 public interface HouseQmCheckTaskService {
+
+    List<HouseQmCheckTask> searchByProjectIdAndCategoryClsInAndTaskIdIn(Integer project_id, List<Integer> category_cls_list, List<Integer> task_ids);
+
+    List<HouseQmCheckTask> searchByProjectIdInAndCategoryClsIn(List<Integer> project_ids, List<Integer> categoryClsList);
+
     List<HouseQmCheckTask> searchHouseQmCheckTaskByTaskIdIn(List<Integer> taskIds);
 
     HouseQmCheckTask getHouseQmCheckTaskByProjTaskId(Integer projectId, Integer taskId);

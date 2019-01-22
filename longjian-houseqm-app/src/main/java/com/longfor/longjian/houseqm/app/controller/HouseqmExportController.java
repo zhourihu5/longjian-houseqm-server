@@ -27,6 +27,7 @@ import java.util.List;
 @RestController
 @RequestMapping("oapi/v3/houseqm/export/")
 @Slf4j
+@Deprecated
 public class HouseqmExportController {
 
 

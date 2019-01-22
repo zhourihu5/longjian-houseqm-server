@@ -401,14 +401,9 @@
         and delete_at is null
     </select>
 
-    <select id="searchByConditionOrderByPageUnscoped" resultMap="BaseResultMap">
+    <select id="searchByConditionOrderByPageUnscoped" resultMap="ResultMapWithBLOBs">
         SELECT
-        id, project_id, task_id, uuid, sender_id, plan_end_on, end_on, area_id, area_path_and_id,
-        category_cls, category_key, category_path_and_key, check_item_key, check_item_path_and_key,
-        drawing_m_d5, pos_x, pos_y, title, typ, content, `condition`, status, repairer_id,
-        repairer_follower_ids, client_create_at, last_assigner, last_assign_at, last_repairer,
-        last_repairer_at, destroy_user, destroy_at, delete_user, delete_time, create_at,
-        update_at, delete_at
+       <include refid="Base_Column_List"/>,<include refid="Blob_Column_List"/>
         FROM
         house_qm_check_task_issue hqcti
         WHERE

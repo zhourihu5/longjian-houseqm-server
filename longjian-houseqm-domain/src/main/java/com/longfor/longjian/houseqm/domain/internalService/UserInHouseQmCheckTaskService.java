@@ -9,7 +9,9 @@ import java.util.Set;
 
 public interface UserInHouseQmCheckTaskService {
 
+    List<UserInHouseQmCheckTask> searchByTaskIdInAndRoleType(List<Integer> task_ids, Integer roleType);
 
+    List<UserInHouseQmCheckTask> searchByUserIdAndRoleType(int uid, Integer roleType);
 
     List<UserInHouseQmCheckTask> searchByTaskIdUserIdRoleType(int taskId, int userId, Integer roleType);
 

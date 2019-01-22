@@ -9,6 +9,7 @@ import com.longfor.longjian.houseqm.app.req.DeviceReq;
 import com.longfor.longjian.houseqm.app.req.TaskEditReq;
 import com.longfor.longjian.houseqm.app.req.TaskReq;
 import com.longfor.longjian.houseqm.app.req.UpdateDeviceReq;
+import com.longfor.longjian.houseqm.app.req.buildingqm.MyIssuePatchListReq;
 import com.longfor.longjian.houseqm.app.service.IBuildingqmService;
 import com.longfor.longjian.houseqm.app.service.ICheckUpdateService;
 import com.longfor.longjian.houseqm.app.vo.*;
@@ -123,13 +124,10 @@ public class BuildingqmController {
         } else {
             item.setTask_members(0);
         }
-
-        LjBaseResponse<TaskIssueListVo> ljbr = new LjBaseResponse<>();
-        List<TaskIssueListVo.TaskIussueVo> list = Lists.newArrayList();
-        list.add(item);
-        taskIssueListVo.setItem(list);
-        ljbr.setData(taskIssueListVo);
-        return ljbr;
+        LjBaseResponse<TaskIssueListVo> respone = new LjBaseResponse<>();
+        taskIssueListVo.setItem(item);
+        respone.setData(taskIssueListVo);
+        return respone;
     }
 
     /**
@@ -151,16 +149,16 @@ public class BuildingqmController {
      * 补全与我相关问题信息
      * http://192.168.37.159:3000/project/8/interface/api/678
      *
-     * @param deviceReq
+     * @param req
      * @return
      */
     @GetMapping(value = "buildingqm/my_issue_patch_list/", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
-    public LjBaseResponse<MyIssuePatchListVo> myIssuePatchList(DeviceReq deviceReq) {
-        log.info("my_issue_patch_list, task_id= " + deviceReq.getTask_id() + ", timestamp= " + deviceReq.getTimestamp());
+    public LjBaseResponse<MyIssuePatchListVo> myIssuePatchList(MyIssuePatchListReq req) {
+        log.info("my_issue_patch_list, task_id= " + req.getTask_id() + ", timestamp= " + req.getTimestamp());
         //// Todo: uid = session['uid']
         Integer uid = 9;
         //int uid = (int) sessionInfo.getBaseInfo("uid");
-        MyIssuePatchListVo miplv = buildingqmService.myIssuePathList(uid, deviceReq.getTask_id(), deviceReq.getTimestamp());
+        MyIssuePatchListVo miplv = buildingqmService.myIssuePathList(uid, req.getTask_id(), req.getTimestamp());
         LjBaseResponse<MyIssuePatchListVo> ljBaseResponse = new LjBaseResponse<>();
         ljBaseResponse.setData(miplv);
         return ljBaseResponse;

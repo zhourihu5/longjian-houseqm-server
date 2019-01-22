@@ -17,7 +17,7 @@ import java.io.Serializable;
  */
 @Data
 @NoArgsConstructor
-public class BgTaskExportReq implements Serializable {
+public class ExportBuildingExcelReq implements Serializable {
 
     @NotNull
     private Integer project_id;//项目ID
@@ -38,5 +38,7 @@ public class BgTaskExportReq implements Serializable {
     private String create_on_begin="";//开始时间范围
     private String create_on_end="";//结束时间范围
     private Boolean is_overdue=false;//是否超期
+
+
 
 }

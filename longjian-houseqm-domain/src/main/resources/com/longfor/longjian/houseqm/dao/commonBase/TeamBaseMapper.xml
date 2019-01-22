@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.longfor.longjian.common.dao.TeamBaseMapper">
+  <resultMap id="BaseResultMap" type="com.longfor.longjian.common.entity.TeamBase">
+    <!--
+      WARNING - @mbg.generated
+    -->
+    <id column="team_id" property="teamId" jdbcType="INTEGER"/>
+    <result column="team_name" property="teamName" jdbcType="VARCHAR"/>
+    <result column="parent_team_id" property="parentTeamId" jdbcType="INTEGER"/>
+    <result column="path" property="path" jdbcType="VARCHAR"/>
+    <result column="level" property="level" jdbcType="INTEGER"/>
+    <result column="display_index" property="displayIndex" jdbcType="INTEGER"/>
+    <result column="payment_type" property="paymentType" jdbcType="INTEGER"/>
+    <result column="owner_user_id" property="ownerUserId" jdbcType="INTEGER"/>
+    <result column="group_code" property="groupCode" jdbcType="VARCHAR"/>
+    <result column="create_at" property="createAt" jdbcType="TIMESTAMP"/>
+    <result column="update_at" property="updateAt" jdbcType="TIMESTAMP"/>
+    <result column="delete_at" property="deleteAt" jdbcType="TIMESTAMP"/>
+    <result column="custom_id" property="customId" jdbcType="VARCHAR"/>
+  </resultMap>
+  <resultMap id="ResultMapWithBLOBs" type="com.longfor.longjian.common.entity.TeamBase" extends="BaseResultMap">
+    <!--
+      WARNING - @mbg.generated
+    -->
+    <result column="setting" property="setting" jdbcType="LONGVARCHAR"/>
+    <result column="custom_extra" property="customExtra" jdbcType="LONGVARCHAR"/>
+  </resultMap>
+  <sql id="Base_Column_List">
+    <!--
+      WARNING - @mbg.generated
+    -->
+    team_id, team_name, parent_team_id, path, level, display_index, payment_type, owner_user_id,
+    group_code, create_at, update_at, delete_at, custom_id
+  </sql>
+  <sql id="Blob_Column_List">
+    <!--
+      WARNING - @mbg.generated
+    -->
+    setting, custom_extra
+  </sql>
+</mapper>

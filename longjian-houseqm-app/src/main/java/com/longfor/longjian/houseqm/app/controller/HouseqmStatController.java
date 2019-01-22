@@ -271,7 +271,9 @@ public class HouseqmStatController {
         TaskRepairStatVo taskRepairStatVo = houseqmStatisticService.searchIssueRepairStatisticByProjTaskIdAreaIdBeginOnEndOn(req.getProject_id(), req.getTask_id(), 0, t, t);
         TaskRepairStatVo.TaskRepairVo item = taskRepairStatVo.getItem();
         LjBaseResponse<StatTaskSituationRepairStatRsp> response = new LjBaseResponse<>();
-        StatTaskSituationRepairStatRsp result = new StatTaskSituationRepairStatRsp();
+
+        StatTaskSituationRepairStatRsp res = new StatTaskSituationRepairStatRsp();
+        StatTaskSituationRepairStatRsp.HouseQmStatTaskDetailRepairerStatRsp result = res.new HouseQmStatTaskDetailRepairerStatRsp();
         result.setInitime_finish(item.getInitime_finish());
         result.setInitime_finish_count(item.getInitime_finish_count());
         result.setInitime_unfinish(item.getInitime_unfinish());
@@ -282,7 +284,8 @@ public class HouseqmStatController {
         result.setOvertime_finish_count(item.getOvertime_finish_count());
         result.setOvertime_unfinish(item.getOvertime_unfinish());
         result.setOvertime_unfinish_count(item.getOvertime_unfinish_count());
-        response.setData(result);
+        res.setItem(result);
+        response.setData(res);
         return response;
     }
 
@@ -294,6 +297,7 @@ public class HouseqmStatController {
      * @Param [req]
      * ////该接口不用了，废弃
      **/
+    @Deprecated
     @GetMapping(value = "stat_houseqm/task_situation_overall", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     public LjBaseResponse<StatHouseqmTaskSituationOverallRspVo> taskSituationOverall(@RequestBody @Valid StatHouseqmTaskSituationOverallReq req) {
 
@@ -334,6 +338,7 @@ public class HouseqmStatController {
      * @Date 20:16 2019/1/8
      * @Param //// 该接口不用了，废弃
      **/
+    @Deprecated
     @GetMapping(value = "stat_houseqm/complete_daily", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     public LjBaseResponse<StatHouseqmCompleteDailyRspVo> completeDaily(@Valid StatHouseqmCompleteDailyReq req) {
         // todo  鉴权   _, _, err := ctrl_tool.ProjPermMulti(c, []string{"项目.移动验房.统计.查看", "项目.工程检查.统计.查看"})

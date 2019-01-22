@@ -1,5 +1,5 @@
-server.port: 8081
-management.port: 9981
+server.port: 8081 #8082
+management.port: 9981 #9982
 
 spring:
   application:
@@ -48,8 +48,18 @@ longfor:
         longjian-basic-server:
           permission:
             url: http://172.17.96.88:8082/uc/inner/
+          repossession:
+            url: http://172.17.96.88:8082/v3/api/repossession/
+          buildingqmexport:
+            url: http://172.17.96.88:8082/papi/v3/bgtask/buildingqm/
         config:
           permission:
+            connectTimeout: 5000
+            readTimeout: 5000
+          repossession:
+            connectTimeout: 5000
+            readTimeout: 5000
+          buildingqmexport:
             connectTimeout: 5000
             readTimeout: 5000
         cas-server:
@@ -253,3 +263,6 @@ push_config:
     app_master_secrect_ios: "xvxrx1rqaaulmfw5yfuei9cppptkery2"
     app_secret_xiao_mi: "vdvG+lOHl8yY7bZR8VRXug=="
     package_name_xiao_mi:  "cn.smartinspection.keyprocedure.keyprocedure"
+display_logo_url: assets/favicon.png
+display_company_name: 默认
+display_system_name: 智检
