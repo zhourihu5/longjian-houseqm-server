@@ -52,6 +52,8 @@ longfor:
             url: http://172.17.96.88:8082/v3/api/repossession/
           buildingqmexport:
             url: http://172.17.96.88:8082/papi/v3/bgtask/buildingqm/
+          houseqmcheckissue:
+            url: http://172.17.96.88:8082/v3/stat_export/houseqm_check_task_issue/
         config:
           permission:
             connectTimeout: 5000
@@ -60,6 +62,9 @@ longfor:
             connectTimeout: 5000
             readTimeout: 5000
           buildingqmexport:
+            connectTimeout: 5000
+            readTimeout: 5000
+          houseqmcheckissue:
             connectTimeout: 5000
             readTimeout: 5000
         cas-server:
@@ -195,7 +200,7 @@ kafka:
     concurrency: 10
 
 # 第三方配置
-#IssueListController /buildingqm/v3/papi/issue/list/ 引入配置host_list
+#IssueListController /buildingqm/v3/papi/houseqmissue/list/ 引入配置host_list
 env_info:
   host_list: devlongjian.longhu.net longjianapp.longhu.net lh.zj.com
 #TaskListController buildingqm/v3/papi/task/list  getExportIssueConfig() 导入配置信息

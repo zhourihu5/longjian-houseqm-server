@@ -1,15 +1,13 @@
-package com.longfor.longjian.houseqm.app.vo.issue;
+package com.longfor.longjian.houseqm.app.vo.houseqmissue;
 
-import com.longfor.longjian.houseqm.util.StringSplitToListUtil;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import springfox.documentation.service.ApiListing;
 
 import java.io.Serializable;
 
 /**
  * @ProjectName: longjian-houseqm-server
- * @Package: com.longfor.longjian.houseqm.app.vo.issue
+ * @Package: com.longfor.longjian.houseqm.app.vo.houseqmissue
  * @ClassName: RemoveAttachement
  * @Description: java类作用描述
  * @Author: hy

@@ -1,6 +1,5 @@
 package com.longfor.longjian.houseqm.app.service;
 
-import com.longfor.longjian.houseqm.app.vo.HouseQmCheckTaskIssueOnlineInfoVo;
 import com.longfor.longjian.houseqm.app.vo.*;
 import com.longfor.longjian.houseqm.app.vo.HouseQmIssueCategoryStatVo;
 import com.longfor.longjian.houseqm.app.vo.TaskRepairStatVo;
@@ -9,7 +8,6 @@ import com.longfor.longjian.houseqm.app.vo.houseqmstatisticapp.ProjectCheckerSta
 import com.longfor.longjian.houseqm.app.vo.houseqmstatisticapp.ProjectIssueStatRspVo;
 import com.longfor.longjian.houseqm.app.vo.houseqmstatisticapp.ProjectListRspVo;
 import com.longfor.longjian.houseqm.app.vo.houseqmstatisticapp.ProjectRepairerStatRspVo;
-import com.longfor.longjian.houseqm.app.vo.issue.HouseQmCheckTaskIssueVo;
 import com.longfor.longjian.houseqm.po.Area;
 
 import java.util.Date;

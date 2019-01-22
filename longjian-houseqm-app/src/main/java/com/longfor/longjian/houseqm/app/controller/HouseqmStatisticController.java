@@ -4,7 +4,6 @@ import com.longfor.longjian.houseqm.app.vo.houseqmstatistic.ApiHouseQmRhyfTaskHo
 import com.longfor.longjian.houseqm.app.req.houseqmstatistic.HouseqmStatisticRhyfTaskStatReq;
 import com.longfor.longjian.houseqm.app.vo.houseqmstatistic.HouseqmStatisticProjectIssueRepairRsp.ApiHouseQmIssueRepairStat;
 
-import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.google.common.collect.Lists;
 import com.longfor.longjian.houseqm.app.req.houseqmstatistic.HouseqmStatisticProjectIssueRepairReq;
 import com.longfor.longjian.houseqm.app.req.houseqmstatistic.HouseqmStatisticTaskIssueRepairListReq;
@@ -14,7 +13,6 @@ import com.longfor.longjian.houseqm.app.service.IHouseqmStatisticService;
 import com.longfor.longjian.houseqm.app.vo.houseqmstatistic.HouseqmStatisticProjectIssueRepairRsp;
 import com.longfor.longjian.houseqm.app.vo.houseqmstatistic.HouseqmStatisticRhyfTaskStatRspVo;
 import com.longfor.longjian.houseqm.app.vo.houseqmstatistic.HouseqmStatisticTaskIssueRepairListRsp;
-import com.longfor.longjian.houseqm.app.vo.issue.HouseQmCheckTaskIssueVo;
 import com.longfor.longjian.houseqm.consts.CategoryClsTypeEnum;
 import com.longfor.longjian.houseqm.consts.HouseQmCheckTaskRoleTypeEnum;
 import com.longfor.longjian.houseqm.domain.internalService.HouseQmCheckTaskService;

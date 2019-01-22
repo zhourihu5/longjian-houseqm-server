@@ -60,7 +60,7 @@ public class BgTaskController {
         String now = DateUtil.dateToString(new Date(), "yyyy-MM-dd hh:mm");
 
         String file_name="工程检查：导出带图片ppt报告 "+now;
-        //调服务
+        //todo 调basic服务
         LjBaseResponse<ExportPptRspVo> response = new LjBaseResponse<>();
         response.setResult(0);
         //response.setData();

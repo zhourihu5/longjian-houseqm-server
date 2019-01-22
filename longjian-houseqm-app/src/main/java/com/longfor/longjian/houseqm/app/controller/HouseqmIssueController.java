@@ -5,14 +5,17 @@ import com.google.common.collect.Maps;
 import com.longfor.longjian.common.base.LjBaseResponse;
 import com.longfor.longjian.common.exception.LjBaseRuntimeException;
 import com.longfor.longjian.common.util.CtrlTool;
+import com.longfor.longjian.houseqm.app.feginClient.IHouseqmCheckTaskIssueFeignService;
 import com.longfor.longjian.houseqm.app.req.issue.IssueBatchAppointReq;
 import com.longfor.longjian.houseqm.app.req.issue.IssueBatchApproveReq;
 import com.longfor.longjian.houseqm.app.req.issue.IssueBatchDeleteReq;
 import com.longfor.longjian.houseqm.app.req.issue.IssueExportPdfReq;
 import com.longfor.longjian.houseqm.app.service.IHouseqmIssueService;
 import com.longfor.longjian.houseqm.app.vo.IssueBatchAppointRspVo;
-import com.longfor.longjian.houseqm.app.vo.issue.IssueBatchApproveRspVo;
-import com.longfor.longjian.houseqm.app.vo.issue.IssueBatchDeleteRspVo;
+import com.longfor.longjian.houseqm.app.vo.houseqmissue.HouseqmCheckTaskIssueIndexJsonReqMsg;
+import com.longfor.longjian.houseqm.app.vo.houseqmissue.HouseqmCheckTaskIssueIndexJsonRspMsg;
+import com.longfor.longjian.houseqm.app.vo.houseqmissue.IssueBatchApproveRspVo;
+import com.longfor.longjian.houseqm.app.vo.houseqmissue.IssueBatchDeleteRspVo;
 import com.longfor.longjian.houseqm.consts.ErrorEnum;
 import com.longfor.longjian.houseqm.consts.HouseQmCheckTaskIssueCheckStatusEnum;
 import com.longfor.longjian.common.consts.HouseQmCheckTaskIssueStatusEnum;
@@ -24,7 +27,7 @@ import com.longfor.longjian.houseqm.po.zj2db.Project;
 import com.longfor.longjian.houseqm.util.DateUtil;
 import com.longfor.longjian.houseqm.util.StringSplitToListUtil;
 import com.longfor.longjian.houseqm.app.vo.url.UrlUtils;
-import com.sun.jndi.toolkit.url.UrlUtil;
+import com.longfor.longjian.houseqm.util.StringUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.MediaType;
@@ -59,9 +62,8 @@ public class HouseqmIssueController {
     private HouseQmCheckTaskIssueService houseQmCheckTaskIssueService;
     @Resource
     private CtrlTool ctrlTool;
-
-    @Value("${stat_export_server_addr}")
-    private String statExportServerAddr;
+    @Resource
+    private IHouseqmCheckTaskIssueFeignService iHouseqmCheckTaskIssueFeignService;
 
     /**
      * @return com.longfor.longjian.common.base.LjBaseResponse
@@ -124,24 +126,46 @@ public class HouseqmIssueController {
                 taskName += "、";
             }
         }
-        // 导出项配置
-        UrlUtils.getUrl(statExportServerAddr + "/stat_export/houseqm_check_task_issue/index_json/");
+        HouseqmCheckTaskIssueIndexJsonReqMsg reqMsg = new HouseqmCheckTaskIssueIndexJsonReqMsg();
+        reqMsg.setCategory_cls(req.getCategory_cls());
+        reqMsg.setProject_id(req.getProject_id());
+        reqMsg.setTask_id(req.getTask_id());
+        reqMsg.setTask_name(taskName);
+        reqMsg.setCategory_key(req.getCategory_key());
+        reqMsg.setCheck_item_key(req.getCheck_item_key());
+        reqMsg.setChecker_id(req.getChecker_id());
+        reqMsg.setRepairer_id(req.getRepairer_id());
+        reqMsg.setType(req.getType());
+        reqMsg.setCondition(req.getCondition());
+        reqMsg.setCreate_on_begin(req.getCreate_on_begin());
+        reqMsg.setCreate_on_end(req.getCreate_on_end());
+        reqMsg.setIs_overdue(req.getIs_overdue());
 
-        //todo  设置url参数 即要导出的数据
+        reqMsg.setArea_ids(req.getArea_ids());
+        reqMsg.setStatus_in(req.getStatus_in());
+        reqMsg.setUuids(StringUtil.strToStrs(req.getUuids(),","));
 
+        LjBaseResponse<Object> response = new LjBaseResponse<>();
+        try {
+            LjBaseResponse<HouseqmCheckTaskIssueIndexJsonRspMsg> result = iHouseqmCheckTaskIssueFeignService.indexJson(reqMsg);
+            response.setResult(0);
+            response.setMessage("success");
+        } catch (Exception e) {
+            e.printStackTrace();
+            response.setResult(500);
+            response.setMessage(e.getMessage());
+            throw new LjBaseRuntimeException(500,e.getMessage());
+        }
 
-        // 获取userid //c.MustGet("user").(*zj3user_models.User).Id
+        //todo 获取userid //c.MustGet("user").(*zj3user_models.User).Id
         int userId = 1;
         Map<String, String> args = Maps.newHashMap();
-        args.put("url", "");
+        //args.put("url", "");
 
         String nowTime = DateUtil.getNowTimeStr("yyyyMMddhhmm");
         String exportName = "【" + proj.getName() + "】整改报告." + nowTime + ".pdf";
-        // todo 把导出的信息插入到数据库中
+        // 把导出的信息插入到数据库中
         iHouseqmIssueService.create(userId, proj.getTeamId(), req.getProject_id(), 0, args, exportName, new Date());
-
-
-        LjBaseResponse<Object> response = new LjBaseResponse<>();
         return response;
     }
 
@@ -185,7 +209,7 @@ public class HouseqmIssueController {
     }
 
     /**
-     * @return com.longfor.longjian.common.base.LjBaseResponse<com.longfor.longjian.houseqm.app.vo.issue.IssueBatchApproveRspVo>
+     * @return com.longfor.longjian.common.base.LjBaseResponse<com.longfor.longjian.houseqm.app.vo.houseqmissue.IssueBatchApproveRspVo>
      * @Author hy
      * @Description 项目下我的问题批量销项
      * http://192.168.37.159:3000/project/8/interface/api/3376
@@ -217,7 +241,7 @@ public class HouseqmIssueController {
     }
 
     /**
-     * @return com.longfor.longjian.common.base.LjBaseResponse<com.longfor.longjian.houseqm.app.vo.issue.IssueBatchDeleteRspVo>
+     * @return com.longfor.longjian.common.base.LjBaseResponse<com.longfor.longjian.houseqm.app.vo.houseqmissue.IssueBatchDeleteRspVo>
      * @Author hy
      * @Description 项目下问题管理批量删除
      * http://192.168.37.159:3000/project/8/interface/api/3348

@@ -1,8 +1,7 @@
-package com.longfor.longjian.houseqm.app.vo.issue;
+package com.longfor.longjian.houseqm.app.vo.houseqmissue;
 
 import com.google.common.collect.Lists;
 import com.longfor.longjian.houseqm.app.service.IHouseqmService;
-import com.longfor.longjian.houseqm.domain.internalService.UserInHouseQmCheckTaskService;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -14,7 +13,7 @@ import java.util.Map;
 
 /**
  * @ProjectName: longjian-houseqm-server
- * @Package: com.longfor.longjian.houseqm.app.vo.issue
+ * @Package: com.longfor.longjian.houseqm.app.vo.houseqmissue
  * @ClassName: HouseqmSquadUserCache
  * @Description: 用来处理融合app中的消息推送功能，简单缓存一下
  * @Author: hy

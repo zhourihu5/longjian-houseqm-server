@@ -3,7 +3,7 @@ package com.longfor.longjian.houseqm.app.service.impl;
 import com.google.common.collect.Lists;
 import com.longfor.longjian.houseqm.app.service.IHouseqmIssueService;
 import com.longfor.longjian.houseqm.app.vo.HouseQmCheckTaskIssueHelperVo;
-import com.longfor.longjian.houseqm.app.vo.issue.ApiHouseQmCheckTaskReportRsp;
+import com.longfor.longjian.houseqm.app.vo.houseqmissue.ApiHouseQmCheckTaskReportRsp;
 import com.longfor.longjian.houseqm.app.vo.url.ExportVo;
 import com.longfor.longjian.houseqm.consts.HouseQmCheckTaskIssueCheckStatusEnum;
 import com.longfor.longjian.common.consts.HouseQmCheckTaskIssueStatusEnum;
@@ -143,8 +143,6 @@ public class HouseqmIssueServiceImpl implements IHouseqmIssueService {
         //输入输出文件名
         String inputFileName = randCount + ts + ".input";
         String outputFileName = "export/" + randCount + ts + ".output";
-
-        //todo writeInput()
         String fileName = cfg_base_dir + "/" + inputFileName;
 
         //记录导出的内容到数据库
@@ -153,10 +151,6 @@ public class HouseqmIssueServiceImpl implements IHouseqmIssueService {
                 resultFilePath, exportName, 0, "", executeAt);
     }
 
-    //todo
-    public void writeInput(String fileName) {
-
-    }
 
     @Override
     public Project getProjectByProjId(Integer project_id) {

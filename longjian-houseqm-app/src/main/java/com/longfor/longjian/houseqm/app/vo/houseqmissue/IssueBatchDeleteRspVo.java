@@ -1,4 +1,4 @@
-package com.longfor.longjian.houseqm.app.vo.issue;
+package com.longfor.longjian.houseqm.app.vo.houseqmissue;
 
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -8,7 +8,7 @@ import java.util.List;
 
 /**
  * @ProjectName: longjian-houseqm-server
- * @Package: com.longfor.longjian.houseqm.app.vo.issue
+ * @Package: com.longfor.longjian.houseqm.app.vo.houseqmissue
  * @ClassName: IssueBatchDeleteRspVo
  * @Description: java类作用描述
  * @Author: hy

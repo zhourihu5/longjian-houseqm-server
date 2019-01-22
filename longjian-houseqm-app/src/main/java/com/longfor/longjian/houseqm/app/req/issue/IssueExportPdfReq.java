@@ -9,7 +9,7 @@ import java.util.List;
 
 /**
  * @ProjectName: longjian-houseqm-server
- * @Package: com.longfor.longjian.houseqm.app.req.issue
+ * @Package: com.longfor.longjian.houseqm.app.req.houseqmissue
  * @ClassName: IssueExportPdfReq
  * @Description: java类作用描述
  * @Author: hy
@@ -52,4 +52,6 @@ public class IssueExportPdfReq implements Serializable {
     private String create_on_end;
     private Boolean is_overdue;
     private String uuids;
+
+
 }

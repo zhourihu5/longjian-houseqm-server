@@ -1,4 +1,4 @@
-package com.longfor.longjian.houseqm.app.vo.issue;
+package com.longfor.longjian.houseqm.app.vo.houseqmissue;
 
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -7,7 +7,7 @@ import java.io.Serializable;
 
 /**
  * @ProjectName: longjian-houseqm-server
- * @Package: com.longfor.longjian.houseqm.app.vo.issue
+ * @Package: com.longfor.longjian.houseqm.app.vo.houseqmissue
  * @ClassName: HouseQmIssue
  * @Description: java类作用描述
  * @Author: hy
