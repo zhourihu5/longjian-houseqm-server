@@ -642,4 +642,13 @@ public class HouseQmCheckTaskIssueServiceImpl implements HouseQmCheckTaskIssueSe
         return houseQmCheckTaskIssueMapper.selectByExample(example);
     }
 
+    @Override
+    @LFAssignDataSource("zhijian2")
+    public HouseQmCheckTaskIssue selectByTaskIdAndUuidAndNotDel(Integer taskId, String issueUuid) {
+        Example example = new Example(HouseQmCheckTaskIssue.class);
+        example.createCriteria().andEqualTo("taskId",taskId).andEqualTo("uuid",issueUuid).andIsNull("deleteAt");
+        return    houseQmCheckTaskIssueMapper.selectOneByExample(example);
+
+    }
+
 }

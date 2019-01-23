@@ -46,7 +46,7 @@ public class GroupProgressStatDataFetcher {
         String categoryKey = environment.getArgument("categoryKey");
         String timeFrameType = environment.getArgument("timeFrameType");
         List<Integer> teamIds = environment.getArgument("teamIds");
-        Date dateField = environment.getArgument("timeFrameEnd");
+        Date timeFrameEnd = environment.getArgument("timeFrameEnd");
 
         log.debug("StatGroupDataFetcher - progressStatDataFetcher - categoryKey:{}", categoryKey);
         log.debug("StatGroupDataFetcher - progressStatDataFetcher - timeFrameType:{}", timeFrameType);
@@ -56,7 +56,7 @@ public class GroupProgressStatDataFetcher {
                 log.debug("StatGroupDataFetcher - progressStatDataFetcher - teamIds-teamId:{}", teamId);
             }
         }
-        log.debug("StatGroupDataFetcher - progressStatDataFetcher - timeFrameEnd:{}", dateField);
+        log.debug("StatGroupDataFetcher - progressStatDataFetcher - timeFrameEnd:{}", timeFrameEnd);
 
 
         StatItemsVo statItemsVo =new StatItemsVo();
@@ -65,7 +65,7 @@ public class GroupProgressStatDataFetcher {
         vo.setCategoryKey(categoryKey);
         vo.setTimeFrameType(timeFrameType);
         vo.setTeamIds(teamIds);
-        vo.setDateField(dateField);
+//      vo.setDateField(dateField);
 
         statItemsVo.setVariableVo(vo);
         return statItemsVo;
@@ -87,13 +87,26 @@ public class GroupProgressStatDataFetcher {
         String categoryKey =  statItemsVo.getVariableVo().getCategoryKey();
         String timeFrameType = statItemsVo.getVariableVo().getTimeFrameType();
         List<Integer> teamIds = statItemsVo.getVariableVo().getTeamIds();
-        Date dateField = statItemsVo.getVariableVo().getDateField();
+        Date timeFrameEnd = statItemsVo.getVariableVo().getDateField();
 
 
         log.debug("StatGroupDataFetcher - statGroupItemDataFetcher - categoryKey:{}", categoryKey);
 
+        if(TimeFrameTypeEnum.WEEK.toString().equals(timeFrameType)){
 
-        statHouseQmProjectDailyStatService.searchStat(categoryKey,timeFrameType,teamIds,dateField);
+        }else if(TimeFrameTypeEnum.QUARTER.toString().equals(timeFrameType)){
+
+        }else if(TimeFrameTypeEnum.MONTH.toString().equals(timeFrameType)){
+
+        }else if(TimeFrameTypeEnum.YEAR.toString().equals(timeFrameType)){
+
+        }else{
+            //day
+//            statHouseQmProjectDailyStatService.searchStat(categoryKey,timeFrameType,teamIds,timeFrameEnd);
+
+        }
+
+
 
         StatDataVo statDataVo = new StatDataVo();
         statDataVo.setIssueCount(100);

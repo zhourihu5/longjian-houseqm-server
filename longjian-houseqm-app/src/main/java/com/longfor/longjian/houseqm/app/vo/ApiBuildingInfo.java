@@ -11,6 +11,6 @@ import java.io.Serializable;
 @Data
 @NoArgsConstructor
 public class ApiBuildingInfo implements Serializable{
-  private Integer  Id; // 楼栋ID
-   private String  Name ;// 楼栋名称
+  private Integer  id; // 楼栋ID
+   private String  name ;// 楼栋名称
 }

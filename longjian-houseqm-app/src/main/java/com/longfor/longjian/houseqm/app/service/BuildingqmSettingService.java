@@ -34,10 +34,10 @@ public class BuildingqmSettingService {
     private IssueFieldSettingService issueFieldSettingService;
 
 
-    public LjBaseResponse<List<ApiIssueFiledSettingMsg>> getIssuefiledSetting(String projectIds, Integer timestamp)  {
+    public LjBaseResponse<List<ApiIssueFiledSettingMsg>> getIssuefiledSetting(String projectIds, Integer timestamp) {
         List<Integer> projectIdList = StringSplitToListUtil.splitToIdsComma(projectIds, ",");
         ArrayList<ApiIssueFiledSettingMsg> issueFileds = Lists.newArrayList();
-        List<IssueFieldSetting> settingList = issueFieldSettingService.findProjectIdsAndModuleId(projectIdList,ModuleInfoEnum.GCGL.getValue());
+        List<IssueFieldSetting> settingList = issueFieldSettingService.findProjectIdsAndModuleId(projectIdList, ModuleInfoEnum.GCGL.getValue());
         HashMap<Integer, List<IssueFieldSetting>> projectMap = Maps.newHashMap();
         for (int i = 0; i < settingList.size(); i++) {
             if (!projectMap.containsKey(settingList.get(i).getProjectId())) {
@@ -63,14 +63,14 @@ public class BuildingqmSettingService {
                 }
             } else {
                 List<IssueFieldSetting> issueFieldSettings = initDefaultSetting(projectIdList.get(i));
-                for (int j = 0; j <issueFieldSettings.size() ; j++) {
+                for (int j = 0; j < issueFieldSettings.size(); j++) {
                     ApiIssueFiledSettingMsg msg = new ApiIssueFiledSettingMsg();
                     msg.setProject_id(issueFieldSettings.get(i).getProjectId());
-                            msg.setField_id(issueFieldSettings.get(i).getFieldId());
+                    msg.setField_id(issueFieldSettings.get(i).getFieldId());
                     msg.setName(issueFieldSettings.get(i).getName());
-                            msg.setAlias(issueFieldSettings.get(i).getAlias());
+                    msg.setAlias(issueFieldSettings.get(i).getAlias());
                     msg.setDisplay_status(issueFieldSettings.get(i).getDisplayStatus());
-                            msg.setRequired_status(issueFieldSettings.get(i).getRequiredStatus());
+                    msg.setRequired_status(issueFieldSettings.get(i).getRequiredStatus());
                     msg.setAlias_status(issueFieldSettings.get(i).getAliasStatus());
                     issueFileds.add(msg);
                 }
@@ -81,8 +81,6 @@ public class BuildingqmSettingService {
         response.setData(issueFileds);
         return response;
     }
-
-
 
 
     private List<IssueFieldSetting> initDefaultSetting(Integer projectId) {
@@ -100,10 +98,10 @@ public class BuildingqmSettingService {
         setting.setModifyUserId(uid);
         setting.setCreateAt(new Date());
         setting.setUpdateAt(new Date());
-   int  one=issueFieldSettingService.add(setting);
-       if(one<=0){
-           return settingList;
-       }
+        int one = issueFieldSettingService.add(setting);
+        if (one <= 0) {
+            return settingList;
+        }
         settingList.add(setting);
 
         IssueFieldSetting settings = new IssueFieldSetting();
@@ -118,8 +116,8 @@ public class BuildingqmSettingService {
         settings.setModifyUserId(uid);
         settings.setCreateAt(new Date());
         settings.setUpdateAt(new Date());
-        int  two=issueFieldSettingService.add(settings);
-        if(two<=0){
+        int two = issueFieldSettingService.add(settings);
+        if (two <= 0) {
             return settingList;
         }
         settingList.add(settings);
@@ -136,8 +134,8 @@ public class BuildingqmSettingService {
         settings3.setModifyUserId(uid);
         settings3.setCreateAt(new Date());
         settings3.setUpdateAt(new Date());
-        int  three=issueFieldSettingService.add(settings3);
-        if(three<=0){
+        int three = issueFieldSettingService.add(settings3);
+        if (three <= 0) {
             return settingList;
         }
         settingList.add(settings3);
@@ -154,8 +152,8 @@ public class BuildingqmSettingService {
         settings4.setModifyUserId(uid);
         settings4.setCreateAt(new Date());
         settings4.setUpdateAt(new Date());
-        int  four=issueFieldSettingService.add(settings4);
-        if(four<=0){
+        int four = issueFieldSettingService.add(settings4);
+        if (four <= 0) {
             return settingList;
         }
         settingList.add(settings4);
@@ -172,8 +170,8 @@ public class BuildingqmSettingService {
         settings5.setModifyUserId(uid);
         settings5.setCreateAt(new Date());
         settings5.setUpdateAt(new Date());
-        int  five=issueFieldSettingService.add(settings5);
-        if(five<=0){
+        int five = issueFieldSettingService.add(settings5);
+        if (five <= 0) {
             return settingList;
         }
         settingList.add(settings5);
@@ -190,8 +188,8 @@ public class BuildingqmSettingService {
         settings6.setModifyUserId(uid);
         settings6.setCreateAt(new Date());
         settings6.setUpdateAt(new Date());
-        int  six=issueFieldSettingService.add(settings6);
-        if(six<=0){
+        int six = issueFieldSettingService.add(settings6);
+        if (six <= 0) {
             return settingList;
         }
         settingList.add(settings6);
@@ -208,8 +206,8 @@ public class BuildingqmSettingService {
         settings7.setModifyUserId(uid);
         settings7.setCreateAt(new Date());
         settings7.setUpdateAt(new Date());
-        int  seven=issueFieldSettingService.add(settings7);
-        if(seven<=0){
+        int seven = issueFieldSettingService.add(settings7);
+        if (seven <= 0) {
             return settingList;
         }
         settingList.add(settings7);
@@ -226,8 +224,8 @@ public class BuildingqmSettingService {
         settings8.setModifyUserId(uid);
         settings8.setCreateAt(new Date());
         settings8.setUpdateAt(new Date());
-        int  eight=issueFieldSettingService.add(settings8);
-        if(eight<=0){
+        int eight = issueFieldSettingService.add(settings8);
+        if (eight <= 0) {
             return settingList;
         }
         settingList.add(settings8);
@@ -245,8 +243,8 @@ public class BuildingqmSettingService {
         settings9.setModifyUserId(uid);
         settings9.setCreateAt(new Date());
         settings9.setUpdateAt(new Date());
-        int  nine=issueFieldSettingService.add(settings9);
-        if(nine<=0){
+        int nine = issueFieldSettingService.add(settings9);
+        if (nine <= 0) {
             return settingList;
         }
         settingList.add(settings9);
@@ -264,8 +262,8 @@ public class BuildingqmSettingService {
         settings10.setModifyUserId(uid);
         settings10.setCreateAt(new Date());
         settings10.setUpdateAt(new Date());
-        int  ten=issueFieldSettingService.add(settings10);
-        if(ten<=0){
+        int ten = issueFieldSettingService.add(settings10);
+        if (ten <= 0) {
             return settingList;
         }
         settingList.add(settings10);

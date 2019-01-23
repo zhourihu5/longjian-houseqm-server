@@ -14,6 +14,7 @@ import org.springframework.transaction.annotation.Transactional;
 import tk.mybatis.mapper.entity.Example;
 
 import javax.annotation.Resource;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Set;
@@ -198,6 +199,14 @@ public class HouseQmCheckTaskServiceImpl implements HouseQmCheckTaskService {
     @LFAssignDataSource("zhijian2")
     public int delete(HouseQmCheckTask houseQmCheckTask) {
         return houseQmCheckTaskMapper.delete(houseQmCheckTask);
+    }
+
+    @Override
+    @LFAssignDataSource("zhijian2")
+    public List<HouseQmCheckTask> selectByProjectIdsAndCategoryClsNotDel(ArrayList<Integer> parentIds, List<Integer> categorylist) {
+        Example example = new Example(HouseQmCheckTask.class);
+        example.createCriteria().andIn("projectId",parentIds).andIn("categoryCls",categorylist).andIsNull("deleteAt");
+        return houseQmCheckTaskMapper.selectByExample(example);
     }
 
     /**
