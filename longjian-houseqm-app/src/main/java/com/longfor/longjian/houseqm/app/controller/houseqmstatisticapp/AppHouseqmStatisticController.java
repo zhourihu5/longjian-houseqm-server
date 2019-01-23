@@ -80,9 +80,14 @@ public class AppHouseqmStatisticController {
         log.info("project_issue_stat, project_id=" + req.getProject_id() + ", source=" + req.getSource() + ", area_id=" + req.getArea_id() + ", timestamp=" + req.getTimestamp());
         // todo uid      uid = session['uid']
         int uid = 7566;
-        ProjectIssueStatRspVo item = iHouseqmStatisticService.projectIssueStat(uid, req.getProject_id(), req.getSource(), req.getArea_id(), req.getTimestamp());
-
-
+        try {
+            ProjectIssueStatRspVo item = iHouseqmStatisticService.projectIssueStat(uid, req.getProject_id(), req.getSource(), req.getArea_id(), req.getTimestamp());
+            response.setData(item);
+        } catch (Exception e) {
+            e.printStackTrace();
+            response.setResult(500);
+            response.setMessage(e.getMessage());
+        }
         return response;
     }
 

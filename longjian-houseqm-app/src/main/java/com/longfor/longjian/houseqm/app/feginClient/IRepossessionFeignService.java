@@ -10,6 +10,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 
 /**
  * @ProjectName: longjian-houseqm-server
@@ -30,7 +31,7 @@ public interface IRepossessionFeignService {
      * @return
      */
     @PostMapping(value = "report", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
-    LjBaseResponse<Object> report(@Validated RepossessionReportReq repossessionReportReq);
+    LjBaseResponse<Object> report(@RequestBody RepossessionReportReq repossessionReportReq);
 
 
     /**
@@ -40,6 +41,6 @@ public interface IRepossessionFeignService {
      * @return
      */
     @GetMapping(value = "get", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
-    LjBaseResponse<Object> get(@Validated RepossessionGetReq repossessionGetReq);
+    LjBaseResponse<Object> get(@RequestBody RepossessionGetReq repossessionGetReq);
 
 }

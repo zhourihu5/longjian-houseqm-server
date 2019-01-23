@@ -193,8 +193,7 @@ public class HouseQmCheckTaskIssueServiceImpl implements HouseQmCheckTaskIssueSe
      */
     @LFAssignDataSource("zhijian2")
     public List<CheckerIssueStat> searchHouseQmCheckTaskIssueActiveDateByProjTaskIdIn(Integer projectId, List<Integer> taskIds) {
-        List<CheckerIssueStat> taskIssues = houseQmCheckTaskIssueMapper.selectCreateAtByProjectIdAndTaskIdsIn(projectId, taskIds, "false");
-        return taskIssues;
+        return houseQmCheckTaskIssueMapper.selectCreateAtByProjectIdAndTaskIdsIn(projectId, taskIds, "false");
     }
 
     /**
@@ -450,6 +449,7 @@ public class HouseQmCheckTaskIssueServiceImpl implements HouseQmCheckTaskIssueSe
         if (page != null && page > 0) {
             start = (page - 1) * pageSize;
         }
+        ExampleUtil.addDeleteAtJudge(example);
         int total = houseQmCheckTaskIssueMapper.selectCountByExample(example);
         example.orderBy("updateAt").desc();
         List<HouseQmCheckTaskIssue> houseQmCheckTaskIssues = houseQmCheckTaskIssueMapper.selectByExampleAndRowBounds(example, new RowBounds(start, pageSize));

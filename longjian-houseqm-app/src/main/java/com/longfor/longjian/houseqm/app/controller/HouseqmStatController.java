@@ -1,10 +1,10 @@
 package com.longfor.longjian.houseqm.app.controller;
 
 import com.ctrip.framework.apollo.core.utils.StringUtils;
-import com.github.pagehelper.util.StringUtil;
 import com.google.common.collect.Lists;
 import com.longfor.longjian.common.base.LjBaseResponse;
 import com.longfor.longjian.common.util.CtrlTool;
+import com.longfor.longjian.common.util.StringUtil;
 import com.longfor.longjian.houseqm.app.req.*;
 import com.longfor.longjian.houseqm.app.req.houseqmstat.*;
 import com.longfor.longjian.houseqm.app.service.IHouseqmStatService;
@@ -62,7 +62,7 @@ public class HouseqmStatController {
      * @param req
      * @return
      */
-    @GetMapping(value = "stat_houseqm/checker_stat", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+    @GetMapping(value = "stat_houseqm/checker_stat/", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     public LjBaseResponse<CheckerStatListVo> checkerStat(HttpServletRequest request, @Valid StatHouseqmCheckerStatReq req) {
         ////TODO 鉴权  _, _, err := ctrl_tool.ProjPermMulti(c, []string
         LjBaseResponse<CheckerStatListVo> response = new LjBaseResponse<>();
@@ -93,7 +93,7 @@ public class HouseqmStatController {
      * @param req
      * @return
      */
-    @GetMapping(value = "stat/task_situation_daily", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+    @GetMapping(value = "stat/task_situation_daily/", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     public LjBaseResponse<ProjectDailyListVo> taskSituationDaily(HttpServletRequest request, @Valid StatTaskSituationDailyReq req) {
         ////TODO 鉴权 _, _, err := ctrl_tool.ProjPermMulti(c, []string{"项目.移动验房.统计.查看", "项目.工程检查.统计.查看"})
         LjBaseResponse<ProjectDailyListVo> response = new LjBaseResponse<>();
@@ -106,7 +106,7 @@ public class HouseqmStatController {
             response.setResult(500);
         }
         try {
-            List<Integer> taskIdList = StringSplitToListUtil.splitToIdsComma(req.getTask_ids(), ",");
+            List<Integer> taskIdList = StringUtil.strToInts(req.getTask_ids(),",");
             ProjectDailyListVo pdv = houseqmStatService.searchTaskSituationDailyByProjTaskIdInOnPage(req.getProject_id(), taskIdList, req.getPage(), req.getPage_size());
             response.setData(pdv);
         } catch (Exception e) {
@@ -124,7 +124,7 @@ public class HouseqmStatController {
      * @param req
      * @return
      */
-    @GetMapping(value = "stat/task_situation_overall", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+    @GetMapping(value = "stat/task_situation_overall/", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     public LjBaseResponse<ProjectOveralListVo> taskSituationOverall(HttpServletRequest request, @Valid StatTaskSituationOverallReq req) {
         ////TODO _, _, err := ctrl_tool.ProjPermMulti(c, []string{"项目.移动验房.统计.查看", "项目.工程检查.统计.查看"})
         LjBaseResponse<ProjectOveralListVo> response = new LjBaseResponse<>();
@@ -170,7 +170,7 @@ public class HouseqmStatController {
      * @param req
      * @return
      */
-    @GetMapping(value = "stat/task_area_list", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+    @GetMapping(value = "stat/task_area_list/", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     public LjBaseResponse<TaskAreaListVo> taskAreaList(HttpServletRequest request, @Valid StatTaskAreaListReq req) {
         LjBaseResponse<TaskAreaListVo> response = new LjBaseResponse<>();
         ////TODO _, _, err := ctrl_tool.ProjPermMulti(c, []string{"项目.移动验房.统计.查看", "项目.工程检查.统计.查看"})
@@ -200,7 +200,7 @@ public class HouseqmStatController {
      * @param req
      * @return
      */
-    @GetMapping(value = "stat/area_situation_task_list", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+    @GetMapping(value = "stat/area_situation_task_list/", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     public LjBaseResponse<AreaTaskListVo> areaSituationTaskList(HttpServletRequest request, @Valid StatAreaSituationTaskListReq req) {
         LjBaseResponse<AreaTaskListVo> response = new LjBaseResponse<>();
         ////TODO _, _, err := ctrl_tool.ProjPermMulti(c, []string{"项目.移动验房.统计.查看", "项目.工程检查.统计.查看"})
@@ -225,7 +225,7 @@ public class HouseqmStatController {
      * @param req
      * @return
      */
-    @GetMapping(value = "stat/task_detail", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+    @GetMapping(value = "stat/task_detail/", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     public LjBaseResponse<TaskStatVo> taskDetail(HttpServletRequest request, @Valid StatTaskDetailReq req) {
         LjBaseResponse<TaskStatVo> response = new LjBaseResponse<>();
 
@@ -235,15 +235,21 @@ public class HouseqmStatController {
         } catch (Exception e) {
             e.printStackTrace();
         }
-        TaskStatVo.IssueStatVo issue = houseqmStatisticService.getCheckTaskIssueTypeStatByTaskIdAreaId(req.getTask_id(), req.getArea_id());
-        TaskStatVo.HouseStatVo house = houseqmStatisticService.getHouseQmCheckTaskHouseStatByTaskId(req.getProject_id(), req.getTask_id(), req.getArea_id());
-        house.setHouse_checked_percent(MathUtil.getPercentage(house.getChecked_count(), house.getHouse_count()));
-        house.setHouse_repaired_percent(MathUtil.getPercentage(house.getRepaired_count(), house.getHas_issue_count()));
-        house.setHouse_approveded_percent(MathUtil.getPercentage(house.getApproved_count(), house.getRepaired_count()));
-        TaskStatVo taskStatVo = new TaskStatVo();
-        taskStatVo.setIssue(issue);
-        taskStatVo.setHouse(house);
-        response.setData(taskStatVo);
+        try {
+            TaskStatVo.IssueStatVo issue = houseqmStatisticService.getCheckTaskIssueTypeStatByTaskIdAreaId(req.getTask_id(), req.getArea_id());
+            TaskStatVo.HouseStatVo house = houseqmStatisticService.getHouseQmCheckTaskHouseStatByTaskId(req.getProject_id(), req.getTask_id(), req.getArea_id());
+            house.setHouse_checked_percent(MathUtil.getPercentage(house.getChecked_count(), house.getHouse_count()));
+            house.setHouse_repaired_percent(MathUtil.getPercentage(house.getRepaired_count(), house.getHas_issue_count()));
+            house.setHouse_approveded_percent(MathUtil.getPercentage(house.getApproved_count(), house.getRepaired_count()));
+            TaskStatVo taskStatVo = new TaskStatVo();
+            taskStatVo.setIssue(issue);
+            taskStatVo.setHouse(house);
+            response.setData(taskStatVo);
+        } catch (Exception e) {
+            e.printStackTrace();
+            response.setMessage(e.getMessage());
+            response.setResult(500);
+        }
         return response;
     }
 
@@ -298,7 +304,7 @@ public class HouseqmStatController {
      * ////该接口不用了，废弃
      **/
     @Deprecated
-    @GetMapping(value = "stat_houseqm/task_situation_overall", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+    @GetMapping(value = "stat_houseqm/task_situation_overall/", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     public LjBaseResponse<StatHouseqmTaskSituationOverallRspVo> taskSituationOverall(@RequestBody @Valid StatHouseqmTaskSituationOverallReq req) {
 
 
@@ -339,7 +345,7 @@ public class HouseqmStatController {
      * @Param //// 该接口不用了，废弃
      **/
     @Deprecated
-    @GetMapping(value = "stat_houseqm/complete_daily", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+    @GetMapping(value = "stat_houseqm/complete_daily/", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     public LjBaseResponse<StatHouseqmCompleteDailyRspVo> completeDaily(@Valid StatHouseqmCompleteDailyReq req) {
         // todo  鉴权   _, _, err := ctrl_tool.ProjPermMulti(c, []string{"项目.移动验房.统计.查看", "项目.工程检查.统计.查看"})
 
@@ -369,7 +375,7 @@ public class HouseqmStatController {
      * @Date 14:50 2019/1/9
      * @Param [req]
      **/
-    @GetMapping(value = "stat/task_situation_members_checker", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+    @GetMapping(value = "stat/task_situation_members_checker/", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     public LjBaseResponse<StatTaskSituationMembersCheckerRspVo> taskSituationMembersChecker(@Valid StatTaskSituationMembersCheckerReq req) {
         //todo 鉴权 _, _, err := ctrl_tool.ProjPermMulti(c, []string{"项目.移动验房.统计.查看", "项目.工程检查.统计.查看"})
         if ("".equals(req.getBegin_on())) {

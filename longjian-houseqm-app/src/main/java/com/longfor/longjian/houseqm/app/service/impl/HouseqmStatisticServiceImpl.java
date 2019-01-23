@@ -137,14 +137,14 @@ public class HouseqmStatisticServiceImpl implements IHouseqmStatisticService {
         List<Integer> typs = Lists.newArrayList(HouseQmCheckTaskIssueTypeEnum.FindProblem.getId(), HouseQmCheckTaskIssueTypeEnum.Difficult.getId());
         List<Integer> status = Lists.newArrayList(HouseQmCheckTaskIssueStatusEnum.AssignNoReform.getId(), HouseQmCheckTaskIssueStatusEnum.ReformNoCheck.getId(), HouseQmCheckTaskIssueStatusEnum.CheckYes.getId());
 
-        List<HouseQmCheckTaskIssue> issue_list=houseQmCheckTaskIssueService.searchByProjIdAndCategoryClsInAndRepairerIdAndClientCreateAtAndTypInAndStatusInAndTaskIdOrderByClientCreateAt(project_id,category_cls_list,statBegin,statEnd,typs,status,task_id,my_task_ids);
+        List<HouseQmCheckTaskIssue> issue_list = houseQmCheckTaskIssueService.searchByProjIdAndCategoryClsInAndRepairerIdAndClientCreateAtAndTypInAndStatusInAndTaskIdOrderByClientCreateAt(project_id, category_cls_list, statBegin, statEnd, typs, status, task_id, my_task_ids);
 
         for (HouseQmCheckTaskIssue item : issue_list) {
-            if (stat_map.containsKey(item.getRepairerId())){
-                if (HouseQmCheckTaskIssueStatusEnum.AssignNoReform.getId().equals(item.getStatus())){
-                    stat_map.get(item.getRepairerId()).setIssue_assigned_count(stat_map.get(item.getRepairerId()).getIssue_assigned_count()+1);
-                }else if (HouseQmCheckTaskIssueStatusEnum.ReformNoCheck.getId().equals(item.getStatus())){
-                    stat_map.get(item.getRepairerId()).setIssue_repaired_count(stat_map.get(item.getRepairerId()).getIssue_repaired_count()+1);
+            if (stat_map.containsKey(item.getRepairerId())) {
+                if (HouseQmCheckTaskIssueStatusEnum.AssignNoReform.getId().equals(item.getStatus())) {
+                    stat_map.get(item.getRepairerId()).setIssue_assigned_count(stat_map.get(item.getRepairerId()).getIssue_assigned_count() + 1);
+                } else if (HouseQmCheckTaskIssueStatusEnum.ReformNoCheck.getId().equals(item.getStatus())) {
+                    stat_map.get(item.getRepairerId()).setIssue_repaired_count(stat_map.get(item.getRepairerId()).getIssue_repaired_count() + 1);
                 } else if (HouseQmCheckTaskIssueStatusEnum.CheckYes.getId().equals(item.getStatus())) {
                     stat_map.get(item.getRepairerId()).setIssue_approveded_count(stat_map.get(item.getRepairerId()).getIssue_approveded_count() + 1);
                 }
@@ -152,7 +152,7 @@ public class HouseqmStatisticServiceImpl implements IHouseqmStatisticService {
         }
         List<ApiHouseQmRepairerStatVo> items = Lists.newArrayList();
         for (Integer stat : stat_map.keySet()) {
-                items.add(stat_map.get(stat));
+            items.add(stat_map.get(stat));
         }
         ProjectRepairerStatRspVo result = new ProjectRepairerStatRspVo();
         result.setItems(items);
@@ -469,6 +469,7 @@ public class HouseqmStatisticServiceImpl implements IHouseqmStatisticService {
             houseStatVo.setHouse_count(0);
             //读取任务
             HouseQmCheckTask task = houseQmCheckTaskService.selectByProjectIdAndTaskId(projectId, taskId);
+            if (task==null)throw new LjBaseRuntimeException(500,"任务不存在");
             // 获取出任务下的区域与检验类型的交集
             List<Integer> areaIds = StringSplitToListUtil.splitToIdsComma(task.getAreaIds(), ",");
             List<Integer> areaTypes = StringSplitToListUtil.splitToIdsComma(task.getAreaTypes(), ",");
@@ -589,7 +590,8 @@ public class HouseqmStatisticServiceImpl implements IHouseqmStatisticService {
         }
         if (planStatus <= 0 || planStatus > 5) throw new LjBaseRuntimeException(500, "invalid plan_status.");
         List<Integer> categoryClsList = getCategoryClsList(source);
-//        HouseQmCheckTaskIssueListVo issueListVo = searchHouseQmCheckTaskIssueByProjTaskIdClsInAreaIdPlanStatusBeginOnEndOnPage(projectId, taskId, categoryClsList, areaId, planStatus, beginOn1, endOn1, page, pageSize);
+        // 没有deleted_at is null
+        // HouseQmCheckTaskIssueListVo issueListVo = searchHouseQmCheckTaskIssueByProjTaskIdClsInAreaIdPlanStatusBeginOnEndOnPage(projectId, taskId, categoryClsList, areaId, planStatus, beginOn1, endOn1, page, pageSize);
         HouseQmCheckTaskIssueListDto issueListVo = houseQmCheckTaskIssueService.selectCountByProjectIdAndCategoryClsAndTypeAndStatusInAndDongTai2(projectId, taskId, categoryClsList, areaId, planStatus, beginOn1, endOn1, page, pageSize);
         HouseQmCheckTaskIssueListVo houseQmCheckTaskIssueListVo = new HouseQmCheckTaskIssueListVo();
         houseQmCheckTaskIssueListVo.setHouseQmCheckTaskIssues(issueListVo.getHouseQmCheckTaskIssues());

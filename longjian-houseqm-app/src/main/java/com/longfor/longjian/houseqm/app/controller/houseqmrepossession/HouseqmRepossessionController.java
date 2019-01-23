@@ -31,31 +31,31 @@ public class HouseqmRepossessionController {
     private IRepossessionFeignService iRepossessionFeignService;
 
     /**
+     * @return com.longfor.longjian.common.base.LjBaseResponse<java.lang.Object>
      * @Author hy
      * @Description 提交验房报告
      * http://192.168.37.159:3000/project/8/interface/api/3292
      * @Date 15:18 2019/1/22
      * @Param [repossessionReportReq]
-     * @return com.longfor.longjian.common.base.LjBaseResponse<java.lang.Object>
      **/
-    @GetMapping(value= "report/", produces= MediaType.APPLICATION_JSON_UTF8_VALUE)
-    public LjBaseResponse<Object> report(@Validated RepossessionReportReq repossessionReportReq){
+    @RequestMapping(value = "report/", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+    public LjBaseResponse<Object> report(@Validated RepossessionReportReq repossessionReportReq) {
         return iRepossessionFeignService.report(repossessionReportReq);
     }
 
     /**
+     * @return
      * @Author hy
      * @Description 获取验房报告
      * http://192.168.37.159:3000/project/8/interface/api/3300
      * @Date 15:18 2019/1/22
      * @Param
-     * @return
      **/
-    @GetMapping(value= "get/", produces= MediaType.APPLICATION_JSON_UTF8_VALUE)
-    public LjBaseResponse<Object> get(@Validated RepossessionGetReq repossessionGetReq){
+    @RequestMapping(value = "get/", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+    public LjBaseResponse<Object> get(@Validated RepossessionGetReq repossessionGetReq) {
+        log.info("get, task_ids="+repossessionGetReq.getTask_ids()+", timestamp="+repossessionGetReq.getTimestamp());
         return iRepossessionFeignService.get(repossessionGetReq);
     }
-
 
 
 }

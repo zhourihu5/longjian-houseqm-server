@@ -8,6 +8,7 @@ import com.longfor.longjian.houseqm.app.vo.bgtask.ExportRsp;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 
 /**
  * @ProjectName: longjian-houseqm-server
@@ -23,7 +24,7 @@ public interface IBuildingqmExportFeignService {
 
     //导出问题列表带图片Excel
     @PostMapping(value = "export_pic_excel/", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
-    LjBaseResponse<ExportRsp> exportPicExcel(ExportBuildingExcelReq req);
+    LjBaseResponse<ExportRsp> exportPicExcel(@RequestBody ExportBuildingExcelReq req);
 
 
 

@@ -9,6 +9,7 @@ import org.springframework.http.MediaType;
 import org.springframework.stereotype.Service;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 
 /**
  * @ProjectName: longjian-houseqm-server
@@ -23,6 +24,6 @@ import org.springframework.web.bind.annotation.PostMapping;
 public interface IHouseqmCheckTaskIssueFeignService {
 
     @PostMapping(value = "index_json", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
-    LjBaseResponse<HouseqmCheckTaskIssueIndexJsonRspMsg> indexJson(@Validated HouseqmCheckTaskIssueIndexJsonReqMsg req);
+    LjBaseResponse<HouseqmCheckTaskIssueIndexJsonRspMsg> indexJson(@RequestBody HouseqmCheckTaskIssueIndexJsonReqMsg req);
 
 }

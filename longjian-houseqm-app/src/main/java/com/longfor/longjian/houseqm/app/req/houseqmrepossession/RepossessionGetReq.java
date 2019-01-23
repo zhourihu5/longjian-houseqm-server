@@ -1,9 +1,11 @@
 package com.longfor.longjian.houseqm.app.req.houseqmrepossession;
 
 import lombok.Data;
+import org.hibernate.validator.constraints.NotBlank;
 
 import javax.validation.constraints.Max;
 import javax.validation.constraints.Min;
+import javax.validation.constraints.NotNull;
 import java.io.Serializable;
 
 /**
@@ -17,8 +19,8 @@ import java.io.Serializable;
 @Data
 public class RepossessionGetReq implements Serializable {
 
-    @Max(1024)
-    @Min(1)
+    @NotBlank
     private String task_ids;
+
     private Integer timestamp;
 }

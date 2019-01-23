@@ -5,6 +5,7 @@ import com.google.common.collect.Maps;
 import com.longfor.longjian.common.base.LjBaseResponse;
 import com.longfor.longjian.common.exception.LjBaseRuntimeException;
 import com.longfor.longjian.common.util.CtrlTool;
+import com.longfor.longjian.common.util.SessionInfo;
 import com.longfor.longjian.houseqm.app.feginClient.IHouseqmCheckTaskIssueFeignService;
 import com.longfor.longjian.houseqm.app.req.issue.IssueBatchAppointReq;
 import com.longfor.longjian.houseqm.app.req.issue.IssueBatchApproveReq;
@@ -31,6 +32,7 @@ import com.longfor.longjian.houseqm.util.StringUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.MediaType;
+import org.springframework.util.Assert;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -64,6 +66,8 @@ public class HouseqmIssueController {
     private CtrlTool ctrlTool;
     @Resource
     private IHouseqmCheckTaskIssueFeignService iHouseqmCheckTaskIssueFeignService;
+    @Resource
+    private SessionInfo sessionInfo;
 
     /**
      * @return com.longfor.longjian.common.base.LjBaseResponse
@@ -87,11 +91,12 @@ public class HouseqmIssueController {
             throw new LjBaseRuntimeException(ErrorEnum.DB_ITEM_UNFOUND.getCode(), ErrorEnum.DB_ITEM_UNFOUND.getMessage());
 
         List<String> uuids = null;
+
         if (req.getUuids().trim().length() > 0) {
             uuids = StringSplitToListUtil.splitToStringComma(req.getUuids(), ",");
         }
 
-        String taskName = "";
+        StringBuilder taskName = new StringBuilder();
         List<HouseQmCheckTask> taskList = Lists.newArrayList();
         //优先看有没有传task_id
         if (req.getTask_id() > 0) {
@@ -99,7 +104,7 @@ public class HouseqmIssueController {
             taskList.add(houseQmCheckTask);
         } else if (req.getUuids().length() > 0) {
             // 按uuid提取
-            List<HouseQmCheckTaskIssue> issueList = null;
+            List<HouseQmCheckTaskIssue> issueList = Lists.newArrayList();
             try {
                 issueList = iHouseqmIssueService.searchHouseQmIssueListByProjUuidIn(req.getProject_id(), uuids);
             } catch (Exception e) {
@@ -107,7 +112,7 @@ public class HouseqmIssueController {
             }
             HashMap<Integer, Boolean> taskMap = Maps.newHashMap();
             issueList.forEach(issue -> taskMap.put(issue.getTaskId(), true));
-            List<Integer> taskIds = taskMap.keySet().stream().collect(Collectors.toList());
+            List<Integer> taskIds = new ArrayList<>(taskMap.keySet());
             if (taskIds.size() > 0) {
                 taskList = houseQmCheckTaskService.searchHouseQmCheckTaskByTaskIdIn(taskIds);
             }
@@ -117,20 +122,20 @@ public class HouseqmIssueController {
         }
         int taskLen = taskList.size();
         for (int i = 0; i < taskList.size(); i++) {
-            taskName += taskList.get(i).getName();
+            taskName.append(taskList.get(i).getName());
             if (taskName.length() > 50) {
-                taskName += "等" + taskLen + "个任务";
+                taskName.append("等").append(taskLen).append("个任务");
                 break;
             }
             if (i != taskLen - 1) {
-                taskName += "、";
+                taskName.append("、");
             }
         }
         HouseqmCheckTaskIssueIndexJsonReqMsg reqMsg = new HouseqmCheckTaskIssueIndexJsonReqMsg();
         reqMsg.setCategory_cls(req.getCategory_cls());
         reqMsg.setProject_id(req.getProject_id());
         reqMsg.setTask_id(req.getTask_id());
-        reqMsg.setTask_name(taskName);
+        reqMsg.setTask_name(taskName.toString());
         reqMsg.setCategory_key(req.getCategory_key());
         reqMsg.setCheck_item_key(req.getCheck_item_key());
         reqMsg.setChecker_id(req.getChecker_id());
@@ -158,14 +163,15 @@ public class HouseqmIssueController {
         }
 
         //todo 获取userid //c.MustGet("user").(*zj3user_models.User).Id
-        int userId = 1;
+        Integer userId = (Integer) sessionInfo.getBaseInfo("userId");
+        int uid = 9;
         Map<String, String> args = Maps.newHashMap();
         //args.put("url", "");
 
         String nowTime = DateUtil.getNowTimeStr("yyyyMMddhhmm");
         String exportName = "【" + proj.getName() + "】整改报告." + nowTime + ".pdf";
         // 把导出的信息插入到数据库中
-        iHouseqmIssueService.create(userId, proj.getTeamId(), req.getProject_id(), 0, args, exportName, new Date());
+        iHouseqmIssueService.create(uid, proj.getTeamId(), req.getProject_id(), 0, args, exportName, new Date());
         return response;
     }
 
