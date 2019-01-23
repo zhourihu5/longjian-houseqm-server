@@ -194,7 +194,7 @@ public class AreaServiceImpl implements AreaService {
     public List<Area> selectByFatherId(Integer prodectId, Integer i) {
         Example example = new Example(Area.class);
         Example.Criteria criteria = example.createCriteria();
-        criteria.andEqualTo("projectId",prodectId).andEqualTo("fatherId",i).andEqualTo("deleteAt");
+        criteria.andEqualTo("projectId",prodectId).andEqualTo("fatherId",i).andIsNull("deleteAt");
         return areaMapper.selectByExample(example);
     }
 

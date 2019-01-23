@@ -13,7 +13,7 @@ public class CategoryV3 {
 
     @Column(name = "father_key")
     private String fatherKey;
-
+    @Column(name = "`key`")
     private String key;
 
     private String path;
@@ -25,7 +25,7 @@ public class CategoryV3 {
 
     @Column(name = "team_id")
     private Integer teamId;
-
+    @Column(name = "`order`")
     private String order;
 
     @Column(name = "zj_std_key")
@@ -33,9 +33,9 @@ public class CategoryV3 {
 
     @Column(name = "custom_key")
     private String customKey;
-
+    @Column(name = "`name`")
     private String name;
-
+    @Column(name = "`desc`")
     private String desc;
 
     @Column(name = "file_md5")

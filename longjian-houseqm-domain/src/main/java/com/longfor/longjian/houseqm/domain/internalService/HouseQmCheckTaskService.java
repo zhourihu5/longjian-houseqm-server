@@ -2,6 +2,7 @@ package com.longfor.longjian.houseqm.domain.internalService;
 
 import com.longfor.longjian.houseqm.po.HouseQmCheckTask;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Set;
@@ -51,4 +52,6 @@ public interface HouseQmCheckTaskService {
 
 
     int delete(HouseQmCheckTask houseQmCheckTask);
+
+    List<HouseQmCheckTask> selectByProjectIdsAndCategoryClsNotDel(ArrayList<Integer> parentIds, List<Integer> categorylist);
 }
