@@ -77,7 +77,7 @@ public class HouseqmStatisticServiceImpl implements IHouseqmStatisticService {
     @Resource
     RepossessionStatusService repossessionStatusService;
     @Resource
-    private IUserInProjectService iUserInProjectService;
+    private UserInProjectService iUserInProjectService;
     @Resource
     private UserInHouseQmCheckTaskService userInHouseQmCheckTaskService;
     @Resource

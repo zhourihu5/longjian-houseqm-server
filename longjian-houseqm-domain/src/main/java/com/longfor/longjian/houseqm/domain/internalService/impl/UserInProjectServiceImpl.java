@@ -5,16 +5,9 @@ import com.longfor.longjian.houseqm.dao.zj2db.UserInProjectMapper;
 import com.longfor.longjian.houseqm.domain.internalService.UserInProjectService;
 import com.longfor.longjian.houseqm.po.zj2db.UserInProject;
 import com.longfor.longjian.houseqm.utils.ExampleUtil;
-import lombok.Data;
-import lombok.NoArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import com.longfor.longjian.houseqm.domain.internalService.IUserInProjectService;
-import com.longfor.longjian.houseqm.po.zj2db.UserInProject;
-import com.longfor.longjian.houseqm.utils.ExampleUtil;
-import lombok.extern.slf4j.Slf4j;
-import org.springframework.stereotype.Service;
 import tk.mybatis.mapper.entity.Example;
 
 import javax.annotation.Resource;
