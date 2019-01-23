@@ -13,7 +13,7 @@ spring:
         register: true
         healthCheckInterval: 600s
         fail-fast: false
-        # preferIpAddress: true
+        #preferIpAddress: true
     sleuth:
       enabled: true
 

@@ -98,7 +98,7 @@ public class HouseqmStatController {
         ////TODO 鉴权 _, _, err := ctrl_tool.ProjPermMulti(c, []string{"项目.移动验房.统计.查看", "项目.工程检查.统计.查看"})
         LjBaseResponse<ProjectDailyListVo> response = new LjBaseResponse<>();
         try {
-            //ctrlTool.projPermMulti(request, new String[]{"项目.移动验房.统计.查看", "项目.工程检查.统计.查看"});
+            ctrlTool.projPermMulti(request, new String[]{"项目.移动验房.统计.查看", "项目.工程检查.统计.查看"});
         } catch (Exception e) {
             e.printStackTrace();
             log.error(e.getMessage());
