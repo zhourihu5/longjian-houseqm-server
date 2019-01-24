@@ -152,11 +152,7 @@ public class AreaServiceImpl implements AreaService {
         return result.stream().collect(Collectors.toSet()).stream().collect(Collectors.toList());
     }
 
-    public static void main(String[] args) {
-        String a="hello";
-        String b="he";
-        System.out.println(a.startsWith(b));
-    }
+
     /**
      * @param projectId
      * @param rootIds
