@@ -8,7 +8,9 @@ import com.longfor.longjian.houseqm.po.HouseQmCheckTaskIssue;
 import com.longfor.longjian.houseqm.po.HouseQmCheckTaskSquad;
 import com.longfor.longjian.houseqm.po.Task;
 import com.longfor.longjian.houseqm.utils.ExampleUtil;
+import io.swagger.models.auth.In;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.ibatis.session.RowBounds;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import tk.mybatis.mapper.entity.Example;
@@ -32,6 +34,26 @@ public class HouseQmCheckTaskServiceImpl implements HouseQmCheckTaskService {
 
     @Resource
     HouseQmCheckTaskMapper houseQmCheckTaskMapper;
+
+    @Override
+    @LFAssignDataSource("zhijian2")
+    public Integer searchTotalByProjIdAndCategoryClsAndStatus(Integer projId, Integer category_cls, Integer status) {
+        Example example = new Example(HouseQmCheckTask.class);
+        Example.Criteria criteria = example.createCriteria();
+        criteria.andEqualTo("projectId", projId).andEqualTo("categoryCls",category_cls).andEqualTo("status",status);
+        ExampleUtil.addDeleteAtJudge(example);
+        return houseQmCheckTaskMapper.selectCountByExample(example);
+    }
+
+    @Override
+    @LFAssignDataSource("zhijian2")
+    public List<HouseQmCheckTask> searchByProjIdAndCategoryClsAndStatusByPage(Integer projId, Integer category_cls, Integer status, int limit, int start) {
+        Example example = new Example(HouseQmCheckTask.class);
+        Example.Criteria criteria = example.createCriteria();
+        criteria.andEqualTo("projectId", projId).andEqualTo("categoryCls",category_cls).andEqualTo("status",status);
+        ExampleUtil.addDeleteAtJudge(example);
+        return houseQmCheckTaskMapper.selectByExampleAndRowBounds(example,new RowBounds(start,limit));
+    }
 
     @Override
     @LFAssignDataSource("zhijian2")

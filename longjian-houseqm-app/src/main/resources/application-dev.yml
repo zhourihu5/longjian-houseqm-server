@@ -165,7 +165,7 @@ longfor:
         demoRedis:
           database: 10
           timeout: 2000
-          host: 192.168.36.93 #192.168.37.158
+          host: 192.168.37.158 #192.168.36.93
           port: 6379
           pool:
             minIdle: 50
@@ -205,8 +205,18 @@ env_info:
   host_list: devlongjian.longhu.net longjianapp.longhu.net lh.zj.com
 #TaskListController buildingqm/v3/papi/task/list  getExportIssueConfig() 导入配置信息
 spe:
+  # 清水
   team_group_100194:
+      # 导出Excel
     export_issue: /v3stat/spec/qingshui/export_issue/
+  team_group_100044: #dev
+      # 导出Excel
+    export_issue: /v3stat/spec/qingshui/export_issue/
+  team_group_100137: #test
+      # 导出Excel
+    export_issue: /v3stat/spec/qingshui/export_issue/
+
+
 # HouseqmIssueController exportPdf 导出 url
 stat_export_server_addr: http://192.168.96.132:9202/v3
 export:

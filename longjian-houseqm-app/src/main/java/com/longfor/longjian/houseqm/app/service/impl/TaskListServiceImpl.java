@@ -6,12 +6,17 @@ import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
 import com.google.gson.JsonObject;
+import com.longfor.longjian.common.consts.ErrorNumEnum;
+import com.longfor.longjian.common.consts.HouseQmCheckTaskIssueStatusEnum;
 import com.longfor.longjian.common.consts.checktask.*;
+import com.longfor.longjian.common.exception.LjBaseRuntimeException;
 import com.longfor.longjian.common.util.JSONUtil;
 import com.longfor.longjian.houseqm.app.service.ITaskListService;
 import com.longfor.longjian.houseqm.app.vo.TaskList2Vo;
 import com.longfor.longjian.houseqm.app.vo.TaskPushStrategyVo;
 import com.longfor.longjian.houseqm.app.vo.TaskRoleListVo;
+import com.longfor.longjian.houseqm.app.vo.task.CheckTaskIssueTypeStatInfo;
+import com.longfor.longjian.houseqm.consts.ErrorEnum;
 import com.longfor.longjian.houseqm.domain.internalService.*;
 import com.longfor.longjian.houseqm.innervo.ApiBuildingQmCheckTaskConfig;
 import com.longfor.longjian.houseqm.innervo.ApiBuildingQmCheckTaskMsg;
@@ -38,25 +43,88 @@ import java.util.concurrent.atomic.AtomicReference;
 public class TaskListServiceImpl implements ITaskListService {
 
     @Resource
-    HouseQmCheckTaskService houseQmCheckTaskService;
-
+    private HouseQmCheckTaskService houseQmCheckTaskService;
     @Resource
-    TeamService teamService;
-
+    private TeamService teamService;
     @Resource
-    PushStrategyAssignTimeService pushStrategyAssignTimeService;
-
+    private PushStrategyAssignTimeService pushStrategyAssignTimeService;
     @Resource
-    PushStrategyCategoryOverdueService pushStrategyCategoryOverdueService;
-
+    private PushStrategyCategoryOverdueService pushStrategyCategoryOverdueService;
     @Resource
-    PushStrategyCategoryThresholdService pushStrategyCategoryThresholdService;
-
+    private PushStrategyCategoryThresholdService pushStrategyCategoryThresholdService;
     @Resource
-    UserInHouseQmCheckTaskService userInHouseQmCheckTaskService;
-
+    private UserInHouseQmCheckTaskService userInHouseQmCheckTaskService;
     @Resource
-    UserService userService;
+    private UserService userService;
+    @Resource
+    private HouseQmCheckTaskIssueService houseQmCheckTaskIssueService;
+
+    // 通过taskIds获取以任务为索引的问题累计统计的map
+    @Override
+    public Map<Integer, CheckTaskIssueTypeStatInfo> searchTaskIssueStatMapByTaskIds(List<Integer> taskIds) {
+        List<HouseQmCheckTaskIssue> issues = houseQmCheckTaskIssueService.searchByTaskIdInGroupByTaskIdAndStatus(taskIds);
+        Map<Integer, CheckTaskIssueTypeStatInfo> statMap = Maps.newHashMap();
+        for (HouseQmCheckTaskIssue res : issues) {
+            if (!statMap.containsKey(res.getTaskId())) {
+                CheckTaskIssueTypeStatInfo value = new CheckTaskIssueTypeStatInfo();
+                value.setIssueCount(0);
+                value.setRecordCount(0);
+                value.setIssueRecordedCount(0);
+                value.setIssueAssignedCount(0);
+                value.setIssueRepairedCount(0);
+                value.setIssueApprovededCount(0);
+
+                statMap.put(res.getTaskId(), value);
+            }
+
+            CheckTaskIssueTypeStatInfo result = statMap.get(res.getTaskId());
+            HouseQmCheckTaskIssueStatusEnum e = null;
+            for (HouseQmCheckTaskIssueStatusEnum value : HouseQmCheckTaskIssueStatusEnum.values()) {
+                if (value.getId().equals(res.getStatus())) {
+                    e = value;
+                }
+            }
+            if (e != null) {
+                //处理详细统计数
+                switch (e) {
+                    //已记录未分配
+                    case NoteNoAssign:
+                        result.setIssueRecordedCount(res.getPosX());
+                        break;
+                    //已分配未整改
+                    case AssignNoReform:
+                        result.setIssueAssignedCount(res.getPosX());
+                        break;
+                    //已整改未验收
+                    case ReformNoCheck:
+                        result.setIssueRepairedCount(res.getPosX());
+                        break;
+                    //已验收
+                    case CheckYes:
+                        result.setIssueApprovededCount(res.getPosX());
+                        break;
+                    default:
+                        break;
+                }
+                //处理状态统计
+                switch (e) {
+                    case NoProblem:
+                        result.setRecordCount(result.getRecordCount() + res.getPosX());
+                        break;
+                    case NoteNoAssign:
+                    case AssignNoReform:
+                    case ReformNoCheck:
+                    case CheckYes:
+                        result.setIssueCount(result.getIssueCount() + res.getPosX());
+                        break;
+                    default:
+                        break;
+                }
+
+            }
+        }
+        return statMap;
+    }
 
     /**
      * @param teamId
@@ -239,14 +307,18 @@ public class TaskListServiceImpl implements ITaskListService {
      * @param teamId
      * @return
      */
-    private Team getTopTeam(int teamId) {
+    public Team getTopTeam(int teamId) {
         Team team = null;
         for (int i = 0; i < 15; i++) {
             team = teamService.selectByTeamId(teamId);
-            if (team == null || team.getParentTeamId() == 0) {
+            if (team == null || team.getParentTeamId().equals(0)) {
                 break;
             }
             teamId = team.getParentTeamId();
+        }
+        if (team == null || team.getParentTeamId() > 0) {
+            log.warn(ErrorEnum.TEAM_PARENT_RECIRCLE.getMessage());
+            throw new LjBaseRuntimeException(ErrorEnum.TEAM_PARENT_RECIRCLE.getCode(), ErrorEnum.TEAM_PARENT_RECIRCLE.getMessage());
         }
         return team;
     }
