@@ -1,6 +1,6 @@
 package com.longfor.longjian.houseqm.app.controller;
 
-import com.longfor.longjian.houseqm.app.vo.houseqmstatistic.ApiHouseQmRhyfTaskHouseStatVo;
+import com.longfor.longjian.houseqm.app.vo.houseqmstatistic.*;
 import com.longfor.longjian.houseqm.app.req.houseqmstatistic.HouseqmStatisticRhyfTaskStatReq;
 import com.longfor.longjian.houseqm.app.vo.houseqmstatistic.HouseqmStatisticProjectIssueRepairRsp.ApiHouseQmIssueRepairStat;
 
@@ -10,9 +10,6 @@ import com.longfor.longjian.houseqm.app.req.houseqmstatistic.HouseqmStatisticTas
 import com.google.common.collect.Maps;
 import com.longfor.longjian.houseqm.app.vo.HouseqmStatisticTaskCheckitemStatRspMsgVo;
 import com.longfor.longjian.houseqm.app.service.IHouseqmStatisticService;
-import com.longfor.longjian.houseqm.app.vo.houseqmstatistic.HouseqmStatisticProjectIssueRepairRsp;
-import com.longfor.longjian.houseqm.app.vo.houseqmstatistic.HouseqmStatisticRhyfTaskStatRspVo;
-import com.longfor.longjian.houseqm.app.vo.houseqmstatistic.HouseqmStatisticTaskIssueRepairListRsp;
 import com.longfor.longjian.houseqm.consts.CategoryClsTypeEnum;
 import com.longfor.longjian.houseqm.consts.HouseQmCheckTaskRoleTypeEnum;
 import com.longfor.longjian.houseqm.domain.internalService.HouseQmCheckTaskService;
@@ -305,22 +302,42 @@ public class HouseqmStatisticController {
      * @return http://192.168.37.159:3000/project/8/interface/api/388
      */
     @GetMapping(value = "task_issue_repair/", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
-    public LjBaseResponse<TaskRepairStatVo> taskIssueRepair(@RequestParam(value = "project_id") Integer projectId,
-                                                            @RequestParam(value = "task_id") Integer taskId,
-                                                            @RequestParam(value = "area_id") Integer areaId,
-                                                            @RequestParam(value = "begin_on") Integer beginOn,
-                                                            @RequestParam(value = "end_on") Integer endOn,
-                                                            @RequestParam(value = "timestamp") Integer timestamp) {
-        Date begin = DateUtil.transForDate(beginOn);
-        Date endOns = DateUtil.transForDate(endOn);
-        //endon加一天
-        Calendar c = Calendar.getInstance();
-        c.setTime(endOns);
-        c.add(Calendar.DAY_OF_MONTH, 1);// +1天
-        endOns = c.getTime();
-        TaskRepairStatVo taskRepairStatVo = iHouseqmStatisticService.searchIssueRepairStatisticByProjTaskIdAreaIdBeginOnEndOn(projectId, taskId, areaId, begin, endOns);
-        LjBaseResponse<TaskRepairStatVo> ljbr = new LjBaseResponse<>();
-        ljbr.setData(taskRepairStatVo);
+    public LjBaseResponse<HouseqmStatisticTaskIssueRepairRsp> taskIssueRepair(@RequestParam(value = "project_id") Integer projectId,
+                                                                              @RequestParam(value = "task_id") Integer taskId,
+                                                                              @RequestParam(value = "area_id") Integer areaId,
+                                                                              @RequestParam(value = "begin_on") Integer beginOn,
+                                                                              @RequestParam(value = "end_on") Integer endOn,
+                                                                              @RequestParam(value = "timestamp") Integer timestamp) {
+        Date begin =null;
+        if (beginOn > 0) {
+            begin=DateUtil.timeStampToDate(beginOn, "yyyy-MM-dd");
+        }
+        Date endOns=null;
+        if (endOn>0){
+            endOns = DateUtil.timeStampToDate(endOn, "yyyy-MM-dd");
+            //endon加一天
+            Calendar c = Calendar.getInstance();
+            c.setTime(endOns);
+            c.add(Calendar.DAY_OF_MONTH, 1);// +1天
+            endOns = c.getTime();
+        }
+        TaskRepairStatVo res = iHouseqmStatisticService.searchIssueRepairStatisticByProjTaskIdAreaIdBeginOnEndOn(projectId, taskId, areaId, begin, endOns);
+        LjBaseResponse<HouseqmStatisticTaskIssueRepairRsp> ljbr = new LjBaseResponse<>();
+        HouseqmStatisticTaskIssueRepairRsp result = new HouseqmStatisticTaskIssueRepairRsp();
+        HouseqmStatisticProjectIssueRepairRsp data = new HouseqmStatisticProjectIssueRepairRsp();
+        ApiHouseQmIssueRepairStat item = data.new ApiHouseQmIssueRepairStat();
+        item.setInitime_finish(res.getItem().getInitime_finish());
+        item.setInitime_finish_count(res.getItem().getInitime_finish_count());
+        item.setInitime_unfinish(res.getItem().getInitime_unfinish());
+        item.setInitime_unfinish_count(res.getItem().getInitime_unfinish_count());
+        item.setNo_plan_end_on(res.getItem().getNo_plan_end_on());
+        item.setNo_plan_end_on_count(res.getItem().getNo_plan_end_on_count());
+        item.setOvertime_finish(res.getItem().getOvertime_finish());
+        item.setOvertime_finish_count(res.getItem().getOvertime_finish_count());
+        item.setOvertime_unfinish(res.getItem().getOvertime_unfinish());
+        item.setOvertime_unfinish_count(res.getItem().getOvertime_unfinish_count());
+        result.setItem(item);
+        ljbr.setData(result);
         return ljbr;
     }
 

@@ -368,18 +368,18 @@
             <foreach collection="types" item="type" index="index" open="(" separator="," close=")">
                 #{type}
             </foreach>
-            <if test="areaId!=null">and area_path_and_id like '${aredId}'</if>
+            <if test="areaId!=null">AND area_path_and_id like '${areaId}'</if>
             <if test="beginOn!=null">AND client_create_at &gt;= #{beginOn}</if>
             <if test="endOn!=null">AND client_create_at &lt;= #{endOn}</if>
-            <if test="statusIn!=null">and `status` in
+            <if test="statusIn!=null">AND `status` in
                 <foreach collection="statusIn" item="item" index="index" open="(" separator="," close=")">
                     #{item}
                 </foreach>
             </if>
+            <if test="deleted=='false'">
+                AND delete_at IS NULL
+            </if>
         </where>
-        <if test="deleted=='false'">
-            AND delete_at IS NULL
-        </if>
     </select>
     <!--List<HouseQmCheckTaskIssue> searchHouseQmCheckTaskIssueByTaskIdUuidIn(@Param("task_id") Integer task_id,@Param("uuids") List<String> uuids);-->
     <select id="searchHouseQmCheckTaskIssueByTaskIdUuidIn" resultMap="ResultMapWithBLOBs">

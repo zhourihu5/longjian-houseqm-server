@@ -165,7 +165,7 @@ longfor:
         demoRedis:
           database: 10
           timeout: 2000
-          host: 192.168.36.93
+          host: 192.168.36.93 #192.168.37.158
           port: 6379
           pool:
             minIdle: 50

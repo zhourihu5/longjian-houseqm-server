@@ -472,7 +472,7 @@ public class HouseqmStatisticServiceImpl implements IHouseqmStatisticService {
             houseStatVo.setHouse_count(0);
             //读取任务
             HouseQmCheckTask task = houseQmCheckTaskService.selectByProjectIdAndTaskId(projectId, taskId);
-            if (task==null)throw new LjBaseRuntimeException(500,"任务不存在");
+            if (task == null) throw new LjBaseRuntimeException(500, "任务不存在");
             // 获取出任务下的区域与检验类型的交集
             List<Integer> areaIds = StringSplitToListUtil.splitToIdsComma(task.getAreaIds(), ",");
             List<Integer> areaTypes = StringSplitToListUtil.splitToIdsComma(task.getAreaTypes(), ",");
@@ -528,10 +528,10 @@ public class HouseqmStatisticServiceImpl implements IHouseqmStatisticService {
         if (areaId > 0) {
             condiMap.put("areaId", "%/" + areaId + "/%");
         }
-        if (beginOn.getTime() / 1000 > 0) {
+        if (beginOn != null && beginOn.getTime() / 1000 > 0) {
             condiMap.put("beginOn", beginOn);
         }
-        if (endOn.getTime() / 1000 > 0) {
+        if (endOn != null && endOn.getTime() / 1000 > 0) {
             condiMap.put("endOn", endOn);
         }
         Date now = new Date();
@@ -663,10 +663,11 @@ public class HouseqmStatisticServiceImpl implements IHouseqmStatisticService {
             apiTaskIssueRepairListRsp.setUpdate_at(DateUtil.datetimeToTimeStamp(item.getUpdateAt()));
 
             List<String> list = StringSplitToListUtil.splitToStringComma(item.getAttachmentMd5List(), ",");
-            apiTaskIssueRepairListRsp.setAttachment_url_list(new ArrayList<String>());
+            //apiTaskIssueRepairListRsp.setAttachment_url_list(new ArrayList<String>());
             list.forEach(fm -> {
                 if (fileMap.containsKey(fm)) {
-                    List<String> attachmentUrlList = apiTaskIssueRepairListRsp.getAttachment_url_list();
+                    //List<String> attachmentUrlList = apiTaskIssueRepairListRsp.getAttachment_url_list();
+                    List<String> attachmentUrlList = Lists.newArrayList();
                     attachmentUrlList.add(fileMap.get(fm));
                     apiTaskIssueRepairListRsp.setAttachment_url_list(attachmentUrlList);
                 }
@@ -1327,7 +1328,7 @@ public class HouseqmStatisticServiceImpl implements IHouseqmStatisticService {
                                 isRoot = true;
                             }
                         }
-                        entry.getValue().setName( categoryMap.get(entry.getValue().getKey()).getName());
+                        entry.getValue().setName(categoryMap.get(entry.getValue().getKey()).getName());
                         // 如果节点是第二级的，则将FatherKey设置为空，否则补充上去
                         if (!isRoot) {
                             entry.getValue().setParentKey(categoryMap.get(entry.getValue().getKey()).getFatherKey());
@@ -1342,7 +1343,7 @@ public class HouseqmStatisticServiceImpl implements IHouseqmStatisticService {
             if (entrys.getKey().equals("checkItemStatMap")) {
                 HashMap<String, HouseQmIssueCategoryStatVo> checkItemStatMap = (HashMap<String, HouseQmIssueCategoryStatVo>) entrys.getValue();
                 for (Map.Entry<String, HouseQmIssueCategoryStatVo> entry : checkItemStatMap.entrySet()) {
-                    if(checkItemMap.containsKey(entry.getValue().getKey())){
+                    if (checkItemMap.containsKey(entry.getValue().getKey())) {
                         entry.getValue().setName(checkItemMap.get(entry.getValue().getKey()).getName());
                         entry.getValue().setParentKey(checkItemMap.get(entry.getValue().getKey()).getCategoryKey());
                         entry.getValue().setKey("C" + entry.getValue().getKey());
@@ -1359,6 +1360,7 @@ public class HouseqmStatisticServiceImpl implements IHouseqmStatisticService {
 
     /**
      * 判断某个字符串出现的次数
+     *
      * @param srcText
      * @param findText
      * @return
@@ -1410,10 +1412,10 @@ public class HouseqmStatisticServiceImpl implements IHouseqmStatisticService {
                     categoryStatMap.put(categoryPathKeys.get(j), houseQmIssueCategoryStatVo);
                 }
                 Integer issueCount = categoryStatMap.get(categoryPathKeys.get(j)).getIssueCount();
-                if(issueCount==null){
+                if (issueCount == null) {
                     categoryStatMap.get(categoryPathKeys.get(j)).setIssueCount(issueCount);
-                }else {
-                    issueCount +=issueStatVoList.get(i).getCount();
+                } else {
+                    issueCount += issueStatVoList.get(i).getCount();
                     categoryStatMap.get(categoryPathKeys.get(j)).setIssueCount(issueCount);
                 }
 
@@ -1432,10 +1434,10 @@ public class HouseqmStatisticServiceImpl implements IHouseqmStatisticService {
 
 
                 Integer issueCount = checkItemStatMap.get(issueStatVoList.get(i).getCheckItemKey()).getIssueCount();
-                if(issueCount==null){
+                if (issueCount == null) {
                     checkItemStatMap.get(issueStatVoList.get(i).getCheckItemKey()).setIssueCount(issueCount);
-                }else {
-                    issueCount +=issueStatVoList.get(i).getCount();
+                } else {
+                    issueCount += issueStatVoList.get(i).getCount();
                     checkItemStatMap.get(issueStatVoList.get(i).getCheckItemKey()).setIssueCount(issueCount);
                 }
                 checkItemKeys.add(issueStatVoList.get(i).getCheckItemKey());
