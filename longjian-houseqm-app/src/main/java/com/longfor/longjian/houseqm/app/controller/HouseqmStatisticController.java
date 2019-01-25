@@ -1,5 +1,7 @@
 package com.longfor.longjian.houseqm.app.controller;
 
+import com.longfor.longjian.common.util.CtrlTool;
+import com.longfor.longjian.common.util.SessionInfo;
 import com.longfor.longjian.houseqm.app.vo.houseqmstatistic.*;
 import com.longfor.longjian.houseqm.app.req.houseqmstatistic.HouseqmStatisticRhyfTaskStatReq;
 import com.longfor.longjian.houseqm.app.vo.houseqmstatistic.HouseqmStatisticProjectIssueRepairRsp.ApiHouseQmIssueRepairStat;
@@ -64,6 +66,10 @@ public class HouseqmStatisticController {
     private HouseQmCheckTaskService houseQmCheckTaskRspService;
     @Resource
     private IHouseqmStatisticService iHouseqmStatisticService;
+    @Resource
+    private CtrlTool ctrlTool;
+    @Resource
+    private SessionInfo sessionInfo;
     @Resource
     private AreaService areaService;
     private static final String _SOURCE_NAME_GCJC = "gcjc";
@@ -172,10 +178,8 @@ public class HouseqmStatisticController {
                                                                      @RequestParam(value = "source") String source,
                                                                      @RequestParam(value = "timestamp") Integer timestamp,
                                                                      @RequestParam(value = "area_id") Integer areaId) {
-        /// todo  session 获取uid
-        Integer uid = 1;
-
-        List<UserInHouseQmCheckTask> checkers = houseqmStaticService.searchUserInHouseQmCheckTaskByUserIdRoleType(uid, HouseQmCheckTaskRoleTypeEnum.Checker.getId());
+        Integer userId = (Integer) sessionInfo.getBaseInfo("userId");
+        List<UserInHouseQmCheckTask> checkers = houseqmStaticService.searchUserInHouseQmCheckTaskByUserIdRoleType(userId, HouseQmCheckTaskRoleTypeEnum.Checker.getId());
         HashMap<Integer, Boolean> checkMap = Maps.newHashMap();
         for (int i = 0; i < checkers.size(); i++) {
             checkMap.put(checkers.get(i).getTaskId(), true);

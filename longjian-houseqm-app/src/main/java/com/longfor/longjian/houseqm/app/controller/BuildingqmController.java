@@ -195,7 +195,7 @@ public class BuildingqmController {
      * @return
      */
     @PostMapping(value = "task/create", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
-    public LjBaseResponse create(HttpServletRequest request, TaskReq taskReq) {
+    public LjBaseResponse create(HttpServletRequest request, @Valid TaskReq taskReq) {
         log.info("create, project_id=" + taskReq.getProject_id() + "" +
                 " name=" + taskReq.getName() + ", " +
                 "category_cls=" + taskReq.getCategory_cls() + "," +
@@ -233,28 +233,28 @@ public class BuildingqmController {
      * @return
      */
     @GetMapping(value = "task/task_squad/", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
-    public LjBaseResponse<ArrayList<HouseQmCheckTaskSquadListRspVo>> taskSquad(@RequestParam(name = "project_id", required = true) String projectId,
+    public LjBaseResponse<ArrayList<HouseQmCheckTaskSquadListRspVo>> taskSquad(HttpServletRequest request, @RequestParam(name = "project_id", required = true) String projectId,
                                                                                @RequestParam(name = "task_id", required = true) String taskId) {
-        ////todo c从session中获取uid
-/*
-        uid = session['uid']
-*/
-        Integer uid = 1;
-        ////todo 鉴权
-       /* has_per = ucenter_api.check_project_permission(uid, req.project_id, '项目.工程检查.任务管理.新增')
-        if not has_per:
-        rsp = errors_utils.err(rsp, 'PermissionDenied')*/
-        List<HouseQmCheckTaskSquad> info = buildingqmService.searchHouseqmCheckTaskSquad(projectId, taskId);
-        ArrayList<HouseQmCheckTaskSquadListRspVo> squad_list = Lists.newArrayList();
-        for (int i = 0; i < info.size(); i++) {
-            HouseQmCheckTaskSquadListRspVo rspVo = new HouseQmCheckTaskSquadListRspVo();
-            rspVo.setId(info.get(i).getId());
-            rspVo.setName(info.get(i).getName());
-            rspVo.setSquad_type(info.get(i).getSquadType());
-            squad_list.add(rspVo);
-        }
         LjBaseResponse<ArrayList<HouseQmCheckTaskSquadListRspVo>> response = new LjBaseResponse<>();
-        response.setData(squad_list);
+        Integer userId = (Integer) sessionInfo.getBaseInfo("userId");
+        try {
+            ctrlTool.projPerm(request, "项目.工程检查.任务管理.新增");
+            List<HouseQmCheckTaskSquad> info = buildingqmService.searchHouseqmCheckTaskSquad(projectId, taskId);
+            ArrayList<HouseQmCheckTaskSquadListRspVo> squad_list = Lists.newArrayList();
+            for (int i = 0; i < info.size(); i++) {
+                HouseQmCheckTaskSquadListRspVo rspVo = new HouseQmCheckTaskSquadListRspVo();
+                rspVo.setId(info.get(i).getId());
+                rspVo.setName(info.get(i).getName());
+                rspVo.setSquad_type(info.get(i).getSquadType());
+                squad_list.add(rspVo);
+            }
+            response.setData(squad_list);
+        } catch (Exception e) {
+            e.printStackTrace();
+            log.error(e.getMessage());
+            response.setResult(1);
+            response.setMessage(e.getMessage());
+        }
         return response;
     }
 
@@ -265,7 +265,7 @@ public class BuildingqmController {
      * @return
      */
     @PostMapping(value = "task/edit/", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
-    public LjBaseResponse edit(TaskEditReq taskEditReq) {
+    public LjBaseResponse edit(HttpServletRequest request, @Valid TaskEditReq taskEditReq) {
         log.info("edit, project_id=" + taskEditReq.getProject_id() + "" +
                 " name=" + taskEditReq.getName() + ", " +
                 "task_id=" + taskEditReq.getTask_id() + "," +
@@ -281,18 +281,17 @@ public class BuildingqmController {
                 "issue_desc_status=" + taskEditReq.getIssue_desc_status() + ", " +
                 "issue_default_desc=" + taskEditReq.getIssue_default_desc() + "," +
                 " push_strategy_config=" + taskEditReq.getPush_strategy_config() + "");
-        ////todo c从session中获取uid
-/*
-        uid = session['uid']
-*/
-        Integer uid = 1;
-        ////todo 鉴权
-       /* has_per = ucenter_api.check_project_permission(uid, req.project_id, '项目.工程检查.任务管理.新增')
-        if not has_per:
-        rsp = errors_utils.err(rsp, 'PermissionDenied')*/
-
-        buildingqmService.edit(uid, taskEditReq);
+        Integer userId = (Integer) sessionInfo.getBaseInfo("userId");
         LjBaseResponse<Object> response = new LjBaseResponse<>();
+        try {
+            ctrlTool.projPerm(request, "项目.工程检查.任务管理.新增");
+            buildingqmService.edit(userId, taskEditReq);
+        } catch (Exception e) {
+            e.printStackTrace();
+            log.error(e.getMessage());
+            response.setResult(1);
+            response.setMessage(e.getMessage());
+        }
         return response;
     }
 
@@ -329,10 +328,8 @@ public class BuildingqmController {
 
                                                      @RequestParam(name = "data", required = true) String data) {
         log.info("report_issue, project_id=" + projectId + ", data=" + data + "");
-        //// todo   session 获取uid
-        /* uid = session['uid']*/
-        Integer uid = null;
-        ReportIssueVo reportIssueVo = buildingqmService.reportIssue(uid, projectId, data);
+        Integer userId = (Integer) sessionInfo.getBaseInfo("userId");
+        ReportIssueVo reportIssueVo = buildingqmService.reportIssue(userId, projectId, data);
         LjBaseResponse<ReportIssueVo> response = new LjBaseResponse<>();
         response.setData(reportIssueVo);
         return response;
