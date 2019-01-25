@@ -20,6 +20,7 @@ public class PassedVariableVo implements Serializable {
     private Integer timeFrameMax;
     private String timeFrameType;
     private List<Integer> teamIds;
-    private Date dateField;
+    private Date beginDate;
+    private Date endDate;
 
 }

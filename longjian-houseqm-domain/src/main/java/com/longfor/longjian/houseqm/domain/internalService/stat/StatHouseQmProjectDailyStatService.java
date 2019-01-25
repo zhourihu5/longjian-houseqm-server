@@ -1,8 +1,13 @@
 package com.longfor.longjian.houseqm.domain.internalService.stat;
 
 import com.longfor.gaia.gfs.data.mybatis.datasource.LFAssignDataSource;
+import com.longfor.longjian.common.exception.LjBaseRuntimeException;
+import com.longfor.longjian.common.time.TimeFrame;
+import com.longfor.longjian.common.time.TimeFrameHelper;
+import com.longfor.longjian.houseqm.config.LjTimeUtil;
 import com.longfor.longjian.houseqm.dao.stat.StatHouseQmProjectDailyStatMapper;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.collections.CollectionUtils;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
@@ -38,13 +43,23 @@ public class StatHouseQmProjectDailyStatService {
 
 
         if(timeFrameMax == null){
-            timeFrameMax =1 ;
+            timeFrameMax = 1 ;
         }
 
-        //默认是昨天
-        if(timeFrameEnd==null){
-            timeFrameEnd = new Date();
+        if(timeFrameEnd == null){
+            timeFrameEnd =  LjTimeUtil.yesterdayZeroDate();
         }
+
+        List<TimeFrame>  frames = TimeFrameHelper.produceFrames(timeFrameType,timeFrameMax,timeFrameBegin,timeFrameEnd,true);
+
+        if(CollectionUtils.isEmpty(frames)){
+            log.error("searchStat timeFrameBegin:{}, timeFrameEnd:{},timeFrameMax:{},timeFrameType:{} ",
+                    timeFrameBegin, timeFrameEnd, timeFrameMax, timeFrameType);
+            throw new LjBaseRuntimeException(430," no frames");
+        }
+
+
+
 
 
 
