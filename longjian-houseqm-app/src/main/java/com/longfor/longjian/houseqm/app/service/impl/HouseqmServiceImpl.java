@@ -244,16 +244,28 @@ public class HouseqmServiceImpl implements IHouseqmService {
         LjBaseResponse<MyIssueAttachListVo> ljBaseResponse = new LjBaseResponse<>();
         MyIssueAttachListVo myIssueAttachListVo = new MyIssueAttachListVo();
         List<ApiHouseQmCheckTaskIssueAttachmentRspVo> houseQmCheckTaskIssueJsons = new ArrayList<>();
+
         //Integer userId = (Integer)request.getSession().getAttribute("uid");
         //todo 暂时获取不到uid
-        Integer userId = 9;
+        Integer userId = 7566;
         Integer start = 0;
         Integer limit = HOUSEQM_API_GET_PER_TIME;
         Integer lastId = 0;
+        //与我相关的附件
+        //需求：
+        //自己只能看到自己的私人附件
+        //自己能看到自己以及与自己同组的人所产生问题中所产生的公开的附件（包括检查人与整改人）
+        //
+        //思路：
+        //A、找出与自己同组的人（无论是检查人还是整改人）
+        //B、找出与这批人员相关的issue，
+        //C1、根据相关的issue，找到与issue相关的所有人员，再找到这批人员的相关的 公开 的附件
+        //C2、根据相关的issue 或 根据task_id和user_id，检索自己私人的附件
         try {
-            List<HouseQmCheckTaskIssueAttachment> houseQmCheckTaskIssueAttachments = houseQmCheckTaskIssueService.searchHouseQmCheckTaskIssueAttachmentByMyIdTaskIdLastIdUpdateAtGt(userId, deviceReq.getTask_id(), deviceReq.getLast_id(), deviceReq.getTimestamp(), start, limit, HouseQmCheckTaskIssueAttachmentPublicTypeEnum.Private.getId(), HouseQmCheckTaskIssueAttachmentPublicTypeEnum.Public.getId());
-            lastId = houseQmCheckTaskIssueAttachments.get(houseQmCheckTaskIssueAttachments.size() - 1).getId();
-            houseQmCheckTaskIssueAttachments.forEach(houseQmCheckTaskIssueAttachment -> {
+            List<HouseQmCheckTaskIssueAttachment> attachments = houseQmCheckTaskIssueService.searchHouseQmCheckTaskIssueAttachmentByMyIdTaskIdLastIdUpdateAtGt(userId, deviceReq.getTask_id(), deviceReq.getLast_id(), deviceReq.getTimestamp(), start, limit, HouseQmCheckTaskIssueAttachmentPublicTypeEnum.Private.getId(), HouseQmCheckTaskIssueAttachmentPublicTypeEnum.Public.getId());
+
+            if (attachments.size()>0)lastId = attachments.get(attachments.size() - 1).getId();
+            attachments.forEach(houseQmCheckTaskIssueAttachment -> {
                 ApiHouseQmCheckTaskIssueAttachmentRspVo apiHouseQmCheckTaskIssueAttachmentRspVo = new ApiHouseQmCheckTaskIssueAttachmentRspVo();
                 apiHouseQmCheckTaskIssueAttachmentRspVo.setId(houseQmCheckTaskIssueAttachment.getId());
                 apiHouseQmCheckTaskIssueAttachmentRspVo.setProjectId(houseQmCheckTaskIssueAttachment.getProjectId());
@@ -274,6 +286,7 @@ public class HouseqmServiceImpl implements IHouseqmService {
             ljBaseResponse.setData(myIssueAttachListVo);
         } catch (Exception e) {
             log.error("error:" + e);
+            e.printStackTrace();
         }
         return ljBaseResponse;
     }

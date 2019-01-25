@@ -96,6 +96,7 @@
                     #{item}
                 </foreach>
             </if>
+            AND delete_at is null
         </where>
     </select>
 

@@ -340,6 +340,8 @@ public class HouseQmCheckTaskIssueServiceImpl implements HouseQmCheckTaskIssueSe
     @LFAssignDataSource("zhijian2")
     public List<HouseQmCheckTaskIssueAttachment> searchHouseQmCheckTaskIssueAttachmentByMyIdTaskIdLastIdUpdateAtGt(Integer userId, Integer task_id, Integer last_id, Integer timestamp, Integer start, Integer limit, Integer privateInt, Integer publicInt) {
         try {
+            //A找出与自己同组的人
+            ////找到任务中，用户所在的所有组
             List<UserInHouseQmCheckTask> userInHouseQmCheckTasks = userInHouseQmCheckTaskMapper.searchByCondition(task_id, userId);
             List<Integer> squadIds = new ArrayList<>();
             userInHouseQmCheckTasks.forEach(userInHouseQmCheckTask -> {
@@ -350,22 +352,25 @@ public class HouseQmCheckTaskIssueServiceImpl implements HouseQmCheckTaskIssueSe
             List<HouseQmCheckTaskSquad> houseQmCheckTaskSquads = null;
             List<Integer> existsSquadIds = new ArrayList<>();
             if (squadIds.size() > 0) {
-                //找出所有组的，确保其有效
+                ////找出所有组的，确保其有效
                 houseQmCheckTaskSquads = houseQmCheckTaskSquadMapper.searchByInId(squadIds);
                 houseQmCheckTaskSquads.forEach(houseQmCheckTaskSquad -> {
                     existsSquadIds.add(houseQmCheckTaskSquad.getId());
                 });
             }
-            //再根据组ID获取相关的组用户信息
-            List<UserInHouseQmCheckTask> userInHouseQmCheckTaskSquadIdInList = userInHouseQmCheckTaskMapper.searchByTaskIdSquadIdIn(task_id, existsSquadIds);
+            ////再根据组ID获取相关的组用户信息
+            List<UserInHouseQmCheckTask> rs = userInHouseQmCheckTaskMapper.searchByTaskIdSquadIdIn(task_id, existsSquadIds);
+            //B找出相关的附件
             List<Integer> userIds = new ArrayList<>();
-            userInHouseQmCheckTaskSquadIdInList.forEach(userInHouseQmCheckTask -> {
+            rs.forEach(userInHouseQmCheckTask -> {
                 userIds.add(userInHouseQmCheckTask.getUserId());
             });
-            List<HouseQmCheckTaskIssueAttachment> houseQmCheckTaskIssueAttachments = houseQmCheckTaskIssueAttachmentMapper.searchByConditionOrderByPageUnscoped(task_id, userId, timestamp, userIds, privateInt, publicInt, start, limit);
+            //
+            List<HouseQmCheckTaskIssueAttachment> houseQmCheckTaskIssueAttachments = houseQmCheckTaskIssueAttachmentMapper.searchByTaskIdAndSelfJoinOrderByIdASCPageUnscoped(task_id, userId, timestamp, userIds, privateInt, publicInt, start, limit);
             return houseQmCheckTaskIssueAttachments;
         } catch (Exception e) {
             log.error("error:" + e);
+            e.printStackTrace();
         }
         return null;
     }

@@ -43,7 +43,7 @@ import java.util.stream.Collectors;
 @Slf4j
 public class TaskController {
     @Resource
-    ITaskService taskService;
+    private ITaskService taskService;
     @Resource
     private CtrlTool ctrlTool;
     @Resource
@@ -72,10 +72,9 @@ public class TaskController {
      * @Date 11:19 2019/1/24
      * @Param [request, req]
      **/
-    @GetMapping(value = "list_info/", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+    @GetMapping(value = "list_info", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     public LjBaseResponse<TaskListInfoRspVo> listInfo(HttpServletRequest request, @Valid TaskListInfoReq req) {
         LjBaseResponse<TaskListInfoRspVo> response = new LjBaseResponse<>();
-        //proj, _, err := ctrl_tool.ProjPermMulti(c, []string{"项目.移动验房.任务管理.查看", "项目.工程检查.任务管理.查看"})
         try {
             ctrlTool.projPermMulti(request, new String[]{"项目.移动验房.任务管理.查看", "项目.工程检查.任务管理.查看"});
         } catch (Exception e) {
@@ -105,11 +104,11 @@ public class TaskController {
         TaskListInfoRspVo data = new TaskListInfoRspVo();
         List<Integer> taskIds = Lists.newArrayList();
         List<HouseQmCheckTaskInfoRspVo> taskList = Lists.newArrayList();
-        String teamGroupId="team_group_"+teamGroup.getTeamId();
+        String teamGroupId = "team_group_" + teamGroup.getTeamId();
         Map<String, String> map = Maps.newHashMap();
-        map.put("team_group_100044",spec.getTeam_group_100044().getExport_issue());
-        map.put("team_group_100194",spec.getTeam_group_100194().getExport_issue());
-        map.put("team_group_100137",spec.getTeam_group_100137().getExport_issue());
+        map.put("team_group_100044", spec.getTeam_group_100044().getExport_issue());
+        map.put("team_group_100194", spec.getTeam_group_100194().getExport_issue());
+        map.put("team_group_100137", spec.getTeam_group_100137().getExport_issue());
         for (HouseQmCheckTask item : res) {
             taskIds.add(item.getTaskId());
             HouseQmCheckTaskInfoRspVo task = new HouseQmCheckTaskInfoRspVo();
@@ -123,13 +122,13 @@ public class TaskController {
             task.setArea_types(item.getAreaTypes());
             task.setPlan_begin_on(DateUtil.dateToTimestamp(item.getPlanBeginOn()));
             task.setPlan_end_on(DateUtil.dateToTimestamp(item.getPlanEndOn()));
-            task.setCreate_at(item.getCreateAt()==null?0:DateUtil.dateToTimestamp(item.getCreateAt()));
-            task.setUpdate_at(item.getUpdateAt()==null?0:DateUtil.dateToTimestamp(item.getUpdateAt()));
-            task.setDelete_at(item.getDeleteAt()==null?0:DateUtil.dateToTimestamp(item.getDeleteAt()));
+            task.setCreate_at(item.getCreateAt() == null ? 0 : DateUtil.dateToTimestamp(item.getCreateAt()));
+            task.setUpdate_at(item.getUpdateAt() == null ? 0 : DateUtil.dateToTimestamp(item.getUpdateAt()));
+            task.setDelete_at(item.getDeleteAt() == null ? 0 : DateUtil.dateToTimestamp(item.getDeleteAt()));
             // 通过读取配置文件 获取导出问题报告路径
-            if (map.containsKey(teamGroupId)){
+            if (map.containsKey(teamGroupId)) {
                 HouseQmCheckTaskExOps exOps = new HouseQmCheckTaskExOps();
-                exOps.setExport_issue(map.get(teamGroupId)+"?project_id="+proj.getId()+"&task_id="+task.getTask_id());
+                exOps.setExport_issue(map.get(teamGroupId) + "?project_id=" + proj.getId() + "&task_id=" + task.getTask_id());
                 task.setExtra_ops(exOps);
             }
             task.setIssue_count(0);
@@ -143,7 +142,7 @@ public class TaskController {
 
         Map<Integer, CheckTaskIssueTypeStatInfo> taskStatMap = iTaskListService.searchTaskIssueStatMapByTaskIds(taskIds);
         for (HouseQmCheckTaskInfoRspVo item : taskList) {
-            if (taskStatMap.containsKey(item.getTask_id())){
+            if (taskStatMap.containsKey(item.getTask_id())) {
                 CheckTaskIssueTypeStatInfo stat = taskStatMap.get(item.getTask_id());
                 item.setIssue_count(stat.getIssueCount());
                 item.setRecord_count(stat.getRecordCount());
@@ -175,10 +174,10 @@ public class TaskController {
      * @return com.longfor.longjian.common.base.LjBaseResponse
      **/
     @PostMapping(value = "delete/", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
-    public LjBaseResponse delete(@Valid TaskDeleteReq req) {
-        //todo 鉴权 _, _, err := ctrl_tool.ProjPermMulti(c, []string{"项目.移动验房.任务管理.删除", "项目.工程检查.任务管理.删除"})
+    public LjBaseResponse delete(HttpServletRequest request, @Valid TaskDeleteReq req) {
         LjBaseResponse response = new LjBaseResponse();
         try {
+            ctrlTool.projPermMulti(request, new String[]{"项目.移动验房.任务管理.删除", "项目.工程检查.任务管理.删除"});
             taskService.deleteHouseQmCheckTaskByProjTaskId(req.getProject_id(), req.getTask_id());
         } catch (Exception e) {
             e.printStackTrace();
@@ -196,33 +195,38 @@ public class TaskController {
      * @return com.longfor.longjian.common.base.LjBaseResponse<com.longfor.longjian.houseqm.app.vo.TaskTaskRoleRspVo>
      **/
     @GetMapping(value = "task_role/", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
-    public LjBaseResponse<TaskTaskRoleRspVo> taskRole(@Valid TaskTaskRoleReq req) {
-        //todo 鉴权 _, _, err := ctrl_tool.ProjPermMulti(c, []string{"项目.移动验房.任务管理.查看", "项目.工程检查.任务管理.查看"})
-
-        List<UserInHouseQmCheckTask> res = taskService.searchUserInKeyHouseQmCheckTaskByTaskId(req.getTask_id());
-        log.debug("task_role --->" + res);
-        List<Integer> uids = res.stream().map(UserInHouseQmCheckTask::getUserId).collect(Collectors.toList());
-        Map<Integer, User> userMap = taskService.getUsersByIds(uids);
+    public LjBaseResponse<TaskTaskRoleRspVo> taskRole(HttpServletRequest request, @Valid TaskTaskRoleReq req) {
         LjBaseResponse<TaskTaskRoleRspVo> response = new LjBaseResponse<>();
-        List<HouseQmCheckTaskRoleListRspVo> role_list = Lists.newArrayList();
-        for (UserInHouseQmCheckTask item : res) {
-            HouseQmCheckTaskRoleListRspVo role = new HouseQmCheckTaskRoleListRspVo();
-            role.setId(item.getId());
-            role.setUser_id(item.getUserId());
-            role.setSquad_id(item.getSquadId());
-            role.setRole_type(item.getRoleType());
-            role.setCan_approve(item.getCanApprove());
-            role.setTask_id(item.getTaskId());
-            role.setReal_name("");
-            if (userMap.containsKey(role.getUser_id())) {
-                role.setReal_name(userMap.get(role.getUser_id()).getRealName());
+        try {
+            ctrlTool.projPermMulti(request, new String[]{"项目.移动验房.任务管理.查看", "项目.工程检查.任务管理.查看"});
+            List<UserInHouseQmCheckTask> res = taskService.searchUserInKeyHouseQmCheckTaskByTaskId(req.getTask_id());
+            log.debug("task_role --->" + res);
+            List<Integer> uids = res.stream().map(UserInHouseQmCheckTask::getUserId).collect(Collectors.toList());
+            Map<Integer, User> userMap = taskService.getUsersByIds(uids);
+            List<HouseQmCheckTaskRoleListRspVo> role_list = Lists.newArrayList();
+            for (UserInHouseQmCheckTask item : res) {
+                HouseQmCheckTaskRoleListRspVo role = new HouseQmCheckTaskRoleListRspVo();
+                role.setId(item.getId());
+                role.setUser_id(item.getUserId());
+                role.setSquad_id(item.getSquadId());
+                role.setRole_type(item.getRoleType());
+                role.setCan_approve(item.getCanApprove());
+                role.setTask_id(item.getTaskId());
+                role.setReal_name("");
+                if (userMap.containsKey(role.getUser_id())) {
+                    role.setReal_name(userMap.get(role.getUser_id()).getRealName());
+                }
+                role_list.add(role);
             }
-            role_list.add(role);
+            TaskTaskRoleRspVo data = new TaskTaskRoleRspVo();
+            data.setRole_list(role_list);
+            response.setData(data);
+            response.setResult(0);
+        } catch (Exception e) {
+            e.printStackTrace();
+            response.setResult(1);
+            response.setMessage(e.getMessage());
         }
-        TaskTaskRoleRspVo data = new TaskTaskRoleRspVo();
-        data.setRole_list(role_list);
-        response.setData(data);
-        response.setResult(0);
         return response;
     }
 }

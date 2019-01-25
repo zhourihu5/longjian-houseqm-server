@@ -59,13 +59,13 @@ import java.util.*;
 @Slf4j
 public class HouseqmStatisticController {
     @Resource
-    HouseqmStaticService houseqmStaticService;
+    private HouseqmStaticService houseqmStaticService;
     @Resource
-    HouseQmCheckTaskService houseQmCheckTaskRspService;
+    private HouseQmCheckTaskService houseQmCheckTaskRspService;
     @Resource
-    IHouseqmStatisticService iHouseqmStatisticService;
+    private IHouseqmStatisticService iHouseqmStatisticService;
     @Resource
-    AreaService areaService;
+    private AreaService areaService;
     private static final String _SOURCE_NAME_GCJC = "gcjc";
 
     /**
@@ -76,7 +76,7 @@ public class HouseqmStatisticController {
      * @Date 14:42 2019/1/22
      * @Param [req]
      **/
-    @GetMapping(value = "rhyf_task_stat/", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+    @GetMapping(value = "rhyf_task_stat", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     public LjBaseResponse<HouseqmStatisticRhyfTaskStatRspVo> rhyfTaskStat(@Valid HouseqmStatisticRhyfTaskStatReq req) {
         LjBaseResponse<HouseqmStatisticRhyfTaskStatRspVo> response = new LjBaseResponse<>();
         HouseQmCheckTaskHouseStatInfoVo house = null;
@@ -108,7 +108,7 @@ public class HouseqmStatisticController {
         } catch (Exception e) {
             e.printStackTrace();
             response.setMessage(e.getMessage());
-            response.setResult(500);
+            response.setResult(1);
         }
         return response;
     }
@@ -241,7 +241,7 @@ public class HouseqmStatisticController {
      * @author hy
      * @date 2018/12/24 0024
      */
-    @GetMapping(value = "project_issue_repair/", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+    @GetMapping(value = "project_issue_repair", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     public LjBaseResponse<HouseqmStatisticProjectIssueRepairRsp> projectIssueRepair(@Valid HouseqmStatisticProjectIssueRepairReq req) {
         IssueRepairStatisticVo result = iHouseqmStatisticService.projectIssueRepair(req.getProject_id(), req.getSource(), req.getArea_id(), req.getBegin_on(), req.getEnd_on(), req.getTimestamp());
         LjBaseResponse<HouseqmStatisticProjectIssueRepairRsp> response = new LjBaseResponse<>();
@@ -308,12 +308,12 @@ public class HouseqmStatisticController {
                                                                               @RequestParam(value = "begin_on") Integer beginOn,
                                                                               @RequestParam(value = "end_on") Integer endOn,
                                                                               @RequestParam(value = "timestamp") Integer timestamp) {
-        Date begin =null;
+        Date begin = null;
         if (beginOn > 0) {
-            begin=DateUtil.timeStampToDate(beginOn, "yyyy-MM-dd");
+            begin = DateUtil.timeStampToDate(beginOn, "yyyy-MM-dd");
         }
-        Date endOns=null;
-        if (endOn>0){
+        Date endOns = null;
+        if (endOn > 0) {
             endOns = DateUtil.timeStampToDate(endOn, "yyyy-MM-dd");
             //endon加一天
             Calendar c = Calendar.getInstance();
@@ -350,7 +350,7 @@ public class HouseqmStatisticController {
      * @author hy
      * @date 2018/12/22 0022
      */
-    @GetMapping(value = "task_issue_repair_list/", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+    @GetMapping(value = "task_issue_repair_list", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     public LjBaseResponse<HouseqmStatisticTaskIssueRepairListRsp> taskIssueRepairList(HouseqmStatisticTaskIssueRepairListReq req) {
         HouseqmStatisticCategoryIssueListRspMsgVo result = iHouseqmStatisticService.taskIssueRepairList(req.getProject_id(), req.getTask_id(), req.getArea_id(), req.getBegin_on(), req.getEnd_on(), req.getTimestamp(), req.getPlan_status(), req.getSource(), req.getPage(), req.getPage_size());
         LjBaseResponse<HouseqmStatisticTaskIssueRepairListRsp> response = new LjBaseResponse<>();

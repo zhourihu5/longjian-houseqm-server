@@ -51,15 +51,13 @@ public class AppHouseqmStatisticController {
     public LjBaseResponse<ProjectListRspVo> projectList(HttpServletRequest request, @Valid ProjectListReq req) {
         LjBaseResponse<ProjectListRspVo> response = new LjBaseResponse<>();
         log.info("project_list, source=" + req.getSource() + ", timestamp=" + req.getTimestamp());
-        // todo uid       uid = session['uid']
-        int uid = 7566;
-        ProjectListRspVo items = null;
+        Integer userId = (Integer) sessionInfo.getBaseInfo("userId");
         try {
-            items = iHouseqmStatisticService.projectList(uid, req.getSource(), req.getTimestamp());
+            ProjectListRspVo items = iHouseqmStatisticService.projectList(userId, req.getSource(), req.getTimestamp());
             response.setData(items);
         } catch (Exception e) {
             e.printStackTrace();
-            response.setResult(500);
+            response.setResult(1);
             response.setMessage(e.getMessage());
         }
         return response;
@@ -78,14 +76,13 @@ public class AppHouseqmStatisticController {
     public LjBaseResponse<ProjectIssueStatRspVo> projectIssueStat(HttpServletRequest request, @Valid ProjectIssueStatReq req) {
         LjBaseResponse<ProjectIssueStatRspVo> response = new LjBaseResponse<>();
         log.info("project_issue_stat, project_id=" + req.getProject_id() + ", source=" + req.getSource() + ", area_id=" + req.getArea_id() + ", timestamp=" + req.getTimestamp());
-        // todo uid      uid = session['uid']
-        int uid = 7566;
+        Integer userId = (Integer) sessionInfo.getBaseInfo("userId");
         try {
-            ProjectIssueStatRspVo item = iHouseqmStatisticService.projectIssueStat(uid, req.getProject_id(), req.getSource(), req.getArea_id(), req.getTimestamp());
+            ProjectIssueStatRspVo item = iHouseqmStatisticService.projectIssueStat(userId, req.getProject_id(), req.getSource(), req.getArea_id(), req.getTimestamp());
             response.setData(item);
         } catch (Exception e) {
             e.printStackTrace();
-            response.setResult(500);
+            response.setResult(1);
             response.setMessage(e.getMessage());
         }
         return response;
@@ -103,46 +100,37 @@ public class AppHouseqmStatisticController {
     public LjBaseResponse<ProjectCheckerStatRspVo> projectCheckerStat(HttpServletRequest request, @Valid ProjectCheckerStatReq req) {
         LjBaseResponse<ProjectCheckerStatRspVo> response = new LjBaseResponse<>();
         log.info("project_checker_stat, project_id=" + req.getProject_id() + ", task_id=" + req.getTask_id() + ", source=" + req.getSource() + ", stat_begin=" + req.getStat_begin() + ", stat_end=" + req.getStat_end() + ", timestamp=" + req.getTimestamp());
-        //        uid = session['uid']
-        Integer userId= (Integer) sessionInfo.getBaseInfo("userId");
-        int uid=7566;
-        ProjectCheckerStatRspVo item = null;
+        Integer userId = (Integer) sessionInfo.getBaseInfo("userId");
         try {
-            item = iHouseqmStatisticService.projectCheckerStat(uid, req.getProject_id(), req.getTask_id(), req.getSource(), req.getStat_begin(), req.getStat_end(), req.getTimestamp());
+            ProjectCheckerStatRspVo item = iHouseqmStatisticService.projectCheckerStat(userId, req.getProject_id(), req.getTask_id(), req.getSource(), req.getStat_begin(), req.getStat_end(), req.getTimestamp());
             response.setData(item);
-            response.setResult(0);
-            response.setMessage("success");
         } catch (Exception e) {
             e.printStackTrace();
-            response.setResult(500);
+            response.setResult(1);
             response.setMessage(e.getMessage());
         }
         return response;
     }
 
     /**
+     * @return com.longfor.longjian.common.base.LjBaseResponse<com.longfor.longjian.houseqm.app.vo.houseqmstatisticapp.ProjectRepairerStatRspVo>
      * @Author hy
      * @Description 项目/任务整改人员统计
      * http://192.168.37.159:3000/project/8/interface/api/3272
      * @Date 12:16 2019/1/22
      * @Param [request, req]
-     * @return com.longfor.longjian.common.base.LjBaseResponse<com.longfor.longjian.houseqm.app.vo.houseqmstatisticapp.ProjectRepairerStatRspVo>
      **/
     @GetMapping(value = "project_repairer_stat/", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     public LjBaseResponse<ProjectRepairerStatRspVo> projectRepairerStat(HttpServletRequest request, @Valid ProjectRepairerStatReq req) {
         LjBaseResponse<ProjectRepairerStatRspVo> response = new LjBaseResponse<>();
-        log.info("project_repairer_stat, project_id="+req.getProject_id()+", task_id="+req.getTask_id()+", source="+req.getSource()+", stat_begin="+req.getStat_begin()+", stat_end="+req.getStat_end()+", timestamp="+req.getTimestamp());
-        //todo uid = session['uid']
+        log.info("project_repairer_stat, project_id=" + req.getProject_id() + ", task_id=" + req.getTask_id() + ", source=" + req.getSource() + ", stat_begin=" + req.getStat_begin() + ", stat_end=" + req.getStat_end() + ", timestamp=" + req.getTimestamp());
         Integer userId = (Integer) sessionInfo.getBaseInfo("userId");
-        int uid=7566;
         try {
-            ProjectRepairerStatRspVo items = iHouseqmStatisticService.projectRepairerStat(uid, req.getProject_id(), req.getTask_id(), req.getSource(), req.getStat_begin(), req.getStat_end(), req.getTimestamp());
+            ProjectRepairerStatRspVo items = iHouseqmStatisticService.projectRepairerStat(userId, req.getProject_id(), req.getTask_id(), req.getSource(), req.getStat_begin(), req.getStat_end(), req.getTimestamp());
             response.setData(items);
-            response.setResult(0);
-            response.setMessage("success");
         } catch (Exception e) {
             e.printStackTrace();
-            response.setResult(500);
+            response.setResult(1);
             response.setMessage(e.getMessage());
         }
         return response;

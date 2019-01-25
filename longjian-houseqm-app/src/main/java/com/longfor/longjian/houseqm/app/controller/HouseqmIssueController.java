@@ -79,16 +79,19 @@ public class HouseqmIssueController {
      **/
     @PostMapping(value = "export_pdf/", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     public LjBaseResponse exportPdf(HttpServletRequest request, @Valid IssueExportPdfReq req) {
-        //todo 鉴权 _, _, err = ctrl_tool.ProjPermMulti(c, []string{"项目.移动验房.问题管理.查看", "项目.工程检查.问题管理.查看"})
-        /*try {
-            ctrlTool.projPermMulti(request,new String[]{"项目.移动验房.问题管理.查看", "项目.工程检查.问题管理.查看"});
+        LjBaseResponse<Object> response = new LjBaseResponse<>();
+        try {
+            ctrlTool.projPermMulti(request, new String[]{"项目.移动验房.问题管理.查看", "项目.工程检查.问题管理.查看"});
         } catch (Exception e) {
             e.printStackTrace();
             log.error(e.getMessage());
-        }*/
+            response.setResult(1);
+            response.setMessage(e.getMessage());
+        }
         Project proj = iHouseqmIssueService.getProjectByProjId(req.getProject_id());
-        if (proj == null)
+        if (proj == null) {
             throw new LjBaseRuntimeException(ErrorEnum.DB_ITEM_UNFOUND.getCode(), ErrorEnum.DB_ITEM_UNFOUND.getMessage());
+        }
 
         List<String> uuids = null;
 
@@ -148,30 +151,27 @@ public class HouseqmIssueController {
 
         reqMsg.setArea_ids(req.getArea_ids());
         reqMsg.setStatus_in(req.getStatus_in());
-        reqMsg.setUuids(StringUtil.strToStrs(req.getUuids(),","));
+        reqMsg.setUuids(StringUtil.strToStrs(req.getUuids(), ","));
 
-        LjBaseResponse<Object> response = new LjBaseResponse<>();
         try {
             LjBaseResponse<HouseqmCheckTaskIssueIndexJsonRspMsg> result = iHouseqmCheckTaskIssueFeignService.indexJson(reqMsg);
             response.setResult(0);
             response.setMessage("success");
         } catch (Exception e) {
             e.printStackTrace();
-            response.setResult(500);
+            response.setResult(1);
             response.setMessage(e.getMessage());
-            throw new LjBaseRuntimeException(500,e.getMessage());
+            throw new LjBaseRuntimeException(500, e.getMessage());
         }
 
-        //todo 获取userid //c.MustGet("user").(*zj3user_models.User).Id
         Integer userId = (Integer) sessionInfo.getBaseInfo("userId");
-        int uid = 9;
         Map<String, String> args = Maps.newHashMap();
         //args.put("url", "");
 
         String nowTime = DateUtil.getNowTimeStr("yyyyMMddhhmm");
         String exportName = "【" + proj.getName() + "】整改报告." + nowTime + ".pdf";
         // 把导出的信息插入到数据库中
-        iHouseqmIssueService.create(uid, proj.getTeamId(), req.getProject_id(), 0, args, exportName, new Date());
+        iHouseqmIssueService.create(userId, proj.getTeamId(), req.getProject_id(), 0, args, exportName, new Date());
         return response;
     }
 
@@ -185,32 +185,31 @@ public class HouseqmIssueController {
      **/
     @PostMapping(value = "batch_appoint/", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     public LjBaseResponse<IssueBatchAppointRspVo> batchAppoint(HttpServletRequest request, @Valid IssueBatchAppointReq req) throws Exception {
-        //todo 鉴权 _, _, err := ctrl_tool.ProjPermMulti(c, []string{"项目.移动验房.问题管理.编辑", "项目.工程检查.问题管理.编辑"})
-       /* try {
-            ctrlTool.projPermMulti(request,new String[]{"项目.移动验房.问题管理.编辑", "项目.工程检查.问题管理.编辑"});
+        LjBaseResponse<IssueBatchAppointRspVo> response = new LjBaseResponse<>();
+        try {
+            ctrlTool.projPermMulti(request, new String[]{"项目.移动验房.问题管理.编辑", "项目.工程检查.问题管理.编辑"});
+            // 过滤掉不同task下的问题，感觉有点多余，不过还是处理下
+            List<String> issueUuids = StringSplitToListUtil.splitToStringComma(req.getIssue_uuids(), ",");
+            List<HouseQmCheckTaskIssue> issues = houseQmCheckTaskIssueService.searchHouseQmCheckTaskIssueByTaskIdUuidIn(req.getTask_id(), issueUuids);
+            List<String> uuids = Lists.newArrayList();
+            for (HouseQmCheckTaskIssue issue : issues) {
+                if (issue.getStatus().equals(HouseQmCheckTaskIssueStatusEnum.CheckYes.getId())) {
+                    throw new Exception("有问题已销项，不能被指派");
+                }
+                if (req.getProject_id().equals(issue.getProjectId())) {
+                    uuids.add(issue.getUuid());
+                }
+            }
+            Integer userId = (Integer) sessionInfo.getBaseInfo("userId");
+            List<String> fails = iHouseqmIssueService.updateBatchIssueRepairInfoByUuids(uuids, req.getProject_id(), userId, req.getRepairer_id(), req.getRepair_follower_ids(), req.getPlan_end_on());
+            IssueBatchAppointRspVo data = new IssueBatchAppointRspVo();
+            data.setFails(fails);
+            response.setData(data);
         } catch (Exception e) {
             e.printStackTrace();
-            log.error(e.getMessage());
-        }*/
-        // 过滤掉不同task下的问题，感觉有点多余，不过还是处理下
-        List<String> issueUuids = StringSplitToListUtil.splitToStringComma(req.getIssue_uuids(), ",");
-        List<HouseQmCheckTaskIssue> issues = houseQmCheckTaskIssueService.searchHouseQmCheckTaskIssueByTaskIdUuidIn(req.getTask_id(), issueUuids);
-        List<String> uuids = Lists.newArrayList();
-        for (HouseQmCheckTaskIssue issue : issues) {
-            if (issue.getStatus().equals(HouseQmCheckTaskIssueStatusEnum.CheckYes.getId())) {
-                throw new Exception("有问题已销项，不能被指派");
-            }
-            if (req.getProject_id().equals(issue.getProjectId())) {
-                uuids.add(issue.getUuid());
-            }
+            response.setResult(1);
+            response.setMessage(e.getMessage());
         }
-        //todo 获取userid
-        int uid = 7566;
-        List<String> fails = iHouseqmIssueService.updateBatchIssueRepairInfoByUuids(uuids, req.getProject_id(), uid, req.getRepairer_id(), req.getRepair_follower_ids(), req.getPlan_end_on());
-        LjBaseResponse<IssueBatchAppointRspVo> response = new LjBaseResponse<>();
-        IssueBatchAppointRspVo data = new IssueBatchAppointRspVo();
-        data.setFails(fails);
-        response.setData(data);
         return response;
     }
 
@@ -224,25 +223,22 @@ public class HouseqmIssueController {
      **/
     @PostMapping(value = "batch_approve/", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     public LjBaseResponse<IssueBatchApproveRspVo> batchApprove(HttpServletRequest request, IssueBatchApproveReq req) throws Exception {
-        //todo 鉴权 String[] perms=new String[]{"项目.移动验房.问题管理.编辑","项目.工程检查.问题管理.编辑"};
-        /*try {
+        LjBaseResponse<IssueBatchApproveRspVo> response = new LjBaseResponse<>();
+        try {
             ctrlTool.projPermMulti(request,new String[]{"项目.移动验房.问题管理.编辑", "项目.工程检查.问题管理.编辑"});
+            // 过滤掉不同task下的问题，感觉有点多余，不过还是处理下
+            List<String> uuids = filterIssueUuidByProjIdTaskIdUuids(req.getProject_id(), req.getTask_id(), req.getIssue_uuids());
+            Integer userId = (Integer) sessionInfo.getBaseInfo("userId");
+            List<String> fails = iHouseqmIssueService.updateBatchIssueApproveStatusByUuids(uuids, req.getProject_id(), userId, HouseQmCheckTaskIssueCheckStatusEnum.CheckYes.getId(), "", "");
+            IssueBatchApproveRspVo data = new IssueBatchApproveRspVo();
+            data.setFails(fails);
+            response.setData(data);
         } catch (Exception e) {
             e.printStackTrace();
             log.error(e.getMessage());
-        }*/
-
-        // 过滤掉不同task下的问题，感觉有点多余，不过还是处理下
-        List<String> uuids = filterIssueUuidByProjIdTaskIdUuids(req.getProject_id(), req.getTask_id(), req.getIssue_uuids());
-
-        //todo uid  uId := getCurUid(c)
-        int uid = 7556;
-
-        List<String> fails = iHouseqmIssueService.updateBatchIssueApproveStatusByUuids(uuids, req.getProject_id(), uid, HouseQmCheckTaskIssueCheckStatusEnum.CheckYes.getId(), "", "");
-        LjBaseResponse<IssueBatchApproveRspVo> response = new LjBaseResponse<>();
-        IssueBatchApproveRspVo data = new IssueBatchApproveRspVo();
-        data.setFails(fails);
-        response.setData(data);
+            response.setResult(1);
+            response.setMessage(e.getMessage());
+        }
         return response;
     }
 
@@ -256,30 +252,31 @@ public class HouseqmIssueController {
      **/
     @PostMapping(value = "batch_delete/", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     public LjBaseResponse<IssueBatchDeleteRspVo> batchDelete(HttpServletRequest request, IssueBatchDeleteReq req) {
-        //todo 鉴权 String[] perms=new String[]{"项目.移动验房.问题管理.编辑","项目.工程检查.问题管理.编辑"};
-        /*try {
+        LjBaseResponse<IssueBatchDeleteRspVo> response = new LjBaseResponse<>();
+        try {
             ctrlTool.projPermMulti(request,new String[]{"项目.移动验房.问题管理.编辑", "项目.工程检查.问题管理.编辑"});
+            List<String> issueUuids = StringSplitToListUtil.splitToStringComma(req.getIssue_uuids(), ",");
+            IssueBatchDeleteRspVo data = new IssueBatchDeleteRspVo();
+            List<String> fails = Lists.newArrayList();
+            for (String issueUuid : issueUuids) {
+                try {
+                    iHouseqmIssueService.deleteHouseQmCheckTaskIssueByProjUuid(req.getProject_id(), issueUuid);
+                } catch (Exception e) {
+                    fails.add(issueUuid);
+                }
+            }
+            data.setFails(fails);
+            response.setData(data);
         } catch (Exception e) {
             e.printStackTrace();
             log.error(e.getMessage());
-        }*/
-        List<String> issueUuids = StringSplitToListUtil.splitToStringComma(req.getIssue_uuids(), ",");
-        LjBaseResponse<IssueBatchDeleteRspVo> response = new LjBaseResponse<>();
-        IssueBatchDeleteRspVo data = new IssueBatchDeleteRspVo();
-        List<String> fails = Lists.newArrayList();
-        for (String issueUuid : issueUuids) {
-            try {
-                iHouseqmIssueService.deleteHouseQmCheckTaskIssueByProjUuid(req.getProject_id(), issueUuid);
-            } catch (Exception e) {
-                fails.add(issueUuid);
-            }
+            response.setResult(1);
+            response.setMessage(e.getMessage());
         }
-        data.setFails(fails);
-        response.setData(data);
         return response;
     }
 
-    public List<String> filterIssueUuidByProjIdTaskIdUuids(int projId, int taskId, String uuidStr) {
+    private List<String> filterIssueUuidByProjIdTaskIdUuids(int projId, int taskId, String uuidStr) {
         List<String> issueUuids = StringSplitToListUtil.splitToStringComma(uuidStr, ",");
         if (issueUuids.size() == 0) return null;
         List<HouseQmCheckTaskIssue> issues = houseQmCheckTaskIssueService.searchHouseQmCheckTaskIssueByTaskIdUuidIn(taskId, issueUuids);
