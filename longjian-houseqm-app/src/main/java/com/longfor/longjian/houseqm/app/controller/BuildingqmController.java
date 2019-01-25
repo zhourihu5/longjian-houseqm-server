@@ -9,6 +9,7 @@ import com.longfor.longjian.houseqm.app.req.DeviceReq;
 import com.longfor.longjian.houseqm.app.req.TaskEditReq;
 import com.longfor.longjian.houseqm.app.req.TaskReq;
 import com.longfor.longjian.houseqm.app.req.UpdateDeviceReq;
+import com.longfor.longjian.houseqm.app.req.buildingqm.MyIssuePatchListReq;
 import com.longfor.longjian.houseqm.app.service.IBuildingqmService;
 import com.longfor.longjian.houseqm.app.service.ICheckUpdateService;
 import com.longfor.longjian.houseqm.app.vo.*;
@@ -20,6 +21,7 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
 import javax.validation.Valid;
+import java.rmi.server.UID;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -49,6 +51,7 @@ public class BuildingqmController {
     /**
      * 项目下获取我的任务列表
      * http://192.168.37.159:3000/project/8/interface/api/626
+     *
      * @return
      */
     @RequestMapping(value = "buildingqm/my_task_list/", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
@@ -123,18 +126,16 @@ public class BuildingqmController {
         } else {
             item.setTask_members(0);
         }
-
-        LjBaseResponse<TaskIssueListVo> ljbr = new LjBaseResponse<>();
-        List<TaskIssueListVo.TaskIussueVo> list = Lists.newArrayList();
-        list.add(item);
-        taskIssueListVo.setItem(list);
-        ljbr.setData(taskIssueListVo);
-        return ljbr;
+        LjBaseResponse<TaskIssueListVo> respone = new LjBaseResponse<>();
+        taskIssueListVo.setItem(item);
+        respone.setData(taskIssueListVo);
+        return respone;
     }
 
     /**
      * http://192.168.37.159:3000/project/8/interface/api/670  获取任务角色列表
      * //@RequestParam(value = "device_id") String deviceId,@RequestParam(value = "token") String token
+     *
      * @param taskIds
      * @return
      */
@@ -151,16 +152,16 @@ public class BuildingqmController {
      * 补全与我相关问题信息
      * http://192.168.37.159:3000/project/8/interface/api/678
      *
-     * @param deviceReq
+     * @param req
      * @return
      */
     @GetMapping(value = "buildingqm/my_issue_patch_list/", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
-    public LjBaseResponse<MyIssuePatchListVo> myIssuePatchList(DeviceReq deviceReq) {
-        log.info("my_issue_patch_list, task_id= " + deviceReq.getTask_id() + ", timestamp= " + deviceReq.getTimestamp());
+    public LjBaseResponse<MyIssuePatchListVo> myIssuePatchList(MyIssuePatchListReq req) {
+        log.info("my_issue_patch_list, task_id= " + req.getTask_id() + ", timestamp= " + req.getTimestamp());
         //// Todo: uid = session['uid']
         Integer uid = 9;
         //int uid = (int) sessionInfo.getBaseInfo("uid");
-        MyIssuePatchListVo miplv = buildingqmService.myIssuePathList(uid, deviceReq.getTask_id(), deviceReq.getTimestamp());
+        MyIssuePatchListVo miplv = buildingqmService.myIssuePathList(uid, req.getTask_id(), req.getTimestamp());
         LjBaseResponse<MyIssuePatchListVo> ljBaseResponse = new LjBaseResponse<>();
         ljBaseResponse.setData(miplv);
         return ljBaseResponse;
@@ -168,6 +169,7 @@ public class BuildingqmController {
 
     /**
      * 项目下创建任务
+     *
      * @param taskReq
      * @return
      */
@@ -206,6 +208,7 @@ public class BuildingqmController {
 
     /**
      * 项目下获取检查组信息
+     *
      * @param projectId
      * @param taskId
      * @return
@@ -238,6 +241,7 @@ public class BuildingqmController {
 
     /**
      * 项目下任务内容修改
+     *
      * @param taskEditReq
      * @return
      */
@@ -272,4 +276,50 @@ public class BuildingqmController {
         LjBaseResponse<Object> response = new LjBaseResponse<>();
         return response;
     }
+
+    /**
+     * http://192.168.37.159:3000/project/8/interface/api/3288  上报验房报告数据
+     * @param taskId
+     * @param timestamp
+     * @param issueUuid
+     * @return
+     */
+    @GetMapping(value = "issue/issue_log_info/", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+    public LjBaseResponse<ApiIssueLogVo> issueLogInfo(@RequestParam(name = "task_id", required = true) Integer taskId,
+                                                                               @RequestParam(name = "timestamp", required = true) Integer timestamp,
+                                                                                  @RequestParam(name = "issue_uuid",required = true)String issueUuid) {
+
+        ApiIssueLogVo apiIssueLogVo=  buildingqmService.getIssueListLogByLastIdAndUpdataAt(taskId,timestamp,issueUuid);
+
+        LjBaseResponse<ApiIssueLogVo> response = new LjBaseResponse<>();
+        response.setData(apiIssueLogVo);
+        return  response;
+
+    }
+
+    /**
+     * http://192.168.37.159:3000/project/8/interface/api/3260  提交问题日志
+     * @param projectId
+     * @param data
+     * @return
+     */
+    @GetMapping(value = "buildingqm/report_issue/", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+    public LjBaseResponse<ReportIssueVo> reportIssue(@RequestParam(name = "project_id", required = true) String projectId,
+
+                                                                     @RequestParam(name = "data", required = true) String data) {
+        log.info("report_issue, project_id="+projectId+", data="+data+"" );
+        //// todo   session 获取uid
+       /* uid = session['uid']*/
+        Integer uid=null;
+        ReportIssueVo reportIssueVo=  buildingqmService.reportIssue(uid,projectId,data);
+        LjBaseResponse<ReportIssueVo> response = new LjBaseResponse<>();
+        response.setData(reportIssueVo);
+        return  response;
+    }
+
+
+
+
+
+
 }

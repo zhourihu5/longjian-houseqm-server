@@ -9,7 +9,7 @@ import java.io.Serializable;
 
 /**
  * @ProjectName: longjian-houseqm-server
- * @Package: com.longfor.longjian.houseqm.app.req.issue
+ * @Package: com.longfor.longjian.houseqm.app.req.houseqmissue
  * @ClassName: IssueBatchAppointReq
  * @Description: java类作用描述
  * @Author: hy

@@ -10,7 +10,7 @@ import java.util.List;
  */
 
 public interface CategoryService {
-    List<CategoryV3> SearchCategoryByKeyIn(List<String> keys);
+    List<CategoryV3> searchCategoryByKeyIn(List<String> keys);
 
-    List<CategoryV3> SearchCategoryByFatherKey(String categoryRootKey);
+    List<CategoryV3> searchCategoryByFatherKey(String categoryRootKey);
 }

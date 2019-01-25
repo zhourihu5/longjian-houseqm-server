@@ -8,9 +8,10 @@ import lombok.Data;
  */
 @Data
 public class ApiHouseQmCheckTaskIssueDetailVo {
-    private Integer IssueReason; // 产生问题的原因，需要检索project_setting表此project的PROJ_ISSUE_REASON_LIST记录
-    private String  IssueReasonDetail; // 产生问题原因的文字描述
-    private  String IssueSuggest;     // 措施建议
-    private String  PotentialRisk; // 潜在风险
-    private String PreventiveActionDetail; //预防措施
+    private Integer issue_reason=0; // 产生问题的原因，需要检索project_setting表此project的PROJ_ISSUE_REASON_LIST记录
+    private String  issue_reason_detail=""; // 产生问题原因的文字描述
+    private  String issue_suggest="";     // 措施建议
+    private String  potential_risk=""; // 潜在风险
+    private String preventive_action_detail=""; //预防措施
+
 }

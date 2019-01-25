@@ -1,13 +1,12 @@
 package com.longfor.longjian.houseqm.domain.internalService.impl;
 
 import com.longfor.gaia.gfs.data.mybatis.datasource.LFAssignDataSource;
-import com.longfor.longjian.houseqm.dao.CategoryMapper;
+import com.longfor.longjian.houseqm.dao.CategoryV3Mapper;
 import com.longfor.longjian.houseqm.domain.internalService.CategoryService;
-import com.longfor.longjian.houseqm.po.Category;
 import com.longfor.longjian.houseqm.po.CategoryV3;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.ibatis.annotations.Param;
 import org.springframework.stereotype.Service;
+import tk.mybatis.mapper.entity.Example;
 
 import javax.annotation.Resource;
 import java.util.List;
@@ -19,17 +18,23 @@ import java.util.List;
 @Slf4j
 public class CategoryServiceImpl implements CategoryService {
     @Resource
-    CategoryMapper categoryMapper;
+    CategoryV3Mapper categoryMapper;
 
     @Override
     @LFAssignDataSource("zhijian2")
-    public List<CategoryV3> SearchCategoryByKeyIn(List<String> keys) {
-        return categoryMapper.searchCategoryByKeyIn(keys);
+    public List<CategoryV3> searchCategoryByKeyIn(List<String> keys) {
+        Example example = new Example(CategoryV3.class);
+        Example.Criteria criteria = example.createCriteria();
+        criteria.andIn("key",keys);
+      return categoryMapper.selectByExample(example);
     }
 
     @Override
     @LFAssignDataSource("zhijian2")
-    public List<CategoryV3> SearchCategoryByFatherKey(String categoryRootKey) {
-        return categoryMapper.searchCategoryByFatherKey(categoryRootKey);
+    public List<CategoryV3> searchCategoryByFatherKey(String categoryRootKey) {
+        Example example = new Example(CategoryV3.class);
+        Example.Criteria criteria = example.createCriteria();
+        criteria.andEqualTo("fatherKey",categoryRootKey);
+        return   categoryMapper.selectByExample(example);
     }
 }

@@ -1,5 +1,7 @@
 package com.longfor.longjian.houseqm.app.service.impl;
 
+import com.longfor.longjian.houseqm.app.vo.ApiHouseQmCheckTaskIssueLogDetailRspVo;
+
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import com.alibaba.fastjson.TypeReference;
@@ -9,10 +11,15 @@ import com.longfor.longjian.common.base.LjBaseResponse;
 import com.longfor.longjian.houseqm.app.req.DeviceReq;
 import com.longfor.longjian.houseqm.app.service.IHouseqmService;
 import com.longfor.longjian.houseqm.app.vo.*;
+import com.longfor.longjian.houseqm.app.vo.houseqm.ApiHouseQmCheckTaskIssueDetail;
+import com.longfor.longjian.houseqm.app.vo.houseqm.ApiHouseQmCheckTaskIssueLogRsp;
+import com.longfor.longjian.houseqm.app.vo.houseqm.ApiHouseQmCheckTaskIssueRsp;
+import com.longfor.longjian.houseqm.app.vo.houseqm.HouseqmMyIssueLogListRspVo;
 import com.longfor.longjian.houseqm.consts.HouseQmCheckTaskIssueAttachmentPublicTypeEnum;
 import com.longfor.longjian.houseqm.consts.HouseQmUserInIssueRoleTypeEnum;
 import com.longfor.longjian.houseqm.domain.internalService.*;
 import com.longfor.longjian.houseqm.po.*;
+import com.longfor.longjian.houseqm.util.DateUtil;
 import com.longfor.longjian.houseqm.util.JsonUtil;
 import com.longfor.longjian.houseqm.util.StringSplitToListUtil;
 import lombok.extern.slf4j.Slf4j;
@@ -41,16 +48,16 @@ public class HouseqmServiceImpl implements IHouseqmService {
 
     @Override
     public List<Integer> searchHouseQmApproveUserIdInMyCheckSquad(int userId, int taskId) {
-        List<UserInHouseQmCheckTask> rs=userInHouseQmCheckTaskService.searchByTaskIdUserIdRoleType(taskId,userId,HouseQmUserInIssueRoleTypeEnum.Checker.getId());
+        List<UserInHouseQmCheckTask> rs = userInHouseQmCheckTaskService.searchByTaskIdUserIdRoleType(taskId, userId, HouseQmUserInIssueRoleTypeEnum.Checker.getId());
         List<Integer> squadIds = rs.stream().map(UserInHouseQmCheckTask::getSquadId).collect(Collectors.toSet()).stream().collect(Collectors.toList());
-        List<UserInHouseQmCheckTask> rrs=userInHouseQmCheckTaskService.searchBySquadIdIn(squadIds);
-        List<Integer> userIds= Lists.newArrayList();
+        List<UserInHouseQmCheckTask> rrs = userInHouseQmCheckTaskService.searchBySquadIdIn(squadIds);
+        List<Integer> userIds = Lists.newArrayList();
         for (UserInHouseQmCheckTask r : rrs) {
-            if (r.getCanApprove()>0){
+            if (r.getCanApprove() > 0) {
                 userIds.add(r.getUserId());
             }
         }
-        if (userIds.isEmpty()){
+        if (userIds.isEmpty()) {
             userIds.add(userId);
             return userIds;
         }
@@ -58,13 +65,13 @@ public class HouseqmServiceImpl implements IHouseqmService {
     }
 
     @Override
-    public TaskResponse<MyIssueListVo> myIssueLogList(DeviceReq deviceReq, HttpServletRequest request) {
-        TaskResponse<MyIssueListVo> taskResponse = new TaskResponse<>();
-        MyIssueListVo myIssueListVo = new MyIssueListVo();
-        List<String> houseQmCheckTaskIssueLogJsons = new ArrayList<>();
+    public TaskResponse<HouseqmMyIssueLogListRspVo> myIssueLogList(DeviceReq deviceReq, HttpServletRequest request) {
+        TaskResponse<HouseqmMyIssueLogListRspVo> taskResponse = new TaskResponse<>();
+        HouseqmMyIssueLogListRspVo myIssueListVo = new HouseqmMyIssueLogListRspVo();
+        List<ApiHouseQmCheckTaskIssueLogRsp> result = new ArrayList<>();
         //Integer userId = (Integer)request.getSession().getAttribute("uid");
         //todo 暂时获取不到uid
-        Integer userId = 6;
+        Integer userId = 7566;
         Integer start = 0;
         Integer limit = HOUSEQM_API_GET_PER_TIME;
         try {
@@ -87,35 +94,33 @@ public class HouseqmServiceImpl implements IHouseqmService {
                 HouseQmCheckTaskIssue houseQmCheckTaskIssue = map.get(houseQmCheckTaskIssueLog.getIssueUuid());
                 if (houseQmCheckTaskIssue != null) {
                     rspVo.setTitle(houseQmCheckTaskIssue.getTitle());
-                    rspVo.setPosX(houseQmCheckTaskIssue.getPosX());
-                    rspVo.setPosY(houseQmCheckTaskIssue.getPosY());
+                    rspVo.setPos_x(houseQmCheckTaskIssue.getPosX());
+                    rspVo.setPos_y(houseQmCheckTaskIssue.getPosY());
                     rspVo.setTyp(houseQmCheckTaskIssue.getTyp());
-                    rspVo.setAreaId(houseQmCheckTaskIssue.getAreaId());
+                    rspVo.setArea_id(houseQmCheckTaskIssue.getAreaId());
                 }
-                HouseQmCheckTaskIssueLogRspVo houseQmCheckTaskIssueLogRspVo = new HouseQmCheckTaskIssueLogRspVo();
+                ApiHouseQmCheckTaskIssueLogRsp houseQmCheckTaskIssueLogRspVo = new ApiHouseQmCheckTaskIssueLogRsp();
                 houseQmCheckTaskIssueLogRspVo.setId(houseQmCheckTaskIssueLog.getId());
-                houseQmCheckTaskIssueLogRspVo.setProjectId(houseQmCheckTaskIssueLog.getProjectId());
-                houseQmCheckTaskIssueLogRspVo.setTaskId(houseQmCheckTaskIssueLog.getTaskId());
+                houseQmCheckTaskIssueLogRspVo.setProject_id(houseQmCheckTaskIssueLog.getProjectId());
+                houseQmCheckTaskIssueLogRspVo.setTask_id(houseQmCheckTaskIssueLog.getTaskId());
                 houseQmCheckTaskIssueLogRspVo.setUuid(houseQmCheckTaskIssueLog.getUuid());
-                houseQmCheckTaskIssueLogRspVo.setIssueUuid(houseQmCheckTaskIssueLog.getIssueUuid());
-                houseQmCheckTaskIssueLogRspVo.setSenderId(houseQmCheckTaskIssueLog.getSenderId());
+                houseQmCheckTaskIssueLogRspVo.setIssue_uuid(houseQmCheckTaskIssueLog.getIssueUuid());
+                houseQmCheckTaskIssueLogRspVo.setSender_id(houseQmCheckTaskIssueLog.getSenderId());
                 houseQmCheckTaskIssueLogRspVo.setDesc(houseQmCheckTaskIssueLog.getDesc());
                 houseQmCheckTaskIssueLogRspVo.setStatus(houseQmCheckTaskIssueLog.getStatus());
-                houseQmCheckTaskIssueLogRspVo.setAttachmentMd5List(houseQmCheckTaskIssueLog.getAttachmentMd5List());
-                houseQmCheckTaskIssueLogRspVo.setAudioMd5List(houseQmCheckTaskIssueLog.getAudioMd5List());
-                houseQmCheckTaskIssueLogRspVo.setMemoAudioMd5List(houseQmCheckTaskIssueLog.getMemoAudioMd5List());
-                houseQmCheckTaskIssueLogRspVo.setClientCreateAt(DateToInt(houseQmCheckTaskIssueLog.getClientCreateAt()));
-                houseQmCheckTaskIssueLogRspVo.setUpdateAt(DateToInt(houseQmCheckTaskIssueLog.getUpdateAt()));
-                houseQmCheckTaskIssueLogRspVo.setDeleteAt(houseQmCheckTaskIssueLog.getDeleteAt() == null ? 0 : DateToInt(houseQmCheckTaskIssueLog.getDeleteAt()));
-                String rspVoJson = JSON.toJSONString(rspVo);
-                houseQmCheckTaskIssueLogRspVo.setDetail(rspVoJson);
+                houseQmCheckTaskIssueLogRspVo.setAttachment_md5_list(houseQmCheckTaskIssueLog.getAttachmentMd5List());
+                houseQmCheckTaskIssueLogRspVo.setAudio_md5_list(houseQmCheckTaskIssueLog.getAudioMd5List());
+                houseQmCheckTaskIssueLogRspVo.setMemo_audio_md5_list(houseQmCheckTaskIssueLog.getMemoAudioMd5List());
+                houseQmCheckTaskIssueLogRspVo.setClient_create_at(DateUtil.datetimeToTimeStamp(houseQmCheckTaskIssueLog.getClientCreateAt()));
+                houseQmCheckTaskIssueLogRspVo.setUpdate_at(DateUtil.datetimeToTimeStamp(houseQmCheckTaskIssueLog.getUpdateAt()));
+                houseQmCheckTaskIssueLogRspVo.setDelete_at(houseQmCheckTaskIssueLog.getDeleteAt() == null ? 0 : DateUtil.datetimeToTimeStamp(houseQmCheckTaskIssueLog.getDeleteAt()));
+                houseQmCheckTaskIssueLogRspVo.setDetail(rspVo);
                 if (houseQmCheckTaskIssue != null) {
-                    houseQmCheckTaskIssueLogRspVo.setIssueUuid(houseQmCheckTaskIssue.getUuid());
+                    houseQmCheckTaskIssueLogRspVo.setIssue_uuid(houseQmCheckTaskIssue.getUuid());
                 }
-                String IssueLogJson = JsonUtil.GsonString(houseQmCheckTaskIssueLogRspVo);
-                houseQmCheckTaskIssueLogJsons.add(IssueLogJson);
+                result.add(houseQmCheckTaskIssueLogRspVo);
             });
-            myIssueListVo.setIssue_list(houseQmCheckTaskIssueLogJsons);
+            myIssueListVo.setIssue_list(result);
             taskResponse.setData(myIssueListVo);
         } catch (Exception e) {
             log.error("error:" + e);
@@ -127,10 +132,10 @@ public class HouseqmServiceImpl implements IHouseqmService {
     public TaskResponse<MyIssueListVo> myIssueList(DeviceReq deviceReq, HttpServletRequest request) {
         TaskResponse<MyIssueListVo> taskResponse = new TaskResponse<>();
         MyIssueListVo myIssueListVo = new MyIssueListVo();
-        List<String> houseQmCheckTaskIssueJsons = new ArrayList<>();
+        List<ApiHouseQmCheckTaskIssueRsp> items = new ArrayList<>();
         //Integer userId = (Integer)request.getSession().getAttribute("uid");
         //todo 暂时获取不到uid
-        Integer userId = 6;
+        Integer userId = 7566;
         Integer start = 0;
         Integer limit = HOUSEQM_API_GET_PER_TIME;
         Integer lastId = 0;
@@ -139,52 +144,65 @@ public class HouseqmServiceImpl implements IHouseqmService {
             // 上次获取的最后ID，首次拉取传`0`
             lastId = houseQmCheckTaskIssues.get(houseQmCheckTaskIssues.size() - 1).getId();
             houseQmCheckTaskIssues.forEach(houseQmCheckTaskIssue -> {
-                ApiHouseQmCheckTaskIssueRspVo houseQmCheckTaskIssueVo = new ApiHouseQmCheckTaskIssueRspVo();
+                ApiHouseQmCheckTaskIssueRsp houseQmCheckTaskIssueVo = new ApiHouseQmCheckTaskIssueRsp();
                 houseQmCheckTaskIssueVo.setId(houseQmCheckTaskIssue.getId());
-                houseQmCheckTaskIssueVo.setProjectId(houseQmCheckTaskIssue.getProjectId());
-                houseQmCheckTaskIssueVo.setTaskId(houseQmCheckTaskIssue.getTaskId());
+                houseQmCheckTaskIssueVo.setProject_id(houseQmCheckTaskIssue.getProjectId());
+                houseQmCheckTaskIssueVo.setTask_id(houseQmCheckTaskIssue.getTaskId());
                 houseQmCheckTaskIssueVo.setUuid(houseQmCheckTaskIssue.getUuid());
-                houseQmCheckTaskIssueVo.setSenderId(houseQmCheckTaskIssue.getSenderId());
-                houseQmCheckTaskIssueVo.setPlanEndOn(DateToInt(houseQmCheckTaskIssue.getPlanEndOn()));
-                houseQmCheckTaskIssueVo.setEndOn(DateToInt(houseQmCheckTaskIssue.getEndOn()));
-                houseQmCheckTaskIssueVo.setAreaId(houseQmCheckTaskIssue.getAreaId());
-                houseQmCheckTaskIssueVo.setAreaPathAndId(houseQmCheckTaskIssue.getAreaPathAndId());
-                houseQmCheckTaskIssueVo.setCategoryCls(houseQmCheckTaskIssue.getCategoryCls());
-                houseQmCheckTaskIssueVo.setCategoryKey(houseQmCheckTaskIssue.getCategoryKey());
-                houseQmCheckTaskIssueVo.setCategoryPathAndKey(houseQmCheckTaskIssue.getCategoryPathAndKey());
-                houseQmCheckTaskIssueVo.setCheckItemKey(houseQmCheckTaskIssue.getCheckItemKey());
-                houseQmCheckTaskIssueVo.setCheckItemPathAndKey(houseQmCheckTaskIssue.getCheckItemPathAndKey());
-                houseQmCheckTaskIssueVo.setDrawingMd5(houseQmCheckTaskIssue.getDrawingMD5());
-                houseQmCheckTaskIssueVo.setPosX(houseQmCheckTaskIssue.getPosX());
-                houseQmCheckTaskIssueVo.setPosY(houseQmCheckTaskIssue.getPosY());
+                houseQmCheckTaskIssueVo.setSender_id(houseQmCheckTaskIssue.getSenderId());
+                houseQmCheckTaskIssueVo.setPlan_end_on(DateToInt(houseQmCheckTaskIssue.getPlanEndOn()));
+                houseQmCheckTaskIssueVo.setEnd_on(DateToInt(houseQmCheckTaskIssue.getEndOn()));
+                houseQmCheckTaskIssueVo.setArea_id(houseQmCheckTaskIssue.getAreaId());
+                houseQmCheckTaskIssueVo.setArea_path_and_id(houseQmCheckTaskIssue.getAreaPathAndId());
+                houseQmCheckTaskIssueVo.setCategory_cls(houseQmCheckTaskIssue.getCategoryCls());
+                houseQmCheckTaskIssueVo.setCategory_key(houseQmCheckTaskIssue.getCategoryKey());
+                houseQmCheckTaskIssueVo.setCategory_path_and_key(houseQmCheckTaskIssue.getCategoryPathAndKey());
+                houseQmCheckTaskIssueVo.setCheck_item_key(houseQmCheckTaskIssue.getCheckItemKey());
+                houseQmCheckTaskIssueVo.setCheck_item_path_and_key(houseQmCheckTaskIssue.getCheckItemPathAndKey());
+                houseQmCheckTaskIssueVo.setDrawing_md5(houseQmCheckTaskIssue.getDrawingMD5());
+                houseQmCheckTaskIssueVo.setPos_x(houseQmCheckTaskIssue.getPosX());
+                houseQmCheckTaskIssueVo.setPos_y(houseQmCheckTaskIssue.getPosY());
                 houseQmCheckTaskIssueVo.setTitle(houseQmCheckTaskIssue.getTitle());
                 houseQmCheckTaskIssueVo.setTyp(houseQmCheckTaskIssue.getTyp());
                 houseQmCheckTaskIssueVo.setContent(houseQmCheckTaskIssue.getContent());
                 houseQmCheckTaskIssueVo.setCondition(houseQmCheckTaskIssue.getCondition());
                 houseQmCheckTaskIssueVo.setStatus(houseQmCheckTaskIssue.getStatus());
-                houseQmCheckTaskIssueVo.setRepairerId(houseQmCheckTaskIssue.getRepairerId());
-                houseQmCheckTaskIssueVo.setRepairerFollowerIds(houseQmCheckTaskIssue.getRepairerFollowerIds());
-                houseQmCheckTaskIssueVo.setAttachmentMd5List(houseQmCheckTaskIssue.getAttachmentMd5List());
-                houseQmCheckTaskIssueVo.setClientCreateAt(DateToInt(houseQmCheckTaskIssue.getClientCreateAt()));
-                houseQmCheckTaskIssueVo.setLastAssigner(houseQmCheckTaskIssue.getLastAssigner());
-                houseQmCheckTaskIssueVo.setLastAssignerAt(DateToInt(houseQmCheckTaskIssue.getLastAssignAt()));
-                houseQmCheckTaskIssueVo.setLastRepairer(houseQmCheckTaskIssue.getLastRepairer());
-                houseQmCheckTaskIssueVo.setLastRepairerAt(DateToInt(houseQmCheckTaskIssue.getLastRepairerAt()));
-                houseQmCheckTaskIssueVo.setDestroyUser(houseQmCheckTaskIssue.getDestroyUser());
-                houseQmCheckTaskIssueVo.setDestroyAt(DateToInt(houseQmCheckTaskIssue.getDestroyAt()));
-                houseQmCheckTaskIssueVo.setDeleteUser(houseQmCheckTaskIssue.getDeleteUser());
-                houseQmCheckTaskIssueVo.setDeleteTime(DateToInt(houseQmCheckTaskIssue.getDeleteTime()));
-                houseQmCheckTaskIssueVo.setDetail(houseQmCheckTaskIssue.getDetail());
-                houseQmCheckTaskIssueVo.setUpdateAt(DateToInt(houseQmCheckTaskIssue.getUpdateAt()));
-                houseQmCheckTaskIssueVo.setDeleteAt(houseQmCheckTaskIssue.getDeleteAt() == null ? 0 : DateToInt(houseQmCheckTaskIssue.getDeleteAt()));
-                String IssueVoJson = JsonUtil.GsonString(houseQmCheckTaskIssueVo);
-                houseQmCheckTaskIssueJsons.add(IssueVoJson);
+                houseQmCheckTaskIssueVo.setRepairer_id(houseQmCheckTaskIssue.getRepairerId());
+                houseQmCheckTaskIssueVo.setRepairer_follower_ids(houseQmCheckTaskIssue.getRepairerFollowerIds());
+                houseQmCheckTaskIssueVo.setAttachment_md5_list(houseQmCheckTaskIssue.getAttachmentMd5List());
+                houseQmCheckTaskIssueVo.setAudio_md5_list(houseQmCheckTaskIssue.getAudioMd5List());
+                houseQmCheckTaskIssueVo.setClient_create_at(DateUtil.datetimeToTimeStamp(houseQmCheckTaskIssue.getClientCreateAt()));
+                houseQmCheckTaskIssueVo.setLast_assigner(houseQmCheckTaskIssue.getLastAssigner());
+                houseQmCheckTaskIssueVo.setLast_assigner_at(DateUtil.datetimeToTimeStamp(houseQmCheckTaskIssue.getLastAssignAt()));
+                houseQmCheckTaskIssueVo.setLast_repairer(houseQmCheckTaskIssue.getLastRepairer());
+                houseQmCheckTaskIssueVo.setLast_repairer_at(DateUtil.datetimeToTimeStamp(houseQmCheckTaskIssue.getLastRepairerAt()));
+                houseQmCheckTaskIssueVo.setDestroy_user(houseQmCheckTaskIssue.getDestroyUser());
+                houseQmCheckTaskIssueVo.setDestroy_at(DateUtil.datetimeToTimeStamp(houseQmCheckTaskIssue.getDestroyAt()));
+                houseQmCheckTaskIssueVo.setDelete_user(houseQmCheckTaskIssue.getDeleteUser());
+                houseQmCheckTaskIssueVo.setDelete_time(DateUtil.datetimeToTimeStamp(houseQmCheckTaskIssue.getDeleteTime()));
+
+                String detail = houseQmCheckTaskIssue.getDetail();
+                Map map = JSON.parseObject(detail, Map.class);
+
+                //{"IssueReason":0,"IssueReasonDetail":"","IssueSuggest":"","PotentialRisk":"","PreventiveActionDetail":""}
+                ApiHouseQmCheckTaskIssueDetail issueDetail = new ApiHouseQmCheckTaskIssueDetail();
+                issueDetail.setIssue_reason((Integer) map.get("IssueReason"));
+                issueDetail.setIssue_reason_detail((String) map.get("IssueReasonDetail"));
+                issueDetail.setIssue_suggest((String) map.get("IssueSuggest"));
+                issueDetail.setPotential_risk((String) map.get("PotentialRisk"));
+                issueDetail.setPreventive_action_detail((String) map.get("PreventiveActionDetail"));
+                houseQmCheckTaskIssueVo.setDetail(issueDetail);
+                houseQmCheckTaskIssueVo.setUpdate_at(DateToInt(houseQmCheckTaskIssue.getUpdateAt()));
+                houseQmCheckTaskIssueVo.setDelete_at(houseQmCheckTaskIssue.getDeleteAt() == null ? 0 : DateToInt(houseQmCheckTaskIssue.getDeleteAt()));
+                //String IssueVoJson = JsonUtil.GsonString(houseQmCheckTaskIssueVo);
+                items.add(houseQmCheckTaskIssueVo);
             });
-            myIssueListVo.setIssue_list(houseQmCheckTaskIssueJsons);
+            myIssueListVo.setIssue_list(items);
             myIssueListVo.setLast_id(lastId);
             taskResponse.setData(myIssueListVo);
         } catch (Exception e) {
             log.error("error" + e);
+            e.printStackTrace();
         }
         return taskResponse;
     }
@@ -203,12 +221,12 @@ public class HouseqmServiceImpl implements IHouseqmService {
             houseQmCheckTaskIssueUsers.forEach(houseQmCheckTaskIssueUser -> {
                 ApiHouseQmCheckTaskIssueMemberRspVo apiHouseQmCheckTaskIssueMemberRspVo = new ApiHouseQmCheckTaskIssueMemberRspVo();
                 apiHouseQmCheckTaskIssueMemberRspVo.setId(houseQmCheckTaskIssueUser.getId());
-                apiHouseQmCheckTaskIssueMemberRspVo.setUserId(houseQmCheckTaskIssueUser.getUserId());
-                apiHouseQmCheckTaskIssueMemberRspVo.setTaskId(houseQmCheckTaskIssueUser.getTaskId());
-                apiHouseQmCheckTaskIssueMemberRspVo.setRoleType(houseQmCheckTaskIssueUser.getRoleType());
-                apiHouseQmCheckTaskIssueMemberRspVo.setIssueUuid(houseQmCheckTaskIssueUser.getIssueUuid());
-                apiHouseQmCheckTaskIssueMemberRspVo.setUpdateAt(DateToInt(houseQmCheckTaskIssueUser.getUpdateAt()));
-                apiHouseQmCheckTaskIssueMemberRspVo.setDeleteAt(houseQmCheckTaskIssueUser.getDeleteAt() == null ? 0 : DateToInt(houseQmCheckTaskIssueUser.getDeleteAt()));
+                apiHouseQmCheckTaskIssueMemberRspVo.setUser_id(houseQmCheckTaskIssueUser.getUserId());
+                apiHouseQmCheckTaskIssueMemberRspVo.setTask_id(houseQmCheckTaskIssueUser.getTaskId());
+                apiHouseQmCheckTaskIssueMemberRspVo.setRole_type(houseQmCheckTaskIssueUser.getRoleType());
+                apiHouseQmCheckTaskIssueMemberRspVo.setIssue_uuid(houseQmCheckTaskIssueUser.getIssueUuid());
+                apiHouseQmCheckTaskIssueMemberRspVo.setUpdate_at(DateUtil.datetimeToTimeStamp(houseQmCheckTaskIssueUser.getUpdateAt()));
+                apiHouseQmCheckTaskIssueMemberRspVo.setDelete_at(houseQmCheckTaskIssueUser.getDeleteAt() == null ? 0 : DateUtil.datetimeToTimeStamp(houseQmCheckTaskIssueUser.getDeleteAt()));
                 //String rspVoJson = JSON.toJSONString(apiHouseQmCheckTaskIssueMemberRspVo);
                 memberList.add(apiHouseQmCheckTaskIssueMemberRspVo);
             });
@@ -228,7 +246,7 @@ public class HouseqmServiceImpl implements IHouseqmService {
         List<ApiHouseQmCheckTaskIssueAttachmentRspVo> houseQmCheckTaskIssueJsons = new ArrayList<>();
         //Integer userId = (Integer)request.getSession().getAttribute("uid");
         //todo 暂时获取不到uid
-        Integer userId = 6;
+        Integer userId = 9;
         Integer start = 0;
         Integer limit = HOUSEQM_API_GET_PER_TIME;
         Integer lastId = 0;
@@ -268,7 +286,7 @@ public class HouseqmServiceImpl implements IHouseqmService {
         //获取出任务下的区域与检验类型的交集
         List<Integer> areaIds = StringSplitToListUtil.strToInts(task.getAreaIds(), ",");
         List<Integer> areaTypes = StringSplitToListUtil.strToInts(task.getAreaTypes(), ",");
-        if (areaIds.size()==0||areaTypes.size()==0)return null;
+        if (areaIds.size() == 0 || areaTypes.size() == 0) return null;
         List<Area> areas = areaService.searchAreaListByRootIdAndTypes(projectId, areaIds, areaTypes);
         return areas;
     }

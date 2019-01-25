@@ -6,7 +6,7 @@ import com.longfor.longjian.common.push.UmPushUtil;
 import com.longfor.longjian.common.push.xiaomi.XmPushUtil;
 import com.longfor.longjian.houseqm.app.service.PushService;
 import com.longfor.longjian.houseqm.app.vo.PushConfigVo;
-import com.longfor.longjian.houseqm.app.vo.issue.HouseQmCheckTaskIssueVo;
+import com.longfor.longjian.houseqm.app.vo.houseqmissue.HouseQmCheckTaskIssueVo;
 import com.longfor.longjian.houseqm.consts.AppPlatformTypeEnum;
 import com.longfor.longjian.houseqm.consts.CategoryClsTypeEnum;
 import com.longfor.longjian.common.consts.HouseQmCheckTaskIssueStatusEnum;
@@ -50,7 +50,7 @@ public class PushServiceImpl implements PushService {
         Map<Integer, List<HouseQmCheckTaskIssueVo>> issuesMap = Maps.newHashMap();
         for (HouseQmCheckTaskIssueVo issue : issues) {
             if (issue == null) {
-                log.warn("issue is nil");
+                log.warn("houseqmissue is nil");
                 continue;
             }
             List<HouseQmCheckTaskIssueVo> issueList = issuesMap.get(issue.getTaskId());

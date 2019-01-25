@@ -253,7 +253,7 @@ public class IssueServiceImpl implements IIssueService {
             item.setDestroy_user(issue.getDestroyUser());
             item.setDestroy_at(DateUtil.datetimeToTimeStamp(issue.getDestroyAt()));
             item.setDelete_user(issue.getDeleteUser());
-            //todo 确认 python源码 item.delete_time = CommonUtil.datetime_to_timestamp(issue.delete_at)
+            //todo 确认 python源码 item.delete_time = CommonUtil.datetime_to_timestamp(houseqmissue.delete_at)
             item.setDelete_time(DateUtil.datetimeToTimeStamp(issue.getDeleteTime()));
 
             List<String> attachmentsList = StringSplitToListUtil.splitToStringComma(issue.getAttachmentMd5List(), ",");

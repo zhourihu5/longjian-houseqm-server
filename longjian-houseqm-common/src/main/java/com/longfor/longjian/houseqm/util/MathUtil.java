@@ -21,9 +21,9 @@ public class MathUtil {
         if (a == 0 || b == 0) {
             return "0.00";
         }
-        BigDecimal decimal = new BigDecimal(a);
+        BigDecimal decimala = new BigDecimal(a);
         BigDecimal decimalb= new BigDecimal(b);
-        BigDecimal divide = decimal.divide(decimalb,5,BigDecimal.ROUND_HALF_DOWN);
+        BigDecimal divide = decimala.divide(decimalb,4,BigDecimal.ROUND_HALF_UP);
         BigDecimal perc = new BigDecimal(100);
         perc.setScale(2,BigDecimal.ROUND_HALF_UP);
         BigDecimal multiply = divide.multiply(perc);
@@ -32,6 +32,13 @@ public class MathUtil {
         return  formatToNumber(multiply);
     }
 
+    /**
+     * @Author hy
+     * @Description 格式化
+     * @Date 14:48 2019/1/22
+     * @Param [a, b, pattern]
+     * @return java.lang.String
+     **/
     public static String getPercentageByPattern(int a, int b, String pattern) {
         if (a == 0 || b == 0) {
             return "0";

@@ -6,6 +6,7 @@ import com.longfor.longjian.common.consts.ErrorNumEnum;
 import com.longfor.longjian.common.exception.LjBaseRuntimeException;
 import com.longfor.longjian.houseqm.app.service.ITaskService;
 import com.longfor.longjian.houseqm.app.vo.HouseQmCheckTaskRspVo;
+import com.longfor.longjian.houseqm.app.vo.task.HouseQmCheckTaskListAndTotalVo;
 import com.longfor.longjian.houseqm.consts.ErrorEnum;
 import com.longfor.longjian.houseqm.domain.internalService.*;
 import com.longfor.longjian.houseqm.po.HouseQmCheckTask;
@@ -43,6 +44,21 @@ public class TaskServiceImpl implements ITaskService {
     private UserInHouseQmCheckTaskService userInHouseQmCheckTaskService;
     @Resource
     private UserService userService;
+
+    @Override
+    public HouseQmCheckTaskListAndTotalVo searchHouseQmCheckTaskByProjCategoryClsStatusPage(Integer projId, Integer category_cls, Integer status, Integer page, Integer page_size) {
+        Integer total = houseQmCheckTaskService.searchTotalByProjIdAndCategoryClsAndStatus(projId, category_cls, status);
+        int limit=page_size;
+        if (page<=0){
+            page=1;
+        }
+        int start=(page-1)*page_size;
+        List<HouseQmCheckTask> list = houseQmCheckTaskService.searchByProjIdAndCategoryClsAndStatusByPage(projId, category_cls, status, limit, start);
+        HouseQmCheckTaskListAndTotalVo result = new HouseQmCheckTaskListAndTotalVo();
+        result.setList(list);
+        result.setTotal(total);
+        return result;
+    }
 
     /**
      * @param projectId

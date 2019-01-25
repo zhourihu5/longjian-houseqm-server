@@ -8,6 +8,7 @@ import com.longfor.longjian.houseqm.domain.internalService.AreaService;
 import com.longfor.longjian.houseqm.po.Area;
 import com.longfor.longjian.houseqm.util.CollectionUtil;
 import com.longfor.longjian.houseqm.util.StringSplitToListUtil;
+import com.longfor.longjian.houseqm.util.StringUtil;
 import com.longfor.longjian.houseqm.utils.ExampleUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections.CollectionUtils;
@@ -106,9 +107,11 @@ public class AreaServiceImpl implements AreaService {
      */
     @LFAssignDataSource("zhijian2")
     public List<Integer> getIntersectAreas(List<Integer> areaIds, List<Integer> areaList) {
+        // 取出两个ids中的所有path
         List<Integer> result = Lists.newArrayList();
         List<String> pathsA = Lists.newArrayList();
         List<String> pathsB = Lists.newArrayList();
+        // 两边去重，取最大范围
         Example example = new Example(Area.class);
         Example.Criteria criteria = example.createCriteria();
         if (areaIds.size() > 0) criteria.andIn("id", areaIds);
@@ -119,6 +122,7 @@ public class AreaServiceImpl implements AreaService {
             pathsA.add(area.getPath() + area.getId() + "/");
         }
         List<String> pathA = getUnionPaths(pathsA);
+
         Example example1 = new Example(Area.class);
         Example.Criteria criteria1 = example1.createCriteria();
         if (areaList.size() > 0) criteria1.andIn("id", areaList);
@@ -129,24 +133,25 @@ public class AreaServiceImpl implements AreaService {
             pathsB.add(area.getPath() + area.getId() + "/");
         }
         List<String> pathB = getUnionPaths(pathsB);
+
         // 遍历比较，发现一个包含另一个直接跳过
         for (String pA : pathA) {
             for (String pB : pathB) {
                 if (pA.startsWith(pB)) {
-                    List<Integer> ids = splitToIds(pA, "/");
+                    List<Integer> ids = StringUtil.strToInts(pA, "/");
                     if (ids.size() > 0) result.add(ids.get(ids.size() - 1));
                     continue;
                 }
                 if (pB.startsWith(pA)) {
-                    List<Integer> ids = splitToIds(pB, "/");
+                    List<Integer> ids = StringUtil.strToInts(pB, "/");
                     if (ids.size() > 0) result.add(ids.get(ids.size() - 1));
                     continue;
                 }
             }
         }
-        List<Integer> list = result.stream().collect(Collectors.toSet()).stream().collect(Collectors.toList());
-        return list;
+        return result.stream().collect(Collectors.toSet()).stream().collect(Collectors.toList());
     }
+
 
     /**
      * @param projectId
@@ -162,6 +167,7 @@ public class AreaServiceImpl implements AreaService {
         if (rootIds.size() > 0) criteria.andIn("id", rootIds);
         ExampleUtil.addDeleteAtJudge(example);
         List<Area> areas = areaMapper.selectByExample(example);
+
         List<Area> areaList = remainTopAreas(areas);
 
         List<Area> items = Lists.newArrayList();
@@ -172,8 +178,8 @@ public class AreaServiceImpl implements AreaService {
             criteria1.andEqualTo("projectId", projectId).andLike("path", likePath).orEqualTo("id", area.getId());
             if (types.size()>0)criteria1.andIn("type", types);
             ExampleUtil.addDeleteAtJudge(example1);
-            List<Area> areas1 = areaMapper.selectByExample(example1);
-            items.addAll(areas1);
+            List<Area> subAreas = areaMapper.selectByExample(example1);
+            items.addAll(subAreas);
         }
         return items;
     }
@@ -185,8 +191,6 @@ public class AreaServiceImpl implements AreaService {
         Example.Criteria criteria = example.createCriteria();
         criteria.andIn("id",integers).andIsNull("deleteAt");
         return areaMapper.selectByExample(example);
-
-
     }
 
 
@@ -194,7 +198,7 @@ public class AreaServiceImpl implements AreaService {
     public List<Area> selectByFatherId(Integer prodectId, Integer i) {
         Example example = new Example(Area.class);
         Example.Criteria criteria = example.createCriteria();
-        criteria.andEqualTo("projectId",prodectId).andEqualTo("fatherId",i).andEqualTo("deleteAt");
+        criteria.andEqualTo("projectId",prodectId).andEqualTo("fatherId",i).andIsNull("deleteAt");
         return areaMapper.selectByExample(example);
     }
 
@@ -268,8 +272,10 @@ public class AreaServiceImpl implements AreaService {
             areaMap.put(p, area);
         }
         Collections.sort(paths);
+
         List<String> remainPath = Lists.newArrayList();
         String lastPath = paths.get(0);
+
         for (int i = 1; i < paths.size(); i++) {
             if (paths.get(i).startsWith(lastPath)) continue;
             else {
@@ -278,7 +284,8 @@ public class AreaServiceImpl implements AreaService {
             }
         }
         remainPath.add(lastPath);
-        ArrayList<Area> items = Lists.newArrayList();
+
+        List<Area> items = Lists.newArrayList();
         for (int i = 0; i < remainPath.size(); i++) {
             items.add(areaMap.get(remainPath.get(i)));
         }
