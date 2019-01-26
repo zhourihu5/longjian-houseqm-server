@@ -61,13 +61,16 @@
         <include refid="Base_Column_List"/>
         FROM
         user_in_house_qm_check_task
-        WHERE
-        squad_id in
-        <foreach collection="squadIds" index="index" item="item" open="(" separator="," close=")">
-            #{item}
-        </foreach>
-        AND
-        delete_at is NULL
+        <where>
+            <if test="squadIds.size()>0">
+                squad_id in
+                <foreach collection="squadIds" index="index" item="item" open="(" separator="," close=")">
+                    #{item}
+                </foreach>
+            </if>
+            AND
+            delete_at is NULL
+        </where>
     </select>
     <select id="searchByCondition" resultMap="BaseResultMap">
         select
@@ -84,13 +87,17 @@
         <include refid="Base_Column_List"/>
         FROM
         user_in_house_qm_check_task
-        where
-        task_id =#{task_id}
-        and
-        squad_id in
-        <foreach collection="existsSquadIds" index="index" item="item" open="(" separator="," close=")">
-            #{item}
-        </foreach>
+        <where>
+            task_id =#{task_id}
+            <if test="existsSquadIds.size()>0">
+                and
+                squad_id in
+                <foreach collection="existsSquadIds" index="index" item="item" open="(" separator="," close=")">
+                    #{item}
+                </foreach>
+            </if>
+            AND delete_at is null
+        </where>
     </select>
 
     <select id="selectSquadIdByTaskIdAndUserIdAndRoleTypeAndNoDeleted" resultMap="BaseResultMap">

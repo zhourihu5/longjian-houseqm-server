@@ -1,6 +1,7 @@
 package com.longfor.longjian.houseqm.app.controller;
 
 import com.longfor.longjian.common.util.CtrlTool;
+import com.longfor.longjian.common.util.SessionInfo;
 import com.longfor.longjian.houseqm.app.req.taskcheckedareas.CheckedAreasReq;
 import com.longfor.longjian.houseqm.app.service.ITaskService;
 import com.longfor.longjian.houseqm.app.vo.TaskResponse;
@@ -35,6 +36,8 @@ public class TaskCheckedAreasController {
     private ITaskService taskService;
     @Resource
     private CtrlTool ctrlTool;
+    @Resource
+    private SessionInfo sessionInfo;
 
     /**
      * 获取任务区域信息
@@ -44,30 +47,27 @@ public class TaskCheckedAreasController {
      */
     @GetMapping(value = "checked_areas/", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     public TaskResponse<CheckedAreasRsp> doAction(HttpServletRequest request, @Valid CheckedAreasReq req) {
-
-        //todo session uid  权限验证 uid = session['uid']
-        int uid = 7566;
-        /*
-        has_per = ucenter_api.check_project_permission(uid, req.project_id, '项目.工程检查.任务管理.查看')
-       */
+        Integer userId = (Integer) sessionInfo.getBaseInfo("userId");
+        TaskResponse<CheckedAreasRsp> taskResponse = new TaskResponse<>();
         try {
             ctrlTool.projPerm(request,"项目.工程检查.任务管理.查看");
+            List<Integer> areaIds = taskService.getHouseqmCheckTaskCheckedAreas(req.getProject_id(), req.getTask_id());
+            String checkAreaIds = null;
+            if (areaIds.isEmpty()) {
+                checkAreaIds = "";
+            } else {
+                //对areaIds进行排序并转换成字符 元素间加逗号隔开
+                Collections.sort(areaIds);
+                checkAreaIds = StringSplitToListUtil.dataToString(areaIds, ",");
+            }
+            CheckedAreasRsp data = new CheckedAreasRsp();
+            data.setCheck_area_ids(checkAreaIds);
+            taskResponse.setData(data);
         } catch (Exception e) {
             e.printStackTrace();
+            taskResponse.setResult(1);
+            taskResponse.setMessage(e.getMessage());
         }
-        List<Integer> areaIds = taskService.getHouseqmCheckTaskCheckedAreas(req.getProject_id(), req.getTask_id());
-        TaskResponse<CheckedAreasRsp> taskResponse = new TaskResponse<>();
-        String checkAreaIds = null;
-        if (areaIds.isEmpty()) {
-            checkAreaIds = "";
-        } else {
-            //对areaIds进行排序并转换成字符 元素间加逗号隔开
-            Collections.sort(areaIds);
-            checkAreaIds = StringSplitToListUtil.dataToString(areaIds, ",");
-        }
-        CheckedAreasRsp data = new CheckedAreasRsp();
-        data.setCheck_area_ids(checkAreaIds);
-        taskResponse.setData(data);
         return taskResponse;
     }
 

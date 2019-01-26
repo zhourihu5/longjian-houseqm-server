@@ -41,6 +41,7 @@
         <foreach close=")" collection="squadIds" index="index" item="item" open="(" separator=",">
             #{item}
         </foreach>
+        and delete_at is null
     </select>
     <insert id="add" parameterType="com.longfor.longjian.houseqm.po.HouseQmCheckTaskSquad" useGeneratedKeys="true" keyProperty="id">
 insert into house_qm_check_task_squad (project_id, task_id,squad_type,name)

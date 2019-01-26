@@ -2,6 +2,7 @@ package com.longfor.longjian.houseqm.app.controller;
 
 import com.longfor.longjian.common.req.feignClientReq.ProjectPermissionReq;
 import com.longfor.longjian.common.util.CtrlTool;
+import com.longfor.longjian.common.util.SessionInfo;
 import com.longfor.longjian.houseqm.app.feginClient.IPermissionFeignService;
 import com.longfor.longjian.houseqm.app.req.tasklist.TaskListListReq;
 import com.longfor.longjian.houseqm.app.req.tasklist.TaskRoleReq;
@@ -38,50 +39,54 @@ public class TaskListController {
     private ITaskListService taskListService;
     @Resource
     private CtrlTool ctrlTool;
+    @Resource
+    private SessionInfo sessionInfo;
+
     /**
      * 获取项目下任务列表任务信息
      *
      * @param req
      * @return
      */
-    @GetMapping(value = "list/", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+    @GetMapping(value = "list", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     public TaskResponse<TaskList2Vo> list(HttpServletRequest request, @Valid TaskListListReq req) {
-        log.info("team_id=" + req.getTeam_id() + ", project_id=" + req.getProject_id()+ ", category_cls=" + req.getCategory_cls()+ ", status=" + req.getStatus());
-        ////Todo uid  uid = session['uid']
-        Integer uid = 7566;
-        ////Todo 鉴权 has_per = ucenter_api.check_project_permission(uid, req.project_id, '项目.工程检查.任务管理.查看')
+        log.info("team_id=" + req.getTeam_id() + ", project_id=" + req.getProject_id() + ", category_cls=" + req.getCategory_cls() + ", status=" + req.getStatus());
+        Integer userId = (Integer) sessionInfo.getBaseInfo("userId");
+        TaskResponse<TaskList2Vo> taskResponse = new TaskResponse<>();
         try {
-            ctrlTool.projPerm(request,"项目.工程检查.任务管理.查看");
+            ctrlTool.projPerm(request, "项目.工程检查.任务管理.查看");
+            TaskList2Vo taskListVo = taskListService.list(req.getTeam_id(), req.getProject_id(), req.getCategory_cls(), req.getStatus());
+            taskResponse.setMessage("success");
+            taskResponse.setMsg("success");
+            taskResponse.setData(taskListVo);
         } catch (Exception e) {
             e.printStackTrace();
+            taskResponse.setResult(1);
+            taskResponse.setMessage(e.getMessage());
         }
-        TaskList2Vo taskListVo = taskListService.list(req.getTeam_id(), req.getProject_id(), req.getCategory_cls(), req.getStatus());
-        TaskResponse<TaskList2Vo> taskResponse = new TaskResponse<>();
-        taskResponse.setMessage("success");
-        taskResponse.setMsg("success");
-        taskResponse.setData(taskListVo);
         return taskResponse;
     }
 
     /**
      * 获取任务角色列表
+     *
      * @param req
      * @return
      */
-    @GetMapping(value = "task_role/", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
-    public TaskResponse<TaskRoleListVo> taskRole(HttpServletRequest request,@Valid TaskRoleReq req) {
+    @GetMapping(value = "task_role", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+    public TaskResponse<TaskRoleListVo> taskRole(HttpServletRequest request, @Valid TaskRoleReq req) {
         TaskResponse<TaskRoleListVo> taskResponse = new TaskResponse<>();
-        log.info("task_role, project_id="+req.getProject_id()+", task_id=" +req.getTask_id());
-        //todo  uid = session['uid']
-        int uid=7566;
-        //todo 鉴权 has_per = ucenter_api.check_project_permission(uid, req.project_id, '项目.工程检查.任务管理.查看')
+        log.info("task_role, project_id=" + req.getProject_id() + ", task_id=" + req.getTask_id());
+        Integer userId = (Integer) sessionInfo.getBaseInfo("userId");
         try {
-            ctrlTool.projPerm(request,"项目.工程检查.任务管理.查看");
+            ctrlTool.projPerm(request, "项目.工程检查.任务管理.查看");
+            TaskRoleListVo roleListVos = taskListService.taskRole(req.getTask_id());
+            taskResponse.setData(roleListVos);
         } catch (Exception e) {
             e.printStackTrace();
+            taskResponse.setResult(1);
+            taskResponse.setMessage(e.getMessage());
         }
-        TaskRoleListVo roleListVos = taskListService.taskRole(req.getTask_id());
-        taskResponse.setData(roleListVos);
         return taskResponse;
     }
 }

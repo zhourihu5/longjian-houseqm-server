@@ -8,7 +8,9 @@ import com.longfor.longjian.houseqm.po.HouseQmCheckTaskIssue;
 import com.longfor.longjian.houseqm.po.HouseQmCheckTaskSquad;
 import com.longfor.longjian.houseqm.po.Task;
 import com.longfor.longjian.houseqm.utils.ExampleUtil;
+import io.swagger.models.auth.In;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.ibatis.session.RowBounds;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import tk.mybatis.mapper.entity.Example;
@@ -32,6 +34,49 @@ public class HouseQmCheckTaskServiceImpl implements HouseQmCheckTaskService {
 
     @Resource
     HouseQmCheckTaskMapper houseQmCheckTaskMapper;
+
+    @Override
+    @LFAssignDataSource("zhijian2")
+    public Integer searchTotalByProjIdAndCategoryClsAndStatus(Integer projId, Integer category_cls, Integer status) {
+        Example example = new Example(HouseQmCheckTask.class);
+        Example.Criteria criteria = example.createCriteria();
+        criteria.andEqualTo("projectId", projId).andEqualTo("categoryCls",category_cls).andEqualTo("status",status);
+        ExampleUtil.addDeleteAtJudge(example);
+        return houseQmCheckTaskMapper.selectCountByExample(example);
+    }
+
+    @Override
+    @LFAssignDataSource("zhijian2")
+    public List<HouseQmCheckTask> searchByProjIdAndCategoryClsAndStatusByPage(Integer projId, Integer category_cls, Integer status, int limit, int start) {
+        Example example = new Example(HouseQmCheckTask.class);
+        Example.Criteria criteria = example.createCriteria();
+        criteria.andEqualTo("projectId", projId).andEqualTo("categoryCls",category_cls).andEqualTo("status",status);
+        ExampleUtil.addDeleteAtJudge(example);
+        return houseQmCheckTaskMapper.selectByExampleAndRowBounds(example,new RowBounds(start,limit));
+    }
+
+    @Override
+    @LFAssignDataSource("zhijian2")
+    public List<HouseQmCheckTask> searchByProjectIdAndCategoryClsInAndTaskIdIn(Integer project_id, List<Integer> category_cls_list, List<Integer> task_ids) {
+        Example example = new Example(HouseQmCheckTask.class);
+        Example.Criteria criteria = example.createCriteria();
+        criteria.andEqualTo("projectId", project_id);
+        if (category_cls_list.size() > 0) criteria.andIn("categoryCls", category_cls_list);
+        if (task_ids.size() > 0) criteria.andIn("taskId", task_ids);
+        ExampleUtil.addDeleteAtJudge(example);
+        return houseQmCheckTaskMapper.selectByExample(example);
+    }
+
+    @Override
+    @LFAssignDataSource("zhijian2")
+    public List<HouseQmCheckTask> searchByProjectIdInAndCategoryClsIn(List<Integer> project_ids, List<Integer> categoryClsList) {
+        Example example = new Example(HouseQmCheckTask.class);
+        Example.Criteria criteria = example.createCriteria();
+        if (project_ids.size() > 0) criteria.andIn("projectId", project_ids);
+        criteria.andIn("categoryCls", categoryClsList);
+        ExampleUtil.addDeleteAtJudge(example);
+        return houseQmCheckTaskMapper.selectByExample(example);
+    }
 
     @Override
     @LFAssignDataSource("zhijian2")
@@ -59,6 +104,7 @@ public class HouseQmCheckTaskServiceImpl implements HouseQmCheckTaskService {
         criteria.andEqualTo("projectId", projectId).andEqualTo("taskId", taskId);
         return houseQmCheckTaskMapper.selectOneByExample(example);
     }
+
     /**
      * 根据TaskID 只拿出 未删除的
      *
@@ -107,7 +153,11 @@ public class HouseQmCheckTaskServiceImpl implements HouseQmCheckTaskService {
      */
     @LFAssignDataSource("zhijian2")
     public HouseQmCheckTask selectByProjectIdAndTaskId(Integer projectId, Integer taskId) {
-        return houseQmCheckTaskMapper.selectByProjectIdAndTaskId(projectId, taskId);
+        Example example = new Example(HouseQmCheckTask.class);
+        Example.Criteria criteria = example.createCriteria();
+        criteria.andEqualTo("projectId", projectId).andEqualTo("taskId", taskId);
+        ExampleUtil.addDeleteAtJudge(example);
+        return houseQmCheckTaskMapper.selectOneByExample(example);
     }
 
     /**
@@ -145,7 +195,7 @@ public class HouseQmCheckTaskServiceImpl implements HouseQmCheckTaskService {
     public HouseQmCheckTask selectByTaskId(Integer integer) {
         Example example = new Example(HouseQmCheckTask.class);
         Example.Criteria criteria = example.createCriteria();
-        criteria.andEqualTo("taskId",integer);
+        criteria.andEqualTo("taskId", integer);
         criteria.andIsNull("deleteAt");
         return houseQmCheckTaskMapper.selectOneByExample(example);
     }
@@ -156,7 +206,7 @@ public class HouseQmCheckTaskServiceImpl implements HouseQmCheckTaskService {
     public HouseQmCheckTask selectByProjectIdAndTaskIdAndDel(Integer projectId, Integer taskId) {
         Example example = new Example(HouseQmCheckTask.class);
         Example.Criteria criteria = example.createCriteria();
-        criteria.andEqualTo("projectId",projectId).andEqualTo("taskId",taskId).andIsNull("deleteAt");
+        criteria.andEqualTo("projectId", projectId).andEqualTo("taskId", taskId).andIsNull("deleteAt");
         return houseQmCheckTaskMapper.selectOneByExample(example);
     }
 
@@ -165,7 +215,6 @@ public class HouseQmCheckTaskServiceImpl implements HouseQmCheckTaskService {
     public int update(HouseQmCheckTask taskInfo) {
         return houseQmCheckTaskMapper.updateByPrimaryKey(taskInfo);
     }
-
 
 
     @Override

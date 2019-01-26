@@ -66,6 +66,5 @@
         <table tableName="stat_house_qm_partner_monthly_stat" enableCountByExample="false" enableUpdateByExample="false" enableDeleteByExample="false" enableSelectByExample="false" selectByExampleQueryId="false"/>
         <table tableName="stat_house_qm_partner_quarterly_stat" enableCountByExample="false" enableUpdateByExample="false" enableDeleteByExample="false" enableSelectByExample="false" selectByExampleQueryId="false"/>
         <table tableName="stat_house_qm_partner_yearly_stat" enableCountByExample="false" enableUpdateByExample="false" enableDeleteByExample="false" enableSelectByExample="false" selectByExampleQueryId="false"/>
-
     </context>
 </generatorConfiguration>

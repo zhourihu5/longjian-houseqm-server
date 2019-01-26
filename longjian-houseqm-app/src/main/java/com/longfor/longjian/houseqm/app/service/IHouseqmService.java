@@ -6,6 +6,7 @@ import com.longfor.longjian.houseqm.app.vo.MyIssueAttachListVo;
 import com.longfor.longjian.houseqm.app.vo.MyIssueListVo;
 import com.longfor.longjian.houseqm.app.vo.MyIssueMemberListVo;
 import com.longfor.longjian.houseqm.app.vo.TaskResponse;
+import com.longfor.longjian.houseqm.app.vo.houseqm.HouseqmMyIssueLogListRspVo;
 import com.longfor.longjian.houseqm.po.Area;
 
 import javax.servlet.http.HttpServletRequest;
@@ -22,7 +23,7 @@ public interface IHouseqmService {
      * @param deviceReq
      * @return
      */
-    TaskResponse<MyIssueListVo> myIssueLogList(DeviceReq deviceReq, HttpServletRequest request);
+    TaskResponse<HouseqmMyIssueLogListRspVo> myIssueLogList(DeviceReq deviceReq, HttpServletRequest request);
 
     /**
      * 获取指定任务与我相关的issue列表（增量接口

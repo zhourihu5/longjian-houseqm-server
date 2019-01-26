@@ -1,6 +1,6 @@
 package com.longfor.longjian.houseqm.app.service;
 
-import com.longfor.longjian.houseqm.app.vo.issue.HouseQmCheckTaskIssueVo;
+import com.longfor.longjian.houseqm.app.vo.houseqmissue.HouseQmCheckTaskIssueVo;
 
 import java.util.List;
 

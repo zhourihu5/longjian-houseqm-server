@@ -4,11 +4,13 @@ import com.longfor.gaia.gfs.data.mybatis.datasource.LFAssignDataSource;
 import com.longfor.longjian.houseqm.dao.TeamMapper;
 import com.longfor.longjian.houseqm.domain.internalService.TeamService;
 import com.longfor.longjian.houseqm.po.Team;
+import com.longfor.longjian.houseqm.utils.ExampleUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import tk.mybatis.mapper.entity.Example;
 
 import javax.annotation.Resource;
+import java.util.List;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -23,11 +25,22 @@ public class TeamServiceImpl implements TeamService {
     @Resource
     TeamMapper teamMapper;
 
+
+    @Override
+    public List<Team> searchByTeamIdIn(List<Integer> team_ids) {
+        Example example = new Example(Team.class);
+        Example.Criteria criteria = example.createCriteria();
+        criteria.andIn("teamId",team_ids);
+        ExampleUtil.addDeleteAtJudge(example);
+        return teamMapper.selectByExample(example);
+    }
+
     /**
      *
      * @param teamId
      * @return
      */
+    @Override
     public Team selectByTeamId(int teamId){
         return teamMapper.selectByTeamId(teamId,"false");
     }

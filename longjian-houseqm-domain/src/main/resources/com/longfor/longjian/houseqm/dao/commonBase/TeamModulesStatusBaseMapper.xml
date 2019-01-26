@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.longfor.longjian.common.dao.TeamModulesStatusBaseMapper">
+  <resultMap id="BaseResultMap" type="com.longfor.longjian.common.entity.TeamModulesStatusBase">
+    <!--
+      WARNING - @mbg.generated
+    -->
+    <id column="id" property="id" jdbcType="INTEGER"/>
+    <result column="team_id" property="teamId" jdbcType="INTEGER"/>
+    <result column="gcgl" property="gcgl" jdbcType="INTEGER"/>
+    <result column="ydyf" property="ydyf" jdbcType="INTEGER"/>
+    <result column="gxgl" property="gxgl" jdbcType="INTEGER"/>
+    <result column="scsl" property="scsl" jdbcType="INTEGER"/>
+    <result column="xunjian" property="xunjian" jdbcType="INTEGER"/>
+    <result column="plan" property="plan" jdbcType="INTEGER"/>
+    <result column="create_at" property="createAt" jdbcType="TIMESTAMP"/>
+    <result column="update_at" property="updateAt" jdbcType="TIMESTAMP"/>
+    <result column="delete_at" property="deleteAt" jdbcType="TIMESTAMP"/>
+    <result column="docs" property="docs" jdbcType="INTEGER"/>
+    <result column="ydkf" property="ydkf" jdbcType="INTEGER"/>
+  </resultMap>
+  <sql id="Base_Column_List">
+    <!--
+      WARNING - @mbg.generated
+    -->
+    id, team_id, gcgl, ydyf, gxgl, scsl, xunjian, plan, create_at, update_at, delete_at,
+    docs, ydkf
+  </sql>
+</mapper>

@@ -1,5 +1,5 @@
-server.port: 8081
-management.port: 9981
+server.port: 8081 #8082
+management.port: 9981 #9982
 
 spring:
   application:
@@ -48,8 +48,23 @@ longfor:
         longjian-basic-server:
           permission:
             url: http://172.17.96.88:8082/uc/inner/
+          repossession:
+            url: http://172.17.96.88:8082/v3/api/repossession/
+          buildingqmexport:
+            url: http://172.17.96.88:8082/papi/v3/bgtask/buildingqm/
+          houseqmcheckissue:
+            url: http://172.17.96.88:8082/v3/stat_export/houseqm_check_task_issue/
         config:
           permission:
+            connectTimeout: 5000
+            readTimeout: 5000
+          repossession:
+            connectTimeout: 5000
+            readTimeout: 5000
+          buildingqmexport:
+            connectTimeout: 5000
+            readTimeout: 5000
+          houseqmcheckissue:
             connectTimeout: 5000
             readTimeout: 5000
         cas-server:
@@ -150,7 +165,7 @@ longfor:
         demoRedis:
           database: 10
           timeout: 2000
-          host: 192.168.36.93
+          host: 192.168.37.158 #192.168.36.93
           port: 6379
           pool:
             minIdle: 50
@@ -185,13 +200,23 @@ kafka:
     concurrency: 10
 
 # 第三方配置
-#IssueListController /buildingqm/v3/papi/issue/list/ 引入配置host_list
+#IssueListController /buildingqm/v3/papi/houseqmissue/list/ 引入配置host_list
 env_info:
   host_list: devlongjian.longhu.net longjianapp.longhu.net lh.zj.com
 #TaskListController buildingqm/v3/papi/task/list  getExportIssueConfig() 导入配置信息
 spe:
+  # 清水
   team_group_100194:
+      # 导出Excel
     export_issue: /v3stat/spec/qingshui/export_issue/
+  team_group_100044: #dev
+      # 导出Excel
+    export_issue: /v3stat/spec/qingshui/export_issue/
+  team_group_100137: #test
+      # 导出Excel
+    export_issue: /v3stat/spec/qingshui/export_issue/
+
+
 # HouseqmIssueController exportPdf 导出 url
 stat_export_server_addr: http://192.168.96.132:9202/v3
 export:
@@ -253,3 +278,6 @@ push_config:
     app_master_secrect_ios: "xvxrx1rqaaulmfw5yfuei9cppptkery2"
     app_secret_xiao_mi: "vdvG+lOHl8yY7bZR8VRXug=="
     package_name_xiao_mi:  "cn.smartinspection.keyprocedure.keyprocedure"
+display_logo_url: assets/favicon.png
+display_company_name: 默认
+display_system_name: 智检

@@ -1,17 +1,27 @@
 package com.longfor.longjian.houseqm.app.service;
 
-import com.longfor.longjian.houseqm.app.vo.HouseQmCheckTaskIssueOnlineInfoVo;
 import com.longfor.longjian.houseqm.app.vo.*;
 import com.longfor.longjian.houseqm.app.vo.HouseQmIssueCategoryStatVo;
 import com.longfor.longjian.houseqm.app.vo.TaskRepairStatVo;
 import com.longfor.longjian.houseqm.app.vo.TaskStatVo;
-import com.longfor.longjian.houseqm.app.vo.issue.HouseQmCheckTaskIssueVo;
+import com.longfor.longjian.houseqm.app.vo.houseqmstatisticapp.ProjectCheckerStatRspVo;
+import com.longfor.longjian.houseqm.app.vo.houseqmstatisticapp.ProjectIssueStatRspVo;
+import com.longfor.longjian.houseqm.app.vo.houseqmstatisticapp.ProjectListRspVo;
+import com.longfor.longjian.houseqm.app.vo.houseqmstatisticapp.ProjectRepairerStatRspVo;
 import com.longfor.longjian.houseqm.po.Area;
 
 import java.util.Date;
 import java.util.List;
 
 public interface IHouseqmStatisticService {
+
+    ProjectRepairerStatRspVo projectRepairerStat(int uid, Integer project_id, Integer task_id, String source, Integer stat_begin, Integer stat_end, Integer timestamp);
+
+    ProjectCheckerStatRspVo projectCheckerStat(int uid, Integer project_id, Integer task_id, String source, Integer stat_begin, Integer stat_end, Integer timestamp);
+
+    ProjectIssueStatRspVo projectIssueStat(int uid, Integer project_id, String source, Integer area_id, Integer timestamp);
+
+    ProjectListRspVo projectList(int uid, String source, Integer timestamp);
 
     TaskStatVo.IssueStatVo getCheckTaskIssueTypeStatByTaskIdAreaId(Integer taskId, Integer areaId);
 

@@ -10,6 +10,7 @@ import org.springframework.stereotype.Service;
 import tk.mybatis.mapper.entity.Example;
 
 import javax.annotation.Resource;
+import java.util.List;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -27,6 +28,16 @@ public class ProjectServiceImpl implements ProjectService {
 
     @Resource
     private ProjectMapper projectMapper;
+
+    @Override
+    @LFAssignDataSource("zhijian2")
+    public List<Project> searchByProjectIdIn(List<Integer> projectIds) {
+        Example example = new Example(Project.class);
+        Example.Criteria criteria = example.createCriteria();
+        criteria.andIn("id",projectIds);
+        ExampleUtil.addDeleteAtJudge(example);
+        return projectMapper.selectByExample(example);
+    }
 
     @Override
     @LFAssignDataSource("zhijian2")

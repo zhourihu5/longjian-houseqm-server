@@ -1,6 +1,8 @@
 package com.longfor.longjian.houseqm.app.service;
 
 import com.longfor.longjian.houseqm.app.vo.HouseQmCheckTaskRspVo;
+import com.longfor.longjian.houseqm.app.vo.HouseQmCheckTaskVo;
+import com.longfor.longjian.houseqm.app.vo.task.HouseQmCheckTaskListAndTotalVo;
 import com.longfor.longjian.houseqm.po.User;
 import com.longfor.longjian.houseqm.po.UserInHouseQmCheckTask;
 
@@ -17,4 +19,6 @@ public interface ITaskService {
     List<UserInHouseQmCheckTask> searchUserInKeyHouseQmCheckTaskByTaskId(Integer task_id);
 
     Map<Integer, User> getUsersByIds(List<Integer> uids);
+
+    HouseQmCheckTaskListAndTotalVo searchHouseQmCheckTaskByProjCategoryClsStatusPage(Integer projId, Integer category_cls, Integer status, Integer page, Integer page_size);
 }

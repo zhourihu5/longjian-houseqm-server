@@ -302,9 +302,9 @@ public class HouseqmStatServiceImpl implements IHouseqmStatService {
             for (CheckerIssueStat l : checkerIssueStat) {
                 String areapath = l.getAreaId() + "/";
                 String fatherPath = l.getAreaPathAndId().replace(areapath, "");
-                if (l.getTyp() == HouseQmCheckTaskIssueEnum.Record.getId()) {
+                if (l.getTyp().equals(HouseQmCheckTaskIssueEnum.Record.getId())) {
                     stat.setRecords_count(l.getCount() + stat.getRecords_count());
-                } else if (l.getTyp() == HouseQmCheckTaskIssueEnum.FindProblem.getId() || l.getTyp() == HouseQmCheckTaskIssueEnum.Difficult.getId()) {
+                } else if (l.getTyp().equals(HouseQmCheckTaskIssueEnum.FindProblem.getId()) || l.getTyp().equals(HouseQmCheckTaskIssueEnum.Difficult.getId())) {
                     stat.setIssue_count(l.getCount() + stat.getIssue_count());
                 }
                 areaMap.put(fatherPath, true);

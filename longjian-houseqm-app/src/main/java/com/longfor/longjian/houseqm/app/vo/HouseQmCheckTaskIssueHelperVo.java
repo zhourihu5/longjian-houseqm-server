@@ -5,11 +5,11 @@ import com.longfor.longjian.common.consts.HouseQmCheckTaskIssueLogStatus;
 import com.longfor.longjian.common.consts.HouseQmCheckTaskIssueStatusEnum;
 import com.longfor.longjian.common.kafka.KafkaProducer;
 import com.longfor.longjian.houseqm.app.service.PushService;
-import com.longfor.longjian.houseqm.app.vo.issue.HouseQmCheckTaskIssueDetail;
+import com.longfor.longjian.houseqm.app.vo.houseqmissue.HouseQmCheckTaskIssueDetail;
 
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
-import com.longfor.longjian.houseqm.app.vo.issue.*;
+import com.longfor.longjian.houseqm.app.vo.houseqmissue.*;
 import com.longfor.longjian.houseqm.consts.*;
 import com.longfor.longjian.houseqm.domain.internalService.*;
 import com.longfor.longjian.houseqm.po.*;
@@ -224,7 +224,7 @@ public class HouseQmCheckTaskIssueHelperVo implements Serializable {
                     try {
                         issue = getIssueFromDb(issueUuid);
                     } catch (Exception e) {
-                        log.warn("get issue error:" + e.getMessage() + ", issue_uuid: " + issueUuid);
+                        log.warn("get houseqmissue error:" + e.getMessage() + ", issue_uuid: " + issueUuid);
                         this.setDroppedIssue(issueUuid, ApiDropDataReasonEnum.Other.getValue(), ApiDropDataReasonEnum.Other.getName());
                         return this;
                     }
@@ -234,7 +234,7 @@ public class HouseQmCheckTaskIssueHelperVo implements Serializable {
                         needCreate = true;
                     } else if (issue.getDeleteAt() != null) {
                         this.needDeleteAtIssueLogMap.put(this.currentLog.getUuid(), true);
-                        log.warn("issue had been delete, issue_uuid:" + issueUuid + ", log_uuid", this.currentLog.getUuid());
+                        log.warn("houseqmissue had been delete, issue_uuid:" + issueUuid + ", log_uuid", this.currentLog.getUuid());
                         return this;
                     } else {
                         //存在于数据库
@@ -260,7 +260,7 @@ public class HouseQmCheckTaskIssueHelperVo implements Serializable {
         //需要新创建的
         if (needCreate) {
             Map<String, Object> map = initNewIssue();
-            HouseQmCheckTaskIssueVo newIssue = (HouseQmCheckTaskIssueVo) map.get("issue");
+            HouseQmCheckTaskIssueVo newIssue = (HouseQmCheckTaskIssueVo) map.get("houseqmissue");
             UserInIssue newIssueRole = (UserInIssue) map.get("issueRole");
             String tempIssueUid = this.currentLog.getIssueUuid();
             if (newIssueRole.isModified()) {
@@ -278,7 +278,7 @@ public class HouseQmCheckTaskIssueHelperVo implements Serializable {
             } else {
                 Map<String, Object> map = modifyIssue(tempIssue);
                 Boolean changed = (Boolean) map.get("changed");
-                HouseQmCheckTaskIssueVo modifiedIssue = (HouseQmCheckTaskIssueVo) map.get("issue");
+                HouseQmCheckTaskIssueVo modifiedIssue = (HouseQmCheckTaskIssueVo) map.get("houseqmissue");
                 UserInIssue newIssueRole = (UserInIssue) map.get("issueRole");
                 if (changed) {
                     this.needUpdateIssueMap.put(issueUuid, modifiedIssue);
@@ -298,7 +298,7 @@ public class HouseQmCheckTaskIssueHelperVo implements Serializable {
                 String tempIssueUid = this.currentLog.getIssueUuid();
                 Map<String, Object> map = this.modifyIssue(tempIssue);
                 Boolean changed = (Boolean) map.get("changed");
-                HouseQmCheckTaskIssueVo modifiedIssue = (HouseQmCheckTaskIssueVo) map.get("issue");
+                HouseQmCheckTaskIssueVo modifiedIssue = (HouseQmCheckTaskIssueVo) map.get("houseqmissue");
                 UserInIssue newIssueRole = (UserInIssue) map.get("issueRole");
                 if (changed) {
                     this.needUpdateIssueMap.put(issueUuid, modifiedIssue);
@@ -314,7 +314,7 @@ public class HouseQmCheckTaskIssueHelperVo implements Serializable {
             String tempIssueUid = this.currentLog.getIssueUuid();
             Map<String, Object> map = this.modifyIssue(tempIssue);
             Boolean changed = (Boolean) map.get("changed");
-            HouseQmCheckTaskIssueVo modifiedIssue = (HouseQmCheckTaskIssueVo) map.get("issue");
+            HouseQmCheckTaskIssueVo modifiedIssue = (HouseQmCheckTaskIssueVo) map.get("houseqmissue");
             UserInIssue newIssueRole = (UserInIssue) map.get("issueRole");
             if (changed) {
                 this.needUpdateIssueMap.put(issueUuid, modifiedIssue);
@@ -416,7 +416,7 @@ public class HouseQmCheckTaskIssueHelperVo implements Serializable {
             issue1.setDetail(JsonUtil.GsonString(detail));
             houseQmCheckTaskIssueService.update(issue1);
         }
-        //issue log 入库
+        //houseqmissue log 入库
         List<HouseQmCheckTaskIssueLog> hIssueLogs = Lists.newArrayList();
         for (HouseQmCheckTaskIssueLogVo issueLog : this.issueLogs) {
             HouseQmCheckTaskIssueLog hIssueLog = new HouseQmCheckTaskIssueLog();
@@ -887,7 +887,7 @@ public class HouseQmCheckTaskIssueHelperVo implements Serializable {
 
 
         HashMap<String, Object> map = Maps.newHashMap();
-        map.put("issue", issue);
+        map.put("houseqmissue", issue);
         map.put("changed", changed);
         map.put("issueRole", issueRole);
 
@@ -989,7 +989,7 @@ public class HouseQmCheckTaskIssueHelperVo implements Serializable {
         }
         issueRole.setUserRole(userRole);
         HashMap<String, Object> map = Maps.newHashMap();
-        map.put("issue", issue);
+        map.put("houseqmissue", issue);
         map.put("issueRole", issueRole);
         return map;
     }

@@ -16,10 +16,12 @@ public class DeviceReq implements Serializable {
 
     //private Integer task_ids;
     //private Long device_id;
-    private Integer last_id;
+    @NotNull
+    private Integer last_id;//上次获取的最后ID，首次拉取传`0`
     @NotNull
     private Integer task_id;//任务ID
-    private Integer timestamp = 0;//上次更新时间
+    @NotNull
+    private Integer timestamp;//上次更新时间
     //private String token;
 
 }
