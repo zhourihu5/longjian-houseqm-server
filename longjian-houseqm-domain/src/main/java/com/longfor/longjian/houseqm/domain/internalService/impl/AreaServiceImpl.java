@@ -163,18 +163,20 @@ public class AreaServiceImpl implements AreaService {
      */
     @LFAssignDataSource("zhijian2")
     public List<Area> searchAreaListByRootIdAndTypes(Integer projectId, List<Integer> rootIds, List<Integer> types) {
+        List<Area> items = Lists.newArrayList();
+
         Example example = new Example(Area.class);
         Example.Criteria criteria = example.createCriteria();
         criteria.andEqualTo("projectId", projectId);
         if (rootIds.size() > 0) criteria.andIn("id", rootIds);
         ExampleUtil.addDeleteAtJudge(example);
         List<Area> areas = areaMapper.selectByExample(example);
+        if (areas.size()==0)return items;
 
         List<Area> areaList = remainTopAreas(areas);
 
-        List<Area> items = Lists.newArrayList();
         for (Area area : areaList) {
-            String likePath = area.getPath() + area.getId() + "/%%";
+            String likePath = area.getPath() + area.getId() + "/%";
             Example example1 = new Example(Area.class);
             Example.Criteria criteria1 = example1.createCriteria();
             criteria1.andEqualTo("projectId", projectId).andLike("path", likePath).orEqualTo("id", area.getId());

@@ -409,11 +409,11 @@
         from
         house_qm_check_task_issue
         where task_id= #{task_id}
-        and
+        <if test="uuids.size()>0"> and
         uuid in
         <foreach collection="uuids" item="item" index="index" open="(" separator="," close=")">
             #{item}
-        </foreach>
+        </foreach></if>
         and delete_at is null
     </select>
 

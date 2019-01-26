@@ -75,7 +75,7 @@ public class HouseqmServiceImpl implements IHouseqmService {
         List<ApiHouseQmCheckTaskIssueLogRsp> result = new ArrayList<>();
 
         Integer userId = (Integer) sessionInfo.getBaseInfo("userId");
-        Integer start = 0;
+        Integer start = 1;//源码 start=0
         Integer lastId = 0;
         Integer limit = HOUSEQM_API_GET_PER_TIME;
         try {
