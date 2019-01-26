@@ -16,4 +16,9 @@ public interface HouseQmCheckTaskIssueAttachmentService {
     List<HouseQmCheckTaskIssueAttachment> selectByissueUuidAnduserIdAndpublicTypeAndattachmentTypeAndNotDel(String issueUuid,Integer uid, Integer value, Integer value1);
 
     List<HouseQmCheckTaskIssueAttachment> selectByIssueUuidAndpublicTypeAndattachmentTypeAndNotDel(String issueUuid, Integer value, Integer value1);
+
+    int add(HouseQmCheckTaskIssueAttachment value);
+
+
+    HouseQmCheckTaskIssueAttachment selectByMd5AndNotDel(Object attachment);
 }

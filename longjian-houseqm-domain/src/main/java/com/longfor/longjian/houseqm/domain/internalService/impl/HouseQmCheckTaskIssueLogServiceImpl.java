@@ -154,4 +154,14 @@ public class HouseQmCheckTaskIssueLogServiceImpl implements HouseQmCheckTaskIssu
         criteria.andIsNull("deleteAt");
         return houseQmCheckTaskIssueLogMapper.selectCountByExample(example);
     }
+
+    @Override
+    @LFAssignDataSource("zhijian2")
+    public List<HouseQmCheckTaskIssueLog> selectByUuidsAndNotDelete(List<String> log_uuids) {
+        Example example = new Example(HouseQmCheckTaskIssueLog.class);
+        Example.Criteria criteria = example.createCriteria();
+        criteria.andIn("uuid",log_uuids);
+        criteria.andIsNull("deleteAt");
+        return houseQmCheckTaskIssueLogMapper.selectByExample(example);
+    }
 }

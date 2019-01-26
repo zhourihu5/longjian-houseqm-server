@@ -3,6 +3,7 @@ package com.longfor.longjian.houseqm.app.vo;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.io.Serializable;
 import java.util.List;
 
 /**
@@ -10,7 +11,7 @@ import java.util.List;
  */
 @Data
 @NoArgsConstructor
-public class ApiBuildingQmTaskMemberGroupVo {
+public class ApiBuildingQmTaskMemberGroupVo implements Serializable {
     private Integer group_id=0;
     private String group_name="";
     private Integer group_role=0 ;

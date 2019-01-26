@@ -3,6 +3,7 @@ package com.longfor.longjian.houseqm.app.vo;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.io.Serializable;
 import java.util.List;
 
 /**
@@ -10,7 +11,7 @@ import java.util.List;
  */
 @Data
 @NoArgsConstructor
-public class ApiBuildingQmCheckTaskIssueDetailVo {
+public class ApiBuildingQmCheckTaskIssueDetailVo implements Serializable {
   private Integer  id =0;
     private Integer   team_id  =0;
     private String team_name ="";
@@ -47,14 +48,14 @@ public class ApiBuildingQmCheckTaskIssueDetailVo {
     private Integer   update_at =0;
     @NoArgsConstructor
     @Data
-    public class ApiUserDetail{
+    public class ApiUserDetail implements Serializable{
       private Integer  user_id =0;
       private String  user_name="";
 
     }
     @NoArgsConstructor
     @Data
-    public class ApiMemoAudioDetail{
+    public class ApiMemoAudioDetail implements Serializable{
       private String  url=""  ;
         private Integer  create_at =0;
 

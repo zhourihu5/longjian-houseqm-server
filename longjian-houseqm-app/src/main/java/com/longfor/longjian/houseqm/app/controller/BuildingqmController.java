@@ -327,7 +327,7 @@ public class BuildingqmController {
      * @return
      */
     @GetMapping(value = "buildingqm/report_issue/", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
-    public LjBaseResponse<ReportIssueVo> reportIssue(@RequestParam(name = "project_id", required = true) String projectId,
+    public LjBaseResponse<ReportIssueVo> reportIssue(@RequestParam(name = "project_id", required = true) Integer projectId,
 
                                                      @RequestParam(name = "data", required = true) String data) {
         log.info("report_issue, project_id=" + projectId + ", data=" + data + "");

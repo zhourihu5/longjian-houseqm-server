@@ -23,5 +23,5 @@ public interface IBuildingqmService {
 
     ApiIssueLogVo getIssueListLogByLastIdAndUpdataAt(Integer taskId, Integer timestamp, String issueUuid);
 
-    ReportIssueVo reportIssue(Integer uid, String projectId, String data);
+    ReportIssueVo reportIssue(Integer uid, Integer projectId, String data);
 }

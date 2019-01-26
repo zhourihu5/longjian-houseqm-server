@@ -3,6 +3,7 @@ package com.longfor.longjian.houseqm.app.vo;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.io.Serializable;
 import java.util.List;
 
 /**
@@ -10,7 +11,7 @@ import java.util.List;
  */
 @Data
 @NoArgsConstructor
-public class HouseQmCheckTaskIssueHistoryLogVo {
+public class HouseQmCheckTaskIssueHistoryLogVo implements Serializable {
     private Integer user_id;
     private String user_name;
     private Integer create_at;
@@ -18,9 +19,9 @@ public class HouseQmCheckTaskIssueHistoryLogVo {
 
     @Data
     @NoArgsConstructor
-    public class HouseQmCheckTaskIssueHistoryLogItem {
-        private Integer target_user_id = 0;
-        private String target_user_name = "";
+    public  class HouseQmCheckTaskIssueHistoryLogItem implements Serializable{
+        private Integer   target_user_id =0;
+        private String target_user_name="";
         private Integer log_type;
         private String data = "";
     }

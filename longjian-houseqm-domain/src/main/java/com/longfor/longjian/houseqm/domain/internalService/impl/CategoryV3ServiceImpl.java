@@ -4,8 +4,10 @@ import com.longfor.gaia.gfs.data.mybatis.datasource.LFAssignDataSource;
 import com.longfor.longjian.houseqm.dao.CategoryV3Mapper;
 import com.longfor.longjian.houseqm.domain.internalService.CategoryV3Service;
 import com.longfor.longjian.houseqm.po.CategoryV3;
+import com.longfor.longjian.houseqm.po.CheckItemV3;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
+import tk.mybatis.mapper.entity.Example;
 
 import javax.annotation.Resource;
 import java.util.List;
@@ -32,5 +34,13 @@ public class CategoryV3ServiceImpl implements CategoryV3Service {
     @Override
     public List<CategoryV3> searchCategoryV3ByKeyInAndNoDeleted(List<String> categoryKeys) {
         return categoryV3Mapper.selectCategoryV3ByKeyInAndNoDeleted(categoryKeys,"false");
+    }
+
+    @Override
+    public CategoryV3 selectByKeyNotDel(String categoryKey) {
+        Example example = new Example(CategoryV3.class);
+        Example.Criteria criteria = example.createCriteria();
+        criteria.andEqualTo("key",categoryKey).andIsNull("deleteAt");
+        return categoryV3Mapper.selectOneByExample(example);
     }
 }
