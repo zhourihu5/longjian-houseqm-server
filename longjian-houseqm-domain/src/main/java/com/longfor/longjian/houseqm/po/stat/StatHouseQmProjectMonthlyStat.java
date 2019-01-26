@@ -1,10 +1,14 @@
 package com.longfor.longjian.houseqm.po.stat;
 
+import tk.mybatis.mapper.entity.IDynamicTableName;
+
+import javax.persistence.Column;
+import javax.persistence.Id;
+import javax.persistence.Table;
 import java.util.Date;
-import javax.persistence.*;
 
 @Table(name = "stat_house_qm_project_monthly_stat")
-public class StatHouseQmProjectMonthlyStat {
+public class StatHouseQmProjectMonthlyStat implements IDynamicTableName {
     @Id
     private Integer id;
 
@@ -829,5 +833,10 @@ public class StatHouseQmProjectMonthlyStat {
      */
     public void setUpdateAt(Date updateAt) {
         this.updateAt = updateAt;
+    }
+
+    @Override
+    public String getDynamicTableName() {
+        return null;
     }
 }

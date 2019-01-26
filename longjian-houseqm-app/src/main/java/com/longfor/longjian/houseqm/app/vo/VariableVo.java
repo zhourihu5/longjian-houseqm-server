@@ -20,5 +20,6 @@ public class VariableVo implements Serializable {
     private String timeFrameType;
     private List<Integer> teamIds;
     private String timeFrameEnd;
+    private String timeFrameBegin;
 
 }

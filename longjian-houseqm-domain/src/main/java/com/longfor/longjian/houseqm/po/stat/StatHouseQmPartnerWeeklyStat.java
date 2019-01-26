@@ -1,10 +1,14 @@
 package com.longfor.longjian.houseqm.po.stat;
 
+import tk.mybatis.mapper.entity.IDynamicTableName;
+
+import javax.persistence.Column;
+import javax.persistence.Id;
+import javax.persistence.Table;
 import java.util.Date;
-import javax.persistence.*;
 
 @Table(name = "stat_house_qm_partner_weekly_stat")
-public class StatHouseQmPartnerWeeklyStat {
+public class StatHouseQmPartnerWeeklyStat implements IDynamicTableName {
     @Id
     private Integer id;
 
@@ -925,5 +929,10 @@ public class StatHouseQmPartnerWeeklyStat {
      */
     public void setCompanyRoleId(Integer companyRoleId) {
         this.companyRoleId = companyRoleId;
+    }
+
+    @Override
+    public String getDynamicTableName() {
+        return null;
     }
 }
