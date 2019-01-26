@@ -80,4 +80,24 @@ public class HouseQmCheckTaskIssueAttachmentServiceImpl implements HouseQmCheckT
         criteria.andIsNull("deleteAt");
         return  houseQmCheckTaskIssueAttachmentMapper.selectByExample(example);
     }
+
+    @Override
+    @LFAssignDataSource(value = "zhijian2")
+    @Transactional
+    public int add(HouseQmCheckTaskIssueAttachment value) {
+        return    houseQmCheckTaskIssueAttachmentMapper.insert(value);
+
+    }
+
+    @Override
+    @LFAssignDataSource(value = "zhijian2")
+    public HouseQmCheckTaskIssueAttachment selectByMd5AndNotDel(Object attachment) {
+        Example example = new Example(HouseQmCheckTaskIssueAttachment.class);
+        Example.Criteria criteria = example.createCriteria();
+        criteria.andEqualTo("md5",attachment);
+
+        criteria.andIsNull("deleteAt");
+        return houseQmCheckTaskIssueAttachmentMapper.selectOneByExample(example);
+    }
+
 }

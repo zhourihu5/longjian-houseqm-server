@@ -11,4 +11,6 @@ import java.util.List;
 public interface CheckItemV3Service {
 
     List<CheckItemV3> searchCheckItemyV3ByKeyInAndNoDeleted(List<String> checkItems);
+
+    CheckItemV3 selectByKeyNotDel(String checkItemKey);
 }

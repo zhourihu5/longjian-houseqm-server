@@ -3,6 +3,7 @@ package com.longfor.longjian.houseqm.app.vo;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.io.Serializable;
 import java.util.Map;
 
 /**
@@ -10,28 +11,28 @@ import java.util.Map;
  */
 @Data
 @NoArgsConstructor
-public class ConfigVo {
+public class ConfigVo  implements Serializable {
     private ApiPushStrategyAssignTime config_assign_time;
     private ApiPushStrategyCategoryOverdue config_category_overdue;
     private  ApiPushStrategyCategoryThreshold config_category_threshold;
 
     @Data
     @NoArgsConstructor
-    public class ApiPushStrategyAssignTime{
+    public class ApiPushStrategyAssignTime implements Serializable{
         private String push_time="";
         private  String user_ids="";
     }
 
     @Data
     @NoArgsConstructor
-    public class ApiPushStrategyCategoryOverdue{
+    public class ApiPushStrategyCategoryOverdue implements Serializable{
         private String category_keys="";
         private  String user_ids="";
     }
 
     @Data
     @NoArgsConstructor
-    public class ApiPushStrategyCategoryThreshold{
+    public class ApiPushStrategyCategoryThreshold implements Serializable{
         private String category_keys="";
         private  String user_ids="";
         private Integer threshold=0;

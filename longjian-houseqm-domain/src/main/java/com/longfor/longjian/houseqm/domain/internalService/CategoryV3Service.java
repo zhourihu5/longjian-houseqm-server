@@ -12,4 +12,5 @@ public interface CategoryV3Service {
 
     List<CategoryV3>  searchCategoryV3ByKeyInAndNoDeleted(List<String> categoryKeys);
 
+    CategoryV3 selectByKeyNotDel(String categoryKey);
 }

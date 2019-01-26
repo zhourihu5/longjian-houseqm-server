@@ -10,7 +10,7 @@ public class CheckItemV3 {
 
     @Column(name = "father_key")
     private String fatherKey;
-
+    @Column(name = "`key`")
     private String key;
 
     private String path;

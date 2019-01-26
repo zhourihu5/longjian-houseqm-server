@@ -595,4 +595,20 @@ public class HouseQmCheckTaskIssueServiceImpl implements HouseQmCheckTaskIssueSe
 
     }
 
+    @Override
+    @LFAssignDataSource("zhijian2")
+    public int add(HouseQmCheckTaskIssue issue) {
+        return    houseQmCheckTaskIssueMapper.insert(issue);
+
+    }
+
+    @Override
+    @LFAssignDataSource("zhijian2")
+    public List<HouseQmCheckTaskIssue> selectByUuids(List<String> issueUuids) {
+        Example example = new Example(HouseQmCheckTaskIssue.class);
+        example.createCriteria().andIn("uuid",issueUuids);
+        example.orderBy("clientCreateAt");
+        return houseQmCheckTaskIssueMapper.selectByExample(example);
+    }
+
 }

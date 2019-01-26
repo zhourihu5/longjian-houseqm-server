@@ -6,6 +6,7 @@ import com.longfor.longjian.houseqm.domain.internalService.CheckItemV3Service;
 import com.longfor.longjian.houseqm.po.CheckItemV3;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
+import tk.mybatis.mapper.entity.Example;
 
 import javax.annotation.Resource;
 import java.util.List;
@@ -32,5 +33,13 @@ public class CheckItemV3ServiceImpl implements CheckItemV3Service {
     @Override
     public List<CheckItemV3> searchCheckItemyV3ByKeyInAndNoDeleted(List<String> checkItems) {
         return checkItemV3Mapper.selectCheckItemyV3ByKeyInAndNoDeleted(checkItems,"false");
+    }
+    @LFAssignDataSource("zhijian2")
+    @Override
+    public CheckItemV3 selectByKeyNotDel(String checkItemKey) {
+        Example example = new Example(CheckItemV3.class);
+        Example.Criteria criteria = example.createCriteria();
+        criteria.andEqualTo("key",checkItemKey).andIsNull("deleteAt");
+        return checkItemV3Mapper.selectOneByExample(example);
     }
 }

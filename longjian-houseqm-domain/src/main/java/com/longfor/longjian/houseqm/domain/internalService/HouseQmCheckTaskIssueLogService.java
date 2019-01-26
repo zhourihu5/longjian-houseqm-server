@@ -43,4 +43,6 @@ public interface HouseQmCheckTaskIssueLogService {
     List<HouseQmCheckTaskIssueLog> selectByIssueUuIdAndStatusNotDel(String issueUuid, ArrayList<Integer> issueLogStatus);
 
     int selectByIssueUuIdAndStatusNotDelAndCount(String issueUuid, ArrayList<Integer> issueLogStatus);
+
+    List<HouseQmCheckTaskIssueLog> selectByUuidsAndNotDelete(List<String> log_uuids);
 }

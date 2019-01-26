@@ -1,5 +1,6 @@
 package com.longfor.longjian.houseqm.domain.internalService.impl;
 
+import java.util.ArrayList;
 import java.util.Date;
 
 import com.longfor.gaia.gfs.data.mybatis.datasource.LFAssignDataSource;
@@ -26,6 +27,12 @@ public class HouseQmCheckTaskNotifyRecordServiceImpl implements HouseQmCheckTask
     @LFAssignDataSource("zhijian2")
     public int add(HouseQmCheckTaskNotifyRecord record) {
         return houseQmCheckTaskNotifyRecordMapper.insert(record);
+    }
+
+    @Override
+    @LFAssignDataSource("zhijian2")
+    public void addMany(ArrayList<HouseQmCheckTaskNotifyRecord> dataSource) {
+        houseQmCheckTaskNotifyRecordMapper.insertList(dataSource);
     }
 
     @Override

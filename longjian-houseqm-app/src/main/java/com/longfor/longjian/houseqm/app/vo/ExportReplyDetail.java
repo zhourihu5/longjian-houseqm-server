@@ -3,6 +3,7 @@ package com.longfor.longjian.houseqm.app.vo;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.io.Serializable;
 import java.util.List;
 
 /**
@@ -10,13 +11,13 @@ import java.util.List;
  */
 @Data
 @NoArgsConstructor
-public class ExportReplyDetail {
+public class ExportReplyDetail implements Serializable {
    private String task_name="";
     private String check_item_name="";
     private List<ExportIssueDetail>issue_detail;
     @Data
     @NoArgsConstructor
-    public  class  ExportIssueDetail{
+    public  class  ExportIssueDetail implements Serializable{
         private Integer   issue_id =0;
         private String    ques_content="";
         private String   answ_content="";
