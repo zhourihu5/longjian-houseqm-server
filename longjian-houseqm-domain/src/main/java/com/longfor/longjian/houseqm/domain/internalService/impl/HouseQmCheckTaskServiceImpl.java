@@ -40,7 +40,7 @@ public class HouseQmCheckTaskServiceImpl implements HouseQmCheckTaskService {
     public Integer searchTotalByProjIdAndCategoryClsAndStatus(Integer projId, Integer category_cls, Integer status) {
         Example example = new Example(HouseQmCheckTask.class);
         Example.Criteria criteria = example.createCriteria();
-        criteria.andEqualTo("projectId", projId).andEqualTo("categoryCls",category_cls).andEqualTo("status",status);
+        criteria.andEqualTo("projectId", projId).andEqualTo("categoryCls", category_cls).andEqualTo("status", status);
         ExampleUtil.addDeleteAtJudge(example);
         return houseQmCheckTaskMapper.selectCountByExample(example);
     }
@@ -50,9 +50,9 @@ public class HouseQmCheckTaskServiceImpl implements HouseQmCheckTaskService {
     public List<HouseQmCheckTask> searchByProjIdAndCategoryClsAndStatusByPage(Integer projId, Integer category_cls, Integer status, int limit, int start) {
         Example example = new Example(HouseQmCheckTask.class);
         Example.Criteria criteria = example.createCriteria();
-        criteria.andEqualTo("projectId", projId).andEqualTo("categoryCls",category_cls).andEqualTo("status",status);
+        criteria.andEqualTo("projectId", projId).andEqualTo("categoryCls", category_cls).andEqualTo("status", status);
         ExampleUtil.addDeleteAtJudge(example);
-        return houseQmCheckTaskMapper.selectByExampleAndRowBounds(example,new RowBounds(start,limit));
+        return houseQmCheckTaskMapper.selectByExampleAndRowBounds(example, new RowBounds(start, limit));
     }
 
     @Override
@@ -113,7 +113,10 @@ public class HouseQmCheckTaskServiceImpl implements HouseQmCheckTaskService {
      */
     @LFAssignDataSource("zhijian2")
     public List<HouseQmCheckTask> selectByTaskIds(Set<Integer> taskIds) {
-        return houseQmCheckTaskMapper.selectByTaskIds(taskIds, "false");
+        Example example = new Example(HouseQmCheckTask.class);
+        Example.Criteria criteria = example.createCriteria();
+        criteria.andIn("taskId", taskIds);
+        return houseQmCheckTaskMapper.selectByExample(example);
     }
 
 
@@ -227,7 +230,7 @@ public class HouseQmCheckTaskServiceImpl implements HouseQmCheckTaskService {
     @LFAssignDataSource("zhijian2")
     public List<HouseQmCheckTask> selectByProjectIdsAndCategoryClsNotDel(ArrayList<Integer> parentIds, List<Integer> categorylist) {
         Example example = new Example(HouseQmCheckTask.class);
-        example.createCriteria().andIn("projectId",parentIds).andIn("categoryCls",categorylist).andIsNull("deleteAt");
+        example.createCriteria().andIn("projectId", parentIds).andIn("categoryCls", categorylist).andIsNull("deleteAt");
         return houseQmCheckTaskMapper.selectByExample(example);
     }
 

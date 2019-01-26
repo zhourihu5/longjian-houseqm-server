@@ -167,4 +167,8 @@ public interface HouseQmCheckTaskIssueService {
     List<HouseQmCheckTaskIssue> selectHouseQmCheckTaskIssueByProIdAndIdAndStatus(Integer projectId, List<Integer> issueIds, ArrayList<Integer> statusList);
 
     HouseQmCheckTaskIssue selectByTaskIdAndUuidAndNotDel(Integer taskId, String issueUuid);
+
+    int add(HouseQmCheckTaskIssue issue);
+
+    List<HouseQmCheckTaskIssue> selectByUuids(List<String> issueUuids);
 }

@@ -3,6 +3,7 @@ package com.longfor.longjian.houseqm.app.vo;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.io.Serializable;
 import java.util.List;
 
 /**
@@ -10,7 +11,7 @@ import java.util.List;
  */
 @Data
 @NoArgsConstructor
-public class ReportIssueVo {
+public class ReportIssueVo implements Serializable {
     List<ApiHouseQmCheckTaskReportMsg> dropped;
     @Data
     @NoArgsConstructor

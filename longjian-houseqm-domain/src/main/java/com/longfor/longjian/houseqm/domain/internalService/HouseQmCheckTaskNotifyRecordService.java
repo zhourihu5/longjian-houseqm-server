@@ -11,6 +11,8 @@ package com.longfor.longjian.houseqm.domain.internalService;
 
 import com.longfor.longjian.houseqm.po.HouseQmCheckTaskNotifyRecord;
 
+import java.util.ArrayList;
+
 /**
  * Created by Dongshun on 2019/1/11.
  */
@@ -18,4 +20,6 @@ public interface HouseQmCheckTaskNotifyRecordService {
     int insertFull(Integer projectId, Integer taskId, Integer srcUserId, String desUserIds, int moduleId, Integer issueId, Integer issueStatus, String extraInfo);
 
     int add(HouseQmCheckTaskNotifyRecord record);
+
+    void addMany(ArrayList<HouseQmCheckTaskNotifyRecord> dataSource);
 }

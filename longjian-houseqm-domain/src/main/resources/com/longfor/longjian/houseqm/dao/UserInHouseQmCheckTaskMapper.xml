@@ -53,7 +53,7 @@
         WHERE user_id = #{userId}
         AND task_id =#{task_id}
         AND role_type=#{checker}
-        and delete_at is null
+        AND (`delete_at` IS NULL or `delete_at` = '0001-01-01 00:00:00')
     </select>
     <!--List<UserInHouseQmCheckTask> searchBySquadIdIn(@Param("squadIds") List<Integer> squadIds);-->
     <select id="searchBySquadIdIn" resultMap="BaseResultMap">
@@ -62,14 +62,14 @@
         FROM
         user_in_house_qm_check_task
         <where>
+            (`delete_at` IS NULL or `delete_at` = '0001-01-01 00:00:00')
             <if test="squadIds.size()>0">
-                squad_id in
+                AND  squad_id in
                 <foreach collection="squadIds" index="index" item="item" open="(" separator="," close=")">
                     #{item}
                 </foreach>
             </if>
-            AND
-            delete_at is NULL
+
         </where>
     </select>
     <select id="searchByCondition" resultMap="BaseResultMap">

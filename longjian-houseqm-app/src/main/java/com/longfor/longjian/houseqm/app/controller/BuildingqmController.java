@@ -13,6 +13,7 @@ import com.longfor.longjian.houseqm.app.req.buildingqm.MyIssuePatchListReq;
 import com.longfor.longjian.houseqm.app.service.IBuildingqmService;
 import com.longfor.longjian.houseqm.app.service.ICheckUpdateService;
 import com.longfor.longjian.houseqm.app.vo.*;
+import com.longfor.longjian.houseqm.app.vo.houseqm.TaskSquadRspVo;
 import com.longfor.longjian.houseqm.po.HouseQmCheckTaskSquad;
 import com.longfor.longjian.houseqm.util.DateUtil;
 import lombok.extern.slf4j.Slf4j;
@@ -232,10 +233,10 @@ public class BuildingqmController {
      * @param taskId
      * @return
      */
-    @GetMapping(value = "task/task_squad/", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
-    public LjBaseResponse<ArrayList<HouseQmCheckTaskSquadListRspVo>> taskSquad(HttpServletRequest request, @RequestParam(name = "project_id", required = true) String projectId,
-                                                                               @RequestParam(name = "task_id", required = true) String taskId) {
-        LjBaseResponse<ArrayList<HouseQmCheckTaskSquadListRspVo>> response = new LjBaseResponse<>();
+    @GetMapping(value = "task/task_squad", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+    public LjBaseResponse<TaskSquadRspVo> taskSquad(HttpServletRequest request, @RequestParam(name = "project_id", required = true) String projectId,
+                                                    @RequestParam(name = "task_id", required = true) String taskId) {
+        LjBaseResponse<TaskSquadRspVo> response = new LjBaseResponse<>();
         Integer userId = (Integer) sessionInfo.getBaseInfo("userId");
         try {
             ctrlTool.projPerm(request, "项目.工程检查.任务管理.新增");
@@ -248,7 +249,9 @@ public class BuildingqmController {
                 rspVo.setSquad_type(info.get(i).getSquadType());
                 squad_list.add(rspVo);
             }
-            response.setData(squad_list);
+            TaskSquadRspVo data = new TaskSquadRspVo();
+            data.setSquad_list(squad_list);
+            response.setData(data);
         } catch (Exception e) {
             e.printStackTrace();
             log.error(e.getMessage());
@@ -324,7 +327,7 @@ public class BuildingqmController {
      * @return
      */
     @GetMapping(value = "buildingqm/report_issue/", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
-    public LjBaseResponse<ReportIssueVo> reportIssue(@RequestParam(name = "project_id", required = true) String projectId,
+    public LjBaseResponse<ReportIssueVo> reportIssue(@RequestParam(name = "project_id", required = true) Integer projectId,
 
                                                      @RequestParam(name = "data", required = true) String data) {
         log.info("report_issue, project_id=" + projectId + ", data=" + data + "");

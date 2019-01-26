@@ -3,6 +3,7 @@ package com.longfor.longjian.houseqm.app.vo;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.io.Serializable;
 import java.util.List;
 
 /**
@@ -10,7 +11,7 @@ import java.util.List;
  */
 @Data
 @NoArgsConstructor
-public class ProjectSettingConfigVo {
+public class ProjectSettingConfigVo implements Serializable {
     private Boolean has_issue_reason;
     private Boolean has_issue_suggest;
     private Boolean has_issue_potential_rist;
@@ -19,7 +20,7 @@ public class ProjectSettingConfigVo {
 
     @Data
     @NoArgsConstructor
-    public class HouseQmIssueReason {
+    public class HouseQmIssueReason implements Serializable{
         private Integer id;
         private String value;
     }

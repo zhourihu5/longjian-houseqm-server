@@ -118,6 +118,7 @@ public class AreaServiceImpl implements AreaService {
         else return result;
         ExampleUtil.addDeleteAtJudge(example);
         List<Area> areaA = areaMapper.selectByExample(example);
+
         for (Area area : areaA) {
             pathsA.add(area.getPath() + area.getId() + "/");
         }
@@ -129,6 +130,7 @@ public class AreaServiceImpl implements AreaService {
         else return result;
         ExampleUtil.addDeleteAtJudge(example1);
         List<Area> areaB = areaMapper.selectByExample(example1);
+
         for (Area area : areaB) {
             pathsB.add(area.getPath() + area.getId() + "/");
         }
@@ -149,7 +151,7 @@ public class AreaServiceImpl implements AreaService {
                 }
             }
         }
-        return result.stream().collect(Collectors.toSet()).stream().collect(Collectors.toList());
+        return CollectionUtil.removeDuplicate(result);
     }
 
 
@@ -161,18 +163,20 @@ public class AreaServiceImpl implements AreaService {
      */
     @LFAssignDataSource("zhijian2")
     public List<Area> searchAreaListByRootIdAndTypes(Integer projectId, List<Integer> rootIds, List<Integer> types) {
+        List<Area> items = Lists.newArrayList();
+
         Example example = new Example(Area.class);
         Example.Criteria criteria = example.createCriteria();
         criteria.andEqualTo("projectId", projectId);
         if (rootIds.size() > 0) criteria.andIn("id", rootIds);
         ExampleUtil.addDeleteAtJudge(example);
         List<Area> areas = areaMapper.selectByExample(example);
+        if (areas.size()==0)return items;
 
         List<Area> areaList = remainTopAreas(areas);
 
-        List<Area> items = Lists.newArrayList();
         for (Area area : areaList) {
-            String likePath = area.getPath() + area.getId() + "/%%";
+            String likePath = area.getPath() + area.getId() + "/%";
             Example example1 = new Example(Area.class);
             Example.Criteria criteria1 = example1.createCriteria();
             criteria1.andEqualTo("projectId", projectId).andLike("path", likePath).orEqualTo("id", area.getId());

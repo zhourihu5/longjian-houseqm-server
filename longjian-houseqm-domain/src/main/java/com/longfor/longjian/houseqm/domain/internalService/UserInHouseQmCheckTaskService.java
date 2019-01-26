@@ -73,4 +73,6 @@ public interface UserInHouseQmCheckTaskService {
     List<UserInHouseQmCheckTask> selectBysquadIdAndtaskId(Object o, Integer task_id);
 
     List<UserInHouseQmCheckTask> searchUserInHouseQmCheckTaskByUserIdRoleType(Integer uid, Integer id);
+
+    List<UserInHouseQmCheckTask> selectByTaskIdInAndRoleTypeNotDel(ArrayList<Integer> taskIds, Integer value);
 }

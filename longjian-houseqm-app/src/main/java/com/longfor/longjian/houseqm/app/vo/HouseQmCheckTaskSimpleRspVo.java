@@ -25,7 +25,7 @@ public class HouseQmCheckTaskSimpleRspVo implements Serializable {
     private Integer create_at;
     @Data
     @NoArgsConstructor
-    public class TaskList {
+    public class TaskList implements Serializable{
         List<HouseQmCheckTaskSimpleRspVo> task_list;
     }
 }

@@ -3,6 +3,7 @@ package com.longfor.longjian.houseqm.app.vo;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.io.Serializable;
 import java.util.List;
 
 /**
@@ -10,12 +11,12 @@ import java.util.List;
  */
 @Data
 @NoArgsConstructor
-public class ApiIssueLogVo {
+public class ApiIssueLogVo implements Serializable {
     private List<ApiIssueLogInfoIssueRsp>issue;
     private List<ApiIssueLogListRsp>issue_log_list;
     @Data
     @NoArgsConstructor
-    public class ApiIssueLogInfoIssueRsp{
+    public class ApiIssueLogInfoIssueRsp implements Serializable{
       private Integer  id;
         private Integer project_id;
         private Integer task_id;
@@ -63,7 +64,7 @@ public class ApiIssueLogVo {
     }
     @Data
     @NoArgsConstructor
-    public class ApiIssueLogListRsp{
+    public class ApiIssueLogListRsp implements Serializable{
     private Integer  id;
       private Integer   project_id;
       private Integer  task_id;

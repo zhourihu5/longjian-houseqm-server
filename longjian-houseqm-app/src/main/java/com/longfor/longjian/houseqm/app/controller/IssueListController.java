@@ -10,6 +10,8 @@ import com.longfor.longjian.common.util.SessionInfo;
 import com.longfor.longjian.houseqm.app.req.IssueListDoActionReq;
 import com.longfor.longjian.houseqm.app.service.IIssueService;
 import com.longfor.longjian.houseqm.app.vo.*;
+import com.longfor.longjian.houseqm.app.vo.issuelist.DetailLogRspVo;
+import com.longfor.longjian.houseqm.app.vo.issuelist.DetailRepairLogRspVo;
 import com.longfor.longjian.houseqm.app.vo.issuelist.IssueListRsp;
 import com.longfor.longjian.houseqm.consts.CommonGlobalEnum;
 import com.longfor.longjian.houseqm.po.ProjectSettingV2;
@@ -82,15 +84,17 @@ public class IssueListController {
      * @param issueUuid
      * @return
      */
-    @GetMapping(value = "detail_log/", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
-    public TaskResponse<ArrayList<HouseQmCheckTaskIssueHistoryLogVo>> detailLog(HttpServletRequest request, @RequestParam(value = "project_id", required = true) Integer projectId,
-                                                                                @RequestParam(value = "issue_uuid", required = true) String issueUuid) {
-        TaskResponse<ArrayList<HouseQmCheckTaskIssueHistoryLogVo>> response = new TaskResponse<>();
+    @GetMapping(value = "detail_log", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+    public TaskResponse<DetailLogRspVo> detailLog(HttpServletRequest request, @RequestParam(value = "project_id", required = true) Integer projectId,
+                                                  @RequestParam(value = "issue_uuid", required = true) String issueUuid) {
+        TaskResponse<DetailLogRspVo> response = new TaskResponse<>();
         Integer userId = (Integer) sessionInfo.getBaseInfo("userId");
         try {
             ctrlTool.projPerm(request, "项目.工程检查.问题管理.查看");
             List<HouseQmCheckTaskIssueHistoryLogVo> result = iIssueService.getHouseQmCheckTaskIssueActionLogByIssueUuid(issueUuid);
-            response.setData(result);
+            DetailLogRspVo data = new DetailLogRspVo();
+            data.setItems(result);
+            response.setData(data);
         } catch (Exception e) {
             e.printStackTrace();
             response.setResult(1);
@@ -151,16 +155,16 @@ public class IssueListController {
         ProjectSettingConfigVo vo = new ProjectSettingConfigVo();
         for (int i = 0; i < projectSetting.size(); i++) {
             if (projectSetting.get(i).getsKey().equals("PROJ_ISSUE_REASON_SWITCH")) {
-                vo.setHas_issue_reason(true);
+                vo.setHas_issue_reason(projectSetting.get(i).getValue().equals("是"));
             }
             if (projectSetting.get(i).getsKey().equals("PROJ_ISSUE_SUGGEST_SWITCH")) {
-                vo.setHas_issue_suggest(true);
+                vo.setHas_issue_suggest(projectSetting.get(i).getValue().equals("是"));
             }
             if (projectSetting.get(i).getsKey().equals("PROJ_POTENTIAL_RISK_SWITCH")) {
-                vo.setHas_issue_potential_rist(true);
+                vo.setHas_issue_potential_rist(projectSetting.get(i).getValue().equals("是"));
             }
             if (projectSetting.get(i).getsKey().equals("PROJ_PREVENTIVE_ACTION_SWITCH")) {
-                vo.setHas_issue_preventive_action(true);
+                vo.setHas_issue_preventive_action(projectSetting.get(i).getValue().equals("是"));
             }
             if (projectSetting.get(i).getsKey().equals("PROJ_ISSUE_REASON_NAME")) {
                 reasonId = projectSetting.get(i).getId();
@@ -311,8 +315,8 @@ public class IssueListController {
      * @return
      */
     @GetMapping(value = "detail_repair_log", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
-    public LjBaseResponse<List<HouseQmCheckTaskIssueDetailRepairLogVo>> detailRepairLog(HttpServletRequest request,@RequestParam(value = "project_id", required = true) Integer projectId,
-                                                                                        @RequestParam(value = "issue_uuid", required = true) String issueUuid) {
+    public LjBaseResponse<DetailRepairLogRspVo> detailRepairLog(HttpServletRequest request, @RequestParam(value = "project_id", required = true) Integer projectId,
+                                                                @RequestParam(value = "issue_uuid", required = true) String issueUuid) {
         Integer userId = (Integer) sessionInfo.getBaseInfo("userId");
         try {
             ctrlTool.projPerm(request, "项目.工程检查.问题管理.查看");
@@ -321,7 +325,11 @@ public class IssueListController {
         }
         LjBaseResponse<List<HouseQmCheckTaskIssueDetailRepairLogVo>> result = iIssueService.getDetailRepairLogByIssueUuid(issueUuid);
 
-        return result;
+        LjBaseResponse<DetailRepairLogRspVo> response = new LjBaseResponse<>();
+        DetailRepairLogRspVo data = new DetailRepairLogRspVo();
+        data.setItems(result.getData());
+        response.setData(data);
+        return response;
     }
 
     /**

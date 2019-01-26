@@ -315,13 +315,12 @@ public class IssueServiceImpl implements IIssueService {
                 for (int j = 0; j < split.size(); j++) {
                     uids.add(Integer.valueOf(split.get(j)));
                 }
-                List uidlist = CollectionUtil.removeDuplicate(uids);
-                List<User> user_info = userService.searchByUserIdInAndNoDeleted(uidlist);
-                for (int j = 0; j < user_info.size(); j++) {
-                    user_id_real_name_map.put(user_info.get(j).getUserId(), user_info.get(j).getRealName());
-                }
-
             }
+        }
+        List uidlist = CollectionUtil.removeDuplicate(uids);
+        List<User> user_info = userService.searchByUserIdInAndNoDeleted(uidlist);
+        for (int j = 0; j < user_info.size(); j++) {
+            user_id_real_name_map.put(user_info.get(j).getUserId(), user_info.get(j).getRealName());
         }
         ArrayList<HouseQmCheckTaskIssueHistoryLogVo> result = Lists.newArrayList();
         boolean hasCreateLog = false;
@@ -344,14 +343,14 @@ public class IssueServiceImpl implements IIssueService {
 
             }
 
-
             if (issue_log_info.get(i).getStatus().equals(HouseQmCheckTaskIssueLogStatus.Repairing.getValue())) {
                 HouseQmCheckTaskIssueHistoryLogVo.HouseQmCheckTaskIssueHistoryLogItem log_item = new HouseQmCheckTaskIssueHistoryLogVo().new HouseQmCheckTaskIssueHistoryLogItem();
                 log_item.setLog_type(HouseQmCheckTaskActionLogType.Assign.getValue());
                 log_item.setTarget_user_id((Integer) issue_log_detail.get("RepairerId"));
                 log_item.setTarget_user_name(user_id_real_name_map.get(issue_log_detail.get("RepairerId")));
                 ArrayList<String> followers = Lists.newArrayList();
-                if ((Integer) issue_log_detail.get("RepairerFollowerIds") > 0) {
+                String repairerFollowerIds = (String) issue_log_detail.get("RepairerFollowerIds");
+                if ( repairerFollowerIds.length() > 0) {
 
                     List<Integer> followers_id = StringSplitToListUtil.splitToIdsComma((String) issue_log_detail.get("RepairerFollowerIds"), ",");
                     for (int j = 0; j < followers_id.size(); j++) {
@@ -444,9 +443,9 @@ public class IssueServiceImpl implements IIssueService {
             HouseQmCheckTaskIssueHistoryLogVo history_log = new HouseQmCheckTaskIssueHistoryLogVo();
             HouseQmCheckTaskIssue issue_infos = houseQmCheckTaskIssueService.selectByUuidAndNotDelete(issueUuid);
             Integer senderId = issue_info.getSenderId();
-            User user_info = userService.selectByUserIdAndNotDelete(senderId);
+            User userInfo = userService.selectByUserIdAndNotDelete(senderId);
             history_log.setUser_id(senderId);
-            history_log.setUser_name(user_info.getRealName());
+            history_log.setUser_name(userInfo.getRealName());
             history_log.setCreate_at(DateUtil.datetimeToTimeStamp(issue_infos.getCreateAt()));
             HouseQmCheckTaskIssueHistoryLogVo.HouseQmCheckTaskIssueHistoryLogItem logItem = new HouseQmCheckTaskIssueHistoryLogVo().new HouseQmCheckTaskIssueHistoryLogItem();
             logItem.setLog_type(HouseQmCheckTaskActionLogType.Create.getValue());

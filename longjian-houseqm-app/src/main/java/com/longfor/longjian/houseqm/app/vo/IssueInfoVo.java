@@ -12,7 +12,7 @@ import java.util.List;
  */
 @Data
 @NoArgsConstructor
-public class IssueInfoVo {
+public class IssueInfoVo implements Serializable{
    private Integer task_id;
    private String task_name;
     private Integer  create_at;
@@ -38,7 +38,7 @@ public class IssueInfoVo {
 
     @Data
     @NoArgsConstructor
-    public class HouseQmCheckTaskIssueDetail {
+    public class HouseQmCheckTaskIssueDetail implements Serializable{
         private Integer issue_reason; // 产生问题的原因，需要检索project_setting表此project的PROJ_ISSUE_REASON_LIST记录
         private String  issue_reason_detail; // 产生问题原因的文字描述
         private  String issue_suggest;     // 措施建议
@@ -47,7 +47,7 @@ public class IssueInfoVo {
     }
     @Data
     @NoArgsConstructor
-    public class HouseQmCheckTaskIssueDetailEditLog {
+    public class HouseQmCheckTaskIssueDetailEditLog implements Serializable{
        private Integer  user_id;
         private  String  user_name;
         private Integer  create_at;
@@ -56,7 +56,7 @@ public class IssueInfoVo {
     }
     @Data
     @NoArgsConstructor
-    public class HouseQmCheckTaskIssueAttachmentVo {
+    public class HouseQmCheckTaskIssueAttachmentVo implements Serializable{
         private String md5;
         private  Integer create_at;
         private  Integer typ  ;
