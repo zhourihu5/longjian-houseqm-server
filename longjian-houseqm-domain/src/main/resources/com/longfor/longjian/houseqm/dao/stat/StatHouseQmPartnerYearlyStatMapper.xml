@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.longfor.longjian.houseqm.dao.stat.StatHouseQmPartnerYearlyStatMapper">
-  <resultMap id="BaseResultMap" type="com.longfor.longjian.houseqm.po.stat.StatHouseQmPartnerYearlyStat">
-    <!--
+  <!--<resultMap id="BaseResultMap" type="com.longfor.longjian.houseqm.po.stat.StatHouseQmPartnerYearlyStat">
+    &lt;!&ndash;
       WARNING - @mbg.generated
-    -->
+    &ndash;&gt;
     <id column="id" jdbcType="INTEGER" property="id" />
     <result column="project_id" jdbcType="INTEGER" property="projectId" />
     <result column="category_cls" jdbcType="INTEGER" property="categoryCls" />
@@ -46,9 +46,9 @@
     <result column="company_role_id" jdbcType="INTEGER" property="companyRoleId" />
   </resultMap>
   <sql id="Example_Where_Clause">
-    <!--
+    &lt;!&ndash;
       WARNING - @mbg.generated
-    -->
+    &ndash;&gt;
     <where>
       <foreach collection="oredCriteria" item="criteria" separator="or">
         <if test="criteria.valid">
@@ -78,9 +78,9 @@
     </where>
   </sql>
   <sql id="Base_Column_List">
-    <!--
+    &lt;!&ndash;
       WARNING - @mbg.generated
-    -->
+    &ndash;&gt;
     id, project_id, category_cls, area_id, area_father_id, area_name, area_path_and_id, 
     category_key, category_father_key, category_name, category_path_and_key, has_sub, 
     root_category_id, category_order, issue_count, record_count, issue_new_count, record_new_count, 
@@ -93,9 +93,9 @@
     company_role_id
   </sql>
   <select id="selectByExample" parameterType="com.longfor.longjian.houseqm.po.stat.StatHouseQmPartnerYearlyStatExample" resultMap="BaseResultMap">
-    <!--
+    &lt;!&ndash;
       WARNING - @mbg.generated
-    -->
+    &ndash;&gt;
     select
     <if test="distinct">
       distinct
@@ -110,18 +110,18 @@
     </if>
   </select>
   <select id="countByExample" parameterType="com.longfor.longjian.houseqm.po.stat.StatHouseQmPartnerYearlyStatExample" resultType="java.lang.Integer">
-    <!--
+    &lt;!&ndash;
       WARNING - @mbg.generated
-    -->
+    &ndash;&gt;
     select count(*) from stat_house_qm_partner_yearly_stat
     <if test="_parameter != null">
       <include refid="Example_Where_Clause" />
     </if>
   </select>
   <resultMap id="BaseResultMap" type="com.longfor.longjian.houseqm.po.stat.StatHouseQmPartnerYearlyStat">
-    <!--
+    &lt;!&ndash;
       WARNING - @mbg.generated
-    -->
+    &ndash;&gt;
     <id column="id" jdbcType="INTEGER" property="id" />
     <result column="project_id" jdbcType="INTEGER" property="projectId" />
     <result column="category_cls" jdbcType="INTEGER" property="categoryCls" />
@@ -163,9 +163,9 @@
     <result column="company_role_id" jdbcType="INTEGER" property="companyRoleId" />
   </resultMap>
   <sql id="Example_Where_Clause">
-    <!--
+    &lt;!&ndash;
       WARNING - @mbg.generated
-    -->
+    &ndash;&gt;
     <where>
       <foreach collection="oredCriteria" item="criteria" separator="or">
         <if test="criteria.valid">
@@ -195,9 +195,9 @@
     </where>
   </sql>
   <sql id="Update_By_Example_Where_Clause">
-    <!--
+    &lt;!&ndash;
       WARNING - @mbg.generated
-    -->
+    &ndash;&gt;
     <where>
       <foreach collection="example.oredCriteria" item="criteria" separator="or">
         <if test="criteria.valid">
@@ -227,9 +227,9 @@
     </where>
   </sql>
   <sql id="Base_Column_List">
-    <!--
+    &lt;!&ndash;
       WARNING - @mbg.generated
-    -->
+    &ndash;&gt;
     id, project_id, category_cls, area_id, area_father_id, area_name, area_path_and_id, 
     category_key, category_father_key, category_name, category_path_and_key, has_sub, 
     root_category_id, category_order, issue_count, record_count, issue_new_count, record_new_count, 
@@ -242,9 +242,9 @@
     company_role_id
   </sql>
   <select id="selectByExample" parameterType="com.longfor.longjian.houseqm.po.stat.StatHouseQmPartnerYearlyStatExample" resultMap="BaseResultMap">
-    <!--
+    &lt;!&ndash;
       WARNING - @mbg.generated
-    -->
+    &ndash;&gt;
     select
     <if test="distinct">
       distinct
@@ -259,27 +259,27 @@
     </if>
   </select>
   <delete id="deleteByExample" parameterType="com.longfor.longjian.houseqm.po.stat.StatHouseQmPartnerYearlyStatExample">
-    <!--
+    &lt;!&ndash;
       WARNING - @mbg.generated
-    -->
+    &ndash;&gt;
     delete from stat_house_qm_partner_yearly_stat
     <if test="_parameter != null">
       <include refid="Example_Where_Clause" />
     </if>
   </delete>
   <select id="countByExample" parameterType="com.longfor.longjian.houseqm.po.stat.StatHouseQmPartnerYearlyStatExample" resultType="java.lang.Integer">
-    <!--
+    &lt;!&ndash;
       WARNING - @mbg.generated
-    -->
+    &ndash;&gt;
     select count(*) from stat_house_qm_partner_yearly_stat
     <if test="_parameter != null">
       <include refid="Example_Where_Clause" />
     </if>
   </select>
   <update id="updateByExampleSelective" parameterType="map">
-    <!--
+    &lt;!&ndash;
       WARNING - @mbg.generated
-    -->
+    &ndash;&gt;
     update stat_house_qm_partner_yearly_stat
     <set>
       <if test="record.id != null">
@@ -405,9 +405,9 @@
     </if>
   </update>
   <update id="updateByExample" parameterType="map">
-    <!--
+    &lt;!&ndash;
       WARNING - @mbg.generated
-    -->
+    &ndash;&gt;
     update stat_house_qm_partner_yearly_stat
     set id = #{record.id,jdbcType=INTEGER},
       project_id = #{record.projectId,jdbcType=INTEGER},
@@ -451,5 +451,5 @@
     <if test="_parameter != null">
       <include refid="Update_By_Example_Where_Clause" />
     </if>
-  </update>
+  </update>-->
 </mapper>

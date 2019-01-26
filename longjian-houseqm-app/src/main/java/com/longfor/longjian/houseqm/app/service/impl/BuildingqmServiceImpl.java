@@ -42,45 +42,38 @@ import java.util.*;
 @Service
 @Slf4j
 public class BuildingqmServiceImpl implements IBuildingqmService {
-
     @Resource
-    UserInHouseQmCheckTaskService userInHouseQmCheckTaskService;
-
+    private UserInHouseQmCheckTaskService userInHouseQmCheckTaskService;
     @Resource
-    HouseQmCheckTaskService houseQmCheckTaskService;
-
+    private HouseQmCheckTaskService houseQmCheckTaskService;
     @Resource
-    HouseQmCheckTaskSquadService houseQmCheckTaskSquadService;
-
+    private HouseQmCheckTaskSquadService houseQmCheckTaskSquadService;
     @Resource
-    HouseQmCheckTaskIssueUserService houseQmCheckTaskIssueUserService;
-
+    private HouseQmCheckTaskIssueUserService houseQmCheckTaskIssueUserService;
     @Resource
-    HouseQmCheckTaskIssueService houseQmCheckTaskIssueService;
-
+    private HouseQmCheckTaskIssueService houseQmCheckTaskIssueService;
     @Resource
-    HouseQmCheckTaskIssueLogService houseQmCheckTaskIssueLogService;
-
+    private HouseQmCheckTaskIssueLogService houseQmCheckTaskIssueLogService;
     @Resource
-    HouseQmCheckTaskIssueAttachmentService houseQmCheckTaskIssueAttachmentService;
+    private HouseQmCheckTaskIssueAttachmentService houseQmCheckTaskIssueAttachmentService;
     @Resource
-    TasksService taskService;
+    private TasksService taskService;
     @Resource
-    PushStrategyAssignTimeService pushStrategyAssignTimeService;
+    private PushStrategyAssignTimeService pushStrategyAssignTimeService;
     @Resource
-    PushStrategyCategoryOverdueService pushStrategyCategoryOverdueService;
+    private PushStrategyCategoryOverdueService pushStrategyCategoryOverdueService;
     @Resource
-    PushStrategyCategoryThresholdService pushStrategyCategoryThresholdService;
+    private PushStrategyCategoryThresholdService pushStrategyCategoryThresholdService;
     @Resource
-    UserService userService;
+    private UserService userService;
     @Resource
-    FileResourceService fileResourceService;
+    private FileResourceService fileResourceService;
     @Resource
-    AreaService areaService;
+    private AreaService areaService;
     @Resource
-    CategoryV3Service categoryV3Service;
+    private CategoryV3Service categoryV3Service;
     @Resource
-    CheckItemV3Service checkItemV3Service;
+    private CheckItemV3Service checkItemV3Service;
 
 
     /**
@@ -89,24 +82,71 @@ public class BuildingqmServiceImpl implements IBuildingqmService {
      */
     public TaskListVo myTaskList(Integer userId) {
 
-        List<UserInHouseQmCheckTask> userInHouseQmCheckTasks = userInHouseQmCheckTaskService.searchByUserId(userId);
+        List<UserInHouseQmCheckTask> user_tasks = userInHouseQmCheckTaskService.searchByUserId(userId);
         Set<Integer> taskIds = Sets.newHashSet();
 
-        for (UserInHouseQmCheckTask task : userInHouseQmCheckTasks) {
+        for (UserInHouseQmCheckTask task : user_tasks) {
             taskIds.add(task.getTaskId());
         }
+        Map<Integer, ApiBuildingQmCheckTaskConfig> task_map = creatTaskMap(taskIds);
+        List<HouseQmCheckTask> houseqm_tasks = houseQmCheckTaskService.selectByTaskIds(taskIds);
+        List<TaskVo> taskVoList = Lists.newArrayList();
+        for (HouseQmCheckTask item : houseqm_tasks) {
+            TaskVo task = new TaskVo();
+            task.setProject_id(item.getProjectId());
+            task.setTask_id(item.getTaskId());
+            task.setName(item.getName());
+            task.setStatus(item.getStatus());
+            task.setCategory_cls(item.getCategoryCls());
+            task.setRoot_category_key(item.getRootCategoryKey());
+            task.setArea_ids(item.getAreaIds());
+            task.setArea_type(item.getAreaTypes());
 
-        Map<Integer, ApiBuildingQmCheckTaskConfig> apiBuildingQmCheckTaskConfigMap = Maps.newHashMap();
-        List<HouseQmCheckTask> houseQmCheckTasks = houseQmCheckTaskService.selectByTaskIds(taskIds);
+            task.setRepairer_refund_permission(task_map.containsKey(task.getTask_id()) ? task_map.get(task.getTask_id()).getRepairer_refund_permission() : CheckTaskRepairerRefundPermission.No.getValue());
+            task.setRepairer_follower_permission(task_map.containsKey(task.getTask_id()) ? task_map.get(task.getTask_id()).getRepairer_follower_permission() : CheckTaskRepairerFollowerPermission.CompleteRepair.getValue());
+            task.setChecker_approve_permission(task_map.containsKey(task.getTask_id()) ? task_map.get(task.getTask_id()).getChecker_approve_permission() : CheckerApprovePermission.No.getValue());
+            task.setRepaired_picture_status(task_map.containsKey(task.getTask_id()) ? task_map.get(task.getTask_id()).getRepaired_picture_status() : CheckTaskRepairedPictureEnum.UnForcePicture.getValue());
+            task.setIssue_desc_status(task_map.containsKey(task.getTask_id()) ? task_map.get(task.getTask_id()).getIssue_desc_status() : CheckTaskIssueDescEnum.Arbitrary.getValue());
+            task.setIssue_default_desc(task_map.containsKey(task.getTask_id()) ? task_map.get(task.getTask_id()).getIssue_default_desc() : "该问题无文字描述");
 
-        fullTaskConfigVO(apiBuildingQmCheckTaskConfigMap, houseQmCheckTasks);
-        List<HouseQmCheckTask> allHouseQmCheckTasks = houseQmCheckTaskService.selectByTaskIdsEvenDeleted(taskIds);
-        List<TaskVo> vos = Lists.newArrayList();
-        fullAllTaskConfigVO(apiBuildingQmCheckTaskConfigMap, allHouseQmCheckTasks, vos);
+            task.setPlan_begin_on(item.getPlanBeginOn() == null ? 0 : DateUtil.datetimeToTimeStamp(item.getPlanBeginOn()));
+            task.setPlan_end_on(item.getPlanEndOn() == null ? 0 : DateUtil.datetimeToTimeStamp(item.getPlanEndOn()));
+            task.setCreate_at(item.getCreateAt() == null ? 0 : DateUtil.datetimeToTimeStamp(item.getCreateAt()));
+            task.setUpdate_at(item.getUpdateAt() == null ? 0 : DateUtil.datetimeToTimeStamp(item.getUpdateAt()));
+            task.setDelete_at(item.getDeleteAt() == null ? 0 : DateUtil.datetimeToTimeStamp(item.getDeleteAt()));
+            taskVoList.add(task);
+        }
+
         TaskListVo taskListVo = new TaskListVo();
-        taskListVo.setTask_list(vos);
+        taskListVo.setTask_list(taskVoList);
 
         return taskListVo;
+    }
+
+    private Map<Integer, ApiBuildingQmCheckTaskConfig> creatTaskMap(Set<Integer> taskIds) {
+        HashMap<Integer, ApiBuildingQmCheckTaskConfig> taskMap = Maps.newHashMap();
+        List<HouseQmCheckTask> taskList = houseQmCheckTaskService.selectByTaskIds(taskIds);
+        for (HouseQmCheckTask task : taskList) {
+            ApiBuildingQmCheckTaskConfig item = new ApiBuildingQmCheckTaskConfig();
+            if (task.getConfigInfo() == null) {
+                item.setRepairer_refund_permission(CheckTaskRepairerRefundPermission.No.getValue());
+                item.setRepairer_follower_permission(CheckTaskRepairerFollowerPermission.CompleteRepair.getValue());
+                item.setChecker_approve_permission(CheckerApprovePermission.No.getValue());
+                item.setRepaired_picture_status(CheckTaskRepairedPictureEnum.UnForcePicture.getValue());
+                item.setIssue_desc_status(CheckTaskIssueDescEnum.Arbitrary.getValue());
+                item.setIssue_default_desc("(该问题无文字描述)");
+            } else {
+                JSONObject configData = JSON.parseObject(task.getConfigInfo());
+                item.setRepairer_refund_permission(configData.get("repairer_refund_permission")==null?CheckTaskRepairerRefundPermission.No.getValue():configData.getIntValue("repairer_refund_permission"));
+                item.setRepairer_follower_permission(configData.get("repairer_follower_permission")==null?CheckTaskRepairerFollowerPermission.CompleteRepair.getValue():configData.getIntValue("repairer_follower_permission"));
+                item.setChecker_approve_permission(configData.get("checker_approve_permission")==null?CheckerApprovePermission.No.getValue():configData.getIntValue("checker_approve_permission"));
+                item.setRepaired_picture_status(configData.get("repaired_picture_status")==null?CheckTaskRepairedPictureEnum.UnForcePicture.getValue():configData.getIntValue("repaired_picture_status"));
+                item.setIssue_desc_status(configData.get("issue_desc_status")==null?CheckTaskIssueDescEnum.Arbitrary.getValue():configData.getIntValue("issue_desc_status"));
+                item.setIssue_default_desc(configData.get("issue_default_desc")==null?"(该问题无文字描述)":configData.getString("issue_default_desc"));
+            }
+            taskMap.put(task.getTaskId(), item);
+        }
+        return taskMap;
     }
 
     /**
@@ -391,15 +431,15 @@ public class BuildingqmServiceImpl implements IBuildingqmService {
         if (!issueInfo.getAttachmentMd5List().equals("")) {
             issueAttachmentMd5List = StringSplitToListUtil.removeStartAndEndStrAndSplit(issueInfo.getAttachmentMd5List().replace(",,", ","), ",", ",");
             fileMd5s.addAll(issueAttachmentMd5List);
-        }else{
-            issueAttachmentMd5List= Lists.newArrayList();
+        } else {
+            issueAttachmentMd5List = Lists.newArrayList();
         }
         List<String> issueAudioMd5List = null;
         if (!issueInfo.getAudioMd5List().equals("")) {
             issueAudioMd5List = StringSplitToListUtil.removeStartAndEndStrAndSplit(issueInfo.getAttachmentMd5List().replace(",,", ","), ",", ",");
             fileMd5s.addAll(issueAudioMd5List);
-        }else{
-            issueAudioMd5List= Lists.newArrayList();
+        } else {
+            issueAudioMd5List = Lists.newArrayList();
         }
         //  # issue log
         List<HouseQmCheckTaskIssueLog> issueLogInfo = houseQmCheckTaskIssueLogService.selectByUuidAndNotDelete(issueUuid);
@@ -537,25 +577,25 @@ public class BuildingqmServiceImpl implements IBuildingqmService {
         issue.setLast_assigner_name(userIdRealNameMap.get(issueInfo.getLastAssigner()));
         if (issueInfo.getLastAssignAt() != null && DateUtil.datetimeToTimeStamp(issueInfo.getLastAssignAt()) > timestampZero) {
             issue.setLast_assigner_at(DateUtil.datetimeToTimeStamp(issueInfo.getLastAssignAt()));
-        }else{
+        } else {
             issue.setLast_assigner_at(0);
         }
         issue.setLast_repairer_name(userIdRealNameMap.get(issueInfo.getRepairerId()));
-        if(issueInfo.getLastRepairerAt()!=null&&DateUtil.datetimeToTimeStamp(issueInfo.getLastRepairerAt())>timestampZero){
+        if (issueInfo.getLastRepairerAt() != null && DateUtil.datetimeToTimeStamp(issueInfo.getLastRepairerAt()) > timestampZero) {
             issue.setLast_repairer_at(DateUtil.datetimeToTimeStamp(issueInfo.getLastRepairerAt()));
-        }else{
+        } else {
             issue.setLast_repairer_at(0);
         }
         issue.setDestroy_user_name(userIdRealNameMap.get(issueInfo.getDestroyUser()));
         if (issueInfo.getDestroyAt() != null && DateUtil.datetimeToTimeStamp(issueInfo.getDestroyAt()) > timestampZero) {
             issue.setDestroy_at(DateUtil.datetimeToTimeStamp(issueInfo.getDestroyAt()));
-        }else{
+        } else {
             issue.setDestroy_at(0);
         }
         issue.setDelete_user_name(userIdRealNameMap.get(issueInfo.getDeleteUser()));
         if (issueInfo.getDeleteTime() != null && DateUtil.datetimeToTimeStamp(issueInfo.getDeleteTime()) > timestampZero) {
             issue.setDelete_time(DateUtil.datetimeToTimeStamp(issueInfo.getDeleteTime()));
-        }else{
+        } else {
             issue.setDelete_time(0);
         }
         ArrayList<ApiHouseQmCheckTaskIssueDetailVo> objects8 = Lists.newArrayList();
@@ -563,12 +603,12 @@ public class BuildingqmServiceImpl implements IBuildingqmService {
         issue.setDetail(objects8);
         if (issueInfo.getUpdateAt() != null && DateUtil.datetimeToTimeStamp(issueInfo.getUpdateAt()) > timestampZero) {
             issue.setUpdate_at(DateUtil.datetimeToTimeStamp(issueInfo.getDeleteAt()));
-        }else{
+        } else {
             issue.setUpdate_at(0);
         }
-        if (issueInfo.getDeleteAt()!= null && DateUtil.datetimeToTimeStamp(issueInfo.getDeleteAt()) > timestampZero) {
+        if (issueInfo.getDeleteAt() != null && DateUtil.datetimeToTimeStamp(issueInfo.getDeleteAt()) > timestampZero) {
             issue.setDelete_at(DateUtil.datetimeToTimeStamp(issueInfo.getDeleteAt()));
-        }else{
+        } else {
             issue.setDelete_at(0);
         }
         for (int i = 0; i < issueLogInfo.size(); i++) {
@@ -608,19 +648,19 @@ public class BuildingqmServiceImpl implements IBuildingqmService {
 
             if (issueLogInfo.get(i).getClientCreateAt() != null && DateUtil.datetimeToTimeStamp(issueLogInfo.get(i).getClientCreateAt()) > timestampZero) {
                 singleLog.setClient_create_at(DateUtil.datetimeToTimeStamp(issueLogInfo.get(i).getClientCreateAt()));
-            }else{
+            } else {
                 singleLog.setClient_create_at(0);
             }
 
             if (issueLogInfo.get(i).getUpdateAt() != null && DateUtil.datetimeToTimeStamp(issueLogInfo.get(i).getUpdateAt()) > timestampZero) {
                 singleLog.setUpdate_at(DateUtil.datetimeToTimeStamp(issueLogInfo.get(i).getUpdateAt()));
-            }else{
+            } else {
                 singleLog.setUpdate_at(0);
             }
             issueLogList.add(singleLog);
         }
         ApiIssueLogVo vo = new ApiIssueLogVo();
-        ArrayList< ApiIssueLogVo.ApiIssueLogInfoIssueRsp> issueList = Lists.newArrayList();
+        ArrayList<ApiIssueLogVo.ApiIssueLogInfoIssueRsp> issueList = Lists.newArrayList();
         issueList.add(issue);
         vo.setIssue(issueList);
         vo.setIssue_log_list(issueLogList);
@@ -629,7 +669,7 @@ public class BuildingqmServiceImpl implements IBuildingqmService {
 
     @Override
     public ReportIssueVo reportIssue(Integer uid, String projectId, String data) {
-        UnmarshReportIssueRequestBody issueRequestBody=unmarshReportIssueRequest(data);
+        UnmarshReportIssueRequestBody issueRequestBody = unmarshReportIssueRequest(data);
 
         return null;
     }
@@ -638,13 +678,11 @@ public class BuildingqmServiceImpl implements IBuildingqmService {
         ArrayList<Object> logUuids = Lists.newArrayList();
         ArrayList<Object> issueUuids = Lists.newArrayList();
         ArrayList<Object> issueLogs = Lists.newArrayList();
-        Map<String,Object> reportlist = JSON.parseObject(data, Map.class);
-        for (Map.Entry<String,Object> entry : reportlist.entrySet()) {
-
+        Map<String, Object> reportlist = JSON.parseObject(data, Map.class);
+        for (Map.Entry<String, Object> entry : reportlist.entrySet()) {
 
 
         }
-
 
 
         return null;
@@ -1448,7 +1486,6 @@ public class BuildingqmServiceImpl implements IBuildingqmService {
         }
 
         for (HouseQmCheckTask item : houseQmCheckTasks) {
-
             TaskVo task = new TaskVo();
             task.setTask_id(item.getTaskId());
             task.setProject_id(item.getProjectId());
@@ -1458,15 +1495,14 @@ public class BuildingqmServiceImpl implements IBuildingqmService {
             task.setRoot_category_key(item.getRootCategoryKey());
             task.setArea_ids(item.getAreaIds());
             // 有可能是area_type?
-            task.setArea_types(item.getAreaTypes());
-            task.setPlan_begin_on((int) (item.getPlanBeginOn().getTime() / 1000));
-            task.setPlan_end_on((int) (item.getPlanEndOn().getTime() / 1000));
-            task.setCreate_at((int) (item.getCreateAt().getTime() / 1000));
-            task.setUpdate_at((int) (item.getUpdateAt().getTime() / 1000));
-            task.setDelete_at(DateUtil.datetimeToTimeStamp(item.getDeleteAt()));
+            task.setArea_type(item.getAreaTypes());
+            task.setPlan_begin_on(item.getPlanBeginOn() == null ? 0 : DateUtil.datetimeToTimeStamp(item.getPlanBeginOn()));
+            task.setPlan_end_on(item.getPlanEndOn() == null ? 0 : DateUtil.datetimeToTimeStamp(item.getPlanEndOn()));
+            task.setCreate_at(item.getCreateAt() == null ? 0 : DateUtil.datetimeToTimeStamp(item.getCreateAt()));
+            task.setUpdate_at(item.getUpdateAt() == null ? 0 : DateUtil.datetimeToTimeStamp(item.getUpdateAt()));
+            task.setDelete_at(item.getDeleteAt() == null ? 0 : DateUtil.datetimeToTimeStamp(item.getDeleteAt()));
 
             if (maps.containsKey(task.getTask_id())) {
-
                 ApiBuildingQmCheckTaskConfig cfg = maps.get(task.getTask_id());
                 task.setRepairer_refund_permission(cfg.getRepairer_refund_permission());
                 task.setRepairer_follower_permission(cfg.getRepairer_follower_permission());
@@ -1475,7 +1511,6 @@ public class BuildingqmServiceImpl implements IBuildingqmService {
                 task.setIssue_desc_status(cfg.getIssue_desc_status());
                 task.setIssue_default_desc(cfg.getIssue_default_desc());
             } else {
-
                 task.setRepairer_refund_permission(CheckTaskRepairerRefundPermission.No.getValue());
                 task.setRepairer_follower_permission(CheckTaskRepairerFollowerPermission.CompleteRepair.getValue());
                 task.setChecker_approve_permission(CheckerApprovePermission.No.getValue());

@@ -14,6 +14,7 @@ import com.longfor.longjian.houseqm.dto.HouseQmCheckTaskIssueDto;
 import com.longfor.longjian.houseqm.dto.HouseQmCheckTaskIssueListDto;
 import com.longfor.longjian.houseqm.dto.RepaireIssueStatusStatDto;
 import com.longfor.longjian.houseqm.po.*;
+import com.longfor.longjian.houseqm.util.CollectionUtil;
 import com.longfor.longjian.houseqm.util.DateUtil;
 import com.longfor.longjian.houseqm.utils.ExampleUtil;
 import lombok.extern.slf4j.Slf4j;
@@ -26,6 +27,7 @@ import tk.mybatis.mapper.entity.Example;
 import javax.annotation.Resource;
 import java.util.*;
 import java.util.ArrayList;
+import java.util.stream.Collectors;
 
 /**
  * @author Houyan
@@ -66,7 +68,7 @@ public class HouseQmCheckTaskIssueServiceImpl implements HouseQmCheckTaskIssueSe
         criteria.andGreaterThanOrEqualTo("clientCreateAt", statBegin);
         criteria.andLessThanOrEqualTo("clientCreateAt", statEnd);
         if (typs.size() > 0) criteria.andIn("typ", typs);
-        if (status.size()>0)criteria.andIn("status",status);
+        if (status.size() > 0) criteria.andIn("status", status);
         if (task_id > 0) {
             criteria.andEqualTo("taskId", task_id);
         } else {
@@ -300,28 +302,30 @@ public class HouseQmCheckTaskIssueServiceImpl implements HouseQmCheckTaskIssueSe
     @Override
     @LFAssignDataSource("zhijian2")
     public List<HouseQmCheckTaskIssue> searchHouseQmCheckTaskIssueByMyIdTaskIdLastIdUpdateAtGt(Integer userId, Integer task_id, Integer last_id, Integer timestamp, Integer start, Integer limit, Integer checker) {
-        List<HouseQmCheckTaskIssue> houseQmCheckTaskIssues = new ArrayList<>();
+        List<HouseQmCheckTaskIssue> items = new ArrayList<>();
         try {
-            List<UserInHouseQmCheckTask> userInHouseQmCheckTasks = userInHouseQmCheckTaskMapper.searchByTaskIdUserIdRoleType(userId, task_id, checker);
+            List<UserInHouseQmCheckTask> rs = userInHouseQmCheckTaskMapper.searchByTaskIdUserIdRoleType(userId, task_id, checker);
             List<Integer> squadIds = new ArrayList<>();
-            List<Integer> userIds = new ArrayList<>();
-            userInHouseQmCheckTasks.forEach(userInHouseQmCheckTask -> {
-                squadIds.add(userInHouseQmCheckTask.getSquadId());
-            });
-            List<UserInHouseQmCheckTask> userInHouseQmCheckTaskSearchSquadIdsList = userInHouseQmCheckTaskMapper.searchBySquadIdIn(squadIds);
-            userInHouseQmCheckTaskSearchSquadIdsList.forEach(userInHouseQmCheckTask -> {
-                userIds.add(userInHouseQmCheckTask.getUserId());
-            });
-            if (userIds.size() == 0) {
-                userIds.add(userId);
+            rs.forEach(r -> squadIds.add(r.getSquadId()));
+            List<Integer> list = CollectionUtil.removeDuplicate(squadIds);
+            List<UserInHouseQmCheckTask> res;
+            if (list.size() > 0) res = userInHouseQmCheckTaskMapper.searchBySquadIdIn(list);
+            else {
+                res = Lists.newArrayList();
             }
-            userIds.add(userId);
-            houseQmCheckTaskIssues = houseQmCheckTaskIssueMapper.searchByConditionOrderByPageUnscoped(task_id, last_id, timestamp, userIds, userId, start, limit);
+            List<Integer> userIds = new ArrayList<>();
+            res.forEach(r -> userIds.add(r.getUserId()));
+            List<Integer> userIdList = CollectionUtil.removeDuplicate(userIds);
+            if (userIdList.size() == 0) {
+                userIdList.add(userId);
+            }
+            userIdList.add(userId);
+            items = houseQmCheckTaskIssueMapper.searchByConditionOrderByPageUnscoped(task_id, last_id, timestamp, userIdList, userId, start, limit);
         } catch (Exception e) {
             log.error("error" + e);
         }
 
-        return houseQmCheckTaskIssues;
+        return items;
     }
 
     @Override
@@ -658,8 +662,8 @@ public class HouseQmCheckTaskIssueServiceImpl implements HouseQmCheckTaskIssueSe
     @LFAssignDataSource("zhijian2")
     public HouseQmCheckTaskIssue selectByTaskIdAndUuidAndNotDel(Integer taskId, String issueUuid) {
         Example example = new Example(HouseQmCheckTaskIssue.class);
-        example.createCriteria().andEqualTo("taskId",taskId).andEqualTo("uuid",issueUuid).andIsNull("deleteAt");
-        return    houseQmCheckTaskIssueMapper.selectOneByExample(example);
+        example.createCriteria().andEqualTo("taskId", taskId).andEqualTo("uuid", issueUuid).andIsNull("deleteAt");
+        return houseQmCheckTaskIssueMapper.selectOneByExample(example);
 
     }
 

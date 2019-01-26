@@ -1,4 +1,5 @@
 package com.longfor.longjian.houseqm.app.controller;
+import com.longfor.longjian.houseqm.app.vo.HouseQmStatAreaSituationIssueRspVo;
 
 import com.ctrip.framework.apollo.core.utils.StringUtils;
 import com.google.common.collect.Lists;
@@ -11,6 +12,7 @@ import com.longfor.longjian.houseqm.app.req.houseqmstat.*;
 import com.longfor.longjian.houseqm.app.service.IHouseqmStatService;
 import com.longfor.longjian.houseqm.app.service.IHouseqmStatisticService;
 import com.longfor.longjian.houseqm.app.vo.*;
+import com.longfor.longjian.houseqm.app.vo.houseqmstat.StatAreaSituationRspVo;
 import com.longfor.longjian.houseqm.util.DateUtil;
 import com.longfor.longjian.houseqm.util.MathUtil;
 import com.longfor.longjian.houseqm.util.StringSplitToListUtil;
@@ -457,8 +459,8 @@ public class HouseqmStatController {
      * @Param [req]
      **/
     @GetMapping(value = "stat/area_situation", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
-    public LjBaseResponse<HouseQmStatAreaSituationIssueRspVo> areaSituation(HttpServletRequest request, @Valid StatAreaSituationReq req) {
-        LjBaseResponse<HouseQmStatAreaSituationIssueRspVo> response = new LjBaseResponse<>();
+    public LjBaseResponse<StatAreaSituationRspVo> areaSituation(HttpServletRequest request, @Valid StatAreaSituationReq req) {
+        LjBaseResponse<StatAreaSituationRspVo> response = new LjBaseResponse<>();
         try {
             ctrlTool.projPermMulti(request, new String[]{"项目.移动验房.统计.查看", "项目.工程检查.统计.查看"});
         } catch (Exception e) {
@@ -468,7 +470,11 @@ public class HouseqmStatController {
         }
         try {
             HouseQmStatAreaSituationIssueRspVo data = houseqmStatService.getAreaIssueTypeStatByProjectIdAreaIdCategoryCls(req.getProject_id(), req.getArea_id(), req.getCategory_cls());
-            response.setData(data);
+            StatAreaSituationRspVo issue = new StatAreaSituationRspVo();
+            issue.setIssue(data);
+            response.setData(issue);
+            response.setMessage("success");
+            response.setResult(0);
         } catch (Exception e) {
             e.printStackTrace();
             response.setMessage(e.getMessage());

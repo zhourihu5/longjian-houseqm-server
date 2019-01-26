@@ -118,6 +118,7 @@ public class AreaServiceImpl implements AreaService {
         else return result;
         ExampleUtil.addDeleteAtJudge(example);
         List<Area> areaA = areaMapper.selectByExample(example);
+
         for (Area area : areaA) {
             pathsA.add(area.getPath() + area.getId() + "/");
         }
@@ -129,6 +130,7 @@ public class AreaServiceImpl implements AreaService {
         else return result;
         ExampleUtil.addDeleteAtJudge(example1);
         List<Area> areaB = areaMapper.selectByExample(example1);
+
         for (Area area : areaB) {
             pathsB.add(area.getPath() + area.getId() + "/");
         }
@@ -149,7 +151,7 @@ public class AreaServiceImpl implements AreaService {
                 }
             }
         }
-        return result.stream().collect(Collectors.toSet()).stream().collect(Collectors.toList());
+        return CollectionUtil.removeDuplicate(result);
     }
 
 
