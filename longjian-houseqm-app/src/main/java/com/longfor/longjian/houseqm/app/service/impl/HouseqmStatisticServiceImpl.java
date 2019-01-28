@@ -481,10 +481,12 @@ public class HouseqmStatisticServiceImpl implements IHouseqmStatisticService {
             }
             List<Integer> areaIdList = Lists.newArrayList();
             areaIdList.add(areaId);
+            List<Integer> list = Lists.newArrayList();
+            list.addAll(areaIds);
             if (areaId > 0) {
-                areaIds = areaService.getIntersectAreas(areaIds, areaIdList);
+                list = areaService.getIntersectAreas(areaIds, areaIdList);
             }
-            List<Area> areas = areaService.searchAreaListByRootIdAndTypes(projectId, areaIds, areaTypes);
+            List<Area> areas = areaService.searchAreaListByRootIdAndTypes(projectId, list, areaTypes);
             houseStatVo.setHouse_count(areas.size());
 
             //计算总户数
