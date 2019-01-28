@@ -290,14 +290,15 @@ public class TaskListServiceImpl implements ITaskListService {
                 item.setIssue_default_desc("(该问题无文字描述)");
             } else {
                 JSONObject configData = JSON.parseObject(task.getConfigInfo());
-                item.setRepairer_refund_permission(configData.get("repairer_refund_permission")==null?CheckTaskRepairerRefundPermission.No.getValue():configData.getIntValue("repairer_refund_permission"));
-                item.setRepairer_follower_permission(configData.get("repairer_follower_permission")==null?CheckTaskRepairerFollowerPermission.CompleteRepair.getValue():configData.getIntValue("repairer_follower_permission"));
-                item.setChecker_approve_permission(configData.get("checker_approve_permission")==null?CheckerApprovePermission.No.getValue():configData.getIntValue("checker_approve_permission"));
-                item.setRepaired_picture_status(configData.get("repaired_picture_status")==null?CheckTaskRepairedPictureEnum.UnForcePicture.getValue():configData.getIntValue("repaired_picture_status"));
-                item.setIssue_desc_status(configData.get("issue_desc_status")==null?CheckTaskIssueDescEnum.Arbitrary.getValue():configData.getIntValue("issue_desc_status"));
-                item.setIssue_default_desc(configData.get("issue_default_desc")==null?"(该问题无文字描述)":configData.getString("issue_default_desc"));
+                item.setRepairer_refund_permission(configData.getIntValue("repairer_refund_permission"));
+                item.setRepairer_follower_permission(configData.getIntValue("repairer_follower_permission"));
+                item.setChecker_approve_permission(configData.getIntValue("checker_approve_permission"));
+                item.setRepaired_picture_status(configData.getIntValue("repaired_picture_status"));
+                item.setIssue_desc_status(configData.getIntValue("issue_desc_status"));
+                item.setIssue_default_desc(configData.getString("issue_default_desc"));
             }
             taskMap.put(task.getTaskId(), item);
+
         }
         return taskMap;
     }

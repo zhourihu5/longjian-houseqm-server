@@ -79,11 +79,7 @@ public class UserInHouseQmCheckTaskServiceImpl implements UserInHouseQmCheckTask
      */
     @LFAssignDataSource("zhijian2")
     public List<UserInHouseQmCheckTask> searchByUserId(Integer userId) {
-        Example example = new Example(UserInHouseQmCheckTask.class);
-        Example.Criteria criteria = example.createCriteria();
-        criteria.andEqualTo("userId", userId);
-        ExampleUtil.addDeleteAtJudge(example);
-        return userInHouseQmCheckTaskMapper.selectByExample(example);
+        return userInHouseQmCheckTaskMapper.selectByUserId(userId);
     }
 
     /**

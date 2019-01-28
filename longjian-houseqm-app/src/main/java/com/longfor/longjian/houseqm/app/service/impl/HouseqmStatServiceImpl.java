@@ -36,6 +36,8 @@ import java.util.stream.Collectors;
 @Service
 @Slf4j
 public class HouseqmStatServiceImpl implements IHouseqmStatService {
+
+
     @Resource
     private HouseQmCheckTaskIssueService houseQmCheckTaskIssueService;
     @Resource

@@ -163,7 +163,7 @@ longfor:
       namespace: longjian:app
       connection:
         demoRedis:
-          database: 1
+          database: 10
           timeout: 2000
           host: 192.168.37.158 #192.168.36.93
           port: 6379

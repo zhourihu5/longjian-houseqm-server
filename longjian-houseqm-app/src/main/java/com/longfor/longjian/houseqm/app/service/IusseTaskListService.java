@@ -110,7 +110,6 @@ public class IusseTaskListService {
                     int stamp = DateUtil.datetimeToTimeStamp(itemlist.get(j).getCreateAt());
                     if (stamp >= timestamp) {
                         ApiStatHouseqmMeterSettingMsgVo vo = new ApiStatHouseqmMeterSettingMsgVo();
-                        vo.setProject_id(itemlist.get(j).getProjectId());
                         vo.setItem_id(itemlist.get(j).getItemId());
                         vo.setItem_name(itemlist.get(j).getItemName());
                         vo.setInput_type(itemlist.get(j).getInputType());

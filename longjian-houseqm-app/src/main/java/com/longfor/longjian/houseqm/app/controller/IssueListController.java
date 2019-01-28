@@ -10,8 +10,6 @@ import com.longfor.longjian.common.util.SessionInfo;
 import com.longfor.longjian.houseqm.app.req.IssueListDoActionReq;
 import com.longfor.longjian.houseqm.app.service.IIssueService;
 import com.longfor.longjian.houseqm.app.vo.*;
-import com.longfor.longjian.houseqm.app.vo.issuelist.DetailLogRspVo;
-import com.longfor.longjian.houseqm.app.vo.issuelist.DetailRepairLogRspVo;
 import com.longfor.longjian.houseqm.app.vo.issuelist.IssueListRsp;
 import com.longfor.longjian.houseqm.consts.CommonGlobalEnum;
 import com.longfor.longjian.houseqm.po.ProjectSettingV2;
@@ -155,16 +153,16 @@ public class IssueListController {
         ProjectSettingConfigVo vo = new ProjectSettingConfigVo();
         for (int i = 0; i < projectSetting.size(); i++) {
             if (projectSetting.get(i).getsKey().equals("PROJ_ISSUE_REASON_SWITCH")) {
-                vo.setHas_issue_reason(projectSetting.get(i).getValue().equals("是"));
+                vo.setHas_issue_reason(true);
             }
             if (projectSetting.get(i).getsKey().equals("PROJ_ISSUE_SUGGEST_SWITCH")) {
-                vo.setHas_issue_suggest(projectSetting.get(i).getValue().equals("是"));
+                vo.setHas_issue_suggest(true);
             }
             if (projectSetting.get(i).getsKey().equals("PROJ_POTENTIAL_RISK_SWITCH")) {
-                vo.setHas_issue_potential_rist(projectSetting.get(i).getValue().equals("是"));
+                vo.setHas_issue_potential_rist(true);
             }
             if (projectSetting.get(i).getsKey().equals("PROJ_PREVENTIVE_ACTION_SWITCH")) {
-                vo.setHas_issue_preventive_action(projectSetting.get(i).getValue().equals("是"));
+                vo.setHas_issue_preventive_action(true);
             }
             if (projectSetting.get(i).getsKey().equals("PROJ_ISSUE_REASON_NAME")) {
                 reasonId = projectSetting.get(i).getId();

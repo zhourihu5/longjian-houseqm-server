@@ -120,7 +120,7 @@ public class HouseqmStatisticController {
     }
 
 
-    @GetMapping(value = "task_stat", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+    @GetMapping(value = "task_stat/", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     public LjBaseResponse<HouseqmStatisticTaskStatRspMsgVo> taskStat(@RequestParam(value = "project_id") Integer prodectId,
                                                                      @RequestParam(value = "task_id") Integer taskId,
                                                                      @RequestParam(value = "area_id") Integer areaId,
@@ -271,7 +271,7 @@ public class HouseqmStatisticController {
      * @param
      * @return http://192.168.37.159:3000/project/8/interface/api/384
      */
-    @GetMapping(value = "task_checkitem_stat", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+    @GetMapping(value = "task_checkitem_stat/", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     public LjBaseResponse<HouseqmStatisticTaskCheckitemStatRspMsgVo> taskCheckitemStat(@RequestParam(value = "project_id") Integer projectId,
                                                                                        @RequestParam(value = "task_id") Integer taskId,
                                                                                        @RequestParam(value = "area_id") Integer areaId,
