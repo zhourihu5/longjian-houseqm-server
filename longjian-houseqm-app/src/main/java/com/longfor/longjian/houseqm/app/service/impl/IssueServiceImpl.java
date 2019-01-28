@@ -388,7 +388,7 @@ public class IssueServiceImpl implements IIssueService {
             }
             if ((Integer) issue_log_detail.get("PlanEndOn") != -1 || (Integer) issue_log_detail.get("RepairerId") > 0 || (
                     !issue_log_detail.get("RepairerFollowerIds").equals("-1") &&
-                    ((String) issue_log_detail.get("RepairerFollowerIds")).length() > 0)) {
+                            ((String) issue_log_detail.get("RepairerFollowerIds")).length() > 0)) {
                 HouseQmCheckTaskIssueHistoryLogVo.HouseQmCheckTaskIssueHistoryLogItem log_item = new HouseQmCheckTaskIssueHistoryLogVo().new HouseQmCheckTaskIssueHistoryLogItem();
                 log_item.setLog_type(HouseQmCheckTaskActionLogType.Assign.getValue());
                 log_item.setTarget_user_id((Integer) issue_log_detail.get("RepairerId"));
@@ -419,22 +419,22 @@ public class IssueServiceImpl implements IIssueService {
 
                 }
             }
-                if (issue_log_info.get(i).getDesc().length() > 0) {
-                    HouseQmCheckTaskIssueHistoryLogVo.HouseQmCheckTaskIssueHistoryLogItem log_items = new HouseQmCheckTaskIssueHistoryLogVo().new HouseQmCheckTaskIssueHistoryLogItem();
-                    log_items.setLog_type(HouseQmCheckTaskActionLogType.AddDesc.getValue());
-                    items.add(log_items);
-                    single_item.setItems(items);
+            if (issue_log_info.get(i).getDesc().length() > 0) {
+                HouseQmCheckTaskIssueHistoryLogVo.HouseQmCheckTaskIssueHistoryLogItem log_items = new HouseQmCheckTaskIssueHistoryLogVo().new HouseQmCheckTaskIssueHistoryLogItem();
+                log_items.setLog_type(HouseQmCheckTaskActionLogType.AddDesc.getValue());
+                items.add(log_items);
+                single_item.setItems(items);
 
-                }
-                if (issue_log_info.get(i).getAttachmentMd5List().length() > 0) {
-                    HouseQmCheckTaskIssueHistoryLogVo.HouseQmCheckTaskIssueHistoryLogItem log_items = new HouseQmCheckTaskIssueHistoryLogVo().new HouseQmCheckTaskIssueHistoryLogItem();
-                    log_items.setLog_type(HouseQmCheckTaskActionLogType.AddAttachment.getValue());
-                    items.add(log_items);
-                    single_item.setItems(items);
-                }
-                if (items.size() > 0) {
-                    result.add(single_item);
-                }
+            }
+            if (issue_log_info.get(i).getAttachmentMd5List().length() > 0) {
+                HouseQmCheckTaskIssueHistoryLogVo.HouseQmCheckTaskIssueHistoryLogItem log_items = new HouseQmCheckTaskIssueHistoryLogVo().new HouseQmCheckTaskIssueHistoryLogItem();
+                log_items.setLog_type(HouseQmCheckTaskActionLogType.AddAttachment.getValue());
+                items.add(log_items);
+                single_item.setItems(items);
+            }
+            if (items.size() > 0) {
+                result.add(single_item);
+            }
         }
         if (!hasCreateLog) {
             HouseQmCheckTaskIssueHistoryLogVo history_log = new HouseQmCheckTaskIssueHistoryLogVo();
@@ -1089,16 +1089,16 @@ public class IssueServiceImpl implements IIssueService {
         }
         for (int i = 0; i < issueLogInfo.size(); i++) {
             if (issueLogInfo.get(i).getDesc().length() < 1 && issueLogInfo.get(i).getAttachmentMd5List().length() < 1) {
-            IssueInfoVo.HouseQmCheckTaskIssueDetailEditLog singleLog = new IssueInfoVo().new HouseQmCheckTaskIssueDetailEditLog();
-            singleLog.setContent(issueLogInfo.get(i).getDesc());
-            singleLog.setUser_id(issueLogInfo.get(i).getSenderId());
-            singleLog.setCreate_at(DateUtil.datetimeToTimeStamp(issueLogInfo.get(i).getCreateAt()));
-            if (issueLogInfo.get(i).getAttachmentMd5List().length() > 0) {
-                singleLog.setAttachment_md5_list(StringSplitToListUtil.removeStartAndEndStrAndSplit(issueLogInfo.get(i).getAttachmentMd5List(), ",", ","));
+                IssueInfoVo.HouseQmCheckTaskIssueDetailEditLog singleLog = new IssueInfoVo().new HouseQmCheckTaskIssueDetailEditLog();
+                singleLog.setContent(issueLogInfo.get(i).getDesc());
+                singleLog.setUser_id(issueLogInfo.get(i).getSenderId());
+                singleLog.setCreate_at(DateUtil.datetimeToTimeStamp(issueLogInfo.get(i).getCreateAt()));
+                if (issueLogInfo.get(i).getAttachmentMd5List().length() > 0) {
+                    singleLog.setAttachment_md5_list(StringSplitToListUtil.removeStartAndEndStrAndSplit(issueLogInfo.get(i).getAttachmentMd5List(), ",", ","));
+                }
+                singleLog.setUser_name((String) logUserIdNameMap.get(issueLogInfo.get(i).getSenderId()));
+                editLogs.add(singleLog);
             }
-            singleLog.setUser_name((String) logUserIdNameMap.get(issueLogInfo.get(i).getSenderId()));
-            editLogs.add(singleLog);
-        }
         }
         int planEndOn = -1;
         if (DateUtil.datetimeToTimeStamp(issueInfo.getPlanEndOn()) > DateUtil.datetimeToTimeStamp(limitTime)) {

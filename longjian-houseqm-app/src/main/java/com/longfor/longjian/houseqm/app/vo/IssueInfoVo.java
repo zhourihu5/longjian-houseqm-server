@@ -32,7 +32,7 @@ public class IssueInfoVo implements Serializable{
     private Integer  plan_end_on;
     private String  content;
     private List<HouseQmCheckTaskIssueDetailEditLog>edit_logs;
-    private Map<String,Object> detail;
+    private Map detail;
     private List<HouseQmCheckTaskIssueAttachmentVo> audios;
     private List<HouseQmCheckTaskIssueAttachmentVo>my_audio;
     private Integer   status;
