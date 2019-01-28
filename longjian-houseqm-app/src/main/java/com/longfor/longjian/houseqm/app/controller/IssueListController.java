@@ -6,10 +6,13 @@ import com.longfor.gaia.gfs.web.mock.MockOperation;
 import com.longfor.longjian.common.base.LjBaseResponse;
 import com.longfor.longjian.common.consts.CommonGlobal;
 import com.longfor.longjian.common.util.CtrlTool;
+import com.longfor.longjian.common.util.RequestContextHolderUtil;
 import com.longfor.longjian.common.util.SessionInfo;
 import com.longfor.longjian.houseqm.app.req.IssueListDoActionReq;
 import com.longfor.longjian.houseqm.app.service.IIssueService;
 import com.longfor.longjian.houseqm.app.vo.*;
+import com.longfor.longjian.houseqm.app.vo.issuelist.DetailLogRspVo;
+import com.longfor.longjian.houseqm.app.vo.issuelist.DetailRepairLogRspVo;
 import com.longfor.longjian.houseqm.app.vo.issuelist.IssueListRsp;
 import com.longfor.longjian.houseqm.consts.CommonGlobalEnum;
 import com.longfor.longjian.houseqm.po.ProjectSettingV2;
@@ -83,21 +86,17 @@ public class IssueListController {
      * @return
      */
     @GetMapping(value = "detail_log", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
-    public TaskResponse<DetailLogRspVo> detailLog(HttpServletRequest request, @RequestParam(value = "project_id", required = true) Integer projectId,
-                                                  @RequestParam(value = "issue_uuid", required = true) String issueUuid) {
-        TaskResponse<DetailLogRspVo> response = new TaskResponse<>();
-        Integer userId = (Integer) sessionInfo.getBaseInfo("userId");
-        try {
-          /*  ctrlTool.projPerm(request, "项目.工程检查.问题管理.查看");*/
+    public LjBaseResponse<DetailLogRspVo> detailLog(@RequestParam(value = "project_id", required = true) Integer projectId,
+                                                  @RequestParam(value = "issue_uuid", required = true) String issueUuid) throws Exception {
+        LjBaseResponse<DetailLogRspVo> response = new LjBaseResponse<>();
+      /*  Integer userId = (Integer) sessionInfo.getBaseInfo("userId");*/
+        Integer userId=sessionInfo.getSessionUser().getUserId();
+            ctrlTool.projPerm(RequestContextHolderUtil.getRequest(), "项目.工程检查.问题管理.查看");
             List<HouseQmCheckTaskIssueHistoryLogVo> result = iIssueService.getHouseQmCheckTaskIssueActionLogByIssueUuid(issueUuid);
             DetailLogRspVo data = new DetailLogRspVo();
             data.setItems(result);
             response.setData(data);
-        } catch (Exception e) {
-            e.printStackTrace();
-            response.setResult(1);
-            response.setMessage(e.getMessage());
-        }
+
         return response;
     }
 

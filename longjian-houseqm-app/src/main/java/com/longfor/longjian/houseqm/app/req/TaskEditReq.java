@@ -4,20 +4,31 @@ import com.longfor.longjian.common.consts.checktask.*;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import javax.validation.constraints.NotNull;
+
 /**
  * Created by Dongshun on 2019/1/14.
  */
 @Data
 @NoArgsConstructor
 public class TaskEditReq {
+    @NotNull
     private  Integer project_id;
+    @NotNull
     private  Integer task_id;
+    @NotNull
     private  String name;
+    @NotNull
     private  String area_ids;
+    @NotNull
     private  String area_types;
+    @NotNull
     private  String plan_begin_on;
+    @NotNull
     private  String plan_end_on;
+    @NotNull
     private  String  repairer_ids;
+    @NotNull
     private  String checker_groups;
     private  Integer repairer_refund_permission=CheckTaskRepairerRefundPermission.No.getValue();
     private  Integer repairer_follower_permission=CheckTaskRepairerFollowerPermission.CompleteRepair.getValue();

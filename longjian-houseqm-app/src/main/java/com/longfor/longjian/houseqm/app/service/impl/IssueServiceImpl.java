@@ -409,7 +409,6 @@ public class IssueServiceImpl implements IIssueService {
                         }
 
                     }
-                    /*   }*/
                     HashMap<String, Object> log_data = Maps.newHashMap();
                     log_data.put("plan_end_on", issue_log_detail.get("PlanEndOn"));
                     log_data.put("followers", followers);

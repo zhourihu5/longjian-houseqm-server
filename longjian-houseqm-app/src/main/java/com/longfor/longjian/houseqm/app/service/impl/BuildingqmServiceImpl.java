@@ -2646,32 +2646,35 @@ public class ApiRefundInfo{
     }
 
     private List<ApiBuildingQmCheckTaskSquadObjVo> unmarshCheckerGroups(String checker_groups) {
-        Map<Object, Object> checkergroups = JSON.parseObject(checker_groups, Map.class);
-        ApiBuildingQmCheckTaskSquadObjVo objVo = new ApiBuildingQmCheckTaskSquadObjVo();
-        objVo.setId((Integer) checkergroups.get("id"));
-        objVo.setName((String) checkergroups.get("name"));
-        if (objVo.getName() == null) {
-            log.info("name not exist, data='unmarshCheckerGroups'");
-            throw new LjBaseRuntimeException(275, "name not exist");
-        }
-        objVo.setUser_ids((String) checkergroups.get("user_ids"));
-        if (objVo.getUser_ids() == null) {
-            log.info("name not exist, data='unmarshCheckerGroups'");
-            throw new LjBaseRuntimeException(280, "user_ids not exist");
-        }
-        objVo.setApprove_ids((String) checkergroups.get("approve_ids"));
-        if (objVo.getApprove_ids() == null) {
-            log.info("name not exist, data='unmarshCheckerGroups'");
-            throw new LjBaseRuntimeException(285, "approve_ids not exist");
-        }
-        objVo.setDirect_approve_ids((String) checkergroups.get("direct_approve_ids"));
-        if (objVo.getDirect_approve_ids() == null) {
-            log.info("name not exist, data='unmarshCheckerGroups'");
-            throw new LjBaseRuntimeException(290, "direct_approve_ids not exist");
-        }
-        objVo.setReassign_ids((String) checkergroups.get("reassign_ids"));
+        List<Map<String,Object>> list = JSON.parseObject(checker_groups, List.class);
         ArrayList<ApiBuildingQmCheckTaskSquadObjVo> result = Lists.newArrayList();
-        result.add(objVo);
+        list.forEach(checkergroups->{
+            ApiBuildingQmCheckTaskSquadObjVo objVo = new ApiBuildingQmCheckTaskSquadObjVo();
+            objVo.setId((Integer) checkergroups.get("id"));
+            objVo.setName((String) checkergroups.get("name"));
+            if (objVo.getName() == null) {
+                log.info("name not exist, data='unmarshCheckerGroups'");
+                throw new LjBaseRuntimeException(275, "name not exist");
+            }
+            objVo.setUser_ids((String) checkergroups.get("user_ids"));
+            if (objVo.getUser_ids() == null) {
+                log.info("name not exist, data='unmarshCheckerGroups'");
+                throw new LjBaseRuntimeException(280, "user_ids not exist");
+            }
+            objVo.setApprove_ids((String) checkergroups.get("approve_ids"));
+            if (objVo.getApprove_ids() == null) {
+                log.info("name not exist, data='unmarshCheckerGroups'");
+                throw new LjBaseRuntimeException(285, "approve_ids not exist");
+            }
+            objVo.setDirect_approve_ids((String) checkergroups.get("direct_approve_ids"));
+            if (objVo.getDirect_approve_ids() == null) {
+                log.info("name not exist, data='unmarshCheckerGroups'");
+                throw new LjBaseRuntimeException(290, "direct_approve_ids not exist");
+            }
+            objVo.setReassign_ids((String) checkergroups.get("reassign_ids"));
+            result.add(objVo);
+        });
+
         return result;
 
     }
