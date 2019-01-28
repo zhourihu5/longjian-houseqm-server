@@ -3,6 +3,7 @@ package com.longfor.longjian.houseqm.app.controller;
 import com.ctrip.framework.apollo.core.utils.StringUtils;
 import com.google.common.collect.Lists;
 import com.longfor.longjian.common.base.LjBaseResponse;
+import com.longfor.longjian.common.exception.LjBaseRuntimeException;
 import com.longfor.longjian.common.util.CtrlTool;
 import com.longfor.longjian.common.util.SessionInfo;
 import com.longfor.longjian.common.util.StringUtil;
@@ -74,6 +75,7 @@ public class HouseqmStatController {
             e.printStackTrace();
             response.setResult(1);
             response.setMessage(e.getMessage());
+            return response;
         }
         try {
             List<Integer> taskIdList = StringSplitToListUtil.splitToIdsComma(req.getTask_ids(), ",");
@@ -104,6 +106,7 @@ public class HouseqmStatController {
             log.error(e.getMessage());
             response.setMessage(e.getMessage());
             response.setResult(1);
+            return response;
         }
         try {
             List<Integer> taskIdList = StringUtil.strToInts(req.getTask_ids(), ",");
@@ -134,6 +137,7 @@ public class HouseqmStatController {
             log.error(e.getMessage());
             response.setMessage(e.getMessage());
             response.setResult(1);
+            return response;
         }
         List<Integer> taskIdList = StringSplitToListUtil.splitToIdsComma(req.getTask_ids(), ",");
         ProjectOveralListVo projectOveralListVo = new ProjectOveralListVo();
@@ -179,6 +183,7 @@ public class HouseqmStatController {
             log.error(e.getMessage());
             response.setMessage(e.getMessage());
             response.setResult(1);
+            return response;
         }
         try {
             TaskAreaListVo talv = houseqmStatService.searchAreasByProjTaskIdTyp(req.getProject_id(), req.getTask_id(), req.getTyp());
@@ -237,6 +242,7 @@ public class HouseqmStatController {
             e.printStackTrace();
             response.setResult(1);
             response.setMessage(e.getMessage());
+            return response;
         }
         try {
             TaskStatVo.IssueStatVo issue = houseqmStatisticService.getCheckTaskIssueTypeStatByTaskIdAreaId(req.getTask_id(), req.getArea_id());
@@ -272,6 +278,7 @@ public class HouseqmStatController {
             e.printStackTrace();
             response.setMessage(e.getMessage());
             response.setResult(1);
+            return response;
         }
         Date t = null;
         try {
@@ -409,6 +416,7 @@ public class HouseqmStatController {
             e.printStackTrace();
             response.setMessage(e.getMessage());
             response.setResult(1);
+            return response;
         }
         return response;
     }
@@ -444,6 +452,7 @@ public class HouseqmStatController {
             e.printStackTrace();
             response.setMessage(e.getMessage());
             response.setResult(1);
+            return response;
         }
         return response;
     }
@@ -465,6 +474,7 @@ public class HouseqmStatController {
             e.printStackTrace();
             response.setMessage(e.getMessage());
             response.setResult(1);
+            return response;
         }
         try {
             HouseQmStatAreaSituationIssueRspVo data = houseqmStatService.getAreaIssueTypeStatByProjectIdAreaIdCategoryCls(req.getProject_id(), req.getArea_id(), req.getCategory_cls());
@@ -473,6 +483,7 @@ public class HouseqmStatController {
             e.printStackTrace();
             response.setMessage(e.getMessage());
             response.setResult(1);
+            return response;
         }
         return response;
     }

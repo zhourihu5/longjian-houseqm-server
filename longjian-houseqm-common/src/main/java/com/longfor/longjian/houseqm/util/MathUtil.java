@@ -31,6 +31,27 @@ public class MathUtil {
         String result = df.format((float) a / (float) b * 100.0);*/
         return  formatToNumber(multiply);
     }
+    /**
+     * @Author hy
+     * @Description 格式
+     * @Date 15:38 2019/1/28
+     * @Param [a, b]
+     * @return java.lang.String
+     **/
+    public static String getPercentage2(int a, int b) {
+        if (a == 0 || b == 0) {
+            return "0";
+        }
+        BigDecimal decimala = new BigDecimal(a);
+        BigDecimal decimalb= new BigDecimal(b);
+        BigDecimal divide = decimala.divide(decimalb,4,BigDecimal.ROUND_HALF_UP);
+        BigDecimal perc = new BigDecimal(100);
+        perc.setScale(2,BigDecimal.ROUND_HALF_UP);
+        BigDecimal multiply = divide.multiply(perc);
+        /*DecimalFormat df = new DecimalFormat("0.00");
+        String result = df.format((float) a / (float) b * 100.0);*/
+        return  formatToNumber(multiply);
+    }
 
     /**
      * @Author hy
