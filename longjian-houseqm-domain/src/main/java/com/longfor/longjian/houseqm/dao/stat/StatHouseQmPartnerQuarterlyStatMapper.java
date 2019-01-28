@@ -6,7 +6,7 @@ import com.longfor.longjian.houseqm.po.stat.StatHouseQmPartnerQuarterlyStatExamp
 import java.util.List;
 
 public interface StatHouseQmPartnerQuarterlyStatMapper extends LFMySQLMapper<StatHouseQmPartnerQuarterlyStat> {
-    int countByExample(StatHouseQmPartnerQuarterlyStatExample example);
+   /* int countByExample(StatHouseQmPartnerQuarterlyStatExample example);
 
-    List<StatHouseQmPartnerQuarterlyStat> selectByExample(StatHouseQmPartnerQuarterlyStatExample example);
+    List<StatHouseQmPartnerQuarterlyStat> selectByExample(StatHouseQmPartnerQuarterlyStatExample example);*/
 }

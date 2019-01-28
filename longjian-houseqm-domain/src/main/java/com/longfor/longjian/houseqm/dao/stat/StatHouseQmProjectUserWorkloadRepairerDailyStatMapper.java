@@ -6,7 +6,7 @@ import com.longfor.longjian.houseqm.po.stat.StatHouseQmProjectUserWorkloadRepair
 import java.util.List;
 
 public interface StatHouseQmProjectUserWorkloadRepairerDailyStatMapper extends LFMySQLMapper<StatHouseQmProjectUserWorkloadRepairerDailyStat> {
-    int countByExample(StatHouseQmProjectUserWorkloadRepairerDailyStatExample example);
+   /* int countByExample(StatHouseQmProjectUserWorkloadRepairerDailyStatExample example);
 
-    List<StatHouseQmProjectUserWorkloadRepairerDailyStat> selectByExample(StatHouseQmProjectUserWorkloadRepairerDailyStatExample example);
+    List<StatHouseQmProjectUserWorkloadRepairerDailyStat> selectByExample(StatHouseQmProjectUserWorkloadRepairerDailyStatExample example);*/
 }

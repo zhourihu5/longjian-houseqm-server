@@ -24,8 +24,8 @@ import java.util.List;
 public class StatHouseQmProjectDailyStatService {
 
 
-    @Resource
-    StatHouseQmProjectDailyStatMapper statHouseQmProjectDailyStatMapper;
+  /*@Resource
+    StatHouseQmProjectDailyStatMapper statHouseQmProjectDailyStatMapper;*/
 
 
     /**

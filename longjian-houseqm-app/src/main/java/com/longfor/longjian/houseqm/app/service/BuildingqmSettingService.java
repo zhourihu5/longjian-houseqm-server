@@ -34,7 +34,7 @@ public class BuildingqmSettingService {
     private IssueFieldSettingService issueFieldSettingService;
 
 
-    public LjBaseResponse<List<ApiIssueFiledSettingMsg>> getIssuefiledSetting(String projectIds, Integer timestamp) {
+    public LjBaseResponse<ApiIssueFiledSettingMsg.IssueFileds> getIssuefiledSetting(String projectIds, Integer timestamp) {
         List<Integer> projectIdList = StringSplitToListUtil.splitToIdsComma(projectIds, ",");
         ArrayList<ApiIssueFiledSettingMsg> issueFileds = Lists.newArrayList();
         List<IssueFieldSetting> settingList = issueFieldSettingService.findProjectIdsAndModuleId(projectIdList, ModuleInfoEnum.GCGL.getValue());
@@ -77,8 +77,10 @@ public class BuildingqmSettingService {
 
             }
         }
-        LjBaseResponse<List<ApiIssueFiledSettingMsg>> response = new LjBaseResponse<>();
-        response.setData(issueFileds);
+        LjBaseResponse<ApiIssueFiledSettingMsg.IssueFileds> response = new LjBaseResponse<>();
+        ApiIssueFiledSettingMsg.IssueFileds fileds = new ApiIssueFiledSettingMsg().new IssueFileds();
+        fileds.setIssue_fileds(issueFileds);
+        response.setData(fileds);
         return response;
     }
 

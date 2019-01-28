@@ -160,7 +160,7 @@ longfor:
           password: JM4tLp9u6pPANLhT
 
     redis:
-      namespace: longjian:houseqm:app
+      namespace: longjian:app
       connection:
         demoRedis:
           database: 10
