@@ -172,10 +172,12 @@ public class AreaServiceImpl implements AreaService {
 
         List<Area> items = Lists.newArrayList();
         for (Area area : areaList) {
-            String likePath = area.getPath() + area.getId() + "/%%";
+            String likePath = String.format("%s%d/%%",area.getPath(),area.getId());
             Example example1 = new Example(Area.class);
             Example.Criteria criteria1 = example1.createCriteria();
-            criteria1.andEqualTo("projectId", projectId).andLike("path", likePath).orEqualTo("id", area.getId());
+            Example.Criteria criteria2 = example1.createCriteria();
+            criteria2.andEqualTo("projectId", projectId).andLike("path", likePath).orEqualTo("id", area.getId());
+            example1.and(criteria2);
             if (types.size()>0)criteria1.andIn("type", types);
             ExampleUtil.addDeleteAtJudge(example1);
             List<Area> subAreas = areaMapper.selectByExample(example1);
@@ -277,7 +279,8 @@ public class AreaServiceImpl implements AreaService {
         String lastPath = paths.get(0);
 
         for (int i = 1; i < paths.size(); i++) {
-            if (paths.get(i).startsWith(lastPath)) continue;
+            if (paths.get(i).startsWith(lastPath)) {
+            }
             else {
                 remainPath.add(lastPath);
                 lastPath = paths.get(i);

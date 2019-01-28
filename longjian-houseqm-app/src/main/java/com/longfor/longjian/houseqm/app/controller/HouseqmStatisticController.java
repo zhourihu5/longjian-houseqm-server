@@ -102,10 +102,10 @@ public class HouseqmStatisticController {
             result.setOnly_watch_count(house.getOnlyWatchCount());
             result.setReject_count(house.getRejectCount());
 
-            result.setHouse_checked_percent(MathUtil.getPercentage(house.getCheckedCount(), house.getHouseCount()));
-            result.setHouse_repaired_percent(MathUtil.getPercentage(house.getRepairedCount(), house.getHasIssueCount()));
-            result.setHouse_approveded_percent(MathUtil.getPercentage(house.getApprovedCount(), house.getRepairedCount()));
-            result.setHouse_repair_confirm_percent(MathUtil.getPercentage(house.getRepairConfirmCount(), house.getApprovedCount()));
+            result.setHouse_checked_percent(MathUtil.getPercentage2(house.getCheckedCount(), house.getHouseCount()));
+            result.setHouse_repaired_percent(MathUtil.getPercentage2(house.getRepairedCount(), house.getHasIssueCount()));
+            result.setHouse_approveded_percent(MathUtil.getPercentage2(house.getApprovedCount(), house.getRepairedCount()));
+            result.setHouse_repair_confirm_percent(MathUtil.getPercentage2(house.getRepairConfirmCount(), house.getApprovedCount()));
             //缺少repair_confirm_count
             item.setItem(result);
             response.setData(item);

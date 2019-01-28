@@ -14,8 +14,8 @@ import java.util.List;
 @NoArgsConstructor
 public class ProjectDailyListVo implements Serializable {
 
-    private List<ProjectDailyVo> items;
     private Integer total;
+    private List<ProjectDailyVo> items;
 
     @Data
     @NoArgsConstructor

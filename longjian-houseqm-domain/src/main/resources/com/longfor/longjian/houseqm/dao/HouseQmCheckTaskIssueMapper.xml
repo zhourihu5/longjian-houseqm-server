@@ -262,7 +262,7 @@
             #{taskId}
         </foreach>
         <if test="deleted=='false'">
-            AND `delete_at` IS NULL OR `delete_at` = '0001-01-01 00:00:00'
+            AND (`delete_at` IS NULL OR `delete_at` = '0001-01-01 00:00:00')
         </if>
         GROUP BY date
     </select>
