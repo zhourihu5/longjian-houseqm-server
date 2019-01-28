@@ -90,7 +90,7 @@ public class IssueListController {
         TaskResponse<DetailLogRspVo> response = new TaskResponse<>();
         Integer userId = (Integer) sessionInfo.getBaseInfo("userId");
         try {
-            ctrlTool.projPerm(request, "项目.工程检查.问题管理.查看");
+          /*  ctrlTool.projPerm(request, "项目.工程检查.问题管理.查看");*/
             List<HouseQmCheckTaskIssueHistoryLogVo> result = iIssueService.getHouseQmCheckTaskIssueActionLogByIssueUuid(issueUuid);
             DetailLogRspVo data = new DetailLogRspVo();
             data.setItems(result);

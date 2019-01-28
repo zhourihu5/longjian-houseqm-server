@@ -6,6 +6,7 @@ import lombok.NoArgsConstructor;
 
 import java.io.Serializable;
 import java.util.List;
+import java.util.Map;
 
 /**
  * Created by Dongshun on 2019/1/13.
@@ -16,14 +17,14 @@ public class IssueInfoVo implements Serializable{
    private Integer task_id;
    private String task_name;
     private Integer  create_at;
-    private String category_path_names;
-    private String  check_item_path_names;
-    private String area_path_names;
+    private List category_path_names;
+    private List  check_item_path_names;
+    private List area_path_names;
     private Integer  issue_type;
     private Integer  pos_x;
     private Integer  pos_y;
     private String  drawing_md5;
-    private String  attachment_md5_list;
+    private List  attachment_md5_list;
     private Integer  close_status;
     private List   repair_follower_ids;
     private Integer  repairer_id;
@@ -31,7 +32,7 @@ public class IssueInfoVo implements Serializable{
     private Integer  plan_end_on;
     private String  content;
     private List<HouseQmCheckTaskIssueDetailEditLog>edit_logs;
-    private  List<HouseQmCheckTaskIssueDetail>detail;
+    private Map detail;
     private List<HouseQmCheckTaskIssueAttachmentVo> audios;
     private List<HouseQmCheckTaskIssueAttachmentVo>my_audio;
     private Integer   status;
@@ -52,7 +53,7 @@ public class IssueInfoVo implements Serializable{
         private  String  user_name;
         private Integer  create_at;
         private  String  content;
-        private  String  attachment_md5_list;
+        private  List  attachment_md5_list;
     }
     @Data
     @NoArgsConstructor
