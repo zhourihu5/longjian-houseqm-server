@@ -6,7 +6,7 @@ schema {
 
 
 type gapiQuery{
-    progressStat(timeFrameType: TimeFrameTypeEnum, timeFrameMax: Int, timeFrameEnd: DateField, timeFrameBegin: DateField, categoryKey: String, teamIds: [Int]):StatGroupItem
+    progressStat(timeFrameType: TimeFrameTypeEnum, timeFrameMax: Int, timeFrameEnd: DateField, categoryKey: String, teamIds: [Int]):StatGroupItem
 }
 
 type StatGroupItem {

@@ -2,14 +2,15 @@ package com.longfor.longjian.houseqm.graphql.fetcher;
 
 import com.google.common.collect.Lists;
 import com.longfor.longjian.common.time.TimeType;
-import com.longfor.longjian.houseqm.app.service.StatHouseQmProjectStatService;
 import com.longfor.longjian.houseqm.app.vo.StatDataVo;
 import com.longfor.longjian.houseqm.app.vo.StatItemsVo;
+import com.longfor.longjian.houseqm.domain.internalService.stat.StatHouseQmProjectDailyStatService;
 import com.longfor.longjian.houseqm.graphql.data.PassedVariableVo;
 import com.longfor.longjian.houseqm.graphql.data.TimeFrameTypeEnum;
 import graphql.schema.DataFetcher;
 import graphql.schema.idl.EnumValuesProvider;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.collections.CollectionUtils;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
@@ -29,7 +30,7 @@ import java.util.List;
 public class GroupProgressStatDataFetcher {
 
     @Resource
-    StatHouseQmProjectStatService statHouseQmProjectStatService;
+    StatHouseQmProjectDailyStatService statHouseQmProjectDailyStatService;
 
     public static EnumValuesProvider timeFrameTypeResolver = TimeFrameTypeEnum::valueOf;
 
@@ -48,11 +49,18 @@ public class GroupProgressStatDataFetcher {
         List<Integer> teamIds = environment.getArgument("teamIds");
         Date timeFrameBegin = environment.getArgument("timeFrameBegin");
         Date timeFrameEnd = environment.getArgument("timeFrameEnd");
-        Integer timeFrameMax = environment.getArgument("timeFrameMax");
 
-        log.debug("StatGroupDataFetcher - progressStatDataFetcher - categoryKey:{}，timeFrameType:{}，" +
-                "timeFrameBegin:{}, timeFrameEnd:{},timeFrameMax:{} ",
-                categoryKey,timeFrameType,timeFrameBegin,timeFrameEnd,timeFrameMax);
+        log.debug("StatGroupDataFetcher - progressStatDataFetcher - categoryKey:{}", categoryKey);
+        log.debug("StatGroupDataFetcher - progressStatDataFetcher - timeFrameType:{}", timeFrameType);
+        log.debug("StatGroupDataFetcher - progressStatDataFetcher - teamIds size:{}", teamIds.size());
+        if(CollectionUtils.isNotEmpty(teamIds)){
+            for(Integer teamId: teamIds){
+                log.debug("StatGroupDataFetcher - progressStatDataFetcher - teamIds-teamId:{}", teamId);
+            }
+        }
+        log.debug("StatGroupDataFetcher - progressStatDataFetcher - timeFrameBegin:{}", timeFrameBegin);
+        log.debug("StatGroupDataFetcher - progressStatDataFetcher - timeFrameEnd:{}", timeFrameEnd);
+
 
         StatItemsVo statItemsVo =new StatItemsVo();
 
@@ -62,7 +70,6 @@ public class GroupProgressStatDataFetcher {
         vo.setTeamIds(teamIds);
         vo.setBeginDate(timeFrameBegin);
         vo.setEndDate(timeFrameEnd);
-        vo.setTimeFrameMax(timeFrameMax);
         statItemsVo.setVariableVo(vo);
         return statItemsVo;
     };
@@ -92,26 +99,26 @@ public class GroupProgressStatDataFetcher {
 
         if(TimeType.WEEK.toString().equalsIgnoreCase(timeFrameType)){
 
-            statHouseQmProjectStatService.searchStat(categoryKey,TimeType.WEEK.getValue(),teamIds,
+            statHouseQmProjectDailyStatService.searchStat(categoryKey,TimeType.WEEK.getValue(),teamIds,
                     timeFrameBegin, timeFrameEnd, timeFrameMaxCount);
 
         }else if(TimeType.QUARTER.toString().equalsIgnoreCase(timeFrameType)){
 
-            statHouseQmProjectStatService.searchStat(categoryKey,TimeType.QUARTER.getValue(),teamIds,
+            statHouseQmProjectDailyStatService.searchStat(categoryKey,TimeType.QUARTER.getValue(),teamIds,
                     timeFrameBegin, timeFrameEnd, timeFrameMaxCount);
 
         }else if(TimeType.MONTH.toString().equalsIgnoreCase(timeFrameType)){
 
-            statHouseQmProjectStatService.searchStat(categoryKey,TimeType.MONTH.getValue(),teamIds,
+            statHouseQmProjectDailyStatService.searchStat(categoryKey,TimeType.MONTH.getValue(),teamIds,
                     timeFrameBegin, timeFrameEnd, timeFrameMaxCount);
 
         }else if(TimeType.YEAR.toString().equalsIgnoreCase(timeFrameType)){
 
-            statHouseQmProjectStatService.searchStat(categoryKey,TimeType.YEAR.getValue(),teamIds,
+            statHouseQmProjectDailyStatService.searchStat(categoryKey,TimeType.YEAR.getValue(),teamIds,
                     timeFrameBegin, timeFrameEnd, timeFrameMaxCount);
         }else{
             //day
-            statHouseQmProjectStatService.searchStat(categoryKey,TimeType.DAY.getValue(),teamIds,
+            statHouseQmProjectDailyStatService.searchStat(categoryKey,TimeType.DAY.getValue(),teamIds,
                     timeFrameBegin, timeFrameEnd, timeFrameMaxCount);
         }
 

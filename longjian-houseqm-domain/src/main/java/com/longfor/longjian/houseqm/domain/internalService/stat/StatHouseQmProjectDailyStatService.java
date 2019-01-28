@@ -1,16 +1,17 @@
 package com.longfor.longjian.houseqm.domain.internalService.stat;
 
-import com.github.pagehelper.util.StringUtil;
 import com.longfor.gaia.gfs.data.mybatis.datasource.LFAssignDataSource;
+import com.longfor.longjian.common.exception.LjBaseRuntimeException;
 import com.longfor.longjian.common.time.TimeFrame;
+import com.longfor.longjian.common.time.TimeFrameHelper;
+import com.longfor.longjian.houseqm.config.LjTimeUtil;
 import com.longfor.longjian.houseqm.dao.stat.StatHouseQmProjectDailyStatMapper;
-import com.longfor.longjian.houseqm.po.stat.StatHouseQmProjectDailyStat;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.collections.CollectionUtils;
 import org.springframework.stereotype.Service;
-import tk.mybatis.mapper.entity.Condition;
-import tk.mybatis.mapper.entity.Example;
 
 import javax.annotation.Resource;
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -22,46 +23,49 @@ import java.util.List;
 @Slf4j
 public class StatHouseQmProjectDailyStatService {
 
-    @Resource
-    StatHouseQmProjectDailyStatMapper statHouseQmProjectDailyStatMapper;
+
+  /*@Resource
+    StatHouseQmProjectDailyStatMapper statHouseQmProjectDailyStatMapper;*/
+
 
     /**
-     // stat_house_qm_project_daily_stat_20181116
-     // stat_house_qm_project_weekly_stat_201846
-     // stat_house_qm_project_monthly_stat_201811
-     // stat_house_qm_project_yearly_stat_2018
-     // stat_house_qm_project_quarterly_stat_20191
      *
-     * @param timeFrame
      * @param categoryKey
-     * @param projectIds
-     * @return
+     * @param timeFrameType
+     * @param teamIds
+     * @param timeFrameBegin
+     * @param timeFrameEnd
+     * @param timeFrameMax
      */
     @LFAssignDataSource("zhijian2_stat")
-    public List<StatHouseQmProjectDailyStat> query(TimeFrame timeFrame,String categoryKey, List<Integer> projectIds){
+    public void searchStat(String categoryKey, String timeFrameType, List<Integer> teamIds, Date timeFrameBegin,
+                           Date timeFrameEnd, Integer timeFrameMax){
 
-        String table = "stat_house_qm_project_daily_stat" + timeFrame.getTableIdx();
 
-        Condition condition = new Condition(StatHouseQmProjectDailyStat.class);
-        /**
-         * 因为统计表是分表的，故要使用动态表名
-         * （1）StatHouseQmProjectDailyStat 必须实现 IDynamicTableName接口，默认的getDynamicTableName 方法返回null即可
-         * （2）timeFrame的getTableIdx方法会返回相应的表的后缀，如天表_20181116、周表_201846等，后者表示2018年的第46周
-         * （3）使用condition设置表名称：condition.setTableName;
-         */
-        condition.setTableName(table);
-        Example.Criteria c = condition.createCriteria();
-
-        if(StringUtil.isNotEmpty(categoryKey)){
-            c.andEqualTo("categoryKey", categoryKey);
+        if(timeFrameMax == null){
+            timeFrameMax = 1 ;
         }
-        c.andIn("projectId", projectIds);
 
-        List<StatHouseQmProjectDailyStat> stats =  statHouseQmProjectDailyStatMapper.selectByExample(condition);
-        log.debug("StatHouseQmProjectDailyStat query:{}, result size:{}", condition.getDynamicTableName(), stats.size());
+        if(timeFrameEnd == null){
+            timeFrameEnd =  LjTimeUtil.yesterdayZeroDate();
+        }
 
-        return stats;
+        List<TimeFrame>  frames = TimeFrameHelper.produceFrames(timeFrameType,timeFrameMax,timeFrameBegin,timeFrameEnd,true);
+
+        if(CollectionUtils.isEmpty(frames)){
+            log.error("searchStat timeFrameBegin:{}, timeFrameEnd:{},timeFrameMax:{},timeFrameType:{} ",
+                    timeFrameBegin, timeFrameEnd, timeFrameMax, timeFrameType);
+            throw new LjBaseRuntimeException(430," no frames");
+        }
+
+
+
+
+
 
     }
+
+
+
 
 }

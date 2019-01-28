@@ -96,13 +96,11 @@ public class IusseTaskListController {
      * @param categorys
      * @return
      */
-    @GetMapping(value = "mine/teams_and_projects", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
-
+    @GetMapping(value = "mine/teams_and_projects/", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     public LjBaseResponse<ApiMineMsg> teamsAndProjects(@RequestParam(name = "categorys", required = false, defaultValue = "26,28") String categorys) {
         log.info("teams_and_projects, categorys=" + categorys + "");
         Integer userId = (Integer) sessionInfo.getBaseInfo("userId");
         ApiMineMsg apiMineMsg = iusseTaskListService.teamsAndProjects(userId, categorys);
-
         LjBaseResponse<ApiMineMsg> response = new LjBaseResponse<>();
         response.setData(apiMineMsg);
         return response;

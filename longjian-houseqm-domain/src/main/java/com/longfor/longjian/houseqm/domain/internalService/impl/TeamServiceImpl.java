@@ -10,6 +10,7 @@ import org.springframework.stereotype.Service;
 import tk.mybatis.mapper.entity.Example;
 
 import javax.annotation.Resource;
+import java.util.List;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -50,15 +51,6 @@ public class TeamServiceImpl implements TeamService {
         Example example = new Example(Team.class);
         Example.Criteria criteria = example.createCriteria();
         criteria.andIn("teamId",teamIds).andIsNull("deleteAt");
-        return   teamMapper.selectByExample(example);
-    }
-
-    @Override
-    @LFAssignDataSource("zhijian2_apisvr")
-    public List<Team> selectGroupIdNotDel(Integer groupId) {
-        Example example = new Example(Team.class);
-        Example.Criteria criteria = example.createCriteria();
-        criteria.andEqualTo("parentTeamId",groupId).andIsNull("deleteAt");
         return   teamMapper.selectByExample(example);
     }
 }

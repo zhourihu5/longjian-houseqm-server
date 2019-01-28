@@ -66,49 +66,49 @@
     <!--List<HouseQmCheckTaskIssueLog> searchHouseQmCheckTaskIssueLogByMyIdTaskIdLastIdUpdateAtGt(@Param("userIds")List<Integer> userIds,@Param("task_id") Integer task_id, @Param("last_id")Integer last_id, @Param("timestamp")Integer timestamp, @Param("start")Integer start, @Param("limit")Integer limit);-->
     <select id="searchHouseQmCheckTaskIssueLogByMyIdTaskIdLastIdUpdateAtGt" resultMap="BaseResultMap">
         SELECT
-        <include refid="Full_Column_List"/>
+        id, project_id, task_id, uuid, issue_uuid, sender_id, status, client_create_at, create_at,
+        update_at, delete_at,`desc`,attachment_md5_list, audio_md5_list, memo_audio_md5_list, detail
         FROM
         house_qm_check_task_issue_log as hqctil
         WHERE
-                (
-                    hqctil.task_id = #{task_id}
-                    AND
-                    hqctil.id &gt; #{last_id}
-                )
-                AND issue_uuid IN (
-                                    SELECT
-                                    uuid
-                                    FROM
-                                    house_qm_check_task_issue as hqcti
-                                    WHERE
-                                    (
-                                        hqcti.sender_id IN
-                                        <foreach collection="userIds" item="item" open="(" separator="," close=")" index="index">
-                                            #{item}
-                                        </foreach>
-                                    )
-                                    OR (
-                                            hqcti.task_id = #{task_id}
-                                            AND
-                                            hqcti.uuid IN (
-                                                    SELECT
-                                                    hqctiu.issue_uuid
-                                                    FROM
-                                                    house_qm_check_task_issue_user as hqctiu
-                                                    WHERE
-                                                    hqctiu.task_id = #{task_id}
-                                                    AND
-                                                    hqctiu.user_id = #{userId}
-                                                    AND
-                                                    delete_at IS NULL
-                                                    OR delete_at = '0001-01-01 00:00:00'
-                                                    )
-                                        )
-                                    )
-                <if test="timestamp != null and timestamp > 0">
-                    AND hqctil.update_at > FROM_UNIXTIME( #{timestamp} )
-                </if>
-                order by hqctil.id ASC LIMIT #{start},#{limit}
+        (
+        hqctil.task_id = #{task_id}
+        AND
+        hqctil.id > #{last_id}
+        )
+        AND issue_uuid IN (
+        SELECT
+        uuid
+        FROM
+        house_qm_check_task_issue as hqcti
+        WHERE
+        (
+        hqcti.sender_id IN
+        <foreach collection="userIds" item="item" open="(" separator="," close=")" index="index">
+            #{item}
+        </foreach>
+        )
+        <if test="timestamp != null and timestamp >= 0">
+            AND hqcti.update_at > FROM_UNIXTIME( #{timestamp} )
+        </if>
+        OR (
+        hqcti.task_id = #{task_id}
+        AND
+        hqcti.uuid IN (
+        SELECT
+        hqctiu.issue_uuid
+        FROM
+        house_qm_check_task_issue_user as hqctiu
+        WHERE
+        hqctiu.task_id = #{task_id}
+        AND
+        hqctiu.user_id = #{userId}
+        AND
+        delete_at IS NULL
+        )
+        )
+        )
+        <![CDATA[order by hqctil.id ASC LIMIT ${start},${limit} ]]>
     </select>
 
     <select id="selectIdByTaskIdAndIdAndUuidInAndUpdateAtGtAndNoDeletedOrderById" resultMap="BaseResultMap">

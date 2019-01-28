@@ -228,7 +228,6 @@
             project_id = #{project_id}
             AND category_cls = #{category_cls}
             AND area_path_and_id LIKE #{area_path_and_id}
-            AND delete_at IS NULL
         GROUP BY
         `status`
     </select>
@@ -409,11 +408,11 @@
         from
         house_qm_check_task_issue
         where task_id= #{task_id}
-        <if test="uuids.size()>0"> and
+        and
         uuid in
         <foreach collection="uuids" item="item" index="index" open="(" separator="," close=")">
             #{item}
-        </foreach></if>
+        </foreach>
         and delete_at is null
     </select>
 
@@ -424,30 +423,27 @@
         FROM
         house_qm_check_task_issue hqcti
         WHERE
-                (hqcti.task_id = #{task_id}
-                AND hqcti.id &gt; #{last_id}
-                <if test="timestamp != null and timestamp > 0">AND hqcti.update_at &gt; FROM_UNIXTIME( #{timestamp} ,'%Y-%m-%d
-                    %H:%i:%S')
-                </if>)
-            OR (
-                (hqcti.sender_id IN
-                <foreach collection="userIds" item="item" open="(" separator="," close=")" index="index">
-                    #{item}
-                </foreach>)
-                AND (
-                    hqcti.task_id = #{task_id}
-                    AND hqcti.uuid IN (
-                                    SELECT
-                                    hqmctiu.issue_uuid
-                                    FROM
-                                    house_qm_check_task_issue_user hqmctiu
-                                    WHERE
-                                    hqmctiu.task_id = #{task_id}
-                                    AND hqmctiu.user_id = #{userId}
-                                    AND (`delete_at` IS NULL or `delete_at` = '0001-01-01 00:00:00')
-                    )
-                )
-            )
+        hqcti.task_id = #{task_id}
+        AND hqcti.id > #{last_id}
+        <if test="timestamp != null and timestamp >= 0">
+            AND hqcti.update_at > FROM_UNIXTIME( #{timestamp} )
+        </if>
+        OR (
+        hqcti.sender_id IN
+        <foreach collection="userIds" item="item" open="(" separator="," close=")" index="index">
+            #{item}
+        </foreach>
+        AND hqcti.task_id = #{task_id}
+        AND hqcti.uuid IN (
+        SELECT
+        hqmctiu.issue_uuid
+        FROM
+        house_qm_check_task_issue_user hqmctiu
+        WHERE
+        hqmctiu.task_id = #{task_id}
+        AND hqmctiu.user_id = #{userId}
+        )
+        )
         ORDER BY
         id ASC
         LIMIT #{start},#{limit}

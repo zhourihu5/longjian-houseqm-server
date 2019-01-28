@@ -17,7 +17,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.servlet.http.HttpServletRequest;
-import javax.validation.Valid;
 
 /**
  * http://192.168.37.159:3000/project/8/interface/api/344
@@ -43,8 +42,8 @@ public class HouseqmController {
      * @param deviceReq
      * @return
      */
-    @GetMapping(value = "my_issue_log_list", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
-    public TaskResponse<HouseqmMyIssueLogListRspVo> myIssueLogList(@Valid DeviceReq deviceReq, HttpServletRequest request) {
+    @GetMapping(value = "my_issue_log_list/", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+    public TaskResponse<HouseqmMyIssueLogListRspVo> myIssueLogList(DeviceReq deviceReq, HttpServletRequest request) {
         return houseqmService.myIssueLogList(deviceReq,request);
     }
 
@@ -53,8 +52,8 @@ public class HouseqmController {
      * @param deviceReq
      * @return
      */
-    @GetMapping(value = "my_issue_list", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
-    public TaskResponse<MyIssueListVo> myIssueList(@Valid DeviceReq deviceReq,HttpServletRequest request) {
+    @GetMapping(value = "my_issue_list/", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+    public TaskResponse<MyIssueListVo> myIssueList(DeviceReq deviceReq,HttpServletRequest request) {
         return houseqmService.myIssueList(deviceReq,request);
     }
 
@@ -63,8 +62,8 @@ public class HouseqmController {
      * @param deviceReq
      * @return
      */
-    @GetMapping(value = "issue_members", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
-    public LjBaseResponse<MyIssueMemberListVo> issueMembers(@Valid DeviceReq deviceReq) {
+    @GetMapping(value = "issue_members/", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+    public LjBaseResponse<MyIssueMemberListVo> issueMembers(DeviceReq deviceReq) {
         return houseqmService.issueMembers(deviceReq);
     }
 
@@ -73,8 +72,8 @@ public class HouseqmController {
      * @param deviceReq
      * @return
      */
-    @GetMapping(value = "my_issue_attachment_list", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
-    public LjBaseResponse<MyIssueAttachListVo> myIssueAttachmentList(@Valid DeviceReq deviceReq) {
+    @GetMapping(value = "my_issue_attachment_list/", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+    public LjBaseResponse<MyIssueAttachListVo> myIssueAttachmentList(DeviceReq deviceReq) {
         return houseqmService.myIssueAttachementList(deviceReq);
     }
 }

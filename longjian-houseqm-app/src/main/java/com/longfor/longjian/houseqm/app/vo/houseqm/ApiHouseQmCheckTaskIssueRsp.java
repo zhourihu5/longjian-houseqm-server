@@ -46,6 +46,9 @@ public class ApiHouseQmCheckTaskIssueRsp implements Serializable {
     private String repairer_follower_ids;    // 整改人跟进人user_ids
     private Integer client_create_at;// 客户端记录时间
 
+    private Integer update_at;// 更新时间
+    private Integer delete_at; // 删除时间(0表示未删除)
+
     private Integer last_assigner;// 最后指派人
     private Integer last_assigner_at;// 最后指派时间
     private Integer last_repairer;// 最后整改人
@@ -56,8 +59,5 @@ public class ApiHouseQmCheckTaskIssueRsp implements Serializable {
     private Integer delete_time;// 删除时间
 
     private ApiHouseQmCheckTaskIssueDetail detail;// 其它数据
-
-    private Integer update_at;// 更新时间
-    private Integer delete_at; // 删除时间(0表示未删除)
 
 }

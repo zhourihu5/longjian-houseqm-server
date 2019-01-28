@@ -4,6 +4,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.io.Serializable;
+import java.util.List;
 
 /**
  * Created by Dongshun on 2019/1/16.
@@ -18,4 +19,9 @@ public class ApiIssueFiledSettingMsg implements Serializable {
     private Integer display_status=0;
     private Integer required_status=0;
     private Integer alias_status=0;
+    @Data
+    @NoArgsConstructor
+    public class IssueFileds{
+        List<ApiIssueFiledSettingMsg>issue_fileds;
+    }
 }
