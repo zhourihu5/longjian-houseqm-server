@@ -1306,56 +1306,79 @@ public class HouseqmStatisticServiceImpl implements IHouseqmStatisticService {
             if (categoryMap.size() > 0) {
                 String rootKey = "";
                 for (Map.Entry<String, CategoryV3> entry : categoryMap.entrySet()) {
-                    List<String> keys = StringSplitToListUtil.removeStartAndEndStrAndSplit(entry.getValue().getPath(), "/", "/");
-                    keys.add(entry.getValue().getKey());
+                    String newStr = entry.getValue().getPath().substring(1, entry.getValue().getPath().length());
+                    String[] split = newStr.split("/");
+/*
+                    split[split.length]= entry.getValue().getKey();
+*/
+                    rootKey = split[0];
                 }
                 isStatLevel3 = isCategoryStatLevelThree(rootKey);
             }
             if (entrys.getKey().equals("categoryStatMap")) {
                 HashMap<String, HouseQmIssueCategoryStatVo> categoryStatMap = (HashMap<String, HouseQmIssueCategoryStatVo>) entrys.getValue();
+
                 for (Map.Entry<String, HouseQmIssueCategoryStatVo> entry : categoryStatMap.entrySet()) {
-                    if (categoryMap.containsKey(entry.getValue().getKey())) {
-                        boolean isRoot = false;
-                        int level = appearNumber(categoryMap.get(entry.getValue().getKey()).getPath(), "/");
-                        if (isStatLevel3) {
-                            if (level < 3) {
-                                continue;
-                            } else if (level == 3) {
-                                isRoot = true;
-                            }
-                        } else {
-                            if (level < 2) {
-                                continue;
-                            } else if (level == 2) {
-                                isRoot = true;
-                            }
-                        }
-                        entry.getValue().setName(categoryMap.get(entry.getValue().getKey()).getName());
-                        // 如果节点是第二级的，则将FatherKey设置为空，否则补充上去
-                        if (!isRoot) {
-                            entry.getValue().setParentKey(categoryMap.get(entry.getValue().getKey()).getFatherKey());
-                        }
-                        objects.add(entry.getValue());
+                    for (Map.Entry<String, CategoryV3> Entry : categoryMap.entrySet()) {
 
+                        if (entry.getValue().getKey().equals(Entry.getKey())) {
+                            boolean isRoot = false;
 
+                            //通过“/”进行匹配
+                            int level = 0;
+
+                            String str = Entry.getValue().getPath();
+
+                            for (int i = 0; i < str.length(); i++) {
+                                if (str.charAt(i) == '/') {
+                                    level++;
+                                }
+                            }
+                            //需要跳过三级
+                            if (isStatLevel3) {
+                                if (level < 3) {
+                                    continue;
+                                } else if (level == 3) {
+                                    isRoot = true;
+                                }
+                            } else {
+                                if (level < 2) {
+                                    continue;
+                                } else if (level == 2) {
+                                    isRoot = true;
+                                }
+
+                            }
+                            entry.getValue().setName(Entry.getValue().getName());
+
+                            if (!isRoot) {
+                                entry.getValue().setParentKey(Entry.getValue().getFatherKey());
+                            }
+                            objects.add(entry.getValue());
+                        }
                     }
                 }
-
             }
             if (entrys.getKey().equals("checkItemStatMap")) {
                 HashMap<String, HouseQmIssueCategoryStatVo> checkItemStatMap = (HashMap<String, HouseQmIssueCategoryStatVo>) entrys.getValue();
-                for (Map.Entry<String, HouseQmIssueCategoryStatVo> entry : checkItemStatMap.entrySet()) {
-                    if (checkItemMap.containsKey(entry.getValue().getKey())) {
-                        entry.getValue().setName(checkItemMap.get(entry.getValue().getKey()).getName());
-                        entry.getValue().setParentKey(checkItemMap.get(entry.getValue().getKey()).getCategoryKey());
-                        entry.getValue().setKey("C" + entry.getValue().getKey());
-                        objects.add(entry.getValue());
-                    }
+                for (Map.Entry<String, HouseQmIssueCategoryStatVo> entryS : checkItemStatMap.entrySet()) {
+                    for (Map.Entry<String, CheckItem> Entry : checkItemMap.entrySet()) {
 
+                        if (entryS.getValue().getKey().equals(Entry.getKey())) {
+                            entryS.getValue().setName(Entry.getValue().getName());
+                            entryS.getValue().setParentKey(Entry.getValue().getCategoryKey());
+                            entryS.getValue().setKey("C" + Entry.getValue().getKey());
+                            objects.add(entryS.getValue());
+                        }
+
+
+                    }
                 }
 
             }
+
         }
+
         return objects;
     }
 
@@ -1404,24 +1427,36 @@ public class HouseqmStatisticServiceImpl implements IHouseqmStatisticService {
         ArrayList<String> categoryKeys = Lists.newArrayList();
         ArrayList<String> checkItemKeys = Lists.newArrayList();
         for (int i = 0; i < issueStatVoList.size(); i++) {
-            List<String> categoryPathKeys = StringSplitToListUtil.removeStartAndEndStrAndSplit(issueStatVoList.get(i).getCategoryPathAndKey(), "/", "/");
-            for (int j = 0; j < categoryPathKeys.size(); j++) {
-                //判断key是否存在
-                if (!categoryStatMap.containsKey(categoryPathKeys.get(j))) {
-                    HouseQmIssueCategoryStatVo houseQmIssueCategoryStatVo = new HouseQmIssueCategoryStatVo();
-                    houseQmIssueCategoryStatVo.setKey(categoryPathKeys.get(j));
-                    //存放key value（对象中的key值）
-                    categoryStatMap.put(categoryPathKeys.get(j), houseQmIssueCategoryStatVo);
-                }
-                Integer issueCount = categoryStatMap.get(categoryPathKeys.get(j)).getIssueCount();
-                if (issueCount == null) {
-                    categoryStatMap.get(categoryPathKeys.get(j)).setIssueCount(issueCount);
-                } else {
-                    issueCount += issueStatVoList.get(i).getCount();
-                    categoryStatMap.get(categoryPathKeys.get(j)).setIssueCount(issueCount);
-                }
+            //切空格and“/”
+            //String[] categoryPathKeys = issueStatVoList.get(i).getCategoryPathAndKey().trim().split("/");
 
-                categoryKeys.addAll(categoryPathKeys);
+            String[] categoryPathKeys = issueStatVoList.get(i).getCategoryPathAndKey().split("/");
+            for (int j = 0; j < categoryPathKeys.length; j++) {
+                //判断key是否存在
+                if (!categoryStatMap.containsKey(categoryPathKeys[j])) {
+                    HouseQmIssueCategoryStatVo houseQmIssueCategoryStatVo = new HouseQmIssueCategoryStatVo();
+                    houseQmIssueCategoryStatVo.setKey(categoryPathKeys[j]);
+                    //存放key value（对象中的key值）
+                    categoryStatMap.put(categoryPathKeys[j], houseQmIssueCategoryStatVo);
+                }
+                //遍历此map
+                for (Map.Entry<String, HouseQmIssueCategoryStatVo> entrys : categoryStatMap.entrySet()) {
+                    //当map中的key存在
+                    if (entrys.getKey().equals(categoryPathKeys[j])) {
+                        //在key所对应的对象中添加issuencount值
+
+                        entrys.getValue().setIssueCount(issueStatVoList.get(i).getCount());
+
+                    }
+                }
+               /* ArrayList<String> categoryPathKeysList = Lists.newArrayList();
+                for (int k = 0; k < categoryPathKeys.length; k++) {
+                    categoryPathKeysList.add(categoryPathKeys[k]);
+                }
+                categoryKeys.addAll(categoryPathKeysList);*/
+                for (int k = 0; k < categoryPathKeys.length; k++) {
+                    categoryKeys.add(categoryPathKeys[k]);
+                }
 
             }
             //当CheckItemKey的长度大于0
@@ -1431,16 +1466,18 @@ public class HouseqmStatisticServiceImpl implements IHouseqmStatisticService {
                     HouseQmIssueCategoryStatVo houseQmIssueCategoryStatVo = new HouseQmIssueCategoryStatVo();
                     houseQmIssueCategoryStatVo.setKey(issueStatVoList.get(i).getCheckItemKey());
                     //存放key value（对象中的key值）
-                    checkItemStatMap.put(issueStatVoList.get(i).getCheckItemKey(), houseQmIssueCategoryStatVo);
+                    categoryStatMap.put(issueStatVoList.get(i).getCheckItemKey(), houseQmIssueCategoryStatVo);
                 }
 
 
-                Integer issueCount = checkItemStatMap.get(issueStatVoList.get(i).getCheckItemKey()).getIssueCount();
-                if (issueCount == null) {
-                    checkItemStatMap.get(issueStatVoList.get(i).getCheckItemKey()).setIssueCount(issueCount);
-                } else {
-                    issueCount += issueStatVoList.get(i).getCount();
-                    checkItemStatMap.get(issueStatVoList.get(i).getCheckItemKey()).setIssueCount(issueCount);
+                //遍历此map
+                for (Map.Entry<String, HouseQmIssueCategoryStatVo> entrys : checkItemStatMap.entrySet()) {
+                    //当map中的key存在
+                    if (entrys.getKey().equals(issueStatVoList.get(i).getCheckItemKey())) {
+                        //在key所对应的对象中添加issuencount值
+                        entrys.getValue().setIssueCount(issueStatVoList.get(i).getCount() + entrys.getValue().getIssueCount());
+
+                    }
                 }
                 checkItemKeys.add(issueStatVoList.get(i).getCheckItemKey());
             }
@@ -1467,7 +1504,6 @@ public class HouseqmStatisticServiceImpl implements IHouseqmStatisticService {
     // 判断检查项的统计级别。部分检查项的顶级
     public boolean isCategoryStatLevelThree(String categoryRootKey) {
         List<CategoryV3> categoryList = categoryService.searchCategoryByFatherKey(categoryRootKey);
-
         try {
             if (categoryList.size() > 2) {
                 return false;
