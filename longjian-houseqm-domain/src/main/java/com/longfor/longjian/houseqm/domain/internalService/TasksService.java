@@ -8,4 +8,5 @@ import com.longfor.longjian.houseqm.po.Task;
 public interface TasksService {
 
     int add(Task task);
+
 }

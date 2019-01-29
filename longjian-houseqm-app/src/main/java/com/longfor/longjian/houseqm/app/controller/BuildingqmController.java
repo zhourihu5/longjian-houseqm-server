@@ -233,12 +233,12 @@ public class BuildingqmController {
      * @return
      */
     @GetMapping(value = "task/task_squad/", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
-    public LjBaseResponse<ArrayList<HouseQmCheckTaskSquadListRspVo>> taskSquad(HttpServletRequest request, @RequestParam(name = "project_id", required = true) String projectId,
-                                                                               @RequestParam(name = "task_id", required = true) String taskId) {
-        LjBaseResponse<ArrayList<HouseQmCheckTaskSquadListRspVo>> response = new LjBaseResponse<>();
+    public LjBaseResponse<HouseQmCheckTaskSquadListRspVo.HouseQmCheckTaskSquadListRspVoList> taskSquad(HttpServletRequest request, @RequestParam(name = "project_id", required = true) String projectId,
+                                                                                                       @RequestParam(name = "task_id", required = true) String taskId) {
+        LjBaseResponse<HouseQmCheckTaskSquadListRspVo.HouseQmCheckTaskSquadListRspVoList> response= new LjBaseResponse<>();
         Integer userId = (Integer) sessionInfo.getBaseInfo("userId");
         try {
-            ctrlTool.projPerm(request, "项目.工程检查.任务管理.新增");
+            ctrlTool.projPerm(request, "项目.工程检查.任务管理.查看");
             List<HouseQmCheckTaskSquad> info = buildingqmService.searchHouseqmCheckTaskSquad(projectId, taskId);
             ArrayList<HouseQmCheckTaskSquadListRspVo> squad_list = Lists.newArrayList();
             for (int i = 0; i < info.size(); i++) {
@@ -248,7 +248,9 @@ public class BuildingqmController {
                 rspVo.setSquad_type(info.get(i).getSquadType());
                 squad_list.add(rspVo);
             }
-            response.setData(squad_list);
+            HouseQmCheckTaskSquadListRspVo.HouseQmCheckTaskSquadListRspVoList houseQmCheckTaskSquadListRspVoList = new HouseQmCheckTaskSquadListRspVo().new HouseQmCheckTaskSquadListRspVoList();
+            houseQmCheckTaskSquadListRspVoList.setSquad_list(squad_list);
+            response.setData(houseQmCheckTaskSquadListRspVoList);
         } catch (Exception e) {
             e.printStackTrace();
             log.error(e.getMessage());
@@ -284,7 +286,7 @@ public class BuildingqmController {
         Integer userId = (Integer) sessionInfo.getBaseInfo("userId");
         LjBaseResponse<Object> response = new LjBaseResponse<>();
         try {
-            ctrlTool.projPerm(request, "项目.工程检查.任务管理.新增");
+            ctrlTool.projPerm(request, "项目.工程检查.任务管理.编辑");
             buildingqmService.edit(userId, taskEditReq);
         } catch (Exception e) {
             e.printStackTrace();

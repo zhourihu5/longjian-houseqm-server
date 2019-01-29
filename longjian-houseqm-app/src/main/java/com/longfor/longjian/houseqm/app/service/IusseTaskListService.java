@@ -139,6 +139,7 @@ public class IusseTaskListService {
             if (!teamIds.contains(userlist.get(i).getTeamId())) {
                 teamIds.add(userlist.get(i).getTeamId());
             }
+        }
             List<Team> teamlist = teamService.selectByTeamIdsNotDel(teamIds);
             for (int j = 0; j < teamlist.size(); j++) {
                 ApiMineMsg.ApiMineTeamsMsg apiMineTeamsMsg = new ApiMineMsg().new ApiMineTeamsMsg();
@@ -152,7 +153,6 @@ public class IusseTaskListService {
             for (int j = 0; j < teamlist.size(); j++) {
                 if (teamlist.get(j).getTeamId() > 0) {
                     parentIds.add(teamlist.get(j).getTeamId());
-
                 }
             }
             Map<Integer, Team> parentMap = createTeamsMap(parentIds);
@@ -181,7 +181,7 @@ public class IusseTaskListService {
                 }
             });
             //  # 判断每个项目下有没有验房任务
-            List<HouseQmCheckTask> tasklist = houseQmCheckTaskService.selectByProjectIdsAndCategoryClsNotDel(parentIds, categorylist);
+            List<HouseQmCheckTask> tasklist = houseQmCheckTaskService.selectByProjectIdsAndCategoryClsNotDel(projectIds, categorylist);
             ArrayList<Integer> projectIdsList = Lists.newArrayList();
             tasklist.forEach(item -> {
                 projectIdsList.add(item.getProjectId());
@@ -224,12 +224,13 @@ public class IusseTaskListService {
                 }
                 List<Integer> idsComma = StringSplitToListUtil.splitToIdsComma(item.getPath(), "/");
                 idsComma.forEach(items -> {
-                    if (objects.contains(items)) {
+                    if (!objects.contains(items)) {
                         objects.add(items);
                     }
                 });
             });
             List<Team> teamsLists = teamService.selectByTeamIdsNotDel(objects);
+                    teams.clear();
             teamsLists.forEach(item -> {
                 ApiMineMsg.ApiMineTeamsMsg msg = new ApiMineMsg().new ApiMineTeamsMsg();
                 msg.setId(item.getTeamId());
@@ -238,8 +239,6 @@ public class IusseTaskListService {
                 msg.setUpdate_at(DateUtil.datetimeToTimeStamp(item.getUpdateAt()));
                 teams.add(msg);
             });
-
-        }
         ApiMineMsg apiMineMsg = new ApiMineMsg();
         apiMineMsg.setProjects(projects);
         apiMineMsg.setTeams(teams);

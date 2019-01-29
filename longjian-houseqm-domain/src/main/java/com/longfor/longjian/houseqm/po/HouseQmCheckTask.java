@@ -9,6 +9,7 @@ public class HouseQmCheckTask {
      * 记录ID
      */
     @Id
+    @GeneratedValue(generator = "JDBC")
     private Integer id;
 
     /**

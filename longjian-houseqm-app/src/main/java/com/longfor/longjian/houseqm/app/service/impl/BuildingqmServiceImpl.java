@@ -1911,6 +1911,7 @@ public class ApiRefundInfo{
         taskInfo.setAreaTypes(StringUtils.join(areaTypes, ","));
         taskInfo.setPlanBeginOn(begin);
         taskInfo.setPlanEndOn(endon);
+        taskInfo.setUpdateAt(new Date());
         taskInfo.setEditor(uid);
         if (taskInfo.getConfigInfo() == null) {
             HashMap<String, Object> configMap = Maps.newHashMap();
@@ -1983,6 +1984,8 @@ public class ApiRefundInfo{
                     qmCheckTask.setCanApprove(canApprove);
                     qmCheckTask.setCanDirectApprove(canDirectApprove);
                     qmCheckTask.setCanReassign(canReassign);
+                    qmCheckTask.setCreateAt(new Date());
+                    qmCheckTask.setUpdateAt(new Date());
                     int num = userInHouseQmCheckTaskService.add(qmCheckTask);
                     if (num <= 0) {
                         log.info("create task user failed");
@@ -2057,6 +2060,8 @@ public class ApiRefundInfo{
                 item.setRoleType(needInsertCheckTaskSquadUser.get(i).getGroup_role());
                 item.setProjectId(taskEditReq.getProject_id());
                 item.setTaskId(taskEditReq.getTask_id());
+                item.setCreateAt(new Date());
+                item.setUpdateAt(new Date());
                 item.setCanApprove(needInsertCheckTaskSquadUser.get(i).getCan_approve());
                 item.setCanDirectApprove(needInsertCheckTaskSquadUser.get(i).getCan_direct_approve());
                 item.setCanReassign(needInsertCheckTaskSquadUser.get(i).getCan_reassign());
@@ -2104,6 +2109,8 @@ public class ApiRefundInfo{
                 item.setTaskId(taskEditReq.getTask_id());
                 item.setModuleId(convertCategoryCls(taskInfo.getCategoryCls()));
                 item.setTyp(1);
+                item.setCreateAt(new Date());
+                item.setUpdateAt( new Date());
                 item.setPushTime(stringToDate(config.getConfig_assign_time().getPush_time()));
                 item.setUserIds(config.getConfig_assign_time().getUser_ids());
                 int one = pushStrategyAssignTimeService.add(item);
@@ -2146,6 +2153,8 @@ public class ApiRefundInfo{
                 item.setTaskId(taskEditReq.getTask_id());
                 item.setModuleId(convertCategoryCls(taskInfo.getCategoryCls()));
                 item.setTyp(1);
+                item.setCreateAt(new Date());
+                item.setUpdateAt(new Date());
                 item.setCategoryKeys(config.getConfig_category_overdue().getCategory_keys());
                 item.setUserIds(config.getConfig_category_overdue().getUser_ids());
                 item.setScanEndOn(DateUtil.timeStampToDate(DateUtil.datetimeToTimeStamp(taskInfo.getPlanEndOn()) + (30 * 24 * 60 * 60), " yyyy-MM-dd HH-mm-ss"));
@@ -2186,6 +2195,8 @@ public class ApiRefundInfo{
                 item.setTaskId(taskEditReq.getTask_id());
                 item.setModuleId(convertCategoryCls(taskInfo.getCategoryCls()));
                 item.setTyp(1);
+                item.setCreateAt( new Date());
+                item.setUpdateAt( new Date());
                 item.setCategoryKeys(config.getConfig_category_threshold().getCategory_keys());
                 item.setUserIds(config.getConfig_category_threshold().getUser_ids());
                 item.setThreshold(config.getConfig_category_threshold().getThreshold());
@@ -2376,9 +2387,11 @@ public class ApiRefundInfo{
         task.setName(taskReq.getName());
         task.setProjectId(taskReq.getProject_id());
         task.setCreatorId(uid);
+        task.setCreateAt(new Date());
+        task.setUpdateAt(new Date());
         task.setTyp(taskReq.getCategory_cls());
-        int One = taskService.add(task);
-        if (One <= 0) {
+        int taskObj = taskService.add(task);
+        if (taskObj <= 0) {
             log.info("create task failed");
             throw new LjBaseRuntimeException(296, "'创建任务失败'");
         }
@@ -2392,7 +2405,7 @@ public class ApiRefundInfo{
         String config_info = JsonUtil.GsonString(config_map);
         HouseQmCheckTask houseQmCheckTask = new HouseQmCheckTask();
         houseQmCheckTask.setProjectId(taskReq.getProject_id());
-        houseQmCheckTask.setTaskId(One);
+        houseQmCheckTask.setTaskId(taskObj);
         houseQmCheckTask.setName(taskReq.getName());
         houseQmCheckTask.setStatus(CheckTaskStatus.UnFinish.getValue());
         houseQmCheckTask.setCategoryCls(taskReq.getCategory_cls());
@@ -2403,6 +2416,8 @@ public class ApiRefundInfo{
         houseQmCheckTask.setEditor(0);
         houseQmCheckTask.setPlanBeginOn(stringToDate(planBeginOn));
         houseQmCheckTask.setPlanEndOn(stringToDate(planEndOn));
+        houseQmCheckTask.setCreateAt(new Date());
+        houseQmCheckTask.setUpdateAt(new Date());
         String stringAreaIds = areaIds.toString();
         String s = StringUtils.removeStart(stringAreaIds, "[");
         String s1 = StringUtils.removeEnd(s, "]");
@@ -2422,7 +2437,7 @@ public class ApiRefundInfo{
         for (int i = 0; i < checkerGroups.size(); i++) {//group
             HouseQmCheckTaskSquad squad = new HouseQmCheckTaskSquad();
             squad.setProjectId(taskReq.getProject_id());
-            squad.setTaskId(One);
+            squad.setTaskId(taskObj);
             squad.setCreateAt(new Date());
             squad.setUpdateAt(new Date());
             squad.setName(checkerGroups.get(i).getGroup_name());
@@ -2453,8 +2468,10 @@ public class ApiRefundInfo{
                 qmCheckTask.setUserId(user_ids.get(j));
                 qmCheckTask.setRoleType(checkerGroups.get(i).getGroup_role());
                 qmCheckTask.setProjectId(taskReq.getProject_id());
-                qmCheckTask.setTaskId(One);
+                qmCheckTask.setTaskId(taskObj);
                 qmCheckTask.setCanApprove(canApprove);
+                qmCheckTask.setCreateAt(new Date());
+                qmCheckTask.setUpdateAt(new Date());
                 qmCheckTask.setCanDirectApprove(canDirectApprove);
                 qmCheckTask.setCanReassign(canReassign);
                 int num = userInHouseQmCheckTaskService.add(qmCheckTask);
@@ -2472,7 +2489,7 @@ public class ApiRefundInfo{
             //返回主键
             HouseQmCheckTaskSquad squad = new HouseQmCheckTaskSquad();
             squad.setProjectId(taskReq.getProject_id());
-            squad.setTaskId(One);
+            squad.setTaskId(taskObj);
             squad.setName(repairerGroups.get(i).getGroup_name());
             squad.setSquadType(repairerGroups.get(i).getGroup_role());
             squad.setCreateAt(new Date());
@@ -2493,7 +2510,9 @@ public class ApiRefundInfo{
                 qmCheckTask.setUserId(userId.get(j));
                 qmCheckTask.setRoleType(repairerGroups.get(i).getGroup_role());
                 qmCheckTask.setProjectId(taskReq.getProject_id());
-                qmCheckTask.setTaskId(One);
+                qmCheckTask.setTaskId(taskObj);
+                qmCheckTask.setCreateAt(new Date());
+                qmCheckTask.setUpdateAt(new Date());
                 qmCheckTask.setCanApprove(canApprove);
                 qmCheckTask.setCanDirectApprove(canDirectApprove);
                 qmCheckTask.setCanReassign(canReassign);
@@ -2511,9 +2530,11 @@ public class ApiRefundInfo{
         if (config.getConfig_assign_time() != null) {
             PushStrategyAssignTime pushStrategyAssignTime = new PushStrategyAssignTime();
             pushStrategyAssignTime.setProjectId(taskReq.getProject_id());
-            pushStrategyAssignTime.setTaskId(One);
+            pushStrategyAssignTime.setTaskId(taskObj);
             pushStrategyAssignTime.setModuleId(convertCategoryCls(taskReq.getCategory_cls()));
             pushStrategyAssignTime.setTyp(1);
+            pushStrategyAssignTime.setCreateAt(new Date());
+            pushStrategyAssignTime.setUpdateAt(new Date());
             pushStrategyAssignTime.setPushTime(stringToDate(config.getConfig_assign_time().getPush_time()));
             pushStrategyAssignTime.setUserIds(config.getConfig_assign_time().getUser_ids());
             int Num = pushStrategyAssignTimeService.add(pushStrategyAssignTime);
@@ -2527,9 +2548,11 @@ public class ApiRefundInfo{
         if (config.getConfig_category_overdue() != null) {
             PushStrategyCategoryOverdue pushStrategyCategoryOverdue = new PushStrategyCategoryOverdue();
             pushStrategyCategoryOverdue.setProjectId(taskReq.getProject_id());
-            pushStrategyCategoryOverdue.setTaskId(One);
+            pushStrategyCategoryOverdue.setTaskId(taskObj);
             pushStrategyCategoryOverdue.setModuleId(convertCategoryCls(taskReq.getCategory_cls()));
             pushStrategyCategoryOverdue.setTyp(1);
+            pushStrategyCategoryOverdue.setCreateAt(new Date());
+            pushStrategyCategoryOverdue.setUpdateAt(new Date());
             pushStrategyCategoryOverdue.setCategoryKeys(config.getConfig_category_overdue().getCategory_keys());
             pushStrategyCategoryOverdue.setUserIds(config.getConfig_category_overdue().getUser_ids());
             pushStrategyCategoryOverdue.setScanEndOn(DateUtil.timeStampToDate(DateUtil.datetimeToTimeStamp(checktaskObj.getPlanEndOn()) + (30 * 24 * 60 * 60), " yyyy-MM-dd HH-mm-ss"));
@@ -2543,7 +2566,7 @@ public class ApiRefundInfo{
         if (config.getConfig_category_threshold() != null) {
             PushStrategyCategoryThreshold pushStrategyCategoryThreshold = new PushStrategyCategoryThreshold();
             pushStrategyCategoryThreshold.setProjectId(taskReq.getProject_id());
-            pushStrategyCategoryThreshold.setTaskId(One);
+            pushStrategyCategoryThreshold.setTaskId(taskObj);
             pushStrategyCategoryThreshold.setModuleId(convertCategoryCls(taskReq.getCategory_cls()));
             pushStrategyCategoryThreshold.setTyp(1);
             pushStrategyCategoryThreshold.setCategoryKeys(config.getConfig_category_threshold().getCategory_keys());

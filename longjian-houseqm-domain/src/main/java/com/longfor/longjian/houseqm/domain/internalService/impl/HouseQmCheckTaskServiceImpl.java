@@ -213,7 +213,7 @@ public class HouseQmCheckTaskServiceImpl implements HouseQmCheckTaskService {
     @Override
     @LFAssignDataSource("zhijian2")
     public int update(HouseQmCheckTask taskInfo) {
-        return houseQmCheckTaskMapper.updateByPrimaryKey(taskInfo);
+        return houseQmCheckTaskMapper.updateByPrimaryKeySelective(taskInfo);
     }
 
 
@@ -246,7 +246,8 @@ public class HouseQmCheckTaskServiceImpl implements HouseQmCheckTaskService {
     @Override
     @LFAssignDataSource("zhijian2")
     public int add(HouseQmCheckTask houseQmCheckTask) {
-        return houseQmCheckTaskMapper.insert(houseQmCheckTask);
+        houseQmCheckTaskMapper.insert(houseQmCheckTask);
+        return houseQmCheckTask.getId();
     }
 
     @Override
