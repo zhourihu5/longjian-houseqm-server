@@ -7,6 +7,8 @@ import java.util.Set;
 
 public interface AreaService {
 
+    String getRootRegexpConditionByAreaIds(List<Integer> areaIds);
+
     List<Area> searchRelatedAreaByAreaIdIn(Integer project_id, List<Integer> areaIds);
 
     List<Area> selectAreasByIdInAreaIds(List<Integer> areaIds);

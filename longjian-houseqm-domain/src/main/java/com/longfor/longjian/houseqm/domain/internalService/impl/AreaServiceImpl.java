@@ -12,6 +12,7 @@ import com.longfor.longjian.houseqm.util.StringUtil;
 import com.longfor.longjian.houseqm.utils.ExampleUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections.CollectionUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Service;
 import tk.mybatis.mapper.entity.Example;
 
@@ -34,6 +35,26 @@ public class AreaServiceImpl implements AreaService {
     @Resource
     AreaMapper areaMapper;
 
+    @Override
+    @LFAssignDataSource("zhijian2")
+    public String getRootRegexpConditionByAreaIds(List<Integer> areaIds) {
+        List<Area> areas = selectAreasByIdInAreaIds(areaIds);
+        List<String> idsStr = Lists.newArrayList();
+        List<String> areaPaths = Lists.newArrayList();
+        for (Area area : areas) {
+            areaPaths.add(String.format("%s%d/",area.getPath(),area.getId()));
+            idsStr.add(String.format("/%d/",area.getId()));
+        }
+        Collections.sort(areaPaths);
+        for (int i=0; i<areaPaths.size();i++) {//areaPaths[i] = fmt.Sprintf("(%s[^,]*)*", path)
+            String path = areaPaths.get(i);
+            areaPaths.remove(i);
+            areaPaths.add(i,String.format("(%s[^,]*)*",path));
+        }
+        String pathsRegexp="^"+ StringUtils.join(areaPaths,",{0,1}") +"$";
+        String idsRegexp=StringUtils.join(idsStr,"|");
+        return idsRegexp;
+    }
 
     @Override
     @LFAssignDataSource("zhijian2")

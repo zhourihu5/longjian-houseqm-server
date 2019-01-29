@@ -48,6 +48,23 @@ public class HouseQmCheckTaskIssueServiceImpl implements HouseQmCheckTaskIssueSe
     @Resource
     private HouseQmCheckTaskIssueAttachmentMapper houseQmCheckTaskIssueAttachmentMapper;
 
+    @Override
+    @LFAssignDataSource("zhijian2")
+    public List<HouseQmCheckTaskIssue> searchByTaskIdAndAreaPathAndIdRegexp(int taskId, String regexp) {
+
+        Example example = new Example(HouseQmCheckTaskIssue.class);
+        Example.Criteria criteria = example.createCriteria();
+        criteria.andEqualTo("taskId", taskId);
+        criteria.andCondition("area_path_and_id REGEXP "+regexp);
+        ExampleUtil.addDeleteAtJudge(example);
+        return houseQmCheckTaskIssueMapper.selectByExample(example);
+    }
+
+    @Override
+    @LFAssignDataSource("zhijian2")
+    public List<HouseQmCheckTaskIssue> searchByProjIdAndTaskIdAndTypInGroupByCategoryPathAndKeyAndCheckItemKey(Map<String, Object> condi) {
+        return houseQmCheckTaskIssueMapper.searchByProjIdAndTaskIdAndTypInGroupByCategoryPathAndKeyAndCheckItemKey(condi);
+    }
 
     @Override
     @LFAssignDataSource("zhijian2")

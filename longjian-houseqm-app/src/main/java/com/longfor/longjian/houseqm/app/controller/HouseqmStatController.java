@@ -12,13 +12,21 @@ import com.longfor.longjian.houseqm.app.req.houseqmstat.*;
 import com.longfor.longjian.houseqm.app.service.IHouseqmStatService;
 import com.longfor.longjian.houseqm.app.service.IHouseqmStatisticService;
 import com.longfor.longjian.houseqm.app.vo.*;
+import com.longfor.longjian.houseqm.app.vo.houseqmstat.HouseQmStatInspectionSituationRspVo;
+import com.longfor.longjian.houseqm.app.vo.houseqmstat.InspectionHouseStatusInfoVo;
+import com.longfor.longjian.houseqm.app.vo.houseqmstat.StatCategoryStatRspVo;
+import com.longfor.longjian.houseqm.app.vo.houseqmstat.StatInspectionSituationSearchRspVo;
+import com.longfor.longjian.houseqm.consts.RepossessionStatusEnum;
 import com.longfor.longjian.houseqm.util.DateUtil;
 import com.longfor.longjian.houseqm.util.MathUtil;
 import com.longfor.longjian.houseqm.util.StringSplitToListUtil;
 import io.swagger.annotations.ApiParam;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.ibatis.executor.ReuseExecutor;
 import org.springframework.http.MediaType;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
+import tk.mybatis.mapper.common.IdsMapper;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
@@ -58,6 +66,95 @@ public class HouseqmStatController {
     private CtrlTool ctrlTool;
     @Resource
     private SessionInfo sessionInfo;
+
+    /**
+     * @return com.longfor.longjian.common.base.LjBaseResponse<com.longfor.longjian.houseqm.app.vo.houseqmstat.StatCategoryStatRspVo>
+     * @Author hy
+     * @Description 统计-问题详情-获取问题统计信息
+     * @Date 11:23 2019/1/29
+     * @Param [request, req]
+     **/
+    @GetMapping(value = "stat/category_stat", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+    public LjBaseResponse<StatCategoryStatRspVo> categoryStat(HttpServletRequest request, @Validated StatCategoryStatReq req) throws Exception {
+        LjBaseResponse<StatCategoryStatRspVo> response = new LjBaseResponse<>();
+        ctrlTool.projPermMulti(request, new String[]{"项目.移动验房.统计.查看", "项目.工程检查.统计.查看"});
+        Date beginOn = DateUtil.timeStampToDate(0, "yyyy-MM-dd");
+        Date endOn = DateUtil.timeStampToDate(0, "yyyy-MM-dd");
+        if (!req.getBegin_on().equals("")) {
+            beginOn = DateUtil.strToDate(req.getBegin_on(), "yyyy-MM-dd");
+        }
+        if (!req.getEnd_on().equals("")) {
+            Date t = DateUtil.strToDate(req.getEnd_on(), "yyyy-MM-dd");
+            endOn = DateUtil.dateAddDay(t, 1);
+        }
+        StatCategoryStatRspVo result = houseqmStatService.searchHouseQmIssueCategoryStatByProjTaskIdAreaIdBeginOnEndOn(req.getProject_id(), req.getTask_id(), req.getArea_id(), beginOn, endOn);
+        response.setData(result);
+        return response;
+    }
+
+    /**
+     * @return com.longfor.longjian.common.base.LjBaseResponse<com.longfor.longjian.houseqm.app.vo.houseqmstat.StatInspectionSituationSearchRspVo>
+     * @Author hy
+     * @Description 统计-验房详情-检索验房详情
+     * @Date 10:50 2019/1/29
+     * @Param [request, req]
+     **/
+    @GetMapping(value = "stat/inspection_situation_search", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+    public LjBaseResponse<StatInspectionSituationSearchRspVo> inspectionSituationSearch(HttpServletRequest request, @Validated StatInspectionSituationSearchReq req) throws Exception {
+        LjBaseResponse<StatInspectionSituationSearchRspVo> response = new LjBaseResponse<>();
+        ctrlTool.projPermMulti(request, new String[]{"项目.移动验房.统计.查看", "项目.工程检查.统计.查看"});
+        if (!req.getStatus().equals(RepossessionStatusEnum.Accept.getId())) {
+            req.setStart_time("");
+            req.setEnd_time("");
+        }
+        // 时间设置问题 可能造成数据结果不一致，修改时关注一下
+        Date startTime = DateUtil.timeStampToDate(0, "yyyy-MM-dd");
+        Date endTime = DateUtil.timeStampToDate(0, "yyyy-MM-dd");
+        if (req.getStart_time().length() > 0) {
+            startTime = DateUtil.strToDate(req.getStart_time() + " 00:00:00", "yyyy-MM-dd hh:mm:ss");
+            endTime = DateUtil.strToDate(req.getEnd_time() + " 23:59:59", "yyyy-MM-dd hh:mm:ss");
+        }
+        List<Integer> areaIds = houseqmStatService.searchRepossessInspectionAreaIdsByConditions(req.getProject_id(), req.getTask_id(), req.getArea_id(), req.getStatus(), req.getIssue_status(), startTime, endTime);
+        StatInspectionSituationSearchRspVo data = new StatInspectionSituationSearchRspVo();
+        data.setTotal(areaIds.size());
+        List<Integer> ids = splitSliceByPaged(areaIds,req.getPage(),req.getPage_size());
+        List<InspectionHouseStatusInfoVo> details = houseqmStatService.formatFenhuHouseInspectionStatusInfoByAreaIds(req.getTask_id(), ids);
+        List<HouseQmStatInspectionSituationRspVo> items = new ArrayList<>();
+        for (InspectionHouseStatusInfoVo detail : details) {
+            HouseQmStatInspectionSituationRspVo item = new HouseQmStatInspectionSituationRspVo();
+            item.setArea_id(detail.getAreaId());
+            item.setArea_name(detail.getAreaName());
+            item.setArea_path(detail.getAreaPathName());
+            item.setIssue_approveded_count(detail.getIssueApprovededCount());
+            item.setIssue_count(detail.getIssueCount());
+            item.setIssue_repaired_count(detail.getIssueRepairedCount());
+            item.setStatus(detail.getStatus());
+            item.setStatus_name(detail.getStatusName());
+            item.setTask_id(detail.getTaskId());
+            items.add(item);
+        }
+        data.setItems(items);
+        response.setData(data);
+        return response;
+    }
+
+    public List<Integer> splitSliceByPaged(List<Integer> areaIds, int page, int pageSize) {
+        int start, end;
+        if (page <= 0) {
+            page = 1;
+        }
+        start = (page - 1) * pageSize;
+        if (start >= areaIds.size()) return areaIds;
+        end=start+pageSize;
+        if (end>areaIds.size()){
+            end=areaIds.size();
+        }
+        List<Integer> ids = Lists.newArrayList();
+        for (int i=start;i<end;i++){
+            ids.add(areaIds.get(i));
+        }
+        return ids;
+    }
 
     /**
      * 项目/任务检查人员统计

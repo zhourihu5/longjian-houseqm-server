@@ -1287,7 +1287,7 @@ public class HouseqmStatisticServiceImpl implements IHouseqmStatisticService {
 
     }
 
-    private List<HouseQmIssueCategoryStatVo> calculateIssueCount
+    public List<HouseQmIssueCategoryStatVo> calculateIssueCount
             (ArrayList<SimpleHouseQmCheckTaskIssueStatVo> issueStatVoList) {
         ArrayList<HouseQmIssueCategoryStatVo> objects = Lists.newArrayList();
         Map<String, Object> map = groupIssueStatByCategoryAndCheckItem(issueStatVoList);
@@ -1486,7 +1486,7 @@ public class HouseqmStatisticServiceImpl implements IHouseqmStatisticService {
      * @author hy
      * @date 2018/12/23 0023
      */
-    private AreaMapVo createAreasMapByLeaveIds(List<Integer> areaIdList) {
+    public AreaMapVo createAreasMapByLeaveIds(List<Integer> areaIdList) {
         List<Area> areas = areaService.selectAreasByIdInAreaIds(areaIdList);
         List<Integer> totalIds = Lists.newArrayList();
         for (Area area : areas) {
