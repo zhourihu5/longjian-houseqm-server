@@ -4,22 +4,22 @@ import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
 import com.longfor.longjian.common.util.StringUtil;
+import com.longfor.longjian.houseqm.app.service.HouseqmStaticService;
 import com.longfor.longjian.houseqm.app.service.IHouseqmStatService;
-import com.longfor.longjian.houseqm.consts.ErrorEnum;
-import com.longfor.longjian.houseqm.consts.HouseQmCheckTaskIssueEnum;
+import com.longfor.longjian.houseqm.app.vo.houseqmstat.HouseQmStatCategorySituationRspVo;
+import com.longfor.longjian.houseqm.app.vo.houseqmstat.InspectionHouseStatusInfoVo;
+import com.longfor.longjian.houseqm.app.vo.houseqmstat.StatCategoryStatRspVo;
+import com.longfor.longjian.houseqm.consts.*;
 import com.longfor.longjian.houseqm.app.vo.*;
 import com.longfor.longjian.common.consts.HouseQmCheckTaskIssueStatusEnum;
-import com.longfor.longjian.houseqm.consts.HouseQmCheckTaskIssueTypeEnum;
-import com.longfor.longjian.houseqm.domain.internalService.AreaService;
-import com.longfor.longjian.houseqm.domain.internalService.HouseQmCheckTaskIssueService;
-import com.longfor.longjian.houseqm.domain.internalService.HouseQmCheckTaskService;
-import com.longfor.longjian.houseqm.domain.internalService.UserService;
+import com.longfor.longjian.houseqm.domain.internalService.*;
 import com.longfor.longjian.houseqm.dto.CheckerIssueStatusStatDto;
 import com.longfor.longjian.houseqm.dto.RepaireIssueStatusStatDto;
 import com.longfor.longjian.houseqm.po.*;
 import com.longfor.longjian.houseqm.util.DateUtil;
 import com.longfor.longjian.houseqm.util.StringSplitToListUtil;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.collections.CollectionUtils;
 import org.springframework.stereotype.Repository;
 import org.springframework.stereotype.Service;
 
@@ -46,6 +46,268 @@ public class HouseqmStatServiceImpl implements IHouseqmStatService {
     private HouseQmCheckTaskService houseQmCheckTaskService;
     @Resource
     private AreaService areaService;
+    @Resource
+    private HouseqmStatisticServiceImpl houseqmStatisticService;
+    @Resource
+    private RepossessionStatusService repossessionStatusService;
+    @Resource
+    private HouseqmStaticService houseqmStaticService;
+
+    @Override
+    public List<Integer> searchRepossessInspectionAreaIdsByConditions(Integer project_id, Integer task_id, Integer area_id, Integer status, Integer issue_status, Date startTime, Date endTime) {
+        //取出该任务下的所有户path
+        List<String> areaPaths = Lists.newArrayList();
+        HouseQmCheckTask task = houseQmCheckTaskService.getHouseQmCheckTaskByProjTaskId(project_id, task_id);
+        List<Integer> aids = StringUtil.strToInts(task.getAreaIds(), ",");
+        List<Integer> types = StringUtil.strToInts(task.getAreaTypes(), ",");
+        List<Area> areas = areaService.searchAreaListByRootIdAndTypes(project_id, aids, types);
+        List<String> taskAreaPaths = Lists.newArrayList();
+        for (Area area : areas) {
+            taskAreaPaths.add(String.format("%s%d/", area.getPath(), area.getId()));
+        }
+
+        //取出对应状态条件path
+        if (!status.equals(StatisticFormRepossessionStatusEnum.All.getId())) {
+            if (status.equals(StatisticFormRepossessionStatusEnum.None.getId())) {
+                List<String> checkedAreaPaths = getRepossessAreaPathListByTaskIdAndStatusesAndClientUpdateAt(task_id, Collections.singletonList(StatisticFormRepossessionStatusEnum.None.getId()), startTime, endTime);
+                //求差集
+                taskAreaPaths.removeAll(checkedAreaPaths);
+                areaPaths = taskAreaPaths;
+            } else {
+                areaPaths = getRepossessAreaPathListByTaskIdAndStatusesAndClientUpdateAt(task_id, Collections.singletonList(status), startTime, endTime);
+            }
+        } else {
+            areaPaths = taskAreaPaths;
+        }
+        // 筛选问题状态
+        // 区分是否存在问题
+        if (issue_status.equals(StatisticFormInspectionIssueStatusEnum.HasIssue.getId())) {
+            List<String> checkedAreaPaths = houseqmStaticService.getHasIssueTaskCheckedAreaPathListByTaskId(task_id, true, null, area_id);
+            //求交集
+            areaPaths.retainAll(checkedAreaPaths);
+        } else if (issue_status.equals(StatisticFormInspectionIssueStatusEnum.NoProblem.getId())) {
+            // 不存在问题的包括了那些未检查，就是 所有-已查验存在问题的
+            List<String> checkedAreaPaths = houseqmStaticService.getHasIssueTaskCheckedAreaPathListByTaskId(task_id, true, null, area_id);
+            // 取差集
+            areaPaths.removeAll(checkedAreaPaths);
+        }
+        //过滤掉不在任务中的path
+        //出现此种情况的原因：在已上传验房报告的情况下，将已有数据的楼栋从任务中移除掉了
+        // areaPaths = utils.StringSliceIntersection(taskAreaPaths, areaPaths)
+
+        //用areaId来过滤掉那些不属范围内的path
+        if (area_id > 0) {
+            areaPaths = filterAreaPathListByRootAreaId(area_id, areaPaths);
+        }
+        //排序后返回areaIds
+        Collections.sort(areaPaths);
+        ArrayList<Integer> result = Lists.newArrayList();
+        for (String p : areaPaths) {
+            List<Integer> ids = StringUtil.strToInts(p, "/");
+            if (ids.size() <= 0) continue;
+            result.add(ids.get(ids.size() - 1));
+        }
+        return result;
+    }
+
+    //依据根节点来过滤掉非子项的areapath
+    public List<String> filterAreaPathListByRootAreaId(Integer rootAreaId, List<String> areaPaths) {
+        Area area = areaService.selectById(rootAreaId);
+        if (area == null) return Lists.newArrayList();
+        String apath = String.format("%s%d/", area.getPath(), area.getId());
+        ArrayList<String> result = Lists.newArrayList();
+        for (String path : areaPaths) {
+            if (path.startsWith(apath)) {
+                result.add(path);
+            }
+        }
+        return result;
+    }
+
+    //通过任务id和需要的验房状态（已经收楼）以及收楼时间获取对应的area_path_and_id
+    //通过任务id和需要的验房状态获取对应的area_path_and_id
+    public List<String> getRepossessAreaPathListByTaskIdAndStatusesAndClientUpdateAt(int taskId, List<Integer> repossStatuses, Date startTime, Date endTime) {
+
+        List<RepossessionStatus> reposs = repossessionStatusService.searchByTaskIdAndStatusInAndStatusClientUpdateAt(taskId, repossStatuses, startTime, endTime);
+        List<String> result = Lists.newArrayList();
+        for (RepossessionStatus r : reposs) {
+            //补全兼容area_path_出错的记录
+            result.add("/" + r.getAreaPathAndId().replaceFirst("/", ""));
+        }
+        return result;
+    }
+
+    // 格式化验房信息
+    @Override
+    public List<InspectionHouseStatusInfoVo> formatFenhuHouseInspectionStatusInfoByAreaIds(Integer task_id, List<Integer> ids) {
+        ArrayList<InspectionHouseStatusInfoVo> result = Lists.newArrayList();
+        if (ids.size() <= 0) return result;
+
+        //获取区域信息
+        AreaMapVo areaMap = houseqmStatisticService.createAreasMapByLeaveIds(ids);
+        //获取问题map
+        Map<Integer, List<HouseQmCheckTaskIssue>> issuesMap = searchHouseQmCheckTaskIssueMapByTaskIdAreaIds(task_id, ids);
+
+        for (Integer aid : ids) {
+            InspectionHouseStatusInfoVo item = new InspectionHouseStatusInfoVo();
+            // 补全区域信息
+            item.setAreaId(aid);
+            item.setTaskId(task_id);
+            item.setAreaName(areaMap.getName(aid));
+            item.setAreaPathName(areaMap.getPathNames(aid));
+
+            item.setIssueRepairedCount(0);
+            item.setIssueApprovededCount(0);
+            item.setIssueCount(0);
+            //补全问题信息
+            List<HouseQmCheckTaskIssue> issues = issuesMap.get(aid);
+            if (CollectionUtils.isNotEmpty(issues)) {
+                item.setStatus(StatisticFormInspectionStatusEnum.Checked.getId());
+                for (HouseQmCheckTaskIssue issue : issues) {
+                    HouseQmCheckTaskIssueStatusEnum e = null;
+                    for (HouseQmCheckTaskIssueStatusEnum value : HouseQmCheckTaskIssueStatusEnum.values()) {
+                        if (value.getId().equals(issue.getStatus())) e = value;
+                    }
+                    if (e != null) {
+                        switch (e) {
+                            case ReformNoCheck:
+                                item.setIssueRepairedCount(item.getIssueRepairedCount() + 1);
+                                break;
+                            case CheckYes:
+                                item.setIssueRepairedCount(item.getIssueRepairedCount() + 1);
+                                item.setIssueApprovededCount(item.getIssueApprovededCount() + 1);
+                                break;
+                            default:
+                                break;
+                        }
+                    }
+                    HouseQmCheckTaskIssueTypeEnum e1 = null;
+                    for (HouseQmCheckTaskIssueTypeEnum value : HouseQmCheckTaskIssueTypeEnum.values()) {
+                        if (value.getId().equals(issue.getTyp())) e1 = value;
+                    }
+                    if (e1 != null) {
+                        switch (e1) {
+                            case FindProblem:
+                            case Difficult:
+                                item.setIssueCount(item.getIssueCount() + 1);
+                                break;
+                            default:
+                                break;
+                        }
+                    }
+                }
+            } else {
+                item.setStatus(StatisticFormInspectionStatusEnum.UnChecked.getId());
+            }
+            for (StatisticFormInspectionStatusEnum value : StatisticFormInspectionStatusEnum.values()) {
+                if (value.getId().equals(item.getStatus())) item.setStatusName(value.getValue());
+            }
+            result.add(item);
+        }
+        return result;
+    }
+
+    // 通过taskId和areaId获取按area_id分组的问题map
+    public Map<Integer, List<HouseQmCheckTaskIssue>> searchHouseQmCheckTaskIssueMapByTaskIdAreaIds(int taskId,List<Integer> areaIds){
+        Map<Integer, List<HouseQmCheckTaskIssue>> result = Maps.newHashMap();
+
+        String regexp=areaService.getRootRegexpConditionByAreaIds(areaIds);
+        // 此处go源码 可能有点问题 ，taskId
+        List<HouseQmCheckTaskIssue> issues=houseQmCheckTaskIssueService.searchByTaskIdAndAreaPathAndIdRegexp(taskId,regexp);
+
+        //排序后用area_path_and_id来聚合时间复杂度更低
+        List<Area> areas = areaService.selectByAreaIds(areaIds);
+        Map<String, Area> areaMap = Maps.newHashMap();
+        List<String> areaPaths = Lists.newArrayList();
+        for (Area a : areas) {
+            String p_a_id=String.format("%s%d/",a.getPath(),a.getId());
+            areaMap.put(p_a_id,a);
+            areaPaths.add(p_a_id);
+        }
+        Map<String, HouseQmCheckTaskIssue> issueMap = Maps.newHashMap();
+        List<String> issuePaths = Lists.newArrayList();
+        for (HouseQmCheckTaskIssue issue : issues) {
+            issueMap.put(issue.getAreaPathAndId(),issue);
+            issuePaths.add(issue.getAreaPathAndId());
+        }
+        Collections.sort(areaPaths);
+        Collections.sort(issuePaths);
+    
+        int issuePos=0;
+        String lastPath="Nothing";
+        int lastCount=0;
+        for (String aPath : areaPaths) {
+            if (!aPath.startsWith(lastPath)){
+                lastPath=aPath;
+                issuePos+=lastCount;
+                lastCount=0;
+            }
+            for (int i=issuePos;i<issuePaths.size();i++){
+                if (issuePaths.get(i).startsWith(aPath)){
+                    Area area = areaMap.get(aPath);
+                    //result[area.Id] = append(result[area.Id], issueMap[issuePaths[i]])
+                    List<HouseQmCheckTaskIssue> list = result.get(area.getId());
+                    if (list !=null){
+                        list.add(issueMap.get(issuePaths.get(i)));
+                        result.put(area.getId(),list);
+                    }else {
+                        result.put(area.getId(),Arrays.asList(issueMap.get(issuePaths.get(i))));
+                    }
+                    lastCount++;
+                }else {
+                    break;
+                }
+            }
+        }
+
+        return result;
+    }
+
+    @Override
+    public StatCategoryStatRspVo searchHouseQmIssueCategoryStatByProjTaskIdAreaIdBeginOnEndOn(Integer project_id, Integer task_id, Integer area_id, Date beginOn, Date endOn) {
+        Map<String, Object> condi = Maps.newHashMap();
+        condi.put("project_id", project_id);
+        condi.put("task_id", task_id);
+        List<Integer> typs = Arrays.asList(HouseQmCheckTaskIssueTypeEnum.FindProblem.getId(), HouseQmCheckTaskIssueTypeEnum.Difficult.getId());
+        condi.put("typ", typs);
+        if (area_id > 0) {
+            condi.put("AreaPathAndId", "%/" + area_id + "/%");
+        }
+        if (DateUtil.datetimeToTimeStamp(beginOn) > 0) {
+            condi.put("ClientCreateAtGte", beginOn);
+        }
+
+        if (DateUtil.datetimeToTimeStamp(endOn) > 0) {
+            condi.put("ClientCreateAtLte", endOn);
+        }
+        List<HouseQmCheckTaskIssue> issueStat = houseQmCheckTaskIssueService.searchByProjIdAndTaskIdAndTypInGroupByCategoryPathAndKeyAndCheckItemKey(condi);
+        StatCategoryStatRspVo result = new StatCategoryStatRspVo();
+        result.setIssue_count(issueStat.size());
+
+        ArrayList<SimpleHouseQmCheckTaskIssueStatVo> issue_stat = Lists.newArrayList();
+        issueStat.forEach(i -> {
+            SimpleHouseQmCheckTaskIssueStatVo s = new SimpleHouseQmCheckTaskIssueStatVo();
+            s.setCategoryKey(i.getCategoryKey());
+            s.setCategoryPathAndKey(i.getCategoryPathAndKey());
+            s.setCheckItemKey(i.getCheckItemKey());
+            s.setCheckItemPathAndKey(i.getCheckItemPathAndKey());
+            s.setCount(i.getCount());
+            issue_stat.add(s);
+        });
+        List<HouseQmIssueCategoryStatVo> list = houseqmStatisticService.calculateIssueCount(issue_stat);
+        ArrayList<HouseQmStatCategorySituationRspVo> items = new ArrayList<>();
+        list.forEach(e -> {
+            HouseQmStatCategorySituationRspVo item = new HouseQmStatCategorySituationRspVo();
+            item.setKey(e.getKey());
+            item.setParent_key(e.getKey());
+            item.setIssue_count(e.getIssueCount());
+            item.setName(e.getName());
+            items.add(item);
+        });
+        result.setItems(items);
+        return result;
+    }
+
 
     @Override
     public HouseQmStatAreaSituationIssueRspVo getAreaIssueTypeStatByProjectIdAreaIdCategoryCls(Integer project_id, Integer area_id, Integer category_cls) throws Exception {

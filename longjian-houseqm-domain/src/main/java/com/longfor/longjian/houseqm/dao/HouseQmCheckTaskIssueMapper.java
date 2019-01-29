@@ -13,6 +13,8 @@ import java.util.*;
 
 public interface HouseQmCheckTaskIssueMapper extends LFMySQLMapper<HouseQmCheckTaskIssue> {
 
+    List<HouseQmCheckTaskIssue> searchByProjIdAndTaskIdAndTypInGroupByCategoryPathAndKeyAndCheckItemKey(Map<String, Object> condi);
+
 
     List<HouseQmCheckTaskIssue> searchByTaskIdInGroupByTaskIdAndStatus(@Param("taskIds") List<Integer> taskIds);
 

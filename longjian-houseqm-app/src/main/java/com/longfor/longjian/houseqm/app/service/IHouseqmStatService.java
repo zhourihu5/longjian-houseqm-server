@@ -1,6 +1,8 @@
 package com.longfor.longjian.houseqm.app.service;
 
 import com.longfor.longjian.houseqm.app.vo.*;
+import com.longfor.longjian.houseqm.app.vo.houseqmstat.InspectionHouseStatusInfoVo;
+import com.longfor.longjian.houseqm.app.vo.houseqmstat.StatCategoryStatRspVo;
 
 import java.util.Date;
 import java.util.List;
@@ -23,4 +25,9 @@ public interface IHouseqmStatService {
 
     HouseQmStatAreaSituationIssueRspVo getAreaIssueTypeStatByProjectIdAreaIdCategoryCls(Integer project_id, Integer area_id, Integer category_cls) throws Exception;
 
+    StatCategoryStatRspVo searchHouseQmIssueCategoryStatByProjTaskIdAreaIdBeginOnEndOn(Integer project_id, Integer task_id, Integer area_id, Date beginOn, Date endOn);
+
+    List<Integer> searchRepossessInspectionAreaIdsByConditions(Integer project_id, Integer task_id, Integer area_id, Integer status, Integer issue_status, Date startTime, Date endTime);
+
+    List<InspectionHouseStatusInfoVo> formatFenhuHouseInspectionStatusInfoByAreaIds(Integer task_id, List<Integer> ids);
 }
