@@ -279,12 +279,26 @@ public class HouseqmStatisticController {
                                                                                        @RequestParam(value = "end_on") Integer endOn,
                                                                                        @RequestParam(value = "timestamp") Integer timestamp) {
 
-        Date begin = DateUtil.transForDate(beginOn);
-        Date endOns = DateUtil.transForDate(endOn);
+        Date begin = null;
+        if (beginOn > 0) {
+            begin = DateUtil.timeStampToDate(beginOn, "yyyy-MM-dd");
+        }
+        Date endOns = null;
+        if (endOn > 0) {
+            endOns = DateUtil.timeStampToDate(endOn, "yyyy-MM-dd");
+            //endon加一天
+            Calendar c = Calendar.getInstance();
+            c.setTime(endOns);
+            c.add(Calendar.DAY_OF_MONTH, 1);// +1天
+            endOns = c.getTime();
+        }
         List<HouseQmIssueCategoryStatVo> categoryStatlist = iHouseqmStatisticService.searchHouseQmIssueCategoryStatByProjTaskIdAreaIdBeginOnEndOn(projectId, taskId, areaId, begin, endOns);
         HouseqmStatisticTaskCheckitemStatRspMsgVo vo = new HouseqmStatisticTaskCheckitemStatRspMsgVo();
         List<HouseqmStatisticTaskCheckitemStatRspMsgVo.ApiHouseQmCheckItemIssueStat> issueStatList = Lists.newArrayList();
         for (int i = 0; i < categoryStatlist.size(); i++) {
+            if(!"".equals(categoryStatlist.get(i).getParentKey())){
+                continue;
+            }
             HouseqmStatisticTaskCheckitemStatRspMsgVo.ApiHouseQmCheckItemIssueStat apiHouseQmCheckItemIssueStat = new HouseqmStatisticTaskCheckitemStatRspMsgVo().new ApiHouseQmCheckItemIssueStat();
             apiHouseQmCheckItemIssueStat.setName(categoryStatlist.get(i).getName());
             apiHouseQmCheckItemIssueStat.setKey(categoryStatlist.get(i).getKey());

@@ -635,7 +635,7 @@
             #{type}
         </foreach>
         AND client_create_at &gt;= #{begin} AND
-        client_create_at &lt;= DATE_ADD(#{endOns},INTERVAL 1 DAY)
+        client_create_at &lt;= #{endOns}
         <if test="deleted =='false'">
             and delete_at is NULL
         </if>
