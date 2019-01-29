@@ -51,13 +51,31 @@ public class HouseQmCheckTaskIssueServiceImpl implements HouseQmCheckTaskIssueSe
     @Override
     @LFAssignDataSource("zhijian2")
     public List<HouseQmCheckTaskIssue> searchByTaskIdAndAreaPathAndIdRegexp(int taskId, String regexp) {
-
         Example example = new Example(HouseQmCheckTaskIssue.class);
         Example.Criteria criteria = example.createCriteria();
         criteria.andEqualTo("taskId", taskId);
         criteria.andCondition("area_path_and_id REGEXP "+regexp);
         ExampleUtil.addDeleteAtJudge(example);
         return houseQmCheckTaskIssueMapper.selectByExample(example);
+    }
+
+    @Override
+    @LFAssignDataSource("zhijian2")
+    public Integer countByProjIdAndTaskIdAndTypInGroupByCategoryPathAndKeyAndCheckItemKey(Integer project_id, Integer task_id, List<Integer> typs, Integer area_id, Date beginOn, Date endOn) {
+        Example example = new Example(HouseQmCheckTaskIssue.class);
+        Example.Criteria criteria = example.createCriteria();
+        criteria.andEqualTo("projectId",project_id).andEqualTo("taskId", task_id).andIn("typ",typs);
+        if (area_id > 0) {
+            criteria.andLike("areaPathAndId","%/" + area_id + "/%");
+        }
+        if (DateUtil.datetimeToTimeStamp(beginOn) > 0) {
+            criteria.andGreaterThanOrEqualTo("clientCreateAt",beginOn);
+        }
+        if (DateUtil.datetimeToTimeStamp(endOn) > 0) {
+            criteria.andLessThanOrEqualTo("clientCreateAt",endOn);
+        }
+        ExampleUtil.addDeleteAtJudge(example);
+        return houseQmCheckTaskIssueMapper.selectCountByExample(example);
     }
 
     @Override

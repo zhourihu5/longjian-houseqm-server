@@ -281,8 +281,9 @@ public class HouseqmStatServiceImpl implements IHouseqmStatService {
             condi.put("ClientCreateAtLte", endOn);
         }
         List<HouseQmCheckTaskIssue> issueStat = houseQmCheckTaskIssueService.searchByProjIdAndTaskIdAndTypInGroupByCategoryPathAndKeyAndCheckItemKey(condi);
+        Integer total = houseQmCheckTaskIssueService.countByProjIdAndTaskIdAndTypInGroupByCategoryPathAndKeyAndCheckItemKey(project_id, task_id, typs, area_id, beginOn, endOn);
         StatCategoryStatRspVo result = new StatCategoryStatRspVo();
-        result.setIssue_count(issueStat.size());
+        result.setIssue_count(total);
 
         ArrayList<SimpleHouseQmCheckTaskIssueStatVo> issue_stat = Lists.newArrayList();
         issueStat.forEach(i -> {

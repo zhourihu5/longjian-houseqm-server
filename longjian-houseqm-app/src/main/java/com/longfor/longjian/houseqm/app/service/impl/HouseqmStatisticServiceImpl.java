@@ -253,7 +253,7 @@ public class HouseqmStatisticServiceImpl implements IHouseqmStatisticService {
         item.setIssue_recorded_count(0);
         item.setIssue_repaired_count(0);
         item.setRecord_count(0);
-
+        result.setItem(item);
         List<UserInHouseQmCheckTask> user_task_list = userInHouseQmCheckTaskService.searchByUserIdAndRoleType(uid, HouseQmCheckTaskRoleTypeEnum.Checker.getId());
         List<Integer> task_ids = Lists.newArrayList();
         user_task_list.forEach(task -> {

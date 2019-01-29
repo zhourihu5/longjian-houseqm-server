@@ -28,7 +28,7 @@ public class StatCategoryStatReq implements Serializable {
     private Integer project_id;
     @NotNull
     private Integer task_id;
-    private Integer area_id;
-    private String begin_on;
-    private String end_on;
+    private Integer area_id=0;
+    private String begin_on="";
+    private String end_on="";
 }

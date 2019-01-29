@@ -80,10 +80,10 @@ public class HouseqmStatController {
         ctrlTool.projPermMulti(request, new String[]{"项目.移动验房.统计.查看", "项目.工程检查.统计.查看"});
         Date beginOn = DateUtil.timeStampToDate(0, "yyyy-MM-dd");
         Date endOn = DateUtil.timeStampToDate(0, "yyyy-MM-dd");
-        if (!req.getBegin_on().equals("")) {
+        if (req.getBegin_on()!=null&&!req.getBegin_on().equals("")) {
             beginOn = DateUtil.strToDate(req.getBegin_on(), "yyyy-MM-dd");
         }
-        if (!req.getEnd_on().equals("")) {
+        if (req.getEnd_on()!=null&&!req.getEnd_on().equals("")) {
             Date t = DateUtil.strToDate(req.getEnd_on(), "yyyy-MM-dd");
             endOn = DateUtil.dateAddDay(t, 1);
         }

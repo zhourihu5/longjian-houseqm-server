@@ -38,7 +38,7 @@ public class HouseqmRepossessionController {
      * @Date 15:18 2019/1/22
      * @Param [repossessionReportReq]
      **/
-    @RequestMapping(value = "report/", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+    @RequestMapping(value = "report", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     public LjBaseResponse<Object> report(@Validated RepossessionReportReq repossessionReportReq) {
         return iRepossessionFeignService.report(repossessionReportReq);
     }
@@ -51,7 +51,7 @@ public class HouseqmRepossessionController {
      * @Date 15:18 2019/1/22
      * @Param
      **/
-    @RequestMapping(value = "get/", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+    @RequestMapping(value = "get", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     public LjBaseResponse<Object> get(@Validated RepossessionGetReq repossessionGetReq) {
         log.info("get, task_ids="+repossessionGetReq.getTask_ids()+", timestamp="+repossessionGetReq.getTimestamp());
         return iRepossessionFeignService.get(repossessionGetReq);
