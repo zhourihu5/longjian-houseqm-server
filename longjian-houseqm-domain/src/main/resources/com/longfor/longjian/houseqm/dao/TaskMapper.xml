@@ -21,12 +21,4 @@
     -->
     id, project_id, name, creator_id, typ, config_info, create_at, update_at, delete_at
   </sql>
-  <insert id="add" parameterType="com.longfor.longjian.houseqm.po.Task" useGeneratedKeys="true" keyProperty="id">
-insert into task (project_id, name,creator_id,typ)
-values (#{projectId,jdbcType=INTEGER},
-#{name,jdbcType=VARCHAR},
-#{creatorId,jdbcType=INTEGER},
-#{typ,jdbcType=INTEGER}
-)
-</insert>
 </mapper>

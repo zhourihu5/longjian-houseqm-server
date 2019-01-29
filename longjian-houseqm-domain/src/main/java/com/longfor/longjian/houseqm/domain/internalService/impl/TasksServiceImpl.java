@@ -22,6 +22,10 @@ public class TasksServiceImpl implements TasksService {
     @LFAssignDataSource("zhijian2")
     @Override
     public int add(Task task) {
-     return    taskMapper.add(task);
+        taskMapper.insertSelective(task);
+
+     return    task.getId();
     }
+
+
 }
