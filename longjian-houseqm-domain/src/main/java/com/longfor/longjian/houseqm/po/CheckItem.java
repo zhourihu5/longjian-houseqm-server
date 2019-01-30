@@ -19,7 +19,7 @@ public class CheckItem implements Serializable {
     private Integer id;
     @Column(name = "father_key")
     private String fatherKey;
-    @Column(name = "key")
+    @Column(name = "`key`")
     private String key;
     @Column(name = "path")
     private String path;
@@ -31,7 +31,7 @@ public class CheckItem implements Serializable {
     private String categoryOrder;
     @Column(name = "category_key")
     private String categoryKey;
-    @Column(name = "order")
+    @Column(name = "`order`")
     private String order;
     @Column(name = "zj_std_key")
     private String zjStdKey;
@@ -39,7 +39,7 @@ public class CheckItem implements Serializable {
     private String customKey;
     @Column(name = "name")
     private String name;
-    @Column(name = "desc")
+    @Column(name = "`desc`")
     private String desc;
     @Column(name = "common_issues")
     private String commonIssues;

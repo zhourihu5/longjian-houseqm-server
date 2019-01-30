@@ -39,7 +39,7 @@ public class FixingPresetAppController {
      * @return
      */
 
-    @GetMapping(value = "check_item/fixing_preset_app/app_list_fixing_preset", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+    @RequestMapping(value = "check_item/fixing_preset_app/app_list_fixing_preset", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     public LjBaseResponse<AppListFixingPresetVo> appListFixingPreset(
             @RequestParam(value = "project_id", required = true, defaultValue = "0") Integer projectId,
             @RequestParam(value = "last_id", required = true, defaultValue = "0") Integer lastId,

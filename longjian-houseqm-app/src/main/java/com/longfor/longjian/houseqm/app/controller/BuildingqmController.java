@@ -82,7 +82,7 @@ public class BuildingqmController {
      * @author hy
      * @date 2018/12/25 0025
      */
-    @GetMapping(value = "check_update/check", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+    @RequestMapping(value = "check_update/check", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     public LjBaseResponse<TaskIssueListVo> check(@Valid UpdateDeviceReq updateDeviceReq) {
 
         Date taskUpdateTime = DateUtil.timeStampToDate(updateDeviceReq.getTask_update_time(), "yyyy-MM-dd");
@@ -194,7 +194,7 @@ public class BuildingqmController {
      * @param taskReq
      * @return
      */
-    @PostMapping(value = "task/create", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+    @RequestMapping(value = "task/create", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     public LjBaseResponse create(HttpServletRequest request, @Valid TaskReq taskReq) {
         log.info("create, project_id=" + taskReq.getProject_id() + "" +
                 " name=" + taskReq.getName() + ", " +
@@ -232,7 +232,7 @@ public class BuildingqmController {
      * @param taskId
      * @return
      */
-    @GetMapping(value = "task/task_squad/", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+    @RequestMapping(value = "task/task_squad", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     public LjBaseResponse<HouseQmCheckTaskSquadListRspVo.HouseQmCheckTaskSquadListRspVoList> taskSquad(HttpServletRequest request, @RequestParam(name = "project_id", required = true) String projectId,
                                                                                                        @RequestParam(name = "task_id", required = true) String taskId) {
         LjBaseResponse<HouseQmCheckTaskSquadListRspVo.HouseQmCheckTaskSquadListRspVoList> response= new LjBaseResponse<>();
@@ -266,7 +266,7 @@ public class BuildingqmController {
      * @param taskEditReq
      * @return
      */
-    @PostMapping(value = "task/edit/", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+    @RequestMapping(value = "task/edit", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     public LjBaseResponse edit(HttpServletRequest request, @Valid TaskEditReq taskEditReq) {
         log.info("edit, project_id=" + taskEditReq.getProject_id() + "" +
                 " name=" + taskEditReq.getName() + ", " +
@@ -305,7 +305,7 @@ public class BuildingqmController {
      * @param issueUuid
      * @return
      */
-    @GetMapping(value = "issue/issue_log_info/", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+    @RequestMapping(value = "issue/issue_log_info", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     public LjBaseResponse<ApiIssueLogVo> issueLogInfo(@RequestParam(name = "task_id", required = true) Integer taskId,
                                                       @RequestParam(name = "timestamp", required = true) Integer timestamp,
                                                       @RequestParam(name = "issue_uuid", required = true) String issueUuid) {
@@ -325,7 +325,7 @@ public class BuildingqmController {
      * @param data
      * @return
      */
-    @GetMapping(value = "buildingqm/report_issue/", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+    @RequestMapping(value = "buildingqm/report_issue", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     public LjBaseResponse<ReportIssueVo> reportIssue(@RequestParam(name = "project_id", required = true) Integer projectId,
 
                                                      @RequestParam(name = "data", required = true) String data) {

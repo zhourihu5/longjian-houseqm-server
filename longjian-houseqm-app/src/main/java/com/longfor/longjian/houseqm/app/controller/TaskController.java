@@ -53,7 +53,7 @@ public class TaskController {
     @Resource
     private SpeConfigVo spec;
 
-    @GetMapping(value = "view/", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+    @RequestMapping(value = "view", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     public LjBaseResponse<HouseQmCheckTaskRspVo> view(@RequestParam(value = "project_id") Integer projectId,
                                                       @RequestParam(value = "task_id") Integer taskId) {
 
@@ -72,7 +72,7 @@ public class TaskController {
      * @Date 11:19 2019/1/24
      * @Param [request, req]
      **/
-    @GetMapping(value = "list_info", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+    @RequestMapping(value = "list_info", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     public LjBaseResponse<TaskListInfoRspVo> listInfo(HttpServletRequest request, @Valid TaskListInfoReq req) {
         LjBaseResponse<TaskListInfoRspVo> response = new LjBaseResponse<>();
         try {
@@ -173,7 +173,7 @@ public class TaskController {
      * @Param [req]
      * @return com.longfor.longjian.common.base.LjBaseResponse
      **/
-    @PostMapping(value = "delete/", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+    @RequestMapping(value = "delete", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     public LjBaseResponse delete(HttpServletRequest request, @Valid TaskDeleteReq req) {
         LjBaseResponse response = new LjBaseResponse();
         try {
@@ -194,7 +194,7 @@ public class TaskController {
      * @Param [req]
      * @return com.longfor.longjian.common.base.LjBaseResponse<com.longfor.longjian.houseqm.app.vo.TaskTaskRoleRspVo>
      **/
-    @GetMapping(value = "task_role/", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+    @RequestMapping(value = "task_role", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     public LjBaseResponse<TaskTaskRoleRspVo> taskRole(HttpServletRequest request, @Valid TaskTaskRoleReq req) {
         LjBaseResponse<TaskTaskRoleRspVo> response = new LjBaseResponse<>();
         try {

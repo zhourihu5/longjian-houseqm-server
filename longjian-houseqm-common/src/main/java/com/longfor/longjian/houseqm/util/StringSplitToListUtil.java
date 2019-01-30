@@ -16,6 +16,28 @@ import java.util.stream.Stream;
  */
 public class StringSplitToListUtil {
 
+    /**
+     * @Author hy
+     * @Description 统计sep在str中出现的次数 非重叠次数 对应go源码中的strings.count(str,sep)
+     * @Date 10:51 2019/1/30
+     * @Param [str, sep]
+     * @return int
+     **/
+    public static int count(String str, String sep) {
+        int fromIndex = 0;
+        int count = 0;
+        while (true) {
+            int index = str.indexOf(sep, fromIndex);
+            if (-1 != index) {
+                fromIndex = index + 1;
+                count++;
+            } else {
+                break;
+            }
+        }
+
+        return count;
+    }
 
     /**
      * 字符串分割 转换为int类型的
@@ -39,14 +61,15 @@ public class StringSplitToListUtil {
     }
 
     /**
-     *  字符串转换成对应的List String泛型
-     * @author hy
-     * @date 2018/12/21 0021
+     * 字符串转换成对应的List String泛型
+     *
      * @param ids
      * @param sep
      * @return java.util.List<java.lang.String>
+     * @author hy
+     * @date 2018/12/21 0021
      */
-    public static List<String> splitToStringComma(String ids,String sep){
+    public static List<String> splitToStringComma(String ids, String sep) {
         String[] str = ids.split(sep);
         ArrayList<String> list = Lists.newArrayList();
         for (String s : str) {
@@ -57,12 +80,13 @@ public class StringSplitToListUtil {
 
     /**
      * 集合数组 按给定的sep 拼接成字符串
+     *
      * @param list
      * @return
      */
-    public static String dataToString(List list,String sep) {
+    public static String dataToString(List list, String sep) {
         StringBuilder sb = new StringBuilder();
-        for(int i = 0; i < list.size(); i++) {
+        for (int i = 0; i < list.size(); i++) {
             if (sb.length() > 0) {//该步即不会第一位有sep，也防止最后一位拼接sep！
                 sb.append(sep);
             }
@@ -72,11 +96,12 @@ public class StringSplitToListUtil {
     }
 
     /**
-     *  判断字符是否为数字类型
-     * @author hy
-     * @date 2018/12/21 0021
+     * 判断字符是否为数字类型
+     *
      * @param str
      * @return boolean
+     * @author hy
+     * @date 2018/12/21 0021
      */
     public static boolean isInteger(String str) {
         Pattern pattern = Pattern.compile("^[-\\+]?[\\d]*$");
@@ -84,17 +109,15 @@ public class StringSplitToListUtil {
     }
 
 
-
     /**
-     *
-     * @author hy
-     * @date 2018/12/22 0022
      * @param str
      * @param removeSep
      * @param splitSep
      * @return java.util.List<java.lang.String>
+     * @author hy
+     * @date 2018/12/22 0022
      */
-    public static List<String> removeStartAndEndStrAndSplit(String str,String removeSep,String splitSep){
+    public static List<String> removeStartAndEndStrAndSplit(String str, String removeSep, String splitSep) {
         String s = StringUtils.removeStart(str, removeSep);
         String s1 = StringUtils.removeEnd(s, removeSep);
         List<String> strings = splitToStringComma(s1, splitSep);

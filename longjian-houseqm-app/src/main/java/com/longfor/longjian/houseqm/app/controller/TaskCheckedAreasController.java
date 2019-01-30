@@ -45,7 +45,7 @@ public class TaskCheckedAreasController {
      * @param req
      * @return
      */
-    @GetMapping(value = "checked_areas/", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+    @RequestMapping(value = "checked_areas", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     public TaskResponse<CheckedAreasRsp> doAction(HttpServletRequest request, @Valid CheckedAreasReq req) {
         Integer userId = (Integer) sessionInfo.getBaseInfo("userId");
         TaskResponse<CheckedAreasRsp> taskResponse = new TaskResponse<>();

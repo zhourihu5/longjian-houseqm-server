@@ -48,7 +48,7 @@ public class TaskListController {
      * @param req
      * @return
      */
-    @GetMapping(value = "list", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+    @RequestMapping(value = "list", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     public TaskResponse<TaskList2Vo> list(HttpServletRequest request, @Valid TaskListListReq req) {
         log.info("team_id=" + req.getTeam_id() + ", project_id=" + req.getProject_id() + ", category_cls=" + req.getCategory_cls() + ", status=" + req.getStatus());
         Integer userId = (Integer) sessionInfo.getBaseInfo("userId");
@@ -73,7 +73,7 @@ public class TaskListController {
      * @param req
      * @return
      */
-    @GetMapping(value = "task_role", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+    @RequestMapping(value = "task_role", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     public TaskResponse<TaskRoleListVo> taskRole(HttpServletRequest request, @Valid TaskRoleReq req) {
         TaskResponse<TaskRoleListVo> taskResponse = new TaskResponse<>();
         log.info("task_role, project_id=" + req.getProject_id() + ", task_id=" + req.getTask_id());

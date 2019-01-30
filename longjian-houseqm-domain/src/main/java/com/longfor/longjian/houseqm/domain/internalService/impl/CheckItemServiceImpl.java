@@ -3,9 +3,12 @@ package com.longfor.longjian.houseqm.domain.internalService.impl;
 import com.longfor.gaia.gfs.data.mybatis.datasource.LFAssignDataSource;
 import com.longfor.longjian.houseqm.dao.CheckItemMapper;
 import com.longfor.longjian.houseqm.domain.internalService.CheckItemService;
+import com.longfor.longjian.houseqm.po.CategoryV3;
 import com.longfor.longjian.houseqm.po.CheckItem;
+import com.longfor.longjian.houseqm.utils.ExampleUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
+import tk.mybatis.mapper.entity.Example;
 
 import javax.annotation.Resource;
 import java.util.List;
@@ -18,9 +21,14 @@ import java.util.List;
 public class CheckItemServiceImpl implements CheckItemService {
     @Resource
     CheckItemMapper checkItemMapper;
+
     @Override
     @LFAssignDataSource("zhijian2")
     public List<CheckItem> SearchCheckItemByKeyIn(List<String> keys) {
-        return checkItemMapper.searchCheckItemByKeyIn( keys);
+        Example example = new Example(CheckItem.class);
+        Example.Criteria criteria = example.createCriteria();
+        if (keys.size() > 0) criteria.andIn("key", keys);
+        ExampleUtil.addDeleteAtJudge(example);
+        return checkItemMapper.selectByExample(example);
     }
 }

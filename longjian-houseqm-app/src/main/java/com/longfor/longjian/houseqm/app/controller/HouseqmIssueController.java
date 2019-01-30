@@ -77,7 +77,7 @@ public class HouseqmIssueController {
      * @Date 17:13 2019/1/10
      * @Param [req]
      **/
-    @PostMapping(value = "export_pdf/", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+    @RequestMapping(value = "export_pdf", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     public LjBaseResponse exportPdf(HttpServletRequest request, @Valid IssueExportPdfReq req) {
         LjBaseResponse<Object> response = new LjBaseResponse<>();
         try {
@@ -183,7 +183,7 @@ public class HouseqmIssueController {
      * @Date 14:03 2019/1/11
      * @Param [req]
      **/
-    @PostMapping(value = "batch_appoint/", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+    @RequestMapping(value = "batch_appoint", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     public LjBaseResponse<IssueBatchAppointRspVo> batchAppoint(HttpServletRequest request, @Valid IssueBatchAppointReq req) throws Exception {
         LjBaseResponse<IssueBatchAppointRspVo> response = new LjBaseResponse<>();
         try {
@@ -221,7 +221,7 @@ public class HouseqmIssueController {
      * @Date 18:45 2019/1/12
      * @Param [req]
      **/
-    @PostMapping(value = "batch_approve/", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+    @RequestMapping(value = "batch_approve", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     public LjBaseResponse<IssueBatchApproveRspVo> batchApprove(HttpServletRequest request, IssueBatchApproveReq req) throws Exception {
         LjBaseResponse<IssueBatchApproveRspVo> response = new LjBaseResponse<>();
         try {
@@ -250,7 +250,7 @@ public class HouseqmIssueController {
      * @Date 18:49 2019/1/12
      * @Param [req]
      **/
-    @PostMapping(value = "batch_delete/", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+    @RequestMapping(value = "batch_delete", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     public LjBaseResponse<IssueBatchDeleteRspVo> batchDelete(HttpServletRequest request, IssueBatchDeleteReq req) {
         LjBaseResponse<IssueBatchDeleteRspVo> response = new LjBaseResponse<>();
         try {

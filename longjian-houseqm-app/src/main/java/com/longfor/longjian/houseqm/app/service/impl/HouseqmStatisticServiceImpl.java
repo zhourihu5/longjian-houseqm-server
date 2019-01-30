@@ -31,6 +31,7 @@ import com.longfor.longjian.houseqm.util.DateUtil;
 import com.longfor.longjian.houseqm.util.MathUtil;
 import com.longfor.longjian.houseqm.util.StringSplitToListUtil;
 import lombok.extern.slf4j.Slf4j;
+import org.bouncycastle.util.Strings;
 import org.springframework.stereotype.Repository;
 import org.springframework.stereotype.Service;
 
@@ -1289,11 +1290,77 @@ public class HouseqmStatisticServiceImpl implements IHouseqmStatisticService {
 
     public List<HouseQmIssueCategoryStatVo> calculateIssueCount
             (ArrayList<SimpleHouseQmCheckTaskIssueStatVo> issueStatVoList) {
-        ArrayList<HouseQmIssueCategoryStatVo> objects = Lists.newArrayList();
+        List<HouseQmIssueCategoryStatVo> r = Lists.newArrayList();
+
         Map<String, Object> map = groupIssueStatByCategoryAndCheckItem(issueStatVoList);
-        Map<String, CategoryV3> categoryMap = null;
-        Map<String, CheckItem> checkItemMap = null;
+
+        // 补充必要信息
+        Map<String, CategoryV3> categoryMap = getCategoryMapByCategoryKeys((List<String>) map.get("categoryKeys"));
+        Map<String, CheckItem> checkItemMap = getCheckItemMapByCheckItemKeys((List<String>) map.get("checkItemKeys"));
+
+        //补充名称 并计算父级节点数量（其下子节点相＋）
+        // 判断统计时是从第二级开始还是从第三级开始
+        // 部分检查项树第二级还只是有一个节点，所以需要从第三级开始
         boolean isStatLevel3 = false;
+        if (categoryMap.size() > 0) {
+            String rootKey = "";
+            for (Map.Entry<String, CategoryV3> cate : categoryMap.entrySet()) {
+                List<String> strings = StringSplitToListUtil.removeStartAndEndStrAndSplit(cate.getValue().getPath(), "/", "/");
+                strings.add(cate.getValue().getKey());
+                rootKey = strings.get(0);
+            }
+            isStatLevel3 = isCategoryStatLevelThree(rootKey);
+        }
+        Map<String, HouseQmIssueCategoryStatVo> categoryStatMap = (Map<String, HouseQmIssueCategoryStatVo>) map.get("categoryStatMap");
+        for (Map.Entry<String, HouseQmIssueCategoryStatVo> categoryStat : categoryStatMap.entrySet()) {
+            // 过滤掉不包括的大类，因为前两级可能是根节点
+            // 为了兼容旧数据转换的问题。旧检查项转过来会多一级的根节点。所以过滤出V开头的，跳过前两级；其他的默认只跳过第一级
+
+            //if cate, ok := categoryMap[categoryStat.Key]; ok {
+            CategoryV3 cate = categoryMap.get(categoryStat.getValue().getKey());
+            if (cate != null) {
+                boolean isRoot = false;
+                String str = cate.getPath();
+                int level = StringSplitToListUtil.count(str, "/");
+                //需要跳过三级
+                if (isStatLevel3) {
+                    if (level < 3) {
+                        continue;
+                    } else if (level == 3) {
+                        isRoot = true;
+                    }
+                } else {
+                    if (level < 2) {
+                        continue;
+                    } else if (level == 2) {
+                        isRoot = true;
+                    }
+
+                }
+                categoryStat.getValue().setName(cate.getName());
+                // 如果节点是第二级的，则将FatherKey设置为空，否则补充上去
+                if (!isRoot) {
+                    categoryStat.getValue().setParentKey(cate.getFatherKey());
+                }
+                r.add(categoryStat.getValue());
+            }
+
+        }
+        Map<String, HouseQmIssueCategoryStatVo> checkItemStatMap = (HashMap<String, HouseQmIssueCategoryStatVo>) map.get("checkItemStatMap");
+        for (Map.Entry<String, HouseQmIssueCategoryStatVo> checkItemStat : checkItemStatMap.entrySet()) {
+            CheckItem citem = checkItemMap.get(checkItemStat.getValue().getKey());
+            if (citem != null) {
+                checkItemStat.getValue().setName(citem.getName());
+                checkItemStat.getValue().setParentKey(citem.getCategoryKey());
+                checkItemStat.getValue().setKey("C_" + checkItemStat.getValue().getKey());
+                r.add(checkItemStat.getValue());
+            }
+
+        }
+
+
+
+/*        // boolean isStatLevel3 = false;
         for (Map.Entry<String, Object> entrys : map.entrySet()) {
             if (entrys.getKey().equals("categoryKeys")) {
                 List<String> keys = (List<String>) entrys.getValue();
@@ -1308,9 +1375,9 @@ public class HouseqmStatisticServiceImpl implements IHouseqmStatisticService {
                 for (Map.Entry<String, CategoryV3> entry : categoryMap.entrySet()) {
                     String newStr = entry.getValue().getPath().substring(1, entry.getValue().getPath().length());
                     String[] split = newStr.split("/");
-/*
+*//*
                     split[split.length]= entry.getValue().getKey();
-*/
+*//*
                     rootKey = split[0];
                 }
                 isStatLevel3 = isCategoryStatLevelThree(rootKey);
@@ -1354,7 +1421,7 @@ public class HouseqmStatisticServiceImpl implements IHouseqmStatisticService {
                             if (!isRoot) {
                                 entry.getValue().setParentKey(Entry.getValue().getFatherKey());
                             }
-                            objects.add(entry.getValue());
+                            r.add(entry.getValue());
                         }
                     }
                 }
@@ -1368,7 +1435,7 @@ public class HouseqmStatisticServiceImpl implements IHouseqmStatisticService {
                             entryS.getValue().setName(Entry.getValue().getName());
                             entryS.getValue().setParentKey(Entry.getValue().getCategoryKey());
                             entryS.getValue().setKey("C" + Entry.getValue().getKey());
-                            objects.add(entryS.getValue());
+                            r.add(entryS.getValue());
                         }
 
 
@@ -1377,9 +1444,9 @@ public class HouseqmStatisticServiceImpl implements IHouseqmStatisticService {
 
             }
 
-        }
+        }*/
 
-        return objects;
+        return r;
     }
 
 
@@ -1402,89 +1469,66 @@ public class HouseqmStatisticServiceImpl implements IHouseqmStatisticService {
 
 
     private Map<String, CheckItem> getCheckItemMapByCheckItemKeys(List<String> keys) {
-        List<CheckItem> checkItemsList = checkItemService.SearchCheckItemByKeyIn(keys);
+        List<CheckItem> resCheckItems = checkItemService.SearchCheckItemByKeyIn(keys);
         HashMap<String, CheckItem> map = Maps.newHashMap();
-        for (int i = 0; i < checkItemsList.size(); i++) {
-            map.put(checkItemsList.get(i).getKey(), checkItemsList.get(i));
-
+        for (CheckItem citem : resCheckItems) {
+            map.put(citem.getKey(), citem);
         }
         return map;
     }
 
     private Map<String, CategoryV3> getCategoryMapByCategoryKeys(List<String> keys) {
-        List<CategoryV3> categoryList = categoryService.searchCategoryByKeyIn(keys);
-        HashMap<String, CategoryV3> map = Maps.newHashMap();
-        for (int i = 0; i < categoryList.size(); i++) {
-            map.put(categoryList.get(i).getKey(), categoryList.get(i));
+        List<CategoryV3> resCategoryItems = categoryService.searchCategoryByKeyIn(keys);
+        Map<String, CategoryV3> map = Maps.newHashMap();
+        for (CategoryV3 cate : resCategoryItems) {
+            map.put(cate.getKey(), cate);
         }
         return map;
     }
 
     private Map<String, Object> groupIssueStatByCategoryAndCheckItem
             (ArrayList<SimpleHouseQmCheckTaskIssueStatVo> issueStatVoList) {
+
         HashMap<String, HouseQmIssueCategoryStatVo> categoryStatMap = Maps.newHashMap();
         HashMap<String, HouseQmIssueCategoryStatVo> checkItemStatMap = Maps.newHashMap();
         ArrayList<String> categoryKeys = Lists.newArrayList();
         ArrayList<String> checkItemKeys = Lists.newArrayList();
-        for (int i = 0; i < issueStatVoList.size(); i++) {
-            //切空格and“/”
-            //String[] categoryPathKeys = issueStatVoList.get(i).getCategoryPathAndKey().trim().split("/");
 
-            String[] categoryPathKeys = issueStatVoList.get(i).getCategoryPathAndKey().split("/");
-            for (int j = 0; j < categoryPathKeys.length; j++) {
+        for (SimpleHouseQmCheckTaskIssueStatVo item : issueStatVoList) {
+            List<String> categoryPathKeys = StringSplitToListUtil.removeStartAndEndStrAndSplit(item.getCategoryPathAndKey(), "/," ,"/");
+            for (String key : categoryPathKeys) {
                 //判断key是否存在
-                if (!categoryStatMap.containsKey(categoryPathKeys[j])) {
+                if (!categoryStatMap.containsKey(key)) {
                     HouseQmIssueCategoryStatVo houseQmIssueCategoryStatVo = new HouseQmIssueCategoryStatVo();
-                    houseQmIssueCategoryStatVo.setKey(categoryPathKeys[j]);
+
+                    houseQmIssueCategoryStatVo.setKey(key);
+                    houseQmIssueCategoryStatVo.setIssueCount(0);
                     //存放key value（对象中的key值）
-                    categoryStatMap.put(categoryPathKeys[j], houseQmIssueCategoryStatVo);
+                    categoryStatMap.put(key, houseQmIssueCategoryStatVo);
                 }
-                //遍历此map
-                for (Map.Entry<String, HouseQmIssueCategoryStatVo> entrys : categoryStatMap.entrySet()) {
-                    //当map中的key存在
-                    if (entrys.getKey().equals(categoryPathKeys[j])) {
-                        //在key所对应的对象中添加issuencount值
-
-                        entrys.getValue().setIssueCount(issueStatVoList.get(i).getCount());
-
-                    }
-                }
-               /* ArrayList<String> categoryPathKeysList = Lists.newArrayList();
-                for (int k = 0; k < categoryPathKeys.length; k++) {
-                    categoryPathKeysList.add(categoryPathKeys[k]);
-                }
-                categoryKeys.addAll(categoryPathKeysList);*/
-                for (int k = 0; k < categoryPathKeys.length; k++) {
-                    categoryKeys.add(categoryPathKeys[k]);
-                }
-
+                //categoryStatMap[key].IssueCount += item.Count
+                int count = categoryStatMap.get(key).getIssueCount() + item.getCount();
+                categoryStatMap.get(key).setIssueCount(count);
             }
+            categoryKeys.addAll(categoryPathKeys);
             //当CheckItemKey的长度大于0
-            if (issueStatVoList.get(i).getCheckItemKey().length() > 0) {
+            if (item.getCheckItemKey().length() > 0) {
                 //判断key是否存在于map
-                if (!checkItemStatMap.containsKey(issueStatVoList.get(i).getCheckItemKey())) {
+                if (!checkItemStatMap.containsKey(item.getCheckItemKey())) {
                     HouseQmIssueCategoryStatVo houseQmIssueCategoryStatVo = new HouseQmIssueCategoryStatVo();
-                    houseQmIssueCategoryStatVo.setKey(issueStatVoList.get(i).getCheckItemKey());
+                    houseQmIssueCategoryStatVo.setKey(item.getCheckItemKey());
+                    houseQmIssueCategoryStatVo.setIssueCount(0);
                     //存放key value（对象中的key值）
-                    categoryStatMap.put(issueStatVoList.get(i).getCheckItemKey(), houseQmIssueCategoryStatVo);
+                    checkItemStatMap.put(item.getCheckItemKey(), houseQmIssueCategoryStatVo);
                 }
-
-
-                //遍历此map
-                for (Map.Entry<String, HouseQmIssueCategoryStatVo> entrys : checkItemStatMap.entrySet()) {
-                    //当map中的key存在
-                    if (entrys.getKey().equals(issueStatVoList.get(i).getCheckItemKey())) {
-                        //在key所对应的对象中添加issuencount值
-                        entrys.getValue().setIssueCount(issueStatVoList.get(i).getCount() + entrys.getValue().getIssueCount());
-
-                    }
-                }
-                checkItemKeys.add(issueStatVoList.get(i).getCheckItemKey());
+                int count = checkItemStatMap.get(item.getCheckItemKey()).getIssueCount() + item.getCount();
+                checkItemStatMap.get(item.getCheckItemKey()).setIssueCount(count);
+                checkItemKeys.add(item.getCheckItemKey());
             }
         }
         removeDuplicate(categoryKeys);
         removeDuplicate(checkItemKeys);
-        HashMap<String, Object> map = Maps.newHashMap();
+        Map<String, Object> map = Maps.newHashMap();
         map.put("categoryKeys", categoryKeys);
         map.put("checkItemKeys", checkItemKeys);
         map.put("categoryStatMap", categoryStatMap);

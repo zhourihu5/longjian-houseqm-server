@@ -42,7 +42,7 @@ public class BgTaskController {
      * @Param [req]
      * @return com.longfor.longjian.common.base.LjBaseResponse<com.longfor.longjian.houseqm.app.vo.bgtask.ExportPicExcelRspVo>
      **/
-    @RequestMapping(value = "buildingqm/export_pic_excel/",produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+    @RequestMapping(value = "buildingqm/export_pic_excel",produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     public LjBaseResponse<ExportRsp> exportPicExcel(@Valid ExportBuildingExcelReq req){
         return iBuildingqmExportFeignService.exportPicExcel(req);
     }
@@ -55,7 +55,7 @@ public class BgTaskController {
      * @Param [req]
      * @return com.longfor.longjian.common.base.LjBaseResponse<com.longfor.longjian.houseqm.app.vo.bgtask.ExportPptRspVo>
      **/
-    @RequestMapping(value = "buildingqm/export_ppt/",produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+    @RequestMapping(value = "buildingqm/export_ppt",produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     public LjBaseResponse<ExportPptRspVo> exportPpt(ExportBuildingExcelReq req){
         String now = DateUtil.dateToString(new Date(), "yyyy-MM-dd hh:mm");
 

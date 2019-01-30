@@ -56,7 +56,7 @@ public class IssueListController {
      * @param req
      * @return
      */
-    @GetMapping(value = "list/", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+    @RequestMapping(value = "list/", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     public TaskResponse<IssueListRsp> doAction(HttpServletRequest request, @Valid IssueListDoActionReq req) {
         log.info("list, project_id=%d, category_cls=%d, task_id=%d, category_key=%s, check_item_key=%s, area_ids=%s, status_in=%s, checker_id=%d, repairer_id=%d," +
                 " type=%d, condition=%d, key_word=%s, create_on_begin=%s, create_on_end=%s, is_overdue=%d, page=%d, page_size=%d"
@@ -85,7 +85,7 @@ public class IssueListController {
      * @param issueUuid
      * @return
      */
-    @GetMapping(value = "detail_log", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+    @RequestMapping(value = "detail_log", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     public LjBaseResponse<DetailLogRspVo> detailLog(@RequestParam(value = "project_id", required = true) Integer projectId,
                                                   @RequestParam(value = "issue_uuid", required = true) String issueUuid) throws Exception {
         LjBaseResponse<DetailLogRspVo> response = new LjBaseResponse<>();
@@ -99,7 +99,7 @@ public class IssueListController {
         return response;
     }
 
-    @GetMapping(value = "repair_notify_export2/", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+    @RequestMapping(value = "repair_notify_export2/", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     public LjBaseResponse<String> repairNotifyExport2(HttpServletRequest request, HttpServletResponse response, @RequestParam(value = "project_id", required = true) Integer projectId,
                                                       @RequestParam(value = "issue_uuid", required = true) String issueUuid) {
         if (request.getMethod() == "POST") {
@@ -133,7 +133,7 @@ public class IssueListController {
      * @param projectId
      * @return
      */
-    @GetMapping(value = "configs/", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+    @RequestMapping(value = "configs/", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     public LjBaseResponse<ProjectSettingConfigVo> configs(HttpServletRequest request, @RequestParam(value = "project_id", required = true) Integer projectId) {
         LjBaseResponse<ProjectSettingConfigVo> response = new LjBaseResponse<>();
         Integer userId = (Integer) sessionInfo.getBaseInfo("userId");
@@ -195,7 +195,7 @@ public class IssueListController {
      * @param issueUuid
      * @return
      */
-    @PostMapping(value = "delete", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+    @RequestMapping(value = "delete", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     public TaskResponse delete(HttpServletRequest request,@RequestParam(value = "project_id", required = true) Integer projectId,
                                @RequestParam(value = "issue_uuid", required = true) String issueUuid) {
         TaskResponse response = new TaskResponse();
@@ -219,7 +219,7 @@ public class IssueListController {
      * @param repairFollowerIds
      * @return
      */
-    @PostMapping(value = "edit_repairer", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+    @RequestMapping(value = "edit_repairer", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     public LjBaseResponse editRepairer(HttpServletRequest request,@RequestParam(value = "project_id", required = true) Integer projectId,
                                        @RequestParam(value = "issue_uuid", required = true) String issueUuid,
                                        @RequestParam(value = "repairer_id", required = false, defaultValue = "0") Integer repairerId,
@@ -243,7 +243,7 @@ public class IssueListController {
      * @param content
      * @return
      */
-    @PostMapping(value = "add_desc", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+    @RequestMapping(value = "add_desc", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     public LjBaseResponse addDesc(HttpServletRequest request,@RequestParam(value = "project_id", required = true) Integer projectId,
                                   @RequestParam(value = "issue_uuid", required = true) String issueUuid,
                                   @RequestParam(value = "content", required = true) String content) {
@@ -265,7 +265,7 @@ public class IssueListController {
      * @param plan_end_on
      * @return
      */
-    @PostMapping(value = "edit_plan_end_on", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+    @RequestMapping(value = "edit_plan_end_on", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     public LjBaseResponse editPlanEndOn(HttpServletRequest request,@RequestParam(value = "project_id", required = true) Integer projectId,
                                         @RequestParam(value = "issue_uuid", required = true) String issueUuid,
                                         @RequestParam(value = "plan_end_on", required = false, defaultValue = "0") Integer plan_end_on) {
@@ -288,7 +288,7 @@ public class IssueListController {
      * @param content
      * @return
      */
-    @PostMapping(value = "edit_approve", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+    @RequestMapping(value = "edit_approve", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     public LjBaseResponse editApprove(HttpServletRequest request,@RequestParam(value = "project_id", required = true) Integer projectId,
                                       @RequestParam(value = "issue_uuid", required = true) String issueUuid,
                                       @RequestParam(value = "status", required = true) Integer status,
@@ -310,7 +310,7 @@ public class IssueListController {
      * @param issueUuid
      * @return
      */
-    @GetMapping(value = "detail_repair_log", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+    @RequestMapping(value = "detail_repair_log", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     public LjBaseResponse<DetailRepairLogRspVo> detailRepairLog(HttpServletRequest request, @RequestParam(value = "project_id", required = true) Integer projectId,
                                                                 @RequestParam(value = "issue_uuid", required = true) String issueUuid) {
         Integer userId = (Integer) sessionInfo.getBaseInfo("userId");
@@ -335,7 +335,7 @@ public class IssueListController {
      * @param issueUuid
      * @return
      */
-    @GetMapping(value = "detail_base", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+    @RequestMapping(value = "detail_base", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     public LjBaseResponse<IssueInfoVo> detailBase(HttpServletRequest request,@RequestParam(value = "project_id", required = true) Integer projectId,
                                                   @RequestParam(value = "issue_uuid", required = true) String issueUuid) {
         Integer userId = (Integer) sessionInfo.getBaseInfo("userId");

@@ -49,7 +49,7 @@ public class IusseTaskListController {
      * @param
      * @return
      */
-    @GetMapping(value = "issue/task_list", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+    @RequestMapping(value = "issue/task_list", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     public TaskResponse<HouseQmCheckTaskSimpleRspVo.TaskList> doAction(HttpServletRequest request, @RequestParam(value = "project_id") Integer
             projectId,
                                                                        @RequestParam(value = "category_cls") Integer categoryCls/*,
@@ -77,8 +77,7 @@ public class IusseTaskListController {
      * http://192.168.37.159:3000/project/8/interface/api/3304  获取验房验收项目配置列表
      */
 
-    @GetMapping(value = "stat_houseqm/get_acceptanceitems_setting", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
-
+    @RequestMapping(value = "stat_houseqm/get_acceptanceitems_setting", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     public LjBaseResponse<ApiStatHouseqmMeterSettingMsgVo.HouseqmMeterSetting> getAcceptanceitemsSetting(@RequestParam(name = "project_ids", required = true) String projectIds,
                                                                                                          @RequestParam(name = "timestamp", required = false, defaultValue = "0") Integer timestamp) {
         log.info("get_acceptanceitems_setting, project_ids=" + projectIds + ", timestamp=" + timestamp + "");
@@ -96,7 +95,7 @@ public class IusseTaskListController {
      * @param categorys
      * @return
      */
-    @GetMapping(value = "mine/teams_and_projects/", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+    @RequestMapping(value = "mine/teams_and_projects", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     public LjBaseResponse<ApiMineMsg> teamsAndProjects(@RequestParam(name = "categorys", required = false, defaultValue = "26,28") String categorys) {
         log.info("teams_and_projects, categorys=" + categorys + "");
         Integer userId = (Integer) sessionInfo.getBaseInfo("userId");

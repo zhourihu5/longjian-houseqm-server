@@ -74,7 +74,7 @@ public class HouseqmStatController {
      * @Date 11:23 2019/1/29
      * @Param [request, req]
      **/
-    @GetMapping(value = "stat/category_stat", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+    @RequestMapping(value = "stat/category_stat", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     public LjBaseResponse<StatCategoryStatRspVo> categoryStat(HttpServletRequest request, @Validated StatCategoryStatReq req) throws Exception {
         LjBaseResponse<StatCategoryStatRspVo> response = new LjBaseResponse<>();
         ctrlTool.projPermMulti(request, new String[]{"项目.移动验房.统计.查看", "项目.工程检查.统计.查看"});
@@ -99,7 +99,7 @@ public class HouseqmStatController {
      * @Date 10:50 2019/1/29
      * @Param [request, req]
      **/
-    @GetMapping(value = "stat/inspection_situation_search", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+    @RequestMapping(value = "stat/inspection_situation_search", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     public LjBaseResponse<StatInspectionSituationSearchRspVo> inspectionSituationSearch(HttpServletRequest request, @Validated StatInspectionSituationSearchReq req) throws Exception {
         LjBaseResponse<StatInspectionSituationSearchRspVo> response = new LjBaseResponse<>();
         ctrlTool.projPermMulti(request, new String[]{"项目.移动验房.统计.查看", "项目.工程检查.统计.查看"});
@@ -162,7 +162,7 @@ public class HouseqmStatController {
      * @param req
      * @return
      */
-    @GetMapping(value = "stat_houseqm/checker_stat", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+    @RequestMapping(value = "stat_houseqm/checker_stat", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     public LjBaseResponse<CheckerStatListVo> checkerStat(HttpServletRequest request, @Valid StatHouseqmCheckerStatReq req) {
         LjBaseResponse<CheckerStatListVo> response = new LjBaseResponse<>();
         try {
@@ -193,7 +193,7 @@ public class HouseqmStatController {
      * @param req
      * @return
      */
-    @GetMapping(value = "stat/task_situation_daily", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+    @RequestMapping(value = "stat/task_situation_daily", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     public LjBaseResponse<ProjectDailyListVo> taskSituationDaily(HttpServletRequest request, @Valid StatTaskSituationDailyReq req) {
         LjBaseResponse<ProjectDailyListVo> response = new LjBaseResponse<>();
         try {
@@ -224,7 +224,7 @@ public class HouseqmStatController {
      * @param req
      * @return
      */
-    @GetMapping(value = "stat/task_situation_overall", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+    @RequestMapping(value = "stat/task_situation_overall", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     public LjBaseResponse<ProjectOveralListVo> taskSituationOverall(HttpServletRequest request, @Valid StatTaskSituationOverallReq req) {
         LjBaseResponse<ProjectOveralListVo> response = new LjBaseResponse<>();
         try {
@@ -270,7 +270,7 @@ public class HouseqmStatController {
      * @param req
      * @return
      */
-    @GetMapping(value = "stat/task_area_list", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+    @RequestMapping(value = "stat/task_area_list", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     public LjBaseResponse<TaskAreaListVo> taskAreaList(HttpServletRequest request, @Valid StatTaskAreaListReq req) {
         LjBaseResponse<TaskAreaListVo> response = new LjBaseResponse<>();
         try {
@@ -300,7 +300,7 @@ public class HouseqmStatController {
      * @param req
      * @return
      */
-    @GetMapping(value = "stat/area_situation_task_list", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+    @RequestMapping(value = "stat/area_situation_task_list", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     public LjBaseResponse<AreaTaskListVo> areaSituationTaskList(HttpServletRequest request, @Valid StatAreaSituationTaskListReq req) {
         LjBaseResponse<AreaTaskListVo> response = new LjBaseResponse<>();
         try {
@@ -330,7 +330,7 @@ public class HouseqmStatController {
      * @param req
      * @return
      */
-    @GetMapping(value = "stat/task_detail", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+    @RequestMapping(value = "stat/task_detail", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     public LjBaseResponse<TaskStatVo> taskDetail(HttpServletRequest request, @Valid StatTaskDetailReq req) {
         LjBaseResponse<TaskStatVo> response = new LjBaseResponse<>();
         try {
@@ -366,7 +366,7 @@ public class HouseqmStatController {
      * @param req
      * @return
      */
-    @GetMapping(value = "stat/task_situation_repair_stat", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+    @RequestMapping(value = "stat/task_situation_repair_stat", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     public LjBaseResponse<StatTaskSituationRepairStatRsp> taskSituationRepairStat(HttpServletRequest request, @Valid StatTaskSituationRepairStatReq req) {
         LjBaseResponse<StatTaskSituationRepairStatRsp> response = new LjBaseResponse<>();
         try {
@@ -490,7 +490,7 @@ public class HouseqmStatController {
      * @Date 14:50 2019/1/9
      * @Param [req]
      **/
-    @GetMapping(value = "stat/task_situation_members_checker/", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+    @RequestMapping(value = "stat/task_situation_members_checker", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     public LjBaseResponse<StatTaskSituationMembersCheckerRspVo> taskSituationMembersChecker(HttpServletRequest request, @Valid StatTaskSituationMembersCheckerReq req) {
         LjBaseResponse<StatTaskSituationMembersCheckerRspVo> response = new LjBaseResponse<>();
         try {
@@ -526,7 +526,7 @@ public class HouseqmStatController {
      * @Date 14:59 2019/1/10
      * @Param [req]
      **/
-    @GetMapping(value = "stat/task_situation_members_repairer", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+    @RequestMapping(value = "stat/task_situation_members_repairer", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     public LjBaseResponse<StatTaskSituationMembersRepairerRspVo> taskSituationMembersRepairer(HttpServletRequest request, @Valid StatTaskSituationMembersRepairerReq req) {
         LjBaseResponse<StatTaskSituationMembersRepairerRspVo> response = new LjBaseResponse<>();
         try {
@@ -562,7 +562,7 @@ public class HouseqmStatController {
      * @Date 16:55 2019/1/10
      * @Param [req]
      **/
-    @GetMapping(value = "stat/area_situation", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+    @RequestMapping(value = "stat/area_situation", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     public LjBaseResponse<HouseQmStatAreaSituationIssueRspVo> areaSituation(HttpServletRequest request, @Valid StatAreaSituationReq req) {
         LjBaseResponse<HouseQmStatAreaSituationIssueRspVo> response = new LjBaseResponse<>();
         try {
