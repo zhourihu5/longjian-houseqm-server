@@ -1346,7 +1346,7 @@ public class HouseqmStatisticServiceImpl implements IHouseqmStatisticService {
             }
 
         }
-        Map<String, HouseQmIssueCategoryStatVo> checkItemStatMap = (HashMap<String, HouseQmIssueCategoryStatVo>) map.get("checkItemStatMap");
+        Map<String, HouseQmIssueCategoryStatVo> checkItemStatMap = (Map<String, HouseQmIssueCategoryStatVo>) map.get("checkItemStatMap");
         for (Map.Entry<String, HouseQmIssueCategoryStatVo> checkItemStat : checkItemStatMap.entrySet()) {
             CheckItem citem = checkItemMap.get(checkItemStat.getValue().getKey());
             if (citem != null) {
@@ -1470,7 +1470,7 @@ public class HouseqmStatisticServiceImpl implements IHouseqmStatisticService {
 
     private Map<String, CheckItem> getCheckItemMapByCheckItemKeys(List<String> keys) {
         List<CheckItem> resCheckItems = checkItemService.SearchCheckItemByKeyIn(keys);
-        HashMap<String, CheckItem> map = Maps.newHashMap();
+        Map<String, CheckItem> map = new HashMap<>();
         for (CheckItem citem : resCheckItems) {
             map.put(citem.getKey(), citem);
         }
@@ -1479,7 +1479,7 @@ public class HouseqmStatisticServiceImpl implements IHouseqmStatisticService {
 
     private Map<String, CategoryV3> getCategoryMapByCategoryKeys(List<String> keys) {
         List<CategoryV3> resCategoryItems = categoryService.searchCategoryByKeyIn(keys);
-        Map<String, CategoryV3> map = Maps.newHashMap();
+        Map<String, CategoryV3> map = new HashMap<>();
         for (CategoryV3 cate : resCategoryItems) {
             map.put(cate.getKey(), cate);
         }
@@ -1489,8 +1489,8 @@ public class HouseqmStatisticServiceImpl implements IHouseqmStatisticService {
     private Map<String, Object> groupIssueStatByCategoryAndCheckItem
             (ArrayList<SimpleHouseQmCheckTaskIssueStatVo> issueStatVoList) {
 
-        HashMap<String, HouseQmIssueCategoryStatVo> categoryStatMap = Maps.newHashMap();
-        HashMap<String, HouseQmIssueCategoryStatVo> checkItemStatMap = Maps.newHashMap();
+        Map<String, HouseQmIssueCategoryStatVo> categoryStatMap = new HashMap<>();
+        Map<String, HouseQmIssueCategoryStatVo> checkItemStatMap =new HashMap<>();
         ArrayList<String> categoryKeys = Lists.newArrayList();
         ArrayList<String> checkItemKeys = Lists.newArrayList();
 

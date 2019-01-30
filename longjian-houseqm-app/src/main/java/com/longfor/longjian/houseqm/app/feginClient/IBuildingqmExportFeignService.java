@@ -9,6 +9,7 @@ import org.springframework.http.MediaType;
 import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
 
 /**
  * @ProjectName: longjian-houseqm-server
@@ -23,7 +24,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 public interface IBuildingqmExportFeignService {
 
     //导出问题列表带图片Excel
-    @PostMapping(value = "export_pic_excel/", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+    @RequestMapping(value = "export_pic_excel", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     LjBaseResponse<ExportRsp> exportPicExcel(@RequestBody ExportBuildingExcelReq req);
 
 

@@ -11,6 +11,7 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
 
 /**
  * @ProjectName: longjian-houseqm-server
@@ -30,7 +31,7 @@ public interface IRepossessionFeignService {
      * @param repossessionReportReq
      * @return
      */
-    @PostMapping(value = "report", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+    @RequestMapping(value = "report", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     LjBaseResponse<Object> report(@RequestBody RepossessionReportReq repossessionReportReq);
 
 
@@ -40,7 +41,7 @@ public interface IRepossessionFeignService {
      * @param repossessionGetReq
      * @return
      */
-    @GetMapping(value = "get", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+    @RequestMapping(value = "get", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     LjBaseResponse<Object> get(@RequestBody RepossessionGetReq repossessionGetReq);
 
 }

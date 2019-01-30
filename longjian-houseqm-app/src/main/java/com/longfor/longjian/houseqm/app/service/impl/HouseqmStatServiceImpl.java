@@ -282,6 +282,7 @@ public class HouseqmStatServiceImpl implements IHouseqmStatService {
         }
         List<HouseQmCheckTaskIssue> issueStat = houseQmCheckTaskIssueService.searchByProjIdAndTaskIdAndTypInGroupByCategoryPathAndKeyAndCheckItemKey(condi);
         Integer total = houseQmCheckTaskIssueService.countByProjIdAndTaskIdAndTypInGroupByCategoryPathAndKeyAndCheckItemKey(project_id, task_id, typs, area_id, beginOn, endOn);
+
         StatCategoryStatRspVo result = new StatCategoryStatRspVo();
         result.setIssue_count(total);
 
@@ -295,12 +296,13 @@ public class HouseqmStatServiceImpl implements IHouseqmStatService {
             s.setCount(i.getCount());
             issue_stat.add(s);
         });
+        // 针对结果的顺序问题 有要求时需要 将map 改为 treemap
         List<HouseQmIssueCategoryStatVo> list = houseqmStatisticService.calculateIssueCount(issue_stat);
         ArrayList<HouseQmStatCategorySituationRspVo> items = new ArrayList<>();
         list.forEach(e -> {
             HouseQmStatCategorySituationRspVo item = new HouseQmStatCategorySituationRspVo();
             item.setKey(e.getKey());
-            item.setParent_key(e.getKey());
+            item.setParent_key(e.getParentKey()==null?"":e.getParentKey());
             item.setIssue_count(e.getIssueCount());
             item.setName(e.getName());
             items.add(item);

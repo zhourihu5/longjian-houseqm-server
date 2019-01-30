@@ -2,6 +2,9 @@ package com.longfor.longjian.houseqm.app.controller;
 
 import com.longfor.longjian.common.util.CtrlTool;
 import com.longfor.longjian.common.util.SessionInfo;
+import com.longfor.longjian.houseqm.app.service.IHouseqmStatService;
+import com.longfor.longjian.houseqm.app.vo.houseqmstat.HouseQmStatCategorySituationRspVo;
+import com.longfor.longjian.houseqm.app.vo.houseqmstat.StatCategoryStatRspVo;
 import com.longfor.longjian.houseqm.app.vo.houseqmstatistic.*;
 import com.longfor.longjian.houseqm.app.req.houseqmstatistic.HouseqmStatisticRhyfTaskStatReq;
 import com.longfor.longjian.houseqm.app.vo.houseqmstatistic.HouseqmStatisticProjectIssueRepairRsp.ApiHouseQmIssueRepairStat;
@@ -66,6 +69,8 @@ public class HouseqmStatisticController {
     private HouseQmCheckTaskService houseQmCheckTaskRspService;
     @Resource
     private IHouseqmStatisticService iHouseqmStatisticService;
+    @Resource
+    private IHouseqmStatService iHouseqmStatService;
     @Resource
     private CtrlTool ctrlTool;
     @Resource
@@ -292,19 +297,30 @@ public class HouseqmStatisticController {
             c.add(Calendar.DAY_OF_MONTH, 1);// +1天
             endOns = c.getTime();
         }
-        List<HouseQmIssueCategoryStatVo> categoryStatlist = iHouseqmStatisticService.searchHouseQmIssueCategoryStatByProjTaskIdAreaIdBeginOnEndOn(projectId, taskId, areaId, begin, endOns);
+        //List<HouseQmIssueCategoryStatVo> categoryStatlist = iHouseqmStatisticService.searchHouseQmIssueCategoryStatByProjTaskIdAreaIdBeginOnEndOn(projectId, taskId, areaId, begin, endOns);
+        StatCategoryStatRspVo result = iHouseqmStatService.searchHouseQmIssueCategoryStatByProjTaskIdAreaIdBeginOnEndOn(projectId, taskId, areaId, begin, endOns);
+        List<HouseQmStatCategorySituationRspVo> items = result.getItems();
+        List<HouseQmIssueCategoryStatVo> categoryStatlist= Lists.newArrayList();
+        items.forEach(e->{
+            HouseQmIssueCategoryStatVo item = new HouseQmIssueCategoryStatVo();
+            item.setKey(e.getKey());
+            item.setParentKey(e.getParent_key());
+            item.setIssueCount(e.getIssue_count());
+            item.setName(e.getName());
+            categoryStatlist.add(item);
+        });
         HouseqmStatisticTaskCheckitemStatRspMsgVo vo = new HouseqmStatisticTaskCheckitemStatRspMsgVo();
         List<HouseqmStatisticTaskCheckitemStatRspMsgVo.ApiHouseQmCheckItemIssueStat> issueStatList = Lists.newArrayList();
-        for (int i = 0; i < categoryStatlist.size(); i++) {
-            if(!"".equals(categoryStatlist.get(i).getParentKey())){
+        for (HouseQmIssueCategoryStatVo item : categoryStatlist) {
+            if (!"".equals(item.getParentKey())) {
                 continue;
             }
-            HouseqmStatisticTaskCheckitemStatRspMsgVo.ApiHouseQmCheckItemIssueStat apiHouseQmCheckItemIssueStat = new HouseqmStatisticTaskCheckitemStatRspMsgVo().new ApiHouseQmCheckItemIssueStat();
-            apiHouseQmCheckItemIssueStat.setName(categoryStatlist.get(i).getName());
-            apiHouseQmCheckItemIssueStat.setKey(categoryStatlist.get(i).getKey());
-            apiHouseQmCheckItemIssueStat.setFather_key(categoryStatlist.get(i).getParentKey());
-            apiHouseQmCheckItemIssueStat.setIssue_count(categoryStatlist.get(i).getIssueCount());
-            issueStatList.add(apiHouseQmCheckItemIssueStat);
+            HouseqmStatisticTaskCheckitemStatRspMsgVo.ApiHouseQmCheckItemIssueStat tempItem = new HouseqmStatisticTaskCheckitemStatRspMsgVo().new ApiHouseQmCheckItemIssueStat();
+            tempItem.setName(item.getName());
+            tempItem.setKey(item.getKey());
+            tempItem.setFather_key(item.getParentKey());
+            tempItem.setIssue_count(item.getIssueCount());
+            issueStatList.add(tempItem);
         }
         vo.setItems(issueStatList);
 
