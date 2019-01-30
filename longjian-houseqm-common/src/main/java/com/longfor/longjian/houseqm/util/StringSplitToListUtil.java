@@ -110,6 +110,7 @@ public class StringSplitToListUtil {
 
 
     /**
+     * 移除首尾指定字符 并以指定字符分割。
      * @param str
      * @param removeSep
      * @param splitSep

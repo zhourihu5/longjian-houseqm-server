@@ -200,7 +200,11 @@ public class HouseqmStatServiceImpl implements IHouseqmStatService {
                 item.setStatus(StatisticFormInspectionStatusEnum.UnChecked.getId());
             }
             for (StatisticFormInspectionStatusEnum value : StatisticFormInspectionStatusEnum.values()) {
-                if (value.getId().equals(item.getStatus())) item.setStatusName(value.getValue());
+                if (value.getId().equals(item.getStatus())) {
+                    item.setStatusName(value.getValue());
+                } else {
+                    item.setStatusName("");
+                }
             }
             result.add(item);
         }
@@ -208,53 +212,57 @@ public class HouseqmStatServiceImpl implements IHouseqmStatService {
     }
 
     // 通过taskId和areaId获取按area_id分组的问题map
-    public Map<Integer, List<HouseQmCheckTaskIssue>> searchHouseQmCheckTaskIssueMapByTaskIdAreaIds(int taskId,List<Integer> areaIds){
+    public Map<Integer, List<HouseQmCheckTaskIssue>> searchHouseQmCheckTaskIssueMapByTaskIdAreaIds(int taskId, List<Integer> areaIds) {
         Map<Integer, List<HouseQmCheckTaskIssue>> result = Maps.newHashMap();
 
-        String regexp=areaService.getRootRegexpConditionByAreaIds(areaIds);
+        String regexp = areaService.getRootRegexpConditionByAreaIds(areaIds);
         // 此处go源码 可能有点问题 ，taskId
-        List<HouseQmCheckTaskIssue> issues=houseQmCheckTaskIssueService.searchByTaskIdAndAreaPathAndIdRegexp(taskId,regexp);
+        List<HouseQmCheckTaskIssue> issues = houseQmCheckTaskIssueService.searchByTaskIdAndAreaPathAndIdRegexp(taskId, regexp);
 
         //排序后用area_path_and_id来聚合时间复杂度更低
         List<Area> areas = areaService.selectByAreaIds(areaIds);
         Map<String, Area> areaMap = Maps.newHashMap();
         List<String> areaPaths = Lists.newArrayList();
         for (Area a : areas) {
-            String p_a_id=String.format("%s%d/",a.getPath(),a.getId());
-            areaMap.put(p_a_id,a);
+            String p_a_id = String.format("%s%d/", a.getPath(), a.getId());
+            areaMap.put(p_a_id, a);
             areaPaths.add(p_a_id);
         }
         Map<String, HouseQmCheckTaskIssue> issueMap = Maps.newHashMap();
         List<String> issuePaths = Lists.newArrayList();
         for (HouseQmCheckTaskIssue issue : issues) {
-            issueMap.put(issue.getAreaPathAndId(),issue);
+            issueMap.put(issue.getAreaPathAndId(), issue);
             issuePaths.add(issue.getAreaPathAndId());
         }
         Collections.sort(areaPaths);
         Collections.sort(issuePaths);
-    
-        int issuePos=0;
-        String lastPath="Nothing";
-        int lastCount=0;
+
+        int issuePos = 0;
+        String lastPath = "Nothing";
+        int lastCount = 0;
         for (String aPath : areaPaths) {
-            if (!aPath.startsWith(lastPath)){
-                lastPath=aPath;
-                issuePos+=lastCount;
-                lastCount=0;
+            if (!aPath.startsWith(lastPath)) {
+                lastPath = aPath;
+                issuePos += lastCount;
+                lastCount = 0;
             }
-            for (int i=issuePos;i<issuePaths.size();i++){
-                if (issuePaths.get(i).startsWith(aPath)){
+            for (int i = issuePos; i < issuePaths.size(); i++) {
+                if (issuePaths.get(i).startsWith(aPath)) {
                     Area area = areaMap.get(aPath);
                     //result[area.Id] = append(result[area.Id], issueMap[issuePaths[i]])
                     List<HouseQmCheckTaskIssue> list = result.get(area.getId());
-                    if (list !=null){
-                        list.add(issueMap.get(issuePaths.get(i)));
-                        result.put(area.getId(),list);
-                    }else {
-                        result.put(area.getId(),Arrays.asList(issueMap.get(issuePaths.get(i))));
+                    if (list != null) {
+                        String key = issuePaths.get(i);
+                        HouseQmCheckTaskIssue e = issueMap.get(key);
+                        list.add(e);
+                        result.put(area.getId(), list);
+                    } else {
+                        List<HouseQmCheckTaskIssue> list1 = Lists.newArrayList();
+                        list1.add(issueMap.get(issuePaths.get(i)));
+                        result.put(area.getId(), list1);
                     }
                     lastCount++;
-                }else {
+                } else {
                     break;
                 }
             }
@@ -302,7 +310,7 @@ public class HouseqmStatServiceImpl implements IHouseqmStatService {
         list.forEach(e -> {
             HouseQmStatCategorySituationRspVo item = new HouseQmStatCategorySituationRspVo();
             item.setKey(e.getKey());
-            item.setParent_key(e.getParentKey()==null?"":e.getParentKey());
+            item.setParent_key(e.getParentKey() == null ? "" : e.getParentKey());
             item.setIssue_count(e.getIssueCount());
             item.setName(e.getName());
             items.add(item);

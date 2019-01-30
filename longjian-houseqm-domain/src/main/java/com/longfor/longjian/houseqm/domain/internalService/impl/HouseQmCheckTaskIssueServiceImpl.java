@@ -54,7 +54,7 @@ public class HouseQmCheckTaskIssueServiceImpl implements HouseQmCheckTaskIssueSe
         Example example = new Example(HouseQmCheckTaskIssue.class);
         Example.Criteria criteria = example.createCriteria();
         criteria.andEqualTo("taskId", taskId);
-        criteria.andCondition("area_path_and_id REGEXP "+regexp);
+        criteria.andCondition("area_path_and_id REGEXP '"+regexp+"'");
         ExampleUtil.addDeleteAtJudge(example);
         return houseQmCheckTaskIssueMapper.selectByExample(example);
     }

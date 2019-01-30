@@ -37,7 +37,7 @@ public class HouseQmCheckTaskIssueLogServiceImpl implements HouseQmCheckTaskIssu
     public int deleteIssueLogByUuids(List<String> uuids) {
         Example example = new Example(HouseQmCheckTaskIssueLog.class);
         Example.Criteria criteria = example.createCriteria();
-        criteria.andIn("uuid",uuids);
+        criteria.andIn("uuid", uuids);
         ExampleUtil.addDeleteAtJudge(example);
         return houseQmCheckTaskIssueLogMapper.deleteByExample(example);
     }
@@ -56,72 +56,80 @@ public class HouseQmCheckTaskIssueLogServiceImpl implements HouseQmCheckTaskIssu
      * @return
      */
     @LFAssignDataSource("zhijian2")
-    public List<HouseQmCheckTaskIssueLog> searchByIssueUuid(Set<String> issueUuids){
+    public List<HouseQmCheckTaskIssueLog> searchByIssueUuid(Set<String> issueUuids) {
         List<HouseQmCheckTaskIssueLog> houseQmCheckTaskIssueLogs = houseQmCheckTaskIssueLogMapper.selectByIssueUuid(issueUuids, "false");
         return houseQmCheckTaskIssueLogs;
     }
+
     @Override
     @LFAssignDataSource("zhijian2")
-    public List<HouseQmCheckTaskIssueLog> searchHouseQmCheckTaskIssueLogByMyIdTaskIdLastIdUpdateAtGt(Integer userId, Integer task_id, Integer last_id, Integer timestamp, Integer limit,Integer start,Integer checker) {
+    public List<HouseQmCheckTaskIssueLog> searchHouseQmCheckTaskIssueLogByMyIdTaskIdLastIdUpdateAtGt(Integer userId, Integer task_id, Integer last_id, Integer timestamp, Integer limit, Integer start, Integer checker) {
         List<Integer> squadIds = new ArrayList<>();
         List<Integer> userIds = new ArrayList<>();
-        List<HouseQmCheckTaskIssueLog>  houseQmCheckTaskIssueLogs = new ArrayList<>();
+        List<HouseQmCheckTaskIssueLog> houseQmCheckTaskIssueLogs = new ArrayList<>();
         try {
-            List<UserInHouseQmCheckTask> userInHouseQmCheckTasks=userInHouseQmCheckTaskMapper.searchByTaskIdUserIdRoleType(userId,task_id,checker);
+            List<UserInHouseQmCheckTask> userInHouseQmCheckTasks = userInHouseQmCheckTaskMapper.searchByTaskIdUserIdRoleType(userId, task_id, checker);
             userInHouseQmCheckTasks.forEach(userInHouseQmCheckTask -> {
                 squadIds.add(userInHouseQmCheckTask.getSquadId());
             });
-            List<UserInHouseQmCheckTask>  userInHouseQmCheckTaskSearchSquadIdsList=userInHouseQmCheckTaskMapper.searchBySquadIdIn(squadIds);
+            List<UserInHouseQmCheckTask> userInHouseQmCheckTaskSearchSquadIdsList = userInHouseQmCheckTaskMapper.searchBySquadIdIn(squadIds);
             userInHouseQmCheckTaskSearchSquadIdsList.forEach(userInHouseQmCheckTask -> {
                 userIds.add(userInHouseQmCheckTask.getUserId());
             });
-            if(userIds.size()==0){
+            if (userIds.size() == 0) {
                 userIds.add(userId);
             }
-            houseQmCheckTaskIssueLogs=houseQmCheckTaskIssueLogMapper.searchHouseQmCheckTaskIssueLogByMyIdTaskIdLastIdUpdateAtGt(userId,userIds,task_id,last_id,timestamp,start,limit);
+            houseQmCheckTaskIssueLogs = houseQmCheckTaskIssueLogMapper.searchHouseQmCheckTaskIssueLogByMyIdTaskIdLastIdUpdateAtGt(userId, userIds, task_id, last_id, timestamp, start, limit);
            /* houseQmCheckTaskIssueLogs.forEach(houseQmCheckTaskIssueLog -> {
                 System.out.println(houseQmCheckTaskIssueLog.getId());
             });*/
-        }catch (Exception e){
-            log.error("error:"+e);
+        } catch (Exception e) {
+            log.error("error:" + e);
         }
 
         return houseQmCheckTaskIssueLogs;
     }
 
     /**
-     *
-     * @author hy
-     * @date 2018/12/25 0025
      * @param task_id
      * @param uuids
      * @param issueLogUpdateTime
      * @return com.longfor.longjian.houseqm.po.HouseQmCheckTaskIssueLog
+     * @author hy
+     * @date 2018/12/25 0025
      */
     @Override
     @LFAssignDataSource("zhijian2")
     public HouseQmCheckTaskIssueLog selectIdByTaskIdAndIdAndUuidInAndUpdateAtGtAndNoDeletedOrderById(Integer task_id, List<String> uuids, Date issueLogUpdateTime) {
         Example example = new Example(HouseQmCheckTaskIssueLog.class);
+
         Example.Criteria criteria = example.createCriteria();
-        criteria.andEqualTo("taskId",task_id).andGreaterThan("id",0);
+        criteria.andEqualTo("taskId", task_id).andGreaterThan("id", 0);
+
         Example.Criteria criteria1 = example.createCriteria();
-        if (uuids.size()>0)criteria1.andIn("issueUuid",uuids);
+        if (uuids.size() > 0) criteria1.andIn("issueUuid", uuids);
+
         Example.Criteria criteria2 = example.createCriteria();
-        criteria2.andGreaterThan("updateAt",issueLogUpdateTime);
+        criteria2.andGreaterThan("updateAt", issueLogUpdateTime);
+
         example.and(criteria);
         example.and(criteria1);
         example.and(criteria2);
-        return houseQmCheckTaskIssueLogMapper.selectOneByExample(example);
+        ExampleUtil.addDeleteAtJudge(example);
+        example.orderBy("id").desc();
+        List<HouseQmCheckTaskIssueLog> result = houseQmCheckTaskIssueLogMapper.selectByExample(example);
+        if (result.size() != 1) return null;//防止因传参问题导致查出的数据量过大报错问题。
+        else return result.get(0);
     }
 
     @Override
     @LFAssignDataSource("zhijian2")
-    public List<HouseQmCheckTaskIssueLog>selectByUuidAndNotDelete(String issueUuid) {
+    public List<HouseQmCheckTaskIssueLog> selectByUuidAndNotDelete(String issueUuid) {
         Example example = new Example(HouseQmCheckTaskIssueLog.class);
         Example.Criteria criteria = example.createCriteria();
-        criteria.andEqualTo("issueUuid",issueUuid);
+        criteria.andEqualTo("issueUuid", issueUuid);
         criteria.andIsNull("deleteAt");
-      return  houseQmCheckTaskIssueLogMapper.selectByExample(example);
+        return houseQmCheckTaskIssueLogMapper.selectByExample(example);
     }
 
     @Override
@@ -135,8 +143,8 @@ public class HouseQmCheckTaskIssueLogServiceImpl implements HouseQmCheckTaskIssu
     public List<HouseQmCheckTaskIssueLog> selectByIssueUuIdAndStatusNotDel(String issueUuid, ArrayList<Integer> issueLogStatus) {
         Example example = new Example(HouseQmCheckTaskIssueLog.class);
         Example.Criteria criteria = example.createCriteria();
-        criteria.andEqualTo("issueUuid",issueUuid);
-        criteria.andIn("status",issueLogStatus);
+        criteria.andEqualTo("issueUuid", issueUuid);
+        criteria.andIn("status", issueLogStatus);
         criteria.andIsNull("deleteAt");
         return houseQmCheckTaskIssueLogMapper.selectByExample(example);
     }
@@ -146,8 +154,8 @@ public class HouseQmCheckTaskIssueLogServiceImpl implements HouseQmCheckTaskIssu
     public int selectByIssueUuIdAndStatusNotDelAndCount(String issueUuid, ArrayList<Integer> issueLogStatus) {
         Example example = new Example(HouseQmCheckTaskIssueLog.class);
         Example.Criteria criteria = example.createCriteria();
-        criteria.andEqualTo("issueUuid",issueUuid);
-        criteria.andIn("status",issueLogStatus);
+        criteria.andEqualTo("issueUuid", issueUuid);
+        criteria.andIn("status", issueLogStatus);
         criteria.andIsNull("deleteAt");
         return houseQmCheckTaskIssueLogMapper.selectCountByExample(example);
     }
@@ -157,7 +165,7 @@ public class HouseQmCheckTaskIssueLogServiceImpl implements HouseQmCheckTaskIssu
     public List<HouseQmCheckTaskIssueLog> selectByUuidsAndNotDelete(List<String> log_uuids) {
         Example example = new Example(HouseQmCheckTaskIssueLog.class);
         Example.Criteria criteria = example.createCriteria();
-        criteria.andIn("uuid",log_uuids);
+        criteria.andIn("uuid", log_uuids);
         criteria.andIsNull("deleteAt");
         return houseQmCheckTaskIssueLogMapper.selectByExample(example);
     }
