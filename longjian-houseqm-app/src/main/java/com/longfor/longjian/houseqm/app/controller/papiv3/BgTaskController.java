@@ -1,4 +1,4 @@
-package com.longfor.longjian.houseqm.app.controller;
+package com.longfor.longjian.houseqm.app.controller.papiv3;
 
 import com.longfor.longjian.common.base.LjBaseResponse;
 import com.longfor.longjian.common.util.DateUtil;

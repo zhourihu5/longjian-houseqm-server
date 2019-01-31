@@ -1,4 +1,4 @@
-package com.longfor.longjian.houseqm.app.controller;
+package com.longfor.longjian.houseqm.app.controller.settingv3papi;
 
 /**
  * @author lipeishuai

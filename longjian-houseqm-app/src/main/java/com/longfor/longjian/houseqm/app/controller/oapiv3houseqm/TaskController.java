@@ -1,4 +1,4 @@
-package com.longfor.longjian.houseqm.app.controller;
+package com.longfor.longjian.houseqm.app.controller.oapiv3houseqm;
 
 import com.google.common.collect.Maps;
 import com.longfor.longjian.common.util.DateUtil;

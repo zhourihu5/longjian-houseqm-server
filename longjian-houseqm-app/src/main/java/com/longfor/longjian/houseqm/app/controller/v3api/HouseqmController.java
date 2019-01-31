@@ -1,6 +1,5 @@
-package com.longfor.longjian.houseqm.app.controller;
+package com.longfor.longjian.houseqm.app.controller.v3api;
 
-import com.longfor.gaia.gfs.web.mock.MockOperation;
 import com.longfor.longjian.common.base.LjBaseResponse;
 import com.longfor.longjian.houseqm.app.req.DeviceReq;
 import com.longfor.longjian.houseqm.app.service.IHouseqmService;

@@ -1,4 +1,4 @@
-package com.longfor.longjian.houseqm.app.controller;
+package com.longfor.longjian.houseqm.app.controller.v3api;
 
 import com.longfor.longjian.common.util.CtrlTool;
 import com.longfor.longjian.common.util.SessionInfo;

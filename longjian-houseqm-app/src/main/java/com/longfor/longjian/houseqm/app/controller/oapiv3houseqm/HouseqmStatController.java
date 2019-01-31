@@ -1,4 +1,4 @@
-package com.longfor.longjian.houseqm.app.controller;
+package com.longfor.longjian.houseqm.app.controller.oapiv3houseqm;
 
 import com.ctrip.framework.apollo.core.utils.StringUtils;
 import com.google.common.collect.Lists;

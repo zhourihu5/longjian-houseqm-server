@@ -1,4 +1,4 @@
-package com.longfor.longjian.houseqm.app.controller;
+package com.longfor.longjian.houseqm.app.controller.buildingqmv3papi;
 
 import com.google.common.collect.Lists;
 import com.longfor.gaia.gfs.core.bean.PageInfo;

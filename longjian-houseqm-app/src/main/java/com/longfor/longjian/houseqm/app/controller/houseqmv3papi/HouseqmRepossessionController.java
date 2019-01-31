@@ -1,4 +1,4 @@
-package com.longfor.longjian.houseqm.app.controller.houseqmrepossession;
+package com.longfor.longjian.houseqm.app.controller.houseqmv3papi;
 
 import com.longfor.longjian.common.base.LjBaseResponse;
 import com.longfor.longjian.houseqm.app.feginClient.IRepossessionFeignService;
@@ -23,7 +23,7 @@ import javax.annotation.Resource;
  * @CreateDate: 2019/1/22 14:52
  */
 @RestController
-@RequestMapping(value = "/houseqm/v3/papi/repossession/")
+@RequestMapping("/houseqm/v3/papi/repossession/")
 @Slf4j
 public class HouseqmRepossessionController {
 

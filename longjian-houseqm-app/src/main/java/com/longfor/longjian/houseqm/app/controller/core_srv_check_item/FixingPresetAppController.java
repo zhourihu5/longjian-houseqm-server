@@ -1,4 +1,4 @@
-package com.longfor.longjian.houseqm.app.controller;
+package com.longfor.longjian.houseqm.app.controller.core_srv_check_item;
 
 import com.google.common.collect.Lists;
 import com.longfor.gaia.gfs.web.mock.MockOperation;
