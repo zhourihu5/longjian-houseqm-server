@@ -5,20 +5,14 @@ package com.longfor.longjian.houseqm.app.controller.settingv3papi;
  * @date 2018/11/20 19:32
  */
 
-import com.longfor.gaia.gfs.web.mock.MockOperation;
 import com.longfor.longjian.common.base.LjBaseResponse;
 import com.longfor.longjian.houseqm.app.service.BuildingqmSettingService;
 import com.longfor.longjian.houseqm.app.vo.ApiIssueFiledSettingMsg;
-import com.longfor.longjian.houseqm.po.IssueFieldSetting;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.util.Date;
-import java.util.List;
 
 /**
  * http://192.168.37.159:3000/project/8/interface/api/752  获取(工程检查)问题字段配置列表

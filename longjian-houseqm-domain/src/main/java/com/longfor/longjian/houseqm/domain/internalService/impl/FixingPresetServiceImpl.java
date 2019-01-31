@@ -1,8 +1,8 @@
 package com.longfor.longjian.houseqm.domain.internalService.impl;
 import com.longfor.gaia.gfs.data.mybatis.datasource.LFAssignDataSource;
-import com.longfor.longjian.houseqm.dao.FixingPresetMapper;
+import com.longfor.longjian.houseqm.dao.zj2db.FixingPresetMapper;
 import com.longfor.longjian.houseqm.domain.internalService.FixingPresetService;
-import com.longfor.longjian.houseqm.po.FixingPreset;
+import com.longfor.longjian.houseqm.po.zj2db.FixingPreset;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 

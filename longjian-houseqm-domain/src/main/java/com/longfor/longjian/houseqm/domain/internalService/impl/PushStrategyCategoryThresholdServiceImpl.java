@@ -1,9 +1,9 @@
 package com.longfor.longjian.houseqm.domain.internalService.impl;
 
 import com.longfor.gaia.gfs.data.mybatis.datasource.LFAssignDataSource;
-import com.longfor.longjian.houseqm.dao.PushStrategyCategoryThresholdMapper;
+import com.longfor.longjian.houseqm.dao.zhijian2_notify.PushStrategyCategoryThresholdMapper;
 import com.longfor.longjian.houseqm.domain.internalService.PushStrategyCategoryThresholdService;
-import com.longfor.longjian.houseqm.po.PushStrategyCategoryThreshold;
+import com.longfor.longjian.houseqm.po.zhijian2_notify.PushStrategyCategoryThreshold;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;

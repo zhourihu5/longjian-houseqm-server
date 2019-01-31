@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.longfor.longjian.houseqm.dao.zhijian2_notify.PushStrategyCategoryOverdueMapper" >
+  <resultMap id="BaseResultMap" type="com.longfor.longjian.houseqm.po.zhijian2_notify.PushStrategyCategoryOverdue" >
+    <!--
+      WARNING - @mbg.generated
+    -->
+    <id column="id" property="id" jdbcType="INTEGER" />
+    <result column="project_id" property="projectId" jdbcType="INTEGER" />
+    <result column="task_id" property="taskId" jdbcType="INTEGER" />
+    <result column="module_id" property="moduleId" jdbcType="INTEGER" />
+    <result column="typ" property="typ" jdbcType="INTEGER" />
+    <result column="category_keys" property="categoryKeys" jdbcType="VARCHAR" />
+    <result column="user_ids" property="userIds" jdbcType="VARCHAR" />
+    <result column="extra_info" property="extraInfo" jdbcType="VARCHAR" />
+    <result column="scan_end_on" property="scanEndOn" jdbcType="TIMESTAMP" />
+    <result column="create_at" property="createAt" jdbcType="TIMESTAMP" />
+    <result column="update_at" property="updateAt" jdbcType="TIMESTAMP" />
+    <result column="delete_at" property="deleteAt" jdbcType="TIMESTAMP" />
+  </resultMap>
+  <resultMap id="ResultMapWithBLOBs" type="com.longfor.longjian.houseqm.po.zhijian2_notify.PushStrategyCategoryOverdue" extends="BaseResultMap" >
+    <!--
+      WARNING - @mbg.generated
+    -->
+    <result column="stat_info" property="statInfo" jdbcType="LONGVARCHAR" />
+  </resultMap>
+  <sql id="Base_Column_List" >
+    <!--
+      WARNING - @mbg.generated
+    -->
+    id, project_id, task_id, module_id, typ, category_keys, user_ids, extra_info, scan_end_on, 
+    create_at, update_at, delete_at
+  </sql>
+  <sql id="Blob_Column_List" >
+    <!--
+      WARNING - @mbg.generated
+    -->
+    stat_info
+  </sql>
+  <select id="selectByTaskIds" resultMap="BaseResultMap">
+    select <include refid="Base_Column_List"/> from push_strategy_category_overdue
+    WHERE task_id in
+    <foreach collection="taskIds" index="index" open="(" separator="," close=")" item="item">
+      #{item}
+    </foreach>
+    <if test="deleted == 'false'">
+      AND delete_at IS NULL
+    </if>
+  </select>
+</mapper>

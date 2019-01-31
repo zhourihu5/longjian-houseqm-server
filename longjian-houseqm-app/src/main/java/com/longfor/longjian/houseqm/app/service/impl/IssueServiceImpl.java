@@ -15,13 +15,13 @@ import com.longfor.longjian.houseqm.app.vo.IssueListVo.DetailVo;
 
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
-import com.longfor.gaia.gfs.core.bean.PageInfo;
 import com.longfor.longjian.houseqm.app.service.IIssueService;
 import com.longfor.longjian.houseqm.app.vo.issuelist.IssueListRsp;
 import com.longfor.longjian.houseqm.consts.AppPlatformTypeEnum;
 import com.longfor.longjian.common.consts.HouseQmCheckTaskIssueStatusEnum;
 import com.longfor.longjian.houseqm.domain.internalService.*;
-import com.longfor.longjian.houseqm.po.*;
+import com.longfor.longjian.houseqm.po.zhijian2_apisvr.User;
+import com.longfor.longjian.houseqm.po.zj2db.*;
 import com.longfor.longjian.houseqm.util.*;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections.CollectionUtils;
@@ -1155,7 +1155,7 @@ public class IssueServiceImpl implements IIssueService {
 
     /**
      * @param categoryKeys
-     * @return java.util.Map<java.lang.String       ,       com.longfor.longjian.houseqm.po.CategoryV3>
+     * @return java.util.Map<java.lang.String       ,       com.longfor.longjian.houseqm.po.zj2db.CategoryV3>
      * @author hy
      * @date 2018/12/21 0021
      */
@@ -1171,7 +1171,7 @@ public class IssueServiceImpl implements IIssueService {
 
     /**
      * @param checkItems
-     * @return java.util.Map<java.lang.String       ,       com.longfor.longjian.houseqm.po.CheckItemV3>
+     * @return java.util.Map<java.lang.String       ,       com.longfor.longjian.houseqm.po.zj2db.CheckItemV3>
      * @author hy
      * @date 2018/12/21 0021
      */
@@ -1187,7 +1187,7 @@ public class IssueServiceImpl implements IIssueService {
 
     /**
      * @param repairers
-     * @return java.util.Map<java.lang.Integer       ,       com.longfor.longjian.houseqm.po.User>
+     * @return java.util.Map<java.lang.Integer       ,       com.longfor.longjian.houseqm.po.zhijian2_apisvr.User>
      * @author hy
      * @date 2018/12/21 0021
      */
@@ -1203,7 +1203,7 @@ public class IssueServiceImpl implements IIssueService {
 
     /**
      * @param areaPaths
-     * @return java.util.Map<java.lang.Integer       ,       com.longfor.longjian.houseqm.po.Area>
+     * @return java.util.Map<java.lang.Integer       ,       com.longfor.longjian.houseqm.po.zj2db.Area>
      * @author hy
      * @date 2018/12/21 0021
      */
@@ -1219,7 +1219,7 @@ public class IssueServiceImpl implements IIssueService {
 
     /**
      * @param attachments
-     * @return java.util.Map<java.lang.String       ,       com.longfor.longjian.houseqm.po.FileResource>
+     * @return java.util.Map<java.lang.String       ,       com.longfor.longjian.houseqm.po.zj2db.FileResource>
      * @author hy
      * @date 2018/12/21 0021
      */

@@ -1,6 +1,6 @@
 package com.longfor.longjian.houseqm.domain.internalService;
 
-import com.longfor.longjian.houseqm.po.IssueFieldSetting;
+import com.longfor.longjian.houseqm.po.zhijian2_setting.IssueFieldSetting;
 
 import java.util.List;
 

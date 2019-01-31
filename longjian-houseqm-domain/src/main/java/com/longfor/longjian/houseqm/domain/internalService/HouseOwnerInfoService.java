@@ -1,6 +1,6 @@
 package com.longfor.longjian.houseqm.domain.internalService;
 
-import com.longfor.longjian.houseqm.po.HouseOwnerInfo;
+import com.longfor.longjian.houseqm.po.zj2db.HouseOwnerInfo;
 
 import java.util.List;
 

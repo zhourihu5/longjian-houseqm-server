@@ -18,8 +18,8 @@ import com.longfor.longjian.houseqm.app.service.IHouseqmStatisticService;
 import com.longfor.longjian.houseqm.consts.CategoryClsTypeEnum;
 import com.longfor.longjian.houseqm.consts.HouseQmCheckTaskRoleTypeEnum;
 import com.longfor.longjian.houseqm.domain.internalService.HouseQmCheckTaskService;
-import com.longfor.longjian.houseqm.po.HouseQmCheckTask;
-import com.longfor.longjian.houseqm.po.UserInHouseQmCheckTask;
+import com.longfor.longjian.houseqm.po.zj2db.HouseQmCheckTask;
+import com.longfor.longjian.houseqm.po.zj2db.UserInHouseQmCheckTask;
 import com.longfor.longjian.houseqm.util.DateUtil;
 import com.longfor.longjian.houseqm.util.MathUtil;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -34,7 +34,6 @@ import com.longfor.longjian.houseqm.domain.internalService.AreaService;
 
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.MediaType;
-import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
 

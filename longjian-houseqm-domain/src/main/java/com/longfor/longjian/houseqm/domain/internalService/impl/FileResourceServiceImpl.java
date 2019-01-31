@@ -1,9 +1,9 @@
 package com.longfor.longjian.houseqm.domain.internalService.impl;
 
 import com.longfor.gaia.gfs.data.mybatis.datasource.LFAssignDataSource;
-import com.longfor.longjian.houseqm.dao.FileResourceMapper;
+import com.longfor.longjian.houseqm.dao.zj2db.FileResourceMapper;
 import com.longfor.longjian.houseqm.domain.internalService.FileResourceService;
-import com.longfor.longjian.houseqm.po.FileResource;
+import com.longfor.longjian.houseqm.po.zj2db.FileResource;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
@@ -27,7 +27,7 @@ public class FileResourceServiceImpl implements FileResourceService {
      * @author hy
      * @date 2018/12/21 0021
      * @param attachments
-     * @return java.util.List<com.longfor.longjian.houseqm.po.FileResource>
+     * @return java.util.List<com.longfor.longjian.houseqm.po.zj2db.FileResource>
      */
     @Override
     @LFAssignDataSource("zhijian2")

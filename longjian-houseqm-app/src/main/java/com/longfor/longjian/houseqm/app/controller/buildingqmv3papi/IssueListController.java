@@ -1,10 +1,7 @@
 package com.longfor.longjian.houseqm.app.controller.buildingqmv3papi;
 
 import com.google.common.collect.Lists;
-import com.longfor.gaia.gfs.core.bean.PageInfo;
-import com.longfor.gaia.gfs.web.mock.MockOperation;
 import com.longfor.longjian.common.base.LjBaseResponse;
-import com.longfor.longjian.common.consts.CommonGlobal;
 import com.longfor.longjian.common.util.CtrlTool;
 import com.longfor.longjian.common.util.RequestContextHolderUtil;
 import com.longfor.longjian.common.util.SessionInfo;
@@ -15,8 +12,7 @@ import com.longfor.longjian.houseqm.app.vo.issuelist.DetailLogRspVo;
 import com.longfor.longjian.houseqm.app.vo.issuelist.DetailRepairLogRspVo;
 import com.longfor.longjian.houseqm.app.vo.issuelist.IssueListRsp;
 import com.longfor.longjian.houseqm.consts.CommonGlobalEnum;
-import com.longfor.longjian.houseqm.po.ProjectSettingV2;
-import io.swagger.annotations.ApiParam;
+import com.longfor.longjian.houseqm.po.zj2db.ProjectSettingV2;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
@@ -25,8 +21,6 @@ import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
-import javax.validation.constraints.Min;
-import java.util.ArrayList;
 import java.util.List;
 
 /**

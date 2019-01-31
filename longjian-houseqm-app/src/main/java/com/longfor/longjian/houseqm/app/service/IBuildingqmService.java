@@ -3,7 +3,7 @@ package com.longfor.longjian.houseqm.app.service;
 import com.longfor.longjian.houseqm.app.req.TaskEditReq;
 import com.longfor.longjian.houseqm.app.req.TaskReq;
 import com.longfor.longjian.houseqm.app.vo.*;
-import com.longfor.longjian.houseqm.po.HouseQmCheckTaskSquad;
+import com.longfor.longjian.houseqm.po.zj2db.HouseQmCheckTaskSquad;
 
 import java.util.List;
 

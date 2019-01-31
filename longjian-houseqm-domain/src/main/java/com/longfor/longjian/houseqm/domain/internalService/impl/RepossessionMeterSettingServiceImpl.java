@@ -1,9 +1,9 @@
 package com.longfor.longjian.houseqm.domain.internalService.impl;
 
 import com.longfor.gaia.gfs.data.mybatis.datasource.LFAssignDataSource;
-import com.longfor.longjian.houseqm.dao.RepossessionMeterSettingMapper;
+import com.longfor.longjian.houseqm.dao.zj2db.RepossessionMeterSettingMapper;
 import com.longfor.longjian.houseqm.domain.internalService.RepossessionMeterSettingService;
-import com.longfor.longjian.houseqm.po.RepossessionMeterSetting;
+import com.longfor.longjian.houseqm.po.zj2db.RepossessionMeterSetting;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;

@@ -1,6 +1,6 @@
 package com.longfor.longjian.houseqm.domain.internalService;
 
-import com.longfor.longjian.houseqm.po.PushStrategyCategoryOverdue;
+import com.longfor.longjian.houseqm.po.zhijian2_notify.PushStrategyCategoryOverdue;
 
 import java.util.List;
 import java.util.Set;

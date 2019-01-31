@@ -2,17 +2,14 @@ package com.longfor.longjian.houseqm.domain.internalService.impl;
 
 
 import com.longfor.gaia.gfs.data.mybatis.datasource.LFAssignDataSource;
-import com.longfor.longjian.houseqm.dao.BuildingqmSettingMapper;
+import com.longfor.longjian.houseqm.dao.zhijian2_setting.BuildingqmSettingMapper;
 import com.longfor.longjian.houseqm.domain.internalService.BuildingqmCheckQuestionService;
-import com.longfor.longjian.houseqm.po.IssueFieldSetting;
+import com.longfor.longjian.houseqm.po.zhijian2_setting.IssueFieldSetting;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.ibatis.annotations.Param;
 import org.springframework.stereotype.Service;
 
 
 import javax.annotation.Resource;
-import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 
 /**

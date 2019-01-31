@@ -1,6 +1,6 @@
 package com.longfor.longjian.houseqm.domain.internalService;
 
-import com.longfor.longjian.houseqm.po.HouseQmCheckTaskSquad;
+import com.longfor.longjian.houseqm.po.zj2db.HouseQmCheckTaskSquad;
 
 import java.util.List;
 import java.util.Set;

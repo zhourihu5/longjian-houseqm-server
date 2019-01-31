@@ -1,6 +1,5 @@
 package com.longfor.longjian.houseqm.app.vo;
 
-import com.longfor.longjian.houseqm.po.HouseQmCheckTaskIssueAttachment;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 

@@ -1,7 +1,6 @@
 package com.longfor.longjian.houseqm.domain.internalService;
 
-import com.longfor.longjian.houseqm.po.Category;
-import com.longfor.longjian.houseqm.po.CategoryV3;
+import com.longfor.longjian.houseqm.po.zj2db.CategoryV3;
 
 import java.util.List;
 

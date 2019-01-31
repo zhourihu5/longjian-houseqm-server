@@ -1,6 +1,6 @@
 package com.longfor.longjian.houseqm.domain.internalService;
 
-import com.longfor.longjian.houseqm.po.CheckItemV3;
+import com.longfor.longjian.houseqm.po.zj2db.CheckItemV3;
 
 import java.util.List;
 

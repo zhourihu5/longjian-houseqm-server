@@ -1,6 +1,6 @@
 package com.longfor.longjian.houseqm.dto;
 
-import com.longfor.longjian.houseqm.po.HouseQmCheckTaskIssue;
+import com.longfor.longjian.houseqm.po.zj2db.HouseQmCheckTaskIssue;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 

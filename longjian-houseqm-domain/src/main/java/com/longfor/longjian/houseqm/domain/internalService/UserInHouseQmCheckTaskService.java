@@ -1,7 +1,6 @@
 package com.longfor.longjian.houseqm.domain.internalService;
 
-import com.longfor.longjian.houseqm.po.HouseQmCheckTask;
-import com.longfor.longjian.houseqm.po.UserInHouseQmCheckTask;
+import com.longfor.longjian.houseqm.po.zj2db.UserInHouseQmCheckTask;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -30,7 +29,7 @@ public interface UserInHouseQmCheckTaskService {
      * @param checker
      * @param uid
      * @param task_id
-     * @return java.util.List<com.longfor.longjian.houseqm.po.UserInHouseQmCheckTask>
+     * @return java.util.List<com.longfor.longjian.houseqm.po.zj2db.UserInHouseQmCheckTask>
      */
     List<UserInHouseQmCheckTask> selectSquadIdByTaskIdAndUserIdAndRoleTypeAndNoDeleted(Integer checker, Integer uid, Integer task_id);
 
@@ -39,7 +38,7 @@ public interface UserInHouseQmCheckTaskService {
      * @author hy
      * @date 2018/12/25 0025
      * @param squadIds
-     * @return java.util.List<com.longfor.longjian.houseqm.po.UserInHouseQmCheckTask>
+     * @return java.util.List<com.longfor.longjian.houseqm.po.zj2db.UserInHouseQmCheckTask>
      */
     List<UserInHouseQmCheckTask> selectUserIdBySquadIdInAndNoDeleted(List<Integer> squadIds);
 
@@ -48,7 +47,7 @@ public interface UserInHouseQmCheckTaskService {
      * @author hy
      * @date 2018/12/25 0025
      * @param task_id
-     * @return com.longfor.longjian.houseqm.po.UserInHouseQmCheckTask
+     * @return com.longfor.longjian.houseqm.po.zj2db.UserInHouseQmCheckTask
      */
     List<UserInHouseQmCheckTask> selectUpdateAtByTaskIdAndNoDeletedOrderByUpdateAt(Integer task_id);
 

@@ -1,17 +1,16 @@
 package com.longfor.longjian.houseqm.domain.internalService.impl;
 
 import com.longfor.gaia.gfs.data.mybatis.datasource.LFAssignDataSource;
-import com.longfor.longjian.houseqm.dao.RepossessionStatusMapper;
+import com.longfor.longjian.houseqm.dao.zj2db.RepossessionStatusMapper;
 import com.longfor.longjian.houseqm.domain.internalService.RepossessionStatusService;
 import com.longfor.longjian.houseqm.dto.RepossessionStatusCompleteDailyCountDto;
-import com.longfor.longjian.houseqm.po.RepossessionStatus;
+import com.longfor.longjian.houseqm.po.zj2db.RepossessionStatus;
 import com.longfor.longjian.houseqm.utils.ExampleUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import tk.mybatis.mapper.entity.Example;
 
 import javax.annotation.Resource;
-import java.beans.beancontext.BeanContext;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;

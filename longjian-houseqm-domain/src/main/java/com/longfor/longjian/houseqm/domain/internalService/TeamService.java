@@ -1,11 +1,10 @@
 package com.longfor.longjian.houseqm.domain.internalService;
 
-import com.longfor.longjian.houseqm.po.Team;
+import com.longfor.longjian.houseqm.po.zhijian2_apisvr.Team;
 
 import java.util.List;
 
 import java.util.ArrayList;
-import java.util.List;
 
 /**
  * @author Houyan

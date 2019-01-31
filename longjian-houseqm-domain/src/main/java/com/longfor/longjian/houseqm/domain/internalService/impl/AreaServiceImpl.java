@@ -3,16 +3,13 @@ package com.longfor.longjian.houseqm.domain.internalService.impl;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.longfor.gaia.gfs.data.mybatis.datasource.LFAssignDataSource;
-import com.longfor.longjian.houseqm.dao.AreaMapper;
+import com.longfor.longjian.houseqm.dao.zj2db.AreaMapper;
 import com.longfor.longjian.houseqm.domain.internalService.AreaService;
-import com.longfor.longjian.houseqm.po.Area;
-import com.longfor.longjian.houseqm.util.CollectionUtil;
+import com.longfor.longjian.houseqm.po.zj2db.Area;
 import com.longfor.longjian.houseqm.util.StringSplitToListUtil;
 import com.longfor.longjian.houseqm.util.StringUtil;
 import com.longfor.longjian.houseqm.utils.ExampleUtil;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.collections.CollectionUtils;
-import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Service;
 import tk.mybatis.mapper.entity.Example;
 
@@ -227,7 +224,7 @@ public class AreaServiceImpl implements AreaService {
 
     /**
      * @param areaPaths
-     * @return java.util.List<com.longfor.longjian.houseqm.po.Area>
+     * @return java.util.List<com.longfor.longjian.houseqm.po.zj2db.Area>
      * @author hy
      * @date 2018/12/21 0021
      */

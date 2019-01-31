@@ -22,18 +22,15 @@ import com.longfor.longjian.houseqm.consts.HouseQmCheckTaskIssueCheckStatusEnum;
 import com.longfor.longjian.common.consts.HouseQmCheckTaskIssueStatusEnum;
 import com.longfor.longjian.houseqm.domain.internalService.HouseQmCheckTaskIssueService;
 import com.longfor.longjian.houseqm.domain.internalService.HouseQmCheckTaskService;
-import com.longfor.longjian.houseqm.po.HouseQmCheckTask;
-import com.longfor.longjian.houseqm.po.HouseQmCheckTaskIssue;
+import com.longfor.longjian.houseqm.po.zj2db.HouseQmCheckTask;
+import com.longfor.longjian.houseqm.po.zj2db.HouseQmCheckTaskIssue;
 import com.longfor.longjian.houseqm.po.zj2db.Project;
 import com.longfor.longjian.houseqm.util.DateUtil;
 import com.longfor.longjian.houseqm.util.StringSplitToListUtil;
-import com.longfor.longjian.houseqm.app.vo.url.UrlUtils;
+
 import com.longfor.longjian.houseqm.util.StringUtil;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.MediaType;
-import org.springframework.util.Assert;
-import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -41,7 +38,6 @@ import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 import java.util.*;
-import java.util.stream.Collectors;
 
 /**
  * @ProjectName: longjian-houseqm-server

@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.longfor.longjian.houseqm.dao.zhijian2_setting.BuildingqmSettingMapper" >
+
+    <resultMap id="BaseResultMap" type="com.longfor.longjian.houseqm.po.zhijian2_setting.IssueFieldSetting" >
+        <!--
+          WARNING - @mbg.generated
+        -->
+        <id column="id" property="id" jdbcType="INTEGER" />
+        <result column="project_id" property="projectId" jdbcType="INTEGER" />
+        <result column="field_id" property="fieldId" jdbcType="INTEGER" />
+        <result column="name" property="name" jdbcType="VARCHAR" />
+        <result column="alias" property="alias" jdbcType="VARCHAR" />
+        <result column="display_status" property="displayStatus" jdbcType="INTEGER" />
+        <result column="required_status" property="requiredStatus" jdbcType="INTEGER" />
+        <result column="alias_status" property="aliasStatus" jdbcType="INTEGER" />
+        <result column="module_id" property="moduleId" jdbcType="INTEGER" />
+        <result column="modify_user_id" property="modifyUserId" jdbcType="INTEGER" />
+        <result column="create_at" property="createAt" jdbcType="TIMESTAMP" />
+        <result column="update_at" property="updateAt" jdbcType="TIMESTAMP" />
+        <result column="delete_at" property="deleteAt" jdbcType="TIMESTAMP" />
+    </resultMap>
+
+    <sql id="Base_Column_List" >
+        <!--
+          WARNING - @mbg.generated
+        -->
+        id,project_id,field_id,name,alias,display_status,required_status,alias_status,module_id,modify_user_id,create_at,update_at,delete_at
+
+    </sql>
+    <select id="findProjectIdsAndModuleId" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List" />
+        from issue_field_setting
+       <where>
+            project_id in
+            <foreach collection="projectIdList" open="(" close = ")" item = "projectId" separator=",">
+                #{projectId}
+            </foreach>
+       </where>
+    </select>
+</mapper>

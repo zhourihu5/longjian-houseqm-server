@@ -5,12 +5,9 @@ import com.alibaba.fastjson.JSONObject;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
-import com.google.gson.JsonObject;
-import com.longfor.longjian.common.consts.ErrorNumEnum;
 import com.longfor.longjian.common.consts.HouseQmCheckTaskIssueStatusEnum;
 import com.longfor.longjian.common.consts.checktask.*;
 import com.longfor.longjian.common.exception.LjBaseRuntimeException;
-import com.longfor.longjian.common.util.JSONUtil;
 import com.longfor.longjian.houseqm.app.service.ITaskListService;
 import com.longfor.longjian.houseqm.app.vo.TaskList2Vo;
 import com.longfor.longjian.houseqm.app.vo.TaskPushStrategyVo;
@@ -20,9 +17,15 @@ import com.longfor.longjian.houseqm.consts.ErrorEnum;
 import com.longfor.longjian.houseqm.domain.internalService.*;
 import com.longfor.longjian.houseqm.innervo.ApiBuildingQmCheckTaskConfig;
 import com.longfor.longjian.houseqm.innervo.ApiBuildingQmCheckTaskMsg;
-import com.longfor.longjian.houseqm.po.*;
+import com.longfor.longjian.houseqm.po.zhijian2_apisvr.Team;
+import com.longfor.longjian.houseqm.po.zhijian2_apisvr.User;
+import com.longfor.longjian.houseqm.po.zhijian2_notify.PushStrategyAssignTime;
+import com.longfor.longjian.houseqm.po.zhijian2_notify.PushStrategyCategoryOverdue;
+import com.longfor.longjian.houseqm.po.zhijian2_notify.PushStrategyCategoryThreshold;
+import com.longfor.longjian.houseqm.po.zj2db.HouseQmCheckTask;
+import com.longfor.longjian.houseqm.po.zj2db.HouseQmCheckTaskIssue;
+import com.longfor.longjian.houseqm.po.zj2db.UserInHouseQmCheckTask;
 import com.longfor.longjian.houseqm.util.DateUtil;
-import com.longfor.longjian.houseqm.util.JsonUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Repository;
@@ -31,7 +34,6 @@ import org.springframework.stereotype.Service;
 import javax.annotation.Resource;
 import java.text.SimpleDateFormat;
 import java.util.*;
-import java.util.concurrent.atomic.AtomicReference;
 
 /**
  * @author Houyan

@@ -3,7 +3,7 @@ package com.longfor.longjian.houseqm.app.service.impl;
 
 import com.longfor.longjian.houseqm.app.service.FixingPresetAppService;
 import com.longfor.longjian.houseqm.domain.internalService.FixingPresetService;
-import com.longfor.longjian.houseqm.po.FixingPreset;
+import com.longfor.longjian.houseqm.po.zj2db.FixingPreset;
 import com.longfor.longjian.houseqm.util.DateUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;

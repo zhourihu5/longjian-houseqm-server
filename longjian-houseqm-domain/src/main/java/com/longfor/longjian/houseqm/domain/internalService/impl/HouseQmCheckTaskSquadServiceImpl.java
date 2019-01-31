@@ -1,10 +1,9 @@
 package com.longfor.longjian.houseqm.domain.internalService.impl;
 
 import com.longfor.gaia.gfs.data.mybatis.datasource.LFAssignDataSource;
-import com.longfor.longjian.houseqm.dao.HouseQmCheckTaskSquadMapper;
+import com.longfor.longjian.houseqm.dao.zj2db.HouseQmCheckTaskSquadMapper;
 import com.longfor.longjian.houseqm.domain.internalService.HouseQmCheckTaskSquadService;
-import com.longfor.longjian.houseqm.po.HouseQmCheckTaskSquad;
-import com.longfor.longjian.houseqm.po.UserInHouseQmCheckTask;
+import com.longfor.longjian.houseqm.po.zj2db.HouseQmCheckTaskSquad;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;

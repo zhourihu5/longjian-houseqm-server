@@ -3,7 +3,7 @@ package com.longfor.longjian.houseqm.app.service;
 import com.longfor.longjian.houseqm.app.vo.TaskList2Vo;
 import com.longfor.longjian.houseqm.app.vo.TaskRoleListVo;
 import com.longfor.longjian.houseqm.app.vo.task.CheckTaskIssueTypeStatInfo;
-import com.longfor.longjian.houseqm.po.Team;
+import com.longfor.longjian.houseqm.po.zhijian2_apisvr.Team;
 
 import java.util.List;
 import java.util.Map;

@@ -7,7 +7,7 @@ import com.longfor.longjian.houseqm.app.vo.MyIssueListVo;
 import com.longfor.longjian.houseqm.app.vo.MyIssueMemberListVo;
 import com.longfor.longjian.houseqm.app.vo.TaskResponse;
 import com.longfor.longjian.houseqm.app.vo.houseqm.HouseqmMyIssueLogListRspVo;
-import com.longfor.longjian.houseqm.po.Area;
+import com.longfor.longjian.houseqm.po.zj2db.Area;
 
 import javax.servlet.http.HttpServletRequest;
 import java.util.List;
@@ -55,7 +55,7 @@ public interface IHouseqmService {
      * @Description
      * @Date 17:13 2019/1/8
      * @Param [projectId, taskId]
-     * @return java.util.List<com.longfor.longjian.houseqm.po.Area>
+     * @return java.util.List<com.longfor.longjian.houseqm.po.zj2db.Area>
      **/
     List<Area> searchTargetAreaByTaskId(Integer projectId,Integer taskId);
 

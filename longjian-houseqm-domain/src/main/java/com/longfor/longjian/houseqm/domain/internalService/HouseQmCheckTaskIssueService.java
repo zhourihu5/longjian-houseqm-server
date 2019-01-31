@@ -5,6 +5,9 @@ import com.longfor.longjian.houseqm.dto.HouseQmCheckTaskIssueListDto;
 import com.longfor.longjian.houseqm.dto.HouseQmCheckTaskIssueDto;
 import com.longfor.longjian.houseqm.dto.RepaireIssueStatusStatDto;
 import com.longfor.longjian.houseqm.po.*;
+import com.longfor.longjian.houseqm.po.zj2db.HouseQmCheckTaskIssue;
+import com.longfor.longjian.houseqm.po.zj2db.HouseQmCheckTaskIssueAttachment;
+import com.longfor.longjian.houseqm.po.zj2db.HouseQmCheckTaskIssueUser;
 
 import java.util.*;
 
@@ -111,7 +114,7 @@ public interface HouseQmCheckTaskIssueService {
     HouseQmCheckTaskIssueListDto selectCountByProjectIdAndCategoryClsAndTypeAndStatusInAndDongTai2(Integer projectId, Integer taskId, List<Integer> categoryClsList, Integer areaId, Integer planStatus, Date beginOn, Date endOn, Integer page, Integer pageSize);
     /**
      * @param map
-     * @return java.util.List<com.longfor.longjian.houseqm.po.HouseQmCheckTaskIssue>
+     * @return java.util.List<com.longfor.longjian.houseqm.po.zj2db.HouseQmCheckTaskIssue>
      * @author hy
      * @date 2018/12/22 0022
      */
@@ -135,7 +138,7 @@ public interface HouseQmCheckTaskIssueService {
      * @param issueUpdateTime
      * @param userIds
      * @param issueUuids
-     * @return java.util.List<com.longfor.longjian.houseqm.po.HouseQmCheckTaskIssue>
+     * @return java.util.List<com.longfor.longjian.houseqm.po.zj2db.HouseQmCheckTaskIssue>
      * @author hy
      * @date 2018/12/25 0025
      */
@@ -145,7 +148,7 @@ public interface HouseQmCheckTaskIssueService {
      * @param userIds
      * @param task_id
      * @param issueUuids
-     * @return java.util.List<com.longfor.longjian.houseqm.po.HouseQmCheckTaskIssue>
+     * @return java.util.List<com.longfor.longjian.houseqm.po.zj2db.HouseQmCheckTaskIssue>
      * @author hy
      * @date 2018/12/25 0025
      */

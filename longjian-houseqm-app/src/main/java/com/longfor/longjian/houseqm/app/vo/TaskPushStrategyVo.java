@@ -1,8 +1,8 @@
 package com.longfor.longjian.houseqm.app.vo;
 
-import com.longfor.longjian.houseqm.po.PushStrategyAssignTime;
-import com.longfor.longjian.houseqm.po.PushStrategyCategoryOverdue;
-import com.longfor.longjian.houseqm.po.PushStrategyCategoryThreshold;
+import com.longfor.longjian.houseqm.po.zhijian2_notify.PushStrategyAssignTime;
+import com.longfor.longjian.houseqm.po.zhijian2_notify.PushStrategyCategoryOverdue;
+import com.longfor.longjian.houseqm.po.zhijian2_notify.PushStrategyCategoryThreshold;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 

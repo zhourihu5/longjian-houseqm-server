@@ -1,7 +1,7 @@
 package com.longfor.longjian.houseqm.app.vo.export;
 
 import com.google.common.collect.Lists;
-import com.longfor.longjian.houseqm.po.Area;
+import com.longfor.longjian.houseqm.po.zj2db.Area;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 

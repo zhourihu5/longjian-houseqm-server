@@ -8,6 +8,10 @@ import com.longfor.longjian.houseqm.app.vo.*;
 import com.longfor.longjian.houseqm.consts.*;
 import com.longfor.longjian.houseqm.domain.internalService.*;
 import com.longfor.longjian.houseqm.po.*;
+import com.longfor.longjian.houseqm.po.zj2db.Area;
+import com.longfor.longjian.houseqm.po.zj2db.HouseQmCheckTask;
+import com.longfor.longjian.houseqm.po.zj2db.RepossessionStatus;
+import com.longfor.longjian.houseqm.po.zj2db.UserInHouseQmCheckTask;
 import com.longfor.longjian.houseqm.util.CollectionUtil;
 import com.longfor.longjian.houseqm.util.DateUtil;
 import com.longfor.longjian.houseqm.util.StringSplitToListUtil;
@@ -17,7 +21,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections.CollectionUtils;
 import org.springframework.stereotype.Repository;
 import org.springframework.stereotype.Service;
-import sun.reflect.generics.tree.ReturnType;
 
 import javax.annotation.Resource;
 

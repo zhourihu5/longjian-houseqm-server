@@ -1,23 +1,22 @@
 package com.longfor.longjian.houseqm.domain.internalService.impl;
 
 import com.google.common.collect.Lists;
-import com.github.pagehelper.Page;
 import com.github.pagehelper.PageHelper;
 import com.longfor.gaia.gfs.data.mybatis.datasource.LFAssignDataSource;
 import com.longfor.longjian.common.consts.HouseQmCheckTaskIssueStatusEnum;
 import com.longfor.longjian.houseqm.consts.HouseQmCheckTaskIssueEnum;
 import com.longfor.longjian.houseqm.consts.HouseQmIssuePlanStatusEnum;
-import com.longfor.longjian.houseqm.dao.*;
+import com.longfor.longjian.houseqm.dao.zj2db.*;
 import com.longfor.longjian.houseqm.domain.internalService.HouseQmCheckTaskIssueService;
 import com.longfor.longjian.houseqm.dto.CheckerIssueStatusStatDto;
 import com.longfor.longjian.houseqm.dto.HouseQmCheckTaskIssueDto;
 import com.longfor.longjian.houseqm.dto.HouseQmCheckTaskIssueListDto;
 import com.longfor.longjian.houseqm.dto.RepaireIssueStatusStatDto;
 import com.longfor.longjian.houseqm.po.*;
+import com.longfor.longjian.houseqm.po.zj2db.*;
 import com.longfor.longjian.houseqm.util.DateUtil;
 import com.longfor.longjian.houseqm.utils.ExampleUtil;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.ibatis.annotations.Param;
 import org.apache.ibatis.session.RowBounds;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -423,7 +422,7 @@ public class HouseQmCheckTaskIssueServiceImpl implements HouseQmCheckTaskIssueSe
     }
 
     /**
-     * @return java.util.List<com.longfor.longjian.houseqm.po.HouseQmCheckTaskIssue>
+     * @return java.util.List<com.longfor.longjian.houseqm.po.zj2db.HouseQmCheckTaskIssue>
      * @author hy
      * @date 2018/12/21 0021
      * * @param map
@@ -560,7 +559,7 @@ public class HouseQmCheckTaskIssueServiceImpl implements HouseQmCheckTaskIssueSe
      * @param issueUpdateTime
      * @param userIds
      * @param issueUuids
-     * @return com.longfor.longjian.houseqm.po.HouseQmCheckTaskIssue
+     * @return com.longfor.longjian.houseqm.po.zj2db.HouseQmCheckTaskIssue
      * @author hy
      * @date 2018/12/25 0025
      */
@@ -588,7 +587,7 @@ public class HouseQmCheckTaskIssueServiceImpl implements HouseQmCheckTaskIssueSe
      * @param userIds
      * @param task_id
      * @param issueUuids
-     * @return java.util.List<com.longfor.longjian.houseqm.po.HouseQmCheckTaskIssue>
+     * @return java.util.List<com.longfor.longjian.houseqm.po.zj2db.HouseQmCheckTaskIssue>
      * @author hy
      * @date 2018/12/25 0025
      */

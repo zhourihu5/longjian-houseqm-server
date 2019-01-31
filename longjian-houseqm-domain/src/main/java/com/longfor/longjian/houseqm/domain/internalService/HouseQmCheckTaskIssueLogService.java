@@ -1,6 +1,6 @@
 package com.longfor.longjian.houseqm.domain.internalService;
 
-import com.longfor.longjian.houseqm.po.HouseQmCheckTaskIssueLog;
+import com.longfor.longjian.houseqm.po.zj2db.HouseQmCheckTaskIssueLog;
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -32,7 +32,7 @@ public interface HouseQmCheckTaskIssueLogService {
      * @param task_id
      * @param uuids
      * @param issueLogUpdateTime
-     * @return com.longfor.longjian.houseqm.po.HouseQmCheckTaskIssueLog
+     * @return com.longfor.longjian.houseqm.po.zj2db.HouseQmCheckTaskIssueLog
      */
     HouseQmCheckTaskIssueLog selectIdByTaskIdAndIdAndUuidInAndUpdateAtGtAndNoDeletedOrderById(Integer task_id, List<String> uuids, Date issueLogUpdateTime);
 

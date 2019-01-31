@@ -1,9 +1,8 @@
 package com.longfor.longjian.houseqm.domain.internalService;
 
-import com.longfor.longjian.houseqm.po.HouseQmCheckTask;
+import com.longfor.longjian.houseqm.po.zj2db.HouseQmCheckTask;
 
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 import java.util.Set;
 

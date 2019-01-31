@@ -1,9 +1,9 @@
 package com.longfor.longjian.houseqm.domain.internalService.impl;
 
 import com.longfor.gaia.gfs.data.mybatis.datasource.LFAssignDataSource;
-import com.longfor.longjian.houseqm.dao.ProjectSettingV2Mapper;
+import com.longfor.longjian.houseqm.dao.zj2db.ProjectSettingV2Mapper;
 import com.longfor.longjian.houseqm.domain.internalService.ProjectSettingV2Service;
-import com.longfor.longjian.houseqm.po.ProjectSettingV2;
+import com.longfor.longjian.houseqm.po.zj2db.ProjectSettingV2;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import tk.mybatis.mapper.entity.Example;

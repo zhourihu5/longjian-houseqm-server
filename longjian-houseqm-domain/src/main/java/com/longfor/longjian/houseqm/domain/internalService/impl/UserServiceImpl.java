@@ -2,15 +2,14 @@ package com.longfor.longjian.houseqm.domain.internalService.impl;
 
 import com.google.common.collect.Maps;
 import com.longfor.gaia.gfs.data.mybatis.datasource.LFAssignDataSource;
-import com.longfor.longjian.houseqm.dao.UserMapper;
+import com.longfor.longjian.houseqm.dao.zhijian2_apisvr.UserMapper;
 import com.longfor.longjian.houseqm.domain.internalService.UserService;
-import com.longfor.longjian.houseqm.po.User;
+import com.longfor.longjian.houseqm.po.zhijian2_apisvr.User;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import tk.mybatis.mapper.entity.Example;
 
 import javax.annotation.Resource;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;

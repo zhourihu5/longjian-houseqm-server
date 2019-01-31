@@ -2,17 +2,14 @@ package com.longfor.longjian.houseqm.domain.internalService.impl;
 
 import com.google.common.collect.Lists;
 import com.longfor.gaia.gfs.data.mybatis.datasource.LFAssignDataSource;
-import com.longfor.longjian.houseqm.dao.UserInHouseQmCheckTaskMapper;
+import com.longfor.longjian.houseqm.dao.zj2db.UserInHouseQmCheckTaskMapper;
 import com.longfor.longjian.houseqm.domain.internalService.UserInHouseQmCheckTaskService;
-import com.longfor.longjian.houseqm.po.HouseQmCheckTask;
-import com.longfor.longjian.houseqm.po.HouseQmCheckTaskSquad;
-import com.longfor.longjian.houseqm.po.UserInHouseQmCheckTask;
+import com.longfor.longjian.houseqm.po.zj2db.UserInHouseQmCheckTask;
 import com.longfor.longjian.houseqm.utils.ExampleUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import tk.mybatis.mapper.entity.Example;
 import org.springframework.transaction.annotation.Transactional;
-import tk.mybatis.mapper.entity.Example;
 
 import javax.annotation.Resource;
 import java.util.ArrayList;
@@ -118,7 +115,7 @@ public class UserInHouseQmCheckTaskServiceImpl implements UserInHouseQmCheckTask
      * @param checker
      * @param uid
      * @param task_id
-     * @return java.util.List<com.longfor.longjian.houseqm.po.UserInHouseQmCheckTask>
+     * @return java.util.List<com.longfor.longjian.houseqm.po.zj2db.UserInHouseQmCheckTask>
      * @author hy
      * @date 2018/12/25 0025
      */
@@ -134,7 +131,7 @@ public class UserInHouseQmCheckTaskServiceImpl implements UserInHouseQmCheckTask
 
     /**
      * @param squadIds
-     * @return java.util.List<com.longfor.longjian.houseqm.po.UserInHouseQmCheckTask>
+     * @return java.util.List<com.longfor.longjian.houseqm.po.zj2db.UserInHouseQmCheckTask>
      * @author hy
      * @date 2018/12/25 0025
      */
@@ -151,7 +148,7 @@ public class UserInHouseQmCheckTaskServiceImpl implements UserInHouseQmCheckTask
 
     /**
      * @param task_id
-     * @return com.longfor.longjian.houseqm.po.UserInHouseQmCheckTask
+     * @return com.longfor.longjian.houseqm.po.zj2db.UserInHouseQmCheckTask
      * @author hy
      * @date 2018/12/25 0025
      */

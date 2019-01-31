@@ -1,6 +1,6 @@
 package com.longfor.longjian.houseqm.domain.internalService;
 
-import com.longfor.longjian.houseqm.po.RepossessionMeterSetting;
+import com.longfor.longjian.houseqm.po.zj2db.RepossessionMeterSetting;
 
 import java.util.List;
 

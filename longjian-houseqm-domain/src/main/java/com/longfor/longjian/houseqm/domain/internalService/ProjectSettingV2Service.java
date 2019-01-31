@@ -1,6 +1,6 @@
 package com.longfor.longjian.houseqm.domain.internalService;
 
-import com.longfor.longjian.houseqm.po.ProjectSettingV2;
+import com.longfor.longjian.houseqm.po.zj2db.ProjectSettingV2;
 
 import java.util.List;
 

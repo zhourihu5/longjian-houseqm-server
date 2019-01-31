@@ -10,8 +10,6 @@ import com.longfor.longjian.common.consts.*;
 import com.longfor.longjian.common.consts.checktask.*;
 import com.longfor.longjian.common.exception.LjBaseRuntimeException;
 import com.longfor.longjian.common.kafka.KafkaProducer;
-import com.longfor.longjian.common.push.UmPushUtil;
-import com.longfor.longjian.common.push.xiaomi.XmPushUtil;
 import com.longfor.longjian.houseqm.app.req.TaskEditReq;
 import com.longfor.longjian.houseqm.app.req.TaskReq;
 import com.longfor.longjian.houseqm.app.service.IBuildingqmService;
@@ -19,7 +17,11 @@ import com.longfor.longjian.houseqm.app.vo.*;
 import com.longfor.longjian.houseqm.consts.DropDataReasonEnum;
 import com.longfor.longjian.houseqm.domain.internalService.*;
 import com.longfor.longjian.houseqm.innervo.ApiBuildingQmCheckTaskConfig;
-import com.longfor.longjian.houseqm.po.*;
+import com.longfor.longjian.houseqm.po.zhijian2_apisvr.User;
+import com.longfor.longjian.houseqm.po.zhijian2_notify.PushStrategyAssignTime;
+import com.longfor.longjian.houseqm.po.zhijian2_notify.PushStrategyCategoryOverdue;
+import com.longfor.longjian.houseqm.po.zhijian2_notify.PushStrategyCategoryThreshold;
+import com.longfor.longjian.houseqm.po.zj2db.*;
 import com.longfor.longjian.houseqm.util.*;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -1393,7 +1395,7 @@ public class ApiRefundInfo{
         return issue;
     }
 
-    private HouseQmCheckTaskIssue reassignIssue(HashMap<String, ApiUserRoleInIssue>  issueRoleMap,HouseQmCheckTaskIssue issue, ApiHouseQmCheckTaskIssueLogInfo item) {
+    private HouseQmCheckTaskIssue reassignIssue(HashMap<String, ApiUserRoleInIssue>  issueRoleMap, HouseQmCheckTaskIssue issue, ApiHouseQmCheckTaskIssueLogInfo item) {
         issue.setRepairerId(0);
         issue.setRepairerFollowerIds("");
         issue.setLastRepairer(0);

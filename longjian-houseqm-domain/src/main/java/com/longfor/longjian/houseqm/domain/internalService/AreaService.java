@@ -1,9 +1,8 @@
 package com.longfor.longjian.houseqm.domain.internalService;
 
-import com.longfor.longjian.houseqm.po.Area;
+import com.longfor.longjian.houseqm.po.zj2db.Area;
 
 import java.util.List;
-import java.util.Set;
 
 public interface AreaService {
 
@@ -24,7 +23,7 @@ public interface AreaService {
     List<Area> selectByFatherId(Integer prodectId, Integer i);
 
     /**
-     * @return java.util.List<com.longfor.longjian.houseqm.po.Area>
+     * @return java.util.List<com.longfor.longjian.houseqm.po.zj2db.Area>
      * @author hy
      * @date 2018/12/21 0021
      * @param areaPaths

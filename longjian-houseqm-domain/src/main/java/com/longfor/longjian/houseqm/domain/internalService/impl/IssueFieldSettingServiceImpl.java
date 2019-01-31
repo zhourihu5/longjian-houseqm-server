@@ -1,10 +1,9 @@
 package com.longfor.longjian.houseqm.domain.internalService.impl;
 
 import com.longfor.gaia.gfs.data.mybatis.datasource.LFAssignDataSource;
-import com.longfor.longjian.houseqm.dao.IssueFieldSettingMapper;
+import com.longfor.longjian.houseqm.dao.zhijian2_setting.IssueFieldSettingMapper;
 import com.longfor.longjian.houseqm.domain.internalService.IssueFieldSettingService;
-import com.longfor.longjian.houseqm.po.IssueFieldSetting;
-import lombok.Data;
+import com.longfor.longjian.houseqm.po.zhijian2_setting.IssueFieldSetting;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;

@@ -1,9 +1,9 @@
 package com.longfor.longjian.houseqm.domain.internalService.impl;
 
 import com.longfor.gaia.gfs.data.mybatis.datasource.LFAssignDataSource;
-import com.longfor.longjian.houseqm.dao.HouseOwnerInfoMapper;
+import com.longfor.longjian.houseqm.dao.zj2db.HouseOwnerInfoMapper;
 import com.longfor.longjian.houseqm.domain.internalService.HouseOwnerInfoService;
-import com.longfor.longjian.houseqm.po.HouseOwnerInfo;
+import com.longfor.longjian.houseqm.po.zj2db.HouseOwnerInfo;
 import com.longfor.longjian.houseqm.utils.ExampleUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;

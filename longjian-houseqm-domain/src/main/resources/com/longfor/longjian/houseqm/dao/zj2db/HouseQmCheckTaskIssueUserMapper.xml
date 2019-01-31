@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.longfor.longjian.houseqm.dao.zj2db.HouseQmCheckTaskIssueUserMapper">
+    <resultMap id="BaseResultMap" type="com.longfor.longjian.houseqm.po.zj2db.HouseQmCheckTaskIssueUser">
+        <!--
+          WARNING - @mbg.generated
+        -->
+        <id column="id" property="id" jdbcType="INTEGER"/>
+        <result column="task_id" property="taskId" jdbcType="INTEGER"/>
+        <result column="issue_uuid" property="issueUuid" jdbcType="VARCHAR"/>
+        <result column="user_id" property="userId" jdbcType="INTEGER"/>
+        <result column="role_type" property="roleType" jdbcType="INTEGER"/>
+        <result column="create_at" property="createAt" jdbcType="TIMESTAMP"/>
+        <result column="update_at" property="updateAt" jdbcType="TIMESTAMP"/>
+        <result column="delete_at" property="deleteAt" jdbcType="TIMESTAMP"/>
+    </resultMap>
+    <sql id="Base_Column_List">
+        <!--
+          WARNING - @mbg.generated
+        -->
+        id, task_id, issue_uuid, user_id, role_type, create_at, update_at, delete_at
+    </sql>
+
+    <select id="selectByUserIdAndTaskIdAndCreateAt" resultMap="BaseResultMap">
+        select issue_uuid from house_qm_check_task_issue_user
+        where user_id=#{userId} and task_id=#{taskId} and create_at &gt; from_unixtime(#{timestamp},'%y-%m-%d')
+        <if test="deleted == 'false'">
+            and delete_at is null
+        </if>
+    </select>
+    <select id="searchByConditionOrderByPageUnscoped" resultMap="BaseResultMap">
+        select
+        id, task_id, issue_uuid, user_id, role_type, create_at, update_at, delete_at
+        from house_qm_check_task_issue_user
+        where task_id = #{task_id}
+        and id > #{last_id}
+        <if test="timestamp != null and timestamp >= 0">
+            AND update_at > FROM_UNIXTIME( #{timestamp} )
+        </if>
+        and delete_at is null
+        ORDER BY
+        id ASC
+        limit #{start},#{limit}
+    </select>
+
+    <select id="selectIssueUUIDByUserIdAndTaskIdAndNoDeleted" resultMap="BaseResultMap">
+        SELECT
+        <include refid="Base_Column_List"/>
+        from house_qm_check_task_issue_user where task_id = #{taskId} and user_id = #{uid}
+        <if test="deleted=='false'">
+            AND delete_at IS NULL
+        </if>
+    </select>
+
+    <select id="selectUpdateAtByTaskIdAndNoDeletedOrderByUpdateAt" resultMap="BaseResultMap">
+        SELECT
+        <include refid="Base_Column_List"/>
+        FROM house_qm_check_task_issue_user
+        WHERE task_id=#{taskId}
+        <if test="deleted=='false'">AND delete_at IS NULL</if>
+        ORDER BY update_at DESC
+    </select>
+
+</mapper>

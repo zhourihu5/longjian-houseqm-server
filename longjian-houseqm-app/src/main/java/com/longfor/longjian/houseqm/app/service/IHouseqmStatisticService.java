@@ -8,7 +8,7 @@ import com.longfor.longjian.houseqm.app.vo.houseqmstatisticapp.ProjectCheckerSta
 import com.longfor.longjian.houseqm.app.vo.houseqmstatisticapp.ProjectIssueStatRspVo;
 import com.longfor.longjian.houseqm.app.vo.houseqmstatisticapp.ProjectListRspVo;
 import com.longfor.longjian.houseqm.app.vo.houseqmstatisticapp.ProjectRepairerStatRspVo;
-import com.longfor.longjian.houseqm.po.Area;
+import com.longfor.longjian.houseqm.po.zj2db.Area;
 
 import java.util.Date;
 import java.util.List;

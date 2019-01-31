@@ -1,0 +1,93 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.longfor.longjian.houseqm.dao.zj2db.HouseQmCheckTaskIssueAttachmentMapper">
+    <resultMap id="BaseResultMap" type="com.longfor.longjian.houseqm.po.zj2db.HouseQmCheckTaskIssueAttachment">
+        <!--
+          WARNING - @mbg.generated
+        -->
+        <id column="id" property="id" jdbcType="INTEGER"/>
+        <result column="project_id" property="projectId" jdbcType="INTEGER"/>
+        <result column="task_id" property="taskId" jdbcType="INTEGER"/>
+        <result column="issue_uuid" property="issueUuid" jdbcType="VARCHAR"/>
+        <result column="user_id" property="userId" jdbcType="INTEGER"/>
+        <result column="public_type" property="publicType" jdbcType="INTEGER"/>
+        <result column="attachment_type" property="attachmentType" jdbcType="INTEGER"/>
+        <result column="md5" property="md5" jdbcType="VARCHAR"/>
+        <result column="status" property="status" jdbcType="INTEGER"/>
+        <result column="client_create_at" property="clientCreateAt" jdbcType="TIMESTAMP"/>
+        <result column="create_at" property="createAt" jdbcType="TIMESTAMP"/>
+        <result column="update_at" property="updateAt" jdbcType="TIMESTAMP"/>
+        <result column="delete_at" property="deleteAt" jdbcType="TIMESTAMP"/>
+    </resultMap>
+    <sql id="Base_Column_List">
+        <!--
+          WARNING - @mbg.generated
+        -->
+        id, project_id, task_id, issue_uuid, user_id, public_type, attachment_type, md5,
+        status, client_create_at, create_at, update_at, delete_at
+    </sql>
+    <select id="selectByIssueUuid" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from house_qm_check_task_issue_attachment
+        where issue_uuid in
+        <foreach collection="issueUuids" item="issueUuid" open="(" separator="," close=")" index="index">
+            #{issueUuid}
+        </foreach>
+        <if test="deleted == 'false'">
+            and delete_at is null
+        </if>
+    </select>
+    <select id="searchByTaskIdAndSelfJoinOrderByIdASCPageUnscoped" resultMap="BaseResultMap">
+        SELECT
+        id, project_id, task_id, issue_uuid, user_id, public_type, attachment_type, md5,
+        status, client_create_at, create_at, update_at, delete_at
+        FROM
+        house_qm_check_task_issue_attachment hqctia
+        WHERE
+        hqctia.task_id = #{task_id}
+            AND (
+                    (
+                    hqctia.issue_uuid IN (
+                                        SELECT
+                                        hqctiu.issue_uuid
+                                        FROM
+                                        house_qm_check_task_issue_user hqctiu
+                                        WHERE
+                                        hqctiu.user_id IN
+                                        <foreach collection="userIds" item="item" open="(" separator="," close=")" index="index">
+                                            #{item}
+                                        </foreach>
+                                        AND (`delete_at` IS NULL or `delete_at` = '0001-01-01 00:00:00')
+                                        )
+                    AND hqctia.user_id = #{userId}
+                    AND hqctia.public_type = #{privateInt}
+                    )
+            OR (
+                    hqctia.user_id IN (
+                                        SELECT DISTINCT
+                                        hqctiu.user_id
+                                        FROM
+                                        house_qm_check_task_issue_user hqctiu
+                                        WHERE
+                                            hqctiu.issue_uuid IN (
+                                                            SELECT
+                                                            issue_uuid
+                                                            FROM house_qm_check_task_issue_user
+                                                            WHERE
+                                                            user_id IN
+                                                            <foreach collection="userIds" item="item" open="(" separator="," close=")" index="index">
+                                                                #{item}
+                                                            </foreach>
+                                                            AND (`delete_at` IS NULL or `delete_at` = '0001-01-01 00:00:00')
+                                                            )
+                                            AND (`delete_at` IS NULL or `delete_at` = '0001-01-01 00:00:00')
+                                        )
+                    AND hqctia.public_type = #{publicInt}
+            )
+        )
+        ORDER BY
+        id ASC
+        LIMIT #{start},#{limit}
+    </select>
+</mapper>

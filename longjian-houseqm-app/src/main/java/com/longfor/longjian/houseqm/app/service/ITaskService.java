@@ -1,10 +1,9 @@
 package com.longfor.longjian.houseqm.app.service;
 
 import com.longfor.longjian.houseqm.app.vo.HouseQmCheckTaskRspVo;
-import com.longfor.longjian.houseqm.app.vo.HouseQmCheckTaskVo;
 import com.longfor.longjian.houseqm.app.vo.task.HouseQmCheckTaskListAndTotalVo;
-import com.longfor.longjian.houseqm.po.User;
-import com.longfor.longjian.houseqm.po.UserInHouseQmCheckTask;
+import com.longfor.longjian.houseqm.po.zhijian2_apisvr.User;
+import com.longfor.longjian.houseqm.po.zj2db.UserInHouseQmCheckTask;
 
 import java.util.List;
 import java.util.Map;

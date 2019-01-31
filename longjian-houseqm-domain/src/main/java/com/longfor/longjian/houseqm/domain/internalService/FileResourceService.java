@@ -1,6 +1,6 @@
 package com.longfor.longjian.houseqm.domain.internalService;
 
-import com.longfor.longjian.houseqm.po.FileResource;
+import com.longfor.longjian.houseqm.po.zj2db.FileResource;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -16,7 +16,7 @@ public interface FileResourceService {
      * @author hy
      * @date 2018/12/21 0021
      * @param attachments
-     * @return java.util.List<com.longfor.longjian.houseqm.po.FileResource>
+     * @return java.util.List<com.longfor.longjian.houseqm.po.zj2db.FileResource>
      */
     List<FileResource> searchFileResourceByFileMd5InAndNoDeleted(List<String> attachments);
 

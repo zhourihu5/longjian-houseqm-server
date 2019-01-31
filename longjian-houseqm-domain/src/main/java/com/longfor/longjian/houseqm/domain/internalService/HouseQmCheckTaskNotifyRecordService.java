@@ -9,7 +9,7 @@ package com.longfor.longjian.houseqm.domain.internalService;
  * @CreateDate: 2019/1/12 15:52
  */
 
-import com.longfor.longjian.houseqm.po.HouseQmCheckTaskNotifyRecord;
+import com.longfor.longjian.houseqm.po.zj2db.HouseQmCheckTaskNotifyRecord;
 
 import java.util.ArrayList;
 

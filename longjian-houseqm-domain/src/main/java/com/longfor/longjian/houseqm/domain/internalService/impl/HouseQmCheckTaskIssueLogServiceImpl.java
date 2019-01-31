@@ -1,11 +1,11 @@
 package com.longfor.longjian.houseqm.domain.internalService.impl;
 
 import com.longfor.gaia.gfs.data.mybatis.datasource.LFAssignDataSource;
-import com.longfor.longjian.houseqm.dao.HouseQmCheckTaskIssueLogMapper;
-import com.longfor.longjian.houseqm.dao.UserInHouseQmCheckTaskMapper;
+import com.longfor.longjian.houseqm.dao.zj2db.HouseQmCheckTaskIssueLogMapper;
+import com.longfor.longjian.houseqm.dao.zj2db.UserInHouseQmCheckTaskMapper;
 import com.longfor.longjian.houseqm.domain.internalService.HouseQmCheckTaskIssueLogService;
-import com.longfor.longjian.houseqm.po.HouseQmCheckTaskIssueLog;
-import com.longfor.longjian.houseqm.po.UserInHouseQmCheckTask;
+import com.longfor.longjian.houseqm.po.zj2db.HouseQmCheckTaskIssueLog;
+import com.longfor.longjian.houseqm.po.zj2db.UserInHouseQmCheckTask;
 import com.longfor.longjian.houseqm.utils.ExampleUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -94,7 +94,7 @@ public class HouseQmCheckTaskIssueLogServiceImpl implements HouseQmCheckTaskIssu
      * @param task_id
      * @param uuids
      * @param issueLogUpdateTime
-     * @return com.longfor.longjian.houseqm.po.HouseQmCheckTaskIssueLog
+     * @return com.longfor.longjian.houseqm.po.zj2db.HouseQmCheckTaskIssueLog
      * @author hy
      * @date 2018/12/25 0025
      */

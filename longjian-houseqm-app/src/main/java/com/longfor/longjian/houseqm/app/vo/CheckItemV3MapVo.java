@@ -1,8 +1,7 @@
 package com.longfor.longjian.houseqm.app.vo;
 
 import com.google.common.collect.Lists;
-import com.longfor.longjian.houseqm.po.CategoryV3;
-import com.longfor.longjian.houseqm.po.CheckItemV3;
+import com.longfor.longjian.houseqm.po.zj2db.CheckItemV3;
 import com.longfor.longjian.houseqm.util.StringSplitToListUtil;
 import lombok.Data;
 import lombok.NoArgsConstructor;

@@ -1,6 +1,6 @@
 package com.longfor.longjian.houseqm.domain.internalService;
 
-import com.longfor.longjian.houseqm.po.PushStrategyAssignTime;
+import com.longfor.longjian.houseqm.po.zhijian2_notify.PushStrategyAssignTime;
 
 import java.util.List;
 import java.util.Set;

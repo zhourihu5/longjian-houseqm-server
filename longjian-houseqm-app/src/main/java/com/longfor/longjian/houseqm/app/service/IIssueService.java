@@ -1,12 +1,10 @@
 package com.longfor.longjian.houseqm.app.service;
 
-import com.longfor.gaia.gfs.core.bean.PageInfo;
 import com.longfor.longjian.common.base.LjBaseResponse;
 import com.longfor.longjian.houseqm.app.vo.*;
 import com.longfor.longjian.houseqm.app.vo.issuelist.IssueListRsp;
-import com.longfor.longjian.houseqm.po.ProjectSettingV2;
+import com.longfor.longjian.houseqm.po.zj2db.ProjectSettingV2;
 
-import java.util.ArrayList;
 import java.util.List;
 
 

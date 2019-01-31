@@ -1,14 +1,10 @@
 package com.longfor.longjian.houseqm.domain.internalService.impl;
 
 import com.longfor.gaia.gfs.data.mybatis.datasource.LFAssignDataSource;
-import com.longfor.longjian.houseqm.dao.HouseQmCheckTaskMapper;
+import com.longfor.longjian.houseqm.dao.zj2db.HouseQmCheckTaskMapper;
 import com.longfor.longjian.houseqm.domain.internalService.HouseQmCheckTaskService;
-import com.longfor.longjian.houseqm.po.HouseQmCheckTask;
-import com.longfor.longjian.houseqm.po.HouseQmCheckTaskIssue;
-import com.longfor.longjian.houseqm.po.HouseQmCheckTaskSquad;
-import com.longfor.longjian.houseqm.po.Task;
+import com.longfor.longjian.houseqm.po.zj2db.HouseQmCheckTask;
 import com.longfor.longjian.houseqm.utils.ExampleUtil;
-import io.swagger.models.auth.In;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.ibatis.session.RowBounds;
 import org.springframework.stereotype.Service;
@@ -17,10 +13,8 @@ import tk.mybatis.mapper.entity.Example;
 
 import javax.annotation.Resource;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 import java.util.Set;
-import java.util.stream.Collectors;
 
 /**
  * @author lipeishuai
@@ -233,7 +227,7 @@ public class HouseQmCheckTaskServiceImpl implements HouseQmCheckTaskService {
 
     /**
      * @param taskId
-     * @return com.longfor.longjian.houseqm.po.HouseQmCheckTask
+     * @return com.longfor.longjian.houseqm.po.zj2db.HouseQmCheckTask
      * @author hy
      * @date 2018/12/25 0025
      */

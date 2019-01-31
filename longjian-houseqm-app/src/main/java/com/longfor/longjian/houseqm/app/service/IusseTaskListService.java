@@ -1,20 +1,16 @@
 package com.longfor.longjian.houseqm.app.service;
 
-import com.alibaba.fastjson.JSONArray;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
-import com.longfor.gaia.gfs.data.mybatis.datasource.LFAssignDataSource;
-import com.longfor.longjian.common.base.LjBaseResponse;
 import com.longfor.longjian.common.exception.LjBaseRuntimeException;
 import com.longfor.longjian.houseqm.app.vo.*;
 import com.longfor.longjian.houseqm.domain.internalService.*;
-import com.longfor.longjian.houseqm.po.HouseQmCheckTask;
-import com.longfor.longjian.houseqm.po.RepossessionMeterSetting;
-import com.longfor.longjian.houseqm.po.Team;
+import com.longfor.longjian.houseqm.po.zj2db.HouseQmCheckTask;
+import com.longfor.longjian.houseqm.po.zj2db.RepossessionMeterSetting;
+import com.longfor.longjian.houseqm.po.zhijian2_apisvr.Team;
 import com.longfor.longjian.houseqm.po.zj2db.Project;
 import com.longfor.longjian.houseqm.po.zj2db.UserInProject;
 import com.longfor.longjian.houseqm.po.zj2db.UserInTeamRole;
-import com.longfor.longjian.houseqm.util.CollectionUtil;
 import com.longfor.longjian.houseqm.util.DateUtil;
 import com.longfor.longjian.houseqm.util.StringSplitToListUtil;
 import lombok.extern.slf4j.Slf4j;

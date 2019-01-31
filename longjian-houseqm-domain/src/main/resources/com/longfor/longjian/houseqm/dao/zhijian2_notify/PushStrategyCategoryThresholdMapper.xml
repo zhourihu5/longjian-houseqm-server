@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.longfor.longjian.houseqm.dao.zhijian2_notify.PushStrategyCategoryThresholdMapper">
+  <resultMap id="BaseResultMap" type="com.longfor.longjian.houseqm.po.zhijian2_notify.PushStrategyCategoryThreshold">
+    <!--
+      WARNING - @mbg.generated
+    -->
+    <id column="id" jdbcType="INTEGER" property="id" />
+    <result column="project_id" jdbcType="INTEGER" property="projectId" />
+    <result column="task_id" jdbcType="INTEGER" property="taskId" />
+    <result column="module_id" jdbcType="INTEGER" property="moduleId" />
+    <result column="typ" jdbcType="INTEGER" property="typ" />
+    <result column="category_keys" jdbcType="VARCHAR" property="categoryKeys" />
+    <result column="threshold" jdbcType="INTEGER" property="threshold" />
+    <result column="user_ids" jdbcType="VARCHAR" property="userIds" />
+    <result column="extra_info" jdbcType="VARCHAR" property="extraInfo" />
+    <result column="scan_end_on" jdbcType="TIMESTAMP" property="scanEndOn" />
+    <result column="create_at" jdbcType="TIMESTAMP" property="createAt" />
+    <result column="update_at" jdbcType="TIMESTAMP" property="updateAt" />
+    <result column="delete_at" jdbcType="TIMESTAMP" property="deleteAt" />
+  </resultMap>
+  <resultMap extends="BaseResultMap" id="ResultMapWithBLOBs" type="com.longfor.longjian.houseqm.po.zhijian2_notify.PushStrategyCategoryThreshold">
+    <!--
+      WARNING - @mbg.generated
+    -->
+    <result column="stat_info" jdbcType="LONGVARCHAR" property="statInfo" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    <!--
+      WARNING - @mbg.generated
+    -->
+    id, project_id, task_id, module_id, typ, category_keys, threshold, user_ids, extra_info, 
+    scan_end_on, create_at, update_at, delete_at
+  </sql>
+  <sql id="Blob_Column_List">
+    <!--
+      WARNING - @mbg.generated
+    -->
+    stat_info
+  </sql>
+
+  <select id="selectByTaskIds" resultMap="BaseResultMap">
+    select <include refid="Base_Column_List" /> from push_strategy_category_threshold
+    WHERE task_id in
+    <foreach close=")" collection="taskIds" index="index" item="item" open="(" separator=",">
+      #{item}
+    </foreach>
+    <if test="deleted == 'false'">
+      AND delete_at IS NULL
+    </if>
+  </select>
+</mapper>

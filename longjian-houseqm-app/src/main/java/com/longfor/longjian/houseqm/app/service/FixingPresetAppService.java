@@ -1,6 +1,6 @@
 package com.longfor.longjian.houseqm.app.service;
 
-import com.longfor.longjian.houseqm.po.FixingPreset;
+import com.longfor.longjian.houseqm.po.zj2db.FixingPreset;
 
 import java.util.List;
 

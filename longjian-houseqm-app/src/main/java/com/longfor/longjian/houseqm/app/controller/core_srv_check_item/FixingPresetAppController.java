@@ -1,21 +1,18 @@
 package com.longfor.longjian.houseqm.app.controller.core_srv_check_item;
 
 import com.google.common.collect.Lists;
-import com.longfor.gaia.gfs.web.mock.MockOperation;
 import com.longfor.longjian.common.base.LjBaseResponse;
 import com.longfor.longjian.houseqm.app.service.FixingPresetAppService;
 import com.longfor.longjian.houseqm.app.vo.AppFixingPresetProtoVo;
 import com.longfor.longjian.houseqm.app.vo.AppListFixingPresetVo;
-import com.longfor.longjian.houseqm.po.FixingPreset;
+import com.longfor.longjian.houseqm.po.zj2db.FixingPreset;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.MediaType;
-import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.annotation.Resource;
-import java.util.ArrayList;
 import java.util.List;
 
 /**

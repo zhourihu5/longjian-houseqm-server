@@ -1,9 +1,9 @@
 package com.longfor.longjian.houseqm.domain.internalService.impl;
 
 import com.longfor.gaia.gfs.data.mybatis.datasource.LFAssignDataSource;
-import com.longfor.longjian.houseqm.dao.TeamMapper;
+import com.longfor.longjian.houseqm.dao.zhijian2_apisvr.TeamMapper;
 import com.longfor.longjian.houseqm.domain.internalService.TeamService;
-import com.longfor.longjian.houseqm.po.Team;
+import com.longfor.longjian.houseqm.po.zhijian2_apisvr.Team;
 import com.longfor.longjian.houseqm.utils.ExampleUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -12,7 +12,6 @@ import tk.mybatis.mapper.entity.Example;
 import javax.annotation.Resource;
 import java.util.List;
 import java.util.ArrayList;
-import java.util.List;
 
 /**
  * @author Houyan

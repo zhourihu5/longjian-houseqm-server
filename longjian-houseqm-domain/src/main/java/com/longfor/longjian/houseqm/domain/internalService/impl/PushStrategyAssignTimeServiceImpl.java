@@ -1,9 +1,9 @@
 package com.longfor.longjian.houseqm.domain.internalService.impl;
 
 import com.longfor.gaia.gfs.data.mybatis.datasource.LFAssignDataSource;
-import com.longfor.longjian.houseqm.dao.PushStrategyAssignTimeMapper;
+import com.longfor.longjian.houseqm.dao.zhijian2_notify.PushStrategyAssignTimeMapper;
 import com.longfor.longjian.houseqm.domain.internalService.PushStrategyAssignTimeService;
-import com.longfor.longjian.houseqm.po.PushStrategyAssignTime;
+import com.longfor.longjian.houseqm.po.zhijian2_notify.PushStrategyAssignTime;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;

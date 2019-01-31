@@ -1,7 +1,7 @@
 package com.longfor.longjian.houseqm.domain.internalService;
 
 import com.longfor.longjian.houseqm.dto.RepossessionStatusCompleteDailyCountDto;
-import com.longfor.longjian.houseqm.po.RepossessionStatus;
+import com.longfor.longjian.houseqm.po.zj2db.RepossessionStatus;
 
 import java.util.Date;
 import java.util.List;

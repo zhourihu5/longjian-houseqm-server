@@ -1,13 +1,12 @@
 package com.longfor.longjian.houseqm.app.vo;
 
 import com.google.common.collect.Lists;
-import com.longfor.longjian.houseqm.po.CategoryV3;
+import com.longfor.longjian.houseqm.po.zj2db.CategoryV3;
 import com.longfor.longjian.houseqm.util.StringSplitToListUtil;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.io.Serializable;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 

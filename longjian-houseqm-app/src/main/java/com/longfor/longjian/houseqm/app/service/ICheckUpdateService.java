@@ -1,7 +1,5 @@
 package com.longfor.longjian.houseqm.app.service;
 
-import com.longfor.longjian.houseqm.po.HouseQmCheckTask;
-
 import java.util.Date;
 
 

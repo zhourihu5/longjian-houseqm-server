@@ -1,21 +1,18 @@
 package com.longfor.longjian.houseqm.domain.internalService.impl;
 
 import com.longfor.gaia.gfs.data.mybatis.datasource.LFAssignDataSource;
-import com.longfor.longjian.houseqm.dao.HouseQmCheckTaskIssueUserMapper;
+import com.longfor.longjian.houseqm.dao.zj2db.HouseQmCheckTaskIssueUserMapper;
 import com.longfor.longjian.houseqm.domain.internalService.HouseQmCheckTaskIssueUserService;
-import com.longfor.longjian.houseqm.po.HouseQmCheckTaskIssue;
-import com.longfor.longjian.houseqm.po.HouseQmCheckTaskIssueUser;
+import com.longfor.longjian.houseqm.po.zj2db.HouseQmCheckTaskIssueUser;
 import com.longfor.longjian.houseqm.utils.ExampleUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 import org.springframework.transaction.annotation.Transactional;
 import tk.mybatis.mapper.entity.Example;
 
 import javax.annotation.Resource;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Set;
 
 /**
  * @author houyan
@@ -56,7 +53,7 @@ public class HouseQmCheckTaskIssueUserServiceImpl implements HouseQmCheckTaskIss
      * @date 2018/12/25 0025
      * @param uid
      * @param task_id
-     * @return java.util.List<com.longfor.longjian.houseqm.po.HouseQmCheckTaskIssueUser>
+     * @return java.util.List<com.longfor.longjian.houseqm.po.zj2db.HouseQmCheckTaskIssueUser>
      */
     @Override
     @LFAssignDataSource(value = "zhijian2")
@@ -69,7 +66,7 @@ public class HouseQmCheckTaskIssueUserServiceImpl implements HouseQmCheckTaskIss
      * @author hy
      * @date 2018/12/25 0025
      * @param task_id
-     * @return com.longfor.longjian.houseqm.po.HouseQmCheckTaskIssueUser
+     * @return com.longfor.longjian.houseqm.po.zj2db.HouseQmCheckTaskIssueUser
      */
     @Override
     @LFAssignDataSource(value = "zhijian2")

@@ -1,10 +1,9 @@
 package com.longfor.longjian.houseqm.domain.internalService.impl;
 
 import com.longfor.gaia.gfs.data.mybatis.datasource.LFAssignDataSource;
-import com.longfor.longjian.houseqm.dao.CheckItemMapper;
+import com.longfor.longjian.houseqm.dao.zj2db.CheckItemMapper;
 import com.longfor.longjian.houseqm.domain.internalService.CheckItemService;
-import com.longfor.longjian.houseqm.po.CategoryV3;
-import com.longfor.longjian.houseqm.po.CheckItem;
+import com.longfor.longjian.houseqm.po.zj2db.CheckItem;
 import com.longfor.longjian.houseqm.utils.ExampleUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
