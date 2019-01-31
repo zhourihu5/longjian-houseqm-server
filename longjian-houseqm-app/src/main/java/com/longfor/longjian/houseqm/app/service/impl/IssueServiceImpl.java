@@ -279,7 +279,7 @@ public class IssueServiceImpl implements IIssueService {
             DetailVo detailVo = item.new DetailVo();
             Map<String, Object> map = JsonUtil.GsonToMaps(issue.getDetail());
 
-            detailVo.setIssue_reason(new Double((Double) map.get("IssueReason")).intValue());
+            detailVo.setIssue_reason(((Double) map.get("IssueReason")).intValue());
             detailVo.setIssue_reason_detail((String) map.get("IssueReasonDetail"));
             detailVo.setIssue_suggest((String) map.get("IssueSuggest"));
             detailVo.setPotential_risk((String) map.get("PotentialRisk"));
@@ -566,7 +566,7 @@ public class IssueServiceImpl implements IIssueService {
         issueInfo.setUpdateAt(new Date());
         houseQmCheckTaskIssueService.update(issueInfo);
         int status = -1;
-        if (issueInfo.getStatus() == HouseQmCheckTaskIssueStatusEnum.NoteNoAssign.getId()) {
+        if (issueInfo.getStatus().equals(HouseQmCheckTaskIssueStatusEnum.NoteNoAssign.getId())) {
             status = HouseQmCheckTaskIssueStatusEnum.AssignNoReform.getId();
         }
         HashMap<String, Object> detail = Maps.newHashMap();

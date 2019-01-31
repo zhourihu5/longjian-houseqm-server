@@ -260,24 +260,6 @@ public class AreaServiceImpl implements AreaService {
         return result;
     }
 
-    /**
-     * 字符串切割，并转换成Integer集合
-     *
-     * @param idstr
-     * @param sep
-     * @return
-     */
-    private List<Integer> splitToIds(String idstr, String sep) {
-        List<Integer> result = Lists.newArrayList();
-        String[] ids = idstr.split(sep);
-        for (String id : ids) {
-            id.trim();
-            if (id.equals("")) continue;
-            int i = Integer.parseInt(id);
-            result.add(i);
-        }
-        return result;
-    }
 
     /**
      * @param areas

@@ -154,8 +154,8 @@ public class HouseqmStatisticServiceImpl implements IHouseqmStatisticService {
             }
         }
         List<ApiHouseQmRepairerStatVo> items = Lists.newArrayList();
-        for (Integer stat : stat_map.keySet()) {
-            items.add(stat_map.get(stat));
+        for (Map.Entry<Integer,ApiHouseQmRepairerStatVo> stat : stat_map.entrySet()) {
+            items.add(stat.getValue());
         }
         ProjectRepairerStatRspVo result = new ProjectRepairerStatRspVo();
         result.setItems(items);
@@ -229,8 +229,8 @@ public class HouseqmStatisticServiceImpl implements IHouseqmStatisticService {
         }
         ProjectCheckerStatRspVo result = new ProjectCheckerStatRspVo();
         List<ApiHouseQmCheckerStatVo> items = Lists.newArrayList();
-        for (Integer stat : stat_map.keySet()) {
-            items.add(stat_map.get(stat));
+        for (Map.Entry<Integer,ApiHouseQmCheckerStatVo> stat : stat_map.entrySet()) {
+            items.add(stat.getValue());
         }
         result.setItems(items);
         return result;

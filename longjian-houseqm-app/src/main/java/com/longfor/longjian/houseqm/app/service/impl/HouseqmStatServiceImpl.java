@@ -495,9 +495,9 @@ public class HouseqmStatServiceImpl implements IHouseqmStatService {
             }
             CheckerStatListVo.CheckerStatVo stat = checkerMap.get(l.getUserId());
             // 以下应使用枚举类，由于未改动包结构 先写死
-            if (l.getTyp() == HouseQmCheckTaskIssueEnum.Record.getId()) {
+            if (l.getTyp().equals(HouseQmCheckTaskIssueEnum.Record.getId())) {
                 stat.setRecords_count(l.getCount() + stat.getRecords_count());
-            } else if (l.getTyp() == HouseQmCheckTaskIssueEnum.FindProblem.getId() || l.getTyp() == HouseQmCheckTaskIssueEnum.Difficult.getId()) {
+            } else if (l.getTyp().equals(HouseQmCheckTaskIssueEnum.FindProblem.getId()) || l.getTyp().equals(HouseQmCheckTaskIssueEnum.Difficult.getId())) {
                 stat.setIssue_count(l.getCount() + stat.getIssue_count());
             }
 
@@ -628,9 +628,9 @@ public class HouseqmStatServiceImpl implements IHouseqmStatService {
             String areapath = l.getAreaId() + "/";
             String fatherPath = l.getAreaPathAndId().replace(areapath, "");
             // 以下应使用枚举类，由于未改动包结构 先写死
-            if (l.getTyp() == HouseQmCheckTaskIssueEnum.Record.getId()) {
+            if (l.getTyp().equals(HouseQmCheckTaskIssueEnum.Record.getId())) {
                 item.setRecords_count(l.getCount() + item.getRecords_count());
-            } else if (l.getTyp() == HouseQmCheckTaskIssueEnum.FindProblem.getId() || l.getTyp() == HouseQmCheckTaskIssueEnum.Difficult.getId()) {
+            } else if (l.getTyp().equals(HouseQmCheckTaskIssueEnum.FindProblem.getId()) || l.getTyp().equals(HouseQmCheckTaskIssueEnum.Difficult.getId())) {
                 item.setIssue_count(l.getCount() + item.getIssue_count());
             }
             areaMap.put(fatherPath, true);
@@ -739,11 +739,11 @@ public class HouseqmStatServiceImpl implements IHouseqmStatService {
      */
     private Boolean checkRootAreaIntersectAreas(Map<Integer, String> areaMap, Integer id, List<Integer> ids) {
         for (Integer i : ids) {
-            if (i == id) {
+            if (i.equals(id)) {
                 return true;
             }
             if (areaMap.containsKey(i)) {
-                if (areaMap.get(i).indexOf("/" + id + "/") != -1) {
+                if (areaMap.get(i).contains("/" + id + "/")) {
                     return true;
                 }
             }

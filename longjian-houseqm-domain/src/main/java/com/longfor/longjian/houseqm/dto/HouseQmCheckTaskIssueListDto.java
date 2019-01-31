@@ -17,7 +17,7 @@ import java.util.List;
  */
 @Data
 @NoArgsConstructor
-public class HouseQmCheckTaskIssueListDto implements Serializable {
+public class HouseQmCheckTaskIssueListDto  {
     private List<HouseQmCheckTaskIssue> houseQmCheckTaskIssues;
     private Integer total;
 }

@@ -147,8 +147,8 @@ public class HouseqmServiceImpl implements IHouseqmService {
                 houseQmCheckTaskIssueVo.setTask_id(houseQmCheckTaskIssue.getTaskId());
                 houseQmCheckTaskIssueVo.setUuid(houseQmCheckTaskIssue.getUuid());
                 houseQmCheckTaskIssueVo.setSender_id(houseQmCheckTaskIssue.getSenderId());
-                houseQmCheckTaskIssueVo.setPlan_end_on(DateToInt(houseQmCheckTaskIssue.getPlanEndOn()));
-                houseQmCheckTaskIssueVo.setEnd_on(DateToInt(houseQmCheckTaskIssue.getEndOn()));
+                houseQmCheckTaskIssueVo.setPlan_end_on(DateUtil.datetimeToTimeStamp(houseQmCheckTaskIssue.getPlanEndOn()));
+                houseQmCheckTaskIssueVo.setEnd_on(DateUtil.datetimeToTimeStamp(houseQmCheckTaskIssue.getEndOn()));
                 houseQmCheckTaskIssueVo.setArea_id(houseQmCheckTaskIssue.getAreaId());
                 houseQmCheckTaskIssueVo.setArea_path_and_id(houseQmCheckTaskIssue.getAreaPathAndId());
                 houseQmCheckTaskIssueVo.setCategory_cls(houseQmCheckTaskIssue.getCategoryCls());
@@ -189,8 +189,8 @@ public class HouseqmServiceImpl implements IHouseqmService {
                 issueDetail.setPotential_risk((String) map.get("PotentialRisk"));
                 issueDetail.setPreventive_action_detail((String) map.get("PreventiveActionDetail"));
                 houseQmCheckTaskIssueVo.setDetail(issueDetail);
-                houseQmCheckTaskIssueVo.setUpdate_at(DateToInt(houseQmCheckTaskIssue.getUpdateAt()));
-                houseQmCheckTaskIssueVo.setDelete_at(houseQmCheckTaskIssue.getDeleteAt() == null ? 0 : DateToInt(houseQmCheckTaskIssue.getDeleteAt()));
+                houseQmCheckTaskIssueVo.setUpdate_at(DateUtil.datetimeToTimeStamp(houseQmCheckTaskIssue.getUpdateAt()));
+                houseQmCheckTaskIssueVo.setDelete_at(houseQmCheckTaskIssue.getDeleteAt() == null ? 0 : DateUtil.datetimeToTimeStamp(houseQmCheckTaskIssue.getDeleteAt()));
                 //String IssueVoJson = JsonUtil.GsonString(houseQmCheckTaskIssueVo);
                 items.add(houseQmCheckTaskIssueVo);
             });
@@ -273,8 +273,8 @@ public class HouseqmServiceImpl implements IHouseqmService {
                 apiHouseQmCheckTaskIssueAttachmentRspVo.setAttachmentType(houseQmCheckTaskIssueAttachment.getAttachmentType());
                 apiHouseQmCheckTaskIssueAttachmentRspVo.setMd5(houseQmCheckTaskIssueAttachment.getMd5());
                 apiHouseQmCheckTaskIssueAttachmentRspVo.setStatus(houseQmCheckTaskIssueAttachment.getStatus());
-                apiHouseQmCheckTaskIssueAttachmentRspVo.setUpdateAt(DateToInt(houseQmCheckTaskIssueAttachment.getUpdateAt()));
-                apiHouseQmCheckTaskIssueAttachmentRspVo.setDeleteAt(houseQmCheckTaskIssueAttachment.getDeleteAt() == null ? 0 : DateToInt(houseQmCheckTaskIssueAttachment.getDeleteAt()));
+                apiHouseQmCheckTaskIssueAttachmentRspVo.setUpdateAt(DateUtil.datetimeToTimeStamp(houseQmCheckTaskIssueAttachment.getUpdateAt()));
+                apiHouseQmCheckTaskIssueAttachmentRspVo.setDeleteAt(houseQmCheckTaskIssueAttachment.getDeleteAt() == null ? 0 : DateUtil.datetimeToTimeStamp(houseQmCheckTaskIssueAttachment.getDeleteAt()));
                 //JSONObject jsonObject = JSON.parseObject(JSON.toJSONString(apiHouseQmCheckTaskIssueAttachmentRspVo));
                 houseQmCheckTaskIssueJsons.add(apiHouseQmCheckTaskIssueAttachmentRspVo);
             });
@@ -299,20 +299,6 @@ public class HouseqmServiceImpl implements IHouseqmService {
         if (areaIds.size() == 0 || areaTypes.size() == 0) return null;
         List<Area> areas = areaService.searchAreaListByRootIdAndTypes(projectId, areaIds, areaTypes);
         return areas;
-    }
-
-
-    /**
-     * lang类型转换Int类型
-     *
-     * @param date
-     * @return
-     */
-    private int DateToInt(Date date) {
-        long time = date.getTime();
-        Long aLong = new Long(time);
-        int i = aLong.intValue();
-        return i;
     }
 
 }
