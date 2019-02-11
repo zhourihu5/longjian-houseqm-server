@@ -8,10 +8,7 @@ import com.longfor.longjian.houseqm.app.req.houseqmrepossession.RepossessionRepo
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Service;
 import org.springframework.validation.annotation.Validated;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.*;
 
 /**
  * @ProjectName: longjian-houseqm-server
@@ -32,16 +29,17 @@ public interface IRepossessionFeignService {
      * @return
      */
     @RequestMapping(value = "report", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
-    LjBaseResponse<Object> report(@Validated RepossessionReportReq repossessionReportReq);
+    LjBaseResponse<Object> report(@Validated @RequestBody RepossessionReportReq repossessionReportReq);
 
 
     /**
      * 获取验房报告
      *
-     * @param repossessionGetReq
+     * @param
      * @return
      */
     @RequestMapping(value = "get", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
-    LjBaseResponse<Object> get(@Validated RepossessionGetReq repossessionGetReq);
+    LjBaseResponse<Object> get(@RequestParam(required = true, name = "task_ids") String task_ids,
+                               @RequestParam(required = true, name = "timestamp") Integer timestamp);
 
 }

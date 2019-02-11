@@ -145,7 +145,7 @@ public class CheckUpdateServiceImpl implements ICheckUpdateService {
     @Override
     public Date getHouseQmCheckTaskLastUpdateTime(Integer task_id) {
         List<UserInHouseQmCheckTask> issueUpdateInfo = userInHouseQmCheckTaskService.selectUpdateAtByTaskIdAndNoDeletedOrderByUpdateAt(task_id);
-        if (issueUpdateInfo != null) return issueUpdateInfo.get(0).getUpdateAt();
+        if (issueUpdateInfo != null && issueUpdateInfo.size() > 0) return issueUpdateInfo.get(0).getUpdateAt();
         else return DateUtil.timeStampToDate(0, "yyyy-MM-dd");
     }
 
