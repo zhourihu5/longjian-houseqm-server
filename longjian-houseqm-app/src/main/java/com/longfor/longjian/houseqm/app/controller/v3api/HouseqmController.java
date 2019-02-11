@@ -42,7 +42,7 @@ public class HouseqmController {
      * @return
      */
     @RequestMapping(value = "my_issue_log_list", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
-    public TaskResponse<HouseqmMyIssueLogListRspVo> myIssueLogList(DeviceReq deviceReq, HttpServletRequest request) {
+    public LjBaseResponse<HouseqmMyIssueLogListRspVo> myIssueLogList(DeviceReq deviceReq, HttpServletRequest request) {
         return houseqmService.myIssueLogList(deviceReq,request);
     }
 
@@ -52,7 +52,7 @@ public class HouseqmController {
      * @return
      */
     @RequestMapping(value = "my_issue_list", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
-    public TaskResponse<MyIssueListVo> myIssueList(DeviceReq deviceReq,HttpServletRequest request) {
+    public LjBaseResponse<MyIssueListVo> myIssueList(DeviceReq deviceReq,HttpServletRequest request) {
         return houseqmService.myIssueList(deviceReq,request);
     }
 
@@ -61,7 +61,7 @@ public class HouseqmController {
      * @param deviceReq
      * @return
      */
-    @GetMapping(value = "issue_members", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+    @RequestMapping(value = "issue_members", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     public LjBaseResponse<MyIssueMemberListVo> issueMembers(DeviceReq deviceReq) {
         return houseqmService.issueMembers(deviceReq);
     }
@@ -72,7 +72,7 @@ public class HouseqmController {
      * @return
      */
     @RequestMapping(value = "my_issue_attachment_list", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
-    public LjBaseResponse<MyIssueAttachListVo> myIssueAttachmentList(DeviceReq deviceReq) {
-        return houseqmService.myIssueAttachementList(deviceReq);
+    public LjBaseResponse<MyIssueAttachListVo> myIssueAttachmentList(DeviceReq deviceReq,HttpServletRequest request) {
+        return houseqmService.myIssueAttachementList(deviceReq,request);
     }
 }

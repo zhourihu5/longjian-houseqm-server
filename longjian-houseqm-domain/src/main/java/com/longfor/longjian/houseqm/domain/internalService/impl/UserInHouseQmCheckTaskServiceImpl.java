@@ -36,8 +36,8 @@ public class UserInHouseQmCheckTaskServiceImpl implements UserInHouseQmCheckTask
     public List<UserInHouseQmCheckTask> searchByTaskIdInAndRoleType(List<Integer> task_ids, Integer roleType) {
         Example example = new Example(UserInHouseQmCheckTask.class);
         Example.Criteria criteria = example.createCriteria();
-        if (task_ids.size() > 0) criteria.andIn("taskId", task_ids);
-        criteria.andEqualTo("roleType", roleType);
+        if (task_ids.size() > 0) criteria.andIn("taskId", task_ids).andEqualTo("roleType", roleType);
+        else return Lists.newArrayList();
         ExampleUtil.addDeleteAtJudge(example);
         return userInHouseQmCheckTaskMapper.selectByExample(example);
     }

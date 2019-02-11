@@ -237,6 +237,7 @@ public class HouseqmStatisticServiceImpl implements IHouseqmStatisticService {
     }
 
     private Map<Integer, String> createUsersMap(List<Integer> user_ids) {
+        if (user_ids.isEmpty())return Maps.newHashMap();
         List<User> resUser = userService.searchByUserIdInAndNoDeleted(user_ids);
         return resUser.stream().collect(Collectors.toMap(User::getUserId, User::getRealName));
     }

@@ -47,7 +47,7 @@ public class AppHouseqmStatisticController {
      * @Date 17:53 2019/1/21
      * @Param [request, req]
      **/
-    @RequestMapping(value = "project_list/", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+    @RequestMapping(value = "project_list", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     public LjBaseResponse<ProjectListRspVo> projectList(HttpServletRequest request, @Valid ProjectListReq req) {
         LjBaseResponse<ProjectListRspVo> response = new LjBaseResponse<>();
         log.info("project_list, source=" + req.getSource() + ", timestamp=" + req.getTimestamp());
@@ -72,7 +72,7 @@ public class AppHouseqmStatisticController {
      * @Date 20:28 2019/1/21
      * @Param [request, req]
      **/
-    @RequestMapping(value = "project_issue_stat/", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+    @RequestMapping(value = "project_issue_stat", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     public LjBaseResponse<ProjectIssueStatRspVo> projectIssueStat(HttpServletRequest request, @Valid ProjectIssueStatReq req) {
         LjBaseResponse<ProjectIssueStatRspVo> response = new LjBaseResponse<>();
         log.info("project_issue_stat, project_id=" + req.getProject_id() + ", source=" + req.getSource() + ", area_id=" + req.getArea_id() + ", timestamp=" + req.getTimestamp());
@@ -96,7 +96,7 @@ public class AppHouseqmStatisticController {
      * @Date 10:27 2019/1/22
      * @Param [request, req]
      **/
-    @RequestMapping(value = "project_checker_stat/", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+    @RequestMapping(value = "project_checker_stat", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     public LjBaseResponse<ProjectCheckerStatRspVo> projectCheckerStat(HttpServletRequest request, @Valid ProjectCheckerStatReq req) {
         LjBaseResponse<ProjectCheckerStatRspVo> response = new LjBaseResponse<>();
         log.info("project_checker_stat, project_id=" + req.getProject_id() + ", task_id=" + req.getTask_id() + ", source=" + req.getSource() + ", stat_begin=" + req.getStat_begin() + ", stat_end=" + req.getStat_end() + ", timestamp=" + req.getTimestamp());

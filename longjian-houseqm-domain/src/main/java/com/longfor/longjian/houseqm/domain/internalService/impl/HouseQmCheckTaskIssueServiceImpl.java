@@ -350,6 +350,7 @@ public class HouseQmCheckTaskIssueServiceImpl implements HouseQmCheckTaskIssueSe
                 userIds.add(userId);
             }
             userIds.add(userId);
+
             houseQmCheckTaskIssues = houseQmCheckTaskIssueMapper.searchByConditionOrderByPageUnscoped(task_id, last_id, timestamp, userIds, userId, start, limit);
         } catch (Exception e) {
             log.error("error" + e);
@@ -576,7 +577,7 @@ public class HouseQmCheckTaskIssueServiceImpl implements HouseQmCheckTaskIssueSe
         if (issueUuids.size() > 0) {
             criteria1.orIn("uuid", issueUuids);
         }
-        example.and(criteria);
+        //example.and(criteria);
         example.and(criteria1);
         ExampleUtil.addDeleteAtJudge(example);
         example.orderBy("id").asc();
@@ -598,9 +599,9 @@ public class HouseQmCheckTaskIssueServiceImpl implements HouseQmCheckTaskIssueSe
         Example.Criteria criteria = example.createCriteria();
         if (userIds.size() > 0) criteria.andIn("senderId", userIds);
         Example.Criteria criteria1 = example.createCriteria();
-        criteria1.andEqualTo("taskId", task_id);
-        if (issueUuids.size() > 0) criteria1.andIn("uuid", issueUuids);
-        example.and(criteria);
+        //criteria1.andEqualTo("taskId", task_id);
+        if (issueUuids.size() > 0) criteria1.andEqualTo("taskId", task_id).andIn("uuid", issueUuids);
+        //example.and(criteria);
         example.or(criteria1);
         return houseQmCheckTaskIssueMapper.selectByExample(example);
     }
