@@ -7,10 +7,7 @@ import com.longfor.longjian.houseqm.app.req.houseqmrepossession.RepossessionRepo
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.MediaType;
 import org.springframework.validation.annotation.Validated;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
 
@@ -52,9 +49,10 @@ public class HouseqmRepossessionController {
      * @Param
      **/
     @RequestMapping(value = "get", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
-    public LjBaseResponse<Object> get(@Validated RepossessionGetReq repossessionGetReq) {
-        log.info("get, task_ids="+repossessionGetReq.getTask_ids()+", timestamp="+repossessionGetReq.getTimestamp());
-        return iRepossessionFeignService.get(repossessionGetReq);
+    public LjBaseResponse<Object> get(@RequestParam(required = true, name = "task_ids") String task_ids,
+                                      @RequestParam(required = true, name = "timestamp") Integer timestamp) {
+        log.info("get, task_ids=" + task_ids + ", timestamp=" + timestamp);
+        return iRepossessionFeignService.get(task_ids, timestamp);
     }
 
 
