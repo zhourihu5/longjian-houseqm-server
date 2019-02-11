@@ -32,7 +32,7 @@ public interface IRepossessionFeignService {
      * @return
      */
     @RequestMapping(value = "report", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
-    LjBaseResponse<Object> report(@RequestBody RepossessionReportReq repossessionReportReq);
+    LjBaseResponse<Object> report(@Validated RepossessionReportReq repossessionReportReq);
 
 
     /**
@@ -42,6 +42,6 @@ public interface IRepossessionFeignService {
      * @return
      */
     @RequestMapping(value = "get", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
-    LjBaseResponse<Object> get(@RequestBody RepossessionGetReq repossessionGetReq);
+    LjBaseResponse<Object> get(@Validated RepossessionGetReq repossessionGetReq);
 
 }
