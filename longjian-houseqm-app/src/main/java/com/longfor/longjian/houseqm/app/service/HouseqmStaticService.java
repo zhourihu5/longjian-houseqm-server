@@ -380,7 +380,7 @@ public class HouseqmStaticService {
             }
         }
 
-        return null;
+        return Lists.newArrayList();
     }
 
     private Boolean checkRootAreaIntersectAreas(HashMap<Integer, String> areaMap, Integer areaId, List<Integer> comma) {

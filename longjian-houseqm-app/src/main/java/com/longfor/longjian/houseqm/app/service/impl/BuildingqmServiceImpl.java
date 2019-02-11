@@ -287,20 +287,20 @@ public class BuildingqmServiceImpl implements IBuildingqmService {
     public void create(Integer uid, TaskReq taskReq) {
         List<Integer> areaIds = StringSplitToListUtil.splitToIdsComma(taskReq.getArea_ids(), ",");
         if (CollectionUtils.isEmpty(areaIds)) {
-            throw new LjBaseRuntimeException(252, "区域不能为空");
+            throw new LjBaseRuntimeException(-99, "区域不能为空");
         }
         List<Integer> areaTypes = StringSplitToListUtil.splitToIdsComma(taskReq.getArea_types(), ",");
         if (CollectionUtils.isEmpty(areaTypes)) {
-            throw new LjBaseRuntimeException(256, "区域类型不能为空");
+            throw new LjBaseRuntimeException(-99, "区域类型不能为空");
         }
         List<ApiBuildingQmCheckTaskSquadObjVo> groupsInfo = unmarshCheckerGroups(taskReq.getChecker_groups());
         if (CollectionUtils.isEmpty(groupsInfo)) {
-            throw new LjBaseRuntimeException(260, "检查人组不能为空");
+            throw new LjBaseRuntimeException(-99, "检查人组不能为空");
         }
         List<ApiBuildingQmTaskMemberGroupVo> checkerGroups = createCheckerGroups(groupsInfo);
         List<Integer> repairerIds = StringSplitToListUtil.splitToIdsComma(taskReq.getRepairer_ids(), ",");
         if (CollectionUtils.isEmpty(repairerIds)) {
-            throw new LjBaseRuntimeException(264, "整改人不能为空");
+            throw new LjBaseRuntimeException(-99, "整改人不能为空");
         }
         List<ApiBuildingQmTaskMemberGroupVo> repairerGroups = createRepairerGroups("整改人组", repairerIds);
 
@@ -312,7 +312,7 @@ public class BuildingqmServiceImpl implements IBuildingqmService {
             Date begin = sdf.parse(planBeginOn);
             Date endon = sdf.parse(planEndOn);
             if (DateUtil.datetimeToTimeStamp(endon) < DateUtil.datetimeToTimeStamp(begin)) {
-                throw new LjBaseRuntimeException(277, "计划结束时间有误");
+                throw new LjBaseRuntimeException(-99, "计划结束时间有误");
             }
         } catch (ParseException e) {
             e.printStackTrace();
@@ -331,20 +331,20 @@ public class BuildingqmServiceImpl implements IBuildingqmService {
     public void edit(Integer uid, TaskEditReq taskEditReq) {
         List<Integer> areaIds = StringSplitToListUtil.splitToIdsComma(taskEditReq.getArea_ids(), ",");
         if (CollectionUtils.isEmpty(areaIds)) {
-            throw new LjBaseRuntimeException(305, "区域不能为空");
+            throw new LjBaseRuntimeException(-99, "区域不能为空");
         }
         List<Integer> areaTypes = StringSplitToListUtil.splitToIdsComma(taskEditReq.getArea_types(), ",");
         if (CollectionUtils.isEmpty(areaTypes)) {
-            throw new LjBaseRuntimeException(310, "区域类型不能为空");
+            throw new LjBaseRuntimeException(-99, "区域类型不能为空");
         }
         List<ApiBuildingQmCheckTaskSquadObjVo> groupsInfo = unmarshCheckerGroups(taskEditReq.getChecker_groups());
         if (CollectionUtils.isEmpty(groupsInfo)) {
-            throw new LjBaseRuntimeException(315, "检查人组不能为空");
+            throw new LjBaseRuntimeException(-99, "检查人组不能为空");
         }
         List<ApiBuildingQmTaskMemberGroupVo> checkerGroups = createCheckerGroups(groupsInfo);
         List<Integer> repairerIds = StringSplitToListUtil.splitToIdsComma(taskEditReq.getRepairer_ids(), ",");
         if (CollectionUtils.isEmpty(repairerIds)) {
-            throw new LjBaseRuntimeException(318, "整改人不能为空");
+            throw new LjBaseRuntimeException(-99, "整改人不能为空");
         }
         List<ApiBuildingQmTaskMemberGroupVo> repairerGroups = createRepairerGroups("整改人组", repairerIds);
 
@@ -358,7 +358,7 @@ public class BuildingqmServiceImpl implements IBuildingqmService {
             begin = sdf.parse(planBeginOn);
             endon = sdf.parse(planEndOn);
             if (DateUtil.datetimeToTimeStamp(endon) < DateUtil.datetimeToTimeStamp(begin)) {
-                throw new LjBaseRuntimeException(331, "计划结束时间有误");
+                throw new LjBaseRuntimeException(-99, "计划结束时间有误");
             }
         } catch (ParseException e) {
             e.printStackTrace();
@@ -373,7 +373,7 @@ public class BuildingqmServiceImpl implements IBuildingqmService {
         ApiIssueLogVo.ApiIssueLogInfoIssueRsp issue = new ApiIssueLogVo().new ApiIssueLogInfoIssueRsp();
         ArrayList<ApiIssueLogVo.ApiIssueLogListRsp> issueLogList = Lists.newArrayList();
         if (issueInfo == null) {
-            throw new LjBaseRuntimeException(348, "没找到此问题");
+            throw new LjBaseRuntimeException(-99, "没找到此问题");
         }
         ArrayList<Integer> usersId = Lists.newArrayList();
         usersId.add(issueInfo.getSenderId());
@@ -497,8 +497,9 @@ public class BuildingqmServiceImpl implements IBuildingqmService {
         issue.setArea_path_and_id(issueInfo.getAreaPathAndId());
         ArrayList<Object> list1 = Lists.newArrayList();
         areaIdsList.forEach(item -> {
-
-            list1.add(areaIdNameMap.get(item));
+            if (areaIdNameMap.containsKey(item)) {
+                list1.add(areaIdNameMap.get(item));
+            }
         });
         issue.setArea_path_name(list1.toString());
         issue.setCategory_cls(issueInfo.getCategoryCls());
@@ -1907,7 +1908,7 @@ public class BuildingqmServiceImpl implements IBuildingqmService {
         //    # 更新验房任务
         HouseQmCheckTask taskInfo = houseQmCheckTaskService.selectByTaskId(taskEditReq.getTask_id());
         if (taskInfo == null) {
-            throw new LjBaseRuntimeException(352, "'任务信息不存在'");
+            throw new LjBaseRuntimeException(-99, "'任务信息不存在'");
         }
         taskInfo.setName(taskEditReq.getName());
         taskInfo.setAreaIds(StringUtils.join(areaIds, ","));
@@ -1946,7 +1947,7 @@ public class BuildingqmServiceImpl implements IBuildingqmService {
         //修改
         int add = houseQmCheckTaskService.update(taskInfo);
         if (add < 0) {
-            throw new LjBaseRuntimeException(352, "'任务信息更新失败'");
+            throw new LjBaseRuntimeException(-99, "'任务信息更新失败'");
         }
         //# 更新检查人组信息
         // # 新增人组 及其 人员
@@ -1962,7 +1963,7 @@ public class BuildingqmServiceImpl implements IBuildingqmService {
                 int squadInfo = houseQmCheckTaskSquadService.add(squad);
                 if (squadInfo <= 0) {
                     log.info("create task squad failed");
-                    throw new LjBaseRuntimeException(402, "'创建任务组失败'");
+                    throw new LjBaseRuntimeException(-99, "'创建任务组失败'");
                 }
                 List<Integer> user_ids = checkerGroups.get(i).getUser_ids();
                 for (int j = 0; j < user_ids.size(); j++) {
@@ -1992,7 +1993,7 @@ public class BuildingqmServiceImpl implements IBuildingqmService {
                     int num = userInHouseQmCheckTaskService.add(qmCheckTask);
                     if (num <= 0) {
                         log.info("create task user failed");
-                        throw new LjBaseRuntimeException(389, "创建任务组人员失败");
+                        throw new LjBaseRuntimeException(-99, "创建任务组人员失败");
                     }
                 }
             }
@@ -2005,7 +2006,7 @@ public class BuildingqmServiceImpl implements IBuildingqmService {
                     int one = houseQmCheckTaskSquadService.delete(dbItem);
                     if (one <= 0) {
                         log.info("HouseQmCheckTaskSquadDao().delete failed, squad_id=" + checkerGroupsDel.get(i) + "");
-                        throw new LjBaseRuntimeException(447, "删除人组失败");
+                        throw new LjBaseRuntimeException(-99, "删除人组失败");
                     }
                 }
                 List<UserInHouseQmCheckTask> userlist = userInHouseQmCheckTaskService.selectBysquadIdAndtaskId(checkerGroupsDel.get(i), taskEditReq.getTask_id());
@@ -2013,7 +2014,7 @@ public class BuildingqmServiceImpl implements IBuildingqmService {
                     int one = userInHouseQmCheckTaskService.delete(userlist.get(j));
                     if (one <= 0) {
                         log.info("HouseQmCheckTaskDao().delete failed, squad_id=" + checkerGroupsDel.get(i) + "");
-                        throw new LjBaseRuntimeException(457, "删除人组失败");
+                        throw new LjBaseRuntimeException(-99, "删除人组失败");
                     }
 
                 }
@@ -2030,10 +2031,11 @@ public class BuildingqmServiceImpl implements IBuildingqmService {
                     dbItem.setTaskId(taskEditReq.getTask_id());
                     dbItem.setSquadType(CheckTaskRoleType.Checker.getValue());
                     dbItem.setName(checkerGroupsEdit.get(i).getGroup_name());
+                    dbItem.setUpdateAt(new Date());
                     int one = houseQmCheckTaskSquadService.update(dbItem);
                     if (one <= 0) {
                         log.info("HouseQmCheckTaskSquadDao().update failed");
-                        throw new LjBaseRuntimeException(457, "更新人组失败");
+                        throw new LjBaseRuntimeException(-99, "更新人组失败");
                     }
                 }
             }
@@ -2045,6 +2047,7 @@ public class BuildingqmServiceImpl implements IBuildingqmService {
                 dbItem.setCanApprove(needUpdateCheckTaskSquadUser.get(i).getCanApprove());
                 dbItem.setCanDirectApprove(needUpdateCheckTaskSquadUser.get(i).getCanDirectApprove());
                 dbItem.setCanReassign(needUpdateCheckTaskSquadUser.get(i).getCanReassign());
+                dbItem.setUpdateAt(new Date());
                 int one = userInHouseQmCheckTaskService.update(dbItem);
                 if (one <= 0) {
                     log.info("UserInHouseQmCheckTaskDao().update failed");
@@ -2071,7 +2074,7 @@ public class BuildingqmServiceImpl implements IBuildingqmService {
                 int one = userInHouseQmCheckTaskService.add(item);
                 if (one <= 0) {
                     log.info("create task user failed");
-                    throw new LjBaseRuntimeException(505, "增加人员信息失败");
+                    throw new LjBaseRuntimeException(-99, "增加人员信息失败");
                 }
             }
 
@@ -2093,7 +2096,7 @@ public class BuildingqmServiceImpl implements IBuildingqmService {
                         int one = userInHouseQmCheckTaskService.delete(userlist.get(i));
                         if (one <= 0) {
                             log.info("UserInHouseQmCheckTaskDao().delete failed");
-                            throw new LjBaseRuntimeException(528, "删除人员失败");
+                            throw new LjBaseRuntimeException(-99, "删除人员失败");
                         }
                     }
                 }
@@ -2125,6 +2128,7 @@ public class BuildingqmServiceImpl implements IBuildingqmService {
             ) {
                 dbConfigAssignTime.setPushTime(stringToDate(config.getConfig_assign_time().getPush_time()));
                 dbConfigAssignTime.setUserIds(config.getConfig_assign_time().getUser_ids());
+                dbConfigAssignTime.setUpdateAt(new Date());
                 int one = pushStrategyAssignTimeService.update(dbConfigAssignTime);
                 if (one == 0) {
                     log.info("PushStrategyAssignTimeDao().update failed");
@@ -2171,6 +2175,7 @@ public class BuildingqmServiceImpl implements IBuildingqmService {
             ) {
                 dbConfigCategoryOverdue.setCategoryKeys(config.getConfig_category_overdue().getCategory_keys());
                 dbConfigCategoryOverdue.setUserIds(config.getConfig_category_overdue().getUser_ids());
+                dbConfigCategoryOverdue.setUpdateAt(new Date());
                 int one = pushStrategyCategoryOverdueService.update(dbConfigCategoryOverdue);
                 if (one <= 0) {
                     log.info("PushStrategyCategoryOverdueDao().update failed");
@@ -2216,6 +2221,7 @@ public class BuildingqmServiceImpl implements IBuildingqmService {
                 dbConfigCategoryThreshold.setCategoryKeys(config.getConfig_category_threshold().getCategory_keys());
                 dbConfigCategoryThreshold.setUserIds(config.getConfig_category_threshold().getUser_ids());
                 dbConfigCategoryThreshold.setThreshold(config.getConfig_category_threshold().getThreshold());
+                dbConfigCategoryThreshold.setUpdateAt(new Date());
                 int one = pushStrategyCategoryThresholdService.update(dbConfigCategoryThreshold);
                 if (one <= 0) {
                     log.info("PushStrategyCategoryThresholdDao().update failed");
@@ -2238,8 +2244,8 @@ public class BuildingqmServiceImpl implements IBuildingqmService {
 
     private void beforeExecute(List<ApiBuildingQmTaskMemberGroupVo> checkerGroupsAdd, List<ApiBuildingQmTaskMemberGroupVo> checkerGroupsEdit, List<Object> checkerGroupsDel, List<ApiBuildingQmTaskMemberInsertVo> needInsertCheckTaskSquadUser, List<UserInHouseQmCheckTask> needUpdateCheckTaskSquadUser, Map doNotNeedDeleteSquaduserPkId, Integer uid, TaskEditReq taskEditReq, List<Integer> areaIds, List<Integer> areaTypes, String planBeginOn, String planEndOn, List<ApiBuildingQmTaskMemberGroupVo> checkerGroups, List<ApiBuildingQmTaskMemberGroupVo> repairerGroups, ConfigVo config) {
         checkSquads(needUpdateCheckTaskSquadUser, needInsertCheckTaskSquadUser, doNotNeedDeleteSquaduserPkId, checkerGroupsDel, checkerGroupsEdit, checkerGroupsAdd, uid, taskEditReq, areaIds, areaTypes, planBeginOn, planEndOn, checkerGroups, repairerGroups, config);
-
-
+        compareSquadCheckers(repairerGroups, needUpdateCheckTaskSquadUser, needInsertCheckTaskSquadUser, checkerGroups, checkerGroupsDel, doNotNeedDeleteSquaduserPkId, taskEditReq);
+        compareSquadRepairers(repairerGroups, taskEditReq, needInsertCheckTaskSquadUser, doNotNeedDeleteSquaduserPkId);
     }
 
     private void compareSquadCheckers(List<ApiBuildingQmTaskMemberGroupVo> repairerGroups, List<UserInHouseQmCheckTask> needUpdateCheckTaskSquadUser, List<ApiBuildingQmTaskMemberInsertVo> needInsertCheckTaskSquadUser, List<ApiBuildingQmTaskMemberGroupVo> checkerGroups, List<Object> checkerGroupsDel, Map doNotNeedDeleteSquaduserPkId, TaskEditReq taskEditReq) {
@@ -2250,17 +2256,22 @@ public class BuildingqmServiceImpl implements IBuildingqmService {
                 squadUserMap.put(dbItems.get(i).getSquadId(), new HashMap<Integer, UserInHouseQmCheckTask>());
             }
             squadUserMap.get(dbItems.get(i).getSquadId()).put(dbItems.get(i).getUserId(), dbItems.get(i));
+            //   # 初始化，初始值都是标记为需要删除的
             doNotNeedDeleteSquaduserPkId.put(dbItems.get(i).getId(), false);
         }
+        //  # 需要排除掉 新增 + 被删除的
+        // # 但不能只判断小组信息有变动的组，因为只更新人员，是不会触发组信息变更的
         HashMap<Object, Object> ignoreSquadIdsMap = Maps.newHashMap();
         for (int i = 0; i < checkerGroupsDel.size(); i++) {
             ignoreSquadIdsMap.put(checkerGroupsDel.get(i), true);
         }
+        //   # 排除新增的
         for (int i = 0; i < checkerGroups.size(); i++) {
             Integer groupId = checkerGroups.get(i).getGroup_id();
             if (groupId.equals(0)) {
                 continue;
             }
+            //  # 排除被删除的
             if (ignoreSquadIdsMap.containsKey(checkerGroups.get(i).getGroup_id())) {
                 continue;
             }
@@ -2290,6 +2301,7 @@ public class BuildingqmServiceImpl implements IBuildingqmService {
                     needInsertCheckTaskSquadUser.add(vo);
                     continue;
                 }
+                //    # 将此记录标记为不需要删除
                 UserInHouseQmCheckTask dbItem = squadUserMap.get(squadId).get(userIds.get(j));
                 doNotNeedDeleteSquaduserPkId.put(dbItem.getId(), true);
                 if (!dbItem.getCanApprove().equals(canApprove) ||
@@ -2301,18 +2313,16 @@ public class BuildingqmServiceImpl implements IBuildingqmService {
                     dbItem.setCanReassign(canReassign);
                     needUpdateCheckTaskSquadUser.add(dbItem);
                 }
-
-
             }
 
         }
-        compareSquadRepairers(repairerGroups, taskEditReq, needInsertCheckTaskSquadUser, doNotNeedDeleteSquaduserPkId);
     }
+
 
     private void compareSquadRepairers(List<ApiBuildingQmTaskMemberGroupVo> repairerGroups, TaskEditReq taskEditReq, List<ApiBuildingQmTaskMemberInsertVo> needInsertCheckTaskSquadUser, Map doNotNeedDeleteSquaduserPkId) {
         List<UserInHouseQmCheckTask> dbItems = userInHouseQmCheckTaskService.selectByTaskIdAndRoleType(taskEditReq.getTask_id(), CheckTaskRoleType.Repairer.getValue());
         Integer squadId = 0;
-        HashMap<Object, Object> squadUserMap = Maps.newHashMap();
+        HashMap<Integer, Object> squadUserMap = Maps.newHashMap();
         for (int i = 0; i < dbItems.size(); i++) {
             squadId = dbItems.get(i).getSquadId();
             squadUserMap.put(dbItems.get(i).getUserId(), dbItems.get(i));
@@ -2333,6 +2343,9 @@ public class BuildingqmServiceImpl implements IBuildingqmService {
                     vo.setCan_reassign(canReassign);
                     needInsertCheckTaskSquadUser.add(vo);
                     continue;
+                } else {
+                    UserInHouseQmCheckTask o = (UserInHouseQmCheckTask) squadUserMap.get(repairerGroups.get(i).getUser_ids().get(j));
+                    doNotNeedDeleteSquaduserPkId.put(o.getId(), true);
                 }
             }
         }
@@ -2351,7 +2364,6 @@ public class BuildingqmServiceImpl implements IBuildingqmService {
 
         List<HouseQmCheckTaskSquad> dbItems = houseQmCheckTaskSquadService.selectByProjectIdAndTaskIdAndSquadType(taskEditReq.getProject_id(), taskEditReq.getTask_id(), CheckTaskRoleType.Checker.getValue());
         for (int i = 0; i < dbItems.size(); i++) {
-
             if (squadMap.containsKey(dbItems.get(i).getId())) {
                 if (!squadMap.get(dbItems.get(i).getId()).getGroup_name().equals(dbItems.get(i).getName())) {
                     checkerGroupsEdit.add(squadMap.get(dbItems.get(i).getId()));
@@ -2360,7 +2372,6 @@ public class BuildingqmServiceImpl implements IBuildingqmService {
                 checkerGroupsDel.add(dbItems.get(i).getId());
             }
         }
-        compareSquadCheckers(repairerGroups, needUpdateCheckTaskSquadUser, needInsertCheckTaskSquadUser, checkerGroups, checkerGroupsDel, doNotNeedDeleteSquaduserPkId, taskEditReq);
     }
 
     private List<ApiBuildingQmTaskMemberGroupVo> createCheckerGroups(List<ApiBuildingQmCheckTaskSquadObjVo> groupsInfo) {
@@ -2396,7 +2407,7 @@ public class BuildingqmServiceImpl implements IBuildingqmService {
         int taskObj = taskService.add(task);
         if (taskObj <= 0) {
             log.info("create task failed");
-            throw new LjBaseRuntimeException(296, "'创建任务失败'");
+            throw new LjBaseRuntimeException(-99, "'创建任务失败'");
         }
         HashMap<String, Object> config_map = Maps.newHashMap();
         config_map.put("repairer_refund_permission", taskReq.getRepairer_refund_permission());
@@ -2434,7 +2445,7 @@ public class BuildingqmServiceImpl implements IBuildingqmService {
         HouseQmCheckTask checktaskObj = houseQmCheckTaskService.selectById(one);
         if (one <= 0) {
             log.info("create check task failed");
-            throw new LjBaseRuntimeException(325, "创建检查任务失败");
+            throw new LjBaseRuntimeException(-99, "创建检查任务失败");
         }
 
         for (int i = 0; i < checkerGroups.size(); i++) {//group
@@ -2449,7 +2460,7 @@ public class BuildingqmServiceImpl implements IBuildingqmService {
             int squadInfo = houseQmCheckTaskSquadService.add(squad);
             if (squadInfo <= 0) {
                 log.info("create task squad failed");
-                throw new LjBaseRuntimeException(361, "'创建任务组失败'");
+                throw new LjBaseRuntimeException(-99, "'创建任务组失败'");
             }
             List<Integer> user_ids = checkerGroups.get(i).getUser_ids();
             for (int j = 0; j < user_ids.size(); j++) {
@@ -2480,7 +2491,7 @@ public class BuildingqmServiceImpl implements IBuildingqmService {
                 int num = userInHouseQmCheckTaskService.add(qmCheckTask);
                 if (num <= 0) {
                     log.info("create task user failed");
-                    throw new LjBaseRuntimeException(389, "创建任务组人员失败");
+                    throw new LjBaseRuntimeException(-99, "创建任务组人员失败");
                 }
 
             }
@@ -2500,7 +2511,7 @@ public class BuildingqmServiceImpl implements IBuildingqmService {
             int squadInfo = houseQmCheckTaskSquadService.add(squad);
             if (squadInfo <= 0) {
                 log.info("create task squad failed");
-                throw new LjBaseRuntimeException(402, "'创建任务组失败'");
+                throw new LjBaseRuntimeException(-99, "'创建任务组失败'");
             }
             List<Integer> userId = repairerGroups.get(i).getUser_ids();
             for (int j = 0; j < userId.size(); j++) {
@@ -2522,7 +2533,7 @@ public class BuildingqmServiceImpl implements IBuildingqmService {
                 int num = userInHouseQmCheckTaskService.add(qmCheckTask);
                 if (num <= 0) {
                     log.info("create task user failed");
-                    throw new LjBaseRuntimeException(422, "创建任务组人员失败");
+                    throw new LjBaseRuntimeException(-99, "创建任务组人员失败");
                 }
             }
 
@@ -2680,22 +2691,22 @@ public class BuildingqmServiceImpl implements IBuildingqmService {
             objVo.setName((String) checkergroups.get("name"));
             if (objVo.getName() == null) {
                 log.info("name not exist, data='unmarshCheckerGroups'");
-                throw new LjBaseRuntimeException(275, "name not exist");
+                throw new LjBaseRuntimeException(-99, "name not exist");
             }
             objVo.setUser_ids((String) checkergroups.get("user_ids"));
             if (objVo.getUser_ids() == null) {
                 log.info("name not exist, data='unmarshCheckerGroups'");
-                throw new LjBaseRuntimeException(280, "user_ids not exist");
+                throw new LjBaseRuntimeException(-99, "user_ids not exist");
             }
             objVo.setApprove_ids((String) checkergroups.get("approve_ids"));
             if (objVo.getApprove_ids() == null) {
                 log.info("name not exist, data='unmarshCheckerGroups'");
-                throw new LjBaseRuntimeException(285, "approve_ids not exist");
+                throw new LjBaseRuntimeException(-99, "approve_ids not exist");
             }
             objVo.setDirect_approve_ids((String) checkergroups.get("direct_approve_ids"));
             if (objVo.getDirect_approve_ids() == null) {
                 log.info("name not exist, data='unmarshCheckerGroups'");
-                throw new LjBaseRuntimeException(290, "direct_approve_ids not exist");
+                throw new LjBaseRuntimeException(-99, "direct_approve_ids not exist");
             }
             objVo.setReassign_ids((String) checkergroups.get("reassign_ids"));
             result.add(objVo);
