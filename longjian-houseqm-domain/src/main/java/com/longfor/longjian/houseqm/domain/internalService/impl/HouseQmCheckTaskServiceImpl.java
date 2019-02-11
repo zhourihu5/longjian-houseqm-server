@@ -203,7 +203,7 @@ public class HouseQmCheckTaskServiceImpl implements HouseQmCheckTaskService {
         criteria.andEqualTo("projectId", projectId).andEqualTo("taskId", taskId).andIsNull("deleteAt");
         return houseQmCheckTaskMapper.selectOneByExample(example);
     }
-
+    @Transactional
     @Override
     @LFAssignDataSource("zhijian2")
     public int update(HouseQmCheckTask taskInfo) {

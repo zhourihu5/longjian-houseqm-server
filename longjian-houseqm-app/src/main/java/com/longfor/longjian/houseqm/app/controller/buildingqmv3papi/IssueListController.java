@@ -96,7 +96,7 @@ public class IssueListController {
     @RequestMapping(value = "repair_notify_export2/", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     public LjBaseResponse<String> repairNotifyExport2(HttpServletRequest request, HttpServletResponse response, @RequestParam(value = "project_id", required = true) Integer projectId,
                                                       @RequestParam(value = "issue_uuid", required = true) String issueUuid) {
-        if (request.getMethod() == "POST") {
+        if (request.getMethod().equals("POST")) {
             String project_id = request.getParameter("project_id");
             String issue_ids = request.getParameter("issue_ids");
         }
