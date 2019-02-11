@@ -22,6 +22,7 @@ import com.longfor.longjian.houseqm.po.zj2db.HouseQmCheckTask;
 import com.longfor.longjian.houseqm.po.zj2db.UserInHouseQmCheckTask;
 import com.longfor.longjian.houseqm.util.DateUtil;
 import com.longfor.longjian.houseqm.util.MathUtil;
+import org.apache.commons.collections.CollectionUtils;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import com.longfor.longjian.common.base.LjBaseResponse;
@@ -181,9 +182,12 @@ public class HouseqmStatisticController {
     public LjBaseResponse<HouseqmStatisticTaskListRspMsgVo> taskList(@RequestParam(value = "project_id") Integer projectId,
                                                                      @RequestParam(value = "source") String source,
                                                                      @RequestParam(value = "timestamp") Integer timestamp,
-                                                                     @RequestParam(value = "area_id") Integer areaId) {
+                                                                     @RequestParam(value = "area_id",required =false) Integer areaId) {
         Integer userId = (Integer) sessionInfo.getBaseInfo("userId");
         List<UserInHouseQmCheckTask> checkers = houseqmStaticService.searchUserInHouseQmCheckTaskByUserIdRoleType(userId, HouseQmCheckTaskRoleTypeEnum.Checker.getId());
+            if(CollectionUtils.isEmpty(checkers)){
+                return  null;
+            }
         HashMap<Integer, Boolean> checkMap = Maps.newHashMap();
         for (int i = 0; i < checkers.size(); i++) {
             checkMap.put(checkers.get(i).getTaskId(), true);
@@ -191,7 +195,7 @@ public class HouseqmStatisticController {
         List<HouseQmCheckTask> resTask = Lists.newArrayList();
 
 
-        if (areaId > 0) {
+        if (areaId !=null) {
             List<HouseQmCheckTask> res = houseqmStaticService.searchHouseQmCheckTaskByProjIdAreaIdCategoryClsIn(projectId, areaId, getCategoryClsList(source));
             resTask.addAll(res);
         } else {
@@ -201,13 +205,12 @@ public class HouseqmStatisticController {
         List<ApiTaskInfo> items = Lists.newArrayList();
         for (int i = 0; i < resTask.size(); i++) {
             if (checkMap.containsKey(resTask.get(i).getTaskId())) {
-                continue;
-            }
             ApiTaskInfo info = new ApiTaskInfo();
             info.setId(resTask.get(i).getTaskId());
             info.setName(resTask.get(i).getName());
             info.setCategory_cls(resTask.get(i).getCategoryCls());
             items.add(info);
+            }
         }
         HouseqmStatisticTaskListRspMsgVo vo1 = new HouseqmStatisticTaskListRspMsgVo();
         vo1.setItems(items);
