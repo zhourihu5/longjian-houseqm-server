@@ -40,13 +40,14 @@ public class GraphqlExecuteService {
      * 2. 解析Schema并缓存
      * 3. Graphql执行Schema
      *
+     * @param groupId
      * @param serviceName:  仅用于标记不同的Service和日志
      * @param query         : query
      * @param variableVo    : 参数值对
      * @param graphQLSchema ：绑定和执行的Schema
      * @return
      */
-    public Object execute(String serviceName, String query, VariableVo variableVo, GraphQLSchema graphQLSchema) {
+    public Object execute(Integer groupId, String serviceName, String query, VariableVo variableVo, GraphQLSchema graphQLSchema) {
 
         Map<String, Object> variables = null;
         try {
@@ -64,7 +65,7 @@ public class GraphqlExecuteService {
                 .preparsedDocumentProvider(cache::get)
                 .build();
 
-        ExecutionInput executionInput = ExecutionInput.newExecutionInput().query(query).variables(variables).build();
+        ExecutionInput executionInput = ExecutionInput.newExecutionInput().query(query).context(groupId).variables(variables).build();
         ExecutionResult executionResult = graphQL.execute(executionInput);
 
         Object data = executionResult.getData();

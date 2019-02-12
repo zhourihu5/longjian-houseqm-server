@@ -58,7 +58,7 @@ public class StatGroupController {
      */
     @PostMapping(value = "group", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     public LjBaseResponse<Object> group(@RequestParam(value = "token", required =false) String token,
-                                        @RequestParam(value = "group_id") String groupId,
+                                        @RequestParam(value = "group_id") Integer groupId,
                                         @RequestParam(value = "page_level") String pageLevel,
                                         @RequestParam(value = "tip") String tip,
                                         @RequestBody StatGroupReq statGroupReq) {
@@ -71,7 +71,7 @@ public class StatGroupController {
                 case teamRankStat_tip:
                     break;
                 case progressStat_tip:
-                    statListVo = graphqlExecuteService.execute(progressStat_tip, statGroupReq.getQuery(),
+                    statListVo = graphqlExecuteService.execute(groupId, progressStat_tip, statGroupReq.getQuery(),
                             statGroupReq.getVariables(), groupProgressStatSchema.buildSchema());
                     break;
                 case projectStat_tip:

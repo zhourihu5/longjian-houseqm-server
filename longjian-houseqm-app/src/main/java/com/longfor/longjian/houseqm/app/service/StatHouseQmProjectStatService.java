@@ -43,7 +43,7 @@ public class StatHouseQmProjectStatService {
 
 
     /**
-     *
+     * @param groupId
      * @param categoryKey
      * @param timeFrameType
      * @param teamIds
@@ -52,7 +52,7 @@ public class StatHouseQmProjectStatService {
      * @param timeFrameMax
      * @return
      */
-    public List<StatDataVo> searchStat(String categoryKey, String timeFrameType, List<Integer> teamIds, Date timeFrameBegin,
+    public List<StatDataVo> searchStat(Integer groupId, String categoryKey, String timeFrameType, List<Integer> teamIds, Date timeFrameBegin,
                                        Date timeFrameEnd, Integer timeFrameMax) {
 
 
@@ -74,7 +74,6 @@ public class StatHouseQmProjectStatService {
 
         if (CollectionUtils.isEmpty(teamIds)) {
             teamIds = Lists.newArrayList();
-            Integer groupId = 4;
 
             List<Team> teamList = teamService.selectGroupIdNotDel(groupId);
             if (CollectionUtils.isEmpty(teamList)) {
