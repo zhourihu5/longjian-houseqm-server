@@ -1,455 +1,63 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="com.longfor.longjian.houseqm.dao.stat.StatHouseQmPartnerWeeklyStatMapper">
-    <!--<resultMap id="BaseResultMap" type="com.longfor.longjian.houseqm.po.stat.StatHouseQmPartnerWeeklyStat">
-      &lt;!&ndash;
-        WARNING - @mbg.generated
-      &ndash;&gt;
-      <id column="id" jdbcType="INTEGER" property="id" />
-      <result column="project_id" jdbcType="INTEGER" property="projectId" />
-      <result column="category_cls" jdbcType="INTEGER" property="categoryCls" />
-      <result column="area_id" jdbcType="INTEGER" property="areaId" />
-      <result column="area_father_id" jdbcType="INTEGER" property="areaFatherId" />
-      <result column="area_name" jdbcType="VARCHAR" property="areaName" />
-      <result column="area_path_and_id" jdbcType="VARCHAR" property="areaPathAndId" />
-      <result column="category_key" jdbcType="VARCHAR" property="categoryKey" />
-      <result column="category_father_key" jdbcType="VARCHAR" property="categoryFatherKey" />
-      <result column="category_name" jdbcType="VARCHAR" property="categoryName" />
-      <result column="category_path_and_key" jdbcType="VARCHAR" property="categoryPathAndKey" />
-      <result column="has_sub" jdbcType="INTEGER" property="hasSub" />
-      <result column="root_category_id" jdbcType="INTEGER" property="rootCategoryId" />
-      <result column="category_order" jdbcType="VARCHAR" property="categoryOrder" />
-      <result column="issue_count" jdbcType="INTEGER" property="issueCount" />
-      <result column="record_count" jdbcType="INTEGER" property="recordCount" />
-      <result column="issue_new_count" jdbcType="INTEGER" property="issueNewCount" />
-      <result column="record_new_count" jdbcType="INTEGER" property="recordNewCount" />
-      <result column="issue_note_no_assign_count" jdbcType="INTEGER" property="issueNoteNoAssignCount" />
-      <result column="issue_assign_no_reform_count" jdbcType="INTEGER" property="issueAssignNoReformCount" />
-      <result column="issue_reform_no_check_count" jdbcType="INTEGER" property="issueReformNoCheckCount" />
-      <result column="issue_check_yes_count" jdbcType="INTEGER" property="issueCheckYesCount" />
-      <result column="issue_overdue_to_assign_count" jdbcType="INTEGER" property="issueOverdueToAssignCount" />
-      <result column="issue_overdue_to_reform_count" jdbcType="INTEGER" property="issueOverdueToReformCount" />
-      <result column="issue_overdue_to_check_count" jdbcType="INTEGER" property="issueOverdueToCheckCount" />
-      <result column="issue_overdue_checked_count" jdbcType="INTEGER" property="issueOverdueCheckedCount" />
-      <result column="issue_intime_to_assign_count" jdbcType="INTEGER" property="issueIntimeToAssignCount" />
-      <result column="issue_intime_to_reform_count" jdbcType="INTEGER" property="issueIntimeToReformCount" />
-      <result column="issue_intime_to_check_count" jdbcType="INTEGER" property="issueIntimeToCheckCount" />
-      <result column="issue_intime_checked_count" jdbcType="INTEGER" property="issueIntimeCheckedCount" />
-      <result column="issue_notset_to_assign_count" jdbcType="INTEGER" property="issueNotsetToAssignCount" />
-      <result column="issue_notset_to_reform_count" jdbcType="INTEGER" property="issueNotsetToReformCount" />
-      <result column="issue_notset_to_check_count" jdbcType="INTEGER" property="issueNotsetToCheckCount" />
-      <result column="issue_notset_checked_count" jdbcType="INTEGER" property="issueNotsetCheckedCount" />
-      <result column="update_at" jdbcType="TIMESTAMP" property="updateAt" />
-      <result column="team_id" jdbcType="INTEGER" property="teamId" />
-      <result column="team_group_company_id" jdbcType="INTEGER" property="teamGroupCompanyId" />
-      <result column="project_company_id" jdbcType="INTEGER" property="projectCompanyId" />
-      <result column="company_role_id" jdbcType="INTEGER" property="companyRoleId" />
-    </resultMap>
-    <sql id="Example_Where_Clause">
-      &lt;!&ndash;
-        WARNING - @mbg.generated
-      &ndash;&gt;
-      <where>
-        <foreach collection="oredCriteria" item="criteria" separator="or">
-          <if test="criteria.valid">
-            <trim prefix="(" prefixOverrides="and" suffix=")">
-              <foreach collection="criteria.criteria" item="criterion">
-                <choose>
-                  <when test="criterion.noValue">
-                    and ${criterion.condition}
-                  </when>
-                  <when test="criterion.singleValue">
-                    and ${criterion.condition} #{criterion.value}
-                  </when>
-                  <when test="criterion.betweenValue">
-                    and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
-                  </when>
-                  <when test="criterion.listValue">
-                    and ${criterion.condition}
-                    <foreach close=")" collection="criterion.value" item="listItem" open="(" separator=",">
-                      #{listItem}
-                    </foreach>
-                  </when>
-                </choose>
-              </foreach>
-            </trim>
-          </if>
-        </foreach>
-      </where>
-    </sql>
-    <sql id="Base_Column_List">
-      &lt;!&ndash;
-        WARNING - @mbg.generated
-      &ndash;&gt;
-      id, project_id, category_cls, area_id, area_father_id, area_name, area_path_and_id,
-      category_key, category_father_key, category_name, category_path_and_key, has_sub,
-      root_category_id, category_order, issue_count, record_count, issue_new_count, record_new_count,
-      issue_note_no_assign_count, issue_assign_no_reform_count, issue_reform_no_check_count,
-      issue_check_yes_count, issue_overdue_to_assign_count, issue_overdue_to_reform_count,
-      issue_overdue_to_check_count, issue_overdue_checked_count, issue_intime_to_assign_count,
-      issue_intime_to_reform_count, issue_intime_to_check_count, issue_intime_checked_count,
-      issue_notset_to_assign_count, issue_notset_to_reform_count, issue_notset_to_check_count,
-      issue_notset_checked_count, update_at, team_id, team_group_company_id, project_company_id,
-      company_role_id
-    </sql>
-    <select id="selectByExample" parameterType="com.longfor.longjian.houseqm.po.stat.StatHouseQmPartnerWeeklyStatExample" resultMap="BaseResultMap">
-      &lt;!&ndash;
-        WARNING - @mbg.generated
-      &ndash;&gt;
-      select
-      <if test="distinct">
-        distinct
-      </if>
-      <include refid="Base_Column_List" />
-      from stat_house_qm_partner_weekly_stat
-      <if test="_parameter != null">
-        <include refid="Example_Where_Clause" />
-      </if>
-      <if test="orderByClause != null">
-        order by ${orderByClause}
-      </if>
-    </select>
-    <select id="countByExample" parameterType="com.longfor.longjian.houseqm.po.stat.StatHouseQmPartnerWeeklyStatExample" resultType="java.lang.Integer">
-      &lt;!&ndash;
-        WARNING - @mbg.generated
-      &ndash;&gt;
-      select count(*) from stat_house_qm_partner_weekly_stat
-      <if test="_parameter != null">
-        <include refid="Example_Where_Clause" />
-      </if>
-    </select>
-    <resultMap id="BaseResultMap" type="com.longfor.longjian.houseqm.po.stat.StatHouseQmPartnerWeeklyStat">
-      &lt;!&ndash;
-        WARNING - @mbg.generated
-      &ndash;&gt;
-      <id column="id" jdbcType="INTEGER" property="id" />
-      <result column="project_id" jdbcType="INTEGER" property="projectId" />
-      <result column="category_cls" jdbcType="INTEGER" property="categoryCls" />
-      <result column="area_id" jdbcType="INTEGER" property="areaId" />
-      <result column="area_father_id" jdbcType="INTEGER" property="areaFatherId" />
-      <result column="area_name" jdbcType="VARCHAR" property="areaName" />
-      <result column="area_path_and_id" jdbcType="VARCHAR" property="areaPathAndId" />
-      <result column="category_key" jdbcType="VARCHAR" property="categoryKey" />
-      <result column="category_father_key" jdbcType="VARCHAR" property="categoryFatherKey" />
-      <result column="category_name" jdbcType="VARCHAR" property="categoryName" />
-      <result column="category_path_and_key" jdbcType="VARCHAR" property="categoryPathAndKey" />
-      <result column="has_sub" jdbcType="INTEGER" property="hasSub" />
-      <result column="root_category_id" jdbcType="INTEGER" property="rootCategoryId" />
-      <result column="category_order" jdbcType="VARCHAR" property="categoryOrder" />
-      <result column="issue_count" jdbcType="INTEGER" property="issueCount" />
-      <result column="record_count" jdbcType="INTEGER" property="recordCount" />
-      <result column="issue_new_count" jdbcType="INTEGER" property="issueNewCount" />
-      <result column="record_new_count" jdbcType="INTEGER" property="recordNewCount" />
-      <result column="issue_note_no_assign_count" jdbcType="INTEGER" property="issueNoteNoAssignCount" />
-      <result column="issue_assign_no_reform_count" jdbcType="INTEGER" property="issueAssignNoReformCount" />
-      <result column="issue_reform_no_check_count" jdbcType="INTEGER" property="issueReformNoCheckCount" />
-      <result column="issue_check_yes_count" jdbcType="INTEGER" property="issueCheckYesCount" />
-      <result column="issue_overdue_to_assign_count" jdbcType="INTEGER" property="issueOverdueToAssignCount" />
-      <result column="issue_overdue_to_reform_count" jdbcType="INTEGER" property="issueOverdueToReformCount" />
-      <result column="issue_overdue_to_check_count" jdbcType="INTEGER" property="issueOverdueToCheckCount" />
-      <result column="issue_overdue_checked_count" jdbcType="INTEGER" property="issueOverdueCheckedCount" />
-      <result column="issue_intime_to_assign_count" jdbcType="INTEGER" property="issueIntimeToAssignCount" />
-      <result column="issue_intime_to_reform_count" jdbcType="INTEGER" property="issueIntimeToReformCount" />
-      <result column="issue_intime_to_check_count" jdbcType="INTEGER" property="issueIntimeToCheckCount" />
-      <result column="issue_intime_checked_count" jdbcType="INTEGER" property="issueIntimeCheckedCount" />
-      <result column="issue_notset_to_assign_count" jdbcType="INTEGER" property="issueNotsetToAssignCount" />
-      <result column="issue_notset_to_reform_count" jdbcType="INTEGER" property="issueNotsetToReformCount" />
-      <result column="issue_notset_to_check_count" jdbcType="INTEGER" property="issueNotsetToCheckCount" />
-      <result column="issue_notset_checked_count" jdbcType="INTEGER" property="issueNotsetCheckedCount" />
-      <result column="update_at" jdbcType="TIMESTAMP" property="updateAt" />
-      <result column="team_id" jdbcType="INTEGER" property="teamId" />
-      <result column="team_group_company_id" jdbcType="INTEGER" property="teamGroupCompanyId" />
-      <result column="project_company_id" jdbcType="INTEGER" property="projectCompanyId" />
-      <result column="company_role_id" jdbcType="INTEGER" property="companyRoleId" />
-    </resultMap>
-    <sql id="Example_Where_Clause">
-      &lt;!&ndash;
-        WARNING - @mbg.generated
-      &ndash;&gt;
-      <where>
-        <foreach collection="oredCriteria" item="criteria" separator="or">
-          <if test="criteria.valid">
-            <trim prefix="(" prefixOverrides="and" suffix=")">
-              <foreach collection="criteria.criteria" item="criterion">
-                <choose>
-                  <when test="criterion.noValue">
-                    and ${criterion.condition}
-                  </when>
-                  <when test="criterion.singleValue">
-                    and ${criterion.condition} #{criterion.value}
-                  </when>
-                  <when test="criterion.betweenValue">
-                    and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
-                  </when>
-                  <when test="criterion.listValue">
-                    and ${criterion.condition}
-                    <foreach close=")" collection="criterion.value" item="listItem" open="(" separator=",">
-                      #{listItem}
-                    </foreach>
-                  </when>
-                </choose>
-              </foreach>
-            </trim>
-          </if>
-        </foreach>
-      </where>
-    </sql>
-    <sql id="Update_By_Example_Where_Clause">
-      &lt;!&ndash;
-        WARNING - @mbg.generated
-      &ndash;&gt;
-      <where>
-        <foreach collection="example.oredCriteria" item="criteria" separator="or">
-          <if test="criteria.valid">
-            <trim prefix="(" prefixOverrides="and" suffix=")">
-              <foreach collection="criteria.criteria" item="criterion">
-                <choose>
-                  <when test="criterion.noValue">
-                    and ${criterion.condition}
-                  </when>
-                  <when test="criterion.singleValue">
-                    and ${criterion.condition} #{criterion.value}
-                  </when>
-                  <when test="criterion.betweenValue">
-                    and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
-                  </when>
-                  <when test="criterion.listValue">
-                    and ${criterion.condition}
-                    <foreach close=")" collection="criterion.value" item="listItem" open="(" separator=",">
-                      #{listItem}
-                    </foreach>
-                  </when>
-                </choose>
-              </foreach>
-            </trim>
-          </if>
-        </foreach>
-      </where>
-    </sql>
-    <sql id="Base_Column_List">
-      &lt;!&ndash;
-        WARNING - @mbg.generated
-      &ndash;&gt;
-      id, project_id, category_cls, area_id, area_father_id, area_name, area_path_and_id,
-      category_key, category_father_key, category_name, category_path_and_key, has_sub,
-      root_category_id, category_order, issue_count, record_count, issue_new_count, record_new_count,
-      issue_note_no_assign_count, issue_assign_no_reform_count, issue_reform_no_check_count,
-      issue_check_yes_count, issue_overdue_to_assign_count, issue_overdue_to_reform_count,
-      issue_overdue_to_check_count, issue_overdue_checked_count, issue_intime_to_assign_count,
-      issue_intime_to_reform_count, issue_intime_to_check_count, issue_intime_checked_count,
-      issue_notset_to_assign_count, issue_notset_to_reform_count, issue_notset_to_check_count,
-      issue_notset_checked_count, update_at, team_id, team_group_company_id, project_company_id,
-      company_role_id
-    </sql>
-    <select id="selectByExample" parameterType="com.longfor.longjian.houseqm.po.stat.StatHouseQmPartnerWeeklyStatExample" resultMap="BaseResultMap">
-      &lt;!&ndash;
-        WARNING - @mbg.generated
-      &ndash;&gt;
-      select
-      <if test="distinct">
-        distinct
-      </if>
-      <include refid="Base_Column_List" />
-      from stat_house_qm_partner_weekly_stat
-      <if test="_parameter != null">
-        <include refid="Example_Where_Clause" />
-      </if>
-      <if test="orderByClause != null">
-        order by ${orderByClause}
-      </if>
-    </select>
-    <delete id="deleteByExample" parameterType="com.longfor.longjian.houseqm.po.stat.StatHouseQmPartnerWeeklyStatExample">
-      &lt;!&ndash;
-        WARNING - @mbg.generated
-      &ndash;&gt;
-      delete from stat_house_qm_partner_weekly_stat
-      <if test="_parameter != null">
-        <include refid="Example_Where_Clause" />
-      </if>
-    </delete>
-    <select id="countByExample" parameterType="com.longfor.longjian.houseqm.po.stat.StatHouseQmPartnerWeeklyStatExample" resultType="java.lang.Integer">
-      &lt;!&ndash;
-        WARNING - @mbg.generated
-      &ndash;&gt;
-      select count(*) from stat_house_qm_partner_weekly_stat
-      <if test="_parameter != null">
-        <include refid="Example_Where_Clause" />
-      </if>
-    </select>
-    <update id="updateByExampleSelective" parameterType="map">
-      &lt;!&ndash;
-        WARNING - @mbg.generated
-      &ndash;&gt;
-      update stat_house_qm_partner_weekly_stat
-      <set>
-        <if test="record.id != null">
-          id = #{record.id,jdbcType=INTEGER},
-        </if>
-        <if test="record.projectId != null">
-          project_id = #{record.projectId,jdbcType=INTEGER},
-        </if>
-        <if test="record.categoryCls != null">
-          category_cls = #{record.categoryCls,jdbcType=INTEGER},
-        </if>
-        <if test="record.areaId != null">
-          area_id = #{record.areaId,jdbcType=INTEGER},
-        </if>
-        <if test="record.areaFatherId != null">
-          area_father_id = #{record.areaFatherId,jdbcType=INTEGER},
-        </if>
-        <if test="record.areaName != null">
-          area_name = #{record.areaName,jdbcType=VARCHAR},
-        </if>
-        <if test="record.areaPathAndId != null">
-          area_path_and_id = #{record.areaPathAndId,jdbcType=VARCHAR},
-        </if>
-        <if test="record.categoryKey != null">
-          category_key = #{record.categoryKey,jdbcType=VARCHAR},
-        </if>
-        <if test="record.categoryFatherKey != null">
-          category_father_key = #{record.categoryFatherKey,jdbcType=VARCHAR},
-        </if>
-        <if test="record.categoryName != null">
-          category_name = #{record.categoryName,jdbcType=VARCHAR},
-        </if>
-        <if test="record.categoryPathAndKey != null">
-          category_path_and_key = #{record.categoryPathAndKey,jdbcType=VARCHAR},
-        </if>
-        <if test="record.hasSub != null">
-          has_sub = #{record.hasSub,jdbcType=INTEGER},
-        </if>
-        <if test="record.rootCategoryId != null">
-          root_category_id = #{record.rootCategoryId,jdbcType=INTEGER},
-        </if>
-        <if test="record.categoryOrder != null">
-          category_order = #{record.categoryOrder,jdbcType=VARCHAR},
-        </if>
-        <if test="record.issueCount != null">
-          issue_count = #{record.issueCount,jdbcType=INTEGER},
-        </if>
-        <if test="record.recordCount != null">
-          record_count = #{record.recordCount,jdbcType=INTEGER},
-        </if>
-        <if test="record.issueNewCount != null">
-          issue_new_count = #{record.issueNewCount,jdbcType=INTEGER},
-        </if>
-        <if test="record.recordNewCount != null">
-          record_new_count = #{record.recordNewCount,jdbcType=INTEGER},
-        </if>
-        <if test="record.issueNoteNoAssignCount != null">
-          issue_note_no_assign_count = #{record.issueNoteNoAssignCount,jdbcType=INTEGER},
-        </if>
-        <if test="record.issueAssignNoReformCount != null">
-          issue_assign_no_reform_count = #{record.issueAssignNoReformCount,jdbcType=INTEGER},
-        </if>
-        <if test="record.issueReformNoCheckCount != null">
-          issue_reform_no_check_count = #{record.issueReformNoCheckCount,jdbcType=INTEGER},
-        </if>
-        <if test="record.issueCheckYesCount != null">
-          issue_check_yes_count = #{record.issueCheckYesCount,jdbcType=INTEGER},
-        </if>
-        <if test="record.issueOverdueToAssignCount != null">
-          issue_overdue_to_assign_count = #{record.issueOverdueToAssignCount,jdbcType=INTEGER},
-        </if>
-        <if test="record.issueOverdueToReformCount != null">
-          issue_overdue_to_reform_count = #{record.issueOverdueToReformCount,jdbcType=INTEGER},
-        </if>
-        <if test="record.issueOverdueToCheckCount != null">
-          issue_overdue_to_check_count = #{record.issueOverdueToCheckCount,jdbcType=INTEGER},
-        </if>
-        <if test="record.issueOverdueCheckedCount != null">
-          issue_overdue_checked_count = #{record.issueOverdueCheckedCount,jdbcType=INTEGER},
-        </if>
-        <if test="record.issueIntimeToAssignCount != null">
-          issue_intime_to_assign_count = #{record.issueIntimeToAssignCount,jdbcType=INTEGER},
-        </if>
-        <if test="record.issueIntimeToReformCount != null">
-          issue_intime_to_reform_count = #{record.issueIntimeToReformCount,jdbcType=INTEGER},
-        </if>
-        <if test="record.issueIntimeToCheckCount != null">
-          issue_intime_to_check_count = #{record.issueIntimeToCheckCount,jdbcType=INTEGER},
-        </if>
-        <if test="record.issueIntimeCheckedCount != null">
-          issue_intime_checked_count = #{record.issueIntimeCheckedCount,jdbcType=INTEGER},
-        </if>
-        <if test="record.issueNotsetToAssignCount != null">
-          issue_notset_to_assign_count = #{record.issueNotsetToAssignCount,jdbcType=INTEGER},
-        </if>
-        <if test="record.issueNotsetToReformCount != null">
-          issue_notset_to_reform_count = #{record.issueNotsetToReformCount,jdbcType=INTEGER},
-        </if>
-        <if test="record.issueNotsetToCheckCount != null">
-          issue_notset_to_check_count = #{record.issueNotsetToCheckCount,jdbcType=INTEGER},
-        </if>
-        <if test="record.issueNotsetCheckedCount != null">
-          issue_notset_checked_count = #{record.issueNotsetCheckedCount,jdbcType=INTEGER},
-        </if>
-        <if test="record.updateAt != null">
-          update_at = #{record.updateAt,jdbcType=TIMESTAMP},
-        </if>
-        <if test="record.teamId != null">
-          team_id = #{record.teamId,jdbcType=INTEGER},
-        </if>
-        <if test="record.teamGroupCompanyId != null">
-          team_group_company_id = #{record.teamGroupCompanyId,jdbcType=INTEGER},
-        </if>
-        <if test="record.projectCompanyId != null">
-          project_company_id = #{record.projectCompanyId,jdbcType=INTEGER},
-        </if>
-        <if test="record.companyRoleId != null">
-          company_role_id = #{record.companyRoleId,jdbcType=INTEGER},
-        </if>
-      </set>
-      <if test="_parameter != null">
-        <include refid="Update_By_Example_Where_Clause" />
-      </if>
-    </update>
-    <update id="updateByExample" parameterType="map">
-      &lt;!&ndash;
-        WARNING - @mbg.generated
-      &ndash;&gt;
-      update stat_house_qm_partner_weekly_stat
-      set id = #{record.id,jdbcType=INTEGER},
-        project_id = #{record.projectId,jdbcType=INTEGER},
-        category_cls = #{record.categoryCls,jdbcType=INTEGER},
-        area_id = #{record.areaId,jdbcType=INTEGER},
-        area_father_id = #{record.areaFatherId,jdbcType=INTEGER},
-        area_name = #{record.areaName,jdbcType=VARCHAR},
-        area_path_and_id = #{record.areaPathAndId,jdbcType=VARCHAR},
-        category_key = #{record.categoryKey,jdbcType=VARCHAR},
-        category_father_key = #{record.categoryFatherKey,jdbcType=VARCHAR},
-        category_name = #{record.categoryName,jdbcType=VARCHAR},
-        category_path_and_key = #{record.categoryPathAndKey,jdbcType=VARCHAR},
-        has_sub = #{record.hasSub,jdbcType=INTEGER},
-        root_category_id = #{record.rootCategoryId,jdbcType=INTEGER},
-        category_order = #{record.categoryOrder,jdbcType=VARCHAR},
-        issue_count = #{record.issueCount,jdbcType=INTEGER},
-        record_count = #{record.recordCount,jdbcType=INTEGER},
-        issue_new_count = #{record.issueNewCount,jdbcType=INTEGER},
-        record_new_count = #{record.recordNewCount,jdbcType=INTEGER},
-        issue_note_no_assign_count = #{record.issueNoteNoAssignCount,jdbcType=INTEGER},
-        issue_assign_no_reform_count = #{record.issueAssignNoReformCount,jdbcType=INTEGER},
-        issue_reform_no_check_count = #{record.issueReformNoCheckCount,jdbcType=INTEGER},
-        issue_check_yes_count = #{record.issueCheckYesCount,jdbcType=INTEGER},
-        issue_overdue_to_assign_count = #{record.issueOverdueToAssignCount,jdbcType=INTEGER},
-        issue_overdue_to_reform_count = #{record.issueOverdueToReformCount,jdbcType=INTEGER},
-        issue_overdue_to_check_count = #{record.issueOverdueToCheckCount,jdbcType=INTEGER},
-        issue_overdue_checked_count = #{record.issueOverdueCheckedCount,jdbcType=INTEGER},
-        issue_intime_to_assign_count = #{record.issueIntimeToAssignCount,jdbcType=INTEGER},
-        issue_intime_to_reform_count = #{record.issueIntimeToReformCount,jdbcType=INTEGER},
-        issue_intime_to_check_count = #{record.issueIntimeToCheckCount,jdbcType=INTEGER},
-        issue_intime_checked_count = #{record.issueIntimeCheckedCount,jdbcType=INTEGER},
-        issue_notset_to_assign_count = #{record.issueNotsetToAssignCount,jdbcType=INTEGER},
-        issue_notset_to_reform_count = #{record.issueNotsetToReformCount,jdbcType=INTEGER},
-        issue_notset_to_check_count = #{record.issueNotsetToCheckCount,jdbcType=INTEGER},
-        issue_notset_checked_count = #{record.issueNotsetCheckedCount,jdbcType=INTEGER},
-        update_at = #{record.updateAt,jdbcType=TIMESTAMP},
-        team_id = #{record.teamId,jdbcType=INTEGER},
-        team_group_company_id = #{record.teamGroupCompanyId,jdbcType=INTEGER},
-        project_company_id = #{record.projectCompanyId,jdbcType=INTEGER},
-        company_role_id = #{record.companyRoleId,jdbcType=INTEGER}
-      <if test="_parameter != null">
-        <include refid="Update_By_Example_Where_Clause" />
-      </if>
-    </update>-->
-  </mapper>
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.longfor.longjian.houseqm.dao.stat.StatHouseQmPartnerWeeklyStatMapper" >
+  <resultMap id="BaseResultMap" type="com.longfor.longjian.houseqm.po.stat.StatHouseQmPartnerWeeklyStat" >
+    <!--
+      WARNING - @mbg.generated
+    -->
+    <id column="id" property="id" jdbcType="INTEGER" />
+    <result column="project_id" property="projectId" jdbcType="INTEGER" />
+    <result column="category_cls" property="categoryCls" jdbcType="INTEGER" />
+    <result column="area_id" property="areaId" jdbcType="INTEGER" />
+    <result column="area_father_id" property="areaFatherId" jdbcType="INTEGER" />
+    <result column="area_name" property="areaName" jdbcType="VARCHAR" />
+    <result column="area_path_and_id" property="areaPathAndId" jdbcType="VARCHAR" />
+    <result column="category_key" property="categoryKey" jdbcType="VARCHAR" />
+    <result column="category_father_key" property="categoryFatherKey" jdbcType="VARCHAR" />
+    <result column="category_name" property="categoryName" jdbcType="VARCHAR" />
+    <result column="category_path_and_key" property="categoryPathAndKey" jdbcType="VARCHAR" />
+    <result column="has_sub" property="hasSub" jdbcType="INTEGER" />
+    <result column="root_category_id" property="rootCategoryId" jdbcType="INTEGER" />
+    <result column="category_order" property="categoryOrder" jdbcType="VARCHAR" />
+    <result column="issue_count" property="issueCount" jdbcType="INTEGER" />
+    <result column="record_count" property="recordCount" jdbcType="INTEGER" />
+    <result column="issue_new_count" property="issueNewCount" jdbcType="INTEGER" />
+    <result column="record_new_count" property="recordNewCount" jdbcType="INTEGER" />
+    <result column="issue_note_no_assign_count" property="issueNoteNoAssignCount" jdbcType="INTEGER" />
+    <result column="issue_assign_no_reform_count" property="issueAssignNoReformCount" jdbcType="INTEGER" />
+    <result column="issue_reform_no_check_count" property="issueReformNoCheckCount" jdbcType="INTEGER" />
+    <result column="issue_check_yes_count" property="issueCheckYesCount" jdbcType="INTEGER" />
+    <result column="issue_overdue_to_assign_count" property="issueOverdueToAssignCount" jdbcType="INTEGER" />
+    <result column="issue_overdue_to_reform_count" property="issueOverdueToReformCount" jdbcType="INTEGER" />
+    <result column="issue_overdue_to_check_count" property="issueOverdueToCheckCount" jdbcType="INTEGER" />
+    <result column="issue_overdue_checked_count" property="issueOverdueCheckedCount" jdbcType="INTEGER" />
+    <result column="issue_intime_to_assign_count" property="issueIntimeToAssignCount" jdbcType="INTEGER" />
+    <result column="issue_intime_to_reform_count" property="issueIntimeToReformCount" jdbcType="INTEGER" />
+    <result column="issue_intime_to_check_count" property="issueIntimeToCheckCount" jdbcType="INTEGER" />
+    <result column="issue_intime_checked_count" property="issueIntimeCheckedCount" jdbcType="INTEGER" />
+    <result column="issue_notset_to_assign_count" property="issueNotsetToAssignCount" jdbcType="INTEGER" />
+    <result column="issue_notset_to_reform_count" property="issueNotsetToReformCount" jdbcType="INTEGER" />
+    <result column="issue_notset_to_check_count" property="issueNotsetToCheckCount" jdbcType="INTEGER" />
+    <result column="issue_notset_checked_count" property="issueNotsetCheckedCount" jdbcType="INTEGER" />
+    <result column="update_at" property="updateAt" jdbcType="TIMESTAMP" />
+    <result column="team_id" property="teamId" jdbcType="INTEGER" />
+    <result column="team_group_company_id" property="teamGroupCompanyId" jdbcType="INTEGER" />
+    <result column="project_company_id" property="projectCompanyId" jdbcType="INTEGER" />
+    <result column="company_role_id" property="companyRoleId" jdbcType="INTEGER" />
+  </resultMap>
+  <sql id="Base_Column_List" >
+    <!--
+      WARNING - @mbg.generated
+    -->
+    id, project_id, category_cls, area_id, area_father_id, area_name, area_path_and_id, 
+    category_key, category_father_key, category_name, category_path_and_key, has_sub, 
+    root_category_id, category_order, issue_count, record_count, issue_new_count, record_new_count, 
+    issue_note_no_assign_count, issue_assign_no_reform_count, issue_reform_no_check_count, 
+    issue_check_yes_count, issue_overdue_to_assign_count, issue_overdue_to_reform_count, 
+    issue_overdue_to_check_count, issue_overdue_checked_count, issue_intime_to_assign_count, 
+    issue_intime_to_reform_count, issue_intime_to_check_count, issue_intime_checked_count, 
+    issue_notset_to_assign_count, issue_notset_to_reform_count, issue_notset_to_check_count, 
+    issue_notset_checked_count, update_at, team_id, team_group_company_id, project_company_id, 
+    company_role_id
+  </sql>
+</mapper>

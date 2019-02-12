@@ -17,4 +17,6 @@ public interface TeamService {
     Team selectByTeamId(int teamId);
 
     List<Team> selectByTeamIdsNotDel(ArrayList<Integer> teamIds);
+
+    List<Team> selectGroupIdNotDel(Integer groupId);
 }
