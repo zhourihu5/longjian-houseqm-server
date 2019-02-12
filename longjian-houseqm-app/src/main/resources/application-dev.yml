@@ -155,7 +155,7 @@ longfor:
           password: JM4tLp9u6pPANLhT
         zhijian2_stat:
           driver-class-name: com.mysql.jdbc.Driver
-          url: jdbc:mysql://192.168.37.158:3306/zhijian2_stat?useUnicode=true&characterEncoding=UTF8
+          url: jdbc:mysql://192.168.36.95:3306/zhijian2_stat?useUnicode=true&characterEncoding=UTF8
           username: zhijian
           password: JM4tLp9u6pPANLhT
 

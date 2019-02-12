@@ -82,32 +82,32 @@ public class GroupProgressStatDataFetcher {
         Date timeFrameBegin = statItemsVo.getVariableVo().getBeginDate();
         Date timeFrameEnd = statItemsVo.getVariableVo().getEndDate();
         Integer timeFrameMaxCount =  statItemsVo.getVariableVo().getTimeFrameMax();
+        Integer groupId = environment.getContext();
 
-
-        log.debug("StatGroupDataFetcher - statGroupItemDataFetcher - categoryKey:{}", categoryKey);
+        log.debug("StatGroupDataFetcher - statGroupItemDataFetcher - groupId:{}", groupId);
 
         if(TimeType.WEEK.toString().equalsIgnoreCase(timeFrameType)){
 
-            return statHouseQmProjectStatService.searchStat(categoryKey,TimeType.WEEK.getValue(),teamIds,
+            return statHouseQmProjectStatService.searchStat(groupId,categoryKey,TimeType.WEEK.getValue(),teamIds,
                     timeFrameBegin, timeFrameEnd, timeFrameMaxCount);
 
         }else if(TimeType.QUARTER.toString().equalsIgnoreCase(timeFrameType)){
 
-            return statHouseQmProjectStatService.searchStat(categoryKey,TimeType.QUARTER.getValue(),teamIds,
+            return statHouseQmProjectStatService.searchStat(groupId,categoryKey,TimeType.QUARTER.getValue(),teamIds,
                     timeFrameBegin, timeFrameEnd, timeFrameMaxCount);
 
         }else if(TimeType.MONTH.toString().equalsIgnoreCase(timeFrameType)){
 
-            return statHouseQmProjectStatService.searchStat(categoryKey,TimeType.MONTH.getValue(),teamIds,
+            return statHouseQmProjectStatService.searchStat(groupId,categoryKey,TimeType.MONTH.getValue(),teamIds,
                     timeFrameBegin, timeFrameEnd, timeFrameMaxCount);
 
         }else if(TimeType.YEAR.toString().equalsIgnoreCase(timeFrameType)){
 
-            return statHouseQmProjectStatService.searchStat(categoryKey,TimeType.YEAR.getValue(),teamIds,
+            return statHouseQmProjectStatService.searchStat(groupId,categoryKey,TimeType.YEAR.getValue(),teamIds,
                     timeFrameBegin, timeFrameEnd, timeFrameMaxCount);
         }else{
             //day
-            return statHouseQmProjectStatService.searchStat(categoryKey,TimeType.DAY.getValue(),teamIds,
+            return statHouseQmProjectStatService.searchStat(groupId,categoryKey,TimeType.DAY.getValue(),teamIds,
                     timeFrameBegin, timeFrameEnd, timeFrameMaxCount);
         }
 
