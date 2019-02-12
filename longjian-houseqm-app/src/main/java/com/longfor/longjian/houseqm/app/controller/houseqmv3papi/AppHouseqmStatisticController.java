@@ -7,6 +7,7 @@ import com.longfor.longjian.houseqm.app.req.houseqmstatisticapp.ProjectIssueStat
 import com.longfor.longjian.houseqm.app.req.houseqmstatisticapp.ProjectListReq;
 import com.longfor.longjian.houseqm.app.req.houseqmstatisticapp.ProjectRepairerStatReq;
 import com.longfor.longjian.houseqm.app.service.IHouseqmStatisticService;
+import com.longfor.longjian.houseqm.app.vo.TaskResponse;
 import com.longfor.longjian.houseqm.app.vo.houseqmstatisticapp.ProjectCheckerStatRspVo;
 import com.longfor.longjian.houseqm.app.vo.houseqmstatisticapp.ProjectIssueStatRspVo;
 import com.longfor.longjian.houseqm.app.vo.houseqmstatisticapp.ProjectListRspVo;
@@ -48,8 +49,8 @@ public class AppHouseqmStatisticController {
      * @Param [request, req]
      **/
     @RequestMapping(value = "project_list", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
-    public LjBaseResponse<ProjectListRspVo> projectList(HttpServletRequest request, @Valid ProjectListReq req) {
-        LjBaseResponse<ProjectListRspVo> response = new LjBaseResponse<>();
+    public TaskResponse<ProjectListRspVo> projectList(HttpServletRequest request, @Valid ProjectListReq req) {
+        TaskResponse<ProjectListRspVo> response = new TaskResponse<>();
         log.info("project_list, source=" + req.getSource() + ", timestamp=" + req.getTimestamp());
         Integer userId = (Integer) sessionInfo.getBaseInfo("userId");
         try {
@@ -97,8 +98,8 @@ public class AppHouseqmStatisticController {
      * @Param [request, req]
      **/
     @RequestMapping(value = "project_checker_stat", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
-    public LjBaseResponse<ProjectCheckerStatRspVo> projectCheckerStat(HttpServletRequest request, @Valid ProjectCheckerStatReq req) {
-        LjBaseResponse<ProjectCheckerStatRspVo> response = new LjBaseResponse<>();
+    public TaskResponse<ProjectCheckerStatRspVo> projectCheckerStat(HttpServletRequest request, @Valid ProjectCheckerStatReq req) {
+        TaskResponse<ProjectCheckerStatRspVo> response = new TaskResponse<>();
         log.info("project_checker_stat, project_id=" + req.getProject_id() + ", task_id=" + req.getTask_id() + ", source=" + req.getSource() + ", stat_begin=" + req.getStat_begin() + ", stat_end=" + req.getStat_end() + ", timestamp=" + req.getTimestamp());
         Integer userId = (Integer) sessionInfo.getBaseInfo("userId");
         try {
@@ -121,8 +122,8 @@ public class AppHouseqmStatisticController {
      * @Param [request, req]
      **/
     @RequestMapping(value = "project_repairer_stat", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
-    public LjBaseResponse<ProjectRepairerStatRspVo> projectRepairerStat(HttpServletRequest request, @Valid ProjectRepairerStatReq req) {
-        LjBaseResponse<ProjectRepairerStatRspVo> response = new LjBaseResponse<>();
+    public TaskResponse<ProjectRepairerStatRspVo> projectRepairerStat(HttpServletRequest request, @Valid ProjectRepairerStatReq req) {
+        TaskResponse<ProjectRepairerStatRspVo> response = new TaskResponse<>();
         log.info("project_repairer_stat, project_id=" + req.getProject_id() + ", task_id=" + req.getTask_id() + ", source=" + req.getSource() + ", stat_begin=" + req.getStat_begin() + ", stat_end=" + req.getStat_end() + ", timestamp=" + req.getTimestamp());
         Integer userId = (Integer) sessionInfo.getBaseInfo("userId");
         try {
