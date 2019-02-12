@@ -13,6 +13,7 @@ import tk.mybatis.mapper.entity.Example;
 
 import javax.annotation.Resource;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.Set;
 
@@ -181,7 +182,13 @@ public class HouseQmCheckTaskServiceImpl implements HouseQmCheckTaskService {
         Example example = new Example(HouseQmCheckTask.class);
         Example.Criteria criteria = example.createCriteria();
         criteria.andEqualTo("projectId", project_id).andEqualTo("taskId", task_id);
-        return houseQmCheckTaskMapper.deleteByExample(example);
+        ExampleUtil.addDeleteAtJudge(example);
+        List<HouseQmCheckTask> houseQmCheckTasks = houseQmCheckTaskMapper.selectByExample(example);
+        for (HouseQmCheckTask task : houseQmCheckTasks) {
+            task.setDeleteAt(new Date());
+            houseQmCheckTaskMapper.updateByPrimaryKey(task);
+        }
+        return houseQmCheckTasks.size();
     }
 
     @Override
