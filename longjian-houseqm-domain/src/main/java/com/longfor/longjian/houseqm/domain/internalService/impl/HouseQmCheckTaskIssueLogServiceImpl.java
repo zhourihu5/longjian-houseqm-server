@@ -1,5 +1,6 @@
 package com.longfor.longjian.houseqm.domain.internalService.impl;
 
+import com.google.common.collect.Lists;
 import com.longfor.gaia.gfs.data.mybatis.datasource.LFAssignDataSource;
 import com.longfor.longjian.houseqm.dao.zj2db.HouseQmCheckTaskIssueLogMapper;
 import com.longfor.longjian.houseqm.dao.zj2db.UserInHouseQmCheckTaskMapper;
@@ -8,6 +9,7 @@ import com.longfor.longjian.houseqm.po.zj2db.HouseQmCheckTaskIssueLog;
 import com.longfor.longjian.houseqm.po.zj2db.UserInHouseQmCheckTask;
 import com.longfor.longjian.houseqm.utils.ExampleUtil;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.ibatis.session.RowBounds;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import tk.mybatis.mapper.entity.Example;
@@ -72,7 +74,8 @@ public class HouseQmCheckTaskIssueLogServiceImpl implements HouseQmCheckTaskIssu
             userInHouseQmCheckTasks.forEach(userInHouseQmCheckTask -> {
                 squadIds.add(userInHouseQmCheckTask.getSquadId());
             });
-            List<UserInHouseQmCheckTask> userInHouseQmCheckTaskSearchSquadIdsList = userInHouseQmCheckTaskMapper.searchBySquadIdIn(squadIds);
+            List<UserInHouseQmCheckTask> userInHouseQmCheckTaskSearchSquadIdsList= Lists.newArrayList();
+            if (!squadIds.isEmpty()) userInHouseQmCheckTaskSearchSquadIdsList = userInHouseQmCheckTaskMapper.searchBySquadIdIn(squadIds);
             userInHouseQmCheckTaskSearchSquadIdsList.forEach(userInHouseQmCheckTask -> {
                 userIds.add(userInHouseQmCheckTask.getUserId());
             });
@@ -112,12 +115,16 @@ public class HouseQmCheckTaskIssueLogServiceImpl implements HouseQmCheckTaskIssu
         Example.Criteria criteria2 = example.createCriteria();
         criteria2.andGreaterThan("updateAt", issueLogUpdateTime);
 
-        example.and(criteria);
+        //example.and(criteria);
         example.and(criteria1);
         example.and(criteria2);
         ExampleUtil.addDeleteAtJudge(example);
         example.orderBy("id").desc();
-        List<HouseQmCheckTaskIssueLog> result = houseQmCheckTaskIssueLogMapper.selectByExample(example);
+        //List<HouseQmCheckTaskIssueLog> result = houseQmCheckTaskIssueLogMapper.selectByExample(example);
+        //限制 返回值数据条数
+        RowBounds rowBounds = new RowBounds(0,2);
+        List<HouseQmCheckTaskIssueLog> result = houseQmCheckTaskIssueLogMapper.selectByExampleAndRowBounds(example, rowBounds);
+
         if (result.size() != 1) return null;//防止因传参问题导致查出的数据量过大报错问题。
         else return result.get(0);
     }

@@ -1,5 +1,6 @@
 package com.longfor.longjian.houseqm.app.service.impl;
 
+import com.longfor.longjian.common.util.SessionInfo;
 import com.longfor.longjian.houseqm.app.vo.ApiHouseQmCheckTaskIssueLogDetailRspVo;
 
 import com.alibaba.fastjson.JSON;
@@ -42,6 +43,8 @@ public class HouseqmServiceImpl implements IHouseqmService {
     private HouseQmCheckTaskService houseQmCheckTaskService;
     @Resource
     private UserInHouseQmCheckTaskService userInHouseQmCheckTaskService;
+    @Resource
+    private SessionInfo sessionInfo;
 
     @Override
     public List<Integer> searchHouseQmApproveUserIdInMyCheckSquad(int userId, int taskId) {
@@ -62,25 +65,26 @@ public class HouseqmServiceImpl implements IHouseqmService {
     }
 
     @Override
-    public TaskResponse<HouseqmMyIssueLogListRspVo> myIssueLogList(DeviceReq deviceReq, HttpServletRequest request) {
-        TaskResponse<HouseqmMyIssueLogListRspVo> taskResponse = new TaskResponse<>();
+    public LjBaseResponse<HouseqmMyIssueLogListRspVo> myIssueLogList(DeviceReq deviceReq, HttpServletRequest request) {
+        LjBaseResponse<HouseqmMyIssueLogListRspVo> taskResponse = new LjBaseResponse<>();
         HouseqmMyIssueLogListRspVo myIssueListVo = new HouseqmMyIssueLogListRspVo();
         List<ApiHouseQmCheckTaskIssueLogRsp> result = new ArrayList<>();
-        //Integer userId = (Integer)request.getSession().getAttribute("uid");
-        //todo 暂时获取不到uid
-        Integer userId = 7566;
+        Integer userId = (Integer) sessionInfo.getBaseInfo("userId");
         Integer start = 0;
-        Integer limit = HOUSEQM_API_GET_PER_TIME;
+        Integer lastId = 0;
+        Integer limit = HOUSEQM_API_GET_PER_TIME;//可能会导致接口出现504 请求超时
         try {
             List<HouseQmCheckTaskIssueLog> houseQmCheckTaskIssueLogs = houseQmCheckTaskIssueLogService.searchHouseQmCheckTaskIssueLogByMyIdTaskIdLastIdUpdateAtGt(userId, deviceReq.getTask_id(), deviceReq.getLast_id(), deviceReq.getTimestamp(), limit, start, HouseQmUserInIssueRoleTypeEnum.Checker.getId());
             //获取最后一次的id
-            Integer lastId = houseQmCheckTaskIssueLogs.get(houseQmCheckTaskIssueLogs.size() - 1).getId();
+            if (houseQmCheckTaskIssueLogs.size() > 0)
+                lastId = houseQmCheckTaskIssueLogs.get(houseQmCheckTaskIssueLogs.size() - 1).getId();
             myIssueListVo.setLast_id(lastId);
             List<String> uuids = new ArrayList<>();
             houseQmCheckTaskIssueLogs.forEach(houseQmCheckTaskIssueLog -> {
                 uuids.add(houseQmCheckTaskIssueLog.getUuid());
             });
-            List<HouseQmCheckTaskIssue> houseQmCheckTaskIssues = houseQmCheckTaskIssueService.searchHouseQmCheckTaskIssueByTaskIdUuidIn(deviceReq.getTask_id(), uuids);
+            List<HouseQmCheckTaskIssue> houseQmCheckTaskIssues = Lists.newArrayList();
+            if (!uuids.isEmpty()) houseQmCheckTaskIssues = houseQmCheckTaskIssueService.searchHouseQmCheckTaskIssueByTaskIdUuidIn(deviceReq.getTask_id(), uuids);
             Map<String, HouseQmCheckTaskIssue> map = new HashMap<>();
             houseQmCheckTaskIssues.forEach(houseQmCheckTaskIssue -> {
                 map.put(houseQmCheckTaskIssue.getUuid(), houseQmCheckTaskIssue);
@@ -121,25 +125,25 @@ public class HouseqmServiceImpl implements IHouseqmService {
             taskResponse.setData(myIssueListVo);
         } catch (Exception e) {
             log.error("error:" + e);
+            e.printStackTrace();
         }
         return taskResponse;
     }
 
     @Override
-    public TaskResponse<MyIssueListVo> myIssueList(DeviceReq deviceReq, HttpServletRequest request) {
-        TaskResponse<MyIssueListVo> taskResponse = new TaskResponse<>();
+    public LjBaseResponse<MyIssueListVo> myIssueList(DeviceReq deviceReq, HttpServletRequest request) {
+        LjBaseResponse<MyIssueListVo> taskResponse = new LjBaseResponse<>();
         MyIssueListVo myIssueListVo = new MyIssueListVo();
         List<ApiHouseQmCheckTaskIssueRsp> items = new ArrayList<>();
-        //Integer userId = (Integer)request.getSession().getAttribute("uid");
-        //todo 暂时获取不到uid
-        Integer userId = 7566;
+        Integer userId = (Integer) sessionInfo.getBaseInfo("userId");
         Integer start = 0;
         Integer limit = HOUSEQM_API_GET_PER_TIME;
         Integer lastId = 0;
         try {
             List<HouseQmCheckTaskIssue> houseQmCheckTaskIssues = houseQmCheckTaskIssueService.searchHouseQmCheckTaskIssueByMyIdTaskIdLastIdUpdateAtGt(userId, deviceReq.getTask_id(), deviceReq.getLast_id(), deviceReq.getTimestamp(), start, limit, HouseQmUserInIssueRoleTypeEnum.Checker.getId());
             // 上次获取的最后ID，首次拉取传`0`
-            lastId = houseQmCheckTaskIssues.get(houseQmCheckTaskIssues.size() - 1).getId();
+            if (houseQmCheckTaskIssues.size() > 0)
+                lastId = houseQmCheckTaskIssues.get(houseQmCheckTaskIssues.size() - 1).getId();
             houseQmCheckTaskIssues.forEach(houseQmCheckTaskIssue -> {
                 ApiHouseQmCheckTaskIssueRsp houseQmCheckTaskIssueVo = new ApiHouseQmCheckTaskIssueRsp();
                 houseQmCheckTaskIssueVo.setId(houseQmCheckTaskIssue.getId());
@@ -237,14 +241,12 @@ public class HouseqmServiceImpl implements IHouseqmService {
     }
 
     @Override
-    public LjBaseResponse<MyIssueAttachListVo> myIssueAttachementList(DeviceReq deviceReq) {
+    public LjBaseResponse<MyIssueAttachListVo> myIssueAttachementList(DeviceReq deviceReq, HttpServletRequest request) {
         LjBaseResponse<MyIssueAttachListVo> ljBaseResponse = new LjBaseResponse<>();
         MyIssueAttachListVo myIssueAttachListVo = new MyIssueAttachListVo();
         List<ApiHouseQmCheckTaskIssueAttachmentRspVo> houseQmCheckTaskIssueJsons = new ArrayList<>();
 
-        //Integer userId = (Integer)request.getSession().getAttribute("uid");
-        //todo 暂时获取不到uid
-        Integer userId = 7566;
+        Integer userId = (Integer) sessionInfo.getBaseInfo("userId");
         Integer start = 0;
         Integer limit = HOUSEQM_API_GET_PER_TIME;
         Integer lastId = 0;
@@ -260,21 +262,21 @@ public class HouseqmServiceImpl implements IHouseqmService {
         //C2、根据相关的issue 或 根据task_id和user_id，检索自己私人的附件
         try {
             List<HouseQmCheckTaskIssueAttachment> attachments = houseQmCheckTaskIssueService.searchHouseQmCheckTaskIssueAttachmentByMyIdTaskIdLastIdUpdateAtGt(userId, deviceReq.getTask_id(), deviceReq.getLast_id(), deviceReq.getTimestamp(), start, limit, HouseQmCheckTaskIssueAttachmentPublicTypeEnum.Private.getId(), HouseQmCheckTaskIssueAttachmentPublicTypeEnum.Public.getId());
-
-            if (attachments.size()>0)lastId = attachments.get(attachments.size() - 1).getId();
+            // go源码中未对lastid进行处理
+            // if (attachments != null && attachments.size() > 0) lastId = attachments.get(attachments.size() - 1).getId();
             attachments.forEach(houseQmCheckTaskIssueAttachment -> {
                 ApiHouseQmCheckTaskIssueAttachmentRspVo apiHouseQmCheckTaskIssueAttachmentRspVo = new ApiHouseQmCheckTaskIssueAttachmentRspVo();
                 apiHouseQmCheckTaskIssueAttachmentRspVo.setId(houseQmCheckTaskIssueAttachment.getId());
-                apiHouseQmCheckTaskIssueAttachmentRspVo.setProjectId(houseQmCheckTaskIssueAttachment.getProjectId());
-                apiHouseQmCheckTaskIssueAttachmentRspVo.setTaskId(houseQmCheckTaskIssueAttachment.getTaskId());
-                apiHouseQmCheckTaskIssueAttachmentRspVo.setIssueUuid(houseQmCheckTaskIssueAttachment.getIssueUuid());
-                apiHouseQmCheckTaskIssueAttachmentRspVo.setUserId(houseQmCheckTaskIssueAttachment.getUserId());
-                apiHouseQmCheckTaskIssueAttachmentRspVo.setPublicType(houseQmCheckTaskIssueAttachment.getPublicType());
-                apiHouseQmCheckTaskIssueAttachmentRspVo.setAttachmentType(houseQmCheckTaskIssueAttachment.getAttachmentType());
+                apiHouseQmCheckTaskIssueAttachmentRspVo.setProject_id(houseQmCheckTaskIssueAttachment.getProjectId());
+                apiHouseQmCheckTaskIssueAttachmentRspVo.setTask_id(houseQmCheckTaskIssueAttachment.getTaskId());
+                apiHouseQmCheckTaskIssueAttachmentRspVo.setIssue_uuid(houseQmCheckTaskIssueAttachment.getIssueUuid());
+                apiHouseQmCheckTaskIssueAttachmentRspVo.setUser_id(houseQmCheckTaskIssueAttachment.getUserId());
+                apiHouseQmCheckTaskIssueAttachmentRspVo.setPublic_type(houseQmCheckTaskIssueAttachment.getPublicType());
+                apiHouseQmCheckTaskIssueAttachmentRspVo.setAttachment_type(houseQmCheckTaskIssueAttachment.getAttachmentType());
                 apiHouseQmCheckTaskIssueAttachmentRspVo.setMd5(houseQmCheckTaskIssueAttachment.getMd5());
                 apiHouseQmCheckTaskIssueAttachmentRspVo.setStatus(houseQmCheckTaskIssueAttachment.getStatus());
-                apiHouseQmCheckTaskIssueAttachmentRspVo.setUpdateAt(DateUtil.datetimeToTimeStamp(houseQmCheckTaskIssueAttachment.getUpdateAt()));
-                apiHouseQmCheckTaskIssueAttachmentRspVo.setDeleteAt(houseQmCheckTaskIssueAttachment.getDeleteAt() == null ? 0 : DateUtil.datetimeToTimeStamp(houseQmCheckTaskIssueAttachment.getDeleteAt()));
+                apiHouseQmCheckTaskIssueAttachmentRspVo.setUpdate_at(DateUtil.datetimeToTimeStamp(houseQmCheckTaskIssueAttachment.getUpdateAt()));
+                apiHouseQmCheckTaskIssueAttachmentRspVo.setDelete_at(houseQmCheckTaskIssueAttachment.getDeleteAt() == null ? 0 : DateUtil.datetimeToTimeStamp(houseQmCheckTaskIssueAttachment.getDeleteAt()));
                 //JSONObject jsonObject = JSON.parseObject(JSON.toJSONString(apiHouseQmCheckTaskIssueAttachmentRspVo));
                 houseQmCheckTaskIssueJsons.add(apiHouseQmCheckTaskIssueAttachmentRspVo);
             });
