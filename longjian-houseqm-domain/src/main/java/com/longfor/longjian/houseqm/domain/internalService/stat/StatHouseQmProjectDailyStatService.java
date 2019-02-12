@@ -1,17 +1,14 @@
 package com.longfor.longjian.houseqm.domain.internalService.stat;
 
 import com.longfor.gaia.gfs.data.mybatis.datasource.LFAssignDataSource;
-import com.longfor.longjian.common.exception.LjBaseRuntimeException;
 import com.longfor.longjian.common.time.TimeFrame;
-import com.longfor.longjian.common.time.TimeFrameHelper;
-import com.longfor.longjian.houseqm.config.LjTimeUtil;
+import com.longfor.longjian.common.util.DateUtil;
 import com.longfor.longjian.houseqm.dao.stat.StatHouseQmProjectDailyStatMapper;
+import com.longfor.longjian.houseqm.po.stat.StatHouseQmProjectDailyStat;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.collections.CollectionUtils;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
-import java.util.Date;
 import java.util.List;
 
 /**
@@ -23,49 +20,41 @@ import java.util.List;
 @Slf4j
 public class StatHouseQmProjectDailyStatService {
 
-
-  /*@Resource
-    StatHouseQmProjectDailyStatMapper statHouseQmProjectDailyStatMapper;*/
-
+    @Resource
+    StatHouseQmProjectDailyStatMapper statHouseQmProjectDailyStatMapper;
 
     /**
+     // stat_house_qm_project_daily_stat_20181116
+     // stat_house_qm_project_weekly_stat_201846
+     // stat_house_qm_project_monthly_stat_201811
+     // stat_house_qm_project_yearly_stat_2018
+     // stat_house_qm_project_quarterly_stat_20191
      *
+     * @param timeFrame
      * @param categoryKey
-     * @param timeFrameType
-     * @param teamIds
-     * @param timeFrameBegin
-     * @param timeFrameEnd
-     * @param timeFrameMax
+     * @param projectIds
+     * @return
      */
     @LFAssignDataSource("zhijian2_stat")
-    public void searchStat(String categoryKey, String timeFrameType, List<Integer> teamIds, Date timeFrameBegin,
-                           Date timeFrameEnd, Integer timeFrameMax){
+    public StatHouseQmProjectDailyStat query(TimeFrame timeFrame,String categoryKey, List<Integer> projectIds){
 
-
-        if(timeFrameMax == null){
-            timeFrameMax = 1 ;
+        /**
+         * 防止天表没生成
+         */
+        if(timeFrame.getBeginOn().after(DateUtil.yesterdayZeroDate())){
+            return null;
         }
 
-        if(timeFrameEnd == null){
-            timeFrameEnd =  LjTimeUtil.yesterdayZeroDate();
-        }
-
-        List<TimeFrame>  frames = TimeFrameHelper.produceFrames(timeFrameType,timeFrameMax,timeFrameBegin,timeFrameEnd,true);
-
-        if(CollectionUtils.isEmpty(frames)){
-            log.error("searchStat timeFrameBegin:{}, timeFrameEnd:{},timeFrameMax:{},timeFrameType:{} ",
-                    timeFrameBegin, timeFrameEnd, timeFrameMax, timeFrameType);
-            throw new LjBaseRuntimeException(430," no frames");
-        }
+        String postFixDate  = timeFrame.getTableIdx();
+        Integer areaId = null;
 
 
+        StatHouseQmProjectDailyStat stat =  statHouseQmProjectDailyStatMapper.selectSum(postFixDate, areaId,
+                projectIds, categoryKey);
 
+        log.debug("StatHouseQmProjectDailyStat query:{}, result is null :{}", postFixDate, stat==null);
 
-
-
+        return stat;
     }
-
-
-
 
 }

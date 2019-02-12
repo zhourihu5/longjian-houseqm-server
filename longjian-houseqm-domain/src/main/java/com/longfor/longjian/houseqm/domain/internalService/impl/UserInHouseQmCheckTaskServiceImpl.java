@@ -13,6 +13,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.Resource;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -170,7 +171,13 @@ public class UserInHouseQmCheckTaskServiceImpl implements UserInHouseQmCheckTask
         Example example = new Example(UserInHouseQmCheckTask.class);
         Example.Criteria criteria = example.createCriteria();
         criteria.andEqualTo("taskId", task_id);
-        return userInHouseQmCheckTaskMapper.deleteByExample(example);
+        ExampleUtil.addDeleteAtJudge(example);
+        List<UserInHouseQmCheckTask> userInHouseQmCheckTasks = userInHouseQmCheckTaskMapper.selectByExample(example);
+        for (UserInHouseQmCheckTask task : userInHouseQmCheckTasks) {
+            task.setDeleteAt(new Date());
+            userInHouseQmCheckTaskMapper.updateByPrimaryKey(task);
+        }
+        return userInHouseQmCheckTasks.size();
     }
 
     @Override

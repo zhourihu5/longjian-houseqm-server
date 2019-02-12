@@ -133,7 +133,7 @@ public class HouseqmStatController {
             item.setTask_id(detail.getTaskId());
             items.add(item);
         }
-        data.setItems(items);
+        if (!items.isEmpty())data.setItems(items);// go 源码 返回为null 所以需要进行判断
         response.setData(data);
         return response;
     }
