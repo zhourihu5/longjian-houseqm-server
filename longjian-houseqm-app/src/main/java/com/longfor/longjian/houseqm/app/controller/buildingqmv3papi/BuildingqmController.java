@@ -90,6 +90,12 @@ public class BuildingqmController {
 
         TaskIssueListVo taskIssueListVo = new TaskIssueListVo();
         TaskIssueListVo.TaskIussueVo item = taskIssueListVo.new TaskIussueVo();
+        item.setTask(0);
+        item.setIssue(0);
+        item.setIssue_log(0);
+        item.setTask_members(0);
+        item.setIssue_members(0);
+
         LjBaseResponse<TaskIssueListVo> respone = new LjBaseResponse<>();
         try {
             //获取最后更新时间

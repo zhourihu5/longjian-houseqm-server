@@ -36,8 +36,8 @@ public class UserInHouseQmCheckTaskServiceImpl implements UserInHouseQmCheckTask
     public List<UserInHouseQmCheckTask> searchByTaskIdInAndRoleType(List<Integer> task_ids, Integer roleType) {
         Example example = new Example(UserInHouseQmCheckTask.class);
         Example.Criteria criteria = example.createCriteria();
-        if (task_ids.size() > 0) criteria.andIn("taskId", task_ids);
-        criteria.andEqualTo("roleType", roleType);
+        if (task_ids.size() > 0) criteria.andIn("taskId", task_ids).andEqualTo("roleType", roleType);
+        else return Lists.newArrayList();
         ExampleUtil.addDeleteAtJudge(example);
         return userInHouseQmCheckTaskMapper.selectByExample(example);
     }
@@ -208,7 +208,7 @@ public class UserInHouseQmCheckTaskServiceImpl implements UserInHouseQmCheckTask
     public List<UserInHouseQmCheckTask> selectByTaskIdAndRoleType(Integer task_id, Integer value) {
         Example example = new Example(UserInHouseQmCheckTask.class);
         Example.Criteria criteria = example.createCriteria();
-        criteria.andEqualTo("taskId", task_id).andEqualTo("roleType", value);
+        criteria.andEqualTo("taskId", task_id).andEqualTo("roleType", value).andIsNull("deleteAt");
         return userInHouseQmCheckTaskMapper.selectByExample(example);
     }
 

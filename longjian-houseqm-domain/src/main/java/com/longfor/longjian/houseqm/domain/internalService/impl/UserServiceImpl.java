@@ -1,10 +1,12 @@
 package com.longfor.longjian.houseqm.domain.internalService.impl;
 
+import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.longfor.gaia.gfs.data.mybatis.datasource.LFAssignDataSource;
 import com.longfor.longjian.houseqm.dao.zhijian2_apisvr.UserMapper;
 import com.longfor.longjian.houseqm.domain.internalService.UserService;
 import com.longfor.longjian.houseqm.po.zhijian2_apisvr.User;
+import com.longfor.longjian.houseqm.utils.ExampleUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import tk.mybatis.mapper.entity.Example;
@@ -31,7 +33,6 @@ public class UserServiceImpl implements UserService {
      * @param users
      * @return
      */
-    @LFAssignDataSource("zhijian2_apisvr")
     public Map<Integer, User> selectByIds(List<Integer> users){
         if (users==null||users.size()<=0)return Maps.newHashMap();
         Example example = new Example(User.class);
@@ -43,9 +44,12 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    @LFAssignDataSource("zhijian2_apisvr")
     public List<User> searchByUserIdInAndNoDeleted(List<Integer> userIds) {
-        return userMapper.selectByUserIdInAndNoDeleted(userIds,"false");
+        Example example = new Example(User.class);
+        Example.Criteria criteria = example.createCriteria();
+        criteria.andIn("userId",userIds);
+        ExampleUtil.addDeleteAtJudge(example);
+        return userMapper.selectByExample(example);
     }
 
     @Override

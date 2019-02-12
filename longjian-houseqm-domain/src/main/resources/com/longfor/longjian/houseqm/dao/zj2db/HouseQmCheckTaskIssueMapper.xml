@@ -427,11 +427,11 @@
         from
         house_qm_check_task_issue
         where task_id= #{task_id}
-        and
+        <if test="uuids.size()>0">and
         uuid in
         <foreach collection="uuids" item="item" index="index" open="(" separator="," close=")">
             #{item}
-        </foreach>
+        </foreach></if>
         and delete_at is null
     </select>
 
@@ -441,27 +441,29 @@
         <include refid="Blob_Column_List"/>
         FROM
         house_qm_check_task_issue hqcti
-        WHERE
+        WHERE (
         hqcti.task_id = #{task_id}
         AND hqcti.id > #{last_id}
-        <if test="timestamp != null and timestamp >= 0">
+        <if test="timestamp > 0">
             AND hqcti.update_at > FROM_UNIXTIME( #{timestamp} )
-        </if>
-        OR (
+        </if>)
+        OR ( <if test="userIds.size()>0">
         hqcti.sender_id IN
         <foreach collection="userIds" item="item" open="(" separator="," close=")" index="index">
             #{item}
         </foreach>
-        AND hqcti.task_id = #{task_id}
-        AND hqcti.uuid IN (
-        SELECT
-        hqmctiu.issue_uuid
-        FROM
-        house_qm_check_task_issue_user hqmctiu
-        WHERE
-        hqmctiu.task_id = #{task_id}
-        AND hqmctiu.user_id = #{userId}
-        )
+        AND </if>  (
+            hqcti.task_id = #{task_id}
+            AND hqcti.uuid IN (
+            SELECT
+            hqmctiu.issue_uuid
+            FROM
+            house_qm_check_task_issue_user hqmctiu
+            WHERE
+            hqmctiu.task_id = #{task_id}
+            AND hqmctiu.user_id = #{userId}
+            )
+            )
         )
         ORDER BY
         id ASC
