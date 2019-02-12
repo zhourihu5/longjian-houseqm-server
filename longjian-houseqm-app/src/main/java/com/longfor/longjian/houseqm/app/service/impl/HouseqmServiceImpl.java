@@ -83,7 +83,8 @@ public class HouseqmServiceImpl implements IHouseqmService {
             houseQmCheckTaskIssueLogs.forEach(houseQmCheckTaskIssueLog -> {
                 uuids.add(houseQmCheckTaskIssueLog.getUuid());
             });
-            List<HouseQmCheckTaskIssue> houseQmCheckTaskIssues = houseQmCheckTaskIssueService.searchHouseQmCheckTaskIssueByTaskIdUuidIn(deviceReq.getTask_id(), uuids);
+            List<HouseQmCheckTaskIssue> houseQmCheckTaskIssues = Lists.newArrayList();
+            if (!uuids.isEmpty()) houseQmCheckTaskIssues = houseQmCheckTaskIssueService.searchHouseQmCheckTaskIssueByTaskIdUuidIn(deviceReq.getTask_id(), uuids);
             Map<String, HouseQmCheckTaskIssue> map = new HashMap<>();
             houseQmCheckTaskIssues.forEach(houseQmCheckTaskIssue -> {
                 map.put(houseQmCheckTaskIssue.getUuid(), houseQmCheckTaskIssue);
@@ -261,21 +262,21 @@ public class HouseqmServiceImpl implements IHouseqmService {
         //C2、根据相关的issue 或 根据task_id和user_id，检索自己私人的附件
         try {
             List<HouseQmCheckTaskIssueAttachment> attachments = houseQmCheckTaskIssueService.searchHouseQmCheckTaskIssueAttachmentByMyIdTaskIdLastIdUpdateAtGt(userId, deviceReq.getTask_id(), deviceReq.getLast_id(), deviceReq.getTimestamp(), start, limit, HouseQmCheckTaskIssueAttachmentPublicTypeEnum.Private.getId(), HouseQmCheckTaskIssueAttachmentPublicTypeEnum.Public.getId());
-
-            if (attachments.size() > 0) lastId = attachments.get(attachments.size() - 1).getId();
+            // go源码中未对lastid进行处理
+            // if (attachments != null && attachments.size() > 0) lastId = attachments.get(attachments.size() - 1).getId();
             attachments.forEach(houseQmCheckTaskIssueAttachment -> {
                 ApiHouseQmCheckTaskIssueAttachmentRspVo apiHouseQmCheckTaskIssueAttachmentRspVo = new ApiHouseQmCheckTaskIssueAttachmentRspVo();
                 apiHouseQmCheckTaskIssueAttachmentRspVo.setId(houseQmCheckTaskIssueAttachment.getId());
-                apiHouseQmCheckTaskIssueAttachmentRspVo.setProjectId(houseQmCheckTaskIssueAttachment.getProjectId());
-                apiHouseQmCheckTaskIssueAttachmentRspVo.setTaskId(houseQmCheckTaskIssueAttachment.getTaskId());
-                apiHouseQmCheckTaskIssueAttachmentRspVo.setIssueUuid(houseQmCheckTaskIssueAttachment.getIssueUuid());
-                apiHouseQmCheckTaskIssueAttachmentRspVo.setUserId(houseQmCheckTaskIssueAttachment.getUserId());
-                apiHouseQmCheckTaskIssueAttachmentRspVo.setPublicType(houseQmCheckTaskIssueAttachment.getPublicType());
-                apiHouseQmCheckTaskIssueAttachmentRspVo.setAttachmentType(houseQmCheckTaskIssueAttachment.getAttachmentType());
+                apiHouseQmCheckTaskIssueAttachmentRspVo.setProject_id(houseQmCheckTaskIssueAttachment.getProjectId());
+                apiHouseQmCheckTaskIssueAttachmentRspVo.setTask_id(houseQmCheckTaskIssueAttachment.getTaskId());
+                apiHouseQmCheckTaskIssueAttachmentRspVo.setIssue_uuid(houseQmCheckTaskIssueAttachment.getIssueUuid());
+                apiHouseQmCheckTaskIssueAttachmentRspVo.setUser_id(houseQmCheckTaskIssueAttachment.getUserId());
+                apiHouseQmCheckTaskIssueAttachmentRspVo.setPublic_type(houseQmCheckTaskIssueAttachment.getPublicType());
+                apiHouseQmCheckTaskIssueAttachmentRspVo.setAttachment_type(houseQmCheckTaskIssueAttachment.getAttachmentType());
                 apiHouseQmCheckTaskIssueAttachmentRspVo.setMd5(houseQmCheckTaskIssueAttachment.getMd5());
                 apiHouseQmCheckTaskIssueAttachmentRspVo.setStatus(houseQmCheckTaskIssueAttachment.getStatus());
-                apiHouseQmCheckTaskIssueAttachmentRspVo.setUpdateAt(DateUtil.datetimeToTimeStamp(houseQmCheckTaskIssueAttachment.getUpdateAt()));
-                apiHouseQmCheckTaskIssueAttachmentRspVo.setDeleteAt(houseQmCheckTaskIssueAttachment.getDeleteAt() == null ? 0 : DateUtil.datetimeToTimeStamp(houseQmCheckTaskIssueAttachment.getDeleteAt()));
+                apiHouseQmCheckTaskIssueAttachmentRspVo.setUpdate_at(DateUtil.datetimeToTimeStamp(houseQmCheckTaskIssueAttachment.getUpdateAt()));
+                apiHouseQmCheckTaskIssueAttachmentRspVo.setDelete_at(houseQmCheckTaskIssueAttachment.getDeleteAt() == null ? 0 : DateUtil.datetimeToTimeStamp(houseQmCheckTaskIssueAttachment.getDeleteAt()));
                 //JSONObject jsonObject = JSON.parseObject(JSON.toJSONString(apiHouseQmCheckTaskIssueAttachmentRspVo));
                 houseQmCheckTaskIssueJsons.add(apiHouseQmCheckTaskIssueAttachmentRspVo);
             });

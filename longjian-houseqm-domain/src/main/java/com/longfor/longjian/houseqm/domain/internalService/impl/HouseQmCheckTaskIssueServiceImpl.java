@@ -409,7 +409,7 @@ public class HouseQmCheckTaskIssueServiceImpl implements HouseQmCheckTaskIssueSe
             log.error("error:" + e);
             e.printStackTrace();
         }
-        return null;
+        return Lists.newArrayList();
     }
 
     /**

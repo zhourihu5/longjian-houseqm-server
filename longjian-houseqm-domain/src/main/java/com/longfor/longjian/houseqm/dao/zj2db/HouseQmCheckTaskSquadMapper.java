@@ -12,5 +12,5 @@ public interface HouseQmCheckTaskSquadMapper extends LFMySQLMapper<HouseQmCheckT
 
     int add(HouseQmCheckTaskSquad squad);
 
-    List<HouseQmCheckTaskSquad> searchByInId(List<Integer> squadIds);
+    List<HouseQmCheckTaskSquad> searchByInId(@Param("squadIds") List<Integer> squadIds);
 }
