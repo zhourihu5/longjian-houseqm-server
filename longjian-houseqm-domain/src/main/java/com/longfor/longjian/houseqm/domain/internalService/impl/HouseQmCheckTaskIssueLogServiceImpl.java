@@ -127,8 +127,7 @@ public class HouseQmCheckTaskIssueLogServiceImpl implements HouseQmCheckTaskIssu
     public List<HouseQmCheckTaskIssueLog> selectByUuidAndNotDelete(String issueUuid) {
         Example example = new Example(HouseQmCheckTaskIssueLog.class);
         Example.Criteria criteria = example.createCriteria();
-        criteria.andEqualTo("issueUuid", issueUuid);
-        criteria.andIsNull("deleteAt");
+        criteria.andEqualTo("issueUuid", issueUuid).andIsNull("deleteAt");
         return houseQmCheckTaskIssueLogMapper.selectByExample(example);
     }
 
