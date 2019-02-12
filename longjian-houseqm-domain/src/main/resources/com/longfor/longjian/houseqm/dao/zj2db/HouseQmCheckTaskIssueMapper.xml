@@ -445,7 +445,7 @@
         hqcti.task_id = #{task_id}
         AND hqcti.id > #{last_id}
         <if test="timestamp > 0">
-            AND hqcti.update_at > FROM_UNIXTIME( #{timestamp} )
+            AND hqcti.update_at > FROM_UNIXTIME(#{timestamp},'%Y-%m-%d %H:%i:%s')
         </if>)
         OR ( <if test="userIds.size()>0">
         hqcti.sender_id IN
