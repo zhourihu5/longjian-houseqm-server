@@ -452,7 +452,8 @@
         <foreach collection="userIds" item="item" open="(" separator="," close=")" index="index">
             #{item}
         </foreach>
-        AND </if>  (
+    </if>
+        AND  (
             hqcti.task_id = #{task_id}
             AND hqcti.uuid IN (
             SELECT
