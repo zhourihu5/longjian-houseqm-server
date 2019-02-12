@@ -12,7 +12,7 @@ import java.util.List;
 @Data
 @NoArgsConstructor
 public class ApiIssueLogVo implements Serializable {
-    private List<ApiIssueLogInfoIssueRsp>issue;
+    private  ApiIssueLogInfoIssueRsp issue;
     private List<ApiIssueLogListRsp>issue_log_list;
     @Data
     @NoArgsConstructor
@@ -26,14 +26,14 @@ public class ApiIssueLogVo implements Serializable {
         private Integer  end_on;
         private Integer  area_id;
         private String area_path_and_id;
-        private String area_path_name;
+        private List<Object> area_path_name;
         private Integer  category_cls;
         private String category_key;
         private String category_path_and_key;
-        private String category_path_name;
+        private List<String> category_path_name;
         private String  check_item_key;
         private String check_item_path_and_key;
-        private String check_item_path_name;
+        private List<String> check_item_path_name;
         private String drawing_url;
         private String drawing_md5;
         private Integer  pos_x;
@@ -43,12 +43,12 @@ public class ApiIssueLogVo implements Serializable {
         private String content;
         private Integer  condition;
         private Integer status;/*整改状态：当前issue状态0没有问题1已记录未分配2已分配未整改3已整改未审核4已审核（消项）5已取消6=整改中（介乎于2和3之间）')*/
-        private String attachment_url_list;
-        private String audio_url_list;
+        private List<String> attachment_url_list;
+        private List<String> audio_url_list;
         private String attachment_md5_list;
         private String audio_md5_list;
         private String repairer_name;
-        private String repairer_follower_names;
+        private List<String> repairer_follower_names;
         private Integer client_create_at;
         private String last_assigner_name;
         private Integer last_assigner_at;
@@ -58,7 +58,7 @@ public class ApiIssueLogVo implements Serializable {
         private Integer destroy_at;
         private String delete_user_name;
         private Integer delete_time;
-        private List<ApiHouseQmCheckTaskIssueDetailVo> detail;
+        private ApiHouseQmCheckTaskIssueDetailVo detail;
         private Integer update_at;
         private Integer delete_at;
     }
@@ -73,9 +73,9 @@ public class ApiIssueLogVo implements Serializable {
       private String  sender_name;
       private String  desc;
       private Integer   status;
-      private String  attachment_url_list;
-      private String  audio_url_list;
-      private String  memo_audio_url_list;
+      private List<String>  attachment_url_list;
+      private List<String>  audio_url_list;
+      private List<String>  memo_audio_url_list;
       private String   attachment_md5_list;
       private String   audio_md5_list;
       private String  memo_audio_md5_list;

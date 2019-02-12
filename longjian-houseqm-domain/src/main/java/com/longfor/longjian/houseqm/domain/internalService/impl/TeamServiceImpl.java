@@ -52,4 +52,13 @@ public class TeamServiceImpl implements TeamService {
         criteria.andIn("teamId",teamIds).andIsNull("deleteAt");
         return   teamMapper.selectByExample(example);
     }
+
+    @Override
+    @LFAssignDataSource("zhijian2_apisvr")
+    public List<Team> selectGroupIdNotDel(Integer groupId) {
+        Example example = new Example(Team.class);
+        Example.Criteria criteria = example.createCriteria();
+        criteria.andEqualTo("parentTeamId",groupId).andIsNull("deleteAt");
+        return   teamMapper.selectByExample(example);
+    }
 }
