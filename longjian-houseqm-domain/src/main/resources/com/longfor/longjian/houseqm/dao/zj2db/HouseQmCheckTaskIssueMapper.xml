@@ -126,7 +126,7 @@
             #{type}
         </foreach>
         <if test="AreaPathAndId!=null">
-            AND area_path_and_id LIKE #{AreaPathAndId}
+            AND area_path_and_id LIKE concat('',#{AreaPathAndId})
         </if>
         <if test="ClientCreateAtGte!=null" >AND client_create_at &gt;= #{ClientCreateAtGte}</if>
         <if test="ClientCreateAtLte!=null" >AND client_create_at &lt;= #{ClientCreateAtLte}</if>
@@ -246,7 +246,7 @@
        where
             project_id = #{project_id}
             AND category_cls = #{category_cls}
-            AND area_path_and_id LIKE #{area_path_and_id}
+            AND area_path_and_id LIKE concat('',#{area_path_and_id})
         GROUP BY
         `status`
     </select>
@@ -323,7 +323,7 @@
         SELECT status,COUNT(*) as pos_x from house_qm_check_task_issue
         WHERE task_id=#{taskId}
         <if test="areaPath!=''">
-            AND area_path_and_id LIKE #{areaPath}
+            AND area_path_and_id LIKE concat('',#{areaPath})
         </if>
         <if test="deleted=='false'">
             AND delete_at IS NULL
@@ -339,7 +339,7 @@
         <foreach collection="types" item="type" index="index" open="(" separator="," close=")">
             #{type}
         </foreach>
-        AND area_path_and_id LIKE #{areaPathLike}
+        AND area_path_and_id LIKE concat('',#{areaPathLike})
         <if test="deleted=='false'">
             AND delete_at IS NULL
         </if>
@@ -364,7 +364,7 @@
         area_id,MIN(status) AS status,COUNT(*) AS extend_col
         FROM house_qm_check_task_issue
         WHERE task_id=#{taskId}
-        AND area_path_and_id LIKE #{areaPathLike}
+        AND area_path_and_id LIKE concat('',#{areaPathLike})
         <if test="deleted=='false'">
             AND delete_at IS NULL
         </if>
@@ -402,7 +402,7 @@
             <foreach collection="types" item="type" index="index" open="(" separator="," close=")">
                 #{type}
             </foreach>
-            <if test="areaId!=null">AND area_path_and_id like '${areaId}'</if>
+            <if test="areaId!=null">AND area_path_and_id like concat('',#{areaId})</if>
             <if test="beginOn!=null">AND client_create_at &gt;= #{beginOn}</if>
             <if test="endOn!=null">AND client_create_at &lt;= #{endOn}</if>
             <if test="statusIn!=null">AND `status` in
@@ -492,12 +492,12 @@
                     #{item}
                 </foreach>
             </if>
-            <if test="categoryPathAndKey!=null">AND category_path_and_key LIKE ${categoryPathAndKey}</if>
+            <if test="categoryPathAndKey!=null">AND category_path_and_key LIKE concat('',#{categoryPathAndKey})</if>
             <if test="checkItemKey!=null">AND check_item_key=#{checkItemKey}</if>
             <if test="areaPathAndId!=null">
                 AND
                 <foreach collection="areaPathAndId" item="item" index="index" open="(" separator="OR" close=")">
-                    area_path_and_id like ${item}
+                    area_path_and_id like CONCAT('',#{item})
                 </foreach>
             </if>
             <if test="type!=null">AND typ=#{type}</if>
@@ -516,7 +516,7 @@
                 #{item}
             </foreach> and plan_end_on &gt;= '1980-01-01 08:00:00' and plan_end_on &lt;= end_on
             </if>
-            <if test="content!=null">and content like ${content}</if>
+            <if test="content!=null">and content like Concat('',#{content})</if>
             <if test="id!=null">OR id =#{id}</if>
         </where>
         <if test="deleted=='false'">
@@ -538,12 +538,12 @@
                     #{item}
                 </foreach>
             </if>
-            <if test="categoryPathAndKey!=null">AND category_path_and_key LIKE ${categoryPathAndKey}</if>
+            <if test="categoryPathAndKey!=null">AND category_path_and_key LIKE CONCAT('',#{categoryPathAndKey})</if>
             <if test="checkItemKey!=null">AND check_item_key=#{checkItemKey}</if>
             <if test="areaPathAndId!=null">
                 AND
                 <foreach collection="areaPathAndId" item="item" index="index" open="(" separator="OR" close=")">
-                    area_path_and_id like ${item}
+                    area_path_and_id LIKE CONCAT('',#{item})
                 </foreach>
             </if>
             <if test="type!=null">AND typ=#{type}</if>
@@ -562,7 +562,7 @@
                 #{item}
             </foreach> and plan_end_on &gt;= '1980-01-01 08:00:00' and plan_end_on &lt;= end_on
             </if>
-            <if test="content!=null">and content like ${content}</if>
+            <if test="content!=null">and content like concat('',#{content})</if>
             <if test="id!=null">OR id =#{id}</if>
         </where>
         <if test="deleted=='false'">
@@ -581,7 +581,7 @@
                 #{item}
             </foreach>
             <if test="taskId>0">AND task_id=#{taskId}</if>
-            <if test="areaId!=null">AND area_path_and_id LIKE '%${areaId}%'</if>
+            <if test="areaId!=null">AND area_path_and_id LIKE concat('%',#{areaId},'%')</if>
             <if test="clientCreateAtGte!=null">AND client_create_at &gt;= #{clientCreateAtGte}</if>
             <if test="clientCreateAtLte!=null">AND client_create_at &lt;= #{clientCreateAtLte}</if>
             <if test="types!=null">AND typ in
@@ -619,7 +619,7 @@
                 #{item}
             </foreach>
             <if test="taskId>0">AND task_id=#{taskId}</if>
-            <if test="areaId!=null">AND area_path_and_id like '%${areaId}%'</if>
+            <if test="areaId!=null">AND area_path_and_id like concat('%',#{areaId},'%')</if>
             <if test="clientCreateAtGte!=null">AND client_create_at &gt;= #{clientCreateAtGte}</if>
             <if test="clientCreateAtLte!=null">AND client_create_at &lt;= #{clientCreateAtLte}</if>
             <if test="types!=null">AND typ in
@@ -681,7 +681,7 @@
                 #{item}
             </foreach>
             <if test="areaPathAndId!=null">
-                AND area_path_and_id LIKE '${areaPathAndId}'
+                AND area_path_and_id LIKE concat('',#{areaPathAndId})
             </if>
             <if test="clientCreateAtGte!=null">AND client_create_at &gt;=#{clientCreateAtGte}</if>
             <if test="clientCreateAtLte!=null">AND client_create_at &lt;=#{clientCreateAtLte}</if>

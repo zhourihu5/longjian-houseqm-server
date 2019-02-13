@@ -50,9 +50,9 @@ public class IssueListController {
      * @param req
      * @return
      */
-    @RequestMapping(value = "list/", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+    @RequestMapping(value = "list", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     public TaskResponse<IssueListRsp> doAction(HttpServletRequest request, @Valid IssueListDoActionReq req) {
-        log.info("list, project_id=%d, category_cls=%d, task_id=%d, category_key=%s, check_item_key=%s, area_ids=%s, status_in=%s, checker_id=%d, repairer_id=%d," +
+        log.info("list, project_id="+req.getProject_id()+", category_cls=%d, task_id=%d, category_key=%s, check_item_key=%s, area_ids=%s, status_in=%s, checker_id=%d, repairer_id=%d," +
                 " type=%d, condition=%d, key_word=%s, create_on_begin=%s, create_on_end=%s, is_overdue=%d, page=%d, page_size=%d"
         );
         Integer userId = (Integer) sessionInfo.getBaseInfo("userId");
