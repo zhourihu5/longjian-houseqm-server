@@ -2,6 +2,7 @@ package com.longfor.longjian.houseqm.app.service.impl;
 
 import com.google.common.collect.Lists;
 import com.longfor.gaia.gfs.data.mybatis.datasource.LFAssignDataSource;
+import com.longfor.longjian.common.exception.LjBaseRuntimeException;
 import com.longfor.longjian.houseqm.app.service.ITaskService;
 import com.longfor.longjian.houseqm.app.vo.HouseQmCheckTaskRspVo;
 import com.longfor.longjian.houseqm.app.vo.task.HouseQmCheckTaskListAndTotalVo;
@@ -45,11 +46,11 @@ public class TaskServiceImpl implements ITaskService {
     @Override
     public HouseQmCheckTaskListAndTotalVo searchHouseQmCheckTaskByProjCategoryClsStatusPage(Integer projId, Integer category_cls, Integer status, Integer page, Integer page_size) {
         Integer total = houseQmCheckTaskService.searchTotalByProjIdAndCategoryClsAndStatus(projId, category_cls, status);
-        int limit=page_size;
-        if (page<=0){
-            page=1;
+        int limit = page_size;
+        if (page <= 0) {
+            page = 1;
         }
-        int start=(page-1)*page_size;
+        int start = (page - 1) * page_size;
         List<HouseQmCheckTask> list = houseQmCheckTaskService.searchByProjIdAndCategoryClsAndStatusByPage(projId, category_cls, status, limit, start);
         HouseQmCheckTaskListAndTotalVo result = new HouseQmCheckTaskListAndTotalVo();
         result.setList(list);
@@ -110,19 +111,19 @@ public class TaskServiceImpl implements ITaskService {
      * @return void
      **/
     @Override
-    @Transactional(rollbackFor = Exception.class)
     @LFAssignDataSource("zhijian2")
-    public void deleteHouseQmCheckTaskByProjTaskId(Integer project_id, Integer task_id) throws Exception {
-
+    public void deleteHouseQmCheckTaskByProjTaskId(Integer project_id, Integer task_id) {
+        try {
             // 删除人员
             int affect = userInHouseQmCheckTaskService.removeByTaskId(task_id);
-
             // 删除问题
             int affect2 = houseQmCheckTaskIssueService.removeHouseQmCheckTaskIssueByProjectIdAndTaskId(project_id, task_id);
             // 删除任务
             int affect3 = houseQmCheckTaskService.removeHouseQmCheckTaskByProjectIdAndTaskId(project_id, task_id);
-            if (affect < 1 || affect2 < 1 || affect3 < 1)
-                throw new Exception(ErrorEnum.DB_ITEM_NOT_UPDATE.getMessage());
+        } catch (Exception e) {
+            e.printStackTrace();
+            throw new LjBaseRuntimeException(500, e.getMessage());
+        }
     }
 
     @Override
