@@ -409,7 +409,7 @@ public class HouseQmCheckTaskIssueServiceImpl implements HouseQmCheckTaskIssueSe
             log.error("error:" + e);
             e.printStackTrace();
         }
-        return null;
+        return Lists.newArrayList();
     }
 
     /**
@@ -621,7 +621,13 @@ public class HouseQmCheckTaskIssueServiceImpl implements HouseQmCheckTaskIssueSe
         Example example = new Example(HouseQmCheckTaskIssue.class);
         Example.Criteria criteria = example.createCriteria();
         criteria.andEqualTo("projectId", project_id).andEqualTo("taskId", task_id);
-        return houseQmCheckTaskIssueMapper.deleteByExample(example);
+        ExampleUtil.addDeleteAtJudge(example);
+        List<HouseQmCheckTaskIssue> houseQmCheckTaskIssues = houseQmCheckTaskIssueMapper.selectByExample(example);
+        for (HouseQmCheckTaskIssue issue : houseQmCheckTaskIssues) {
+            issue.setDeleteAt(new Date());
+            houseQmCheckTaskIssueMapper.updateByPrimaryKey(issue);
+        }
+        return houseQmCheckTaskIssues.size();
     }
 
     @Override

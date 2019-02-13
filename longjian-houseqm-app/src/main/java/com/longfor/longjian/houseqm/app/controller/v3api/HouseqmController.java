@@ -11,6 +11,7 @@ import com.longfor.longjian.houseqm.app.vo.houseqm.HouseqmMyIssueLogListRspVo;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -42,7 +43,7 @@ public class HouseqmController {
      * @return
      */
     @RequestMapping(value = "my_issue_log_list", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
-    public LjBaseResponse<HouseqmMyIssueLogListRspVo> myIssueLogList(DeviceReq deviceReq, HttpServletRequest request) {
+    public LjBaseResponse<HouseqmMyIssueLogListRspVo> myIssueLogList(@Validated DeviceReq deviceReq, HttpServletRequest request) {
         return houseqmService.myIssueLogList(deviceReq,request);
     }
 
@@ -52,7 +53,7 @@ public class HouseqmController {
      * @return
      */
     @RequestMapping(value = "my_issue_list", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
-    public LjBaseResponse<MyIssueListVo> myIssueList(DeviceReq deviceReq,HttpServletRequest request) {
+    public LjBaseResponse<MyIssueListVo> myIssueList(@Validated DeviceReq deviceReq,HttpServletRequest request) {
         return houseqmService.myIssueList(deviceReq,request);
     }
 
@@ -62,7 +63,7 @@ public class HouseqmController {
      * @return
      */
     @RequestMapping(value = "issue_members", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
-    public LjBaseResponse<MyIssueMemberListVo> issueMembers(DeviceReq deviceReq) {
+    public LjBaseResponse<MyIssueMemberListVo> issueMembers(@Validated DeviceReq deviceReq) {
         return houseqmService.issueMembers(deviceReq);
     }
 
@@ -72,7 +73,7 @@ public class HouseqmController {
      * @return
      */
     @RequestMapping(value = "my_issue_attachment_list", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
-    public LjBaseResponse<MyIssueAttachListVo> myIssueAttachmentList(DeviceReq deviceReq,HttpServletRequest request) {
+    public LjBaseResponse<MyIssueAttachListVo> myIssueAttachmentList(@Validated DeviceReq deviceReq,HttpServletRequest request) {
         return houseqmService.myIssueAttachementList(deviceReq,request);
     }
 }

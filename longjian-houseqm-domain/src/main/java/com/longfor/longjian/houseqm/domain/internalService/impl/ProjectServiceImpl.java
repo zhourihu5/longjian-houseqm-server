@@ -10,7 +10,6 @@ import org.springframework.stereotype.Service;
 import tk.mybatis.mapper.entity.Example;
 
 import javax.annotation.Resource;
-import java.util.List;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -54,6 +53,14 @@ public class ProjectServiceImpl implements ProjectService {
     public List<Project> selectByIdNotDel(ArrayList<Integer> projectIdsList) {
         Example example = new Example(Project.class);
         example.createCriteria().andIn("id",projectIdsList).andIsNull("deleteAt");
+        return projectMapper.selectByExample(example);
+    }
+
+    @Override
+    @LFAssignDataSource("zhijian2")
+    public List<Project> selectByTeamIdsNotDel(List<Integer> teamIdsList) {
+        Example example = new Example(Project.class);
+        example.createCriteria().andIn("teamId",teamIdsList).andIsNull("deleteAt");
         return projectMapper.selectByExample(example);
     }
 }

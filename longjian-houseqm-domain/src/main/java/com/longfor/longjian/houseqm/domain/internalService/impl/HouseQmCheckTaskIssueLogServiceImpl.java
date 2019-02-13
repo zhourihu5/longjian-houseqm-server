@@ -1,5 +1,6 @@
 package com.longfor.longjian.houseqm.domain.internalService.impl;
 
+import com.google.common.collect.Lists;
 import com.longfor.gaia.gfs.data.mybatis.datasource.LFAssignDataSource;
 import com.longfor.longjian.houseqm.dao.zj2db.HouseQmCheckTaskIssueLogMapper;
 import com.longfor.longjian.houseqm.dao.zj2db.UserInHouseQmCheckTaskMapper;
@@ -73,7 +74,8 @@ public class HouseQmCheckTaskIssueLogServiceImpl implements HouseQmCheckTaskIssu
             userInHouseQmCheckTasks.forEach(userInHouseQmCheckTask -> {
                 squadIds.add(userInHouseQmCheckTask.getSquadId());
             });
-            List<UserInHouseQmCheckTask> userInHouseQmCheckTaskSearchSquadIdsList = userInHouseQmCheckTaskMapper.searchBySquadIdIn(squadIds);
+            List<UserInHouseQmCheckTask> userInHouseQmCheckTaskSearchSquadIdsList= Lists.newArrayList();
+            if (!squadIds.isEmpty()) userInHouseQmCheckTaskSearchSquadIdsList = userInHouseQmCheckTaskMapper.searchBySquadIdIn(squadIds);
             userInHouseQmCheckTaskSearchSquadIdsList.forEach(userInHouseQmCheckTask -> {
                 userIds.add(userInHouseQmCheckTask.getUserId());
             });
@@ -132,8 +134,7 @@ public class HouseQmCheckTaskIssueLogServiceImpl implements HouseQmCheckTaskIssu
     public List<HouseQmCheckTaskIssueLog> selectByUuidAndNotDelete(String issueUuid) {
         Example example = new Example(HouseQmCheckTaskIssueLog.class);
         Example.Criteria criteria = example.createCriteria();
-        criteria.andEqualTo("issueUuid", issueUuid);
-        criteria.andIsNull("deleteAt");
+        criteria.andEqualTo("issueUuid", issueUuid).andIsNull("deleteAt");
         return houseQmCheckTaskIssueLogMapper.selectByExample(example);
     }
 

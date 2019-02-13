@@ -366,6 +366,139 @@ public class BuildingqmServiceImpl implements IBuildingqmService {
         editExecute(begin, endon, uid, taskEditReq, areaIds, areaTypes, planBeginOn, planEndOn, checkerGroups, repairerGroups, config);
 
     }
+    private void beforeExecute(List<ApiBuildingQmTaskMemberGroupVo> checkerGroupsAdd, List<ApiBuildingQmTaskMemberGroupVo> checkerGroupsEdit, List<Object> checkerGroupsDel, List<ApiBuildingQmTaskMemberInsertVo> needInsertCheckTaskSquadUser, List<UserInHouseQmCheckTask> needUpdateCheckTaskSquadUser, Map doNotNeedDeleteSquaduserPkId, Integer uid, TaskEditReq taskEditReq, List<Integer> areaIds, List<Integer> areaTypes, String planBeginOn, String planEndOn, List<ApiBuildingQmTaskMemberGroupVo> checkerGroups, List<ApiBuildingQmTaskMemberGroupVo> repairerGroups, ConfigVo config) {
+        checkSquads(needUpdateCheckTaskSquadUser, needInsertCheckTaskSquadUser, doNotNeedDeleteSquaduserPkId, checkerGroupsDel, checkerGroupsEdit, checkerGroupsAdd, uid, taskEditReq, areaIds, areaTypes, planBeginOn, planEndOn, checkerGroups, repairerGroups, config);
+        compareSquadCheckers(repairerGroups, needUpdateCheckTaskSquadUser, needInsertCheckTaskSquadUser, checkerGroups, checkerGroupsDel, doNotNeedDeleteSquaduserPkId, taskEditReq);
+        compareSquadRepairers(repairerGroups, taskEditReq, needInsertCheckTaskSquadUser, doNotNeedDeleteSquaduserPkId);
+    }
+
+    private void compareSquadCheckers(List<ApiBuildingQmTaskMemberGroupVo> repairerGroups, List<UserInHouseQmCheckTask> needUpdateCheckTaskSquadUser, List<ApiBuildingQmTaskMemberInsertVo> needInsertCheckTaskSquadUser, List<ApiBuildingQmTaskMemberGroupVo> checkerGroups, List<Object> checkerGroupsDel, Map doNotNeedDeleteSquaduserPkId, TaskEditReq taskEditReq) {
+        List<UserInHouseQmCheckTask> dbItems = userInHouseQmCheckTaskService.selectByTaskIdAndRoleType(taskEditReq.getTask_id(), CheckTaskRoleType.Checker.getValue());
+        HashMap<Object, Map<Integer, UserInHouseQmCheckTask>> squadUserMap = Maps.newHashMap();
+        for (int i = 0; i < dbItems.size(); i++) {
+            if (!squadUserMap.containsKey(dbItems.get(i).getSquadId())) {
+                squadUserMap.put(dbItems.get(i).getSquadId(), new HashMap<Integer, UserInHouseQmCheckTask>());
+            }
+            squadUserMap.get(dbItems.get(i).getSquadId()).put(dbItems.get(i).getUserId(), dbItems.get(i));
+            //   # 初始化，初始值都是标记为需要删除的
+            doNotNeedDeleteSquaduserPkId.put(dbItems.get(i).getId(), false);
+        }
+        //  # 需要排除掉 新增 + 被删除的
+        // # 但不能只判断小组信息有变动的组，因为只更新人员，是不会触发组信息变更的
+        HashMap<Object, Object> ignoreSquadIdsMap = Maps.newHashMap();
+        for (int i = 0; i < checkerGroupsDel.size(); i++) {
+            ignoreSquadIdsMap.put(checkerGroupsDel.get(i), true);
+        }
+        //   # 排除新增的
+        for (int i = 0; i < checkerGroups.size(); i++) {
+            Integer groupId = checkerGroups.get(i).getGroup_id();
+            if (groupId.equals(0)) {
+                continue;
+            }
+            //  # 排除被删除的
+            if (ignoreSquadIdsMap.containsKey(checkerGroups.get(i).getGroup_id())) {
+                continue;
+            }
+            List<Integer> userIds = checkerGroups.get(i).getUser_ids();
+            for (int j = 0; j < userIds.size(); j++) {
+                Integer squadId = checkerGroups.get(i).getGroup_id();
+                Integer canApprove = CheckTaskRoleCanApproveType.No.getValue();
+                Integer canDirectApprove = CheckTaskRoleCanDirectApproveType.No.getValue();
+                Integer canReassign = CheckTaskRoleCanReassignType.No.getValue();
+                if (checkerGroups.get(i).getApprove_ids().contains(userIds.get(j))) {
+                    canApprove = CheckTaskRoleCanApproveType.Yes.getValue();
+                }
+                if (checkerGroups.get(i).getDirect_approve_ids().contains(userIds.get(j)) && checkerGroups.get(i).getApprove_ids().contains(userIds.get(j))) {
+                    canDirectApprove = CheckTaskRoleCanDirectApproveType.Yes.getValue();
+                }
+                if (checkerGroups.get(i).getReassign_ids().contains(userIds.get(j))) {
+                    canReassign = CheckTaskRoleCanReassignType.Yes.getValue();
+                }
+                if (!squadUserMap.get(squadId).containsKey(userIds.get(j))) {
+                    ApiBuildingQmTaskMemberInsertVo vo = new ApiBuildingQmTaskMemberInsertVo();
+                    vo.setSquad_id(squadId);
+                    vo.setGroup_role(CheckTaskRoleType.Checker.getValue());
+                    vo.setUser_id(userIds.get(j));
+                    vo.setCan_approve(canApprove);
+                    vo.setCan_direct_approve(canDirectApprove);
+                    vo.setCan_reassign(canReassign);
+                    needInsertCheckTaskSquadUser.add(vo);
+                    continue;
+                }
+                //    # 将此记录标记为不需要删除
+                UserInHouseQmCheckTask dbItem = squadUserMap.get(squadId).get(userIds.get(j));
+                doNotNeedDeleteSquaduserPkId.put(dbItem.getId(), true);
+                if (!dbItem.getCanApprove().equals(canApprove) ||
+                        !dbItem.getCanDirectApprove().equals(canDirectApprove) ||
+                        !dbItem.getCanReassign().equals(canReassign)
+                ) {
+                    dbItem.setCanApprove(canApprove);
+                    dbItem.setCanDirectApprove(canDirectApprove);
+                    dbItem.setCanReassign(canReassign);
+                    needUpdateCheckTaskSquadUser.add(dbItem);
+                }
+            }
+
+        }
+    }
+
+
+    private void compareSquadRepairers(List<ApiBuildingQmTaskMemberGroupVo> repairerGroups, TaskEditReq taskEditReq, List<ApiBuildingQmTaskMemberInsertVo> needInsertCheckTaskSquadUser, Map doNotNeedDeleteSquaduserPkId) {
+        List<UserInHouseQmCheckTask> dbItems = userInHouseQmCheckTaskService.selectByTaskIdAndRoleType(taskEditReq.getTask_id(), CheckTaskRoleType.Repairer.getValue());
+        Integer squadId = 0;
+        HashMap<Integer, Object> squadUserMap = Maps.newHashMap();
+        for (int i = 0; i < dbItems.size(); i++) {
+            squadId = dbItems.get(i).getSquadId();
+            squadUserMap.put(dbItems.get(i).getUserId(), dbItems.get(i));
+            doNotNeedDeleteSquaduserPkId.put(dbItems.get(i).getId(), false);
+        }
+        for (int i = 0; i < repairerGroups.size(); i++) {
+            for (int j = 0; j < repairerGroups.get(i).getUser_ids().size(); j++) {
+                if (!squadUserMap.containsKey(repairerGroups.get(i).getUser_ids().get(j))) {
+                    Integer canApprove = CheckTaskRoleCanApproveType.No.getValue();
+                    Integer canDirectApprove = CheckTaskRoleCanDirectApproveType.No.getValue();
+                    Integer canReassign = CheckTaskRoleCanReassignType.No.getValue();
+                    ApiBuildingQmTaskMemberInsertVo vo = new ApiBuildingQmTaskMemberInsertVo();
+                    vo.setSquad_id(squadId);
+                    vo.setGroup_role(CheckTaskRoleType.Checker.getValue());
+                    vo.setUser_id(repairerGroups.get(i).getUser_ids().get(j));
+                    vo.setCan_approve(canApprove);
+                    vo.setCan_direct_approve(canDirectApprove);
+                    vo.setCan_reassign(canReassign);
+                    needInsertCheckTaskSquadUser.add(vo);
+                    continue;
+                } else {
+                    UserInHouseQmCheckTask o = (UserInHouseQmCheckTask) squadUserMap.get(repairerGroups.get(i).getUser_ids().get(j));
+                    doNotNeedDeleteSquaduserPkId.put(o.getId(), true);
+                }
+            }
+        }
+
+    }
+
+    private void checkSquads(List<UserInHouseQmCheckTask> needUpdateCheckTaskSquadUser, List<ApiBuildingQmTaskMemberInsertVo> needInsertCheckTaskSquadUser, Map doNotNeedDeleteSquaduserPkId, List<Object> checkerGroupsDel, List<ApiBuildingQmTaskMemberGroupVo> checkerGroupsEdit, List<ApiBuildingQmTaskMemberGroupVo> checkerGroupsAdd, Integer uid, TaskEditReq taskEditReq, List<Integer> areaIds, List<Integer> areaTypes, String planBeginOn, String planEndOn, List<ApiBuildingQmTaskMemberGroupVo> checkerGroups, List<ApiBuildingQmTaskMemberGroupVo> repairerGroups, ConfigVo config) {
+        HashMap<Object, ApiBuildingQmTaskMemberGroupVo> squadMap = Maps.newHashMap();
+        for (int i = 0; i < checkerGroups.size(); i++) {
+            if (checkerGroups.get(i).getGroup_id().equals(0)) {
+                checkerGroupsAdd.add(checkerGroups.get(i));
+            } else {
+                squadMap.put(checkerGroups.get(i).getGroup_id(), checkerGroups.get(i));
+            }
+        }
+
+        List<HouseQmCheckTaskSquad> dbItems = houseQmCheckTaskSquadService.selectByProjectIdAndTaskIdAndSquadType(taskEditReq.getProject_id(), taskEditReq.getTask_id(), CheckTaskRoleType.Checker.getValue());
+        for (int i = 0; i < dbItems.size(); i++) {
+            if (squadMap.containsKey(dbItems.get(i).getId())) {
+                if (!squadMap.get(dbItems.get(i).getId()).getGroup_name().equals(dbItems.get(i).getName())) {
+                    checkerGroupsEdit.add(squadMap.get(dbItems.get(i).getId()));
+                }
+            } else {
+                checkerGroupsDel.add(dbItems.get(i).getId());
+            }
+        }
+    }
+
+
 
     @Override
     public ApiIssueLogVo getIssueListLogByLastIdAndUpdataAt(Integer taskId, Integer timestamp, String issueUuid) {
@@ -400,6 +533,8 @@ public class BuildingqmServiceImpl implements IBuildingqmService {
         if (!issueInfo.getDrawingMD5().equals("")) {
 
             fileMd5s.add(issueInfo.getDrawingMD5());
+        } else {
+            fileMd5s.clear();
         }
         List<String> issueAttachmentMd5List = null;
         if (!issueInfo.getAttachmentMd5List().equals("")) {
@@ -443,7 +578,8 @@ public class BuildingqmServiceImpl implements IBuildingqmService {
         List<FileResource> fileMd5StoreKeyInfo = fileResourceService.searchFileResourceByFileMd5InAndNoDeleted(fileMd5s);
         HashMap<String, String> fileMd5StoreKeyMap = Maps.newHashMap();
         fileMd5StoreKeyInfo.forEach(item -> {
-            fileMd5StoreKeyMap.put(item.getFileMd5(), item.getStoreKey().split("://").toString());
+            /*  i.store_key.split("://")[-1]*/
+            fileMd5StoreKeyMap.put(item.getFileMd5(), item.getStoreKey());
         });
         List<String> areaIds = StringSplitToListUtil.removeStartAndEndStrAndSplit(issueInfo.getAreaPathAndId().replace("//", "/"), "/", "/");
         ArrayList<Integer> areaIdsList = Lists.newArrayList();
@@ -495,28 +631,28 @@ public class BuildingqmServiceImpl implements IBuildingqmService {
         }
         issue.setArea_id(issueInfo.getAreaId());
         issue.setArea_path_and_id(issueInfo.getAreaPathAndId());
-        ArrayList<Object> list1 = Lists.newArrayList();
+        List<Object> list1 = Lists.newArrayList();
         areaIdsList.forEach(item -> {
             if (areaIdNameMap.containsKey(item)) {
                 list1.add(areaIdNameMap.get(item));
             }
         });
-        issue.setArea_path_name(list1.toString());
+        issue.setArea_path_name(list1);
         issue.setCategory_cls(issueInfo.getCategoryCls());
         issue.setCategory_key(issueInfo.getCategoryKey());
         issue.setCategory_path_and_key(issueInfo.getCategoryPathAndKey());
-        ArrayList<Object> objects = Lists.newArrayList();
+        List<String> objects = Lists.newArrayList();
         categoryKeys.forEach(item -> {
             objects.add(categoryKeyNameMap.get(item));
         });
-        issue.setCategory_path_name(objects.toString());
+        issue.setCategory_path_name(objects);
         issue.setCheck_item_key(issueInfo.getCheckItemKey());
         issue.setCheck_item_path_and_key(issueInfo.getCheckItemPathAndKey());
-        ArrayList<Object> objects1 = Lists.newArrayList();
+        List<String> objects1 = Lists.newArrayList();
         checkItemKeys.forEach(item -> {
             objects1.add(checkItemKeyNameMap.get(item));
         });
-        issue.setCheck_item_path_name(objects1.toString());
+        issue.setCheck_item_path_name(objects1);
         issue.setDrawing_url(fileMd5StoreKeyMap.get(issueInfo.getDrawingMD5()));
         issue.setDrawing_md5(issueInfo.getDrawingMD5());
         issue.setPos_x(issueInfo.getPosX());
@@ -526,24 +662,24 @@ public class BuildingqmServiceImpl implements IBuildingqmService {
         issue.setContent(issueInfo.getContent());
         issue.setCondition(issueInfo.getCondition());
         issue.setStatus(issueInfo.getStatus());
-        ArrayList<Object> objects2 = Lists.newArrayList();
+        List<String> objects2 = Lists.newArrayList();
         issueAttachmentMd5List.forEach(item -> {
             objects2.add(fileMd5StoreKeyMap.get(item));
         });
-        issue.setAttachment_url_list(objects2.toString());
-        ArrayList<Object> objects3 = Lists.newArrayList();
+        issue.setAttachment_url_list(objects2);
+        List<String> objects3 = Lists.newArrayList();
         issueAudioMd5List.forEach(item -> {
             objects3.add(fileMd5StoreKeyMap.get(item));
         });
-        issue.setAudio_url_list(objects3.toString());
+        issue.setAudio_url_list(objects3);
         issue.setAttachment_md5_list(issueInfo.getAttachmentMd5List());
         issue.setAudio_md5_list(issueInfo.getAudioMd5List());
         issue.setRepairer_name(userIdRealNameMap.get(issueInfo.getRepairerId()));
-        ArrayList<Object> objects4 = Lists.newArrayList();
+        List<String> objects4 = Lists.newArrayList();
         followerIds.forEach(item -> {
             objects4.add(userIdRealNameMap.get(item));
         });
-        issue.setRepairer_follower_names(objects4.toString());
+        issue.setRepairer_follower_names(objects4);
         if (issueInfo.getClientCreateAt() != null && DateUtil.datetimeToTimeStamp(issueInfo.getClientCreateAt()) > timestampZero) {
             issue.setClient_create_at(DateUtil.datetimeToTimeStamp(issueInfo.getClientCreateAt()));
         } else {
@@ -567,17 +703,19 @@ public class BuildingqmServiceImpl implements IBuildingqmService {
         } else {
             issue.setDestroy_at(0);
         }
-        issue.setDelete_user_name(userIdRealNameMap.get(issueInfo.getDeleteUser()));
+        if (userIdRealNameMap.get(issueInfo.getDeleteUser()) != null) {
+            issue.setDelete_user_name(userIdRealNameMap.get(issueInfo.getDeleteUser()));
+        } else {
+            issue.setDelete_user_name("");
+        }
         if (issueInfo.getDeleteTime() != null && DateUtil.datetimeToTimeStamp(issueInfo.getDeleteTime()) > timestampZero) {
             issue.setDelete_time(DateUtil.datetimeToTimeStamp(issueInfo.getDeleteTime()));
         } else {
             issue.setDelete_time(0);
         }
-        ArrayList<ApiHouseQmCheckTaskIssueDetailVo> objects8 = Lists.newArrayList();
-        objects8.add(issueDetail);
-        issue.setDetail(objects8);
+        issue.setDetail(issueDetail);
         if (issueInfo.getUpdateAt() != null && DateUtil.datetimeToTimeStamp(issueInfo.getUpdateAt()) > timestampZero) {
-            issue.setUpdate_at(DateUtil.datetimeToTimeStamp(issueInfo.getDeleteAt()));
+            issue.setUpdate_at(DateUtil.datetimeToTimeStamp(issueInfo.getUpdateAt()));
         } else {
             issue.setUpdate_at(0);
         }
@@ -591,35 +729,44 @@ public class BuildingqmServiceImpl implements IBuildingqmService {
                 continue;
             }
             List<String> logAttachmentMd5 = StringSplitToListUtil.removeStartAndEndStrAndSplit(issueLogInfo.get(i).getAttachmentMd5List().replace(",,", ","), ",", ",");
+            if (logAttachmentMd5.contains("")) {
+                logAttachmentMd5.clear();
+            }
             List<String> audioMd5List = StringSplitToListUtil.removeStartAndEndStrAndSplit(issueLogInfo.get(i).getAudioMd5List().replace(",,", ","), ",", ",");
+            if (audioMd5List.contains("")) {
+                audioMd5List.clear();
+            }
             List<String> memoAudioMd5List = StringSplitToListUtil.removeStartAndEndStrAndSplit(issueLogInfo.get(i).getMemoAudioMd5List().replace(",,", ","), ",", ",");
+            if (memoAudioMd5List.contains("")) {
+                memoAudioMd5List.clear();
+            }
             ApiIssueLogVo.ApiIssueLogListRsp singleLog = new ApiIssueLogVo().new ApiIssueLogListRsp();
             singleLog.setId(issueLogInfo.get(i).getId());
             singleLog.setProject_id(issueLogInfo.get(i).getProjectId());
             singleLog.setTask_id(issueLogInfo.get(i).getTaskId());
             singleLog.setUuid(issueLogInfo.get(i).getUuid());
             singleLog.setIssue_uuid(issueLogInfo.get(i).getIssueUuid());
-            singleLog.setSender_name(userIdRealNameMap.get(issueLogInfo.get(i)));
+            singleLog.setSender_name(userIdRealNameMap.get(issueLogInfo.get(i).getSenderId()));
             singleLog.setDesc(issueLogInfo.get(i).getDesc());
             singleLog.setStatus(issueLogInfo.get(i).getStatus());
             singleLog.setAttachment_md5_list(issueLogInfo.get(i).getAttachmentMd5List());
-            ArrayList<Object> objects5 = Lists.newArrayList();
-            logAttachmentMd5.forEach(item -> {
-                objects5.add(fileMd5StoreKeyMap.get(item));
-            });
-            singleLog.setAttachment_url_list(objects5.toString());
             singleLog.setAudio_md5_list(issueLogInfo.get(i).getAudioMd5List());
-            ArrayList<Object> objects6 = Lists.newArrayList();
-            audioMd5List.forEach(item -> {
-                objects6.add(fileMd5StoreKeyMap.get(item));
-            });
-            singleLog.setAudio_url_list(objects6.toString());
             singleLog.setMemo_audio_md5_list(issueLogInfo.get(i).getMemoAudioMd5List());
-            ArrayList<Object> objects7 = Lists.newArrayList();
-            memoAudioMd5List.forEach(item -> {
-                objects7.add(fileMd5StoreKeyMap.get(item));
+            ArrayList<String> md5List = Lists.newArrayList();
+            logAttachmentMd5.forEach(item -> {
+                md5List.add(fileMd5StoreKeyMap.get(item));
             });
-            singleLog.setMemo_audio_url_list(objects7.toString());
+            singleLog.setAttachment_url_list(md5List);
+            ArrayList<String> urlList = Lists.newArrayList();
+            audioMd5List.forEach(item -> {
+                urlList.add(fileMd5StoreKeyMap.get(item));
+            });
+            singleLog.setAudio_url_list(urlList);
+            ArrayList<String> audioUrlList = Lists.newArrayList();
+            memoAudioMd5List.forEach(item -> {
+                audioUrlList.add(fileMd5StoreKeyMap.get(item));
+            });
+            singleLog.setMemo_audio_url_list(audioUrlList);
 
             if (issueLogInfo.get(i).getClientCreateAt() != null && DateUtil.datetimeToTimeStamp(issueLogInfo.get(i).getClientCreateAt()) > timestampZero) {
                 singleLog.setClient_create_at(DateUtil.datetimeToTimeStamp(issueLogInfo.get(i).getClientCreateAt()));
@@ -635,9 +782,7 @@ public class BuildingqmServiceImpl implements IBuildingqmService {
             issueLogList.add(singleLog);
         }
         ApiIssueLogVo vo = new ApiIssueLogVo();
-        ArrayList<ApiIssueLogVo.ApiIssueLogInfoIssueRsp> issueList = Lists.newArrayList();
-        issueList.add(issue);
-        vo.setIssue(issueList);
+        vo.setIssue(issue);
         vo.setIssue_log_list(issueLogList);
         return vo;
     }
@@ -2242,137 +2387,6 @@ public class BuildingqmServiceImpl implements IBuildingqmService {
 
     }
 
-    private void beforeExecute(List<ApiBuildingQmTaskMemberGroupVo> checkerGroupsAdd, List<ApiBuildingQmTaskMemberGroupVo> checkerGroupsEdit, List<Object> checkerGroupsDel, List<ApiBuildingQmTaskMemberInsertVo> needInsertCheckTaskSquadUser, List<UserInHouseQmCheckTask> needUpdateCheckTaskSquadUser, Map doNotNeedDeleteSquaduserPkId, Integer uid, TaskEditReq taskEditReq, List<Integer> areaIds, List<Integer> areaTypes, String planBeginOn, String planEndOn, List<ApiBuildingQmTaskMemberGroupVo> checkerGroups, List<ApiBuildingQmTaskMemberGroupVo> repairerGroups, ConfigVo config) {
-        checkSquads(needUpdateCheckTaskSquadUser, needInsertCheckTaskSquadUser, doNotNeedDeleteSquaduserPkId, checkerGroupsDel, checkerGroupsEdit, checkerGroupsAdd, uid, taskEditReq, areaIds, areaTypes, planBeginOn, planEndOn, checkerGroups, repairerGroups, config);
-        compareSquadCheckers(repairerGroups, needUpdateCheckTaskSquadUser, needInsertCheckTaskSquadUser, checkerGroups, checkerGroupsDel, doNotNeedDeleteSquaduserPkId, taskEditReq);
-        compareSquadRepairers(repairerGroups, taskEditReq, needInsertCheckTaskSquadUser, doNotNeedDeleteSquaduserPkId);
-    }
-
-    private void compareSquadCheckers(List<ApiBuildingQmTaskMemberGroupVo> repairerGroups, List<UserInHouseQmCheckTask> needUpdateCheckTaskSquadUser, List<ApiBuildingQmTaskMemberInsertVo> needInsertCheckTaskSquadUser, List<ApiBuildingQmTaskMemberGroupVo> checkerGroups, List<Object> checkerGroupsDel, Map doNotNeedDeleteSquaduserPkId, TaskEditReq taskEditReq) {
-        List<UserInHouseQmCheckTask> dbItems = userInHouseQmCheckTaskService.selectByTaskIdAndRoleType(taskEditReq.getTask_id(), CheckTaskRoleType.Checker.getValue());
-        HashMap<Object, Map<Integer, UserInHouseQmCheckTask>> squadUserMap = Maps.newHashMap();
-        for (int i = 0; i < dbItems.size(); i++) {
-            if (!squadUserMap.containsKey(dbItems.get(i).getSquadId())) {
-                squadUserMap.put(dbItems.get(i).getSquadId(), new HashMap<Integer, UserInHouseQmCheckTask>());
-            }
-            squadUserMap.get(dbItems.get(i).getSquadId()).put(dbItems.get(i).getUserId(), dbItems.get(i));
-            //   # 初始化，初始值都是标记为需要删除的
-            doNotNeedDeleteSquaduserPkId.put(dbItems.get(i).getId(), false);
-        }
-        //  # 需要排除掉 新增 + 被删除的
-        // # 但不能只判断小组信息有变动的组，因为只更新人员，是不会触发组信息变更的
-        HashMap<Object, Object> ignoreSquadIdsMap = Maps.newHashMap();
-        for (int i = 0; i < checkerGroupsDel.size(); i++) {
-            ignoreSquadIdsMap.put(checkerGroupsDel.get(i), true);
-        }
-        //   # 排除新增的
-        for (int i = 0; i < checkerGroups.size(); i++) {
-            Integer groupId = checkerGroups.get(i).getGroup_id();
-            if (groupId.equals(0)) {
-                continue;
-            }
-            //  # 排除被删除的
-            if (ignoreSquadIdsMap.containsKey(checkerGroups.get(i).getGroup_id())) {
-                continue;
-            }
-            List<Integer> userIds = checkerGroups.get(i).getUser_ids();
-            for (int j = 0; j < userIds.size(); j++) {
-                Integer squadId = checkerGroups.get(i).getGroup_id();
-                Integer canApprove = CheckTaskRoleCanApproveType.No.getValue();
-                Integer canDirectApprove = CheckTaskRoleCanDirectApproveType.No.getValue();
-                Integer canReassign = CheckTaskRoleCanReassignType.No.getValue();
-                if (checkerGroups.get(i).getApprove_ids().contains(userIds.get(j))) {
-                    canApprove = CheckTaskRoleCanApproveType.Yes.getValue();
-                }
-                if (checkerGroups.get(i).getDirect_approve_ids().contains(userIds.get(j)) && checkerGroups.get(i).getApprove_ids().contains(userIds.get(j))) {
-                    canDirectApprove = CheckTaskRoleCanDirectApproveType.Yes.getValue();
-                }
-                if (checkerGroups.get(i).getReassign_ids().contains(userIds.get(j))) {
-                    canReassign = CheckTaskRoleCanReassignType.Yes.getValue();
-                }
-                if (!squadUserMap.get(squadId).containsKey(userIds.get(j))) {
-                    ApiBuildingQmTaskMemberInsertVo vo = new ApiBuildingQmTaskMemberInsertVo();
-                    vo.setSquad_id(squadId);
-                    vo.setGroup_role(CheckTaskRoleType.Checker.getValue());
-                    vo.setUser_id(userIds.get(j));
-                    vo.setCan_approve(canApprove);
-                    vo.setCan_direct_approve(canDirectApprove);
-                    vo.setCan_reassign(canReassign);
-                    needInsertCheckTaskSquadUser.add(vo);
-                    continue;
-                }
-                //    # 将此记录标记为不需要删除
-                UserInHouseQmCheckTask dbItem = squadUserMap.get(squadId).get(userIds.get(j));
-                doNotNeedDeleteSquaduserPkId.put(dbItem.getId(), true);
-                if (!dbItem.getCanApprove().equals(canApprove) ||
-                        !dbItem.getCanDirectApprove().equals(canDirectApprove) ||
-                        !dbItem.getCanReassign().equals(canReassign)
-                ) {
-                    dbItem.setCanApprove(canApprove);
-                    dbItem.setCanDirectApprove(canDirectApprove);
-                    dbItem.setCanReassign(canReassign);
-                    needUpdateCheckTaskSquadUser.add(dbItem);
-                }
-            }
-
-        }
-    }
-
-
-    private void compareSquadRepairers(List<ApiBuildingQmTaskMemberGroupVo> repairerGroups, TaskEditReq taskEditReq, List<ApiBuildingQmTaskMemberInsertVo> needInsertCheckTaskSquadUser, Map doNotNeedDeleteSquaduserPkId) {
-        List<UserInHouseQmCheckTask> dbItems = userInHouseQmCheckTaskService.selectByTaskIdAndRoleType(taskEditReq.getTask_id(), CheckTaskRoleType.Repairer.getValue());
-        Integer squadId = 0;
-        HashMap<Integer, Object> squadUserMap = Maps.newHashMap();
-        for (int i = 0; i < dbItems.size(); i++) {
-            squadId = dbItems.get(i).getSquadId();
-            squadUserMap.put(dbItems.get(i).getUserId(), dbItems.get(i));
-            doNotNeedDeleteSquaduserPkId.put(dbItems.get(i).getId(), false);
-        }
-        for (int i = 0; i < repairerGroups.size(); i++) {
-            for (int j = 0; j < repairerGroups.get(i).getUser_ids().size(); j++) {
-                if (!squadUserMap.containsKey(repairerGroups.get(i).getUser_ids().get(j))) {
-                    Integer canApprove = CheckTaskRoleCanApproveType.No.getValue();
-                    Integer canDirectApprove = CheckTaskRoleCanDirectApproveType.No.getValue();
-                    Integer canReassign = CheckTaskRoleCanReassignType.No.getValue();
-                    ApiBuildingQmTaskMemberInsertVo vo = new ApiBuildingQmTaskMemberInsertVo();
-                    vo.setSquad_id(squadId);
-                    vo.setGroup_role(CheckTaskRoleType.Checker.getValue());
-                    vo.setUser_id(repairerGroups.get(i).getUser_ids().get(j));
-                    vo.setCan_approve(canApprove);
-                    vo.setCan_direct_approve(canDirectApprove);
-                    vo.setCan_reassign(canReassign);
-                    needInsertCheckTaskSquadUser.add(vo);
-                    continue;
-                } else {
-                    UserInHouseQmCheckTask o = (UserInHouseQmCheckTask) squadUserMap.get(repairerGroups.get(i).getUser_ids().get(j));
-                    doNotNeedDeleteSquaduserPkId.put(o.getId(), true);
-                }
-            }
-        }
-
-    }
-
-    private void checkSquads(List<UserInHouseQmCheckTask> needUpdateCheckTaskSquadUser, List<ApiBuildingQmTaskMemberInsertVo> needInsertCheckTaskSquadUser, Map doNotNeedDeleteSquaduserPkId, List<Object> checkerGroupsDel, List<ApiBuildingQmTaskMemberGroupVo> checkerGroupsEdit, List<ApiBuildingQmTaskMemberGroupVo> checkerGroupsAdd, Integer uid, TaskEditReq taskEditReq, List<Integer> areaIds, List<Integer> areaTypes, String planBeginOn, String planEndOn, List<ApiBuildingQmTaskMemberGroupVo> checkerGroups, List<ApiBuildingQmTaskMemberGroupVo> repairerGroups, ConfigVo config) {
-        HashMap<Object, ApiBuildingQmTaskMemberGroupVo> squadMap = Maps.newHashMap();
-        for (int i = 0; i < checkerGroups.size(); i++) {
-            if (checkerGroups.get(i).getGroup_id().equals(0)) {
-                checkerGroupsAdd.add(checkerGroups.get(i));
-            } else {
-                squadMap.put(checkerGroups.get(i).getGroup_id(), checkerGroups.get(i));
-            }
-        }
-
-        List<HouseQmCheckTaskSquad> dbItems = houseQmCheckTaskSquadService.selectByProjectIdAndTaskIdAndSquadType(taskEditReq.getProject_id(), taskEditReq.getTask_id(), CheckTaskRoleType.Checker.getValue());
-        for (int i = 0; i < dbItems.size(); i++) {
-            if (squadMap.containsKey(dbItems.get(i).getId())) {
-                if (!squadMap.get(dbItems.get(i).getId()).getGroup_name().equals(dbItems.get(i).getName())) {
-                    checkerGroupsEdit.add(squadMap.get(dbItems.get(i).getId()));
-                }
-            } else {
-                checkerGroupsDel.add(dbItems.get(i).getId());
-            }
-        }
-    }
 
     private List<ApiBuildingQmTaskMemberGroupVo> createCheckerGroups(List<ApiBuildingQmCheckTaskSquadObjVo> groupsInfo) {
         ArrayList<ApiBuildingQmTaskMemberGroupVo> objects = Lists.newArrayList();
