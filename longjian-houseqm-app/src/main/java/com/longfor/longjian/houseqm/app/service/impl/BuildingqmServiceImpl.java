@@ -415,7 +415,7 @@ public class BuildingqmServiceImpl implements IBuildingqmService {
                     canReassign = CheckTaskRoleCanReassignType.Yes.getValue();
                 }
                 Map<Integer, UserInHouseQmCheckTask> map = squadUserMap.get(squadId);
-                if (!map.containsKey(userIds.get(j))) {
+                if (map!=null&&!map.containsKey(userIds.get(j))) {
                     ApiBuildingQmTaskMemberInsertVo vo = new ApiBuildingQmTaskMemberInsertVo();
                     vo.setSquad_id(squadId);
                     vo.setGroup_role(CheckTaskRoleType.Checker.getValue());
@@ -427,17 +427,19 @@ public class BuildingqmServiceImpl implements IBuildingqmService {
                     continue;
                 }
                 //    # 将此记录标记为不需要删除
-                UserInHouseQmCheckTask dbItem = squadUserMap.get(squadId).get(userIds.get(j));
-                doNotNeedDeleteSquaduserPkId.put(dbItem.getId(), true);
-                if (!dbItem.getCanApprove().equals(canApprove) ||
-                        !dbItem.getCanDirectApprove().equals(canDirectApprove) ||
-                        !dbItem.getCanReassign().equals(canReassign)
-                ) {
-                    dbItem.setCanApprove(canApprove);
-                    dbItem.setCanDirectApprove(canDirectApprove);
-                    dbItem.setCanReassign(canReassign);
-                    needUpdateCheckTaskSquadUser.add(dbItem);
-                }
+                        if(map!=null){
+                            UserInHouseQmCheckTask dbItem = map.get(userIds.get(j));
+                            doNotNeedDeleteSquaduserPkId.put(dbItem.getId(), true);
+                            if (!dbItem.getCanApprove().equals(canApprove) ||
+                                    !dbItem.getCanDirectApprove().equals(canDirectApprove) ||
+                                    !dbItem.getCanReassign().equals(canReassign)
+                            ) {
+                                dbItem.setCanApprove(canApprove);
+                                dbItem.setCanDirectApprove(canDirectApprove);
+                                dbItem.setCanReassign(canReassign);
+                                needUpdateCheckTaskSquadUser.add(dbItem);
+                            }
+                        }
             }
 
         }
