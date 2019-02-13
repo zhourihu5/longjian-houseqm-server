@@ -415,7 +415,7 @@ public class BuildingqmServiceImpl implements IBuildingqmService {
                     canReassign = CheckTaskRoleCanReassignType.Yes.getValue();
                 }
                 Map<Integer, UserInHouseQmCheckTask> map = squadUserMap.get(squadId);
-                if (!map.containsKey(userIds.get(j))) {
+                if (map!=null&&!map.containsKey(userIds.get(j))) {
                     ApiBuildingQmTaskMemberInsertVo vo = new ApiBuildingQmTaskMemberInsertVo();
                     vo.setSquad_id(squadId);
                     vo.setGroup_role(CheckTaskRoleType.Checker.getValue());
