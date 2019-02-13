@@ -17,6 +17,7 @@ import com.longfor.longjian.houseqm.po.zj2db.*;
 import com.longfor.longjian.houseqm.util.DateUtil;
 import com.longfor.longjian.houseqm.utils.ExampleUtil;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.collections.CollectionUtils;
 import org.apache.ibatis.session.RowBounds;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -583,7 +584,9 @@ public class HouseQmCheckTaskIssueServiceImpl implements HouseQmCheckTaskIssueSe
         example.and(criteria1);
         ExampleUtil.addDeleteAtJudge(example);
         example.orderBy("id").asc();
-        return houseQmCheckTaskIssueMapper.selectOneByExample(example);
+        List<HouseQmCheckTaskIssue> result = houseQmCheckTaskIssueMapper.selectByExample(example);
+        if (CollectionUtils.isEmpty(result)) return null;
+        else return result.get(0);
     }
 
     /**

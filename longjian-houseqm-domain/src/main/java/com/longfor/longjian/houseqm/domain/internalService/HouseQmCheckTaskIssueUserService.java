@@ -29,7 +29,7 @@ public interface HouseQmCheckTaskIssueUserService {
      * @param task_id
      * @return com.longfor.longjian.houseqm.po.zj2db.HouseQmCheckTaskIssueUser
      */
-    List<HouseQmCheckTaskIssueUser> selectUpdateAtByTaskIdAndNoDeletedOrderByUpdateAt(Integer task_id);
+    HouseQmCheckTaskIssueUser selectUpdateAtByTaskIdAndNoDeletedOrderByUpdateAt(Integer task_id);
 
     HouseQmCheckTaskIssueUser selectByIssueUUidAndUserIdAndRoleTypeAndNotDel(String uuid, Integer repairerId, Integer value);
 
