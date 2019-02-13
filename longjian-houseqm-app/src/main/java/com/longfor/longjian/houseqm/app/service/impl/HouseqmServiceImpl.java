@@ -80,19 +80,27 @@ public class HouseqmServiceImpl implements IHouseqmService {
                 lastId = houseQmCheckTaskIssueLogs.get(houseQmCheckTaskIssueLogs.size() - 1).getId();
             myIssueListVo.setLast_id(lastId);
             List<String> uuids = new ArrayList<>();
-            houseQmCheckTaskIssueLogs.forEach(houseQmCheckTaskIssueLog -> {
-                uuids.add(houseQmCheckTaskIssueLog.getUuid());
+            houseQmCheckTaskIssueLogs.forEach(item -> {
+                uuids.add(item.getIssueUuid());
             });
-            List<HouseQmCheckTaskIssue> houseQmCheckTaskIssues = Lists.newArrayList();
-            if (!uuids.isEmpty()) houseQmCheckTaskIssues = houseQmCheckTaskIssueService.searchHouseQmCheckTaskIssueByTaskIdUuidIn(deviceReq.getTask_id(), uuids);
-            Map<String, HouseQmCheckTaskIssue> map = new HashMap<>();
-            houseQmCheckTaskIssues.forEach(houseQmCheckTaskIssue -> {
-                map.put(houseQmCheckTaskIssue.getUuid(), houseQmCheckTaskIssue);
+            List<HouseQmCheckTaskIssue> resIssues = Lists.newArrayList();
+            if (!uuids.isEmpty())
+                resIssues = houseQmCheckTaskIssueService.searchHouseQmCheckTaskIssueByTaskIdUuidIn(deviceReq.getTask_id(), uuids);
+            Map<String, HouseQmCheckTaskIssue> mIssue = new HashMap<>();
+            resIssues.forEach(houseQmCheckTaskIssue -> {
+                mIssue.put(houseQmCheckTaskIssue.getUuid(), houseQmCheckTaskIssue);
             });
-            houseQmCheckTaskIssueLogs.forEach(houseQmCheckTaskIssueLog -> {
-                ApiHouseQmCheckTaskIssueLogDetailRspVo rspVo = JSON.parseObject(houseQmCheckTaskIssueLog.getDetail(), new TypeReference<ApiHouseQmCheckTaskIssueLogDetailRspVo>() {
+            houseQmCheckTaskIssueLogs.forEach(item -> {
+                ApiHouseQmCheckTaskIssueLogDetailRspVo rspVo = JSON.parseObject(item.getDetail(), new TypeReference<ApiHouseQmCheckTaskIssueLogDetailRspVo>() {
                 });
-                HouseQmCheckTaskIssue houseQmCheckTaskIssue = map.get(houseQmCheckTaskIssueLog.getIssueUuid());
+                /*rspVo.setTitle("");
+                rspVo.setArea_id(0);
+                rspVo.setPos_x(0);
+                rspVo.setPos_y(0);
+                rspVo.setTyp(0);*/
+                rspVo.setCategory_cls(0);
+
+                HouseQmCheckTaskIssue houseQmCheckTaskIssue = mIssue.get(item.getIssueUuid());
                 if (houseQmCheckTaskIssue != null) {
                     rspVo.setTitle(houseQmCheckTaskIssue.getTitle());
                     rspVo.setPos_x(houseQmCheckTaskIssue.getPosX());
@@ -100,26 +108,26 @@ public class HouseqmServiceImpl implements IHouseqmService {
                     rspVo.setTyp(houseQmCheckTaskIssue.getTyp());
                     rspVo.setArea_id(houseQmCheckTaskIssue.getAreaId());
                 }
-                ApiHouseQmCheckTaskIssueLogRsp houseQmCheckTaskIssueLogRspVo = new ApiHouseQmCheckTaskIssueLogRsp();
-                houseQmCheckTaskIssueLogRspVo.setId(houseQmCheckTaskIssueLog.getId());
-                houseQmCheckTaskIssueLogRspVo.setProject_id(houseQmCheckTaskIssueLog.getProjectId());
-                houseQmCheckTaskIssueLogRspVo.setTask_id(houseQmCheckTaskIssueLog.getTaskId());
-                houseQmCheckTaskIssueLogRspVo.setUuid(houseQmCheckTaskIssueLog.getUuid());
-                houseQmCheckTaskIssueLogRspVo.setIssue_uuid(houseQmCheckTaskIssueLog.getIssueUuid());
-                houseQmCheckTaskIssueLogRspVo.setSender_id(houseQmCheckTaskIssueLog.getSenderId());
-                houseQmCheckTaskIssueLogRspVo.setDesc(houseQmCheckTaskIssueLog.getDesc());
-                houseQmCheckTaskIssueLogRspVo.setStatus(houseQmCheckTaskIssueLog.getStatus());
-                houseQmCheckTaskIssueLogRspVo.setAttachment_md5_list(houseQmCheckTaskIssueLog.getAttachmentMd5List());
-                houseQmCheckTaskIssueLogRspVo.setAudio_md5_list(houseQmCheckTaskIssueLog.getAudioMd5List());
-                houseQmCheckTaskIssueLogRspVo.setMemo_audio_md5_list(houseQmCheckTaskIssueLog.getMemoAudioMd5List());
-                houseQmCheckTaskIssueLogRspVo.setClient_create_at(DateUtil.datetimeToTimeStamp(houseQmCheckTaskIssueLog.getClientCreateAt()));
-                houseQmCheckTaskIssueLogRspVo.setUpdate_at(DateUtil.datetimeToTimeStamp(houseQmCheckTaskIssueLog.getUpdateAt()));
-                houseQmCheckTaskIssueLogRspVo.setDelete_at(houseQmCheckTaskIssueLog.getDeleteAt() == null ? 0 : DateUtil.datetimeToTimeStamp(houseQmCheckTaskIssueLog.getDeleteAt()));
-                houseQmCheckTaskIssueLogRspVo.setDetail(rspVo);
+                ApiHouseQmCheckTaskIssueLogRsp issueLog = new ApiHouseQmCheckTaskIssueLogRsp();
+                issueLog.setId(item.getId());
+                issueLog.setProject_id(item.getProjectId());
+                issueLog.setTask_id(item.getTaskId());
+                issueLog.setUuid(item.getUuid());
+                issueLog.setIssue_uuid(item.getIssueUuid());
+                issueLog.setSender_id(item.getSenderId());
+                issueLog.setDesc(item.getDesc());
+                issueLog.setStatus(item.getStatus());
+                issueLog.setAttachment_md5_list(item.getAttachmentMd5List());
+                issueLog.setAudio_md5_list(item.getAudioMd5List());
+                issueLog.setMemo_audio_md5_list(item.getMemoAudioMd5List());
+                issueLog.setClient_create_at(DateUtil.datetimeToTimeStamp(item.getClientCreateAt()));
+                issueLog.setUpdate_at(DateUtil.datetimeToTimeStamp(item.getUpdateAt()));
+                issueLog.setDelete_at(item.getDeleteAt() == null ? 0 : DateUtil.datetimeToTimeStamp(item.getDeleteAt()));
+                issueLog.setDetail(rspVo);
                 if (houseQmCheckTaskIssue != null) {
-                    houseQmCheckTaskIssueLogRspVo.setIssue_uuid(houseQmCheckTaskIssue.getUuid());
+                    issueLog.setIssue_uuid(houseQmCheckTaskIssue.getUuid());
                 }
-                result.add(houseQmCheckTaskIssueLogRspVo);
+                result.add(issueLog);
             });
             myIssueListVo.setIssue_list(result);
             taskResponse.setData(myIssueListVo);
