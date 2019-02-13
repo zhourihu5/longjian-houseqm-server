@@ -414,7 +414,8 @@ public class BuildingqmServiceImpl implements IBuildingqmService {
                 if (checkerGroups.get(i).getReassign_ids().contains(userIds.get(j))) {
                     canReassign = CheckTaskRoleCanReassignType.Yes.getValue();
                 }
-                if (!squadUserMap.get(squadId).containsKey(userIds.get(j))) {
+                Map<Integer, UserInHouseQmCheckTask> map = squadUserMap.get(squadId);
+                if (map!=null&&!map.containsKey(userIds.get(j))) {
                     ApiBuildingQmTaskMemberInsertVo vo = new ApiBuildingQmTaskMemberInsertVo();
                     vo.setSquad_id(squadId);
                     vo.setGroup_role(CheckTaskRoleType.Checker.getValue());
@@ -426,17 +427,19 @@ public class BuildingqmServiceImpl implements IBuildingqmService {
                     continue;
                 }
                 //    # 将此记录标记为不需要删除
-                UserInHouseQmCheckTask dbItem = squadUserMap.get(squadId).get(userIds.get(j));
-                doNotNeedDeleteSquaduserPkId.put(dbItem.getId(), true);
-                if (!dbItem.getCanApprove().equals(canApprove) ||
-                        !dbItem.getCanDirectApprove().equals(canDirectApprove) ||
-                        !dbItem.getCanReassign().equals(canReassign)
-                ) {
-                    dbItem.setCanApprove(canApprove);
-                    dbItem.setCanDirectApprove(canDirectApprove);
-                    dbItem.setCanReassign(canReassign);
-                    needUpdateCheckTaskSquadUser.add(dbItem);
-                }
+                        if(map!=null){
+                            UserInHouseQmCheckTask dbItem = map.get(userIds.get(j));
+                            doNotNeedDeleteSquaduserPkId.put(dbItem.getId(), true);
+                            if (!dbItem.getCanApprove().equals(canApprove) ||
+                                    !dbItem.getCanDirectApprove().equals(canDirectApprove) ||
+                                    !dbItem.getCanReassign().equals(canReassign)
+                            ) {
+                                dbItem.setCanApprove(canApprove);
+                                dbItem.setCanDirectApprove(canDirectApprove);
+                                dbItem.setCanReassign(canReassign);
+                                needUpdateCheckTaskSquadUser.add(dbItem);
+                            }
+                        }
             }
 
         }
@@ -2701,6 +2704,9 @@ public class BuildingqmServiceImpl implements IBuildingqmService {
         ArrayList<ApiBuildingQmCheckTaskSquadObjVo> result = Lists.newArrayList();
         list.forEach(checkergroups -> {
             ApiBuildingQmCheckTaskSquadObjVo objVo = new ApiBuildingQmCheckTaskSquadObjVo();
+            if((Integer) checkergroups.get("id")!=null){
+
+            }
             objVo.setId((Integer) checkergroups.get("id"));
             objVo.setName((String) checkergroups.get("name"));
             if (objVo.getName() == null) {

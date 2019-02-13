@@ -140,12 +140,12 @@ public class IssueServiceImpl implements IIssueService {
         condiMap.put("categoryCls", categoryCls);
         if (taskId > 0) condiMap.put("taskId", taskId);
         if (statusIn.length() > 0) condiMap.put("status", statusInList);
-        if (categoryKey.length() > 0) condiMap.put("categoryPathAndKey", "%%/" + categoryKey + "/%%");
+        if (categoryKey.length() > 0) condiMap.put("categoryPathAndKey", "%/" + categoryKey + "/%");
         if (checkItemKey.length() > 0) condiMap.put("checkItemKey", checkItemKey);
         if (areaIdList.size() > 0) {
             List<String> areaPathAndIdLikeList = Lists.newArrayList();
             for (Integer i : areaIdList) {
-                areaPathAndIdLikeList.add("%%/" + i + "/%%");
+                areaPathAndIdLikeList.add("%/" + i + "/%");
             }
             condiMap.put("areaPathAndId", areaPathAndIdLikeList);
         }
@@ -166,7 +166,7 @@ public class IssueServiceImpl implements IIssueService {
             condiMap.put("status2", status2);
         }
         if (keyWord.length() > 0) {//content like xxx
-            condiMap.put("content", "%%/" + keyWord + "/%%");
+            condiMap.put("content", "%/" + keyWord + "/%");
             if (StringSplitToListUtil.isInteger(keyWord)) {// or id=xxx
                 condiMap.put("id", keyWord);
             }

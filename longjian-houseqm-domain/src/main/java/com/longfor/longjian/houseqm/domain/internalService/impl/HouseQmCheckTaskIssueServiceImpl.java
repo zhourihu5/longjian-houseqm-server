@@ -449,7 +449,7 @@ public class HouseQmCheckTaskIssueServiceImpl implements HouseQmCheckTaskIssueSe
         Example.Criteria criteria = example.createCriteria();
         criteria.andEqualTo("projectId", projectId).andIn("categoryCls", categoryClsList);
         if (taskId != null && taskId > 0) criteria.andEqualTo("taskId", taskId);
-        if (areaId != null && areaId > 0) criteria.andLike("areaPathAndId", "%%/" + areaId + "/%%");
+        if (areaId != null && areaId > 0) criteria.andLike("areaPathAndId", "%/" + areaId + "/%");
         if (beginOn != null && beginOn.getTime() / 1000 > 0)
             criteria.andGreaterThanOrEqualTo("clientCreateAt", beginOn);
         if (endOn != null && endOn.getTime() / 1000 > 0) criteria.andGreaterThanOrEqualTo("clientCreateAt", endOn);
