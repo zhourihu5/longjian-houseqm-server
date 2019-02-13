@@ -414,7 +414,8 @@ public class BuildingqmServiceImpl implements IBuildingqmService {
                 if (checkerGroups.get(i).getReassign_ids().contains(userIds.get(j))) {
                     canReassign = CheckTaskRoleCanReassignType.Yes.getValue();
                 }
-                if (!squadUserMap.get(squadId).containsKey(userIds.get(j))) {
+                Map<Integer, UserInHouseQmCheckTask> map = squadUserMap.get(squadId);
+                if (!map.containsKey(userIds.get(j))) {
                     ApiBuildingQmTaskMemberInsertVo vo = new ApiBuildingQmTaskMemberInsertVo();
                     vo.setSquad_id(squadId);
                     vo.setGroup_role(CheckTaskRoleType.Checker.getValue());
@@ -2701,6 +2702,9 @@ public class BuildingqmServiceImpl implements IBuildingqmService {
         ArrayList<ApiBuildingQmCheckTaskSquadObjVo> result = Lists.newArrayList();
         list.forEach(checkergroups -> {
             ApiBuildingQmCheckTaskSquadObjVo objVo = new ApiBuildingQmCheckTaskSquadObjVo();
+            if((Integer) checkergroups.get("id")!=null){
+
+            }
             objVo.setId((Integer) checkergroups.get("id"));
             objVo.setName((String) checkergroups.get("name"));
             if (objVo.getName() == null) {
