@@ -275,7 +275,7 @@
         GROUP BY area_id,sender_id,typ
     </select>
     <select id="selectCreateAtByProjectIdAndTaskIdsIn" resultMap="checkerIssueStat">
-        SELECT DATE_FORMAT(create_at,'%Y-%m-%d') AS date from house_qm_check_task_issue
+        SELECT DATE_FORMAT(client_create_at,'%Y-%m-%d') AS date from house_qm_check_task_issue
         WHERE project_id=#{projectId} AND task_id IN
         <foreach collection="taskIds" open="(" separator="," close=")" item="taskId" index="index">
             #{taskId}

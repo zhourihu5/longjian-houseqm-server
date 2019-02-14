@@ -566,7 +566,8 @@ public class HouseqmStatServiceImpl implements IHouseqmStatService {
         List<ProjectDailyListVo.ProjectDailyVo> list = Lists.newArrayList();
 
         for (String date : dates) {
-            List<CheckerIssueStat> checkerIssueStat = houseQmCheckTaskIssueService.getIssueSituationDailyByProjTaskIdInDate(projectId, taskIdList, date);
+            String beginOn=date+" 00:00:00";
+            List<CheckerIssueStat> checkerIssueStat = houseQmCheckTaskIssueService.getIssueSituationDailyByProjTaskIdInDate(projectId, taskIdList, beginOn);
             // 赋值 计算
             ProjectDailyListVo projectDailyListVo1 = new ProjectDailyListVo();
             ProjectDailyListVo.ProjectDailyVo stat = projectDailyListVo1.new ProjectDailyVo();
@@ -591,7 +592,7 @@ public class HouseqmStatServiceImpl implements IHouseqmStatService {
             //计算累计数量
             Map<String, Integer> areaMap2 = Maps.newHashMap();
 
-            List<CheckerIssueStat> totals = houseQmCheckTaskIssueService.searchByProjectIdAndTaskIdsAndClientCreateAt(projectId, taskIdList, date);
+            List<CheckerIssueStat> totals = houseQmCheckTaskIssueService.searchByProjectIdAndTaskIdsAndClientCreateAt(projectId, taskIdList, beginOn);
 
             for (CheckerIssueStat l : totals) {
                 String areapath = l.getAreaId() + "/";
