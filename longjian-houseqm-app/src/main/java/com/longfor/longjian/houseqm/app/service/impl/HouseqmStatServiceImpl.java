@@ -309,7 +309,7 @@ public class HouseqmStatServiceImpl implements IHouseqmStatService {
             s.setCount(i.getCount());
             issue_stat.add(s);
         });
-        // 针对结果的顺序问题 有要求时需要 将map 改为 treemap
+        // 针对结果的顺序问题 有要求时需要
         List<HouseQmIssueCategoryStatVo> list = houseqmStatisticService.calculateIssueCount(issue_stat);
         ArrayList<HouseQmStatCategorySituationRspVo> items = new ArrayList<>();
         list.forEach(e -> {
