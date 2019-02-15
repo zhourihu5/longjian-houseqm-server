@@ -288,6 +288,7 @@ public class HouseqmStatController {
             return response;
         }
         try {
+            if (req.getTyp()==null)req.setTyp(0);
             TaskAreaListVo talv = houseqmStatService.searchAreasByProjTaskIdTyp(req.getProject_id(), req.getTask_id(), req.getTyp());
             response.setData(talv);
         } catch (Exception e) {
