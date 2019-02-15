@@ -5,6 +5,7 @@ import org.apache.commons.lang.StringUtils;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
@@ -70,11 +71,10 @@ public class StringSplitToListUtil {
      * @date 2018/12/21 0021
      */
     public static List<String> splitToStringComma(String ids, String sep) {
+        if (ids==null)return Lists.newArrayList();
         String[] str = ids.split(sep);
-        ArrayList<String> list = Lists.newArrayList();
-        for (String s : str) {
-            list.add(s);
-        }
+        List<String> list = Lists.newArrayList();
+        Collections.addAll(list, str);
         return list;
     }
 

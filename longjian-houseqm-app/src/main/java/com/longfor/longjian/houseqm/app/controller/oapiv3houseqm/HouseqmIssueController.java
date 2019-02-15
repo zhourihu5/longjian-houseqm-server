@@ -31,6 +31,7 @@ import com.longfor.longjian.houseqm.util.StringSplitToListUtil;
 import com.longfor.longjian.houseqm.util.StringUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.MediaType;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -184,6 +185,8 @@ public class HouseqmIssueController {
         LjBaseResponse<IssueBatchAppointRspVo> response = new LjBaseResponse<>();
         try {
             ctrlTool.projPermMulti(request, new String[]{"项目.移动验房.问题管理.编辑", "项目.工程检查.问题管理.编辑"});
+            if (req.getRepairer_id()==null)req.setRepairer_id(0);
+            if (req.getPlan_end_on()==null)req.setPlan_end_on(0);
             // 过滤掉不同task下的问题，感觉有点多余，不过还是处理下
             List<String> issueUuids = StringSplitToListUtil.splitToStringComma(req.getIssue_uuids(), ",");
             List<HouseQmCheckTaskIssue> issues = houseQmCheckTaskIssueService.searchHouseQmCheckTaskIssueByTaskIdUuidIn(req.getTask_id(), issueUuids);
@@ -218,7 +221,7 @@ public class HouseqmIssueController {
      * @Param [req]
      **/
     @RequestMapping(value = "batch_approve", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
-    public LjBaseResponse<IssueBatchApproveRspVo> batchApprove(HttpServletRequest request, IssueBatchApproveReq req) throws Exception {
+    public LjBaseResponse<IssueBatchApproveRspVo> batchApprove(HttpServletRequest request,@Validated IssueBatchApproveReq req) throws Exception {
         LjBaseResponse<IssueBatchApproveRspVo> response = new LjBaseResponse<>();
         try {
             ctrlTool.projPermMulti(request,new String[]{"项目.移动验房.问题管理.编辑", "项目.工程检查.问题管理.编辑"});
@@ -247,7 +250,7 @@ public class HouseqmIssueController {
      * @Param [req]
      **/
     @RequestMapping(value = "batch_delete", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
-    public LjBaseResponse<IssueBatchDeleteRspVo> batchDelete(HttpServletRequest request, IssueBatchDeleteReq req) {
+    public LjBaseResponse<IssueBatchDeleteRspVo> batchDelete(HttpServletRequest request,@Validated IssueBatchDeleteReq req) {
         LjBaseResponse<IssueBatchDeleteRspVo> response = new LjBaseResponse<>();
         try {
             ctrlTool.projPermMulti(request,new String[]{"项目.移动验房.问题管理.编辑", "项目.工程检查.问题管理.编辑"});

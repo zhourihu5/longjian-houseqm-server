@@ -78,6 +78,7 @@ public class HouseqmStatController {
     public LjBaseResponse<StatCategoryStatRspVo> categoryStat(HttpServletRequest request, @Validated StatCategoryStatReq req) throws Exception {
         LjBaseResponse<StatCategoryStatRspVo> response = new LjBaseResponse<>();
         ctrlTool.projPermMulti(request, new String[]{"项目.移动验房.统计.查看", "项目.工程检查.统计.查看"});
+        if (req.getArea_id()==null)req.setArea_id(0);
         Date beginOn = DateUtil.timeStampToDate(0, "yyyy-MM-dd");
         Date endOn = DateUtil.timeStampToDate(0, "yyyy-MM-dd");
         if (req.getBegin_on()!=null&&!req.getBegin_on().equals("")) {
@@ -103,11 +104,15 @@ public class HouseqmStatController {
     public LjBaseResponse<StatInspectionSituationSearchRspVo> inspectionSituationSearch(HttpServletRequest request, @Validated StatInspectionSituationSearchReq req) throws Exception {
         LjBaseResponse<StatInspectionSituationSearchRspVo> response = new LjBaseResponse<>();
         ctrlTool.projPermMulti(request, new String[]{"项目.移动验房.统计.查看", "项目.工程检查.统计.查看"});
+        if (req.getArea_id()==null)req.setArea_id(0);
+        if (req.getIssue_status()==null)req.setIssue_status(0);
+        if (req.getStatus()==null)req.setStatus(0);
+
         if (!req.getStatus().equals(RepossessionStatusEnum.Accept.getId())) {
             req.setStart_time("");
             req.setEnd_time("");
         }
-        // 时间设置问题 可能造成数据结果不一致，修改时关注一下
+        // 时间设置问题 可能造成数据结果不一致，修改
         Date startTime = DateUtil.timeStampToDate(0, "yyyy-MM-dd");
         Date endTime = DateUtil.timeStampToDate(0, "yyyy-MM-dd");
         if (req.getStart_time().length() > 0) {
@@ -283,6 +288,7 @@ public class HouseqmStatController {
             return response;
         }
         try {
+            if (req.getTyp()==null)req.setTyp(0);
             TaskAreaListVo talv = houseqmStatService.searchAreasByProjTaskIdTyp(req.getProject_id(), req.getTask_id(), req.getTyp());
             response.setData(talv);
         } catch (Exception e) {

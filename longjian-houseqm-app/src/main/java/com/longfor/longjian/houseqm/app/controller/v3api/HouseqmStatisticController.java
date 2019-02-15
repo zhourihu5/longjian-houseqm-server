@@ -23,6 +23,7 @@ import com.longfor.longjian.houseqm.po.zj2db.UserInHouseQmCheckTask;
 import com.longfor.longjian.houseqm.util.DateUtil;
 import com.longfor.longjian.houseqm.util.MathUtil;
 import org.apache.commons.collections.CollectionUtils;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import com.longfor.longjian.common.base.LjBaseResponse;
@@ -92,6 +93,7 @@ public class HouseqmStatisticController {
         LjBaseResponse<HouseqmStatisticRhyfTaskStatRspVo> response = new LjBaseResponse<>();
         HouseQmCheckTaskHouseStatInfoVo house = null;
         try {
+            if (req.getArea_id()==null)req.setArea_id(0);
             house = iHouseqmStatisticService.getHouseQmHouseQmCheckTaskHouseStatByTaskId(req.getProject_id(), req.getTask_id(), req.getArea_id());
             HouseqmStatisticRhyfTaskStatRspVo item = new HouseqmStatisticRhyfTaskStatRspVo();
             ApiHouseQmRhyfTaskHouseStatVo result = new ApiHouseQmRhyfTaskHouseStatVo();
@@ -254,6 +256,10 @@ public class HouseqmStatisticController {
      */
     @RequestMapping(value = "project_issue_repair", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     public LjBaseResponse<HouseqmStatisticProjectIssueRepairRsp> projectIssueRepair(@Valid HouseqmStatisticProjectIssueRepairReq req) {
+        if (req.getArea_id()==null)req.setArea_id(0);
+        if (req.getBegin_on()==null)req.setBegin_on(0);
+        if (req.getEnd_on()==null)req.setEnd_on(0);
+
         IssueRepairStatisticVo result = iHouseqmStatisticService.projectIssueRepair(req.getProject_id(), req.getSource(), req.getArea_id(), req.getBegin_on(), req.getEnd_on(), req.getTimestamp());
         LjBaseResponse<HouseqmStatisticProjectIssueRepairRsp> response = new LjBaseResponse<>();
         HouseqmStatisticProjectIssueRepairRsp data = new HouseqmStatisticProjectIssueRepairRsp();
@@ -387,7 +393,11 @@ public class HouseqmStatisticController {
      * @date 2018/12/22 0022
      */
     @RequestMapping(value = "task_issue_repair_list", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
-    public LjBaseResponse<HouseqmStatisticTaskIssueRepairListRsp> taskIssueRepairList(HouseqmStatisticTaskIssueRepairListReq req) {
+    public LjBaseResponse<HouseqmStatisticTaskIssueRepairListRsp> taskIssueRepairList(@Validated HouseqmStatisticTaskIssueRepairListReq req) {
+        if (req.getArea_id()==null)req.setArea_id(0);
+        if (req.getBegin_on()==null)req.setBegin_on(0);
+        if (req.getEnd_on()==null)req.setEnd_on(0);
+
         HouseqmStatisticCategoryIssueListRspMsgVo result = iHouseqmStatisticService.taskIssueRepairList(req.getProject_id(), req.getTask_id(), req.getArea_id(), req.getBegin_on(), req.getEnd_on(), req.getTimestamp(), req.getPlan_status(), req.getSource(), req.getPage(), req.getPage_size());
         LjBaseResponse<HouseqmStatisticTaskIssueRepairListRsp> response = new LjBaseResponse<>();
         HouseqmStatisticTaskIssueRepairListRsp data = new HouseqmStatisticTaskIssueRepairListRsp();

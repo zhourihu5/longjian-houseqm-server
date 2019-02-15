@@ -1469,8 +1469,9 @@ public class HouseqmStatisticServiceImpl implements IHouseqmStatisticService {
 
 
     private Map<String, CheckItem> getCheckItemMapByCheckItemKeys(List<String> keys) {
-        List<CheckItem> resCheckItems = checkItemService.SearchCheckItemByKeyIn(keys);
         Map<String, CheckItem> map = new HashMap<>();
+        if (keys.isEmpty())return map;
+        List<CheckItem> resCheckItems = checkItemService.SearchCheckItemByKeyIn(keys);
         for (CheckItem citem : resCheckItems) {
             map.put(citem.getKey(), citem);
         }
@@ -1478,8 +1479,9 @@ public class HouseqmStatisticServiceImpl implements IHouseqmStatisticService {
     }
 
     private Map<String, CategoryV3> getCategoryMapByCategoryKeys(List<String> keys) {
-        List<CategoryV3> resCategoryItems = categoryService.searchCategoryByKeyIn(keys);
         Map<String, CategoryV3> map = new HashMap<>();
+        if (keys.isEmpty())return map;
+        List<CategoryV3> resCategoryItems = categoryService.searchCategoryByKeyIn(keys);
         for (CategoryV3 cate : resCategoryItems) {
             map.put(cate.getKey(), cate);
         }
