@@ -5,6 +5,7 @@ import com.longfor.longjian.houseqm.app.vo.*;
 import com.longfor.longjian.houseqm.app.vo.issuelist.IssueListRsp;
 import com.longfor.longjian.houseqm.po.zj2db.ProjectSettingV2;
 
+import javax.servlet.http.HttpServletResponse;
 import java.util.List;
 import java.util.Map;
 
@@ -55,7 +56,7 @@ public interface IIssueService {
 
     LjBaseResponse updateIssueApproveStatusByUuid(Integer projectId, String issueUuid, Integer uid, Integer status, String content);
 
-    RepairNotifyExportVo repairNotifyExport2(Integer uid, Integer projectId, String issueUuid);
+    Boolean repairNotifyExport2(Integer uid, Integer projectId, String issueUuid, HttpServletResponse response);
 
     List<ProjectSettingV2> getProjectSettingId(Integer projectId);
 

@@ -687,11 +687,11 @@ public class HouseQmCheckTaskIssueServiceImpl implements HouseQmCheckTaskIssueSe
         criteria.andIsNull("deleteAt");
         return houseQmCheckTaskIssueMapper.selectOneByExample(example);
     }
-
+    @Transactional
     @Override
     @LFAssignDataSource("zhijian2")
     public void update(HouseQmCheckTaskIssue issue_info) {
-        houseQmCheckTaskIssueMapper.updateByPrimaryKeySelective(issue_info);
+        houseQmCheckTaskIssueMapper.updateByPrimaryKey(issue_info);
 
     }
 

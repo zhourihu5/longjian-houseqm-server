@@ -248,7 +248,7 @@ public class UserInHouseQmCheckTaskServiceImpl implements UserInHouseQmCheckTask
         criteria.andIn("taskId",taskIds).andEqualTo("roleType",value).andIsNull("deleteAt");
         return userInHouseQmCheckTaskMapper.selectByExample(example);
     }
-
+    @Transactional
     @Override
     @LFAssignDataSource("zhijian2")
     public int add(UserInHouseQmCheckTask qmCheckTask) {
