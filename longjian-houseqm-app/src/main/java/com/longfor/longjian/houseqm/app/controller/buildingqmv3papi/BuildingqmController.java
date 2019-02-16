@@ -339,6 +339,11 @@ public class BuildingqmController {
         response.setData(reportIssueVo);
         return response;
     }
+    @RequestMapping(value = "stat/issue_statistic_export", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+    public LjBaseResponse<ReportIssueVo> issueStatisticExport(@RequestParam(name = "project_id", required = true) Integer projectId){
+
+       return  null;
+    }
 
 
 }
