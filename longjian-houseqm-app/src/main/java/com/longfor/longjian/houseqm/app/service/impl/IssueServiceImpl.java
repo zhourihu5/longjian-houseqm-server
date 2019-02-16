@@ -254,7 +254,7 @@ public class IssueServiceImpl implements IIssueService {
         if(area==null||StringUtils.isEmpty(area.getPath())) {
             return names;
         }
-        List<Integer> areaIdList=Arrays.asList(area.getPath().split("/")).stream().map(Integer::valueOf).collect(Collectors.toList());
+        List<Integer> areaIdList=StringUtil.strToInts(area.getPath(),"/").stream().map(Integer::valueOf).collect(Collectors.toList());
         areaIdList.add(areaId);
         for(Integer id:areaIdList) {
             if(areaMap.get(id)!=null) {

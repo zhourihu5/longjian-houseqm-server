@@ -4,10 +4,14 @@ import com.longfor.longjian.houseqm.app.vo.issuelist.ExcelIssueData;
 import com.longfor.longjian.houseqm.util.DateUtil;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.apache.poi.ss.usermodel.*;
+import org.apache.poi.ss.util.CellAddress;
 import org.apache.poi.xssf.streaming.SXSSFCell;
 import org.apache.poi.xssf.streaming.SXSSFRow;
 import org.apache.poi.xssf.streaming.SXSSFSheet;
 import org.apache.poi.xssf.streaming.SXSSFWorkbook;
+import org.apache.poi.xssf.usermodel.XSSFCell;
+import org.apache.poi.xssf.usermodel.XSSFRow;
+import org.apache.poi.xssf.usermodel.XSSFSheet;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
@@ -45,13 +49,15 @@ public class ExportUtils {
         //File file = FileUtil.createFile(path);
         //OutputStream out = new FileOutputStream(file);
         SXSSFWorkbook workbook = new SXSSFWorkbook();
-        SXSSFSheet sheet = workbook.createSheet("");
+        SXSSFSheet sheet = workbook.createSheet();
 
         CellStyle cellStyle = workbook.createCellStyle();
         Font base_font = workbook.createFont();
 
         base_font.setFontName("宋体");//字体
         base_font.setBold(true);//加粗
+        base_font.setFontHeightInPoints((short) 14);
+        cellStyle.setFont(base_font);
         cellStyle.setVerticalAlignment(CENTER);//垂直居中
         cellStyle.setWrapText(true);//文字换行
         cellStyle.setAlignment(HorizontalAlignment.CENTER);//水平居中
@@ -73,8 +79,6 @@ public class ExportUtils {
         sheet.setColumnWidth(getColumnIndexByName("U"), 100 * 256);
         sheet.setColumnWidth(getColumnIndexByName("S"), 20 * 256);
         sheet.setColumnWidth(getColumnIndexByName("T"), 25 * 256);
-
-        base_font.setFontHeightInPoints((short) 14);
 
         //表头
         List<String> title = new ArrayList<>();
@@ -173,14 +177,24 @@ public class ExportUtils {
         //    pathname = '%s/export_issue_excel_%s_%s.xlsx' % (config.EXPORT_PATH, dt, r)
         //    wb.save(pathname)
         String dt = DateUtil.getNowTimeStr("yyyyMMddHHmmss");
-        String r=new Random().ints(0,65536).toString();
-        String pathname=String.format("%s/export_issue_excel_%s_%s.xlsx",EXPORT_PATH,dt,r);
+        String r = new Random().ints(0, 65536).toString();
+        String pathname = String.format("%s/export_issue_excel_%s_%s.xlsx", EXPORT_PATH, dt, r);
 
         return workbook;
     }
 
     private static int getColumnIndexByName(String name) {
         return COL_NAME_LIST.indexOf(name);
+    }
+
+    private static XSSFCell getCell(String address, XSSFSheet sheet) {//需先创建单元格才能获取
+        CellAddress ca = new CellAddress(address);
+        XSSFRow row = sheet.getRow(ca.getRow());
+        XSSFCell cell = row.getCell(ca.getColumn());
+        if (cell == null) {
+            cell = row.createCell(ca.getColumn());
+        }
+        return cell;
     }
 
 }
