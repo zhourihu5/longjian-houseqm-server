@@ -2705,9 +2705,10 @@ public class BuildingqmServiceImpl implements IBuildingqmService {
         list.forEach(checkergroups -> {
             ApiBuildingQmCheckTaskSquadObjVo objVo = new ApiBuildingQmCheckTaskSquadObjVo();
             if((Integer) checkergroups.get("id")!=null){
-
+                objVo.setId((Integer) checkergroups.get("id"));
+            }else{
+                objVo.setId(0);
             }
-            objVo.setId((Integer) checkergroups.get("id"));
             objVo.setName((String) checkergroups.get("name"));
             if (objVo.getName() == null) {
                 log.info("name not exist, data='unmarshCheckerGroups'");

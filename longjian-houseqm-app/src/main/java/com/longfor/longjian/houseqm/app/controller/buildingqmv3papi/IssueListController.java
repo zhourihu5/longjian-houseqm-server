@@ -95,30 +95,26 @@ public class IssueListController {
     }
 
     @RequestMapping(value = "repair_notify_export2/", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
-    public LjBaseResponse<String> repairNotifyExport2(HttpServletRequest request, HttpServletResponse response, @RequestParam(value = "project_id", required = true) Integer projectId,
-                                                      @RequestParam(value = "issue_uuid", required = true) String issueUuid) {
-        if (request.getMethod().equals("POST")) {
-            String project_id = request.getParameter("project_id");
-            String issue_ids = request.getParameter("issue_ids");
-        }
+    public LjBaseResponse<Object> repairNotifyExport2(HttpServletRequest request, HttpServletResponse response, @RequestParam(value = "project_id", required = true) Integer projectId,
+                                                      @RequestParam(value = "issue_ids", required = true) String issueUuid) {
+
         log.info("repair_notify_export2, project_id=" + projectId + ", issue_ids=" + issueUuid + "");
 
         Integer userId = (Integer) sessionInfo.getBaseInfo("userId");
         if (projectId == null || issueUuid == null) {
-            LjBaseResponse<String> objectTaskResponse = new LjBaseResponse<>();
+            LjBaseResponse<Object> objectTaskResponse = new LjBaseResponse<>();
             objectTaskResponse.setMessage("args error");
             objectTaskResponse.setResult((Integer) CommonGlobalEnum.RES_ERROR.getId());
             return objectTaskResponse;
 
         }
-        RepairNotifyExportVo repairNotifyExportVo = iIssueService.repairNotifyExport2(userId, projectId, issueUuid);
-        log.info("export repair notify, result=" + repairNotifyExportVo.getResult() + ", message=" + repairNotifyExportVo.getMessage() + ", path=" + repairNotifyExportVo.getPath() + "");
-        if (repairNotifyExportVo.getResult() != 0) {
-            LjBaseResponse<String> objectTaskResponse = new LjBaseResponse<>();
-            objectTaskResponse.setMessage(repairNotifyExportVo.getMessage());
-            objectTaskResponse.setResult(repairNotifyExportVo.getResult());
-            return objectTaskResponse;
-        }
+        Boolean b = iIssueService.repairNotifyExport2(userId, projectId, issueUuid,response);
+       if(b){
+           LjBaseResponse<Object> objectTaskResponse = new LjBaseResponse<>();
+           objectTaskResponse.setData(b);
+           return objectTaskResponse;
+       }
+
         return null;
     }
 

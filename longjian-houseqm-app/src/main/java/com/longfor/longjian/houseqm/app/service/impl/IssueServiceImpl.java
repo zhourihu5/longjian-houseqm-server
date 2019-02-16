@@ -10,6 +10,8 @@ import com.longfor.longjian.common.consts.checktask.*;
 import com.longfor.longjian.common.exception.LjBaseRuntimeException;
 import com.longfor.longjian.common.push.UmPushUtil;
 import com.longfor.longjian.common.push.xiaomi.XmPushUtil;
+import com.longfor.longjian.common.util.RequestContextHolderUtil;
+import com.longfor.longjian.houseqm.app.test.DocumentHandler;
 import com.longfor.longjian.houseqm.app.vo.*;
 import com.longfor.longjian.houseqm.app.vo.IssueListVo.DetailVo;
 
@@ -31,6 +33,8 @@ import org.springframework.stereotype.Repository;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
+import javax.servlet.http.HttpServletResponse;
+import java.text.SimpleDateFormat;
 import java.util.*;
 
 /**
@@ -690,13 +694,13 @@ public class IssueServiceImpl implements IIssueService {
     }
 
     @Override
-    public RepairNotifyExportVo repairNotifyExport2(Integer uid, Integer projectId, String issueUuid) {
+    public Boolean repairNotifyExport2(Integer uid, Integer projectId, String issueUuid, HttpServletResponse resp) {
         int result = 0;
         String message = "";
-        ArrayList<ExportNotifyDetail2Vo> input = Lists.newArrayList();
+        List<ExportNotifyDetail2Vo> input = Lists.newArrayList();
         List<Integer> issueIds = StringSplitToListUtil.splitToIdsComma(issueUuid, ",");
-        if (issueIds.size() == 0) {
-
+        if ( CollectionUtils.isEmpty(issueIds)) {
+              throw  new  LjBaseRuntimeException(-99,"");
         }
         ArrayList<Integer> statusList = Lists.newArrayList();
         statusList.add(CheckTaskIssueStatus.NoteNoAssign.getValue());
@@ -709,10 +713,34 @@ public class IssueServiceImpl implements IIssueService {
             ExportNotifyDetail2Vo vo = new ExportNotifyDetail2Vo();
             vo.setIssue_id(issueList.get(i).getId());
             vo.setContent(issueList.get(i).getContent());
-            vo.setIssue_suggest((String) JSON.parseObject(issueList.get(i).getDetail(), Map.class).get("IssueSuggest"));
+            if((String) JSON.parseObject(issueList.get(i).getDetail(), Map.class).get("IssueSuggest")!=null){
+                vo.setIssue_suggest((String) JSON.parseObject(issueList.get(i).getDetail(), Map.class).get("IssueSuggest"));
+            }else{
+                vo.setIssue_suggest("");
+            }
             input.add(vo);
         }
+        //翻转
+        Collections.reverse(input);
+        User user = userService.selectByUserIdAndNotDelete(uid);
         String userName = "";
+        if(user.getRealName()!=null) {
+            userName = user.getRealName();
+        }
+        Map<String, Object> dataMap = new HashMap<>();
+        dataMap.put("name",userName);
+        ArrayList<String> list = Lists.newArrayList();
+        ArrayList<String> list2 = Lists.newArrayList();
+        input.forEach(item->{
+            list.add(item.getContent().replace("\n"," "));
+            list2.add(item.getIssue_suggest().replace("\n"," "));
+        });
+        dataMap.put("qingkuang",list);
+        dataMap.put("request",list2);
+        String str = DateUtil.getNowTimeStr("yyyy_MM_dd_hh_mm_ss");
+        boolean b = new DocumentHandler().exportDoc("notify_template2", "导出问题通知单_" + str, dataMap, resp);
+
+
       /*  User user = UserDao().get(uid);
         if (user!=null){
              userName=user.getRealName();
@@ -723,7 +751,7 @@ public class IssueServiceImpl implements IIssueService {
       String  path = exportRepairNotify2(input, userName);
                 String filename="整改通知单_ +"+DateUtil.getNowTimeStr("yyyy-MM-dd-HH-mm-ss")+"+.docx";
 */
-        return null;
+        return b;
     }
 
     @Override
