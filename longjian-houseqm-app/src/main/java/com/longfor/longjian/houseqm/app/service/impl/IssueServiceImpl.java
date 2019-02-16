@@ -2,23 +2,21 @@ package com.longfor.longjian.houseqm.app.service.impl;
 
 import com.alibaba.fastjson.JSON;
 import com.longfor.longjian.common.base.LjBaseResponse;
-import com.longfor.longjian.common.consts.HouseQmCheckTaskActionLogType;
-import com.longfor.longjian.common.consts.HouseQmCheckTaskIssueLogStatus;
-import com.longfor.longjian.common.consts.ModuleInfoEnum;
-import com.longfor.longjian.common.consts.UserInIssueRoleType;
+import com.longfor.longjian.common.consts.*;
 import com.longfor.longjian.common.consts.checktask.*;
 import com.longfor.longjian.common.exception.LjBaseRuntimeException;
 import com.longfor.longjian.common.push.UmPushUtil;
 import com.longfor.longjian.common.push.xiaomi.XmPushUtil;
+import com.longfor.longjian.houseqm.app.utils.ExportUtils;
 import com.longfor.longjian.houseqm.app.vo.*;
 import com.longfor.longjian.houseqm.app.vo.IssueListVo.DetailVo;
 
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.longfor.longjian.houseqm.app.service.IIssueService;
+import com.longfor.longjian.houseqm.app.vo.issuelist.ExcelIssueData;
 import com.longfor.longjian.houseqm.app.vo.issuelist.IssueListRsp;
 import com.longfor.longjian.houseqm.consts.AppPlatformTypeEnum;
-import com.longfor.longjian.common.consts.HouseQmCheckTaskIssueStatusEnum;
 import com.longfor.longjian.houseqm.domain.internalService.*;
 import com.longfor.longjian.houseqm.po.zhijian2_apisvr.User;
 import com.longfor.longjian.houseqm.po.zj2db.*;
@@ -26,12 +24,14 @@ import com.longfor.longjian.houseqm.util.*;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang.StringUtils;
+import org.apache.poi.xssf.streaming.SXSSFWorkbook;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Repository;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
 import java.util.*;
+import java.util.stream.Collectors;
 
 /**
  * @author Houyan
@@ -64,35 +64,213 @@ public class IssueServiceImpl implements IIssueService {
     private HouseQmCheckTaskIssueUserService houseQmCheckTaskIssueUserService;
     @Resource
     private HouseQmCheckTaskNotifyRecordService houseQmCheckTaskNotifyRecordService;
-
     @Resource
     private HouseQmCheckTaskIssueService houseQmCheckTaskIssueService;
     @Resource
     private UserInHouseQmCheckTaskService userInHouseQmCheckTaskService;
-
     @Resource
     private CategoryV3Service categoryV3Service;
     @Resource
     private HouseQmCheckTaskIssueLogService houseQmCheckTaskIssueLogService;
-
     @Resource
     private CheckItemV3Service checkItemV3Service;
-
     @Resource
     private UserService userService;
-
     @Resource
     private AreaService areaService;
-
     @Resource
     private FileResourceService fileResourceService;
     @Resource
     private HouseQmCheckTaskService houseQmCheckTaskService;
     @Resource
     private ProjectSettingV2Service projectSettingV2Service;
+    @Resource
+    private ProjectSettingService projectSettingService;
+    @Resource
+    private ProjectService projectService;
 
     @Value("${env_info.host_list}")
     private String envInfo;
+    private String ILLEGAL_CHARACTERS_RE="[\\000-\\010]|[\\013-\\014]|[\\016-\\037]|\\xef|\\xbf";
+
+
+    @Override
+    public Map<String, Object> exportExcel(Integer uid, Integer projectId, Integer categoryCls, Integer taskId, String categoryKey, String checkItemKey, String areaIds, String statusIn,
+                                           Integer checkerId, Integer repairerId, Integer type, Integer condition, String keyWord, String createOnBegin,
+                                           String createOnEnd, Boolean isOverDue) {
+
+        //准备数据
+        List<Integer> areaIdList = StringSplitToListUtil.splitToIdsComma(areaIds, ",");
+        List<Integer> statusInList = StringSplitToListUtil.splitToIdsComma(statusIn, ",");
+        Map<String, Object> condiMap = Maps.newHashMap();
+        condiMap.put("projectId", projectId);
+        condiMap.put("categoryCls", categoryCls);
+        if (taskId != null && taskId > 0) condiMap.put("taskId", taskId);
+        if (statusIn.length() > 0) condiMap.put("status", statusInList);
+        if (categoryKey.length() > 0) condiMap.put("categoryPathAndKey", "%/" + categoryKey + "/%");
+        if (checkItemKey.length() > 0) condiMap.put("checkItemKey", checkItemKey);
+        if (areaIdList.size() > 0) {
+            List<String> areaPathAndIdLikeList = Lists.newArrayList();
+            for (Integer i : areaIdList) {
+                areaPathAndIdLikeList.add("%/" + i + "/%");
+            }
+            condiMap.put("areaPathAndId", areaPathAndIdLikeList);
+        }
+        if (type != null && type > 0) condiMap.put("type", type);
+        if (condition != null && condition > 0) condiMap.put("condition", condition);
+        if (checkerId != null && checkerId > 0) condiMap.put("senderId", checkerId);
+        if (repairerId != null && repairerId > 0) condiMap.put("repairerId", repairerId);
+        if (createOnBegin.length() > 0) condiMap.put("clientCreateAtGte", createOnBegin + " 00:00:00");
+        if (createOnEnd.length() > 0) condiMap.put("clientCreateAtLte", createOnEnd + " 23:59:59");
+        if (isOverDue) {
+            List<Integer> status1 = Lists.newArrayList();
+            List<Integer> status2 = Lists.newArrayList();
+            status1.add(HouseQmCheckTaskIssueStatusEnum.NoteNoAssign.getId());
+            status1.add(HouseQmCheckTaskIssueStatusEnum.AssignNoReform.getId());
+            condiMap.put("status1", status1);
+            status2.add(HouseQmCheckTaskIssueStatusEnum.ReformNoCheck.getId());
+            status2.add(HouseQmCheckTaskIssueStatusEnum.CheckYes.getId());
+            condiMap.put("status2", status2);
+        }
+        if (keyWord.length() > 0) {//content like xxx
+            condiMap.put("content", "%/" + keyWord + "/%");
+            if (StringSplitToListUtil.isInteger(keyWord)) {// or id=xxx
+                condiMap.put("id", keyWord);
+            }
+        }
+        condiMap.put("deleted", "false");
+        condiMap.put("reverse", true);
+        List<HouseQmCheckTaskIssue> valid_issues = houseQmCheckTaskIssueService.searchByProjectIdAndCategoryClsAndNoDeletedAndDongTai(condiMap);
+        //task_ids, category_keys, user_ids, check_items, area_paths, attachments= [], [], [], [], [], []
+        List<Integer> task_ids = Lists.newArrayList();
+        List<String> category_keys = Lists.newArrayList();
+        List<Integer> user_ids = Lists.newArrayList();
+        List<String> check_items = Lists.newArrayList();
+        List<Integer> area_paths = Lists.newArrayList();
+
+        for (HouseQmCheckTaskIssue issue : valid_issues) {
+            if (!task_ids.contains(issue.getTaskId())) {
+                task_ids.add(issue.getTaskId());
+            }
+            Integer senderId = issue.getSenderId();
+            if (senderId != null && senderId != 0 && !user_ids.contains(senderId)) user_ids.add(senderId);
+            Integer repairer_id = issue.getRepairerId();
+            if (repairer_id != null && repairer_id != 0 && !user_ids.contains(repairer_id)) user_ids.add(repairer_id);
+            String followerIds = issue.getRepairerFollowerIds();
+            if (followerIds != null) {
+                List<Integer> followerIdsList = StringUtil.strToInts(followerIds, ",");
+                for (Integer item : followerIdsList) {
+                    if (!user_ids.contains(item)) user_ids.add(item);
+                }
+            }
+            Integer assigner = issue.getLastAssigner();
+            if (assigner != null && assigner != 0 && !user_ids.contains(assigner)) user_ids.add(assigner);
+            Integer destroyUser = issue.getDestroyUser();
+            if (destroyUser != null && destroyUser != 0 && !user_ids.contains(destroyUser)) user_ids.add(destroyUser);
+            List<String> categoryPathAndKeys = StringUtil.strToStrs(issue.getCategoryPathAndKey(), "/");
+            for (String item : categoryPathAndKeys) {
+                if (!category_keys.contains(item)) category_keys.add(item);
+            }
+            List<String> checkItemPathAndKeys = StringUtil.strToStrs(issue.getCheckItemPathAndKey(), "/");
+            for (String item : checkItemPathAndKeys) {
+                if (!check_items.contains(item))check_items.add(item);
+            }
+            List<Integer> areaPathAndIds = StringUtil.strToInts(issue.getAreaPathAndId(), "/");
+            for (Integer item : areaPathAndIds) {
+                if (!area_paths.contains(item))area_paths.add(item);
+            }
+        }
+        Map<Integer, HouseQmCheckTask> task_map = createTaskMap(task_ids);
+        Map<String, CategoryV3> category_map = createCategoryKeyMap(category_keys);
+        Map<String, CheckItemV3> check_item_map = createCheckItemMap(check_items);
+        Map<Integer, User> user_map = createUserMap(user_ids);
+        Map<Integer, Area> area_map = createAreaMap(area_paths);
+        boolean condition_open=false;
+        ProjectSetting condition_setting = projectSettingService.getSettingByProjectIdSKey(projectId, "PROJ_ISSUE_CONDITION");
+        if (condition_setting!=null&&condition_setting.getValue().equals("是")){
+            condition_open=true;
+        }
+        List<ExcelIssueData> data = Lists.newArrayList();
+        for (HouseQmCheckTaskIssue issue : valid_issues) {
+            ExcelIssueData item = new ExcelIssueData();
+            item.setIssue_id(issue.getId());
+            item.setTask_name(task_map.containsKey(issue.getTaskId())?task_map.get(issue.getTaskId()).getName():"");
+            item.setStatus_name(HouseQmCheckTaskIssueStatus.getLabel(issue.getStatus()));
+            item.setArea_path(getAreaPath(area_map,issue.getAreaId()));
+            item.setCategory_name(category_map.containsKey(issue.getCategoryKey())?category_map.get(issue.getCategoryKey()).getName():"");
+            if (condition_open)
+                item.setCondition_name(HouseQmCheckTaskIssueCondition.getLabel(issue.getCondition()));
+            item.setChecker(user_map.get(issue.getSenderId())!=null?user_map.get(issue.getSenderId()).getRealName():"");
+            item.setCheck_at(com.longfor.longjian.common.util.DateUtil.dateToString(issue.getClientCreateAt()));
+            item.setAssigner(user_map.get(issue.getLastAssigner())!=null?user_map.get(issue.getLastAssigner()).getRealName():"");
+            item.setAssign_at(DateUtil.datetimeZero(issue.getLastAssignAt())?"":DateUtil.formatBySec(issue.getLastAssignAt()));
+            item.setRepairer(user_map.get(issue.getRepairerId())!=null?user_map.get(issue.getRepairerId()).getRealName():"");
+            item.setRepair_plan_end_on(DateUtil.datetimeZero(issue.getPlanEndOn())?"":DateUtil.formatBySec(issue.getPlanEndOn()));
+            item.setRepair_end_on(DateUtil.datetimeZero(issue.getEndOn())?"":DateUtil.formatBySec(issue.getEndOn()));
+            item.setDestroy_user(user_map.get(issue.getDestroyUser())!=null?user_map.get(issue.getDestroyUser()).getRealName():"");
+            item.setDestroy_at(DateUtil.datetimeZero(issue.getDestroyAt())?"":DateUtil.formatBySec(issue.getDestroyAt()));
+            item.setContent(issue.getContent().replaceAll(ILLEGAL_CHARACTERS_RE, ""));
+            item.getCheck_item().addAll(getCategoryPathName(category_map,issue.getCategoryPathAndKey()));
+            item.getCheck_item().addAll(getCheckItemPathName(check_item_map,issue.getCheckItemPathAndKey()));
+
+            if(issue.getStatus().intValue()==HouseQmCheckTaskIssueStatus.NoteNoAssign.getValue().intValue()||
+                    issue.getStatus().intValue()==HouseQmCheckTaskIssueStatus.AssignNoReform.getValue().intValue()) {
+                if(!DateUtil.datetimeZero(issue.getPlanEndOn())) {
+                    if(DateUtil.datetimeBefore(issue.getPlanEndOn(), new Date())) {
+                        item.setIs_overdue(true);
+                    }
+                }
+            }else if(issue.getStatus().intValue()==HouseQmCheckTaskIssueStatus.ReformNoCheck.getValue().intValue()||
+                    issue.getStatus().intValue()==HouseQmCheckTaskIssueStatus.CheckYes.getValue().intValue()){
+                if(!DateUtil.datetimeZero(issue.getPlanEndOn())) {
+                    if(DateUtil.datetimeBefore(issue.getPlanEndOn(), issue.getEndOn())) {
+                        item.setIs_overdue(true);
+                    }
+                }
+            }
+            data.add(item);
+        }
+
+        String project_name="";
+        Project project = projectService.getOneByProjId(projectId);
+        if (project!=null)project_name=project.getName();
+        // 数据 格式化到表格 输出
+        SXSSFWorkbook wb = ExportUtils.exportExcel(data, condition_open);
+        //        ret = export_issue_excel(data, condition_open)
+        //        path = ret.get('path', '')
+
+        String dt = DateUtil.getNowTimeStr("yyyyMMddHHmmss");
+        String fileName = String.format("%s-%s-问题列表_%s.xlsx", CategoryClsTypeEnum.getName(categoryCls), project_name, dt);
+        Map<String, Object> map = Maps.newHashMap();
+        map.put("fileName",fileName);
+        map.put("workbook",wb);
+
+        return map;
+    }
+
+    private List<String> getAreaPath(Map<Integer,Area> areaMap,Integer areaId) {
+        List<String> names=new ArrayList<>();
+        Area area=areaMap.get(areaId);
+        if(area==null||StringUtils.isEmpty(area.getPath())) {
+            return names;
+        }
+        List<Integer> areaIdList=Arrays.asList(area.getPath().split("/")).stream().map(Integer::valueOf).collect(Collectors.toList());
+        areaIdList.add(areaId);
+        for(Integer id:areaIdList) {
+            if(areaMap.get(id)!=null) {
+                names.add(areaMap.get(id).getName());
+            }else {
+                log.info(String.format("areaid not in map, areaid=%d", id));
+            }
+        }
+        return names;
+    }
+
+    public Map<Integer,HouseQmCheckTask> createTaskMap(List<Integer> taskIds){
+        if (CollectionUtils.isEmpty(taskIds))return Maps.newHashMap();
+        List<HouseQmCheckTask> tasks = houseQmCheckTaskService.searchHouseQmCheckTaskByTaskIdIn(taskIds);
+        return tasks.stream().collect(Collectors.toMap(HouseQmCheckTask::getTaskId, t -> t));
+    }
 
     /**
      * @param projectId
@@ -1155,7 +1333,7 @@ public class IssueServiceImpl implements IIssueService {
 
     /**
      * @param categoryKeys
-     * @return java.util.Map<java.lang.String                                                                                                                               ,                                                                                                                               com.longfor.longjian.houseqm.po.zj2db.CategoryV3>
+     * @return java.util.Map<java.lang.String                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                               ,                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                               com.longfor.longjian.houseqm.po.zj2db.CategoryV3>
      * @author hy
      * @date 2018/12/21 0021
      */
@@ -1171,7 +1349,7 @@ public class IssueServiceImpl implements IIssueService {
 
     /**
      * @param checkItems
-     * @return java.util.Map<java.lang.String                                                                                                                               ,                                                                                                                               com.longfor.longjian.houseqm.po.zj2db.CheckItemV3>
+     * @return java.util.Map<java.lang.String                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                               ,                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                               com.longfor.longjian.houseqm.po.zj2db.CheckItemV3>
      * @author hy
      * @date 2018/12/21 0021
      */
@@ -1187,7 +1365,7 @@ public class IssueServiceImpl implements IIssueService {
 
     /**
      * @param repairers
-     * @return java.util.Map<java.lang.Integer                                                                                                                               ,                                                                                                                               com.longfor.longjian.houseqm.po.zhijian2_apisvr.User>
+     * @return java.util.Map<java.lang.Integer                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                               ,                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                               com.longfor.longjian.houseqm.po.zhijian2_apisvr.User>
      * @author hy
      * @date 2018/12/21 0021
      */
@@ -1203,7 +1381,7 @@ public class IssueServiceImpl implements IIssueService {
 
     /**
      * @param areaPaths
-     * @return java.util.Map<java.lang.Integer                                                                                                                               ,                                                                                                                               com.longfor.longjian.houseqm.po.zj2db.Area>
+     * @return java.util.Map<java.lang.Integer                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                               ,                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                               com.longfor.longjian.houseqm.po.zj2db.Area>
      * @author hy
      * @date 2018/12/21 0021
      */
@@ -1219,7 +1397,7 @@ public class IssueServiceImpl implements IIssueService {
 
     /**
      * @param attachments
-     * @return java.util.Map<java.lang.String                                                                                                                               ,                                                                                                                               com.longfor.longjian.houseqm.po.zj2db.FileResource>
+     * @return java.util.Map<java.lang.String                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                               ,                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                               com.longfor.longjian.houseqm.po.zj2db.FileResource>
      * @author hy
      * @date 2018/12/21 0021
      */

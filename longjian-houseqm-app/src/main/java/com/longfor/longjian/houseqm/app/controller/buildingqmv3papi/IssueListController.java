@@ -1,12 +1,15 @@
 package com.longfor.longjian.houseqm.app.controller.buildingqmv3papi;
 
+import com.alibaba.fastjson.JSON;
 import com.google.common.collect.Lists;
 import com.longfor.longjian.common.base.LjBaseResponse;
 import com.longfor.longjian.common.util.CtrlTool;
 import com.longfor.longjian.common.util.RequestContextHolderUtil;
 import com.longfor.longjian.common.util.SessionInfo;
 import com.longfor.longjian.houseqm.app.req.IssueListDoActionReq;
+import com.longfor.longjian.houseqm.app.req.bgtask.ExportBuildingExcelReq;
 import com.longfor.longjian.houseqm.app.service.IIssueService;
+import com.longfor.longjian.houseqm.app.utils.ExportUtils;
 import com.longfor.longjian.houseqm.app.vo.*;
 import com.longfor.longjian.houseqm.app.vo.issuelist.DetailLogRspVo;
 import com.longfor.longjian.houseqm.app.vo.issuelist.DetailRepairLogRspVo;
@@ -14,14 +17,20 @@ import com.longfor.longjian.houseqm.app.vo.issuelist.IssueListRsp;
 import com.longfor.longjian.houseqm.consts.CommonGlobalEnum;
 import com.longfor.longjian.houseqm.po.zj2db.ProjectSettingV2;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.poi.hssf.usermodel.HSSFWorkbook;
+import org.apache.poi.xssf.streaming.SXSSFWorkbook;
 import org.springframework.http.MediaType;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
+import javax.servlet.ServletOutputStream;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
+import java.io.IOException;
 import java.util.List;
+import java.util.Map;
 
 /**
  * http://192.168.37.159:3000/project/8/interface/api/286 问题检索
@@ -43,6 +52,43 @@ public class IssueListController {
     private SessionInfo sessionInfo;
 
     /**
+     * @return com.longfor.longjian.common.base.LjBaseResponse<java.lang.Object>
+     * @Author hy
+     * @Description 问题管理--导出excel
+     * @Date 20:51 2019/2/15
+     * @Param [request, req]
+     **/
+    @RequestMapping(value = "export_excel", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+    public LjBaseResponse<Object> exportExcel(HttpServletRequest request, HttpServletResponse response, @Validated ExportBuildingExcelReq req) throws Exception {
+        // 对参数进行非空判断
+        log.info("export_excel," + JSON.toJSONString(req));
+        Integer uid = (Integer) sessionInfo.getBaseInfo("userId");
+        ctrlTool.projPerm(request, "项目.工程检查.问题管理.查看");
+        LjBaseResponse<Object> ljBaseResponse = new LjBaseResponse<>();
+        // 导出execel
+        ServletOutputStream os = response.getOutputStream();
+        try {
+            Map<String, Object> map = iIssueService.exportExcel(uid, req.getProject_id(), req.getCategory_cls(), req.getTask_id(), req.getCategory_key(), req.getCheck_item_key(),
+                    req.getArea_ids(), req.getStatus_in(), req.getChecker_id(), req.getRepairer_id(), req.getType(), req.getCondition(), req.getKey_word(),
+                    req.getCreate_on_begin(), req.getCreate_on_end(), req.getIs_overdue());
+            String fileName = (String) map.get("fileName");
+            SXSSFWorkbook wb = (SXSSFWorkbook) map.get("workbook");
+            response.setContentType("application/vnd.ms-excel");
+            response.setHeader("Content-Disposition", "attachment;filename=" + fileName + ".xls");
+            wb.write(os);
+            os.flush();
+        } catch (IOException e) {
+            e.printStackTrace();
+            log.error("excel 导出异常");
+            ljBaseResponse.setResult(1);
+            ljBaseResponse.setMessage(e.getMessage());
+        } finally {
+            os.close();
+        }
+        return ljBaseResponse;
+    }
+
+    /**
      * 问题检索
      * http://192.168.37.159:3000/project/8/interface/api/286
      * //PageInfo<IssueListVo>
@@ -52,8 +98,8 @@ public class IssueListController {
      */
     @RequestMapping(value = "list", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     public TaskResponse<IssueListRsp> doAction(HttpServletRequest request, @Valid IssueListDoActionReq req) {
-        log.info("list, project_id="+req.getProject_id()+", category_cls="+req.getCategory_cls()+", task_id="+req.getTask_id()+", category_key="+req.getCategory_key()+", check_item_key="+req.getCheck_item_key()+", area_ids="+req.getArea_ids()+", status_in="+req.getStatus_in()+", checker_id="+req.getChecker_id()+", repairer_id="+req.getRepairer_id()+"," +
-                " type="+req.getType()+", condition="+req.getCondition()+", key_word="+req.getKey_word()+", create_on_begin="+req.getCreate_on_begin()+", create_on_end="+req.getCreate_on_end()+", is_overdue="+req.is_overdue()+", page="+req.getPage()+", page_size="+req.getPage_size()
+        log.info("list, project_id=" + req.getProject_id() + ", category_cls=" + req.getCategory_cls() + ", task_id=" + req.getTask_id() + ", category_key=" + req.getCategory_key() + ", check_item_key=" + req.getCheck_item_key() + ", area_ids=" + req.getArea_ids() + ", status_in=" + req.getStatus_in() + ", checker_id=" + req.getChecker_id() + ", repairer_id=" + req.getRepairer_id() + "," +
+                " type=" + req.getType() + ", condition=" + req.getCondition() + ", key_word=" + req.getKey_word() + ", create_on_begin=" + req.getCreate_on_begin() + ", create_on_end=" + req.getCreate_on_end() + ", is_overdue=" + req.is_overdue() + ", page=" + req.getPage() + ", page_size=" + req.getPage_size()
         );
         Integer userId = (Integer) sessionInfo.getBaseInfo("userId");
         TaskResponse<IssueListRsp> response = new TaskResponse<>();
@@ -82,14 +128,14 @@ public class IssueListController {
      */
     @RequestMapping(value = "detail_log", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     public LjBaseResponse<DetailLogRspVo> detailLog(@RequestParam(value = "project_id", required = true) Integer projectId,
-                                                  @RequestParam(value = "issue_uuid", required = true) String issueUuid) throws Exception {
+                                                    @RequestParam(value = "issue_uuid", required = true) String issueUuid) throws Exception {
         LjBaseResponse<DetailLogRspVo> response = new LjBaseResponse<>();
         Integer userId = (Integer) sessionInfo.getBaseInfo("userId");
-            ctrlTool.projPerm(RequestContextHolderUtil.getRequest(), "项目.工程检查.问题管理.查看");
-            List<HouseQmCheckTaskIssueHistoryLogVo> result = iIssueService.getHouseQmCheckTaskIssueActionLogByIssueUuid(issueUuid);
-            DetailLogRspVo data = new DetailLogRspVo();
-            data.setItems(result);
-            response.setData(data);
+        ctrlTool.projPerm(RequestContextHolderUtil.getRequest(), "项目.工程检查.问题管理.查看");
+        List<HouseQmCheckTaskIssueHistoryLogVo> result = iIssueService.getHouseQmCheckTaskIssueActionLogByIssueUuid(issueUuid);
+        DetailLogRspVo data = new DetailLogRspVo();
+        data.setItems(result);
+        response.setData(data);
 
         return response;
     }
@@ -191,7 +237,7 @@ public class IssueListController {
      * @return
      */
     @RequestMapping(value = "delete", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
-    public TaskResponse delete(HttpServletRequest request,@RequestParam(value = "project_id", required = true) Integer projectId,
+    public TaskResponse delete(HttpServletRequest request, @RequestParam(value = "project_id", required = true) Integer projectId,
                                @RequestParam(value = "issue_uuid", required = true) String issueUuid) {
         TaskResponse response = new TaskResponse();
         try {
@@ -215,7 +261,7 @@ public class IssueListController {
      * @return
      */
     @RequestMapping(value = "edit_repairer", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
-    public LjBaseResponse editRepairer(HttpServletRequest request,@RequestParam(value = "project_id", required = true) Integer projectId,
+    public LjBaseResponse editRepairer(HttpServletRequest request, @RequestParam(value = "project_id", required = true) Integer projectId,
                                        @RequestParam(value = "issue_uuid", required = true) String issueUuid,
                                        @RequestParam(value = "repairer_id", required = false, defaultValue = "0") Integer repairerId,
                                        @RequestParam(value = "repair_follower_ids", required = false, defaultValue = "") String repairFollowerIds) {
@@ -239,7 +285,7 @@ public class IssueListController {
      * @return
      */
     @RequestMapping(value = "add_desc", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
-    public LjBaseResponse addDesc(HttpServletRequest request,@RequestParam(value = "project_id", required = true) Integer projectId,
+    public LjBaseResponse addDesc(HttpServletRequest request, @RequestParam(value = "project_id", required = true) Integer projectId,
                                   @RequestParam(value = "issue_uuid", required = true) String issueUuid,
                                   @RequestParam(value = "content", required = true) String content) {
         Integer userId = (Integer) sessionInfo.getBaseInfo("userId");
@@ -261,7 +307,7 @@ public class IssueListController {
      * @return
      */
     @RequestMapping(value = "edit_plan_end_on", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
-    public LjBaseResponse editPlanEndOn(HttpServletRequest request,@RequestParam(value = "project_id", required = true) Integer projectId,
+    public LjBaseResponse editPlanEndOn(HttpServletRequest request, @RequestParam(value = "project_id", required = true) Integer projectId,
                                         @RequestParam(value = "issue_uuid", required = true) String issueUuid,
                                         @RequestParam(value = "plan_end_on", required = false, defaultValue = "0") Integer plan_end_on) {
         Integer userId = (Integer) sessionInfo.getBaseInfo("userId");
@@ -284,7 +330,7 @@ public class IssueListController {
      * @return
      */
     @RequestMapping(value = "edit_approve", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
-    public LjBaseResponse editApprove(HttpServletRequest request,@RequestParam(value = "project_id", required = true) Integer projectId,
+    public LjBaseResponse editApprove(HttpServletRequest request, @RequestParam(value = "project_id", required = true) Integer projectId,
                                       @RequestParam(value = "issue_uuid", required = true) String issueUuid,
                                       @RequestParam(value = "status", required = true) Integer status,
                                       @RequestParam(value = "content", required = true) String content) {
@@ -331,7 +377,7 @@ public class IssueListController {
      * @return
      */
     @RequestMapping(value = "detail_base", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
-    public LjBaseResponse<IssueInfoVo> detailBase(HttpServletRequest request,@RequestParam(value = "project_id", required = true) Integer projectId,
+    public LjBaseResponse<IssueInfoVo> detailBase(HttpServletRequest request, @RequestParam(value = "project_id", required = true) Integer projectId,
                                                   @RequestParam(value = "issue_uuid", required = true) String issueUuid) {
         Integer userId = (Integer) sessionInfo.getBaseInfo("userId");
         try {
