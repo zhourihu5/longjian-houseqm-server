@@ -187,11 +187,11 @@ public class IssueListController {
      * @return
      */
     @RequestMapping(value = "delete", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
-    public TaskResponse delete(HttpServletRequest request,@RequestParam(value = "project_id", required = true) Integer projectId,
+    public LjBaseResponse delete(HttpServletRequest request,@RequestParam(value = "project_id", required = true) Integer projectId,
                                @RequestParam(value = "issue_uuid", required = true) String issueUuid) {
-        TaskResponse response = new TaskResponse();
+        LjBaseResponse response = new LjBaseResponse();
         try {
-            ctrlTool.projPerm(request, "项目.工程检查.问题管理.查看");
+            ctrlTool.projPerm(request, "项目.工程检查.问题管理.删除");
             iIssueService.deleteHouseqmCheckTaskIssueByProjectAndUuid(projectId, issueUuid);
         } catch (Exception e) {
             e.printStackTrace();

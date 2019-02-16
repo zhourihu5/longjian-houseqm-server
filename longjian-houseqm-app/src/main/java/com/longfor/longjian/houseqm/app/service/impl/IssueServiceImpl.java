@@ -463,7 +463,7 @@ public class IssueServiceImpl implements IIssueService {
     public void deleteHouseqmCheckTaskIssueByProjectAndUuid(Integer projectId, String issueUuid) {
         HouseQmCheckTaskIssue issue_info = getIssueByProjectIdAndUuid(projectId, issueUuid);
         if (issue_info == null) {
-            throw new LjBaseRuntimeException(432, "找不到此问题");
+            throw new LjBaseRuntimeException(-1, "找不到此问题");
         }
         issue_info.setUpdateAt(new Date());
         issue_info.setDeleteAt(new Date());
