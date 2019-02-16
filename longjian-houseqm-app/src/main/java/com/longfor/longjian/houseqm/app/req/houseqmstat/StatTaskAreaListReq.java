@@ -23,5 +23,5 @@ public class StatTaskAreaListReq implements Serializable {
     @NotNull
     private Integer task_id;// 任务ID
 
-    private int typ;// 区域类型
+    private Integer typ;// 区域类型
 }

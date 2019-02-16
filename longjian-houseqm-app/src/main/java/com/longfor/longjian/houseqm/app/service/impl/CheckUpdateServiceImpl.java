@@ -7,6 +7,7 @@ import com.longfor.longjian.houseqm.domain.internalService.*;
 import com.longfor.longjian.houseqm.po.zj2db.*;
 import com.longfor.longjian.houseqm.util.DateUtil;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.collections.CollectionUtils;
 import org.springframework.stereotype.Repository;
 import org.springframework.stereotype.Service;
 
@@ -131,8 +132,8 @@ public class CheckUpdateServiceImpl implements ICheckUpdateService {
      */
     @Override
     public Date getHouseQmCheckTaskIssueUserLastUpdateTime(Integer task_id) {
-        List<HouseQmCheckTaskIssueUser> issueUserUpdateInfo = houseQmCheckTaskIssueUserService.selectUpdateAtByTaskIdAndNoDeletedOrderByUpdateAt(task_id);
-        if (issueUserUpdateInfo != null) return issueUserUpdateInfo.get(0).getUpdateAt();
+        HouseQmCheckTaskIssueUser issueUserUpdateInfo = houseQmCheckTaskIssueUserService.selectUpdateAtByTaskIdAndNoDeletedOrderByUpdateAt(task_id);
+        if (issueUserUpdateInfo != null) return issueUserUpdateInfo.getUpdateAt();
         else return DateUtil.timeStampToDate(0, "yyyy-MM-dd");
     }
 
@@ -145,7 +146,7 @@ public class CheckUpdateServiceImpl implements ICheckUpdateService {
     @Override
     public Date getHouseQmCheckTaskLastUpdateTime(Integer task_id) {
         List<UserInHouseQmCheckTask> issueUpdateInfo = userInHouseQmCheckTaskService.selectUpdateAtByTaskIdAndNoDeletedOrderByUpdateAt(task_id);
-        if (issueUpdateInfo != null && issueUpdateInfo.size() > 0) return issueUpdateInfo.get(0).getUpdateAt();
+        if (!CollectionUtils.isEmpty(issueUpdateInfo)) return issueUpdateInfo.get(0).getUpdateAt();
         else return DateUtil.timeStampToDate(0, "yyyy-MM-dd");
     }
 

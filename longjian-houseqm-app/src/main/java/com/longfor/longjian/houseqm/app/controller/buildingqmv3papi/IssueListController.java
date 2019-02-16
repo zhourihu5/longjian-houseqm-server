@@ -50,10 +50,10 @@ public class IssueListController {
      * @param req
      * @return
      */
-    @RequestMapping(value = "list/", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+    @RequestMapping(value = "list", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     public TaskResponse<IssueListRsp> doAction(HttpServletRequest request, @Valid IssueListDoActionReq req) {
-        log.info("list, project_id=%d, category_cls=%d, task_id=%d, category_key=%s, check_item_key=%s, area_ids=%s, status_in=%s, checker_id=%d, repairer_id=%d," +
-                " type=%d, condition=%d, key_word=%s, create_on_begin=%s, create_on_end=%s, is_overdue=%d, page=%d, page_size=%d"
+        log.info("list, project_id="+req.getProject_id()+", category_cls="+req.getCategory_cls()+", task_id="+req.getTask_id()+", category_key="+req.getCategory_key()+", check_item_key="+req.getCheck_item_key()+", area_ids="+req.getArea_ids()+", status_in="+req.getStatus_in()+", checker_id="+req.getChecker_id()+", repairer_id="+req.getRepairer_id()+"," +
+                " type="+req.getType()+", condition="+req.getCondition()+", key_word="+req.getKey_word()+", create_on_begin="+req.getCreate_on_begin()+", create_on_end="+req.getCreate_on_end()+", is_overdue="+req.is_overdue()+", page="+req.getPage()+", page_size="+req.getPage_size()
         );
         Integer userId = (Integer) sessionInfo.getBaseInfo("userId");
         TaskResponse<IssueListRsp> response = new TaskResponse<>();
@@ -68,6 +68,7 @@ public class IssueListController {
             e.printStackTrace();
             response.setResult(1);
             response.setMessage(e.getMessage());
+            response.setMsg(e.getMessage());
         }
         return response;
     }

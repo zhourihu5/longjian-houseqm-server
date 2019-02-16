@@ -9,6 +9,7 @@ import com.longfor.longjian.houseqm.po.zj2db.HouseQmCheckTaskIssueLog;
 import com.longfor.longjian.houseqm.po.zj2db.UserInHouseQmCheckTask;
 import com.longfor.longjian.houseqm.utils.ExampleUtil;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.collections.CollectionUtils;
 import org.apache.ibatis.session.RowBounds;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -124,8 +125,7 @@ public class HouseQmCheckTaskIssueLogServiceImpl implements HouseQmCheckTaskIssu
         //限制 返回值数据条数
         RowBounds rowBounds = new RowBounds(0,2);
         List<HouseQmCheckTaskIssueLog> result = houseQmCheckTaskIssueLogMapper.selectByExampleAndRowBounds(example, rowBounds);
-
-        if (result.size() != 1) return null;//防止因传参问题导致查出的数据量过大报错问题。
+        if (CollectionUtils.isEmpty(result)) return null;
         else return result.get(0);
     }
 

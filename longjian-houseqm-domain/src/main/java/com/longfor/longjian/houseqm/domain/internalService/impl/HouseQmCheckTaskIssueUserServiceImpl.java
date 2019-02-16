@@ -6,6 +6,7 @@ import com.longfor.longjian.houseqm.domain.internalService.HouseQmCheckTaskIssue
 import com.longfor.longjian.houseqm.po.zj2db.HouseQmCheckTaskIssueUser;
 import com.longfor.longjian.houseqm.utils.ExampleUtil;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.collections.CollectionUtils;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import tk.mybatis.mapper.entity.Example;
@@ -70,14 +71,15 @@ public class HouseQmCheckTaskIssueUserServiceImpl implements HouseQmCheckTaskIss
      */
     @Override
     @LFAssignDataSource(value = "zhijian2")
-    public List<HouseQmCheckTaskIssueUser> selectUpdateAtByTaskIdAndNoDeletedOrderByUpdateAt(Integer task_id) {
+    public HouseQmCheckTaskIssueUser selectUpdateAtByTaskIdAndNoDeletedOrderByUpdateAt(Integer task_id) {
         Example example = new Example(HouseQmCheckTaskIssueUser.class);
         Example.Criteria criteria = example.createCriteria();
         criteria.andEqualTo("taskId",task_id);
         ExampleUtil.addDeleteAtJudge(example);
         example.orderBy("updateAt").desc();
-
-        return houseQmCheckTaskIssueUserMapper.selectByExample(example);
+        List<HouseQmCheckTaskIssueUser> result = houseQmCheckTaskIssueUserMapper.selectByExample(example);
+        if (CollectionUtils.isEmpty(result))return null;
+        else return result.get(0);
     }
 
     @Override

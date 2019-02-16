@@ -142,21 +142,21 @@ public class IssueServiceImpl implements IIssueService {
         Map<String, Object> condiMap = Maps.newHashMap();
         condiMap.put("projectId", projectId);
         condiMap.put("categoryCls", categoryCls);
-        if (taskId > 0) condiMap.put("taskId", taskId);
+        if (taskId != null && taskId > 0) condiMap.put("taskId", taskId);
         if (statusIn.length() > 0) condiMap.put("status", statusInList);
-        if (categoryKey.length() > 0) condiMap.put("categoryPathAndKey", "%%/" + categoryKey + "/%%");
+        if (categoryKey.length() > 0) condiMap.put("categoryPathAndKey", "%/" + categoryKey + "/%");
         if (checkItemKey.length() > 0) condiMap.put("checkItemKey", checkItemKey);
         if (areaIdList.size() > 0) {
             List<String> areaPathAndIdLikeList = Lists.newArrayList();
             for (Integer i : areaIdList) {
-                areaPathAndIdLikeList.add("%%/" + i + "/%%");
+                areaPathAndIdLikeList.add("%/" + i + "/%");
             }
             condiMap.put("areaPathAndId", areaPathAndIdLikeList);
         }
-        if (type > 0) condiMap.put("type", type);
-        if (condition > 0) condiMap.put("condition", condition);
-        if (checkerId > 0) condiMap.put("senderId", checkerId);
-        if (repairerId > 0) condiMap.put("repairerId", repairerId);
+        if (type != null && type > 0) condiMap.put("type", type);
+        if (condition != null && condition > 0) condiMap.put("condition", condition);
+        if (checkerId != null && checkerId > 0) condiMap.put("senderId", checkerId);
+        if (repairerId != null && repairerId > 0) condiMap.put("repairerId", repairerId);
         if (createOnBegin.length() > 0) condiMap.put("clientCreateAtGte", createOnBegin + " 00:00:00");
         if (createOnEnd.length() > 0) condiMap.put("clientCreateAtLte", createOnEnd + " 23:59:59");
         if (isOverDue) {
@@ -170,7 +170,7 @@ public class IssueServiceImpl implements IIssueService {
             condiMap.put("status2", status2);
         }
         if (keyWord.length() > 0) {//content like xxx
-            condiMap.put("content", "%%/" + keyWord + "/%%");
+            condiMap.put("content", "%/" + keyWord + "/%");
             if (StringSplitToListUtil.isInteger(keyWord)) {// or id=xxx
                 condiMap.put("id", keyWord);
             }
@@ -264,7 +264,7 @@ public class IssueServiceImpl implements IIssueService {
             List<String> pictures = item.getPictures();
             for (String md5 : attachmentsList) {
                 if (attachmentMap.containsKey(md5)) {
-                    String url = "https://" + host +"/"+ attachmentMap.get(md5).getStoreKey();
+                    String url = "https://" + host + "/" + attachmentMap.get(md5).getStoreKey();
                     pictures.add(url);
                 }
             }
@@ -1091,11 +1091,11 @@ public class IssueServiceImpl implements IIssueService {
             audios.add(houseQmCheckTaskIssueAttachment);
         }
         HashMap<String, Object> detailMap = Maps.newHashMap();
-        detailMap.put("issue_reason",issueDetail.get("IssueReason"));
-        detailMap.put("issue_reason_detail",issueDetail.get("IssueReasonDetail"));
-        detailMap.put("issue_suggest",issueDetail.get("IssueSuggest"));
-        detailMap.put("potential_risk",issueDetail.get("PotentialRisk"));
-        detailMap.put("preventive_action_detail",issueDetail.get("PreventiveActionDetail"));
+        detailMap.put("issue_reason", issueDetail.get("IssueReason"));
+        detailMap.put("issue_reason_detail", issueDetail.get("IssueReasonDetail"));
+        detailMap.put("issue_suggest", issueDetail.get("IssueSuggest"));
+        detailMap.put("potential_risk", issueDetail.get("PotentialRisk"));
+        detailMap.put("preventive_action_detail", issueDetail.get("PreventiveActionDetail"));
         ArrayList<IssueInfoVo.HouseQmCheckTaskIssueDetailEditLog> editLogs = Lists.newArrayList();
 
         //  # 为什么是-1？不知道，照着之前能到写的
@@ -1183,7 +1183,7 @@ public class IssueServiceImpl implements IIssueService {
 
     /**
      * @param categoryKeys
-     * @return java.util.Map<java.lang.String       ,       com.longfor.longjian.houseqm.po.zj2db.CategoryV3>
+     * @return java.util.Map<java.lang.String                                                                                                                               ,                                                                                                                               com.longfor.longjian.houseqm.po.zj2db.CategoryV3>
      * @author hy
      * @date 2018/12/21 0021
      */
@@ -1199,7 +1199,7 @@ public class IssueServiceImpl implements IIssueService {
 
     /**
      * @param checkItems
-     * @return java.util.Map<java.lang.String       ,       com.longfor.longjian.houseqm.po.zj2db.CheckItemV3>
+     * @return java.util.Map<java.lang.String                                                                                                                               ,                                                                                                                               com.longfor.longjian.houseqm.po.zj2db.CheckItemV3>
      * @author hy
      * @date 2018/12/21 0021
      */
@@ -1215,7 +1215,7 @@ public class IssueServiceImpl implements IIssueService {
 
     /**
      * @param repairers
-     * @return java.util.Map<java.lang.Integer       ,       com.longfor.longjian.houseqm.po.zhijian2_apisvr.User>
+     * @return java.util.Map<java.lang.Integer                                                                                                                               ,                                                                                                                               com.longfor.longjian.houseqm.po.zhijian2_apisvr.User>
      * @author hy
      * @date 2018/12/21 0021
      */
@@ -1231,7 +1231,7 @@ public class IssueServiceImpl implements IIssueService {
 
     /**
      * @param areaPaths
-     * @return java.util.Map<java.lang.Integer       ,       com.longfor.longjian.houseqm.po.zj2db.Area>
+     * @return java.util.Map<java.lang.Integer                                                                                                                               ,                                                                                                                               com.longfor.longjian.houseqm.po.zj2db.Area>
      * @author hy
      * @date 2018/12/21 0021
      */
@@ -1247,7 +1247,7 @@ public class IssueServiceImpl implements IIssueService {
 
     /**
      * @param attachments
-     * @return java.util.Map<java.lang.String       ,       com.longfor.longjian.houseqm.po.zj2db.FileResource>
+     * @return java.util.Map<java.lang.String                                                                                                                               ,                                                                                                                               com.longfor.longjian.houseqm.po.zj2db.FileResource>
      * @author hy
      * @date 2018/12/21 0021
      */

@@ -15,6 +15,7 @@ import com.longfor.longjian.houseqm.po.zj2db.HouseQmCheckTaskSquad;
 import com.longfor.longjian.houseqm.util.DateUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.MediaType;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
@@ -176,11 +177,13 @@ public class BuildingqmController {
      * @return
      */
     @RequestMapping(value = "buildingqm/my_issue_patch_list", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
-    public LjBaseResponse<MyIssuePatchListVo> myIssuePatchList(MyIssuePatchListReq req) {
+    public LjBaseResponse<MyIssuePatchListVo> myIssuePatchList(@Validated MyIssuePatchListReq req) {
         log.info("my_issue_patch_list, task_id= " + req.getTask_id() + ", timestamp= " + req.getTimestamp());
         Integer userId = (Integer) sessionInfo.getBaseInfo("userId");
         LjBaseResponse<MyIssuePatchListVo> response = new LjBaseResponse<>();
         try {
+            if (req.getLast_id()==null)req.setLast_id(0);
+            if (req.getTimestamp()==null)req.setTimestamp(0);
             MyIssuePatchListVo miplv = buildingqmService.myIssuePathList(userId, req.getTask_id(), req.getTimestamp());
             response.setData(miplv);
         } catch (Exception e) {
