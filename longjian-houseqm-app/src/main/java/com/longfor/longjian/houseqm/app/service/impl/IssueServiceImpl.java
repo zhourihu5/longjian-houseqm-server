@@ -732,13 +732,20 @@ public class IssueServiceImpl implements IIssueService {
         ArrayList<String> list = Lists.newArrayList();
         ArrayList<String> list2 = Lists.newArrayList();
         input.forEach(item->{
+            //判空
+          /*  if(StringUtils.isNotEmpty(item.getContent())){
+                list.add(item.getContent().replace("\n"," "));
+            }
+             if(StringUtils.isNotEmpty(item.getIssue_suggest())){
+                 list2.add(item.getIssue_suggest().replace("\n"," "));
+             }*/
             list.add(item.getContent().replace("\n"," "));
             list2.add(item.getIssue_suggest().replace("\n"," "));
         });
-        dataMap.put("qingkuang",list);
-        dataMap.put("request",list2);
+            dataMap.put("qingkuang",list);
+            dataMap.put("request",list2);
         String str = DateUtil.getNowTimeStr("yyyy_MM_dd_hh_mm_ss");
-        boolean b = new DocumentHandler().exportDoc("notify_template2", "导出问题通知单_" + str, dataMap, resp);
+        boolean b = new DocumentHandler().exportDoc("notify_template2", "导出问题通知单_" + str.replace("_",""), dataMap, resp);
 
 
       /*  User user = UserDao().get(uid);

@@ -733,7 +733,7 @@
                 <w:rPr>
                   <w:rFonts w:hint="fareast"/>
                 </w:rPr>
-                <w:t>${qk}</w:t>
+                <w:t>${qk_index+1}、${qk}</w:t>
               </w:r>
             </w:p>
 			</#list>
@@ -749,7 +749,7 @@
                 <w:rPr>
                   <w:rFonts w:hint="fareast"/>
                 </w:rPr>
-                <w:t>${rq}</w:t>
+                <w:t>${rq_index+1}、${rq}</w:t>
               </w:r>
             </w:p>
 			</#list>
