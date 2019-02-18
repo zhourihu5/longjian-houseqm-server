@@ -75,7 +75,7 @@ public class IssueListController {
             SXSSFWorkbook wb = (SXSSFWorkbook) map.get("workbook");
             response.setContentType("application/vnd.ms-excel");
             response.setCharacterEncoding("utf-8");
-            response.setHeader("Content-Disposition", "attachment;filename=" + new String(fileName.getBytes("gbk"),"iso8859-1") + ".xlsx");
+            response.setHeader("Content-Disposition", "attachment;filename=" + new String(fileName.getBytes("gbk"), "iso8859-1") + ".xlsx");
             wb.write(os);
             os.flush();
         } catch (IOException e) {
@@ -155,15 +155,35 @@ public class IssueListController {
             return objectTaskResponse;
 
         }
-        Boolean b = iIssueService.repairNotifyExport2(userId, projectId, issueUuid,response);
-       if(b){
-           LjBaseResponse<Object> objectTaskResponse = new LjBaseResponse<>();
-           objectTaskResponse.setData(b);
-           return objectTaskResponse;
-       }
+        Boolean b = iIssueService.repairNotifyExport2(userId, projectId, issueUuid, response);
+        if (b) {
+            LjBaseResponse<Object> objectTaskResponse = new LjBaseResponse<>();
+            objectTaskResponse.setData(b);
+            return objectTaskResponse;
+        }
 
         return null;
     }
+
+
+    //导出整改回复单
+    @RequestMapping(value = "repair_reply_export", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+    public LjBaseResponse<Object> repairReplyExport(HttpServletRequest request, HttpServletResponse response,
+                                                    @RequestParam(value = "project_id", required = true) Integer projectId,
+                                                    @RequestParam(value = "issue_ids", required = true) String issueIds) {
+        log.info("repair_reply_export, project_id=" + projectId + ", issue_ids=" + issueIds);
+        if (projectId == null || issueIds == null) {
+            LjBaseResponse<Object> objectTaskResponse = new LjBaseResponse<>();
+            objectTaskResponse.setMessage("args error");
+            objectTaskResponse.setResult((Integer) CommonGlobalEnum.RES_ERROR.getId());
+            return objectTaskResponse;
+        }
+        iIssueService.repairReplyExport(projectId,issueIds);
+
+
+        return null;
+    }
+
 
     /**
      * 项目下问题详情
@@ -234,8 +254,8 @@ public class IssueListController {
      * @return
      */
     @RequestMapping(value = "delete", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
-    public LjBaseResponse delete(HttpServletRequest request,@RequestParam(value = "project_id", required = true) Integer projectId,
-                               @RequestParam(value = "issue_uuid", required = true) String issueUuid) {
+    public LjBaseResponse delete(HttpServletRequest request, @RequestParam(value = "project_id", required = true) Integer projectId,
+                                 @RequestParam(value = "issue_uuid", required = true) String issueUuid) {
         LjBaseResponse response = new LjBaseResponse();
         try {
             ctrlTool.projPerm(request, "项目.工程检查.问题管理.删除");

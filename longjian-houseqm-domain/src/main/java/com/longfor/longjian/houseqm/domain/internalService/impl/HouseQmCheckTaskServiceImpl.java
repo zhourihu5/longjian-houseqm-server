@@ -257,4 +257,13 @@ public class HouseQmCheckTaskServiceImpl implements HouseQmCheckTaskService {
         return houseQmCheckTaskMapper.selectByPrimaryKey(one);
     }
 
+    @Override
+    @LFAssignDataSource("zhijian2")
+    public HouseQmCheckTask getByTaskId(Integer taskId) {
+        Example example = new Example(HouseQmCheckTask.class);
+        Example.Criteria criteria = example.createCriteria();
+        criteria.andEqualTo("taskId",taskId);
+        ExampleUtil.addDeleteAtJudge(example);
+        return houseQmCheckTaskMapper.selectOneByExample(example);
+    }
 }
