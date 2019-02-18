@@ -215,6 +215,8 @@ spe:
   team_group_100137: #test
       # 导出Excel
     export_issue: /v3stat/spec/qingshui/export_issue/
+#导出
+export_path: /Users/xijunguo/Work/tmp
 
 
 # HouseqmIssueController exportPdf 导出 url
@@ -222,7 +224,6 @@ stat_export_server_addr: http://192.168.96.132:9202/v3
 export:
   base_dir: /data/zhijian/writable
   base_uri: writable
-
 # todo 消息推送 python 和 go 代码 中给的以下推送参数不一致
 push_config:
   enterprise_id: t8 #go longhu  python(dongshun)  t8对应的?

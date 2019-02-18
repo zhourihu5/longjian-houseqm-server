@@ -12,6 +12,22 @@ import java.util.Date;
  */
 public class DateUtil {
 
+    private static final SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-mm-dd hh:mm:ss");
+
+    public static final boolean datetimeZero(Date date) {
+        //315532800000L=dateFormat.parse("1980-01-01 08:00:00").getTime()
+        if(date==null||date.getTime()<=315532800000L) {
+            return true;
+        }
+        return false;
+    }
+
+    public static final String formatBySec(Date date) {
+        return dateFormat.format(date);
+    }
+    public static final boolean datetimeBefore(Date date,Date date2) {
+        return date.getTime()<date2.getTime();
+    }
 
     public static Date strToDate(String str, String pattern) {
         Date date = null;

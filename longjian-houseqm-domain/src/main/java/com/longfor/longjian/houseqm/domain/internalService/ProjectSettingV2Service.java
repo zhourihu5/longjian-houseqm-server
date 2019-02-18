@@ -9,4 +9,5 @@ import java.util.List;
  */
 public interface ProjectSettingV2Service {
     List<ProjectSettingV2> getProjectSettingId(Integer projectId);
+
 }

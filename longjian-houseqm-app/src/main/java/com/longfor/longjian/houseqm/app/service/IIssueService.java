@@ -7,6 +7,7 @@ import com.longfor.longjian.houseqm.po.zj2db.ProjectSettingV2;
 
 import javax.servlet.http.HttpServletResponse;
 import java.util.List;
+import java.util.Map;
 
 
 /**
@@ -14,6 +15,9 @@ import java.util.List;
  * @date 2018/12/21 0021 10:50
  */
 public interface IIssueService {
+
+
+    Map<String, Object> exportExcel(Integer uid, Integer project_id, Integer category_cls, Integer task_id, String category_key, String check_item_key, String area_ids, String status_in, Integer checker_id, Integer repairer_id, Integer type, Integer condition, String key_word, String create_on_begin, String create_on_end, Boolean is_overdue);
 
     /**
      *

@@ -75,7 +75,7 @@ public class HouseqmIssueController {
      * @Param [req]
      **/
     @RequestMapping(value = "export_pdf", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
-    public LjBaseResponse exportPdf(HttpServletRequest request, @Valid IssueExportPdfReq req) {
+    public LjBaseResponse exportPdf(HttpServletRequest request, @Valid IssueExportPdfReq req) throws Exception {
         LjBaseResponse<Object> response = new LjBaseResponse<>();
         try {
             ctrlTool.projPermMulti(request, new String[]{"项目.移动验房.问题管理.查看", "项目.工程检查.问题管理.查看"});
@@ -163,7 +163,7 @@ public class HouseqmIssueController {
 
         Integer userId = (Integer) sessionInfo.getBaseInfo("userId");
         Map<String, String> args = Maps.newHashMap();
-        //args.put("url", "");
+        //todo args.put("url", "");
 
         String nowTime = DateUtil.getNowTimeStr("yyyyMMddhhmm");
         String exportName = "【" + proj.getName() + "】整改报告." + nowTime + ".pdf";

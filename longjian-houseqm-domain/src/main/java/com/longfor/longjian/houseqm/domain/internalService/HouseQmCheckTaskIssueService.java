@@ -100,6 +100,8 @@ public interface HouseQmCheckTaskIssueService {
      */
     List<HouseQmCheckTaskIssueAttachment> searchHouseQmCheckTaskIssueAttachmentByMyIdTaskIdLastIdUpdateAtGt(Integer userId, Integer task_id, Integer last_id, Integer timestamp, Integer start, Integer limit, Integer privateInt, Integer publicInt);
 
+    List<HouseQmCheckTaskIssue> searchByProjectIdAndCategoryClsAndNoDeletedAndDongTai(Map<String, Object> map);
+
     Integer searchTotalByProjectIdAndCategoryClsAndNoDeletedAndDongTai(Map<String, Object> map);
 
     List<HouseQmCheckTaskIssue> searchByPageAndProjectIdAndCategoryClsAndNoDeletedAndDongTai(Map<String, Object> map);

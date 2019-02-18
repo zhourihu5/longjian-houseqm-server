@@ -144,6 +144,7 @@ public interface HouseQmCheckTaskIssueMapper extends LFMySQLMapper<HouseQmCheckT
      */
     List<HouseQmCheckTaskIssue> selectAreaIdByProjectIdAndTaskIdAndAreaIdInAndNoDeleted(@Param("projectId") Integer projectId, @Param("taskId") Integer taskId, @Param("areaIds") List<Integer> areaIds, @Param("deleted") String deleted);
 
+    List<HouseQmCheckTaskIssue> selectHouseQmCheckTaskIssueByProjectIdAndCategoryClsAndNoDeletedAndDongTai(Map<String, Object> map);
     /**
      * @param map
      * @return java.lang.Integer

@@ -20,6 +20,8 @@ import java.util.List;
 @NoArgsConstructor
 public class HouseqmCheckTaskIssueIndexJsonReqMsg implements Serializable {
     @NotNull(message = ReqParamCheckErrors.PARAM_IS_NULL)
+    private String safeCallKey;
+    @NotNull(message = ReqParamCheckErrors.PARAM_IS_NULL)
     private Integer category_cls;//模块类型
     @NotNull(message = ReqParamCheckErrors.PARAM_IS_NULL)
     private Integer project_id;//项目ID

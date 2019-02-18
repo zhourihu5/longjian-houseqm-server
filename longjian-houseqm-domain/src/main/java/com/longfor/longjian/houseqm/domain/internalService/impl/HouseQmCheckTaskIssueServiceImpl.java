@@ -413,6 +413,12 @@ public class HouseQmCheckTaskIssueServiceImpl implements HouseQmCheckTaskIssueSe
         return Lists.newArrayList();
     }
 
+    @Override
+    @LFAssignDataSource("zhijian2")
+    public List<HouseQmCheckTaskIssue> searchByProjectIdAndCategoryClsAndNoDeletedAndDongTai(Map<String, Object> map) {
+        return houseQmCheckTaskIssueMapper.selectHouseQmCheckTaskIssueByProjectIdAndCategoryClsAndNoDeletedAndDongTai(map);
+    }
+
     /**
      * @return java.lang.Integer
      * @author hy
