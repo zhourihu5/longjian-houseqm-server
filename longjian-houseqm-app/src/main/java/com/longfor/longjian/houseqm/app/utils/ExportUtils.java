@@ -4,6 +4,7 @@ import com.longfor.longjian.houseqm.app.vo.ExportReplyDetail;
 import com.longfor.longjian.houseqm.app.vo.issuelist.ExcelIssueData;
 import com.longfor.longjian.houseqm.util.DateUtil;
 import com.longfor.longjian.houseqm.utils.ExampleUtil;
+import org.apache.commons.collections.CollectionUtils;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.apache.poi.ooxml.POIXMLDocument;
 import org.apache.poi.openxml4j.opc.OPCPackage;
@@ -193,12 +194,13 @@ public class ExportUtils {
 
     //导出 整改回复单
     public static XWPFDocument exportRepairReply(ExportReplyDetail data) throws Exception {
-        String template_notify = "templates/reply_template.docx";
+        String template_notify = "/templates/reply_template.docx";
         String dt = DateUtil.getNowTimeStr("MMddHHmmss");
         String r = new Random().ints(0, 65536).toString();
         String file_path = String.format("%s/buildingqm_report/reply_report_%s_%s", EXPORT_PATH, dt, r);
-
-        XWPFDocument doc = new XWPFDocument(POIXMLDocument.openPackage(template_notify));
+        ExportUtils exportUtils = new ExportUtils();
+        InputStream fis = exportUtils.getClass().getResourceAsStream(template_notify);
+        XWPFDocument doc = new XWPFDocument(fis);
         List<XWPFTable> tables = doc.getTables();
         XWPFTable table = tables.get(0);
 
@@ -235,7 +237,7 @@ public class ExportUtils {
                     }
                 }
             } else {
-                if (issue.getAnsw_attachment_path().size() > 0) {
+                if (CollectionUtils.isNotEmpty(issue.getAnsw_attachment_path())&&issue.getAnsw_attachment_path().size() > 0) {
                     XWPFParagraph pI2 = cell.addParagraph();
                     XWPFRun rI2 = pI2.createRun();
                     rI2.setText(String.format("%s回复：", (index + 1 < 10 ? "   " : "    ")));

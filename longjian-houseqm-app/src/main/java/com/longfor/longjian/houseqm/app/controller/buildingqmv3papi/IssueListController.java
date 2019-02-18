@@ -184,7 +184,7 @@ public class IssueListController {
             Map<String, Object> map = iIssueService.repairReplyExport(projectId, issueIds);
             XWPFDocument doc = (XWPFDocument) map.get("doc");
             String filename = (String) map.get("filename");
-            response.setContentType("application/vnd.ms-word");
+            //response.setContentType("application/vnd.ms-word");
             response.setCharacterEncoding("utf-8");
             response.setHeader("Content-Disposition", "attachment;filename=" + new String(filename.getBytes("gbk"), "iso8859-1"));
             doc.write(os);
