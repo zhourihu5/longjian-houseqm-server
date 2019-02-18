@@ -142,9 +142,9 @@ public class IssueListController {
     }
 
     @RequestMapping(value = "repair_notify_export2/", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
-    public LjBaseResponse<Object> repairNotifyExport2(HttpServletRequest request, HttpServletResponse response, @RequestParam(value = "project_id", required = true) Integer projectId,
-                                                      @RequestParam(value = "issue_ids", required = true) String issueUuid) {
-
+    public LjBaseResponse<Object> repairNotifyExport2(HttpServletRequest request, HttpServletResponse response) {
+        String projectId = request.getParameter("project_id");
+        String issueUuid=  request.getParameter("issue_ids");
         log.info("repair_notify_export2, project_id=" + projectId + ", issue_ids=" + issueUuid + "");
 
         Integer userId = (Integer) sessionInfo.getBaseInfo("userId");
@@ -155,12 +155,12 @@ public class IssueListController {
             return objectTaskResponse;
 
         }
-        Boolean b = iIssueService.repairNotifyExport2(userId, projectId, issueUuid, response);
-        if (b) {
-            LjBaseResponse<Object> objectTaskResponse = new LjBaseResponse<>();
-            objectTaskResponse.setData(b);
-            return objectTaskResponse;
-        }
+        Boolean b = iIssueService.repairNotifyExport2(userId, Integer.parseInt(projectId), issueUuid,response);
+       if(b){
+           LjBaseResponse<Object> objectTaskResponse = new LjBaseResponse<>();
+           objectTaskResponse.setData(b);
+           return objectTaskResponse;
+       }
 
         return null;
     }

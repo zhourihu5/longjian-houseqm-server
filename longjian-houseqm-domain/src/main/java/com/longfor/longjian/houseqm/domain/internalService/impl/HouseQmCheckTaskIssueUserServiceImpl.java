@@ -27,10 +27,9 @@ public class HouseQmCheckTaskIssueUserServiceImpl implements HouseQmCheckTaskIss
     @Resource
     HouseQmCheckTaskIssueUserMapper houseQmCheckTaskIssueUserMapper;
 
-
+    @Transactional
     @Override
     @LFAssignDataSource(value = "zhijian2")
-    @Transactional
     public int insertBatch(List<HouseQmCheckTaskIssueUser> issueUsers) {
         return houseQmCheckTaskIssueUserMapper.insertList(issueUsers);
     }
@@ -83,6 +82,7 @@ public class HouseQmCheckTaskIssueUserServiceImpl implements HouseQmCheckTaskIss
     }
 
     @Override
+    @LFAssignDataSource(value = "zhijian2")
     public HouseQmCheckTaskIssueUser selectByIssueUUidAndUserIdAndRoleTypeAndNotDel(String uuid, Integer repairerId, Integer value) {
         Example example = new Example(HouseQmCheckTaskIssueUser.class);
         Example.Criteria criteria = example.createCriteria();
@@ -91,19 +91,22 @@ public class HouseQmCheckTaskIssueUserServiceImpl implements HouseQmCheckTaskIss
         criteria.andEqualTo("roleType",value);
         return houseQmCheckTaskIssueUserMapper.selectOneByExample(example);
     }
-
+    @Transactional
     @Override
+    @LFAssignDataSource(value = "zhijian2")
     public void add(HouseQmCheckTaskIssueUser repairerUserInfos) {
         houseQmCheckTaskIssueUserMapper.insert(repairerUserInfos);
 
     }
-
+    @Transactional
     @Override
+    @LFAssignDataSource(value = "zhijian2")
     public void update(HouseQmCheckTaskIssueUser repairerUserInfo) {
         houseQmCheckTaskIssueUserMapper.updateByPrimaryKeySelective(repairerUserInfo);
     }
 
     @Override
+    @LFAssignDataSource(value = "zhijian2")
     public List<HouseQmCheckTaskIssueUser> selectByRoleTypeAndUserIdAndIssueUuid(Integer value, ArrayList<Integer> intFollowers, String uuid) {
         Example example = new Example(HouseQmCheckTaskIssueUser.class);
         Example.Criteria criteria = example.createCriteria();
@@ -112,8 +115,9 @@ public class HouseQmCheckTaskIssueUserServiceImpl implements HouseQmCheckTaskIss
         criteria.andEqualTo("issueUuid",uuid);
         return houseQmCheckTaskIssueUserMapper.selectByExample(example);
     }
-
+    @Transactional
     @Override
+    @LFAssignDataSource(value = "zhijian2")
     public void insertMany(ArrayList<HouseQmCheckTaskIssueUser> insertData) {
         houseQmCheckTaskIssueUserMapper.insertList(insertData);
     }
