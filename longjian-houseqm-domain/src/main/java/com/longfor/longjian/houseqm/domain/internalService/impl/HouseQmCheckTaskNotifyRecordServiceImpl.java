@@ -19,16 +19,16 @@ import javax.annotation.Resource;
 @Transactional
 @Service
 @Slf4j
-
 public class HouseQmCheckTaskNotifyRecordServiceImpl implements HouseQmCheckTaskNotifyRecordService {
     @Resource
     HouseQmCheckTaskNotifyRecordMapper houseQmCheckTaskNotifyRecordMapper;
+    @Transactional
     @Override
     @LFAssignDataSource("zhijian2")
     public int add(HouseQmCheckTaskNotifyRecord record) {
         return houseQmCheckTaskNotifyRecordMapper.insert(record);
     }
-
+    @Transactional
     @Override
     @LFAssignDataSource("zhijian2")
     public void addMany(ArrayList<HouseQmCheckTaskNotifyRecord> dataSource) {

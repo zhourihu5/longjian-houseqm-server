@@ -413,6 +413,12 @@ public class HouseQmCheckTaskIssueServiceImpl implements HouseQmCheckTaskIssueSe
         return Lists.newArrayList();
     }
 
+    @Override
+    @LFAssignDataSource("zhijian2")
+    public List<HouseQmCheckTaskIssue> searchByProjectIdAndCategoryClsAndNoDeletedAndDongTai(Map<String, Object> map) {
+        return houseQmCheckTaskIssueMapper.selectHouseQmCheckTaskIssueByProjectIdAndCategoryClsAndNoDeletedAndDongTai(map);
+    }
+
     /**
      * @return java.lang.Integer
      * @author hy
@@ -681,11 +687,11 @@ public class HouseQmCheckTaskIssueServiceImpl implements HouseQmCheckTaskIssueSe
         criteria.andIsNull("deleteAt");
         return houseQmCheckTaskIssueMapper.selectOneByExample(example);
     }
-
+    @Transactional
     @Override
     @LFAssignDataSource("zhijian2")
     public void update(HouseQmCheckTaskIssue issue_info) {
-        houseQmCheckTaskIssueMapper.updateByPrimaryKeySelective(issue_info);
+        houseQmCheckTaskIssueMapper.updateByPrimaryKey(issue_info);
 
     }
 
@@ -697,6 +703,8 @@ public class HouseQmCheckTaskIssueServiceImpl implements HouseQmCheckTaskIssueSe
         criteria.andEqualTo("projectId", projectId);
         criteria.andIn("id", issueIds);
         criteria.andIn("status", statusList);
+        ExampleUtil.addDeleteAtJudge(example);//源码中有no_deleted orderby  desc
+        example.orderBy("clientCreateAt").desc();
         return houseQmCheckTaskIssueMapper.selectByExample(example);
     }
 

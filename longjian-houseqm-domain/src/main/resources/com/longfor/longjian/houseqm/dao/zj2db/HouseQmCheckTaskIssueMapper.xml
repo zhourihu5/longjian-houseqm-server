@@ -479,6 +479,53 @@
             AND delete_at IS NULL
         </if>
     </select>
+    <!--    List<HouseQmCheckTaskIssue> selectHouseQmCheckTaskIssueByProjectIdAndCategoryClsAndNoDeletedAndDongTai(Map<String, Object> map);-->
+    <select id="selectHouseQmCheckTaskIssueByProjectIdAndCategoryClsAndNoDeletedAndDongTai"
+            resultMap="ResultMapWithBLOBs" parameterType="java.util.Map">
+        SELECT<include refid="Base_Column_List"/>,
+        <include refid="Blob_Column_List"/>
+        FROM house_qm_check_task_issue
+        <where>
+            project_id=#{projectId} AND category_cls =#{categoryCls}
+            <if test="taskId>0">AND task_id=#{taskId}</if>
+            <if test="status!=null">
+                AND status in
+                <foreach collection="status" item="item" index="index" open="(" separator="," close=")">
+                    #{item}
+                </foreach>
+            </if>
+            <if test="categoryPathAndKey!=null">AND category_path_and_key LIKE CONCAT('',#{categoryPathAndKey})</if>
+            <if test="checkItemKey!=null">AND check_item_key=#{checkItemKey}</if>
+            <if test="areaPathAndId!=null">
+                AND
+                <foreach collection="areaPathAndId" item="item" index="index" open="(" separator="OR" close=")">
+                    area_path_and_id LIKE CONCAT('',#{item})
+                </foreach>
+            </if>
+            <if test="type!=null">AND typ=#{type}</if>
+            <if test="condition!=null">AND `condition` =#{condition}</if>
+            <if test="senderId!=null">AND sender_id =#{senderId}</if>
+            <if test="repairerId!=null">AND repairer_id=#{repairerId}</if>
+            <if test="clientCreateAtGte!=null">AND client_create_at &gt;= #{clientCreateAtGte}</if>
+            <if test="clientCreateAtLte!=null">AND client_create_at &lt;= #{clientCreateAtLte}</if>
+            <if test="status1!=null">
+                AND status in <foreach collection="status1" item="item" index="index" open="(" separator="," close=")">
+                #{item}
+            </foreach> and plan_end_on &gt;= '1980-01-01 08:00:00' and plan_end_on &lt;= now()
+            </if>
+            <if test="status2!=null">
+                OR status in <foreach collection="status2" item="item" index="index" open="(" separator="," close=")">
+                #{item}
+            </foreach> and plan_end_on &gt;= '1980-01-01 08:00:00' and plan_end_on &lt;= end_on
+            </if>
+            <if test="content!=null">and content like concat('',#{content})</if>
+            <if test="id!=null">OR id =#{id}</if>
+        </where>
+        <if test="deleted=='false'">
+            AND delete_at IS NULL
+        </if>
+        <if test="reverse==true">order by client_create_at desc</if>
+    </select>
 
     <select id="selectTotalByProjectIdAndCategoryClsAndNoDeletedAndDongTai" parameterType="java.util.Map"
             resultType="java.lang.Integer">

@@ -60,4 +60,6 @@ public interface HouseQmCheckTaskService {
     int delete(HouseQmCheckTask houseQmCheckTask);
 
     List<HouseQmCheckTask> selectByProjectIdsAndCategoryClsNotDel(ArrayList<Integer> parentIds, List<Integer> categorylist);
+
+    HouseQmCheckTask getByTaskId(Integer taskId);
 }

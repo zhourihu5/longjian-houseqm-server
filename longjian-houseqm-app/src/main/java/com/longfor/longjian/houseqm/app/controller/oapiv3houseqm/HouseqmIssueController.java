@@ -1,5 +1,6 @@
 package com.longfor.longjian.houseqm.app.controller.oapiv3houseqm;
 
+import com.alibaba.fastjson.JSON;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.longfor.longjian.common.base.LjBaseResponse;
@@ -38,6 +39,8 @@ import org.springframework.web.bind.annotation.RestController;
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
+import java.net.URI;
+import java.net.URL;
 import java.util.*;
 
 /**
@@ -75,7 +78,7 @@ public class HouseqmIssueController {
      * @Param [req]
      **/
     @RequestMapping(value = "export_pdf", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
-    public LjBaseResponse exportPdf(HttpServletRequest request, @Valid IssueExportPdfReq req) {
+    public LjBaseResponse exportPdf(HttpServletRequest request, @Valid IssueExportPdfReq req) throws Exception {
         LjBaseResponse<Object> response = new LjBaseResponse<>();
         try {
             ctrlTool.projPermMulti(request, new String[]{"项目.移动验房.问题管理.查看", "项目.工程检查.问题管理.查看"});
@@ -160,11 +163,19 @@ public class HouseqmIssueController {
             response.setMessage(e.getMessage());
             throw new LjBaseRuntimeException(500, e.getMessage());
         }
+        URL url = new URL("");
+        String query = url.getQuery();
+        // 参数
+        Map<String, Object> urlargs = Maps.newHashMap();
+        urlargs.put("project_id", req.getProject_id());
+
+        String newQuery = JSON.toJSONString(urlargs);
+        query += newQuery;
 
         Integer userId = (Integer) sessionInfo.getBaseInfo("userId");
+        //todo args.put("url", "");
         Map<String, String> args = Maps.newHashMap();
-        //args.put("url", "");
-
+        args.put("url", url.toString());
         String nowTime = DateUtil.getNowTimeStr("yyyyMMddhhmm");
         String exportName = "【" + proj.getName() + "】整改报告." + nowTime + ".pdf";
         // 把导出的信息插入到数据库中
@@ -185,8 +196,8 @@ public class HouseqmIssueController {
         LjBaseResponse<IssueBatchAppointRspVo> response = new LjBaseResponse<>();
         try {
             ctrlTool.projPermMulti(request, new String[]{"项目.移动验房.问题管理.编辑", "项目.工程检查.问题管理.编辑"});
-            if (req.getRepairer_id()==null)req.setRepairer_id(0);
-            if (req.getPlan_end_on()==null)req.setPlan_end_on(0);
+            if (req.getRepairer_id() == null) req.setRepairer_id(0);
+            if (req.getPlan_end_on() == null) req.setPlan_end_on(0);
             // 过滤掉不同task下的问题，感觉有点多余，不过还是处理下
             List<String> issueUuids = StringSplitToListUtil.splitToStringComma(req.getIssue_uuids(), ",");
             List<HouseQmCheckTaskIssue> issues = houseQmCheckTaskIssueService.searchHouseQmCheckTaskIssueByTaskIdUuidIn(req.getTask_id(), issueUuids);
@@ -221,10 +232,10 @@ public class HouseqmIssueController {
      * @Param [req]
      **/
     @RequestMapping(value = "batch_approve", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
-    public LjBaseResponse<IssueBatchApproveRspVo> batchApprove(HttpServletRequest request,@Validated IssueBatchApproveReq req) throws Exception {
+    public LjBaseResponse<IssueBatchApproveRspVo> batchApprove(HttpServletRequest request, @Validated IssueBatchApproveReq req) throws Exception {
         LjBaseResponse<IssueBatchApproveRspVo> response = new LjBaseResponse<>();
         try {
-            ctrlTool.projPermMulti(request,new String[]{"项目.移动验房.问题管理.编辑", "项目.工程检查.问题管理.编辑"});
+            ctrlTool.projPermMulti(request, new String[]{"项目.移动验房.问题管理.编辑", "项目.工程检查.问题管理.编辑"});
             // 过滤掉不同task下的问题，感觉有点多余，不过还是处理下
             List<String> uuids = filterIssueUuidByProjIdTaskIdUuids(req.getProject_id(), req.getTask_id(), req.getIssue_uuids());
             Integer userId = (Integer) sessionInfo.getBaseInfo("userId");
@@ -250,10 +261,10 @@ public class HouseqmIssueController {
      * @Param [req]
      **/
     @RequestMapping(value = "batch_delete", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
-    public LjBaseResponse<IssueBatchDeleteRspVo> batchDelete(HttpServletRequest request,@Validated IssueBatchDeleteReq req) {
+    public LjBaseResponse<IssueBatchDeleteRspVo> batchDelete(HttpServletRequest request, @Validated IssueBatchDeleteReq req) {
         LjBaseResponse<IssueBatchDeleteRspVo> response = new LjBaseResponse<>();
         try {
-            ctrlTool.projPermMulti(request,new String[]{"项目.移动验房.问题管理.编辑", "项目.工程检查.问题管理.编辑"});
+            ctrlTool.projPermMulti(request, new String[]{"项目.移动验房.问题管理.编辑", "项目.工程检查.问题管理.编辑"});
             List<String> issueUuids = StringSplitToListUtil.splitToStringComma(req.getIssue_uuids(), ",");
             IssueBatchDeleteRspVo data = new IssueBatchDeleteRspVo();
             List<String> fails = Lists.newArrayList();

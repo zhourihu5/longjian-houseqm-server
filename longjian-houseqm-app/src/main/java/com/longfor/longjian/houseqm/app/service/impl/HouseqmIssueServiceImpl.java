@@ -1,5 +1,6 @@
 package com.longfor.longjian.houseqm.app.service.impl;
 
+import com.alibaba.fastjson.JSON;
 import com.google.common.collect.Lists;
 import com.longfor.longjian.houseqm.app.service.IHouseqmIssueService;
 import com.longfor.longjian.houseqm.app.vo.HouseQmCheckTaskIssueHelperVo;
@@ -16,9 +17,13 @@ import com.longfor.longjian.houseqm.po.zj2db.Project;
 import com.longfor.longjian.houseqm.util.DateUtil;
 import com.longfor.longjian.houseqm.util.StringSplitToListUtil;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
 import java.util.*;
 
 /**
@@ -132,10 +137,10 @@ public class HouseqmIssueServiceImpl implements IHouseqmIssueService {
     }
 
     @Override
-    public ExportFileRecord create(int userId, Integer teamId, Integer project_id, int exportType, Map<String, String> args, String exportName, Date executeAt) {
+    public ExportFileRecord create(int userId, Integer teamId, Integer project_id, int exportType, Map<String, String> args, String exportName, Date executeAt) throws Exception {
         //生成随机数
         Random random = new Random(Long.MAX_VALUE);
-        long randCount = Math.abs(random.nextLong());
+        /*long randCount = Math.abs(random.nextLong());
         long ts = new Date().getTime();
         //读取配置 export - basedir baseuri
         String cfg_base_dir = exportVo.getBase_dir();
@@ -144,13 +149,44 @@ public class HouseqmIssueServiceImpl implements IHouseqmIssueService {
         String inputFileName = randCount + ts + ".input";
         String outputFileName = "export/" + randCount + ts + ".output";
         String fileName = cfg_base_dir + "/" + inputFileName;
-
+        byte[] data = JSON.toJSONBytes(args);
+        writeInput(data, cfg_base_dir,inputFileName);*/
+        long randCount = Math.abs(random.nextLong());
+        String base_dir = exportVo.getBase_dir();
+        Integer ts = DateUtil.datetimeToTimeStamp(new Date());
+        String base_uri = exportVo.getBase_uri();
+        String inputFilename = String.format("%d%d.%s", randCount, ts, "input");
+        String outputFilename = String.format("/export/%d%d.%s", randCount, ts, "output");
+        String filepath = base_dir + inputFilename;
+        byte[] data = JSON.toJSONBytes(args);
+        //todo uat环境是异步导出 源码是同步导出。
+        this.writeInput(data,exportName,filepath);
         //记录导出的内容到数据库
-        String resultFilePath = cfg_base_uri + "/" + outputFileName;
-        return exportFileRecordService.insertFull(userId, teamId, project_id, exportType, inputFileName + " " + outputFileName,
+        String resultFilePath = base_uri + "/" + outputFilename;
+        return exportFileRecordService.insertFull(userId, teamId, project_id, exportType, inputFilename + " " + outputFilename,
                 resultFilePath, exportName, 0, "", executeAt);
     }
 
+    private void writeInput(byte[] data,String exportName,String filepath) throws Exception {
+        try {
+            File file = new File(String.format("%s/%s",filepath,exportName));
+            if(!file.getParentFile().exists()){
+                file.getParentFile().mkdirs();
+            }
+
+            if(!file.exists()){
+                file.createNewFile();
+            }
+            //todo 导出data数据未处理
+            FileOutputStream out;
+            out = new FileOutputStream(String.format("%s/%s",filepath,exportName));
+            out.write(data);
+            out.flush();
+            out.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
 
     @Override
     public Project getProjectByProjId(Integer project_id) {
