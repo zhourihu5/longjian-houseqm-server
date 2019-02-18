@@ -137,7 +137,7 @@ public class HouseQmCheckTaskIssueLogServiceImpl implements HouseQmCheckTaskIssu
         criteria.andEqualTo("issueUuid", issueUuid).andIsNull("deleteAt");
         return houseQmCheckTaskIssueLogMapper.selectByExample(example);
     }
-
+    @Transactional
     @Override
     @LFAssignDataSource("zhijian2")
     public void add(HouseQmCheckTaskIssueLog new_issue_log) {
