@@ -58,7 +58,7 @@ public interface IIssueService {
 
     Boolean repairNotifyExport2(Integer uid, Integer projectId, String issueUuid, HttpServletResponse response);
 
-    void repairReplyExport(Integer projectId, String issueIds);
+    Map<String, Object> repairReplyExport(Integer projectId, String issueIds);
 
     List<ProjectSettingV2> getProjectSettingId(Integer projectId);
 
