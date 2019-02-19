@@ -6,6 +6,7 @@ import com.longfor.longjian.houseqm.app.vo.*;
 import com.longfor.longjian.houseqm.po.zj2db.HouseQmCheckTaskSquad;
 
 import java.util.List;
+import java.util.Map;
 
 public interface IBuildingqmService {
     TaskListVo myTaskList(Integer userId);
@@ -24,4 +25,12 @@ public interface IBuildingqmService {
     ApiIssueLogVo getIssueListLogByLastIdAndUpdataAt(Integer taskId, Integer timestamp, String issueUuid);
 
     ReportIssueVo reportIssue(Integer uid, Integer projectId, String data);
+
+    /**
+     *
+     * @param category_cls
+     * @param items
+     * @return
+     */
+    Map<String, Object> issuestatisticexport(Integer category_cls, String items);
 }

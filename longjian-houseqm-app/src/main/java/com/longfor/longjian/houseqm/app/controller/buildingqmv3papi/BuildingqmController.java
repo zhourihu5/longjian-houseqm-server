@@ -10,20 +10,29 @@ import com.longfor.longjian.houseqm.app.req.UpdateDeviceReq;
 import com.longfor.longjian.houseqm.app.req.buildingqm.MyIssuePatchListReq;
 import com.longfor.longjian.houseqm.app.service.IBuildingqmService;
 import com.longfor.longjian.houseqm.app.service.ICheckUpdateService;
+import com.longfor.longjian.houseqm.app.utils.FileUtil;
 import com.longfor.longjian.houseqm.app.vo.*;
+import com.longfor.longjian.houseqm.consts.CommonGlobalEnum;
 import com.longfor.longjian.houseqm.po.zj2db.HouseQmCheckTaskSquad;
 import com.longfor.longjian.houseqm.util.DateUtil;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang.StringUtils;
 import org.springframework.http.MediaType;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
+import java.io.BufferedInputStream;
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
 
 /**
  * http://192.168.37.159:3000/project/8/interface/api/626  项目下获取我的任务列表
@@ -182,8 +191,8 @@ public class BuildingqmController {
         Integer userId = (Integer) sessionInfo.getBaseInfo("userId");
         LjBaseResponse<MyIssuePatchListVo> response = new LjBaseResponse<>();
         try {
-            if (req.getLast_id()==null)req.setLast_id(0);
-            if (req.getTimestamp()==null)req.setTimestamp(0);
+            if (req.getLast_id() == null) req.setLast_id(0);
+            if (req.getTimestamp() == null) req.setTimestamp(0);
             MyIssuePatchListVo miplv = buildingqmService.myIssuePathList(userId, req.getTask_id(), req.getTimestamp());
             response.setData(miplv);
         } catch (Exception e) {
@@ -241,7 +250,7 @@ public class BuildingqmController {
     @RequestMapping(value = "task/task_squad", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     public LjBaseResponse<HouseQmCheckTaskSquadListRspVo.HouseQmCheckTaskSquadListRspVoList> taskSquad(HttpServletRequest request, @RequestParam(name = "project_id", required = true) String projectId,
                                                                                                        @RequestParam(name = "task_id", required = true) String taskId) {
-        LjBaseResponse<HouseQmCheckTaskSquadListRspVo.HouseQmCheckTaskSquadListRspVoList> response= new LjBaseResponse<>();
+        LjBaseResponse<HouseQmCheckTaskSquadListRspVo.HouseQmCheckTaskSquadListRspVoList> response = new LjBaseResponse<>();
         Integer userId = (Integer) sessionInfo.getBaseInfo("userId");
         try {
             ctrlTool.projPerm(request, "项目.工程检查.任务管理.查看");
@@ -342,11 +351,26 @@ public class BuildingqmController {
         response.setData(reportIssueVo);
         return response;
     }
+
     @RequestMapping(value = "stat/issue_statistic_export", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
-    public LjBaseResponse<ReportIssueVo> issueStatisticExport(@RequestParam(name = "project_id", required = true) Integer projectId){
-
-       return  null;
+    public LjBaseResponse<ReportIssueVo> issueStatisticExport(@RequestParam(name = "category_cls", required = true) Integer category_cls,
+                                                              @RequestParam(name = "items", required = true) String items, HttpServletResponse response) {
+        log.info(String.format("issue_statistic_export, category_cls=%s, items=%s"), category_cls, items);
+        LjBaseResponse<ReportIssueVo> ljBaseResponse = new LjBaseResponse();
+        if (category_cls == null || StringUtils.isNotBlank(items)) {
+            ljBaseResponse.setResult(Integer.parseInt(CommonGlobalEnum.RES_ERROR.getId().toString()));
+            ljBaseResponse.setMessage("args error");
+            return ljBaseResponse;
+        }
+        Map<String, Object> map = buildingqmService.issuestatisticexport(category_cls, items);
+        log.info(String.format("export issue statistic, result=%d, message=%s, path=%s"),Integer.parseInt(map.get("result").toString()),map.get("message").toString(),map.get("path").toString());
+        if(Integer.parseInt(map.get("result").toString()) !=0){
+            ljBaseResponse.setResult(Integer.parseInt(map.get("result").toString()));
+            ljBaseResponse.setMessage(map.get("message").toString());
+            return ljBaseResponse;
+        }
+        response.addHeader("Content-Disposition", String.format("attachment; filename=\"%s\"",map.get("filename").toString()));
+        FileUtil.Load(map.get("path").toString(),response);
+        return ljBaseResponse;
     }
-
-
 }
