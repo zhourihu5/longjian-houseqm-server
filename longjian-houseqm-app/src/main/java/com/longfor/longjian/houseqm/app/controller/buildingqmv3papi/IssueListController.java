@@ -19,6 +19,7 @@ import com.longfor.longjian.houseqm.po.zj2db.ProjectSettingV2;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.apache.poi.xssf.streaming.SXSSFWorkbook;
+import org.apache.poi.xwpf.usermodel.XWPFDocument;
 import org.springframework.http.MediaType;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
@@ -144,7 +145,7 @@ public class IssueListController {
     @RequestMapping(value = "repair_notify_export2/", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     public LjBaseResponse<Object> repairNotifyExport2(HttpServletRequest request, HttpServletResponse response) {
         String projectId = request.getParameter("project_id");
-        String issueUuid=  request.getParameter("issue_ids");
+        String issueUuid = request.getParameter("issue_ids");
         log.info("repair_notify_export2, project_id=" + projectId + ", issue_ids=" + issueUuid + "");
 
         Integer userId = (Integer) sessionInfo.getBaseInfo("userId");
@@ -155,12 +156,12 @@ public class IssueListController {
             return objectTaskResponse;
 
         }
-        Boolean b = iIssueService.repairNotifyExport2(userId, Integer.parseInt(projectId), issueUuid,response);
-       if(b){
-           LjBaseResponse<Object> objectTaskResponse = new LjBaseResponse<>();
-           objectTaskResponse.setData(b);
-           return objectTaskResponse;
-       }
+        Boolean b = iIssueService.repairNotifyExport2(userId, Integer.parseInt(projectId), issueUuid, response);
+        if (b) {
+            LjBaseResponse<Object> objectTaskResponse = new LjBaseResponse<>();
+            objectTaskResponse.setData(b);
+            return objectTaskResponse;
+        }
 
         return null;
     }
@@ -170,7 +171,7 @@ public class IssueListController {
     @RequestMapping(value = "repair_reply_export", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     public LjBaseResponse<Object> repairReplyExport(HttpServletRequest request, HttpServletResponse response,
                                                     @RequestParam(value = "project_id", required = true) Integer projectId,
-                                                    @RequestParam(value = "issue_ids", required = true) String issueIds) {
+                                                    @RequestParam(value = "issue_ids", required = true) String issueIds) throws IOException {
         log.info("repair_reply_export, project_id=" + projectId + ", issue_ids=" + issueIds);
         if (projectId == null || issueIds == null) {
             LjBaseResponse<Object> objectTaskResponse = new LjBaseResponse<>();
@@ -178,10 +179,25 @@ public class IssueListController {
             objectTaskResponse.setResult((Integer) CommonGlobalEnum.RES_ERROR.getId());
             return objectTaskResponse;
         }
-        iIssueService.repairReplyExport(projectId,issueIds);
+        ServletOutputStream os = response.getOutputStream();
+        try {
+            Map<String, Object> map = iIssueService.repairReplyExport(projectId, issueIds);
+            XWPFDocument doc = (XWPFDocument) map.get("doc");
+            String filename = (String) map.get("filename");
+            //response.setContentType("application/vnd.ms-word");
+            response.setCharacterEncoding("utf-8");
+            response.setHeader("Content-Disposition", "attachment;filename=" + new String(filename.getBytes("gbk"), "iso8859-1"));
+            doc.write(os);
+            os.flush();
+        } catch (IOException e) {
+            e.printStackTrace();
+        } finally {
+            if (os != null) {
+                os.close();
+            }
+        }
 
-
-        return null;
+        return new LjBaseResponse<>();
     }
 
 
