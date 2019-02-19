@@ -4,6 +4,7 @@ import com.longfor.longjian.common.exception.CommonRuntimeException;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang.StringUtils;
 
+import javax.servlet.http.HttpServletResponse;
 import java.io.*;
 import java.nio.charset.StandardCharsets;
 import java.util.zip.ZipEntry;
@@ -304,5 +305,33 @@ public class FileUtil {
             }
         }
         return outputStream.toByteArray();
+    }
+
+    /**
+     * 通用下载文件
+     * @param filePath
+     * @param response
+     */
+    public static void Load(String filePath, HttpServletResponse response){
+        byte[] buff = new byte[1024];
+        BufferedInputStream bis = null;
+        OutputStream os = null;
+        try {
+            os = response.getOutputStream();
+            bis = new BufferedInputStream(new FileInputStream(filePath));
+            int i = 0;
+            while ((i = bis.read(buff)) != -1) {
+                os.write(buff, 0, i);
+                os.flush();
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        } finally {
+            try {
+                bis.close();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
     }
 }
