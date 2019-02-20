@@ -2863,5 +2863,13 @@ public class BuildingqmServiceImpl implements IBuildingqmService {
         }
     }
 
+    @Override
+    public Map<String, Object> issuestatisticexport(Integer category_cls, String items) {
+        Integer result = 0;
+        String message = "success";
+        //todo item数据格式未指定
+        Map map = JSON.parseObject(items, Map.class);
 
+        return null;
+    }
 }
