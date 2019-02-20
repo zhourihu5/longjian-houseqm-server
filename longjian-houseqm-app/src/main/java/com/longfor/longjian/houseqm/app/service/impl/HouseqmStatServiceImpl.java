@@ -63,28 +63,28 @@ public class HouseqmStatServiceImpl implements IHouseqmStatService {
         //取出该任务下的所有户path
         List<String> areaPaths = Lists.newArrayList();
         HouseQmCheckTask task = houseQmCheckTaskService.getHouseQmCheckTaskByProjTaskId(project_id, task_id);
-        if (task==null)return Lists.newArrayList();
+        if (task == null) return Lists.newArrayList();
         List<Integer> aids = StringUtil.strToInts(task.getAreaIds(), ",");
         List<Integer> types = StringUtil.strToInts(task.getAreaTypes(), ",");
         List<Area> areas = areaService.searchAreaListByRootIdAndTypes(project_id, aids, types);
         for (Area area : areas) {
-            areaPaths.add(String.format("%s%d/",area.getPath(),area.getId()));
+            areaPaths.add(String.format("%s%d/", area.getPath(), area.getId()));
         }
         //取出对应状态条件path
-        if (status.equals(StatisticFormInspectionStatusEnum.UnChecked.getId())){
+        if (status.equals(StatisticFormInspectionStatusEnum.UnChecked.getId())) {
             // 找出未查验，就是	所有－已查验的
             List<String> checkedAreaPaths = houseqmStaticService.getHasIssueTaskCheckedAreaPathListByTaskId(task_id, false, null, area_id);
             areaPaths.removeAll(checkedAreaPaths);//差集
-        }else if (status.equals(StatisticFormInspectionStatusEnum.Checked.getId())){
+        } else if (status.equals(StatisticFormInspectionStatusEnum.Checked.getId())) {
             // 找出已查验，就是	已查验的 交集 所有
             List<String> checkedAreaPaths = houseqmStaticService.getHasIssueTaskCheckedAreaPathListByTaskId(task_id, false, null, area_id);
             areaPaths.retainAll(checkedAreaPaths);
         }
         // 区分是否存在问题
-        if (issue_status.equals(StatisticFormInspectionIssueStatusEnum.HasIssue.getId())){
+        if (issue_status.equals(StatisticFormInspectionIssueStatusEnum.HasIssue.getId())) {
             List<String> hasIssueAreaPaths = houseqmStaticService.getHasIssueTaskCheckedAreaPathListByTaskId(task_id, true, null, area_id);
             areaPaths.retainAll(hasIssueAreaPaths);//交集
-        }else if (issue_status.equals(StatisticFormInspectionIssueStatusEnum.NoProblem.getId())){
+        } else if (issue_status.equals(StatisticFormInspectionIssueStatusEnum.NoProblem.getId())) {
             // 不存在问题的包括了那些未检查，就是 所有-已查验存在问题的
             List<String> noIssueAreaPaths = houseqmStaticService.getHasIssueTaskCheckedAreaPathListByTaskId(task_id, true, null, area_id);
             areaPaths.removeAll(noIssueAreaPaths);
@@ -250,13 +250,8 @@ public class HouseqmStatServiceImpl implements IHouseqmStatService {
             } else {
                 item.setStatus(StatisticFormInspectionStatusEnum.UnChecked.getId());
             }
-            for (StatisticFormInspectionStatusEnum value : StatisticFormInspectionStatusEnum.values()) {
-                if (value.getId().equals(item.getStatus())) {
-                    item.setStatusName(value.getValue());
-                } else {
-                    item.setStatusName("");
-                }
-            }
+
+            item.setStatusName(StatisticFormInspectionStatusEnum.getName(item.getStatus()));
             result.add(item);
         }
         return result;
@@ -612,7 +607,7 @@ public class HouseqmStatServiceImpl implements IHouseqmStatService {
         List<ProjectDailyListVo.ProjectDailyVo> list = Lists.newArrayList();
 
         for (String date : dates) {
-            String beginOn=date+" 00:00:00";
+            String beginOn = date + " 00:00:00";
             List<CheckerIssueStat> checkerIssueStat = houseQmCheckTaskIssueService.getIssueSituationDailyByProjTaskIdInDate(projectId, taskIdList, beginOn);
             // 赋值 计算
             ProjectDailyListVo projectDailyListVo1 = new ProjectDailyListVo();
