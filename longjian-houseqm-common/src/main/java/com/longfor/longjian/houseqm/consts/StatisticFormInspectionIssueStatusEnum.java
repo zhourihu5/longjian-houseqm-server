@@ -36,6 +36,14 @@ public enum StatisticFormInspectionIssueStatusEnum {
         this.value = value;
     }
 
+    public static String getName(Integer id){
+        StatisticFormInspectionIssueStatusEnum[] values = StatisticFormInspectionIssueStatusEnum.values();
+        for (StatisticFormInspectionIssueStatusEnum value : values) {
+            if (value.getId().equals(id))return value.getValue();
+        }
+        return null;
+    }
+
     StatisticFormInspectionIssueStatusEnum(Integer id, String value) {
         this.id = id;
         this.value = value;

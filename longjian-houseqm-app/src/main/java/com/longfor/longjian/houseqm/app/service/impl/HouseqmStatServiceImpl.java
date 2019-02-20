@@ -59,6 +59,52 @@ public class HouseqmStatServiceImpl implements IHouseqmStatService {
     private HouseqmStaticService houseqmStaticService;
 
     @Override
+    public List<Integer> searchInspectionAreaIdsByConditions(Integer project_id, Integer task_id, Integer area_id, Integer status, Integer issue_status) {
+        //取出该任务下的所有户path
+        List<String> areaPaths = Lists.newArrayList();
+        HouseQmCheckTask task = houseQmCheckTaskService.getHouseQmCheckTaskByProjTaskId(project_id, task_id);
+        if (task==null)return Lists.newArrayList();
+        List<Integer> aids = StringUtil.strToInts(task.getAreaIds(), ",");
+        List<Integer> types = StringUtil.strToInts(task.getAreaTypes(), ",");
+        List<Area> areas = areaService.searchAreaListByRootIdAndTypes(project_id, aids, types);
+        for (Area area : areas) {
+            areaPaths.add(String.format("%s%d/",area.getPath(),area.getId()));
+        }
+        //取出对应状态条件path
+        if (status.equals(StatisticFormInspectionStatusEnum.UnChecked.getId())){
+            // 找出未查验，就是	所有－已查验的
+            List<String> checkedAreaPaths = houseqmStaticService.getHasIssueTaskCheckedAreaPathListByTaskId(task_id, false, null, area_id);
+            areaPaths.removeAll(checkedAreaPaths);//差集
+        }else if (status.equals(StatisticFormInspectionStatusEnum.Checked.getId())){
+            // 找出已查验，就是	已查验的 交集 所有
+            List<String> checkedAreaPaths = houseqmStaticService.getHasIssueTaskCheckedAreaPathListByTaskId(task_id, false, null, area_id);
+            areaPaths.retainAll(checkedAreaPaths);
+        }
+        // 区分是否存在问题
+        if (issue_status.equals(StatisticFormInspectionIssueStatusEnum.HasIssue.getId())){
+            List<String> hasIssueAreaPaths = houseqmStaticService.getHasIssueTaskCheckedAreaPathListByTaskId(task_id, true, null, area_id);
+            areaPaths.retainAll(hasIssueAreaPaths);//交集
+        }else if (issue_status.equals(StatisticFormInspectionIssueStatusEnum.NoProblem.getId())){
+            // 不存在问题的包括了那些未检查，就是 所有-已查验存在问题的
+            List<String> noIssueAreaPaths = houseqmStaticService.getHasIssueTaskCheckedAreaPathListByTaskId(task_id, true, null, area_id);
+            areaPaths.removeAll(noIssueAreaPaths);
+        }
+        //用areaId来过滤掉那些不属范围内的path
+        if (area_id > 0) {
+            areaPaths = filterAreaPathListByRootAreaId(area_id, areaPaths);
+        }
+        //排序后返回areaId
+        Collections.sort(areaPaths);
+        ArrayList<Integer> result = Lists.newArrayList();
+        for (String p : areaPaths) {
+            List<Integer> ids = StringUtil.strToInts(p, "/");
+            if (ids.size() <= 0) continue;
+            result.add(ids.get(ids.size() - 1));
+        }
+        return result;
+    }
+
+    @Override
     public List<Integer> searchRepossessInspectionAreaIdsByConditions(Integer project_id, Integer task_id, Integer area_id, Integer status, Integer issue_status, Date startTime, Date endTime) {
         //取出该任务下的所有户path
         List<String> areaPaths = Lists.newArrayList();
@@ -145,7 +191,7 @@ public class HouseqmStatServiceImpl implements IHouseqmStatService {
     // 格式化验房信息
     @Override
     public List<InspectionHouseStatusInfoVo> formatFenhuHouseInspectionStatusInfoByAreaIds(Integer task_id, List<Integer> ids) {
-        ArrayList<InspectionHouseStatusInfoVo> result = Lists.newArrayList();
+        List<InspectionHouseStatusInfoVo> result = Lists.newArrayList();
         if (ids.size() <= 0) return result;
 
         //获取区域信息
