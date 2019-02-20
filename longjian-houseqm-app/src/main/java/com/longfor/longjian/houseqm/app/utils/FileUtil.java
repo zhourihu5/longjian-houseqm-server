@@ -309,10 +309,11 @@ public class FileUtil {
 
     /**
      * 通用下载文件
+     *
      * @param filePath
      * @param response
      */
-    public static void Load(String filePath, HttpServletResponse response){
+    public static void Load(String filePath, HttpServletResponse response) {
         byte[] buff = new byte[1024];
         BufferedInputStream bis = null;
         OutputStream os = null;
@@ -328,7 +329,7 @@ public class FileUtil {
             e.printStackTrace();
         } finally {
             try {
-                bis.close();
+                if (bis != null) bis.close();
             } catch (IOException e) {
                 e.printStackTrace();
             }
