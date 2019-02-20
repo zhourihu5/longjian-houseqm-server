@@ -4,6 +4,9 @@ import com.longfor.longjian.houseqm.app.vo.ExportReplyDetail;
 import com.longfor.longjian.houseqm.app.vo.issuelist.ExcelIssueData;
 import com.longfor.longjian.houseqm.util.DateUtil;
 import com.longfor.longjian.houseqm.utils.ExampleUtil;
+import freemarker.template.Configuration;
+import freemarker.template.Template;
+import freemarker.template.TemplateException;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.apache.poi.ooxml.POIXMLDocument;
@@ -27,13 +30,16 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 import javax.annotation.Resource;
+import javax.security.auth.login.AppConfigurationEntry;
+import javax.servlet.ServletContext;
+import javax.servlet.ServletOutputStream;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import java.io.*;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Random;
+import java.util.*;
 
 import static org.apache.poi.ss.usermodel.VerticalAlignment.CENTER;
+import static org.apache.poi.ss.usermodel.VerticalAlignment.forInt;
 
 /**
  * @ProjectName: longjian-houseqm-server
@@ -53,7 +59,9 @@ public class ExportUtils {
             "AA", "AB", "AC", "AD", "AE", "AF", "AG", "AH", "AI", "AJ", "AK", "AL", "AM", "AN", "AO", "AP", "AQ", "AR", "AS", "AT", "AU", "AV", "AW", "AX", "AY", "AZ",
             "BA", "BB", "BC", "BD", "BE", "BF", "BG", "BH", "BI", "BJ", "BK", "BL", "BM", "BN", "BO", "BP", "BQ", "BR", "BS", "BT", "BU", "BV", "BW", "BX", "BY", "BZ"});
 
+    //private static Configuration configuration = new freemarker.template.Configuration();
 
+    // 导出excel 不带图片 问题列表
     public static SXSSFWorkbook exportExcel(List<ExcelIssueData> data, boolean condition_open) {
         //File file = FileUtil.createFile(path);
         //OutputStream out = new FileOutputStream(file);
@@ -230,14 +238,14 @@ public class ExportUtils {
                         FileInputStream is = new FileInputStream(file);
                         String pictureData = doc.addPictureData(is, XWPFDocument.PICTURE_TYPE_PNG);
                         CTInline ctInline = pI3.createRun().getCTR().addNewDrawing().addNewInline();
-                        createPicture(doc,pictureData, doc.getNextPicNameNumber(XWPFDocument.PICTURE_TYPE_PNG), 254, 254);
+                        createPicture(doc, pictureData, doc.getNextPicNameNumber(XWPFDocument.PICTURE_TYPE_PNG), 254, 254);
                         FileOutputStream fos = new FileOutputStream(file);
                         doc.write(fos);
                         fos.close();
                     }
                 }
             } else {
-                if (CollectionUtils.isNotEmpty(issue.getAnsw_attachment_path())&&issue.getAnsw_attachment_path().size() > 0) {
+                if (CollectionUtils.isNotEmpty(issue.getAnsw_attachment_path()) && issue.getAnsw_attachment_path().size() > 0) {
                     XWPFParagraph pI2 = cell.addParagraph();
                     XWPFRun rI2 = pI2.createRun();
                     rI2.setText(String.format("%s回复：", (index + 1 < 10 ? "   " : "    ")));
@@ -248,7 +256,7 @@ public class ExportUtils {
                         FileInputStream is = new FileInputStream(file);
                         String pictureData = doc.addPictureData(is, XWPFDocument.PICTURE_TYPE_PNG);
                         CTInline ctInline = pI2.createRun().getCTR().addNewDrawing().addNewInline();
-                        createPicture(doc,pictureData, doc.getNextPicNameNumber(XWPFDocument.PICTURE_TYPE_PNG), 254, 254);
+                        createPicture(doc, pictureData, doc.getNextPicNameNumber(XWPFDocument.PICTURE_TYPE_PNG), 254, 254);
                         FileOutputStream fos = new FileOutputStream(file);
                         doc.write(fos);
                         fos.close();
@@ -268,6 +276,49 @@ public class ExportUtils {
 
         return doc;
     }
+
+    // 导出 统计报告 -任务概况 -验房详情 导出excel 使用freemaker
+    public static void exportStatExcel(String templateName, Map<String, Object> data, HttpServletResponse response, HttpServletRequest request) throws Exception {
+        // 加载模板
+        OutputStreamWriter writer = null;
+        OutputStream out = null;
+        FileInputStream inputStream = null;
+        File file = new File("temp.xlsx");
+        try {
+            Configuration configuration = new Configuration();
+            configuration.setDefaultEncoding("utf-8");
+            configuration.setClassForTemplateLoading(data.getClass(), "/templates");
+            Template template = configuration.getTemplate(templateName, "utf-8");
+            // 填充数据至Excel
+            writer = new OutputStreamWriter(new FileOutputStream(file), "utf-8");
+            template.process(data, writer);
+
+            inputStream = new FileInputStream(file);
+            out = response.getOutputStream();
+            byte[] buffer = new byte[512]; // 缓冲区
+            int bytesToRead = -1;
+            // 通过循环将读入的Excel文件的内容输出到浏览器中
+            while ((bytesToRead = inputStream.read(buffer)) != -1) {
+                out.write(buffer, 0, bytesToRead);
+            }
+            out.flush();
+
+        } catch (IOException e) {
+            e.printStackTrace();
+        } finally {
+            // 关闭文件流
+            if (writer != null) {
+                writer.close();
+            }
+            if (inputStream != null)
+                inputStream.close();
+            if (out != null)
+                out.close();
+            if (file != null)
+                file.delete(); // 删除临时文件
+        }
+    }
+
 
     private static int getColumnIndexByName(String name) {
         return COL_NAME_LIST.indexOf(name);
@@ -337,7 +388,7 @@ public class ExportUtils {
     }
 
 
-    public static void createPicture(XWPFDocument doc,String blipId,int id, int width, int height) {
+    public static void createPicture(XWPFDocument doc, String blipId, int id, int width, int height) {
         final int EMU = 9525;
         width *= EMU;
         height *= EMU;
@@ -376,7 +427,7 @@ public class ExportUtils {
         XmlToken xmlToken = null;
         try {
             xmlToken = XmlToken.Factory.parse(picXml);
-        } catch(XmlException xe) {
+        } catch (XmlException xe) {
             xe.printStackTrace();
         }
         inline.set(xmlToken);
@@ -396,5 +447,6 @@ public class ExportUtils {
         docPr.setName("Picture " + id);
         docPr.setDescr("Generated");
     }
+
 
 }
