@@ -33,6 +33,7 @@ import org.springframework.stereotype.Repository;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.util.*;
 import java.util.stream.Collectors;
@@ -849,8 +850,6 @@ public class IssueServiceImpl implements IIssueService {
 
     @Override
     public Boolean repairNotifyExport2(Integer uid, Integer projectId, String issueUuid, HttpServletResponse resp) {
-        int result = 0;
-        String message = "";
         List<ExportNotifyDetail2Vo> input = Lists.newArrayList();
         List<Integer> issueIds = StringSplitToListUtil.splitToIdsComma(issueUuid, ",");
         if (CollectionUtils.isEmpty(issueIds)) {
@@ -1418,6 +1417,120 @@ public class IssueServiceImpl implements IIssueService {
         LjBaseResponse<IssueInfoVo> response = new LjBaseResponse<>();
         response.setData(vo);
         return response;
+    }
+
+    @Override
+    public Boolean repairNotifyExport(Integer userId, int projectId, String issueUuid, HttpServletResponse response, HttpServletRequest request) {
+        List<ExportNotifyDetailVo> input = Lists.newArrayList();
+        List<Integer> issueIds = StringSplitToListUtil.splitToIdsComma(issueUuid, ",");
+        if (CollectionUtils.isEmpty(issueIds)) {
+            throw new LjBaseRuntimeException(-99, "");
+        }
+        ArrayList<Integer> statusList = Lists.newArrayList();
+        statusList.add(CheckTaskIssueStatus.NoteNoAssign.getValue());
+        statusList.add(CheckTaskIssueStatus.AssignNoReform.getValue());
+        statusList.add(CheckTaskIssueStatus.ReformNoCheck.getValue());
+        statusList.add(CheckTaskIssueStatus.CheckYes.getValue());
+        List<HouseQmCheckTaskIssue> issueList = houseQmCheckTaskIssueService.selectHouseQmCheckTaskIssueByProIdAndIdAndStatus(projectId, issueIds, statusList);
+        List<Integer> taskIds = Lists.newArrayList();
+        List<Integer> areaIds = Lists.newArrayList();
+        List<String> categoryKeys = Lists.newArrayList();
+        List<String> checkItems = Lists.newArrayList();
+        List<String> attachmentMd5s = Lists.newArrayList();
+        issueList.forEach(item -> {
+            if (!taskIds.contains(item.getTaskId())) {
+                taskIds.add(item.getTaskId());
+            }
+            areaIds.addAll(StringSplitToListUtil.splitToIdsComma(item.getAreaPathAndId(), "/"));
+            categoryKeys.addAll(StringSplitToListUtil.splitToStringComma(item.getCategoryPathAndKey(), "/"));
+            checkItems.addAll(StringSplitToListUtil.splitToStringComma(item.getCheckItemPathAndKey(), "/"));
+            attachmentMd5s.addAll(StringSplitToListUtil.splitToStringComma(item.getAttachmentMd5List(), ","));
+        });
+        Map<Integer, HouseQmCheckTask> taskMap = createTaskMap(CollectionUtil.removeDuplicate(taskIds));
+        Map<Integer, Area> areaMap = createAreaMap(CollectionUtil.removeDuplicate(areaIds));
+        Map<String, CategoryV3> categoryMap = createCategoryKeyMap(CollectionUtil.removeDuplicate(categoryKeys));
+        Map<String, CheckItemV3> checkItemMap = createCheckItemMap(CollectionUtil.removeDuplicate(checkItems));
+        Map<String, FileResource> attachmentMap = createAttachmentMap(CollectionUtil.removeDuplicate(attachmentMd5s));
+        for (HouseQmCheckTaskIssue issue : issueList) {
+            ExportNotifyDetailVo detailVo = new ExportNotifyDetailVo();
+            detailVo.setIssue_id(issue.getId());
+            if (taskMap.containsKey(issue.getTaskId())) {
+                detailVo.setTask_name(taskMap.get(issue.getTaskId()).getName());
+            } else {
+                detailVo.setTask_name("");
+            }
+            detailVo.setArea_name(StringUtils.join(getAreaPathName(areaMap, issue.getAreaPathAndId()), "/"));
+            List<String> checkItemNames = getCategoryPathName(categoryMap, issue.getCategoryPathAndKey());
+            checkItemNames.addAll(getCheckItemPathName(checkItemMap, issue.getCheckItemPathAndKey()));
+            detailVo.setCheck_item_name(StringUtils.join(checkItemNames, "/"));
+            detailVo.setContent(issue.getContent());
+            ArrayList<String> storeKeyList = Lists.newArrayList();
+            for (String attachment : StringSplitToListUtil.splitToStringComma(issue.getAttachmentMd5List(), ",")) {
+                if (attachmentMap.containsKey(attachment) && attachmentMap.get(attachment).getStoreKey().length() > 0) {
+                    if (detailVo.getAttachment_path().size() > 2) {
+                        break;
+                    }
+                    String attachmentPath = "/data/zhijian/" + attachmentMap.get(attachment).getStoreKey();
+                    storeKeyList.add(attachmentPath);
+                    detailVo.setAttachment_path(storeKeyList);
+                }
+            }
+            input.add(detailVo);
+        }
+        HashMap<String, Object> map = Maps.newHashMap();
+        if(issueIds.size()==1){
+            //单个文件直接导出
+            ArrayList<Object> picList = Lists.newArrayList();
+            for (ExportNotifyDetailVo vo : input) {
+                map.put("name",vo.getTask_name());
+                map.put("buwei",vo.getArea_name());
+                map.put("neirong",vo.getCheck_item_name());
+                map.put("content",vo.getContent().replace("\n",""));
+                if(vo.getAttachment_path().size()>0){
+                    for (String s : vo.getAttachment_path()) {
+                        try {
+                            picList.add(DocumentHandler.getImageBase(s));
+                        } catch (Exception e) {
+                            e.printStackTrace();
+
+                        }
+                    }
+                }
+                map.put("image",picList);
+            }
+            new DocumentHandler().exportDoc("notify_template", "整改通知单_" + issueIds.get(0), map, response);
+        }else{
+            //多个word文件打包成zip
+            List<String> issueIdsList = Lists.newArrayList();
+            List<Map<String,Object>> docList = Lists.newArrayList();
+            List<Object> picList = Lists.newArrayList();
+            for (ExportNotifyDetailVo vo : input) {
+                issueIdsList.add(String.valueOf(vo.getIssue_id()));
+                //基本数据
+                map.put("name",vo.getTask_name());
+                map.put("buwei",vo.getArea_name());
+                map.put("neirong",vo.getCheck_item_name());
+                map.put("content",vo.getContent().replace("\n",""));
+                if(vo.getAttachment_path().size()>0){
+                    for (String s : vo.getAttachment_path()) {
+                        try {
+                            //导出图片
+                            picList.add(DocumentHandler.getImageBase(s));
+                        } catch (Exception e) {
+                            e.printStackTrace();
+
+                        }
+                    }
+                }
+                map.put("image",picList);
+                docList.add(map);
+            }
+            //导出
+            boolean b=   new DocumentHandler().exportWordBatch(request,response,docList,issueIdsList,"notify_template.ftl");
+            return  b;
+        }
+
+        return null;
     }
 
 
