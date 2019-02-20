@@ -146,7 +146,6 @@ public class IssueListController {
         String projectId = request.getParameter("project_id");
         String issueUuid=  request.getParameter("issue_ids");
         log.info("repair_notify_export2, project_id=" + projectId + ", issue_ids=" + issueUuid + "");
-
         Integer userId = (Integer) sessionInfo.getBaseInfo("userId");
         if (projectId == null || issueUuid == null) {
             LjBaseResponse<Object> objectTaskResponse = new LjBaseResponse<>();
@@ -164,6 +163,35 @@ public class IssueListController {
 
         return null;
     }
+    @RequestMapping(value = "repair_notify_export", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+    public LjBaseResponse<Object> repairNotifyExport(HttpServletRequest request, HttpServletResponse response) {
+        String projectId = request.getParameter("project_id");
+        String issueUuid=  request.getParameter("issue_ids");
+        log.info("repair_notify_export, project_id=" + projectId + ", issue_ids=" + issueUuid + "");
+        Integer userId = (Integer) sessionInfo.getBaseInfo("userId");
+        if (projectId == null || issueUuid == null) {
+            LjBaseResponse<Object> objectTaskResponse = new LjBaseResponse<>();
+            objectTaskResponse.setMessage("args error");
+            objectTaskResponse.setResult((Integer) CommonGlobalEnum.RES_ERROR.getId());
+            return objectTaskResponse;
+
+        }
+        Boolean b = iIssueService.repairNotifyExport(userId, Integer.parseInt(projectId), issueUuid,response,request);
+        if(b){
+            LjBaseResponse<Object> objectTaskResponse = new LjBaseResponse<>();
+            objectTaskResponse.setData(b);
+            return objectTaskResponse;
+        }
+
+        return null;
+    }
+
+
+
+
+
+
+
 
     /**
      * 项目下问题详情
