@@ -175,4 +175,17 @@ public class HouseQmCheckTaskIssueLogServiceImpl implements HouseQmCheckTaskIssu
         criteria.andIsNull("deleteAt");
         return houseQmCheckTaskIssueLogMapper.selectByExample(example);
     }
+
+    @Override
+    @LFAssignDataSource("zhijian2")
+    public List<HouseQmCheckTaskIssueLog> selectByIssueUuIdInAndStatus(List<String> issue_uuids, Integer status) {
+        Example example = new Example(HouseQmCheckTaskIssueLog.class);
+        Example.Criteria criteria = example.createCriteria();
+        criteria.andIn("issueUuid", issue_uuids);
+        criteria.andEqualTo("status",status);
+        ExampleUtil.addDeleteAtJudge(example);
+        example.orderBy("clientCreateAt").asc();
+        return houseQmCheckTaskIssueLogMapper.selectByExample(example);
+
+    }
 }

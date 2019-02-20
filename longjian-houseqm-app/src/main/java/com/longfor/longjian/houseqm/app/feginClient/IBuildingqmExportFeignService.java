@@ -27,6 +27,8 @@ public interface IBuildingqmExportFeignService {
     @RequestMapping(value = "export_pic_excel", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     LjBaseResponse<ExportRsp> exportPicExcel(@RequestBody ExportBuildingExcelReq req);
 
-
+    // 工程检查-问题列表- 导出ppt 存入redis中 用户从任务记录中下载
+    @RequestMapping(value = "export_ppt",produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+    public LjBaseResponse<ExportRsp> exportPpt(ExportBuildingExcelReq req);
 
 }

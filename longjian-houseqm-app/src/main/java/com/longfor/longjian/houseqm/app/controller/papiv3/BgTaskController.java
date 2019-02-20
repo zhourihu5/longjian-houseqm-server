@@ -49,22 +49,15 @@ public class BgTaskController {
 
     /**
      * @Author hy
-     * @Description 导出问题报告PPT
+     * @Description 导出问题报告PPT  先导出到任务记录中 缓存中redis
      * http://192.168.37.159:3000/project/8/interface/api/3360
      * @Date 11:36 2019/1/15
      * @Param [req]
      * @return com.longfor.longjian.common.base.LjBaseResponse<com.longfor.longjian.houseqm.app.vo.bgtask.ExportPptRspVo>
      **/
     @RequestMapping(value = "buildingqm/export_ppt",produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
-    public LjBaseResponse<ExportPptRspVo> exportPpt(ExportBuildingExcelReq req){
-        String now = DateUtil.dateToString(new Date(), "yyyy-MM-dd hh:mm");
-
-        String file_name="工程检查：导出带图片ppt报告 "+now;
-        //todo 调basic服务
-        LjBaseResponse<ExportPptRspVo> response = new LjBaseResponse<>();
-        response.setResult(0);
-        //response.setData();
-        return response;
+    public LjBaseResponse<ExportRsp> exportPpt(ExportBuildingExcelReq req){
+        return iBuildingqmExportFeignService.exportPpt(req);
     }
 
 }

@@ -703,6 +703,8 @@ public class HouseQmCheckTaskIssueServiceImpl implements HouseQmCheckTaskIssueSe
         criteria.andEqualTo("projectId", projectId);
         criteria.andIn("id", issueIds);
         criteria.andIn("status", statusList);
+        ExampleUtil.addDeleteAtJudge(example);//源码中有no_deleted orderby  desc
+        example.orderBy("clientCreateAt").desc();
         return houseQmCheckTaskIssueMapper.selectByExample(example);
     }
 

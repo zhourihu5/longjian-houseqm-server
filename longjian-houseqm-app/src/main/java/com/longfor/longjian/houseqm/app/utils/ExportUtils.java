@@ -1,8 +1,13 @@
 package com.longfor.longjian.houseqm.app.utils;
 
+import com.longfor.longjian.houseqm.app.vo.ExportReplyDetail;
 import com.longfor.longjian.houseqm.app.vo.issuelist.ExcelIssueData;
 import com.longfor.longjian.houseqm.util.DateUtil;
+import com.longfor.longjian.houseqm.utils.ExampleUtil;
+import org.apache.commons.collections.CollectionUtils;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
+import org.apache.poi.ooxml.POIXMLDocument;
+import org.apache.poi.openxml4j.opc.OPCPackage;
 import org.apache.poi.ss.usermodel.*;
 import org.apache.poi.ss.util.CellAddress;
 import org.apache.poi.xssf.streaming.SXSSFCell;
@@ -12,13 +17,17 @@ import org.apache.poi.xssf.streaming.SXSSFWorkbook;
 import org.apache.poi.xssf.usermodel.XSSFCell;
 import org.apache.poi.xssf.usermodel.XSSFRow;
 import org.apache.poi.xssf.usermodel.XSSFSheet;
+import org.apache.poi.xwpf.usermodel.*;
+import org.apache.xmlbeans.XmlException;
+import org.apache.xmlbeans.XmlToken;
+import org.openxmlformats.schemas.drawingml.x2006.main.CTNonVisualDrawingProps;
+import org.openxmlformats.schemas.drawingml.x2006.main.CTPositiveSize2D;
+import org.openxmlformats.schemas.drawingml.x2006.wordprocessingDrawing.CTInline;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 import javax.annotation.Resource;
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.OutputStream;
+import java.io.*;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -176,11 +185,88 @@ public class ExportUtils {
         //    r = '%04x' % random.randint(0, 65536)
         //    pathname = '%s/export_issue_excel_%s_%s.xlsx' % (config.EXPORT_PATH, dt, r)
         //    wb.save(pathname)
-        String dt = DateUtil.getNowTimeStr("yyyyMMddHHmmss");
+        String dt = DateUtil.getNowTimeStr("MMddHHmmss");
         String r = new Random().ints(0, 65536).toString();
         String pathname = String.format("%s/export_issue_excel_%s_%s.xlsx", EXPORT_PATH, dt, r);
 
         return workbook;
+    }
+
+    //导出 整改回复单
+    public static XWPFDocument exportRepairReply(ExportReplyDetail data) throws Exception {
+        String template_notify = "/templates/reply_template.docx";
+        String dt = DateUtil.getNowTimeStr("MMddHHmmss");
+        String r = new Random().ints(0, 65536).toString();
+        String file_path = String.format("%s/buildingqm_report/reply_report_%s_%s", EXPORT_PATH, dt, r);
+        ExportUtils exportUtils = new ExportUtils();
+        InputStream fis = exportUtils.getClass().getResourceAsStream(template_notify);
+        XWPFDocument doc = new XWPFDocument(fis);
+        List<XWPFTable> tables = doc.getTables();
+        XWPFTable table = tables.get(0);
+
+        table.getRow(0).getCell(1).setText(data.getTask_name());
+        table.getRow(0).getCell(3).setText(data.getCheck_item_name());
+        //
+        table.getRow(2).getCell(0).setText("上次检查问题整改复查情况：");
+        for (int index = 0; index < data.getIssue_detail().size(); index++) {
+            ExportReplyDetail.ExportIssueDetail issue = data.getIssue_detail().get(index);
+
+            XWPFTableCell cell = table.getRow(2).getCell(0);
+            XWPFParagraph pIO = cell.addParagraph();
+            XWPFRun rIO = pIO.createRun();
+            rIO.setText(String.format("%d、问题：%s", index + 1, issue.getQues_content().replace("\n", " ")));
+            if (issue.getAnsw_content().length() > 0) {
+                XWPFParagraph pI2 = cell.addParagraph();
+                XWPFRun rI2 = pI2.createRun();
+                rI2.setText(String.format("%s回复：%s", (index + 1 < 10 ? "   " : "    "), issue.getAnsw_content().replace("\n", " ")));
+                if (issue.getAnsw_attachment_path().size() > 0) {
+                    XWPFParagraph pI3 = cell.addParagraph();
+                    XWPFRun rI3 = pI3.createRun();
+                    rI3.setText((index + 1 < 10 ? "   " : "    "));
+                    for (String attachment : issue.getAnsw_attachment_path()) {
+                        //图片 attachment: pictures/3a98d018fb666e1fd3c41575fa20659b.png
+                        // 读取图片 加载到doc中
+                        File file = new File(attachment);
+                        FileInputStream is = new FileInputStream(file);
+                        String pictureData = doc.addPictureData(is, XWPFDocument.PICTURE_TYPE_PNG);
+                        CTInline ctInline = pI3.createRun().getCTR().addNewDrawing().addNewInline();
+                        createPicture(doc,pictureData, doc.getNextPicNameNumber(XWPFDocument.PICTURE_TYPE_PNG), 254, 254);
+                        FileOutputStream fos = new FileOutputStream(file);
+                        doc.write(fos);
+                        fos.close();
+                    }
+                }
+            } else {
+                if (CollectionUtils.isNotEmpty(issue.getAnsw_attachment_path())&&issue.getAnsw_attachment_path().size() > 0) {
+                    XWPFParagraph pI2 = cell.addParagraph();
+                    XWPFRun rI2 = pI2.createRun();
+                    rI2.setText(String.format("%s回复：", (index + 1 < 10 ? "   " : "    ")));
+                    for (String attachment : issue.getAnsw_attachment_path()) {
+                        //图片
+                        // 读取图片 加载到doc中
+                        File file = new File(attachment);
+                        FileInputStream is = new FileInputStream(file);
+                        String pictureData = doc.addPictureData(is, XWPFDocument.PICTURE_TYPE_PNG);
+                        CTInline ctInline = pI2.createRun().getCTR().addNewDrawing().addNewInline();
+                        createPicture(doc,pictureData, doc.getNextPicNameNumber(XWPFDocument.PICTURE_TYPE_PNG), 254, 254);
+                        FileOutputStream fos = new FileOutputStream(file);
+                        doc.write(fos);
+                        fos.close();
+                    }
+                } else {
+                    XWPFParagraph pI2 = cell.addParagraph();
+                    XWPFRun rI2 = pI2.createRun();
+                    rI2.setText(String.format("%s回复：", (index + 1 < 10 ? "   " : "    ")));
+                }
+
+            }
+        }
+
+        String dt1 = DateUtil.getNowTimeStr("MMddHHmmss");
+        String r1 = new Random().ints(0, 65536).toString();
+        String pathname = String.format("%s/repair_reply_%s_%s_report.docx", file_path, dt1, r1);
+
+        return doc;
     }
 
     private static int getColumnIndexByName(String name) {
@@ -195,6 +281,120 @@ public class ExportUtils {
             cell = row.createCell(ca.getColumn());
         }
         return cell;
+    }
+
+    private static void insertPicture(String blipId, XWPFDocument document, String filePath,
+                                      CTInline inline, int width,
+                                      int height) throws Exception {
+        document.addPictureData(new FileInputStream(filePath), XWPFDocument.PICTURE_TYPE_PNG);
+        int id = document.getAllPictures().size() - 1;
+        final int EMU = 9525;
+        width *= EMU;
+        height *= EMU;
+        //String blipId = document.getAllPictures().get(id).getPackageRelationship().getId();
+        String picXml = getPicXml(blipId, width, height);
+        XmlToken xmlToken = null;
+        try {
+            xmlToken = XmlToken.Factory.parse(picXml);
+        } catch (XmlException xe) {
+            xe.printStackTrace();
+        }
+        inline.set(xmlToken);
+        inline.setDistT(0);
+        inline.setDistB(0);
+        inline.setDistL(0);
+        inline.setDistR(0);
+        CTPositiveSize2D extent = inline.addNewExtent();
+        extent.setCx(width);
+        extent.setCy(height);
+        CTNonVisualDrawingProps docPr = inline.addNewDocPr();
+        docPr.setId(id);
+        docPr.setName("IMG_" + id);
+        docPr.setDescr("IMG_" + id);
+    }
+
+    private static String getPicXml(String blipId, int width, int height) {
+        String picXml =
+                "" + "<a:graphic xmlns:a=\"http://schemas.openxmlformats.org/drawingml/2006/main\">" +
+                        "   <a:graphicData uri=\"http://schemas.openxmlformats.org/drawingml/2006/picture\">" +
+                        "      <pic:pic xmlns:pic=\"http://schemas.openxmlformats.org/drawingml/2006/picture\">" +
+                        "         <pic:nvPicPr>" + "            <pic:cNvPr id=\"" + 0 +
+                        "\" name=\"Generated\"/>" + "            <pic:cNvPicPr/>" +
+                        "         </pic:nvPicPr>" + "         <pic:blipFill>" +
+                        "            <a:blip r:embed=\"" + blipId +
+                        "\" xmlns:r=\"http://schemas.openxmlformats.org/officeDocument/2006/relationships\"/>" +
+                        "            <a:stretch>" + "               <a:fillRect/>" +
+                        "            </a:stretch>" + "         </pic:blipFill>" +
+                        "         <pic:spPr>" + "            <a:xfrm>" +
+                        "               <a:off x=\"0\" y=\"0\"/>" +
+                        "               <a:ext cx=\"" + width + "\" cy=\"" + height +
+                        "\"/>" + "            </a:xfrm>" +
+                        "            <a:prstGeom prst=\"rect\">" +
+                        "               <a:avLst/>" + "            </a:prstGeom>" +
+                        "         </pic:spPr>" + "      </pic:pic>" +
+                        "   </a:graphicData>" + "</a:graphic>";
+        return picXml;
+    }
+
+
+    public static void createPicture(XWPFDocument doc,String blipId,int id, int width, int height) {
+        final int EMU = 9525;
+        width *= EMU;
+        height *= EMU;
+        //String blipId = getAllPictures().get(id).getPackageRelationship().getId();
+
+        CTInline inline = doc.createParagraph().createRun().getCTR().addNewDrawing().addNewInline();
+
+        String picXml = "" +
+                "<a:graphic xmlns:a=\"http://schemas.openxmlformats.org/drawingml/2006/main\">" +
+                "   <a:graphicData uri=\"http://schemas.openxmlformats.org/drawingml/2006/picture\">" +
+                "      <pic:pic xmlns:pic=\"http://schemas.openxmlformats.org/drawingml/2006/picture\">" +
+                "         <pic:nvPicPr>" +
+                "            <pic:cNvPr id=\"" + id + "\" name=\"Generated\"/>" +
+                "            <pic:cNvPicPr/>" +
+                "         </pic:nvPicPr>" +
+                "         <pic:blipFill>" +
+                "            <a:blip r:embed=\"" + blipId + "\" xmlns:r=\"http://schemas.openxmlformats.org/officeDocument/2006/relationships\"/>" +
+                "            <a:stretch>" +
+                "               <a:fillRect/>" +
+                "            </a:stretch>" +
+                "         </pic:blipFill>" +
+                "         <pic:spPr>" +
+                "            <a:xfrm>" +
+                "               <a:off x=\"0\" y=\"0\"/>" +
+                "               <a:ext cx=\"" + width + "\" cy=\"" + height + "\"/>" +
+                "            </a:xfrm>" +
+                "            <a:prstGeom prst=\"rect\">" +
+                "               <a:avLst/>" +
+                "            </a:prstGeom>" +
+                "         </pic:spPr>" +
+                "      </pic:pic>" +
+                "   </a:graphicData>" +
+                "</a:graphic>";
+
+        //CTGraphicalObjectData graphicData = inline.addNewGraphic().addNewGraphicData();
+        XmlToken xmlToken = null;
+        try {
+            xmlToken = XmlToken.Factory.parse(picXml);
+        } catch(XmlException xe) {
+            xe.printStackTrace();
+        }
+        inline.set(xmlToken);
+        //graphicData.set(xmlToken);
+
+        inline.setDistT(0);
+        inline.setDistB(0);
+        inline.setDistL(0);
+        inline.setDistR(0);
+
+        CTPositiveSize2D extent = inline.addNewExtent();
+        extent.setCx(width);
+        extent.setCy(height);
+
+        CTNonVisualDrawingProps docPr = inline.addNewDocPr();
+        docPr.setId(id);
+        docPr.setName("Picture " + id);
+        docPr.setDescr("Generated");
     }
 
 }
