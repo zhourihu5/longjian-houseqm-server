@@ -24,6 +24,7 @@ import javax.annotation.Resource;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.OutputStreamWriter;
 import java.util.*;
 
 /**
@@ -158,8 +159,7 @@ public class HouseqmIssueServiceImpl implements IHouseqmIssueService {
         String inputFilename = String.format("%d%d.%s", randCount, ts, "input");
         String outputFilename = String.format("/export/%d%d.%s", randCount, ts, "output");
         String filepath = base_dir + inputFilename;
-        byte[] data = JSON.toJSONBytes(args);
-        //todo uat环境是异步导出 源码是同步导出。
+        String data = JSON.toJSONString(args);
         this.writeInput(data,exportName,filepath);
         //记录导出的内容到数据库
         String resultFilePath = base_uri + "/" + outputFilename;
@@ -167,22 +167,29 @@ public class HouseqmIssueServiceImpl implements IHouseqmIssueService {
                 resultFilePath, exportName, 0, "", executeAt);
     }
 
-    private void writeInput(byte[] data,String exportName,String filepath) throws Exception {
+    private void writeInput(String data, String exportName, String filepath) throws Exception {
         try {
-            File file = new File(String.format("%s/%s",filepath,exportName));
-            if(!file.getParentFile().exists()){
+            //File file = new File(String.format("%s", filepath));
+            File file = new File(String.format("D:/%s", exportName));
+
+            if (!file.getParentFile().exists()) {
                 file.getParentFile().mkdirs();
             }
 
-            if(!file.exists()){
+            if (!file.exists()) {
                 file.createNewFile();
             }
-            //todo 导出data数据未处理
             FileOutputStream out;
-            out = new FileOutputStream(String.format("%s/%s",filepath,exportName));
-            out.write(data);
-            out.flush();
-            out.close();
+            //out = new FileOutputStream(String.format("%s", filepath));
+            out = new FileOutputStream(String.format("D:/%s",exportName));
+            //String data1 = new String(data,"utf-8");
+            OutputStreamWriter op = new OutputStreamWriter(out, "utf-8");
+            op.append(data);
+            //out.write(data);
+            op.flush();
+            op.close();
+        /*out.write(data);
+        out.close();*/
         } catch (IOException e) {
             e.printStackTrace();
         }

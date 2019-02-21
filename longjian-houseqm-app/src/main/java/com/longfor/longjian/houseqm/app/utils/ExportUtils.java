@@ -61,8 +61,6 @@ public class ExportUtils {
             "AA", "AB", "AC", "AD", "AE", "AF", "AG", "AH", "AI", "AJ", "AK", "AL", "AM", "AN", "AO", "AP", "AQ", "AR", "AS", "AT", "AU", "AV", "AW", "AX", "AY", "AZ",
             "BA", "BB", "BC", "BD", "BE", "BF", "BG", "BH", "BI", "BJ", "BK", "BL", "BM", "BN", "BO", "BP", "BQ", "BR", "BS", "BT", "BU", "BV", "BW", "BX", "BY", "BZ"});
 
-    //private static Configuration configuration = new freemarker.template.Configuration();
-
     // 导出excel 不带图片 问题列表
     public static SXSSFWorkbook exportExcel(List<ExcelIssueData> data, boolean condition_open) {
         //File file = FileUtil.createFile(path);
@@ -282,43 +280,21 @@ public class ExportUtils {
     // 导出 统计报告 -任务概况 -验房详情 导出excel 使用freemaker
     public static void exportStatExcel(String templateName, Map<String, Object> data, HttpServletResponse response, HttpServletRequest request) throws Exception {
         // 加载模板
-        OutputStreamWriter writer = null;
-        OutputStream out = null;
-        FileInputStream inputStream = null;
-        File file = new File("temp.xlsx");
-        try {
-            Configuration configuration = new Configuration();
-            configuration.setDefaultEncoding("utf-8");
-            configuration.setClassForTemplateLoading(data.getClass(), "/templates");
-            Template template = configuration.getTemplate(templateName, "utf-8");
-            // 填充数据至Excel
-            writer = new OutputStreamWriter(new FileOutputStream(file), "utf-8");
-            template.process(data, writer);
+        File file = new File("temp.xlsx");// 临时名称
+        Configuration configuration = new Configuration();
+        configuration.setDefaultEncoding("utf-8");
+        ExportUtils exportUtils = new ExportUtils();
+        configuration.setClassForTemplateLoading(exportUtils.getClass(), "/templates");
+        Template template = configuration.getTemplate(templateName, "utf-8");
+        // 填充数据至Excel
+        OutputStreamWriter writer = new OutputStreamWriter(new FileOutputStream(file), "utf-8");
+        template.process(data, writer);
+        // 关闭文件流
+        writer.close();
+        // 导出文件
+        FileUtil.Load(file.getAbsolutePath(), response);
+        file.delete(); // 删除临时文件
 
-            inputStream = new FileInputStream(file);
-            out = response.getOutputStream();
-            byte[] buffer = new byte[512]; // 缓冲区
-            int bytesToRead = -1;
-            // 通过循环将读入的Excel文件的内容输出到浏览器中
-            while ((bytesToRead = inputStream.read(buffer)) != -1) {
-                out.write(buffer, 0, bytesToRead);
-            }
-            out.flush();
-
-        } catch (IOException e) {
-            e.printStackTrace();
-        } finally {
-            // 关闭文件流
-            if (writer != null) {
-                writer.close();
-            }
-            if (inputStream != null)
-                inputStream.close();
-            if (out != null)
-                out.close();
-            if (file != null)
-                file.delete(); // 删除临时文件
-        }
     }
 
 

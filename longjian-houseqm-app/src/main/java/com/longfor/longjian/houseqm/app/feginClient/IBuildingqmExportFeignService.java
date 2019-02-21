@@ -29,6 +29,6 @@ public interface IBuildingqmExportFeignService {
 
     // 工程检查-问题列表- 导出ppt 存入redis中 用户从任务记录中下载
     @RequestMapping(value = "export_ppt",produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
-    public LjBaseResponse<ExportRsp> exportPpt(ExportBuildingExcelReq req);
+    public LjBaseResponse<ExportRsp> exportPpt(@RequestBody ExportBuildingExcelReq req);
 
 }
