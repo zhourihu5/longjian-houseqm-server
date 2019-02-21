@@ -1,5 +1,8 @@
 package com.longfor.longjian.houseqm.util;
 
+import org.apache.commons.lang.StringUtils;
+import org.joda.time.DateTime;
+
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -25,6 +28,20 @@ public class DateUtil {
     public static final String formatBySec(Date date) {
         return dateFormat.format(date);
     }
+
+    public static String dateToString(Date date, String formatStr) {
+        if (date == null) {
+            return "";
+        } else {
+            if (StringUtils.isEmpty(formatStr)) {
+                formatStr = "yyyy-MM-dd HH:mm:ss";
+            }
+
+            DateTime dateTime = new DateTime(date);
+            return dateTime.toString(formatStr);
+        }
+    }
+
     public static final boolean datetimeBefore(Date date,Date date2) {
         return date.getTime()<date2.getTime();
     }

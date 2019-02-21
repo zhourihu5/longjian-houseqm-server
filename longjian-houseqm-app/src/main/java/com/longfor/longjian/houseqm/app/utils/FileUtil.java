@@ -234,12 +234,12 @@ public class FileUtil {
         zip(new File(inputFileName), zipFileName);
     }
 
-    public static void main(String[] args) throws Exception {
+  /*  public static void main(String[] args) throws Exception {
         zip("c://222", "c://666/1.zip");
         //deleteFile(new File("c://222"));
         //copyFile("C://flower.jpg", "c://222/222/222/1.jpg");
         //createDir("c://222/222/222/1");
-    }
+    }*/
 
     /**
      * 根据相对路径获取文件在项目下的绝对路径

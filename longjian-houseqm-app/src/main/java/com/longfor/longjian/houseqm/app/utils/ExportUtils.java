@@ -281,7 +281,8 @@ public class ExportUtils {
         File file = new File("temp.xlsx");// 临时名称
         Configuration configuration = new Configuration();
         configuration.setDefaultEncoding("utf-8");
-        configuration.setClassForTemplateLoading(data.getClass(), "/templates");
+        ExportUtils exportUtils = new ExportUtils();
+        configuration.setClassForTemplateLoading(exportUtils.getClass(), "/templates");
         Template template = configuration.getTemplate(templateName, "utf-8");
         // 填充数据至Excel
         OutputStreamWriter writer = new OutputStreamWriter(new FileOutputStream(file), "utf-8");

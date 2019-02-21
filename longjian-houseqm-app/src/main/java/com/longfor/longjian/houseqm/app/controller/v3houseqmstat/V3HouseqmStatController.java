@@ -62,7 +62,7 @@ public class V3HouseqmStatController {
     // 统计报告 -任务概况 -验房详情 导出excel
     @RequestMapping(value = "inspection_situation_export", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     public LjBaseResponse<Object> inspectionSituationExport(HttpServletRequest request, HttpServletResponse response, @Validated InspectionSituationExportReq req) throws Exception {
-        //ctrlTool.projPermMulti(request, new String[]{"项目.移动验房.统计.查看", "项目.工程检查.统计.查看"});
+        ctrlTool.projPermMulti(request, new String[]{"项目.移动验房.统计.查看", "项目.工程检查.统计.查看"});
         if (req.getArea_id() == null) req.setArea_id(0);
         if (req.getIssue_status() == null) req.setIssue_status(0);
         if (req.getStatus() == null) req.setStatus(0);
