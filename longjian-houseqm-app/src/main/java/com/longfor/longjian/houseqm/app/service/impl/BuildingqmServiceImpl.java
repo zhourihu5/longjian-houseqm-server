@@ -13,7 +13,9 @@ import com.longfor.longjian.common.kafka.KafkaProducer;
 import com.longfor.longjian.houseqm.app.req.TaskEditReq;
 import com.longfor.longjian.houseqm.app.req.TaskReq;
 import com.longfor.longjian.houseqm.app.service.IBuildingqmService;
+import com.longfor.longjian.houseqm.app.utils.ExportUtils;
 import com.longfor.longjian.houseqm.app.vo.*;
+import com.longfor.longjian.houseqm.app.vo.export.NodeDataVo;
 import com.longfor.longjian.houseqm.consts.DropDataReasonEnum;
 import com.longfor.longjian.houseqm.domain.internalService.*;
 import com.longfor.longjian.houseqm.innervo.ApiBuildingQmCheckTaskConfig;
@@ -29,6 +31,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 
+import org.apache.poi.xssf.streaming.SXSSFWorkbook;
 import org.springframework.stereotype.Repository;
 import org.springframework.stereotype.Service;
 
@@ -2867,8 +2870,99 @@ public class BuildingqmServiceImpl implements IBuildingqmService {
     public Map<String, Object> issuestatisticexport(Integer category_cls, String items) {
         Integer result = 0;
         String message = "success";
-        //todo item数据格式未指定
-        Map map = JSON.parseObject(items, Map.class);
+        List<NodeDataVo> dataList = Lists.newArrayList();
+        HashMap<String, NodeDataVo> dataMap = Maps.newHashMap();
+        JSONArray jsonArray = JSON.parseArray(items);
+        List<Map> itemsList = jsonArray.toJavaList(Map.class);
+        List<String> pathKeys = Lists.newArrayList();
+        for (Map<String,Object> item : itemsList) {
+            NodeDataVo nodeDataVo = new NodeDataVo();
+            nodeDataVo.setKey((String) item.get("key"));
+            nodeDataVo.setParent_key((String) item.get("parent_key"));
+            nodeDataVo.setIssue_count((Integer) item.get("issue_count"));
+            nodeDataVo.setName((String) item.get("name"));
+            nodeDataVo.setValid_node(true);
+            nodeDataVo.setPath_name(nodeDataVo.getKey()+"/");
+            pathKeys.add(0,nodeDataVo.getKey());
+            nodeDataVo.setPath_keys(pathKeys);
+            if(StringUtils.isBlank(nodeDataVo.getKey())||StringUtils.isBlank(nodeDataVo.getParent_key())|| nodeDataVo.getIssue_count()!=null||StringUtils.isBlank(nodeDataVo.getName())){
+                        continue;
+            }
+            dataList.add(nodeDataVo);
+            dataMap.put(nodeDataVo.getKey(),nodeDataVo);
+        }
+         int maxCol = 0;
+        ArrayList<String> path_key = Lists.newArrayList();
+        for (NodeDataVo item : dataList) {
+            String parentKey = item.getParent_key();
+            while (parentKey.length()>0){
+                    item.setPath_name(String.format("%s/%s",parentKey,item.getPath_name()));
+                    path_key.add(0,parentKey);
+                    item.setPath_keys(path_key);
+                    if(dataMap.containsKey(parentKey)){
+                        parentKey=dataMap.get(parentKey).getParent_key();
+                    }else{
+                        item.setValid_node(false);
+                        break;
+                    }
+            }
+            dataMap.get(item.getKey()).setPath_name(item.getPath_name());
+            dataMap.get(item.getKey()).setPath_keys(item.getPath_keys());
+            dataMap.get(item.getKey()).setValid_node(item.getValid_node());
+            if(item.getPath_keys().size()>maxCol){
+                maxCol=item.getPath_keys().size();
+            }
+        }
+        for (NodeDataVo obj : dataList) {
+            if(obj.getValid_node()==false){
+                continue;
+            }
+            for (NodeDataVo item : dataList) {
+                if(item.getPath_name().indexOf(obj.getPath_name())==0){
+                   boolean isLast = true;
+                    for (NodeDataVo temp : dataList) {
+                        if(temp.getPath_name().indexOf(item.getPath_name())==0&&temp.getPath_name().length()!=item.getPath_name().length()){
+                            isLast=false;
+                            break;
+                        }
+                    }
+                    if(isLast){
+                        Integer child_count = obj.getChild_count();
+                        child_count+=1;
+                    }
+                }
+            }
+            dataMap.get(obj.getKey()).setChild_count(obj.getChild_count());
+        }
+        List<NodeDataVo> nodeTree = Lists.newArrayList();
+        for (int i = 1; i < maxCol+1; i++) {
+            for (NodeDataVo item : dataList) {
+                if(item.getValid_node()==false){
+                    continue;
+                }
+                if(item.getPath_keys().size()!=i){
+                        continue;
+                }
+                List<NodeDataVo> nodeList= nodeTree;
+                Integer nodeCol = 0;
+                while (true){
+                   boolean existNode=false;
+                    for (NodeDataVo o : nodeList) {
+                      if(item.getPath_keys().get(nodeCol).equals(o.getKey())){
+                          existNode = true;
+                          nodeCol += 1;
+                          break;
+                      }
+                    }
+                    if(existNode==false){
+                        nodeList.add(item);
+                        break;
+                    }
+              }
+            }
+        }
+        SXSSFWorkbook work=ExportUtils.exportIssueStatisticExcel(nodeTree,maxCol);
+
 
         return null;
     }
