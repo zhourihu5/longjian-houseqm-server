@@ -1,6 +1,7 @@
 package com.longfor.longjian.houseqm.app.utils;
 
 import com.longfor.longjian.houseqm.app.vo.ExportReplyDetail;
+import com.longfor.longjian.houseqm.app.vo.export.NodeDataVo;
 import com.longfor.longjian.houseqm.app.vo.issuelist.ExcelIssueData;
 import com.longfor.longjian.houseqm.util.DateUtil;
 import com.longfor.longjian.houseqm.utils.ExampleUtil;
@@ -13,6 +14,7 @@ import org.apache.poi.ooxml.POIXMLDocument;
 import org.apache.poi.openxml4j.opc.OPCPackage;
 import org.apache.poi.ss.usermodel.*;
 import org.apache.poi.ss.util.CellAddress;
+import org.apache.poi.ss.util.CellRangeAddress;
 import org.apache.poi.xssf.streaming.SXSSFCell;
 import org.apache.poi.xssf.streaming.SXSSFRow;
 import org.apache.poi.xssf.streaming.SXSSFSheet;
@@ -449,4 +451,76 @@ public class ExportUtils {
     }
 
 
+    public static SXSSFWorkbook exportIssueStatisticExcel(List<NodeDataVo> nodeTree, int maxCol) {
+        SXSSFWorkbook workbook = new SXSSFWorkbook();
+        SXSSFSheet sheet = workbook.createSheet();
+        CellStyle cellStyle = workbook.createCellStyle();
+        Font base_font = workbook.createFont();
+        base_font.setFontName("宋体");//字体
+        base_font.setBold(true);//加粗
+        base_font.setFontHeightInPoints((short) 14);
+        cellStyle.setFont(base_font);
+        cellStyle.setVerticalAlignment(CENTER);//垂直居中
+        cellStyle.setWrapText(true);//文字换行
+        cellStyle.setAlignment(HorizontalAlignment.CENTER);//水平居中
+        cellStyle.setBorderLeft(BorderStyle.THIN);
+        cellStyle.setBorderRight(BorderStyle.THIN);
+        cellStyle.setBorderTop(BorderStyle.THIN);
+        cellStyle.setBorderBottom(BorderStyle.THIN);
+        int cur_row=1;int cur_column = 1;
+        for (int i = 0; i <maxCol ; i++) {
+            //创建行
+            SXSSFRow row = sheet.createRow(cur_row);
+            //创捷列
+            SXSSFCell cell = row.createCell(cur_column + i);
+            //内容
+            if(i==0){
+                cell.setCellValue("问题项");
+            }else{
+                cell.setCellValue("细项");
+            }
+
+        }
+        cur_row = 2;
+      int  cur_col = 1;
+        exportTree( workbook,sheet,nodeTree,cur_row,cur_col);
+
+        String dt = DateUtil.getNowTimeStr("MMddHHmmss");
+        String r = new Random().ints(0, 65536).toString();
+        String pathname = String.format("%s/export_issue_excel_%s_%s.xlsx", EXPORT_PATH, dt, r);
+
+        return workbook;
+
+    }
+
+    private static void exportTree(SXSSFWorkbook workbook,SXSSFSheet sheet,List<NodeDataVo> tree, int row, int col) {
+        for (NodeDataVo node : tree) {
+           int  end_row=row+node.getChild_count()-1;
+           int end_column = col;
+           //合并单元格
+            //1：开始行 2：结束行  3：开始列 4：结束列
+            CellRangeAddress region = new CellRangeAddress(row, col, end_row, end_column);
+            sheet.addMergedRegion(region);
+            //创建行
+            SXSSFRow row1 = sheet.createRow(row);
+            //创捷列
+            SXSSFCell cell = row1.createCell(col);
+            CellStyle cellStyle = workbook.createCellStyle();
+            cellStyle.setVerticalAlignment(CENTER);//垂直居中
+            cell.setCellValue(node.getName());
+            //合并
+            sheet.addMergedRegion(new CellRangeAddress(row, col+1, end_row, end_column+1));
+            //创建行
+            SXSSFRow row2 = sheet.createRow(row);
+            //创捷列
+            SXSSFCell cell1 = row2.createCell(col+1);
+            CellStyle cellStyles = workbook.createCellStyle();
+            cellStyles.setVerticalAlignment(CENTER);//垂直居中
+            cell1.setCellValue(String.valueOf(node.getIssue_count()));
+         /*   if( &&node){
+                exportTree(node._child_list, row, col + 2);
+            }*/
+        }
+
+    }
 }

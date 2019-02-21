@@ -60,7 +60,11 @@ public class test {
        //多文件导出
          new DocumentHandler().exportWordBatch(req,resp,objects,numbers,"notify_template.ftl");
     }
-
+    public static void main(String[] args) {
+            String str="12312312";
+        int i = str.indexOf("4");
+        System.out.println(i);
+    }
 
 
 }

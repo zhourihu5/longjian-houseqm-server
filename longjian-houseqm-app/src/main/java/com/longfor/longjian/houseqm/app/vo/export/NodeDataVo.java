@@ -4,6 +4,7 @@ import com.google.common.collect.Lists;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.io.Serializable;
 import java.util.List;
 
 /**
@@ -12,7 +13,7 @@ import java.util.List;
  */
 @Data
 @NoArgsConstructor
-public class NodeDataVo {
+public class NodeDataVo  implements Serializable {
     private String key = "";
     private String parent_key = "";
     private Integer issue_count = 0;
