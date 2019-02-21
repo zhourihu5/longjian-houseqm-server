@@ -12,8 +12,8 @@ spring:
       enabled: true
     livereload:
       enabled: true
-  jackson:
-    default-property-inclusion: non_empty # 设置空如何序列化
+#  jackson:
+#   default-property-inclusion: non_empty # 设置空如何序列化
 
 logging:
   level:

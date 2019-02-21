@@ -31,6 +31,9 @@ import com.longfor.longjian.houseqm.util.StringSplitToListUtil;
 
 import com.longfor.longjian.houseqm.util.StringUtil;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.collections.CollectionUtils;
+import org.apache.commons.lang.StringUtils;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.MediaType;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -39,8 +42,10 @@ import org.springframework.web.bind.annotation.RestController;
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
+import java.io.UnsupportedEncodingException;
 import java.net.URI;
 import java.net.URL;
+import java.net.URLEncoder;
 import java.util.*;
 
 /**
@@ -68,6 +73,8 @@ public class HouseqmIssueController {
     private IHouseqmCheckTaskIssueFeignService iHouseqmCheckTaskIssueFeignService;
     @Resource
     private SessionInfo sessionInfo;
+    @Value("${stat_export_server_addr}")
+    private String statExportServerAddr;
 
     /**
      * @return com.longfor.longjian.common.base.LjBaseResponse
@@ -78,7 +85,7 @@ public class HouseqmIssueController {
      * @Param [req]
      **/
     @RequestMapping(value = "export_pdf", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
-    public LjBaseResponse exportPdf(HttpServletRequest request, @Valid IssueExportPdfReq req) throws Exception {
+    public LjBaseResponse exportPdf(HttpServletRequest request, @Validated IssueExportPdfReq req) throws Exception {
         LjBaseResponse<Object> response = new LjBaseResponse<>();
         try {
             ctrlTool.projPermMulti(request, new String[]{"项目.移动验房.问题管理.查看", "项目.工程检查.问题管理.查看"});
@@ -134,7 +141,8 @@ public class HouseqmIssueController {
                 taskName.append("、");
             }
         }
-        HouseqmCheckTaskIssueIndexJsonReqMsg reqMsg = new HouseqmCheckTaskIssueIndexJsonReqMsg();
+       /* HouseqmCheckTaskIssueIndexJsonReqMsg reqMsg = new HouseqmCheckTaskIssueIndexJsonReqMsg();
+        reqMsg.setSafeCallKey("268494d141d8054585ef5943e75e49f2");
         reqMsg.setCategory_cls(req.getCategory_cls());
         reqMsg.setProject_id(req.getProject_id());
         reqMsg.setTask_id(req.getTask_id());
@@ -151,9 +159,9 @@ public class HouseqmIssueController {
 
         reqMsg.setArea_ids(req.getArea_ids());
         reqMsg.setStatus_in(req.getStatus_in());
-        reqMsg.setUuids(StringUtil.strToStrs(req.getUuids(), ","));
+        reqMsg.setUuids(StringUtil.strToStrs(req.getUuids(), ","));*/
 
-        try {
+        /*try {
             LjBaseResponse<HouseqmCheckTaskIssueIndexJsonRspMsg> result = iHouseqmCheckTaskIssueFeignService.indexJson(reqMsg);
             response.setResult(0);
             response.setMessage("success");
@@ -162,20 +170,83 @@ public class HouseqmIssueController {
             response.setResult(1);
             response.setMessage(e.getMessage());
             throw new LjBaseRuntimeException(500, e.getMessage());
-        }
-        URL url = new URL("");
-        String query = url.getQuery();
+        }*/
+
+        String url = statExportServerAddr + "/stat_export/houseqm_check_task_issue/index_json/?";
         // 参数
-        Map<String, Object> urlargs = Maps.newHashMap();
-        urlargs.put("project_id", req.getProject_id());
+        Map<String, String> urlargs = Maps.newHashMap();
+        urlargs.put("safeCallKey", "268494d141d8054585ef5943e75e49f2");
+        urlargs.put("project_id", String.valueOf(req.getProject_id()));
+        urlargs.put("task_id", String.valueOf(req.getTask_id()));
+        urlargs.put("task_name", taskName.toString());
+        urlargs.put("checker_id", String.valueOf(req.getChecker_id()));
+        urlargs.put("repairer_id", String.valueOf(req.getRepairer_id()));
+        urlargs.put("create_on_begin", req.getCreate_on_begin());
+        urlargs.put("create_on_end", req.getCreate_on_end());
+        urlargs.put("category_key", req.getCategory_key());
+        urlargs.put("check_item_key", req.getCheck_item_key());
+        urlargs.put("type", String.valueOf(req.getType()));
+        urlargs.put("condition", String.valueOf(req.getCondition()));
+        urlargs.put("is_overdue", String.valueOf(req.getIs_overdue()));
+        urlargs.put("category_cls", String.valueOf(req.getCategory_cls()));
 
-        String newQuery = JSON.toJSONString(urlargs);
-        query += newQuery;
+        if (CollectionUtils.isNotEmpty(req.getStatus_in())) {
+            StringBuffer sb = new StringBuffer();
+            for (int i = 0; i < req.getStatus_in().size(); i++) {
+                if (i==0){
+                    sb.append(req.getStatus_in().get(i));
+                }else {
+                    sb.append("status_in=").append(req.getStatus_in().get(i));
+                }
+                if (i < req.getStatus_in().size() - 1) {
+                    sb.append("&");
+                }
+            }
+            urlargs.put("status_in", sb.toString());
+        } else {
+            urlargs.put("status_in", "");
+        }
 
+        if (CollectionUtils.isNotEmpty(req.getArea_ids())) {
+            StringBuffer sb = new StringBuffer();
+            for (int i = 0; i < req.getArea_ids().size(); i++) {
+                if (i==0){
+                    sb.append(req.getArea_ids().get(i));
+                }else {
+                    sb.append("area_ids=").append(req.getArea_ids().get(i));
+                }
+                if (i < req.getArea_ids().size() - 1) {
+                    sb.append("&");
+                }
+            }
+            urlargs.put("area_ids", sb.toString());
+        } else {
+            urlargs.put("area_ids", "");
+        }
+        List<String> uuidList = StringUtil.strToStrs(req.getUuids(), ",");
+        if (CollectionUtils.isNotEmpty(uuidList)) {
+            StringBuffer sb = new StringBuffer();
+            for (int i = 0; i < uuidList.size(); i++) {
+                if (i==0){
+                    sb.append(uuidList.get(i));
+                }else {
+                    sb.append("uuids=").append(uuidList.get(i));
+                }
+                if (i < uuidList.size() - 1) {
+                    sb.append("&");
+                }
+            }
+            urlargs.put("uuids", sb.toString());
+        } else {
+            urlargs.put("uuids", "");
+        }
+
+        String urlargsStr = buildMap(urlargs);
+        url += urlargsStr;
         Integer userId = (Integer) sessionInfo.getBaseInfo("userId");
-        //todo args.put("url", "");
+
         Map<String, String> args = Maps.newHashMap();
-        args.put("url", url.toString());
+        args.put("url", url);
         String nowTime = DateUtil.getNowTimeStr("yyyyMMddhhmm");
         String exportName = "【" + proj.getName() + "】整改报告." + nowTime + ".pdf";
         // 把导出的信息插入到数据库中
@@ -298,5 +369,28 @@ public class HouseqmIssueController {
         }
         return uuids;
     }
+
+    // url参数拼接
+    public String buildMap(Map<String, String> map) {
+        StringBuffer sb = new StringBuffer();
+        if (map.size() > 0) {
+            for (String key : map.keySet()) {
+                sb.append(key).append("=");
+                if (StringUtils.isEmpty(map.get(key))) {
+                    sb.append("&");
+                } else {
+                    String value = map.get(key);
+                    try {
+                        value = URLEncoder.encode(value, "UTF-8");
+                    } catch (UnsupportedEncodingException e) {
+                        e.printStackTrace();
+                    }
+                    sb.append(value + "&");
+                }
+            }
+        }
+        return sb.toString();
+    }
+
 
 }

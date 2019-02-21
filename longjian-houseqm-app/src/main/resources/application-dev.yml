@@ -75,6 +75,12 @@ longfor:
             cas:
               connectTimeout: 5000
               readTimeout: 5000
+    logging:
+      kafka:
+        enabled: true
+        broker: kafka01.paas.longhu.net:9092,kafka02.paas.longhu.net:9092,kafka03.paas.longhu.net:9092
+        env: test
+
   data:
     pagehelper:
       helperDialect: mysql
@@ -218,9 +224,8 @@ spe:
 #导出
 export_path: /Users/xijunguo/Work/tmp
 
-
 # HouseqmIssueController exportPdf 导出 url
-stat_export_server_addr: http://192.168.96.132:9202/v3
+stat_export_server_addr: http://172.17.96.88:8082/v3
 export:
   base_dir: /data/zhijian/writable
   base_uri: writable
