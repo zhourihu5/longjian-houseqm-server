@@ -95,6 +95,7 @@ public class HouseqmIssueController {
             response.setResult(1);
             response.setMessage(e.getMessage());
         }
+        if (req.getTask_id()==null)req.setTask_id(0);
         Project proj = iHouseqmIssueService.getProjectByProjId(req.getProject_id());
         if (proj == null) {
             throw new LjBaseRuntimeException(ErrorEnum.DB_ITEM_UNFOUND.getCode(), ErrorEnum.DB_ITEM_UNFOUND.getMessage());
