@@ -198,7 +198,7 @@ public class TaskListServiceImpl implements ITaskListService {
             HashMap<String, Map> pushStrategy = Maps.newHashMap();
             if (assignTimeMap.containsKey(task.getTask_id())) {
                 HashMap<String, Object> assignTime = Maps.newHashMap();
-                String pushTime = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(assignTimeMap.get(task.getTask_id()).getPushTime());
+                String pushTime = DateUtil.dateToString(assignTimeMap.get(task.getTask_id()).getPushTime(),"yyyy-MM-dd HH:mm:ss");
                 assignTime.put("push_time", pushTime);
                 assignTime.put("user_ids", assignTimeMap.get(task.getTask_id()).getUserIds());
                 pushStrategy.put("assign_time", assignTime);
