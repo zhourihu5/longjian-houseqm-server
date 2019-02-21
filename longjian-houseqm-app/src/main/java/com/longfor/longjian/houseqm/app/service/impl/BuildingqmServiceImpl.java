@@ -2954,7 +2954,7 @@ public class BuildingqmServiceImpl implements IBuildingqmService {
                           break;
                       }
                     }
-                    if(existNode==false){
+                    if(!existNode){
                         nodeList.add(item);
                         break;
                     }
