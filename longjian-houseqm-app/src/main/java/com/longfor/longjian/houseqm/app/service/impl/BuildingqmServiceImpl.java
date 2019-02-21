@@ -16,6 +16,7 @@ import com.longfor.longjian.houseqm.app.service.IBuildingqmService;
 import com.longfor.longjian.houseqm.app.utils.ExportUtils;
 import com.longfor.longjian.houseqm.app.vo.*;
 import com.longfor.longjian.houseqm.app.vo.export.NodeDataVo;
+import com.longfor.longjian.houseqm.app.vo.export.NodeVo;
 import com.longfor.longjian.houseqm.consts.DropDataReasonEnum;
 import com.longfor.longjian.houseqm.domain.internalService.*;
 import com.longfor.longjian.houseqm.innervo.ApiBuildingQmCheckTaskConfig;
@@ -2914,7 +2915,7 @@ public class BuildingqmServiceImpl implements IBuildingqmService {
             }
         }
         for (NodeDataVo obj : dataList) {
-            if(obj.getValid_node()==false){
+            if(!obj.getValid_node()){
                 continue;
             }
             for (NodeDataVo item : dataList) {
@@ -2934,36 +2935,49 @@ public class BuildingqmServiceImpl implements IBuildingqmService {
             }
             dataMap.get(obj.getKey()).setChild_count(obj.getChild_count());
         }
-        List<NodeDataVo> nodeTree = Lists.newArrayList();
+        List<NodeVo> nodeTree = Lists.newArrayList();
         for (int i = 1; i < maxCol+1; i++) {
             for (NodeDataVo item : dataList) {
-                if(item.getValid_node()==false){
+                if(!item.getValid_node()){
                     continue;
                 }
                 if(item.getPath_keys().size()!=i){
                         continue;
                 }
-                List<NodeDataVo> nodeList= nodeTree;
+                List<NodeVo> nodeList= nodeTree;
                 Integer nodeCol = 0;
                 while (true){
                    boolean existNode=false;
-                    for (NodeDataVo o : nodeList) {
-                      if(item.getPath_keys().get(nodeCol).equals(o.getKey())){
+                    for (NodeVo o : nodeList) {
+                      if(item.getPath_keys().get(nodeCol).equals(o.getData().getKey())){
+                          nodeList=o.getChild_list();
                           existNode = true;
                           nodeCol += 1;
                           break;
                       }
                     }
                     if(!existNode){
-                        nodeList.add(item);
+                        nodeList.add(new NodeVo(item));
                         break;
                     }
               }
             }
         }
-        SXSSFWorkbook work=ExportUtils.exportIssueStatisticExcel(nodeTree,maxCol);
+        SXSSFWorkbook wb=ExportUtils.exportIssueStatisticExcel(nodeTree,maxCol);
+        //path = ret.get('path', '')
+        //        dt = datetime.datetime.strftime(datetime.datetime.now(), '%Y%m%d%H%M%S')
+        //        category_name = CategoryClsType.get_title(category_cls, u'工程检查')
+        //        filename = u'%s_问题详情_%s.xlsx' % (category_name, dt)
 
 
-        return null;
+        String dt = DateUtil.getNowTimeStr("yyyyMMddHHmmss");
+        String category_name = CategoryClsTypeEnum.getName(category_cls);
+        if (category_name==null)category_name="工程检查";
+        String fileName = String.format("%s_问题详情_%s.xlsx", category_name, dt);
+        Map<String, Object> map = Maps.newHashMap();
+        map.put("fileName", fileName);
+        map.put("workbook", wb);
+
+        return map;
     }
 }

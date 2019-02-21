@@ -2,6 +2,7 @@ package com.longfor.longjian.houseqm.app.utils;
 
 import com.longfor.longjian.houseqm.app.vo.ExportReplyDetail;
 import com.longfor.longjian.houseqm.app.vo.export.NodeDataVo;
+import com.longfor.longjian.houseqm.app.vo.export.NodeVo;
 import com.longfor.longjian.houseqm.app.vo.issuelist.ExcelIssueData;
 import com.longfor.longjian.houseqm.util.DateUtil;
 import com.longfor.longjian.houseqm.utils.ExampleUtil;
@@ -427,7 +428,7 @@ public class ExportUtils {
     }
 
 
-    public static SXSSFWorkbook exportIssueStatisticExcel(List<NodeDataVo> nodeTree, int maxCol) {
+    public static SXSSFWorkbook exportIssueStatisticExcel(List<NodeVo> nodeTree, int maxCol) {
         SXSSFWorkbook workbook = new SXSSFWorkbook();
         SXSSFSheet sheet = workbook.createSheet();
         CellStyle cellStyle = workbook.createCellStyle();
@@ -443,23 +444,24 @@ public class ExportUtils {
         cellStyle.setBorderRight(BorderStyle.THIN);
         cellStyle.setBorderTop(BorderStyle.THIN);
         cellStyle.setBorderBottom(BorderStyle.THIN);
-        int cur_row=1;int cur_column = 1;
-        for (int i = 0; i <maxCol ; i++) {
+        int cur_row = 1;
+        int cur_column = 1;
+        for (int i = 0; i < maxCol; i++) {
             //创建行
             SXSSFRow row = sheet.createRow(cur_row);
             //创捷列
             SXSSFCell cell = row.createCell(cur_column + i);
             //内容
-            if(i==0){
+            if (i == 0) {
                 cell.setCellValue("问题项");
-            }else{
+            } else {
                 cell.setCellValue("细项");
             }
 
         }
         cur_row = 2;
-      int  cur_col = 1;
-        exportTree( workbook,sheet,nodeTree,cur_row,cur_col);
+        int cur_col = 1;
+        exportTree(workbook, sheet, nodeTree, cur_row, cur_col);
 
         String dt = DateUtil.getNowTimeStr("MMddHHmmss");
         String r = new Random().ints(0, 65536).toString();
@@ -469,11 +471,11 @@ public class ExportUtils {
 
     }
 
-    private static void exportTree(SXSSFWorkbook workbook,SXSSFSheet sheet,List<NodeDataVo> tree, int row, int col) {
-        for (NodeDataVo node : tree) {
-           int  end_row=row+node.getChild_count()-1;
-           int end_column = col;
-           //合并单元格
+    private static void exportTree(SXSSFWorkbook workbook, SXSSFSheet sheet, List<NodeVo> tree, int row, int col) {
+        for (NodeVo node : tree) {
+            int end_row = row + node.getData().getChild_count() - 1;
+            int end_column = col;
+            //合并单元格
             //1：开始行 2：结束行  3：开始列 4：结束列
             CellRangeAddress region = new CellRangeAddress(row, col, end_row, end_column);
             sheet.addMergedRegion(region);
@@ -483,19 +485,20 @@ public class ExportUtils {
             SXSSFCell cell = row1.createCell(col);
             CellStyle cellStyle = workbook.createCellStyle();
             cellStyle.setVerticalAlignment(CENTER);//垂直居中
-            cell.setCellValue(node.getName());
+            cell.setCellValue(node.getData().getName());
             //合并
-            sheet.addMergedRegion(new CellRangeAddress(row, col+1, end_row, end_column+1));
+            sheet.addMergedRegion(new CellRangeAddress(row, col + 1, end_row, end_column + 1));
             //创建行
             SXSSFRow row2 = sheet.createRow(row);
             //创捷列
-            SXSSFCell cell1 = row2.createCell(col+1);
+            SXSSFCell cell1 = row2.createCell(col + 1);
             CellStyle cellStyles = workbook.createCellStyle();
             cellStyles.setVerticalAlignment(CENTER);//垂直居中
-            cell1.setCellValue(String.valueOf(node.getIssue_count()));
-         /*   if( &&node){
-                exportTree(node._child_list, row, col + 2);
-            }*/
+            cell1.setCellValue(String.valueOf(node.getData().getIssue_count()));
+            if (CollectionUtils.isNotEmpty(node.getChild_list())) {
+                exportTree(workbook, sheet, node.getChild_list(), row, col + 2);
+            }
+            row += node.getData().getChild_count();
         }
 
     }
