@@ -17,6 +17,7 @@ import com.longfor.longjian.houseqm.po.zj2db.HouseQmCheckTaskSquad;
 import com.longfor.longjian.houseqm.util.DateUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang.StringUtils;
+import org.apache.poi.xssf.streaming.SXSSFWorkbook;
 import org.springframework.http.MediaType;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
@@ -354,7 +355,7 @@ public class BuildingqmController {
 
     @RequestMapping(value = "stat/issue_statistic_export", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     public LjBaseResponse<ReportIssueVo> issueStatisticExport(@RequestParam(name = "category_cls", required = true) Integer category_cls,
-                                                              @RequestParam(name = "items", required = true) String items, HttpServletResponse response) {
+                                                              @RequestParam(name = "items", required = true) String items, HttpServletResponse response) throws IOException {
         log.info(String.format("issue_statistic_export, category_cls=%s, items=%s"), category_cls, items);
         LjBaseResponse<ReportIssueVo> ljBaseResponse = new LjBaseResponse();
         if (category_cls == null || StringUtils.isNotBlank(items)) {
@@ -370,7 +371,9 @@ public class BuildingqmController {
             return ljBaseResponse;
         }
         response.addHeader("Content-Disposition", String.format("attachment; filename=\"%s\"",map.get("filename").toString()));
-        FileUtil.Load(map.get("path").toString(),response);
+        SXSSFWorkbook workbook = (SXSSFWorkbook) map.get("workbook");
+        workbook.write(response.getOutputStream());
+        //FileUtil.Load(map.get("path").toString(),response);
         return ljBaseResponse;
     }
 }
