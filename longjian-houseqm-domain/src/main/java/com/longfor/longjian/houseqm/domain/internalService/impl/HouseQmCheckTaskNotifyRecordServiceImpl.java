@@ -26,12 +26,18 @@ public class HouseQmCheckTaskNotifyRecordServiceImpl implements HouseQmCheckTask
     @Override
     @LFAssignDataSource("zhijian2")
     public int add(HouseQmCheckTaskNotifyRecord record) {
+        record.setCreateAt(new Date());
+        record.setUpdateAt(new Date());
         return houseQmCheckTaskNotifyRecordMapper.insert(record);
     }
     @Transactional
     @Override
     @LFAssignDataSource("zhijian2")
     public void addMany(ArrayList<HouseQmCheckTaskNotifyRecord> dataSource) {
+        for (HouseQmCheckTaskNotifyRecord record : dataSource) {
+            record.setCreateAt(new Date());
+            record.setUpdateAt(new Date());
+        }
         houseQmCheckTaskNotifyRecordMapper.insertList(dataSource);
     }
 

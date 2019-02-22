@@ -10,6 +10,7 @@ import org.springframework.transaction.annotation.Transactional;
 import tk.mybatis.mapper.entity.Example;
 
 import javax.annotation.Resource;
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -24,6 +25,8 @@ public class IssueFieldSettingServiceImpl  implements IssueFieldSettingService {
     @Override
     @LFAssignDataSource("zhijian2_setting")
     public int add(IssueFieldSetting settings6) {
+        settings6.setUpdateAt(new Date());
+        settings6.setCreateAt(new Date());
         return issueFieldSettingMapper.insert(settings6);
     }
 

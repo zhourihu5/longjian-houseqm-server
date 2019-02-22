@@ -11,6 +11,7 @@ import org.springframework.transaction.annotation.Transactional;
 import tk.mybatis.mapper.entity.Example;
 
 import javax.annotation.Resource;
+import java.util.Date;
 import java.util.List;
 import java.util.Set;
 
@@ -30,6 +31,10 @@ public class HouseQmCheckTaskIssueAttachmentServiceImpl implements HouseQmCheckT
     @LFAssignDataSource(value = "zhijian2")
     @Transactional
     public int inseretBatch(List<HouseQmCheckTaskIssueAttachment> attachements) {
+        for (HouseQmCheckTaskIssueAttachment item : attachements) {
+            item.setCreateAt(new Date());
+            item.setUpdateAt(new Date());
+        }
         return houseQmCheckTaskIssueAttachmentMapper.insertList(attachements);
     }
 
@@ -40,8 +45,14 @@ public class HouseQmCheckTaskIssueAttachmentServiceImpl implements HouseQmCheckT
         Example example = new Example(HouseQmCheckTaskIssueAttachment.class);
         Example.Criteria criteria = example.createCriteria();
         criteria.andEqualTo("issueUuid",issueUuid).andEqualTo("md5",md5);
-        ExampleUtil.addDeleteAtJudge(example);
-        return houseQmCheckTaskIssueAttachmentMapper.deleteByExample(example);
+        HouseQmCheckTaskIssueAttachment attachment = new HouseQmCheckTaskIssueAttachment();
+
+        attachment.setDeleteAt(new Date());
+        attachment.setUpdateAt(new Date());
+        attachment.setIssueUuid(issueUuid);
+        attachment.setMd5(md5);
+
+        return houseQmCheckTaskIssueAttachmentMapper.updateByExampleSelective(attachment,example);
     }
 
     /**
@@ -84,6 +95,8 @@ public class HouseQmCheckTaskIssueAttachmentServiceImpl implements HouseQmCheckT
     @LFAssignDataSource(value = "zhijian2")
     @Transactional
     public int add(HouseQmCheckTaskIssueAttachment value) {
+        value.setCreateAt(new Date());
+        value.setUpdateAt(new Date());
         return    houseQmCheckTaskIssueAttachmentMapper.insert(value);
 
     }

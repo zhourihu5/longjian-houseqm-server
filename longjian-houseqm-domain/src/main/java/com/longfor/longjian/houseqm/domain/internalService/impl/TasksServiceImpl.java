@@ -9,6 +9,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.Resource;
+import java.util.Date;
 
 /**
  * Created by Dongshun on 2019/1/8.
@@ -19,12 +20,14 @@ import javax.annotation.Resource;
 public class TasksServiceImpl implements TasksService {
     @Resource
     TaskMapper taskMapper;
+
     @LFAssignDataSource("zhijian2")
     @Override
     public int add(Task task) {
+        task.setCreateAt(new Date());
+        task.setUpdateAt(new Date());
         taskMapper.insertSelective(task);
-
-     return    task.getId();
+        return task.getId();
     }
 
 

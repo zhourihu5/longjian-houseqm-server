@@ -10,6 +10,7 @@ import org.springframework.transaction.annotation.Transactional;
 import tk.mybatis.mapper.entity.Example;
 
 import javax.annotation.Resource;
+import java.util.Date;
 import java.util.List;
 import java.util.Set;
 
@@ -38,6 +39,8 @@ public class PushStrategyCategoryThresholdServiceImpl implements PushStrategyCat
     @Override
     @LFAssignDataSource("zhijian2_notify")
     public int add(PushStrategyCategoryThreshold pushStrategyCategoryThreshold) {
+        pushStrategyCategoryThreshold.setUpdateAt(new Date());
+        pushStrategyCategoryThreshold.setCreateAt(new Date());
         return pushStrategyCategoryThresholdMapper.insert(pushStrategyCategoryThreshold);
     }
 
@@ -52,12 +55,19 @@ public class PushStrategyCategoryThresholdServiceImpl implements PushStrategyCat
     @Override
     @LFAssignDataSource("zhijian2_notify")
     public int update(PushStrategyCategoryThreshold dbConfigCategoryThreshold) {
+        dbConfigCategoryThreshold.setUpdateAt(new Date());
         return pushStrategyCategoryThresholdMapper.updateByPrimaryKey(dbConfigCategoryThreshold);
     }
 
     @Override
     @LFAssignDataSource("zhijian2_notify")
     public int delete(PushStrategyCategoryThreshold dbConfigCategoryThreshold) {
-        return pushStrategyCategoryThresholdMapper.delete(dbConfigCategoryThreshold);
+        List<PushStrategyCategoryThreshold> thresholds = pushStrategyCategoryThresholdMapper.select(dbConfigCategoryThreshold);
+        for (PushStrategyCategoryThreshold threshold : thresholds) {
+            threshold.setUpdateAt(new Date());
+            threshold.setDeleteAt(new Date());
+            pushStrategyCategoryThresholdMapper.updateByPrimaryKeySelective(threshold);
+        }
+        return thresholds.size();
     }
 }

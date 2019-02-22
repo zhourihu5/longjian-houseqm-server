@@ -22,6 +22,7 @@ import lombok.extern.slf4j.Slf4j;
 
 import javax.annotation.Resource;
 import java.io.Serializable;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -491,6 +492,8 @@ public class HouseQmCheckTaskIssueHelperVo implements Serializable {
                 obj.setIssueUuid(issueUuid);
                 obj.setUserId(userEntry.getKey());
                 obj.setRoleType(userEntry.getValue());
+                obj.setCreateAt(new Date());
+                obj.setUpdateAt(new Date());
                 issueUsers.add(obj);
             }
         }
