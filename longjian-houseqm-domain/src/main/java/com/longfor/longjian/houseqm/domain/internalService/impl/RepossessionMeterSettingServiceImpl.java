@@ -31,6 +31,7 @@ public class RepossessionMeterSettingServiceImpl implements RepossessionMeterSet
     }
 
     @Override
+    @LFAssignDataSource("zhijian2")
     public void add(RepossessionMeterSetting setting) {
         setting.setUpdateAt(new Date());
         setting.setCreateAt(new Date());

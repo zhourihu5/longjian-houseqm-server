@@ -355,16 +355,648 @@ public class BuildingqmController {
 
     @RequestMapping(value = "stat/issue_statistic_export", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     public LjBaseResponse<ReportIssueVo> issueStatisticExport(@RequestParam(name = "category_cls", required = true) Integer category_cls,
-                                                              @RequestParam(name = "items", required = true) String items, HttpServletResponse response) throws IOException {
-        log.info(String.format("issue_statistic_export, category_cls=%s, items=%s"), category_cls, items);
+                                                              /*@RequestParam(name = "items", required = true) String items,*/ HttpServletResponse response) throws IOException {
+       String  items="[\n" +
+               "            {\n" +
+               "                \"key\": \"1585_9_0\", \n" +
+               "                \"parent_key\": \"1585_21_0\", \n" +
+               "                \"issue_count\": 479, \n" +
+               "                \"name\": \"3.砌体及二级结构\"\n" +
+               "            }, \n" +
+               "            {\n" +
+               "                \"key\": \"1585_10_0\", \n" +
+               "                \"parent_key\": \"1585_9_0\", \n" +
+               "                \"issue_count\": 123, \n" +
+               "                \"name\": \"3.1 二次结构\"\n" +
+               "            }, \n" +
+               "            {\n" +
+               "                \"key\": \"1585_11_0\", \n" +
+               "                \"parent_key\": \"1585_9_0\", \n" +
+               "                \"issue_count\": 356, \n" +
+               "                \"name\": \"3.2 砌筑\"\n" +
+               "            }, \n" +
+               "            {\n" +
+               "                \"key\": \"1585_19_0\", \n" +
+               "                \"parent_key\": \"1585_21_0\", \n" +
+               "                \"issue_count\": 729, \n" +
+               "                \"name\": \"9.其他\"\n" +
+               "            }, \n" +
+               "            {\n" +
+               "                \"key\": \"1585_3_0\", \n" +
+               "                \"parent_key\": \"1585_1_0\", \n" +
+               "                \"issue_count\": 48, \n" +
+               "                \"name\": \"1.2 楼地面防渗漏\"\n" +
+               "            }, \n" +
+               "            {\n" +
+               "                \"key\": \"1585_4_0\", \n" +
+               "                \"parent_key\": \"1585_1_0\", \n" +
+               "                \"issue_count\": 23, \n" +
+               "                \"name\": \"1.3 屋面、露台防渗漏\"\n" +
+               "            }, \n" +
+               "            {\n" +
+               "                \"key\": \"1585_7_0\", \n" +
+               "                \"parent_key\": \"1585_5_0\", \n" +
+               "                \"issue_count\": 17, \n" +
+               "                \"name\": \"2.2 模板支撑\"\n" +
+               "            }, \n" +
+               "            {\n" +
+               "                \"key\": \"1585_21_0\", \n" +
+               "                \"parent_key\": \"\", \n" +
+               "                \"issue_count\": 3099, \n" +
+               "                \"name\": \"质量风险\"\n" +
+               "            }, \n" +
+               "            {\n" +
+               "                \"key\": \"1585_13_0\", \n" +
+               "                \"parent_key\": \"1585_12_0\", \n" +
+               "                \"issue_count\": 250, \n" +
+               "                \"name\": \"4.1 抹灰工程\"\n" +
+               "            }, \n" +
+               "            {\n" +
+               "                \"key\": \"1585_8_0\", \n" +
+               "                \"parent_key\": \"1585_5_0\", \n" +
+               "                \"issue_count\": 186, \n" +
+               "                \"name\": \"2.3 混凝土\"\n" +
+               "            }, \n" +
+               "            {\n" +
+               "                \"key\": \"1585_16_0\", \n" +
+               "                \"parent_key\": \"1585_21_0\", \n" +
+               "                \"issue_count\": 264, \n" +
+               "                \"name\": \"5.门窗幕墙栏杆\"\n" +
+               "            }, \n" +
+               "            {\n" +
+               "                \"key\": \"1585_17_0\", \n" +
+               "                \"parent_key\": \"1585_21_0\", \n" +
+               "                \"issue_count\": 767, \n" +
+               "                \"name\": \"6.安装工程\"\n" +
+               "            }, \n" +
+               "            {\n" +
+               "                \"key\": \"1585_1_0\", \n" +
+               "                \"parent_key\": \"1585_21_0\", \n" +
+               "                \"issue_count\": 85, \n" +
+               "                \"name\": \"1.防渗漏工程\"\n" +
+               "            }, \n" +
+               "            {\n" +
+               "                \"key\": \"1585_5_0\", \n" +
+               "                \"parent_key\": \"1585_21_0\", \n" +
+               "                \"issue_count\": 219, \n" +
+               "                \"name\": \"2.主体结构\"\n" +
+               "            }, \n" +
+               "            {\n" +
+               "                \"key\": \"1585_2_0\", \n" +
+               "                \"parent_key\": \"1585_1_0\", \n" +
+               "                \"issue_count\": 14, \n" +
+               "                \"name\": \"1.1.地下防渗漏\"\n" +
+               "            }, \n" +
+               "            {\n" +
+               "                \"key\": \"1585_6_0\", \n" +
+               "                \"parent_key\": \"1585_5_0\", \n" +
+               "                \"issue_count\": 16, \n" +
+               "                \"name\": \"2.1 钢筋\"\n" +
+               "            }, \n" +
+               "            {\n" +
+               "                \"key\": \"1585_12_0\", \n" +
+               "                \"parent_key\": \"1585_21_0\", \n" +
+               "                \"issue_count\": 535, \n" +
+               "                \"name\": \"4.装饰装修\"\n" +
+               "            }, \n" +
+               "            {\n" +
+               "                \"key\": \"1585_14_0\", \n" +
+               "                \"parent_key\": \"1585_12_0\", \n" +
+               "                \"issue_count\": 28, \n" +
+               "                \"name\": \"4.2 楼地面装修及细部\"\n" +
+               "            }, \n" +
+               "            {\n" +
+               "                \"key\": \"1585_15_0\", \n" +
+               "                \"parent_key\": \"1585_12_0\", \n" +
+               "                \"issue_count\": 257, \n" +
+               "                \"name\": \"4.3 墙面顶棚装修\"\n" +
+               "            }, \n" +
+               "            {\n" +
+               "                \"key\": \"1585_18_0\", \n" +
+               "                \"parent_key\": \"1585_21_0\", \n" +
+               "                \"issue_count\": 21, \n" +
+               "                \"name\": \"7.小市政工程\"\n" +
+               "            }, \n" +
+               "            {\n" +
+               "                \"key\": \"C_1585_127_0\", \n" +
+               "                \"parent_key\": \"1585_18_0\", \n" +
+               "                \"issue_count\": 3, \n" +
+               "                \"name\": \"7.4 其他\"\n" +
+               "            }, \n" +
+               "            {\n" +
+               "                \"key\": \"C_1585_129_0\", \n" +
+               "                \"parent_key\": \"1585_19_0\", \n" +
+               "                \"issue_count\": 7, \n" +
+               "                \"name\": \"9.2优秀做法\"\n" +
+               "            }, \n" +
+               "            {\n" +
+               "                \"key\": \"C_1585_9_0\", \n" +
+               "                \"parent_key\": \"1585_2_0\", \n" +
+               "                \"issue_count\": 12, \n" +
+               "                \"name\": \"1.1.9 其他\"\n" +
+               "            }, \n" +
+               "            {\n" +
+               "                \"key\": \"C_1585_25_0\", \n" +
+               "                \"parent_key\": \"1585_4_0\", \n" +
+               "                \"issue_count\": 14, \n" +
+               "                \"name\": \"1.3.10 其他\"\n" +
+               "            }, \n" +
+               "            {\n" +
+               "                \"key\": \"C_1585_72_0\", \n" +
+               "                \"parent_key\": \"1585_11_0\", \n" +
+               "                \"issue_count\": 46, \n" +
+               "                \"name\": \"3.2.7 砌体电气预留\"\n" +
+               "            }, \n" +
+               "            {\n" +
+               "                \"key\": \"C_1585_109_0\", \n" +
+               "                \"parent_key\": \"1585_16_0\", \n" +
+               "                \"issue_count\": 47, \n" +
+               "                \"name\": \"5.1 窗框与钢副框间填塞\"\n" +
+               "            }, \n" +
+               "            {\n" +
+               "                \"key\": \"C_1585_111_0\", \n" +
+               "                \"parent_key\": \"1585_16_0\", \n" +
+               "                \"issue_count\": 29, \n" +
+               "                \"name\": \"5.3 金属和石材幕墙安装质量及保护\"\n" +
+               "            }, \n" +
+               "            {\n" +
+               "                \"key\": \"C_1585_8_0\", \n" +
+               "                \"parent_key\": \"1585_2_0\", \n" +
+               "                \"issue_count\": 1, \n" +
+               "                \"name\": \"1.1.8 防水施工、成品保护；渗漏\"\n" +
+               "            }, \n" +
+               "            {\n" +
+               "                \"key\": \"C_1585_24_0\", \n" +
+               "                \"parent_key\": \"1585_4_0\", \n" +
+               "                \"issue_count\": 5, \n" +
+               "                \"name\": \"1.3.9 防水施工、成品保护；渗漏\"\n" +
+               "            }, \n" +
+               "            {\n" +
+               "                \"key\": \"C_1585_29_0\", \n" +
+               "                \"parent_key\": \"1585_6_0\", \n" +
+               "                \"issue_count\": 1, \n" +
+               "                \"name\": \"2.1.4 钢筋连接与锚固\"\n" +
+               "            }, \n" +
+               "            {\n" +
+               "                \"key\": \"C_1585_70_0\", \n" +
+               "                \"parent_key\": \"1585_11_0\", \n" +
+               "                \"issue_count\": 67, \n" +
+               "                \"name\": \"3.2.5 外墙顶砌、顶塞\"\n" +
+               "            }, \n" +
+               "            {\n" +
+               "                \"key\": \"C_1585_126_0\", \n" +
+               "                \"parent_key\": \"1585_18_0\", \n" +
+               "                \"issue_count\": 8, \n" +
+               "                \"name\": \"7.3 小市政管井安装\"\n" +
+               "            }, \n" +
+               "            {\n" +
+               "                \"key\": \"C_1585_15_0\", \n" +
+               "                \"parent_key\": \"1585_4_0\", \n" +
+               "                \"issue_count\": 2, \n" +
+               "                \"name\": \"1.3.1 屋面板砼裂缝\"\n" +
+               "            }, \n" +
+               "            {\n" +
+               "                \"key\": \"C_1585_33_0\", \n" +
+               "                \"parent_key\": \"1585_6_0\", \n" +
+               "                \"issue_count\": 11, \n" +
+               "                \"name\": \"2.1.8 其他\"\n" +
+               "            }, \n" +
+               "            {\n" +
+               "                \"key\": \"C_1585_35_0\", \n" +
+               "                \"parent_key\": \"1585_7_0\", \n" +
+               "                \"issue_count\": 5, \n" +
+               "                \"name\": \"2.2.2 支撑立杆落地\"\n" +
+               "            }, \n" +
+               "            {\n" +
+               "                \"key\": \"C_1585_36_0\", \n" +
+               "                \"parent_key\": \"1585_7_0\", \n" +
+               "                \"issue_count\": 1, \n" +
+               "                \"name\": \"2.2.3 扫地杆、水平杆、剪刀撑\"\n" +
+               "            }, \n" +
+               "            {\n" +
+               "                \"key\": \"C_1585_63_0\", \n" +
+               "                \"parent_key\": \"1585_10_0\", \n" +
+               "                \"issue_count\": 7, \n" +
+               "                \"name\": \"3.1.8 过梁、现浇带\"\n" +
+               "            }, \n" +
+               "            {\n" +
+               "                \"key\": \"C_1585_64_0\", \n" +
+               "                \"parent_key\": \"1585_10_0\", \n" +
+               "                \"issue_count\": 10, \n" +
+               "                \"name\": \"3.1.9 外墙构造柱\"\n" +
+               "            }, \n" +
+               "            {\n" +
+               "                \"key\": \"C_1585_88_0\", \n" +
+               "                \"parent_key\": \"1585_14_0\", \n" +
+               "                \"issue_count\": 4, \n" +
+               "                \"name\": \"4.2.3 户内地砖、石材\"\n" +
+               "            }, \n" +
+               "            {\n" +
+               "                \"key\": \"C_1585_108_0\", \n" +
+               "                \"parent_key\": \"1585_15_0\", \n" +
+               "                \"issue_count\": 27, \n" +
+               "                \"name\": \"4.3.17 其他\"\n" +
+               "            }, \n" +
+               "            {\n" +
+               "                \"key\": \"C_1585_98_0\", \n" +
+               "                \"parent_key\": \"1585_15_0\", \n" +
+               "                \"issue_count\": 1, \n" +
+               "                \"name\": \"4.3.5 外墙涂料质量\"\n" +
+               "            }, \n" +
+               "            {\n" +
+               "                \"key\": \"C_1585_110_0\", \n" +
+               "                \"parent_key\": \"1585_16_0\", \n" +
+               "                \"issue_count\": 8, \n" +
+               "                \"name\": \"5.2 密封防水处理；安装质量及保护\"\n" +
+               "            }, \n" +
+               "            {\n" +
+               "                \"key\": \"C_1585_114_0\", \n" +
+               "                \"parent_key\": \"1585_16_0\", \n" +
+               "                \"issue_count\": 136, \n" +
+               "                \"name\": \"5.6 其他\"\n" +
+               "            }, \n" +
+               "            {\n" +
+               "                \"key\": \"C_1585_115_0\", \n" +
+               "                \"parent_key\": \"1585_17_0\", \n" +
+               "                \"issue_count\": 35, \n" +
+               "                \"name\": \"6.3 雨落管\"\n" +
+               "            }, \n" +
+               "            {\n" +
+               "                \"key\": \"C_1585_119_0\", \n" +
+               "                \"parent_key\": \"1585_17_0\", \n" +
+               "                \"issue_count\": 99, \n" +
+               "                \"name\": \"6.7 强弱电箱预留预埋及安装\"\n" +
+               "            }, \n" +
+               "            {\n" +
+               "                \"key\": \"C_1585_120_0\", \n" +
+               "                \"parent_key\": \"1585_575_0\", \n" +
+               "                \"issue_count\": 4, \n" +
+               "                \"name\": \"6.7 等电位、接地引下线（17版留存）\"\n" +
+               "            }, \n" +
+               "            {\n" +
+               "                \"key\": \"C_1585_17_0\", \n" +
+               "                \"parent_key\": \"1585_4_0\", \n" +
+               "                \"issue_count\": 1, \n" +
+               "                \"name\": \"1.3.3 出屋面反坎一次性浇筑\"\n" +
+               "            }, \n" +
+               "            {\n" +
+               "                \"key\": \"C_1585_31_0\", \n" +
+               "                \"parent_key\": \"1585_6_0\", \n" +
+               "                \"issue_count\": 4, \n" +
+               "                \"name\": \"2.1.6 钢筋保护\"\n" +
+               "            }, \n" +
+               "            {\n" +
+               "                \"key\": \"C_1585_44_0\", \n" +
+               "                \"parent_key\": \"1585_8_0\", \n" +
+               "                \"issue_count\": 12, \n" +
+               "                \"name\": \"2.3.2 板露筋\"\n" +
+               "            }, \n" +
+               "            {\n" +
+               "                \"key\": \"C_1585_69_0\", \n" +
+               "                \"parent_key\": \"1585_11_0\", \n" +
+               "                \"issue_count\": 46, \n" +
+               "                \"name\": \"3.2.4 灰缝、砂浆不饱满\"\n" +
+               "            }, \n" +
+               "            {\n" +
+               "                \"key\": \"C_1585_87_0\", \n" +
+               "                \"parent_key\": \"1585_14_0\", \n" +
+               "                \"issue_count\": 1, \n" +
+               "                \"name\": \"4.2.2 非地暖地面找平层\"\n" +
+               "            }, \n" +
+               "            {\n" +
+               "                \"key\": \"C_1585_93_0\", \n" +
+               "                \"parent_key\": \"1585_14_0\", \n" +
+               "                \"issue_count\": 16, \n" +
+               "                \"name\": \"4.2.8 其他\"\n" +
+               "            }, \n" +
+               "            {\n" +
+               "                \"key\": \"C_1585_67_0\", \n" +
+               "                \"parent_key\": \"1585_11_0\", \n" +
+               "                \"issue_count\": 6, \n" +
+               "                \"name\": \"3.2.2 脚手眼设置\"\n" +
+               "            }, \n" +
+               "            {\n" +
+               "                \"key\": \"C_1585_76_0\", \n" +
+               "                \"parent_key\": \"1585_13_0\", \n" +
+               "                \"issue_count\": 3, \n" +
+               "                \"name\": \"4.1.3 钢副框、窗主框封堵行为\"\n" +
+               "            }, \n" +
+               "            {\n" +
+               "                \"key\": \"C_1585_78_0\", \n" +
+               "                \"parent_key\": \"1585_13_0\", \n" +
+               "                \"issue_count\": 36, \n" +
+               "                \"name\": \"4.1.5 墙体孔洞处理\"\n" +
+               "            }, \n" +
+               "            {\n" +
+               "                \"key\": \"C_1585_42_0\", \n" +
+               "                \"parent_key\": \"1585_7_0\", \n" +
+               "                \"issue_count\": 11, \n" +
+               "                \"name\": \"2.2.16 其他\"\n" +
+               "            }, \n" +
+               "            {\n" +
+               "                \"key\": \"C_1585_46_0\", \n" +
+               "                \"parent_key\": \"1585_8_0\", \n" +
+               "                \"issue_count\": 71, \n" +
+               "                \"name\": \"2.3.4 夹渣\"\n" +
+               "            }, \n" +
+               "            {\n" +
+               "                \"key\": \"C_1585_65_0\", \n" +
+               "                \"parent_key\": \"1585_10_0\", \n" +
+               "                \"issue_count\": 88, \n" +
+               "                \"name\": \"3.1.10 其他\"\n" +
+               "            }, \n" +
+               "            {\n" +
+               "                \"key\": \"C_1585_81_0\", \n" +
+               "                \"parent_key\": \"1585_13_0\", \n" +
+               "                \"issue_count\": 1, \n" +
+               "                \"name\": \"4.1.8 抹灰层质量（中间层）\"\n" +
+               "            }, \n" +
+               "            {\n" +
+               "                \"key\": \"C_1585_95_0\", \n" +
+               "                \"parent_key\": \"1585_15_0\", \n" +
+               "                \"issue_count\": 1, \n" +
+               "                \"name\": \"4.3.2 保温排版、收头及包封\"\n" +
+               "            }, \n" +
+               "            {\n" +
+               "                \"key\": \"C_1585_96_0\", \n" +
+               "                \"parent_key\": \"1585_15_0\", \n" +
+               "                \"issue_count\": 2, \n" +
+               "                \"name\": \"4.3.3 保温防渗漏\"\n" +
+               "            }, \n" +
+               "            {\n" +
+               "                \"key\": \"C_1585_121_0\", \n" +
+               "                \"parent_key\": \"1585_17_0\", \n" +
+               "                \"issue_count\": 13, \n" +
+               "                \"name\": \"6.8 出外墙孔洞处理\"\n" +
+               "            }, \n" +
+               "            {\n" +
+               "                \"key\": \"C_1585_123_0\", \n" +
+               "                \"parent_key\": \"1585_575_0\", \n" +
+               "                \"issue_count\": 158, \n" +
+               "                \"name\": \"6.10 机电管线及防火门（17版留存）\"\n" +
+               "            }, \n" +
+               "            {\n" +
+               "                \"key\": \"C_1585_2_0\", \n" +
+               "                \"parent_key\": \"1585_2_0\", \n" +
+               "                \"issue_count\": 1, \n" +
+               "                \"name\": \"1.1.2 天地墙砼孔洞\"\n" +
+               "            }, \n" +
+               "            {\n" +
+               "                \"key\": \"C_1585_10_0\", \n" +
+               "                \"parent_key\": \"1585_3_0\", \n" +
+               "                \"issue_count\": 12, \n" +
+               "                \"name\": \"1.2.1 管洞撑补\"\n" +
+               "            }, \n" +
+               "            {\n" +
+               "                \"key\": \"C_1585_48_0\", \n" +
+               "                \"parent_key\": \"1585_8_0\", \n" +
+               "                \"issue_count\": 4, \n" +
+               "                \"name\": \"2.3.6 胀模、错台、大面积修补\"\n" +
+               "            }, \n" +
+               "            {\n" +
+               "                \"key\": \"C_1585_57_0\", \n" +
+               "                \"parent_key\": \"1585_10_0\", \n" +
+               "                \"issue_count\": 1, \n" +
+               "                \"name\": \"3.1.1 卫生间导墙\"\n" +
+               "            }, \n" +
+               "            {\n" +
+               "                \"key\": \"C_1585_60_0\", \n" +
+               "                \"parent_key\": \"1585_10_0\", \n" +
+               "                \"issue_count\": 2, \n" +
+               "                \"name\": \"3.1.4 导墙凿毛\"\n" +
+               "            }, \n" +
+               "            {\n" +
+               "                \"key\": \"C_1585_68_0\", \n" +
+               "                \"parent_key\": \"1585_11_0\", \n" +
+               "                \"issue_count\": 2, \n" +
+               "                \"name\": \"3.2.3 砖孔洞方向\"\n" +
+               "            }, \n" +
+               "            {\n" +
+               "                \"key\": \"C_1585_85_0\", \n" +
+               "                \"parent_key\": \"1585_13_0\", \n" +
+               "                \"issue_count\": 151, \n" +
+               "                \"name\": \"4.1.12 其他\"\n" +
+               "            }, \n" +
+               "            {\n" +
+               "                \"key\": \"C_1585_104_0\", \n" +
+               "                \"parent_key\": \"1585_15_0\", \n" +
+               "                \"issue_count\": 17, \n" +
+               "                \"name\": \"4.3.13 公区石膏板吊顶\"\n" +
+               "            }, \n" +
+               "            {\n" +
+               "                \"key\": \"C_1585_116_0\", \n" +
+               "                \"parent_key\": \"1585_17_0\", \n" +
+               "                \"issue_count\": 33, \n" +
+               "                \"name\": \"6.4 雨水口、地漏\"\n" +
+               "            }, \n" +
+               "            {\n" +
+               "                \"key\": \"C_1585_14_0\", \n" +
+               "                \"parent_key\": \"1585_3_0\", \n" +
+               "                \"issue_count\": 11, \n" +
+               "                \"name\": \"1.2.5 其他\"\n" +
+               "            }, \n" +
+               "            {\n" +
+               "                \"key\": \"C_1585_59_0\", \n" +
+               "                \"parent_key\": \"1585_10_0\", \n" +
+               "                \"issue_count\": 7, \n" +
+               "                \"name\": \"3.1.3 其它导墙\"\n" +
+               "            }, \n" +
+               "            {\n" +
+               "                \"key\": \"C_1585_102_0\", \n" +
+               "                \"parent_key\": \"1585_15_0\", \n" +
+               "                \"issue_count\": 205, \n" +
+               "                \"name\": \"4.3.11 户内腻子、面漆\"\n" +
+               "            }, \n" +
+               "            {\n" +
+               "                \"key\": \"C_1585_112_0\", \n" +
+               "                \"parent_key\": \"1585_16_0\", \n" +
+               "                \"issue_count\": 28, \n" +
+               "                \"name\": \"5.4 玻璃幕墙安装质量及保护\"\n" +
+               "            }, \n" +
+               "            {\n" +
+               "                \"key\": \"C_1585_49_0\", \n" +
+               "                \"parent_key\": \"1585_8_0\", \n" +
+               "                \"issue_count\": 4, \n" +
+               "                \"name\": \"2.3.7 拆模棱角破坏、阳角修补\"\n" +
+               "            }, \n" +
+               "            {\n" +
+               "                \"key\": \"C_1585_61_0\", \n" +
+               "                \"parent_key\": \"1585_10_0\", \n" +
+               "                \"issue_count\": 3, \n" +
+               "                \"name\": \"3.1.5 导墙成型质量\"\n" +
+               "            }, \n" +
+               "            {\n" +
+               "                \"key\": \"C_1585_83_0\", \n" +
+               "                \"parent_key\": \"1585_13_0\", \n" +
+               "                \"issue_count\": 1, \n" +
+               "                \"name\": \"4.1.10 几类工序倒错\"\n" +
+               "            }, \n" +
+               "            {\n" +
+               "                \"key\": \"C_1585_97_0\", \n" +
+               "                \"parent_key\": \"1585_15_0\", \n" +
+               "                \"issue_count\": 1, \n" +
+               "                \"name\": \"4.3.4 外墙涂料分隔缝\"\n" +
+               "            }, \n" +
+               "            {\n" +
+               "                \"key\": \"C_1585_12_0\", \n" +
+               "                \"parent_key\": \"1585_3_0\", \n" +
+               "                \"issue_count\": 4, \n" +
+               "                \"name\": \"1.2.3 卫生间、厨房和阳台（若有防水）防水基层\"\n" +
+               "            }, \n" +
+               "            {\n" +
+               "                \"key\": \"C_1585_43_0\", \n" +
+               "                \"parent_key\": \"1585_8_0\", \n" +
+               "                \"issue_count\": 17, \n" +
+               "                \"name\": \"2.3.1 梁、柱、墙露筋\"\n" +
+               "            }, \n" +
+               "            {\n" +
+               "                \"key\": \"C_1585_45_0\", \n" +
+               "                \"parent_key\": \"1585_8_0\", \n" +
+               "                \"issue_count\": 6, \n" +
+               "                \"name\": \"2.3.3 蜂窝、疏松、孔洞、修补开裂\"\n" +
+               "            }, \n" +
+               "            {\n" +
+               "                \"key\": \"C_1585_73_0\", \n" +
+               "                \"parent_key\": \"1585_11_0\", \n" +
+               "                \"issue_count\": 119, \n" +
+               "                \"name\": \"3.2.8 其他\"\n" +
+               "            }, \n" +
+               "            {\n" +
+               "                \"key\": \"C_1585_79_0\", \n" +
+               "                \"parent_key\": \"1585_13_0\", \n" +
+               "                \"issue_count\": 9, \n" +
+               "                \"name\": \"4.1.6 墙面基体应彻底清理（中间层）\"\n" +
+               "            }, \n" +
+               "            {\n" +
+               "                \"key\": \"C_1585_89_0\", \n" +
+               "                \"parent_key\": \"1585_14_0\", \n" +
+               "                \"issue_count\": 7, \n" +
+               "                \"name\": \"4.2.4 公区地砖、石材\"\n" +
+               "            }, \n" +
+               "            {\n" +
+               "                \"key\": \"C_1585_19_0\", \n" +
+               "                \"parent_key\": \"1585_17_0\", \n" +
+               "                \"issue_count\": 1, \n" +
+               "                \"name\": \"6.1 刚性防水套管\"\n" +
+               "            }, \n" +
+               "            {\n" +
+               "                \"key\": \"C_1585_56_0\", \n" +
+               "                \"parent_key\": \"1585_8_0\", \n" +
+               "                \"issue_count\": 67, \n" +
+               "                \"name\": \"2.3.14 其他\"\n" +
+               "            }, \n" +
+               "            {\n" +
+               "                \"key\": \"C_1585_71_0\", \n" +
+               "                \"parent_key\": \"1585_11_0\", \n" +
+               "                \"issue_count\": 50, \n" +
+               "                \"name\": \"3.2.6 砌体水暖空调预留\"\n" +
+               "            }, \n" +
+               "            {\n" +
+               "                \"key\": \"C_1585_74_0\", \n" +
+               "                \"parent_key\": \"1585_13_0\", \n" +
+               "                \"issue_count\": 2, \n" +
+               "                \"name\": \"4.1.1 烟风道成品保护、卸载、挂网\"\n" +
+               "            }, \n" +
+               "            {\n" +
+               "                \"key\": \"C_1585_77_0\", \n" +
+               "                \"parent_key\": \"1585_13_0\", \n" +
+               "                \"issue_count\": 1, \n" +
+               "                \"name\": \"4.1.4 钢副框、窗主框封堵质量\"\n" +
+               "            }, \n" +
+               "            {\n" +
+               "                \"key\": \"C_1585_82_0\", \n" +
+               "                \"parent_key\": \"1585_13_0\", \n" +
+               "                \"issue_count\": 5, \n" +
+               "                \"name\": \"4.1.9 抹灰后开槽\"\n" +
+               "            }, \n" +
+               "            {\n" +
+               "                \"key\": \"C_1585_113_0\", \n" +
+               "                \"parent_key\": \"1585_16_0\", \n" +
+               "                \"issue_count\": 16, \n" +
+               "                \"name\": \"5.5 栏杆安装质量及保护\"\n" +
+               "            }, \n" +
+               "            {\n" +
+               "                \"key\": \"C_1585_118_0\", \n" +
+               "                \"parent_key\": \"1585_17_0\", \n" +
+               "                \"issue_count\": 263, \n" +
+               "                \"name\": \"6.5 室内水暖管线安装\"\n" +
+               "            }, \n" +
+               "            {\n" +
+               "                \"key\": \"C_1585_122_0\", \n" +
+               "                \"parent_key\": \"1585_17_0\", \n" +
+               "                \"issue_count\": 17, \n" +
+               "                \"name\": \"6.9 公区水管井\"\n" +
+               "            }, \n" +
+               "            {\n" +
+               "                \"key\": \"C_1585_124_0\", \n" +
+               "                \"parent_key\": \"1585_17_0\", \n" +
+               "                \"issue_count\": 145, \n" +
+               "                \"name\": \"6.16 其他\"\n" +
+               "            }, \n" +
+               "            {\n" +
+               "                \"key\": \"C_1585_47_0\", \n" +
+               "                \"parent_key\": \"1585_8_0\", \n" +
+               "                \"issue_count\": 5, \n" +
+               "                \"name\": \"2.3.5 裂缝\"\n" +
+               "            }, \n" +
+               "            {\n" +
+               "                \"key\": \"C_1585_66_0\", \n" +
+               "                \"parent_key\": \"1585_11_0\", \n" +
+               "                \"issue_count\": 20, \n" +
+               "                \"name\": \"3.2.1 禁止断砖上墙\"\n" +
+               "            }, \n" +
+               "            {\n" +
+               "                \"key\": \"C_1585_80_0\", \n" +
+               "                \"parent_key\": \"1585_13_0\", \n" +
+               "                \"issue_count\": 24, \n" +
+               "                \"name\": \"4.1.7 润湿、甩浆；分层抹灰\"\n" +
+               "            }, \n" +
+               "            {\n" +
+               "                \"key\": \"C_1585_100_0\", \n" +
+               "                \"parent_key\": \"1585_575_0\", \n" +
+               "                \"issue_count\": 3, \n" +
+               "                \"name\": \"4.3.7 楼内公区瓷砖、石材（17版留存）\"\n" +
+               "            }, \n" +
+               "            {\n" +
+               "                \"key\": \"C_1585_58_0\", \n" +
+               "                \"parent_key\": \"1585_10_0\", \n" +
+               "                \"issue_count\": 5, \n" +
+               "                \"name\": \"3.1.2 阳露台、空调机位导墙\"\n" +
+               "            }, \n" +
+               "            {\n" +
+               "                \"key\": \"C_1585_125_0\", \n" +
+               "                \"parent_key\": \"1585_18_0\", \n" +
+               "                \"issue_count\": 10, \n" +
+               "                \"name\": \"7.2 小市政管线安装\"\n" +
+               "            }, \n" +
+               "            {\n" +
+               "                \"key\": \"C_1585_75_0\", \n" +
+               "                \"parent_key\": \"1585_13_0\", \n" +
+               "                \"issue_count\": 17, \n" +
+               "                \"name\": \"4.1.2 基层清理、结构缺陷处理\"\n" +
+               "            }, \n" +
+               "            {\n" +
+               "                \"key\": \"C_1585_128_0\", \n" +
+               "                \"parent_key\": \"1585_19_0\", \n" +
+               "                \"issue_count\": 722, \n" +
+               "                \"name\": \"9.1其他问题\"\n" +
+               "            }, \n" +
+               "            {\n" +
+               "                \"key\": \"C_1585_13_0\", \n" +
+               "                \"parent_key\": \"1585_3_0\", \n" +
+               "                \"issue_count\": 21, \n" +
+               "                \"name\": \"1.2.4 卫生间、厨房和阳台（若有防水）防水施工效果\"\n" +
+               "            }\n" +
+               "        ]";
+        log.info(String.format("issue_statistic_export, category_cls=%s, items=%s",category_cls, items));
         LjBaseResponse<ReportIssueVo> ljBaseResponse = new LjBaseResponse();
-        if (category_cls == null || StringUtils.isNotBlank(items)) {
+        if (category_cls == null || StringUtils.isBlank(items)) {
             ljBaseResponse.setResult(Integer.parseInt(CommonGlobalEnum.RES_ERROR.getId().toString()));
             ljBaseResponse.setMessage("args error");
             return ljBaseResponse;
         }
         Map<String, Object> map = buildingqmService.issuestatisticexport(category_cls, items);
-        log.info(String.format("export issue statistic, result=%d, message=%s, path=%s"),Integer.parseInt(map.get("result").toString()),map.get("message").toString(),map.get("path").toString());
+        log.info(String.format("export issue statistic, result=%d, message=%s, path=%s",Integer.parseInt(map.get("result").toString()),map.get("message").toString(),map.get("path").toString()));
         if(Integer.parseInt(map.get("result").toString()) !=0){
             ljBaseResponse.setResult(Integer.parseInt(map.get("result").toString()));
             ljBaseResponse.setMessage(map.get("message").toString());

@@ -2922,8 +2922,8 @@ public class BuildingqmServiceImpl implements IBuildingqmService {
             nodeDataVo.setPath_name(nodeDataVo.getKey() + "/");
             pathKeys.add(0, nodeDataVo.getKey());
             nodeDataVo.setPath_keys(pathKeys);
-            if (StringUtils.isBlank(nodeDataVo.getKey()) || StringUtils.isBlank(nodeDataVo.getParent_key()) || nodeDataVo.getIssue_count() != null || StringUtils.isBlank(nodeDataVo.getName())) {
-                continue;
+            if(StringUtils.isBlank(nodeDataVo.getKey())||StringUtils.isBlank(nodeDataVo.getParent_key())|| nodeDataVo.getIssue_count()==null||StringUtils.isBlank(nodeDataVo.getName())){
+                        continue;
             }
             dataList.add(nodeDataVo);
             dataMap.put(nodeDataVo.getKey(), nodeDataVo);
@@ -2951,7 +2951,7 @@ public class BuildingqmServiceImpl implements IBuildingqmService {
             }
         }
         for (NodeDataVo obj : dataList) {
-            if (!obj.getValid_node()) {
+            if(obj.getValid_node()==false){
                 continue;
             }
             for (NodeDataVo item : dataList) {
@@ -3013,7 +3013,8 @@ public class BuildingqmServiceImpl implements IBuildingqmService {
         Map<String, Object> map = Maps.newHashMap();
         map.put("fileName", fileName);
         map.put("workbook", wb);
-
+        map.put("result",result);
+        map.put("message",message);
         return map;
     }
 
