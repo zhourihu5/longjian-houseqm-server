@@ -1,11 +1,13 @@
 package com.longfor.longjian.houseqm.domain.internalService.impl;
 
+import com.google.common.collect.Lists;
 import com.longfor.gaia.gfs.data.mybatis.datasource.LFAssignDataSource;
 import com.longfor.longjian.houseqm.dao.zj2db.HouseQmCheckTaskMapper;
 import com.longfor.longjian.houseqm.domain.internalService.HouseQmCheckTaskService;
 import com.longfor.longjian.houseqm.po.zj2db.HouseQmCheckTask;
 import com.longfor.longjian.houseqm.utils.ExampleUtil;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.collections.CollectionUtils;
 import org.apache.ibatis.session.RowBounds;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -120,7 +122,11 @@ public class HouseQmCheckTaskServiceImpl implements HouseQmCheckTaskService {
      */
     @LFAssignDataSource("zhijian2")
     public List<HouseQmCheckTask> selectByTaskIdsEvenDeleted(Set<Integer> taskIds) {
-        return houseQmCheckTaskMapper.selectByTaskIds(taskIds, "true");
+        if (CollectionUtils.isEmpty(taskIds))return Lists.newArrayList();
+        Example example = new Example(HouseQmCheckTask.class);
+        Example.Criteria criteria = example.createCriteria();
+        criteria.andIn("taskId", taskIds);
+        return houseQmCheckTaskMapper.selectByExample(example);
     }
 
     @LFAssignDataSource("zhijian2")
