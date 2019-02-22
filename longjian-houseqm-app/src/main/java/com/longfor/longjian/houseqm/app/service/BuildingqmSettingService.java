@@ -63,14 +63,15 @@ public class BuildingqmSettingService {
             } else {
                 List<IssueFieldSetting> issueFieldSettings = initDefaultSetting(projectIdList.get(i));
                 for (int j = 0; j < issueFieldSettings.size(); j++) {
+                    IssueFieldSetting issueFieldSetting=issueFieldSettings.get(j);
                     ApiIssueFiledSettingMsg msg = new ApiIssueFiledSettingMsg();
-                    msg.setProject_id(issueFieldSettings.get(i).getProjectId());
-                    msg.setField_id(issueFieldSettings.get(i).getFieldId());
-                    msg.setName(issueFieldSettings.get(i).getName());
-                    msg.setAlias(issueFieldSettings.get(i).getAlias());
-                    msg.setDisplay_status(issueFieldSettings.get(i).getDisplayStatus());
-                    msg.setRequired_status(issueFieldSettings.get(i).getRequiredStatus());
-                    msg.setAlias_status(issueFieldSettings.get(i).getAliasStatus());
+                    msg.setProject_id(issueFieldSetting.getProjectId());
+                    msg.setField_id(issueFieldSetting.getFieldId());
+                    msg.setName(issueFieldSetting.getName());
+                    msg.setAlias(issueFieldSetting.getAlias());
+                    msg.setDisplay_status(issueFieldSetting.getDisplayStatus());
+                    msg.setRequired_status(issueFieldSetting.getRequiredStatus());
+                    msg.setAlias_status(issueFieldSetting.getAliasStatus());
                     issueFileds.add(msg);
                 }
 
