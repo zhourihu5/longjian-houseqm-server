@@ -107,20 +107,56 @@ public class BuildingqmServiceImpl implements IBuildingqmService {
      */
     public TaskListVo myTaskList(Integer userId) {
 
-        List<UserInHouseQmCheckTask> userInHouseQmCheckTasks = userInHouseQmCheckTaskService.searchByUserId(userId);
+        List<UserInHouseQmCheckTask> user_tasks = userInHouseQmCheckTaskService.searchByUserId(userId);
         Set<Integer> taskIds = Sets.newHashSet();
 
-        for (UserInHouseQmCheckTask task : userInHouseQmCheckTasks) {
+        for (UserInHouseQmCheckTask task : user_tasks) {
             taskIds.add(task.getTaskId());
         }
 
-        Map<Integer, ApiBuildingQmCheckTaskConfig> apiBuildingQmCheckTaskConfigMap = Maps.newHashMap();
-        List<HouseQmCheckTask> houseQmCheckTasks = houseQmCheckTaskService.selectByTaskIds(taskIds);
-
-        fullTaskConfigVO(apiBuildingQmCheckTaskConfigMap, houseQmCheckTasks);
-        List<HouseQmCheckTask> allHouseQmCheckTasks = houseQmCheckTaskService.selectByTaskIdsEvenDeleted(taskIds);
+        Map<Integer, ApiBuildingQmCheckTaskConfig> task_map = creatTaskMap(taskIds);
+        List<HouseQmCheckTask> houseqm_tasks = houseQmCheckTaskService.selectByTaskIdsEvenDeleted(taskIds);
         List<TaskVo> vos = Lists.newArrayList();
-        fullAllTaskConfigVO(apiBuildingQmCheckTaskConfigMap, allHouseQmCheckTasks, vos);
+        for (HouseQmCheckTask item : houseqm_tasks) {
+            TaskVo task = new TaskVo();
+            task.setTask_id(item.getTaskId());
+            task.setProject_id(item.getProjectId());
+            task.setName(item.getName());
+            task.setStatus(item.getStatus());
+            task.setCategory_cls(item.getCategoryCls());
+            task.setRoot_category_key(item.getRootCategoryKey());
+            task.setArea_ids(item.getAreaIds());
+            // 有可能是area_type?
+            task.setArea_types(item.getAreaTypes());
+            task.setPlan_begin_on((int) (item.getPlanBeginOn().getTime() / 1000));
+            task.setPlan_end_on((int) (item.getPlanEndOn().getTime() / 1000));
+            task.setCreate_at((int) (item.getCreateAt().getTime() / 1000));
+            task.setUpdate_at((int) (item.getUpdateAt().getTime() / 1000));
+            task.setDelete_at(DateUtil.datetimeToTimeStamp(item.getDeleteAt()));
+
+            if (task_map.containsKey(task.getTask_id())) {
+
+                ApiBuildingQmCheckTaskConfig cfg = task_map.get(task.getTask_id());
+                task.setRepairer_refund_permission(cfg.getRepairer_refund_permission());
+                task.setRepairer_follower_permission(cfg.getRepairer_follower_permission());
+                task.setChecker_approve_permission(cfg.getChecker_approve_permission());
+                task.setRepaired_picture_status(cfg.getRepaired_picture_status());
+                task.setIssue_desc_status(cfg.getIssue_desc_status());
+                task.setIssue_default_desc(cfg.getIssue_default_desc());
+            } else {
+
+                task.setRepairer_refund_permission(CheckTaskRepairerRefundPermission.No.getValue());
+                task.setRepairer_follower_permission(CheckTaskRepairerFollowerPermission.CompleteRepair.getValue());
+                task.setChecker_approve_permission(CheckerApprovePermission.No.getValue());
+                task.setRepaired_picture_status(CheckTaskRepairedPictureEnum.UnForcePicture.getValue());
+                task.setIssue_desc_status(CheckTaskIssueDescEnum.Arbitrary.getValue());
+                task.setIssue_default_desc("该问题无文字描述");
+            }
+            vos.add(task);
+        }
+
+
+        //fullAllTaskConfigVO(task_map, houseqm_tasks, vos);
         TaskListVo taskListVo = new TaskListVo();
         taskListVo.setTask_list(vos);
 
@@ -370,6 +406,7 @@ public class BuildingqmServiceImpl implements IBuildingqmService {
         editExecute(begin, endon, uid, taskEditReq, areaIds, areaTypes, planBeginOn, planEndOn, checkerGroups, repairerGroups, config);
 
     }
+
     private void beforeExecute(List<ApiBuildingQmTaskMemberGroupVo> checkerGroupsAdd, List<ApiBuildingQmTaskMemberGroupVo> checkerGroupsEdit, List<Object> checkerGroupsDel, List<ApiBuildingQmTaskMemberInsertVo> needInsertCheckTaskSquadUser, List<UserInHouseQmCheckTask> needUpdateCheckTaskSquadUser, Map doNotNeedDeleteSquaduserPkId, Integer uid, TaskEditReq taskEditReq, List<Integer> areaIds, List<Integer> areaTypes, String planBeginOn, String planEndOn, List<ApiBuildingQmTaskMemberGroupVo> checkerGroups, List<ApiBuildingQmTaskMemberGroupVo> repairerGroups, ConfigVo config) {
         checkSquads(needUpdateCheckTaskSquadUser, needInsertCheckTaskSquadUser, doNotNeedDeleteSquaduserPkId, checkerGroupsDel, checkerGroupsEdit, checkerGroupsAdd, uid, taskEditReq, areaIds, areaTypes, planBeginOn, planEndOn, checkerGroups, repairerGroups, config);
         compareSquadCheckers(repairerGroups, needUpdateCheckTaskSquadUser, needInsertCheckTaskSquadUser, checkerGroups, checkerGroupsDel, doNotNeedDeleteSquaduserPkId, taskEditReq);
@@ -419,7 +456,7 @@ public class BuildingqmServiceImpl implements IBuildingqmService {
                     canReassign = CheckTaskRoleCanReassignType.Yes.getValue();
                 }
                 Map<Integer, UserInHouseQmCheckTask> map = squadUserMap.get(squadId);
-                if (map!=null&&!map.containsKey(userIds.get(j))) {
+                if (map != null && !map.containsKey(userIds.get(j))) {
                     ApiBuildingQmTaskMemberInsertVo vo = new ApiBuildingQmTaskMemberInsertVo();
                     vo.setSquad_id(squadId);
                     vo.setGroup_role(CheckTaskRoleType.Checker.getValue());
@@ -431,19 +468,19 @@ public class BuildingqmServiceImpl implements IBuildingqmService {
                     continue;
                 }
                 //    # 将此记录标记为不需要删除
-                        if(map!=null){
-                            UserInHouseQmCheckTask dbItem = map.get(userIds.get(j));
-                            doNotNeedDeleteSquaduserPkId.put(dbItem.getId(), true);
-                            if (!dbItem.getCanApprove().equals(canApprove) ||
-                                    !dbItem.getCanDirectApprove().equals(canDirectApprove) ||
-                                    !dbItem.getCanReassign().equals(canReassign)
-                            ) {
-                                dbItem.setCanApprove(canApprove);
-                                dbItem.setCanDirectApprove(canDirectApprove);
-                                dbItem.setCanReassign(canReassign);
-                                needUpdateCheckTaskSquadUser.add(dbItem);
-                            }
-                        }
+                if (map != null) {
+                    UserInHouseQmCheckTask dbItem = map.get(userIds.get(j));
+                    doNotNeedDeleteSquaduserPkId.put(dbItem.getId(), true);
+                    if (!dbItem.getCanApprove().equals(canApprove) ||
+                            !dbItem.getCanDirectApprove().equals(canDirectApprove) ||
+                            !dbItem.getCanReassign().equals(canReassign)
+                    ) {
+                        dbItem.setCanApprove(canApprove);
+                        dbItem.setCanDirectApprove(canDirectApprove);
+                        dbItem.setCanReassign(canReassign);
+                        needUpdateCheckTaskSquadUser.add(dbItem);
+                    }
+                }
             }
 
         }
@@ -504,7 +541,6 @@ public class BuildingqmServiceImpl implements IBuildingqmService {
             }
         }
     }
-
 
 
     @Override
@@ -2708,9 +2744,9 @@ public class BuildingqmServiceImpl implements IBuildingqmService {
         ArrayList<ApiBuildingQmCheckTaskSquadObjVo> result = Lists.newArrayList();
         list.forEach(checkergroups -> {
             ApiBuildingQmCheckTaskSquadObjVo objVo = new ApiBuildingQmCheckTaskSquadObjVo();
-            if((Integer) checkergroups.get("id")!=null){
+            if ((Integer) checkergroups.get("id") != null) {
                 objVo.setId((Integer) checkergroups.get("id"));
-            }else{
+            } else {
                 objVo.setId(0);
             }
             objVo.setName((String) checkergroups.get("name"));
@@ -2876,94 +2912,94 @@ public class BuildingqmServiceImpl implements IBuildingqmService {
         JSONArray jsonArray = JSON.parseArray(items);
         List<Map> itemsList = jsonArray.toJavaList(Map.class);
         List<String> pathKeys = Lists.newArrayList();
-        for (Map<String,Object> item : itemsList) {
+        for (Map<String, Object> item : itemsList) {
             NodeDataVo nodeDataVo = new NodeDataVo();
             nodeDataVo.setKey((String) item.get("key"));
             nodeDataVo.setParent_key((String) item.get("parent_key"));
             nodeDataVo.setIssue_count((Integer) item.get("issue_count"));
             nodeDataVo.setName((String) item.get("name"));
             nodeDataVo.setValid_node(true);
-            nodeDataVo.setPath_name(nodeDataVo.getKey()+"/");
-            pathKeys.add(0,nodeDataVo.getKey());
+            nodeDataVo.setPath_name(nodeDataVo.getKey() + "/");
+            pathKeys.add(0, nodeDataVo.getKey());
             nodeDataVo.setPath_keys(pathKeys);
-            if(StringUtils.isBlank(nodeDataVo.getKey())||StringUtils.isBlank(nodeDataVo.getParent_key())|| nodeDataVo.getIssue_count()!=null||StringUtils.isBlank(nodeDataVo.getName())){
-                        continue;
+            if (StringUtils.isBlank(nodeDataVo.getKey()) || StringUtils.isBlank(nodeDataVo.getParent_key()) || nodeDataVo.getIssue_count() != null || StringUtils.isBlank(nodeDataVo.getName())) {
+                continue;
             }
             dataList.add(nodeDataVo);
-            dataMap.put(nodeDataVo.getKey(),nodeDataVo);
+            dataMap.put(nodeDataVo.getKey(), nodeDataVo);
         }
-         int maxCol = 0;
+        int maxCol = 0;
         ArrayList<String> path_key = Lists.newArrayList();
         for (NodeDataVo item : dataList) {
             String parentKey = item.getParent_key();
-            while (parentKey.length()>0){
-                    item.setPath_name(String.format("%s/%s",parentKey,item.getPath_name()));
-                    path_key.add(0,parentKey);
-                    item.setPath_keys(path_key);
-                    if(dataMap.containsKey(parentKey)){
-                        parentKey=dataMap.get(parentKey).getParent_key();
-                    }else{
-                        item.setValid_node(false);
-                        break;
-                    }
+            while (parentKey.length() > 0) {
+                item.setPath_name(String.format("%s/%s", parentKey, item.getPath_name()));
+                path_key.add(0, parentKey);
+                item.setPath_keys(path_key);
+                if (dataMap.containsKey(parentKey)) {
+                    parentKey = dataMap.get(parentKey).getParent_key();
+                } else {
+                    item.setValid_node(false);
+                    break;
+                }
             }
             dataMap.get(item.getKey()).setPath_name(item.getPath_name());
             dataMap.get(item.getKey()).setPath_keys(item.getPath_keys());
             dataMap.get(item.getKey()).setValid_node(item.getValid_node());
-            if(item.getPath_keys().size()>maxCol){
-                maxCol=item.getPath_keys().size();
+            if (item.getPath_keys().size() > maxCol) {
+                maxCol = item.getPath_keys().size();
             }
         }
         for (NodeDataVo obj : dataList) {
-            if(!obj.getValid_node()){
+            if (!obj.getValid_node()) {
                 continue;
             }
             for (NodeDataVo item : dataList) {
-                if(item.getPath_name().indexOf(obj.getPath_name())==0){
-                   boolean isLast = true;
+                if (item.getPath_name().indexOf(obj.getPath_name()) == 0) {
+                    boolean isLast = true;
                     for (NodeDataVo temp : dataList) {
-                        if(temp.getPath_name().indexOf(item.getPath_name())==0&&temp.getPath_name().length()!=item.getPath_name().length()){
-                            isLast=false;
+                        if (temp.getPath_name().indexOf(item.getPath_name()) == 0 && temp.getPath_name().length() != item.getPath_name().length()) {
+                            isLast = false;
                             break;
                         }
                     }
-                    if(isLast){
+                    if (isLast) {
                         Integer child_count = obj.getChild_count();
-                        child_count+=1;
+                        child_count += 1;
                     }
                 }
             }
             dataMap.get(obj.getKey()).setChild_count(obj.getChild_count());
         }
         List<NodeVo> nodeTree = Lists.newArrayList();
-        for (int i = 1; i < maxCol+1; i++) {
+        for (int i = 1; i < maxCol + 1; i++) {
             for (NodeDataVo item : dataList) {
-                if(!item.getValid_node()){
+                if (!item.getValid_node()) {
                     continue;
                 }
-                if(item.getPath_keys().size()!=i){
-                        continue;
+                if (item.getPath_keys().size() != i) {
+                    continue;
                 }
-                List<NodeVo> nodeList= nodeTree;
+                List<NodeVo> nodeList = nodeTree;
                 Integer nodeCol = 0;
-                while (true){
-                   boolean existNode=false;
+                while (true) {
+                    boolean existNode = false;
                     for (NodeVo o : nodeList) {
-                      if(item.getPath_keys().get(nodeCol).equals(o.getData().getKey())){
-                          nodeList=o.getChild_list();
-                          existNode = true;
-                          nodeCol += 1;
-                          break;
-                      }
+                        if (item.getPath_keys().get(nodeCol).equals(o.getData().getKey())) {
+                            nodeList = o.getChild_list();
+                            existNode = true;
+                            nodeCol += 1;
+                            break;
+                        }
                     }
-                    if(!existNode){
+                    if (!existNode) {
                         nodeList.add(new NodeVo(item));
                         break;
                     }
-              }
+                }
             }
         }
-        SXSSFWorkbook wb=ExportUtils.exportIssueStatisticExcel(nodeTree,maxCol);
+        SXSSFWorkbook wb = ExportUtils.exportIssueStatisticExcel(nodeTree, maxCol);
         //path = ret.get('path', '')
         //        dt = datetime.datetime.strftime(datetime.datetime.now(), '%Y%m%d%H%M%S')
         //        category_name = CategoryClsType.get_title(category_cls, u'工程检查')
@@ -2972,7 +3008,7 @@ public class BuildingqmServiceImpl implements IBuildingqmService {
 
         String dt = DateUtil.getNowTimeStr("yyyyMMddHHmmss");
         String category_name = CategoryClsTypeEnum.getName(category_cls);
-        if (category_name==null)category_name="工程检查";
+        if (category_name == null) category_name = "工程检查";
         String fileName = String.format("%s_问题详情_%s.xlsx", category_name, dt);
         Map<String, Object> map = Maps.newHashMap();
         map.put("fileName", fileName);
@@ -2980,4 +3016,33 @@ public class BuildingqmServiceImpl implements IBuildingqmService {
 
         return map;
     }
+
+
+    private Map<Integer, ApiBuildingQmCheckTaskConfig> creatTaskMap(Set<Integer> taskIds) {
+        HashMap<Integer, ApiBuildingQmCheckTaskConfig> taskMap = Maps.newHashMap();
+        List<HouseQmCheckTask> taskList = houseQmCheckTaskService.selectByTaskIds(taskIds);
+        for (HouseQmCheckTask task : taskList) {
+            ApiBuildingQmCheckTaskConfig item = new ApiBuildingQmCheckTaskConfig();
+            if (task.getConfigInfo() == null) {
+                item.setRepairer_refund_permission(CheckTaskRepairerRefundPermission.No.getValue());
+                item.setRepairer_follower_permission(CheckTaskRepairerFollowerPermission.CompleteRepair.getValue());
+                item.setChecker_approve_permission(CheckerApprovePermission.No.getValue());
+                item.setRepaired_picture_status(CheckTaskRepairedPictureEnum.UnForcePicture.getValue());
+                item.setIssue_desc_status(CheckTaskIssueDescEnum.Arbitrary.getValue());
+                item.setIssue_default_desc("(该问题无文字描述)");
+            } else {
+                JSONObject configData = JSON.parseObject(task.getConfigInfo());
+                item.setRepairer_refund_permission(configData.getIntValue("repairer_refund_permission"));
+                item.setRepairer_follower_permission(configData.getIntValue("repairer_follower_permission"));
+                item.setChecker_approve_permission(configData.getIntValue("checker_approve_permission"));
+                item.setRepaired_picture_status(configData.getIntValue("repaired_picture_status"));
+                item.setIssue_desc_status(configData.getIntValue("issue_desc_status"));
+                item.setIssue_default_desc(configData.getString("issue_default_desc"));
+            }
+            taskMap.put(task.getTaskId(), item);
+
+        }
+        return taskMap;
+    }
+
 }
