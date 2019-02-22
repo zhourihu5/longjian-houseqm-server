@@ -30,6 +30,7 @@ public class RepossessionMeterSettingServiceImpl implements RepossessionMeterSet
     }
 
     @Override
+    @LFAssignDataSource("zhijian2")
     public void add(RepossessionMeterSetting setting) {
         repossessionMeterSettingMapper.insert(setting);
     }
