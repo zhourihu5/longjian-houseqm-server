@@ -1,18 +1,18 @@
 package com.longfor.longjian.houseqm.app.controller.houseqmv3papi;
 
 import com.alibaba.fastjson.JSON;
+import com.google.common.collect.Lists;
 import com.longfor.longjian.common.base.LjBaseResponse;
 import com.longfor.longjian.common.util.CtrlTool;
 import com.longfor.longjian.common.util.SessionInfo;
+import com.longfor.longjian.houseqm.app.req.EditDetailReq;
 import com.longfor.longjian.houseqm.app.req.IssueListDoActionReq;
 import com.longfor.longjian.houseqm.app.service.IIssueService;
 import com.longfor.longjian.houseqm.app.service.IusseTaskListService;
-import com.longfor.longjian.houseqm.app.vo.ApiMineMsg;
-import com.longfor.longjian.houseqm.app.vo.ApiStatHouseqmMeterSettingMsgVo;
-import com.longfor.longjian.houseqm.app.vo.HouseQmCheckTaskSimpleRspVo;
-import com.longfor.longjian.houseqm.app.vo.TaskResponse;
+import com.longfor.longjian.houseqm.app.vo.*;
 import com.longfor.longjian.houseqm.app.vo.issuelist.IssueListRsp;
 import com.longfor.longjian.houseqm.domain.internalService.RepossessionMeterSettingService;
+import com.longfor.longjian.houseqm.po.zj2db.ProjectSettingV2;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.MediaType;
 import org.springframework.validation.annotation.Validated;
@@ -135,6 +135,108 @@ public class IusseTaskListController {
         response.setData(result);
         return response;
     }
+
+    // 工程检查- 我的问题 -问题详情
+    @RequestMapping(value = "issue/configs", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+    public LjBaseResponse<ProjectSettingConfigVo> configs(HttpServletRequest request, @RequestParam(value = "project_id", required = true) Integer projectId) {
+        LjBaseResponse<ProjectSettingConfigVo> response = new LjBaseResponse<>();
+        Integer userId = (Integer) sessionInfo.getBaseInfo("userId");
+        try {
+            ctrlTool.projPerm(request, "项目.工程检查.问题管理.查看");
+        } catch (Exception e) {
+            e.printStackTrace();
+            response.setResult(1);
+            response.setMessage(e.getMessage());
+        }
+        List<ProjectSettingConfigVo.HouseQmIssueReason> reason_list = Lists.newArrayList();
+        Integer reasonId = 0;
+
+        List<ProjectSettingV2> projectSetting = iIssueService.getProjectSettingId(projectId);
+        ProjectSettingConfigVo vo = new ProjectSettingConfigVo();
+        for (int i = 0; i < projectSetting.size(); i++) {
+            if (projectSetting.get(i).getsKey().equals("PROJ_ISSUE_REASON_SWITCH")) {
+                vo.setHas_issue_reason(true);
+            }
+            if (projectSetting.get(i).getsKey().equals("PROJ_ISSUE_SUGGEST_SWITCH")) {
+                vo.setHas_issue_suggest(true);
+            }
+            if (projectSetting.get(i).getsKey().equals("PROJ_POTENTIAL_RISK_SWITCH")) {
+                vo.setHas_issue_potential_rist(true);
+            }
+            if (projectSetting.get(i).getsKey().equals("PROJ_PREVENTIVE_ACTION_SWITCH")) {
+                vo.setHas_issue_preventive_action(true);
+            }
+            if (projectSetting.get(i).getsKey().equals("PROJ_ISSUE_REASON_NAME")) {
+                reasonId = projectSetting.get(i).getId();
+            }
+            if (projectSetting.get(i).getsKey().equals("PROJ_ISSUE_REASON_LIST")) {
+                ProjectSettingConfigVo.HouseQmIssueReason single_reason = new ProjectSettingConfigVo().new HouseQmIssueReason();
+                single_reason.setId(projectSetting.get(i).getId());
+                single_reason.setValue(projectSetting.get(i).getValue());
+                reason_list.add(single_reason);
+            }
+        }
+        if (reasonId > 0) {
+            for (int i = 0; i < projectSetting.size(); i++) {
+                if (projectSetting.get(i).getParentId().equals(reasonId)) {
+                    ProjectSettingConfigVo.HouseQmIssueReason singleReason = new ProjectSettingConfigVo().new HouseQmIssueReason();
+                    singleReason.setId(projectSetting.get(i).getId());
+                    singleReason.setValue(projectSetting.get(i).getValue());
+                    reason_list.add(singleReason);
+                }
+            }
+        }
+        vo.setReason_list(reason_list);
+        response.setData(vo);
+        return response;
+    }
+
+    //工程检查- 我的问题 项目下问题详情
+    @RequestMapping(value = "issue/detail_base", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+    public LjBaseResponse<IssueInfoVo> detailBase(HttpServletRequest request, @RequestParam(value = "project_id", required = true) Integer projectId,
+                                                  @RequestParam(value = "issue_uuid", required = true) String issueUuid) {
+        Integer userId = (Integer) sessionInfo.getBaseInfo("userId");
+        try {
+            ctrlTool.projPerm(request, "项目.工程检查.问题管理.查看");
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        LjBaseResponse<IssueInfoVo> result = iIssueService.getHouseQmCheckTaskIssueDetailBaseByProjectAndUuid(userId, projectId, issueUuid);
+
+        return result;
+    }
+    //工程检查- 我的问题 -项目下问题详情追加描述
+    @RequestMapping(value = "issue/add_desc", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+    public LjBaseResponse addDesc(HttpServletRequest request, @RequestParam(value = "project_id", required = true) Integer projectId,
+                                  @RequestParam(value = "issue_uuid", required = true) String issueUuid,
+                                  @RequestParam(value = "content", required = true) String content) {
+        Integer userId = (Integer) sessionInfo.getBaseInfo("userId");
+        try {
+            ctrlTool.projPerm(request, "项目.工程检查.问题管理.查看");
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        LjBaseResponse taskResponse = iIssueService.updeteIssueDescByUuid(projectId, issueUuid, userId, content);
+        return taskResponse;
+    }
+
+    //【项目-过程检查-问题管理-问题详情】其他信息编辑
+    @RequestMapping(value = "issue/edit_detail",produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+    public LjBaseResponse<Object> editDetail(HttpServletRequest request,@Validated EditDetailReq req){
+        LjBaseResponse<Object> response = new LjBaseResponse<>();
+        Integer userId = (Integer) sessionInfo.getBaseInfo("userId");
+        try {
+            ctrlTool.projPerm(request,"项目.工程检查.问题管理.编辑");
+        } catch (Exception e) {
+            e.printStackTrace();
+            response.setResult(1);
+            response.setMessage("PermissionDenied");
+            return response;
+        }
+
+        return iIssueService.updateIssueDetailByProjectAndUuid(userId, req.getProject_id(), req.getIssue_uuid(), req.getTyp(), req.getData());
+    }
+
 
 
 }
