@@ -4,12 +4,16 @@ import com.alibaba.fastjson.JSON;
 import com.google.common.collect.Lists;
 import com.longfor.longjian.common.base.LjBaseResponse;
 import com.longfor.longjian.common.util.CtrlTool;
+import com.longfor.longjian.common.util.RequestContextHolderUtil;
 import com.longfor.longjian.common.util.SessionInfo;
+import com.longfor.longjian.houseqm.app.controller.buildingqmv3papi.IssueListController;
 import com.longfor.longjian.houseqm.app.req.EditDetailReq;
 import com.longfor.longjian.houseqm.app.req.IssueListDoActionReq;
 import com.longfor.longjian.houseqm.app.service.IIssueService;
 import com.longfor.longjian.houseqm.app.service.IusseTaskListService;
 import com.longfor.longjian.houseqm.app.vo.*;
+import com.longfor.longjian.houseqm.app.vo.issuelist.DetailLogRspVo;
+import com.longfor.longjian.houseqm.app.vo.issuelist.DetailRepairLogRspVo;
 import com.longfor.longjian.houseqm.app.vo.issuelist.IssueListRsp;
 import com.longfor.longjian.houseqm.domain.internalService.RepossessionMeterSettingService;
 import com.longfor.longjian.houseqm.po.zj2db.ProjectSettingV2;
@@ -47,6 +51,8 @@ public class IusseTaskListController {
     private SessionInfo sessionInfo;
     @Resource
     private IIssueService iIssueService;
+    @Resource
+    IssueListController issueListController;
 
     /**
      * 获取可用于检索的任务列表
@@ -57,8 +63,7 @@ public class IusseTaskListController {
      * @return
      */
     @RequestMapping(value = "issue/task_list", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
-    public TaskResponse<HouseQmCheckTaskSimpleRspVo.TaskList> doAction(HttpServletRequest request, @RequestParam(value = "project_id") Integer
-            projectId,
+    public TaskResponse<HouseQmCheckTaskSimpleRspVo.TaskList> doAction(HttpServletRequest request, @RequestParam(value = "project_id") Integer projectId,
                                                                        @RequestParam(value = "category_cls") Integer categoryCls/*,
                                                               @RequestParam(value = "page_level") String pageLevel,
                                                               @RequestParam(value = "group_id") String groupId,
@@ -113,14 +118,14 @@ public class IusseTaskListController {
     }
 
     // 工程检查- 我的问题
-    @RequestMapping(value = "issue/list",produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+    @RequestMapping(value = "issue/list", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     public LjBaseResponse<IssueListRsp> list(HttpServletRequest request, @Validated IssueListDoActionReq req) {
         LjBaseResponse<IssueListRsp> response = new LjBaseResponse<>();
 
-        log.info("list,"+JSON.toJSONString(req));
+        log.info("list," + JSON.toJSONString(req));
         Integer userId = (Integer) sessionInfo.getBaseInfo("userId");
         try {
-            ctrlTool.projPerm(request,"项目.移动验房.问题管理.查看");
+            ctrlTool.projPerm(request, "项目.移动验房.问题管理.查看");
         } catch (Exception e) {
             e.printStackTrace();
             response.setResult(1);
@@ -205,6 +210,7 @@ public class IusseTaskListController {
 
         return result;
     }
+
     //工程检查- 我的问题 -项目下问题详情追加描述
     @RequestMapping(value = "issue/add_desc", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     public LjBaseResponse addDesc(HttpServletRequest request, @RequestParam(value = "project_id", required = true) Integer projectId,
@@ -220,13 +226,47 @@ public class IusseTaskListController {
         return taskResponse;
     }
 
+    //工程检查- 我的问题 问题详情
+    @RequestMapping(value = "issue/detail_log", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+    public LjBaseResponse<DetailLogRspVo> detailLog(@RequestParam(value = "project_id", required = true) Integer projectId,
+                                                    @RequestParam(value = "issue_uuid", required = true) String issueUuid) throws Exception {
+        LjBaseResponse<DetailLogRspVo> response = new LjBaseResponse<>();
+        Integer userId = (Integer) sessionInfo.getBaseInfo("userId");
+        ctrlTool.projPerm(RequestContextHolderUtil.getRequest(), "项目.工程检查.问题管理.查看");
+        List<HouseQmCheckTaskIssueHistoryLogVo> result = iIssueService.getHouseQmCheckTaskIssueActionLogByIssueUuid(issueUuid);
+        DetailLogRspVo data = new DetailLogRspVo();
+        data.setItems(result);
+        response.setData(data);
+
+        return response;
+    }
+
+    //工程检查- 我的问题 项目下问题修复记录
+    @RequestMapping(value = "issue/detail_repair_log", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+    public LjBaseResponse<DetailRepairLogRspVo> detailRepairLog(HttpServletRequest request, @RequestParam(value = "project_id", required = true) Integer projectId,
+                                                                @RequestParam(value = "issue_uuid", required = true) String issueUuid) {
+        Integer userId = (Integer) sessionInfo.getBaseInfo("userId");
+        try {
+            ctrlTool.projPerm(request, "项目.工程检查.问题管理.查看");
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        LjBaseResponse<List<HouseQmCheckTaskIssueDetailRepairLogVo>> result = iIssueService.getDetailRepairLogByIssueUuid(issueUuid);
+
+        LjBaseResponse<DetailRepairLogRspVo> response = new LjBaseResponse<>();
+        DetailRepairLogRspVo data = new DetailRepairLogRspVo();
+        data.setItems(result.getData());
+        response.setData(data);
+        return response;
+    }
+
     //【项目-过程检查-问题管理-问题详情】其他信息编辑
-    @RequestMapping(value = "issue/edit_detail",produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
-    public LjBaseResponse<Object> editDetail(HttpServletRequest request,@Validated EditDetailReq req){
+    @RequestMapping(value = "issue/edit_detail", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+    public LjBaseResponse<Object> editDetail(HttpServletRequest request, @Validated EditDetailReq req) {
         LjBaseResponse<Object> response = new LjBaseResponse<>();
         Integer userId = (Integer) sessionInfo.getBaseInfo("userId");
         try {
-            ctrlTool.projPerm(request,"项目.工程检查.问题管理.编辑");
+            ctrlTool.projPerm(request, "项目.工程检查.问题管理.编辑");
         } catch (Exception e) {
             e.printStackTrace();
             response.setResult(1);
@@ -236,7 +276,6 @@ public class IusseTaskListController {
 
         return iIssueService.updateIssueDetailByProjectAndUuid(userId, req.getProject_id(), req.getIssue_uuid(), req.getTyp(), req.getData());
     }
-
 
 
 }
