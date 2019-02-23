@@ -470,6 +470,9 @@ public class IssueServiceImpl implements IIssueService {
             }
             if (((String) issue_log_detail.get("RepairerFollowerIds")).length() > 0) {
                 String replace = ((String) issue_log_detail.get("RepairerFollowerIds")).replace(",,", ",");
+             /*   if(StringUtils.isNotEmpty()){
+
+                }*/
                 List<String> split = StringSplitToListUtil.removeStartAndEndStrAndSplit(replace, ",", ",");
                 for (int j = 0; j < split.size(); j++) {
                     uids.add(Integer.valueOf(split.get(j)));
@@ -1312,7 +1315,7 @@ public class IssueServiceImpl implements IIssueService {
             allUserId.add(issueInfo.getSenderId());
         }
         List<Integer> repairerFollowerIds = null;
-        if (!StringUtils.isEmpty(issueInfo.getRepairerFollowerIds())) {
+        if (StringUtils.isNotBlank(issueInfo.getRepairerFollowerIds())) {
             if (StringUtils.isNotBlank( issueInfo.getRepairerFollowerIds())&&!issueInfo.getRepairerFollowerIds().contains("[")&&issueInfo.getRepairerFollowerIds().contains("]")) {
                 repairerFollowerIds = StringSplitToListUtil.splitToIdsComma(issueInfo.getRepairerFollowerIds(), ",");
                 if (repairerFollowerIds.contains(0)) {

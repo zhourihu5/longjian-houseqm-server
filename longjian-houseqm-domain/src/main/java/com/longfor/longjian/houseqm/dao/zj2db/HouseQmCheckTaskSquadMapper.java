@@ -9,8 +9,5 @@ import java.util.Set;
 
 public interface HouseQmCheckTaskSquadMapper extends LFMySQLMapper<HouseQmCheckTaskSquad> {
     List<HouseQmCheckTaskSquad> selectByTaskIds(@Param("idList") Set<Integer> taskIdList,@Param("deleted") String aFalse);
-
-    int add(HouseQmCheckTaskSquad squad);
-
     List<HouseQmCheckTaskSquad> searchByInId(@Param("squadIds") List<Integer> squadIds);
 }

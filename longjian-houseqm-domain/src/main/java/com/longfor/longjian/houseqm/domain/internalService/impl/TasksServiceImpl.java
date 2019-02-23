@@ -23,8 +23,7 @@ public class TasksServiceImpl implements TasksService {
     @Override
     public int add(Task task) {
         taskMapper.insertSelective(task);
-
-     return    task.getId();
+     return  task.getId();
     }
 
 

@@ -5,6 +5,7 @@ import javax.persistence.*;
 
 @Table(name = "house_qm_check_task_squad")
 public class HouseQmCheckTaskSquad {
+    @GeneratedValue(generator = "JDBC")
     @Id
     private Integer id;
 
