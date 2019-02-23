@@ -13,6 +13,7 @@ import tk.mybatis.mapper.entity.Example;
 
 import javax.annotation.Resource;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -31,6 +32,10 @@ public class HouseQmCheckTaskIssueUserServiceImpl implements HouseQmCheckTaskIss
     @Override
     @LFAssignDataSource(value = "zhijian2")
     public int insertBatch(List<HouseQmCheckTaskIssueUser> issueUsers) {
+        for (HouseQmCheckTaskIssueUser issueUser : issueUsers) {
+            issueUser.setUpdateAt(new Date());
+            issueUser.setCreateAt(new Date());
+        }
         return houseQmCheckTaskIssueUserMapper.insertList(issueUsers);
     }
 
@@ -88,13 +93,15 @@ public class HouseQmCheckTaskIssueUserServiceImpl implements HouseQmCheckTaskIss
         Example.Criteria criteria = example.createCriteria();
         criteria.andEqualTo("issueUuid",uuid);
         criteria.andEqualTo("userId",repairerId);
-        criteria.andEqualTo("roleType",value);
+        criteria.andEqualTo("roleType",value).andIsNull("deleteAt");
         return houseQmCheckTaskIssueUserMapper.selectOneByExample(example);
     }
     @Transactional
     @Override
     @LFAssignDataSource(value = "zhijian2")
     public void add(HouseQmCheckTaskIssueUser repairerUserInfos) {
+        repairerUserInfos.setCreateAt(new Date());
+        repairerUserInfos.setUpdateAt(new Date());
         houseQmCheckTaskIssueUserMapper.insert(repairerUserInfos);
 
     }
@@ -102,6 +109,7 @@ public class HouseQmCheckTaskIssueUserServiceImpl implements HouseQmCheckTaskIss
     @Override
     @LFAssignDataSource(value = "zhijian2")
     public void update(HouseQmCheckTaskIssueUser repairerUserInfo) {
+        repairerUserInfo.setUpdateAt(new Date());
         houseQmCheckTaskIssueUserMapper.updateByPrimaryKeySelective(repairerUserInfo);
     }
 
@@ -112,13 +120,17 @@ public class HouseQmCheckTaskIssueUserServiceImpl implements HouseQmCheckTaskIss
         Example.Criteria criteria = example.createCriteria();
         criteria.andEqualTo("roleType",value);
         criteria.andIn("userId",intFollowers);
-        criteria.andEqualTo("issueUuid",uuid);
+        criteria.andEqualTo("issueUuid",uuid).andIsNull("deleteAt");
         return houseQmCheckTaskIssueUserMapper.selectByExample(example);
     }
     @Transactional
     @Override
     @LFAssignDataSource(value = "zhijian2")
     public void insertMany(ArrayList<HouseQmCheckTaskIssueUser> insertData) {
+        for (HouseQmCheckTaskIssueUser datum : insertData) {
+            datum.setUpdateAt(new Date());
+            datum.setCreateAt(new Date());
+        }
         houseQmCheckTaskIssueUserMapper.insertList(insertData);
     }
 

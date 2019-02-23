@@ -10,6 +10,7 @@ import org.springframework.transaction.annotation.Transactional;
 import tk.mybatis.mapper.entity.Example;
 
 import javax.annotation.Resource;
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -32,6 +33,8 @@ public class RepossessionMeterSettingServiceImpl implements RepossessionMeterSet
     @Override
     @LFAssignDataSource("zhijian2")
     public void add(RepossessionMeterSetting setting) {
+        setting.setUpdateAt(new Date());
+        setting.setCreateAt(new Date());
         repossessionMeterSettingMapper.insert(setting);
     }
 }

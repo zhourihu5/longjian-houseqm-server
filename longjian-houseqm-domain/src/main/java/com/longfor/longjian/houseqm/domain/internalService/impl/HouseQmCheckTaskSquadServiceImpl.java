@@ -10,6 +10,7 @@ import org.springframework.transaction.annotation.Transactional;
 import tk.mybatis.mapper.entity.Example;
 
 import javax.annotation.Resource;
+import java.util.Date;
 import java.util.List;
 import java.util.Set;
 
@@ -48,11 +49,12 @@ public class HouseQmCheckTaskSquadServiceImpl implements HouseQmCheckTaskSquadSe
         criteria.andIn("taskId",taskIdList);
         return houseQmCheckTaskSquadMapper.selectByExample(example);
     }
-
+    @Transactional
     @Override
     @LFAssignDataSource("zhijian2")
     public int add(HouseQmCheckTaskSquad squad) {
-        return houseQmCheckTaskSquadMapper.add(squad);
+         houseQmCheckTaskSquadMapper.insert(squad);
+        return squad.getId();
     }
 
     @Override
@@ -76,12 +78,19 @@ public class HouseQmCheckTaskSquadServiceImpl implements HouseQmCheckTaskSquadSe
     @Override
     @LFAssignDataSource("zhijian2")
     public int delete(HouseQmCheckTaskSquad dbItem) {
-        return houseQmCheckTaskSquadMapper.delete(dbItem);
+        List<HouseQmCheckTaskSquad> squads = houseQmCheckTaskSquadMapper.select(dbItem);
+        for (HouseQmCheckTaskSquad squad : squads) {
+            squad.setUpdateAt(new Date());
+            squad.setDeleteAt(new Date());
+            houseQmCheckTaskSquadMapper.updateByPrimaryKeySelective(squad);
+        }
+        return squads.size();
     }
 
     @Override
     @LFAssignDataSource("zhijian2")
     public int update(HouseQmCheckTaskSquad dbItem) {
+        dbItem.setUpdateAt(new Date());
         return houseQmCheckTaskSquadMapper.updateByPrimaryKey(dbItem);
     }
 

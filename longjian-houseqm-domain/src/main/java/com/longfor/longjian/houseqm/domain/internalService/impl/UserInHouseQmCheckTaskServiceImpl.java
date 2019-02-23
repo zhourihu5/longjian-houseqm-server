@@ -196,6 +196,7 @@ public class UserInHouseQmCheckTaskServiceImpl implements UserInHouseQmCheckTask
     @Override
     @LFAssignDataSource("zhijian2")
     public int update(UserInHouseQmCheckTask dbItem) {
+        dbItem.setUpdateAt(new Date());
         return userInHouseQmCheckTaskMapper.updateByPrimaryKey(dbItem);
     }
 
@@ -204,14 +205,20 @@ public class UserInHouseQmCheckTaskServiceImpl implements UserInHouseQmCheckTask
     public List<UserInHouseQmCheckTask> selectByIdAndTaskId(Object o, Integer task_id) {
         Example example = new Example(UserInHouseQmCheckTask.class);
         Example.Criteria criteria = example.createCriteria();
-        criteria.andEqualTo("id", o).andEqualTo("taskId", task_id);
+        criteria.andEqualTo("id", o).andEqualTo("taskId", task_id).andIsNull("deleteAt");
         return userInHouseQmCheckTaskMapper.selectByExample(example);
     }
 
     @Override
     @LFAssignDataSource("zhijian2")
     public int delete(UserInHouseQmCheckTask userInHouseQmCheckTask) {
-        return userInHouseQmCheckTaskMapper.delete(userInHouseQmCheckTask);
+        List<UserInHouseQmCheckTask> tasks = userInHouseQmCheckTaskMapper.select(userInHouseQmCheckTask);
+        for (UserInHouseQmCheckTask task : tasks) {
+            task.setUpdateAt(new Date());
+            task.setDeleteAt(new Date());
+            userInHouseQmCheckTaskMapper.updateByPrimaryKeySelective(task);
+        }
+        return tasks.size();
     }
 
     @Override
@@ -256,6 +263,8 @@ public class UserInHouseQmCheckTaskServiceImpl implements UserInHouseQmCheckTask
     @Override
     @LFAssignDataSource("zhijian2")
     public int add(UserInHouseQmCheckTask qmCheckTask) {
+        qmCheckTask.setUpdateAt(new Date());
+        qmCheckTask.setCreateAt(new Date());
         return userInHouseQmCheckTaskMapper.insert(qmCheckTask);
     }
 
@@ -265,7 +274,8 @@ public class UserInHouseQmCheckTaskServiceImpl implements UserInHouseQmCheckTask
         Example example = new Example(UserInHouseQmCheckTask.class);
         Example.Criteria criteria = example.createCriteria();
         criteria.andEqualTo("taskId", taskId).andEqualTo("userId", uid).andIsNull("deleteAt");
-        return userInHouseQmCheckTaskMapper.selectOneByExample(example);
+        List<UserInHouseQmCheckTask> tasks = userInHouseQmCheckTaskMapper.selectByExample(example);
+        return tasks!=null?tasks.get(0):null;
     }
 
 }

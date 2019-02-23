@@ -220,14 +220,21 @@ public class HouseQmCheckTaskServiceImpl implements HouseQmCheckTaskService {
     @Override
     @LFAssignDataSource("zhijian2")
     public int update(HouseQmCheckTask taskInfo) {
+        taskInfo.setUpdateAt(new Date());
         return houseQmCheckTaskMapper.updateByPrimaryKeySelective(taskInfo);
     }
 
-
+    @Transactional
     @Override
     @LFAssignDataSource("zhijian2")
     public int delete(HouseQmCheckTask houseQmCheckTask) {
-        return houseQmCheckTaskMapper.delete(houseQmCheckTask);
+        List<HouseQmCheckTask> tasks = houseQmCheckTaskMapper.select(houseQmCheckTask);
+        for (HouseQmCheckTask task : tasks) {
+            task.setUpdateAt(new Date());
+            task.setDeleteAt(new Date());
+            houseQmCheckTaskMapper.updateByPrimaryKeySelective(task);
+        }
+        return tasks.size();
     }
 
     @Override
@@ -249,10 +256,12 @@ public class HouseQmCheckTaskServiceImpl implements HouseQmCheckTaskService {
     public HouseQmCheckTask selectUpdateAtByTaskIdAndNoDeleted(Integer taskId) {
         return houseQmCheckTaskMapper.selectUpdateAtByTaskIdAndNoDeleted(taskId, "false");
     }
-
+    @Transactional
     @Override
     @LFAssignDataSource("zhijian2")
     public int add(HouseQmCheckTask houseQmCheckTask) {
+        houseQmCheckTask.setUpdateAt(new Date());
+        houseQmCheckTask.setCreateAt(new Date());
         houseQmCheckTaskMapper.insert(houseQmCheckTask);
         return houseQmCheckTask.getId();
     }

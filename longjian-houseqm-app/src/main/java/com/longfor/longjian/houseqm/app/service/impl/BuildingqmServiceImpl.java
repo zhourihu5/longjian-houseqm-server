@@ -2473,7 +2473,7 @@ public class BuildingqmServiceImpl implements IBuildingqmService {
         config_map.put("repaired_picture_status", taskReq.getRepaired_picture_status());
         config_map.put("issue_desc_status", taskReq.getIssue_desc_status());
         config_map.put("issue_default_desc", taskReq.getIssue_default_desc());
-        String config_info = JsonUtil.GsonString(config_map);
+        String config_info =  JSONObject.toJSONString(config_map);
         HouseQmCheckTask houseQmCheckTask = new HouseQmCheckTask();
         houseQmCheckTask.setProjectId(taskReq.getProject_id());
         houseQmCheckTask.setTaskId(taskObj);
