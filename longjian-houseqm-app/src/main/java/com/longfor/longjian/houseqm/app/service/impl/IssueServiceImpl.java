@@ -544,13 +544,14 @@ public class IssueServiceImpl implements IIssueService {
             }
             if (((String) issue_log_detail.get("RepairerFollowerIds")).length() > 0) {
                 String replace = ((String) issue_log_detail.get("RepairerFollowerIds")).replace(",,", ",");
-                List<String> split=null;
+
                 if(StringUtils.isNotBlank(replace)&&!replace.contains("[")&&!replace.contains("]")){
-                    split = StringSplitToListUtil.removeStartAndEndStrAndSplit(replace, ",", ",");
+                    List<String>split = StringSplitToListUtil.removeStartAndEndStrAndSplit(replace, ",", ",");
+                    for (int j = 0; j < split.size(); j++) {
+                        uids.add(Integer.valueOf(split.get(j)));
+                    }
                 }
-                for (int j = 0; j < split.size(); j++) {
-                    uids.add(Integer.valueOf(split.get(j)));
-                }
+
                 List uidlist = CollectionUtil.removeDuplicate(uids);
                 List<User> user_info = userService.searchByUserIdInAndNoDeleted(uidlist);
                 for (int j = 0; j < user_info.size(); j++) {
