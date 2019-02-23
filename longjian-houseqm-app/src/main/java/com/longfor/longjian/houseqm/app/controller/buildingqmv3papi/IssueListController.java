@@ -398,7 +398,7 @@ public class IssueListController {
                                       @RequestParam(value = "content", required = true) String content) {
         Integer userId = (Integer) sessionInfo.getBaseInfo("userId");
         try {
-            ctrlTool.projPerm(request, "项目.工程检查.问题管理.查看");
+            ctrlTool.projPerm(request, "项目.移动验房.问题管理.编辑");
         } catch (Exception e) {
             e.printStackTrace();
         }
