@@ -47,9 +47,9 @@ longfor:
       clients:
         longjian-basic-server:
           permission:
-            url: http://172.17.96.88:8082/uc/inner/
+            url: http://192.168.37.157:8082/uc/inner/ # test 环境
           repossession:
-            url: http://172.17.96.88:8082/v3/api/repossession/
+            url: http://172.17.96.88:8082/v3/api/repossession/ # dev 环境
           buildingqmexport:
             url: http://172.17.96.88:8082/papi/v3/bgtask/buildingqm/
           houseqmcheckissue:

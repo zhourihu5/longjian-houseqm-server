@@ -70,4 +70,6 @@ public interface IIssueService {
     LjBaseResponse<IssueInfoVo> getHouseQmCheckTaskIssueDetailBaseByProjectAndUuid(Integer uid, Integer projectId, String issueUuid);
 
     Boolean repairNotifyExport(Integer userId, int parseInt, String issueUuid, HttpServletResponse response, HttpServletRequest request);
+
+    LjBaseResponse<Object> updateIssueDetailByProjectAndUuid(Integer userId, Integer project_id, String issue_uuid, Integer typ, String data);
 }

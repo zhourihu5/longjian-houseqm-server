@@ -100,6 +100,79 @@ public class IssueServiceImpl implements IIssueService {
 
 
     @Override
+    public LjBaseResponse<Object> updateIssueDetailByProjectAndUuid(Integer userId, Integer project_id, String issue_uuid, Integer typ, String data) {
+        LjBaseResponse<Object> result = new LjBaseResponse<>();
+        String time_now = DateUtil.getNowTimeStr("yyyy-MM-dd HH:mm:ss");
+        HouseQmCheckTaskIssue issue_info = getIssueByProjectIdAndUuid(project_id, issue_uuid);
+        if (issue_info==null){
+            result.setResult(1);
+            result.setMessage("找不到此问题");
+            return result;
+        }
+        Integer taskId = issue_info.getTaskId();
+        UserInHouseQmCheckTask users_info = userInHouseQmCheckTaskService.selectByTaskIdAndUserIdAndNotDel(taskId, userId);
+        if (users_info==null){
+            result.setResult(1);
+            result.setMessage("只有任务参与人员才可以操作");
+            return result;
+        }
+        if (issue_info.getContent().equals(data)){
+            result.setResult(0);
+            result.setMessage("没有做改动");
+            return result;
+        }
+        String contentStr = issue_info.getContent().replace(";;", ";");
+        List<String> content = StringSplitToListUtil.removeStartAndEndStrAndSplit(contentStr, ";", ";");
+        content.add(data);
+        issue_info.setContent(StringUtils.join(content,";"));
+        issue_info.setUpdateAt(new Date());
+        houseQmCheckTaskIssueService.update(issue_info);
+        String uuid = UUID.randomUUID().toString().replace("-", "");
+
+
+        Map<String, Object> logDetail = Maps.newHashMap();
+        logDetail.put("PlanEndOn", -1);
+        logDetail.put("EndOn", -1);
+        logDetail.put("RepairerId", -1);
+        logDetail.put("RepairerFollowerIds", "");
+        logDetail.put("Condition", -1);
+        logDetail.put("AreaId", -1);
+        logDetail.put("PosX", -1);
+        logDetail.put("PosY", -1);
+        logDetail.put("Typ", -1);
+        logDetail.put("Title", "");
+        logDetail.put("CheckItemKey", "");
+        logDetail.put("CategoryCls", -1);
+        logDetail.put("CategoryKey", "");
+        logDetail.put("DrawingMD5", "");
+        logDetail.put("RemoveMemoAudioMd5List", "");
+        logDetail.put("IssueReason", -1);
+        logDetail.put("IssueReasonDetail", "");
+        logDetail.put("IssueSuggest", "");
+        logDetail.put("PotentialRisk", "");
+        logDetail.put("PreventiveActionDetail", "");
+
+        HouseQmCheckTaskIssueLog newIssueLog = new HouseQmCheckTaskIssueLog();
+        newIssueLog.setProjectId(project_id);
+        newIssueLog.setTaskId(taskId);
+        newIssueLog.setUuid(uuid);
+        newIssueLog.setIssueUuid(issue_info.getUuid());
+        newIssueLog.setSenderId(userId);
+        newIssueLog.setDesc(data);
+        newIssueLog.setStatus(HouseQmCheckTaskIssueLogStatus.UpdateIssueInfo.getValue());
+        newIssueLog.setAttachmentMd5List("");
+        newIssueLog.setAudioMd5List("");
+        newIssueLog.setMemoAudioMd5List("");
+        newIssueLog.setClientCreateAt(new Date());
+        newIssueLog.setCreateAt(new Date());
+        newIssueLog.setUpdateAt(new Date());
+        newIssueLog.setDetail(JSON.toJSONString(logDetail));
+        houseQmCheckTaskIssueLogService.add(newIssueLog);
+
+        return result;
+    }
+
+    @Override
     public Map<String, Object> exportExcel(Integer uid, Integer projectId, Integer categoryCls, Integer taskId, String categoryKey, String checkItemKey, String areaIds, String statusIn, Integer checkerId, Integer repairerId, Integer type, Integer condition, String keyWord, String createOnBegin, String createOnEnd, Boolean isOverDue) {
 
         //准备数据

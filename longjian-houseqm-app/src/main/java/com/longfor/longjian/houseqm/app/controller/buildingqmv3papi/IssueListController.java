@@ -6,6 +6,7 @@ import com.longfor.longjian.common.base.LjBaseResponse;
 import com.longfor.longjian.common.util.CtrlTool;
 import com.longfor.longjian.common.util.RequestContextHolderUtil;
 import com.longfor.longjian.common.util.SessionInfo;
+import com.longfor.longjian.houseqm.app.req.EditDetailReq;
 import com.longfor.longjian.houseqm.app.req.IssueListDoActionReq;
 import com.longfor.longjian.houseqm.app.req.bgtask.ExportBuildingExcelReq;
 import com.longfor.longjian.houseqm.app.service.IIssueService;
@@ -449,6 +450,23 @@ public class IssueListController {
         LjBaseResponse<IssueInfoVo> result = iIssueService.getHouseQmCheckTaskIssueDetailBaseByProjectAndUuid(userId, projectId, issueUuid);
 
         return result;
+    }
+
+    //【项目-过程检查-问题管理-问题详情】其他信息编辑
+    @RequestMapping(value = "edit_detail",produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+    public LjBaseResponse<Object> editDetail(HttpServletRequest request,@Validated EditDetailReq req){
+        LjBaseResponse<Object> response = new LjBaseResponse<>();
+        Integer userId = (Integer) sessionInfo.getBaseInfo("userId");
+        try {
+            ctrlTool.projPerm(request,"项目.工程检查.问题管理.编辑");
+        } catch (Exception e) {
+            e.printStackTrace();
+            response.setResult(1);
+            response.setMessage("PermissionDenied");
+            return response;
+        }
+
+        return iIssueService.updateIssueDetailByProjectAndUuid(userId, req.getProject_id(), req.getIssue_uuid(), req.getTyp(), req.getData());
     }
 
 }
