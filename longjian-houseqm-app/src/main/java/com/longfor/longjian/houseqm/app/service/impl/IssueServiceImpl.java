@@ -855,13 +855,13 @@ public class IssueServiceImpl implements IIssueService {
             response.setMessage("找不到此问题");
             return response;
         }
-        if (issueInfo.getStatus() == status) {
+        if (issueInfo.getStatus().equals(status)) {
             LjBaseResponse<Object> response = new LjBaseResponse<>();
             response.setResult(0);
             response.setMessage("没有更改");
             return response;
         }
-        if (issueInfo.getTyp() == CheckTaskIssueType.Record.getValue()) {
+        if (issueInfo.getTyp().equals(CheckTaskIssueType.Record.getValue())) {
             LjBaseResponse<Object> response = new LjBaseResponse<>();
             response.setResult(1);
             response.setMessage("状态为记录，不能更改");
@@ -871,8 +871,9 @@ public class IssueServiceImpl implements IIssueService {
             if (issueInfo.getStatus().equals(CheckTaskIssueStatus.NoteNoAssign.getValue()) ||
                     issueInfo.getStatus().equals(CheckTaskIssueStatus.AssignNoReform.getValue())
             ) {
-                issueInfo.setStatus(CheckTaskIssueStatus.CheckYes.getValue());
+                issueInfo.setEndOn(new Date());
             }
+            issueInfo.setStatus(CheckTaskIssueStatus.CheckYes.getValue());
         }
         if (status.equals(CheckTaskIssueCheckStatus.CheckNo.getValue())) {
             issueInfo.setStatus(CheckTaskIssueStatus.AssignNoReform.getValue());
@@ -906,7 +907,7 @@ public class IssueServiceImpl implements IIssueService {
         issueLog.setProjectId(issueInfo.getProjectId());
         issueLog.setTaskId(issueInfo.getTaskId());
         issueLog.setUuid(UUID.randomUUID().toString().replace("-", ""));
-        issueLog.setIssueUuid(issueInfo.getUuid());
+        issueLog.setIssueUuid(issueUuid);
         issueLog.setSenderId(uid);
         issueLog.setDesc(content);
         issueLog.setAttachmentMd5List("");
@@ -917,10 +918,10 @@ public class IssueServiceImpl implements IIssueService {
         issueLog.setUpdateAt(new Date());
         issueLog.setDetail(JSON.toJSONString(logDetail));
         if (status.equals(CheckTaskIssueCheckStatus.CheckYes.getValue())) {
-            issueLog.setStatus(CheckTaskIssueCheckStatus.CheckYes.getValue());
+            issueLog.setStatus(CheckTaskIssueStatus.CheckYes.getValue());
         }
         if (status.equals(CheckTaskIssueCheckStatus.CheckNo.getValue())) {
-            issueLog.setStatus(CheckTaskIssueCheckStatus.CheckNo.getValue());
+            issueLog.setStatus(CheckTaskIssueStatus.AssignNoReform.getValue());
         }
         houseQmCheckTaskIssueLogService.add(issueLog);
         return new LjBaseResponse();
