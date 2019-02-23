@@ -10,6 +10,7 @@ import org.springframework.transaction.annotation.Transactional;
 import tk.mybatis.mapper.entity.Example;
 
 import javax.annotation.Resource;
+import java.util.Date;
 import java.util.List;
 import java.util.Set;
 
@@ -38,6 +39,8 @@ public class PushStrategyCategoryOverdueServiceImpl implements PushStrategyCateg
     @Override
     @LFAssignDataSource("zhijian2_notify")
     public int add(PushStrategyCategoryOverdue pushStrategyCategoryOverdue) {
+        pushStrategyCategoryOverdue.setUpdateAt(new Date());
+        pushStrategyCategoryOverdue.setCreateAt(new Date());
         return pushStrategyCategoryOverdueMapper.insert(pushStrategyCategoryOverdue);
     }
 
@@ -52,12 +55,19 @@ public class PushStrategyCategoryOverdueServiceImpl implements PushStrategyCateg
     @Override
     @LFAssignDataSource("zhijian2_notify")
     public int update(PushStrategyCategoryOverdue dbConfigCategoryOverdue) {
+        dbConfigCategoryOverdue.setUpdateAt(new Date());
         return pushStrategyCategoryOverdueMapper.updateByPrimaryKey(dbConfigCategoryOverdue);
     }
 
     @Override
     @LFAssignDataSource("zhijian2_notify")
     public int delete(PushStrategyCategoryOverdue dbConfigCategoryOverdue) {
-        return pushStrategyCategoryOverdueMapper.delete(dbConfigCategoryOverdue);
+        List<PushStrategyCategoryOverdue> overdues = pushStrategyCategoryOverdueMapper.select(dbConfigCategoryOverdue);
+        for (PushStrategyCategoryOverdue overdue : overdues) {
+            overdue.setUpdateAt(new Date());
+            overdue.setDeleteAt(new Date());
+            pushStrategyCategoryOverdueMapper.updateByPrimaryKeySelective(overdue);
+        }
+        return overdues.size();
     }
 }

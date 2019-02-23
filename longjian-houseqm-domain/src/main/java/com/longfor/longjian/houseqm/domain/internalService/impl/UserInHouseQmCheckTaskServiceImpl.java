@@ -196,6 +196,7 @@ public class UserInHouseQmCheckTaskServiceImpl implements UserInHouseQmCheckTask
     @Override
     @LFAssignDataSource("zhijian2")
     public int update(UserInHouseQmCheckTask dbItem) {
+        dbItem.setUpdateAt(new Date());
         return userInHouseQmCheckTaskMapper.updateByPrimaryKey(dbItem);
     }
 
@@ -211,7 +212,13 @@ public class UserInHouseQmCheckTaskServiceImpl implements UserInHouseQmCheckTask
     @Override
     @LFAssignDataSource("zhijian2")
     public int delete(UserInHouseQmCheckTask userInHouseQmCheckTask) {
-        return userInHouseQmCheckTaskMapper.delete(userInHouseQmCheckTask);
+        List<UserInHouseQmCheckTask> tasks = userInHouseQmCheckTaskMapper.select(userInHouseQmCheckTask);
+        for (UserInHouseQmCheckTask task : tasks) {
+            task.setUpdateAt(new Date());
+            task.setDeleteAt(new Date());
+            userInHouseQmCheckTaskMapper.updateByPrimaryKeySelective(task);
+        }
+        return tasks.size();
     }
 
     @Override
@@ -256,6 +263,8 @@ public class UserInHouseQmCheckTaskServiceImpl implements UserInHouseQmCheckTask
     @Override
     @LFAssignDataSource("zhijian2")
     public int add(UserInHouseQmCheckTask qmCheckTask) {
+        qmCheckTask.setUpdateAt(new Date());
+        qmCheckTask.setCreateAt(new Date());
         return userInHouseQmCheckTaskMapper.insert(qmCheckTask);
     }
 

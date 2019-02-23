@@ -42,13 +42,23 @@ public class HouseQmCheckTaskIssueLogServiceImpl implements HouseQmCheckTaskIssu
         Example.Criteria criteria = example.createCriteria();
         criteria.andIn("uuid", uuids);
         ExampleUtil.addDeleteAtJudge(example);
-        return houseQmCheckTaskIssueLogMapper.deleteByExample(example);
+        List<HouseQmCheckTaskIssueLog> issueLogs = houseQmCheckTaskIssueLogMapper.selectByExample(example);
+        for (HouseQmCheckTaskIssueLog issueLog : issueLogs) {
+            issueLog.setDeleteAt(new Date());
+            houseQmCheckTaskIssueLogMapper.updateByPrimaryKeySelective(issueLog);
+        }
+        return issueLogs.size();
     }
 
     @Override
     @LFAssignDataSource("zhijian2")
     @Transactional
     public int addBatch(List<HouseQmCheckTaskIssueLog> hIssueLogs) {
+        for (HouseQmCheckTaskIssueLog issueLog : hIssueLogs) {
+            issueLog.setCreateAt(new Date());
+            issueLog.setUpdateAt(new Date());
+            issueLog.setClientCreateAt(new Date());
+        }
         return houseQmCheckTaskIssueLogMapper.insertList(hIssueLogs);
     }
 
@@ -141,6 +151,9 @@ public class HouseQmCheckTaskIssueLogServiceImpl implements HouseQmCheckTaskIssu
     @Override
     @LFAssignDataSource("zhijian2")
     public void add(HouseQmCheckTaskIssueLog new_issue_log) {
+        new_issue_log.setClientCreateAt(new Date());
+        new_issue_log.setUpdateAt(new Date());
+        new_issue_log.setCreateAt(new Date());
         houseQmCheckTaskIssueLogMapper.insert(new_issue_log);
     }
 

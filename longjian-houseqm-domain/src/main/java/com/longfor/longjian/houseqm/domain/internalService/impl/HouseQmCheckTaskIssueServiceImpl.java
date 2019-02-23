@@ -174,7 +174,13 @@ public class HouseQmCheckTaskIssueServiceImpl implements HouseQmCheckTaskIssueSe
             Example.Criteria criteria = example.createCriteria();
             criteria.andEqualTo("projectId", project_id).andEqualTo("uuid", issueUuid);
             ExampleUtil.addDeleteAtJudge(example);
-            return houseQmCheckTaskIssueMapper.deleteByExample(example);
+            List<HouseQmCheckTaskIssue> taskIssues = houseQmCheckTaskIssueMapper.selectByExample(example);
+            for (HouseQmCheckTaskIssue issue : taskIssues) {
+                issue.setDeleteAt(new Date());
+                issue.setUpdateAt(new Date());
+                houseQmCheckTaskIssueMapper.updateByPrimaryKey(issue);
+            }
+            return taskIssues.size();
         } catch (Exception e) {
             e.printStackTrace();
             log.warn(e.getMessage());
@@ -186,6 +192,9 @@ public class HouseQmCheckTaskIssueServiceImpl implements HouseQmCheckTaskIssueSe
     @LFAssignDataSource("zhijian2")
     @Transactional
     public int insertOneHouseQmCheckTaskIssue(HouseQmCheckTaskIssue issue) {
+        issue.setUpdateAt(new Date());
+        issue.setCreateAt(new Date());
+        issue.setClientCreateAt(new Date());
         return houseQmCheckTaskIssueMapper.insertSelective(issue);
     }
 
@@ -691,6 +700,7 @@ public class HouseQmCheckTaskIssueServiceImpl implements HouseQmCheckTaskIssueSe
     @Override
     @LFAssignDataSource("zhijian2")
     public void update(HouseQmCheckTaskIssue issue_info) {
+        issue_info.setUpdateAt(new Date());
         houseQmCheckTaskIssueMapper.updateByPrimaryKey(issue_info);
 
     }
@@ -720,6 +730,9 @@ public class HouseQmCheckTaskIssueServiceImpl implements HouseQmCheckTaskIssueSe
     @Override
     @LFAssignDataSource("zhijian2")
     public int add(HouseQmCheckTaskIssue issue) {
+        issue.setUpdateAt(new Date());
+        issue.setCreateAt(new Date());
+        issue.setClientCreateAt(new Date());
         return houseQmCheckTaskIssueMapper.insert(issue);
 
     }

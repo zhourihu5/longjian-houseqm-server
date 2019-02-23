@@ -10,6 +10,7 @@ import org.springframework.transaction.annotation.Transactional;
 import tk.mybatis.mapper.entity.Example;
 
 import javax.annotation.Resource;
+import java.util.Date;
 import java.util.List;
 import java.util.Set;
 
@@ -36,6 +37,8 @@ public class PushStrategyAssignTimeServiceImpl implements PushStrategyAssignTime
     @LFAssignDataSource("zhijian2_notify")
     @Override
     public int add(PushStrategyAssignTime pushStrategyAssignTime) {
+        pushStrategyAssignTime.setCreateAt(new Date());
+        pushStrategyAssignTime.setUpdateAt(new Date());
         return pushStrategyAssignTimeMapper.insert(pushStrategyAssignTime);
     }
 
@@ -51,13 +54,20 @@ public class PushStrategyAssignTimeServiceImpl implements PushStrategyAssignTime
     @Override
     @LFAssignDataSource("zhijian2_notify")
     public int update(PushStrategyAssignTime dbConfigAssignTime) {
+        dbConfigAssignTime.setUpdateAt(new Date());
         return pushStrategyAssignTimeMapper.updateByPrimaryKey(dbConfigAssignTime);
     }
 
     @Override
     @LFAssignDataSource("zhijian2_notify")
     public int delete(PushStrategyAssignTime dbConfigAssignTime) {
-        return pushStrategyAssignTimeMapper.delete(dbConfigAssignTime);
+        List<PushStrategyAssignTime> assignTimes = pushStrategyAssignTimeMapper.select(dbConfigAssignTime);
+        for (PushStrategyAssignTime assignTime : assignTimes) {
+            assignTime.setUpdateAt(new Date());
+            assignTime.setDeleteAt(new Date());
+            pushStrategyAssignTimeMapper.updateByPrimaryKeySelective(assignTime);
+        }
+        return assignTimes.size();
     }
 
 }
