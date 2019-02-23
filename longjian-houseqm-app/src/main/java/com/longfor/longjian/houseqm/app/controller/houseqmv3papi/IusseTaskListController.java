@@ -1,16 +1,21 @@
 package com.longfor.longjian.houseqm.app.controller.houseqmv3papi;
 
+import com.alibaba.fastjson.JSON;
 import com.longfor.longjian.common.base.LjBaseResponse;
 import com.longfor.longjian.common.util.CtrlTool;
 import com.longfor.longjian.common.util.SessionInfo;
+import com.longfor.longjian.houseqm.app.req.IssueListDoActionReq;
+import com.longfor.longjian.houseqm.app.service.IIssueService;
 import com.longfor.longjian.houseqm.app.service.IusseTaskListService;
 import com.longfor.longjian.houseqm.app.vo.ApiMineMsg;
 import com.longfor.longjian.houseqm.app.vo.ApiStatHouseqmMeterSettingMsgVo;
 import com.longfor.longjian.houseqm.app.vo.HouseQmCheckTaskSimpleRspVo;
 import com.longfor.longjian.houseqm.app.vo.TaskResponse;
+import com.longfor.longjian.houseqm.app.vo.issuelist.IssueListRsp;
 import com.longfor.longjian.houseqm.domain.internalService.RepossessionMeterSettingService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.MediaType;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -40,6 +45,8 @@ public class IusseTaskListController {
     private CtrlTool ctrlTool;
     @Resource
     private SessionInfo sessionInfo;
+    @Resource
+    private IIssueService iIssueService;
 
     /**
      * 获取可用于检索的任务列表
@@ -104,5 +111,30 @@ public class IusseTaskListController {
         response.setData(apiMineMsg);
         return response;
     }
+
+    // 工程检查- 我的问题
+    @RequestMapping(value = "issue/list",produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+    public LjBaseResponse<IssueListRsp> list(HttpServletRequest request, @Validated IssueListDoActionReq req) {
+        LjBaseResponse<IssueListRsp> response = new LjBaseResponse<>();
+
+        log.info("list,"+JSON.toJSONString(req));
+        Integer userId = (Integer) sessionInfo.getBaseInfo("userId");
+        try {
+            ctrlTool.projPerm(request,"项目.移动验房.问题管理.查看");
+        } catch (Exception e) {
+            e.printStackTrace();
+            response.setResult(1);
+            response.setCode(1);
+            response.setMessage("PermissionDenied");
+            return response;
+        }
+        IssueListRsp result = iIssueService.list(req.getProject_id(), req.getCategory_cls(), req.getTask_id(), req.getCategory_key(), req.getCheck_item_key(),
+                req.getArea_ids(), req.getStatus_in(), req.getChecker_id(), req.getRepairer_id(), req.getType(), req.getCondition(), req.getKey_word(),
+                req.getCreate_on_begin(), req.getCreate_on_end(), req.is_overdue(), req.getPage(), req.getPage_size());
+
+        response.setData(result);
+        return response;
+    }
+
 
 }
