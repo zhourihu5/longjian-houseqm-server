@@ -242,7 +242,7 @@ public class IusseTaskListController {
     }
 
     //工程检查- 我的问题 项目下问题修复记录
-    @RequestMapping(value = "detail_repair_log", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+    @RequestMapping(value = "issue/detail_repair_log", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     public LjBaseResponse<DetailRepairLogRspVo> detailRepairLog(HttpServletRequest request, @RequestParam(value = "project_id", required = true) Integer projectId,
                                                                 @RequestParam(value = "issue_uuid", required = true) String issueUuid) {
         Integer userId = (Integer) sessionInfo.getBaseInfo("userId");
