@@ -640,13 +640,15 @@ public class IssueServiceImpl implements IIssueService {
 */
                 if (!StringUtils.isEmpty((String) issue_log_detail.get("RepairerFollowerIds"))) {
                     String repairerFollowerIds = StringSplitToListUtil.removeStartAndEndStr((String) issue_log_detail.get("RepairerFollowerIds"), "[", "]");
+                    if(StringUtils.isNotBlank( StringSplitToListUtil.removeStartAndEndStr(repairerFollowerIds, "[", "]"))){
+                        List<Integer> followers_id = StringSplitToListUtil.splitToIdsComma(repairerFollowerIds, ",");
 
-                    List<Integer> followers_id = StringSplitToListUtil.splitToIdsComma(repairerFollowerIds, ",");
-                    for (int j = 0; j < followers_id.size(); j++) {
-                        if (user_id_real_name_map.containsKey(followers_id.get(j))) {
-                            followers.add(user_id_real_name_map.get(followers_id.get(j)));
+                        for (int j = 0; j < followers_id.size(); j++) {
+                            if (user_id_real_name_map.containsKey(followers_id.get(j))) {
+                                followers.add(user_id_real_name_map.get(followers_id.get(j)));
+                            }
+
                         }
-
                     }
                     HashMap<String, Object> log_data = Maps.newHashMap();
                     log_data.put("plan_end_on", issue_log_detail.get("PlanEndOn"));
@@ -1172,7 +1174,9 @@ public class IssueServiceImpl implements IIssueService {
 
             // # 增加待办问题埋点
             List<Integer> oldRepairerFollowerIdList = StringSplitToListUtil.splitToIdsComma(s, ",");
-            List<Integer> userIds = StringSplitToListUtil.splitToIdsComma(repairFollowerIds, ",");
+            String ss = StringSplitToListUtil.removeStartAndEndStr(repairFollowerIds, "[", "]");
+
+            List<Integer> userIds = StringSplitToListUtil.splitToIdsComma(ss, ",");
 
             for (int i = 0; i < userIds.size(); i++) {
                 if (!oldRepairerFollowerIdList.contains(userIds.get(i)) && !userIds.get(i).equals(tempRepairerId)) {
