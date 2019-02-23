@@ -93,7 +93,7 @@ public class HouseQmCheckTaskIssueUserServiceImpl implements HouseQmCheckTaskIss
         Example.Criteria criteria = example.createCriteria();
         criteria.andEqualTo("issueUuid",uuid);
         criteria.andEqualTo("userId",repairerId);
-        criteria.andEqualTo("roleType",value);
+        criteria.andEqualTo("roleType",value).andIsNull("deleteAt");
         return houseQmCheckTaskIssueUserMapper.selectOneByExample(example);
     }
     @Transactional
@@ -120,7 +120,7 @@ public class HouseQmCheckTaskIssueUserServiceImpl implements HouseQmCheckTaskIss
         Example.Criteria criteria = example.createCriteria();
         criteria.andEqualTo("roleType",value);
         criteria.andIn("userId",intFollowers);
-        criteria.andEqualTo("issueUuid",uuid);
+        criteria.andEqualTo("issueUuid",uuid).andIsNull("deleteAt");
         return houseQmCheckTaskIssueUserMapper.selectByExample(example);
     }
     @Transactional
