@@ -399,7 +399,7 @@ public class IssueServiceImpl implements IIssueService {
             condiMap.put("status2", status2);
         }
         if (keyWord.length() > 0) {//content like xxx
-            condiMap.put("content", "%/" + keyWord + "/%");
+            condiMap.put("content", "%" + keyWord + "%");
             if (StringSplitToListUtil.isInteger(keyWord)) {// or id=xxx
                 condiMap.put("id", keyWord);
             }
@@ -728,8 +728,9 @@ public class IssueServiceImpl implements IIssueService {
             response.setMessage("没有做改动");
             return response;
         }
-        String[] split = issueInfo.getContent().replace(";;", ";").split(";");
-        List<String> strings = Arrays.asList(split);
+        String replace = issueInfo.getContent().replace(";;", ";");
+        String[] split = replace.split(";");
+        List<String> strings = StringSplitToListUtil.removeStartAndEndStrAndSplit(replace,";",";");
         strings.add(content);
         String contentNew = ";";
         for (int i = 0; i < strings.size(); i++) {
