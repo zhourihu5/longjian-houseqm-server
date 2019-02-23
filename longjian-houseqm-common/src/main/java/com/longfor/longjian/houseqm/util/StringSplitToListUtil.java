@@ -175,5 +175,18 @@ public class StringSplitToListUtil {
         return source;
     }
 
+    /**
+     * 移除收尾指定字符串
+     * @param str
+     * @param removeSep
+     * @param splitSep
+     * @return
+     */
+    public static String  removeStartAndEndStr(String str, String removeSep, String splitSep) {
+        String s = StringUtils.removeStart(str, removeSep);
+        String s1 = StringUtils.removeEnd(s, splitSep);
+
+        return s1;
+    }
 
 }

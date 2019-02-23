@@ -639,7 +639,9 @@ public class IssueServiceImpl implements IIssueService {
                 if (issue_log_info.get(i).getStatus().equals(HouseQmCheckTaskIssueLogStatus.Repairing.getValue())) {
 */
                 if (!StringUtils.isEmpty((String) issue_log_detail.get("RepairerFollowerIds"))) {
-                    List<Integer> followers_id = StringSplitToListUtil.splitToIdsComma((String) issue_log_detail.get("RepairerFollowerIds"), ",");
+                    String repairerFollowerIds = StringSplitToListUtil.removeStartAndEndStr((String) issue_log_detail.get("RepairerFollowerIds"), "[", "]");
+
+                    List<Integer> followers_id = StringSplitToListUtil.splitToIdsComma(repairerFollowerIds, ",");
                     for (int j = 0; j < followers_id.size(); j++) {
                         if (user_id_real_name_map.containsKey(followers_id.get(j))) {
                             followers.add(user_id_real_name_map.get(followers_id.get(j)));
@@ -1166,8 +1168,10 @@ public class IssueServiceImpl implements IIssueService {
             issueInfo.setStatus(HouseQmCheckTaskIssueStatus.NoteNoAssign.getValue());
         }
         if (!issueInfo.getRepairerFollowerIds().equals(repairFollowerIds)) {
+            String s = StringSplitToListUtil.removeStartAndEndStr(issueInfo.getRepairerFollowerIds(), "[", "]");
+
             // # 增加待办问题埋点
-            List<Integer> oldRepairerFollowerIdList = StringSplitToListUtil.splitToIdsComma(issueInfo.getRepairerFollowerIds(), ",");
+            List<Integer> oldRepairerFollowerIdList = StringSplitToListUtil.splitToIdsComma(s, ",");
             List<Integer> userIds = StringSplitToListUtil.splitToIdsComma(repairFollowerIds, ",");
 
             for (int i = 0; i < userIds.size(); i++) {
