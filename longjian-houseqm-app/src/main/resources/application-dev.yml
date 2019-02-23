@@ -206,7 +206,7 @@ kafka:
     concurrency: 10
 
 # 第三方配置
-#IssueListController /buildingqm/v3/papi/houseqmissue/list/ 引入配置host_list
+#IssueListController /buildingqm/v3/papi/houseqmissue/list/ 引入配置host_list devtest8.buildingqm.com
 env_info:
   host_list: devlongjian.longhu.net longjianapp.longhu.net lh.zj.com
 #TaskListController buildingqm/v3/papi/task/list  getExportIssueConfig() 导入配置信息
