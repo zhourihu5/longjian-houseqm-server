@@ -49,13 +49,12 @@ public class HouseQmCheckTaskSquadServiceImpl implements HouseQmCheckTaskSquadSe
         criteria.andIn("taskId",taskIdList);
         return houseQmCheckTaskSquadMapper.selectByExample(example);
     }
-
+    @Transactional
     @Override
     @LFAssignDataSource("zhijian2")
     public int add(HouseQmCheckTaskSquad squad) {
-        squad.setUpdateAt(new Date());
-        squad.setCreateAt(new Date());
-        return houseQmCheckTaskSquadMapper.add(squad);
+         houseQmCheckTaskSquadMapper.insert(squad);
+        return squad.getId();
     }
 
     @Override

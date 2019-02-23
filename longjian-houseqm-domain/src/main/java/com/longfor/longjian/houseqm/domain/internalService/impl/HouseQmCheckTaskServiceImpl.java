@@ -224,7 +224,7 @@ public class HouseQmCheckTaskServiceImpl implements HouseQmCheckTaskService {
         return houseQmCheckTaskMapper.updateByPrimaryKeySelective(taskInfo);
     }
 
-
+    @Transactional
     @Override
     @LFAssignDataSource("zhijian2")
     public int delete(HouseQmCheckTask houseQmCheckTask) {
@@ -256,7 +256,7 @@ public class HouseQmCheckTaskServiceImpl implements HouseQmCheckTaskService {
     public HouseQmCheckTask selectUpdateAtByTaskIdAndNoDeleted(Integer taskId) {
         return houseQmCheckTaskMapper.selectUpdateAtByTaskIdAndNoDeleted(taskId, "false");
     }
-
+    @Transactional
     @Override
     @LFAssignDataSource("zhijian2")
     public int add(HouseQmCheckTask houseQmCheckTask) {
