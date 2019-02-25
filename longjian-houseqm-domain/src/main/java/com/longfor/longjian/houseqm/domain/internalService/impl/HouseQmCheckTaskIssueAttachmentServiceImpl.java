@@ -21,26 +21,28 @@ import java.util.Set;
  */
 @Service
 @Slf4j
-public class HouseQmCheckTaskIssueAttachmentServiceImpl implements HouseQmCheckTaskIssueAttachmentService {
+public class HouseQmCheckTaskIssueAttachmentServiceImpl implements  HouseQmCheckTaskIssueAttachmentService{
 
     @Resource
     HouseQmCheckTaskIssueAttachmentMapper houseQmCheckTaskIssueAttachmentMapper;
 
 
-    @Override
-    @LFAssignDataSource(value = "zhijian2")
-    @Transactional
+    
+    @LFAssignDataSource("zhijian2")
     public int inseretBatch(List<HouseQmCheckTaskIssueAttachment> attachements) {
+        int result=0;
         for (HouseQmCheckTaskIssueAttachment item : attachements) {
             item.setCreateAt(new Date());
             item.setUpdateAt(new Date());
+            result+=houseQmCheckTaskIssueAttachmentMapper.insertSelective(item);
+
         }
-        return houseQmCheckTaskIssueAttachmentMapper.insertList(attachements);
+        return result;
     }
 
-    @Override
-    @LFAssignDataSource(value = "zhijian2")
-    @Transactional
+    
+    @LFAssignDataSource("zhijian2")
+    //@Transactional
     public int deleteByIssueUuidMd5(String issueUuid, String md5) {
         Example example = new Example(HouseQmCheckTaskIssueAttachment.class);
         Example.Criteria criteria = example.createCriteria();
@@ -60,14 +62,14 @@ public class HouseQmCheckTaskIssueAttachmentServiceImpl implements HouseQmCheckT
      * @param issueUuids
      * @return
      */
-    @LFAssignDataSource(value = "zhijian2")
+    @LFAssignDataSource("zhijian2")
     public List<HouseQmCheckTaskIssueAttachment> searchByIssueUuid(Set<String> issueUuids){
         List<HouseQmCheckTaskIssueAttachment> houseQmCheckTaskIssueAttachments = houseQmCheckTaskIssueAttachmentMapper.selectByIssueUuid(issueUuids, "false");
         return houseQmCheckTaskIssueAttachments;
     }
 
-    @Override
-    @LFAssignDataSource(value = "zhijian2")
+    
+    @LFAssignDataSource("zhijian2")
     public List<HouseQmCheckTaskIssueAttachment> selectByissueUuidAnduserIdAndpublicTypeAndattachmentTypeAndNotDel(String issueUuid,Integer uid, Integer value, Integer value1) {
         Example example = new Example(HouseQmCheckTaskIssueAttachment.class);
         Example.Criteria criteria = example.createCriteria();
@@ -79,8 +81,8 @@ public class HouseQmCheckTaskIssueAttachmentServiceImpl implements HouseQmCheckT
         return  houseQmCheckTaskIssueAttachmentMapper.selectByExample(example);
     }
 
-    @Override
-    @LFAssignDataSource(value = "zhijian2")
+    
+    @LFAssignDataSource("zhijian2")
     public List<HouseQmCheckTaskIssueAttachment> selectByIssueUuidAndpublicTypeAndattachmentTypeAndNotDel(String issueUuid, Integer value, Integer value1) {
         Example example = new Example(HouseQmCheckTaskIssueAttachment.class);
         Example.Criteria criteria = example.createCriteria();
@@ -91,9 +93,9 @@ public class HouseQmCheckTaskIssueAttachmentServiceImpl implements HouseQmCheckT
         return  houseQmCheckTaskIssueAttachmentMapper.selectByExample(example);
     }
 
-    @Override
-    @LFAssignDataSource(value = "zhijian2")
-    @Transactional
+    
+    @LFAssignDataSource("zhijian2")
+    //@Transactional
     public int add(HouseQmCheckTaskIssueAttachment value) {
         value.setCreateAt(new Date());
         value.setUpdateAt(new Date());
@@ -101,8 +103,8 @@ public class HouseQmCheckTaskIssueAttachmentServiceImpl implements HouseQmCheckT
 
     }
 
-    @Override
-    @LFAssignDataSource(value = "zhijian2")
+    
+    @LFAssignDataSource("zhijian2")
     public HouseQmCheckTaskIssueAttachment selectByMd5AndNotDel(Object attachment) {
         Example example = new Example(HouseQmCheckTaskIssueAttachment.class);
         Example.Criteria criteria = example.createCriteria();
