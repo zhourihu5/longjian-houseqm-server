@@ -31,9 +31,10 @@ public class HouseQmCheckTaskIssueAttachmentServiceImpl implements HouseQmCheckT
     @LFAssignDataSource(value = "zhijian2")
     @Transactional
     public int inseretBatch(List<HouseQmCheckTaskIssueAttachment> attachements) {
+        Date date=new Date();
         for (HouseQmCheckTaskIssueAttachment item : attachements) {
-            item.setCreateAt(new Date());
-            item.setUpdateAt(new Date());
+            item.setCreateAt(date);
+            item.setUpdateAt(date);
         }
         return houseQmCheckTaskIssueAttachmentMapper.insertList(attachements);
     }
