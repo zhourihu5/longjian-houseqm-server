@@ -509,15 +509,15 @@ public class IssueServiceImpl implements IIssueService {
             } else {
                 item.setLast_repairer_name("");
             }
-            DetailVo detailVo = item.new DetailVo();
+           /* DetailVo detailVo = item.new DetailVo();
             Map<String, Object> map = JsonUtil.GsonToMaps(issue.getDetail());
-
             detailVo.setIssue_reason(((Double) map.get("IssueReason")).intValue());
             detailVo.setIssue_reason_detail((String) map.get("IssueReasonDetail"));
             detailVo.setIssue_suggest((String) map.get("IssueSuggest"));
             detailVo.setPotential_risk((String) map.get("PotentialRisk"));
-            detailVo.setPreventive_action_detail((String) map.get("PreventiveActionDetail"));
-            item.setDetail(detailVo);
+            detailVo.setPreventive_action_detail((String) map.get("PreventiveActionDetail"));*/
+            DetailVo detail = JSON.parseObject(issue.getDetail(), DetailVo.class);
+            item.setDetail(detail);
             issueList.add(item);
         }
         /*pageInfo.setTotal(total);

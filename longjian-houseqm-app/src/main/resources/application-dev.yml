@@ -47,13 +47,13 @@ longfor:
       clients:
         longjian-basic-server:
           permission:
-            url: http://192.168.37.157:8082/uc/inner/ # test 环境 192.168.37.157
+            url: http://172.17.96.88:8082/uc/inner/ # test 环境 192.168.37.157
           repossession:
-            url: http://192.168.37.157：8082/v3/api/repossession/ # dev 环境 172.17.96.88
+            url: http://172.17.96.88：8082/v3/api/repossession/ # dev 环境 172.17.96.88
           buildingqmexport:
-            url: http://192.168.37.157:8082/papi/v3/bgtask/buildingqm/
+            url: http://172.17.96.88:8082/papi/v3/bgtask/buildingqm/
           houseqmcheckissue:
-            url: http://192.168.37.157:8082/v3/stat_export/houseqm_check_task_issue/
+            url: http://172.17.96.88:8082/v3/stat_export/houseqm_check_task_issue/
         config:
           permission:
             connectTimeout: 5000
