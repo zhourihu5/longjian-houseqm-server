@@ -1105,7 +1105,7 @@ public class IssueServiceImpl implements IIssueService {
     @Override
     public LjBaseResponse updateIssueRepairInfoByProjectAndUuid(Integer uid, Integer repairerId, String repairFollowerIds, Integer projectId, String issueUuid) {
         Integer tempRepairerId = 0;
-        ArrayList<Integer> notifyUserIds = Lists.newArrayList();
+        ArrayList<String> notifyUserIds = Lists.newArrayList();
         HouseQmCheckTaskIssue issueInfo = getIssueByProjectIdAndUuid(projectId, issueUuid);
         if (issueInfo == null) {
             LjBaseResponse<Object> response = new LjBaseResponse<>();
@@ -1169,7 +1169,7 @@ public class IssueServiceImpl implements IIssueService {
                 status=HouseQmCheckTaskIssueLogStatus.EditBaseInfo.getValue();
             }
             issueInfo.setRepairerId(repairerId);
-            notifyUserIds.add(repairerId);//# 增加待办问题埋点
+            notifyUserIds.add(String.valueOf(repairerId));//# 增加待办问题埋点
             logDetail.put("RepairerId", issueInfo.getRepairerId());
         }
         if (issueInfo.getRepairerId().equals(0)) {
@@ -1178,10 +1178,8 @@ public class IssueServiceImpl implements IIssueService {
         if (!issueInfo.getRepairerFollowerIds().equals(repairFollowerIds)) {
             String s = StringSplitToListUtil.removeStartAndEndStr(issueInfo.getRepairerFollowerIds(), "[", "]");
             // # 增加待办问题埋点
-            List<Integer> oldRepairerFollowerIdList = StringSplitToListUtil.splitToIdsComma(s, ",");
-
-            List<Integer> userIds = StringSplitToListUtil.splitToIdsComma(repairFollowerIds, ",");
-
+            List<String> oldRepairerFollowerIdList = StringSplitToListUtil.removeStartAndEndStrAndSplit(s, ",", ",");
+            List<String> userIds = StringSplitToListUtil.removeStartAndEndStrAndSplit(repairFollowerIds, ",", ",");
             for (int i = 0; i < userIds.size(); i++) {
                 if (!oldRepairerFollowerIdList.contains(userIds.get(i)) && !userIds.get(i).equals(tempRepairerId)) {
                     notifyUserIds.add(userIds.get(i));
@@ -1245,7 +1243,7 @@ public class IssueServiceImpl implements IIssueService {
                 houseQmCheckTaskIssueUserService.update(repairerUserInfo);
             }
         }
-        List<HouseQmCheckTaskIssueUser> userFollowersInfo = null;
+        List<HouseQmCheckTaskIssueUser> userFollowersInfo = Lists.newArrayList();
         ArrayList<Integer> intFollowers = null;
         if (CollectionUtils.isNotEmpty(followers)) {
             intFollowers = Lists.newArrayList();
@@ -1625,7 +1623,7 @@ public class IssueServiceImpl implements IIssueService {
     }
 
 
-    private void pushBaseMessage(Integer taskId, ArrayList<Integer> notifyUserIds, String title, String msg) {
+    private void pushBaseMessage(Integer taskId, ArrayList<String> notifyUserIds, String title, String msg) {
         ArrayList<String> alias = Lists.newArrayList();
         for (int i = 0; i < notifyUserIds.size(); i++) {
             alias.add("user_id_" + ENTERPRISEID + "_" + notifyUserIds.get(i) + "");

@@ -78,13 +78,11 @@ public class HouseQmCheckTaskSquadServiceImpl implements HouseQmCheckTaskSquadSe
     @Override
     @LFAssignDataSource("zhijian2")
     public int delete(HouseQmCheckTaskSquad dbItem) {
-        List<HouseQmCheckTaskSquad> squads = houseQmCheckTaskSquadMapper.select(dbItem);
-        for (HouseQmCheckTaskSquad squad : squads) {
+        HouseQmCheckTaskSquad squad = houseQmCheckTaskSquadMapper.selectOne(dbItem);
             squad.setUpdateAt(new Date());
             squad.setDeleteAt(new Date());
             houseQmCheckTaskSquadMapper.updateByPrimaryKeySelective(squad);
-        }
-        return squads.size();
+        return  houseQmCheckTaskSquadMapper.updateByPrimaryKeySelective(squad);
     }
 
     @Override
