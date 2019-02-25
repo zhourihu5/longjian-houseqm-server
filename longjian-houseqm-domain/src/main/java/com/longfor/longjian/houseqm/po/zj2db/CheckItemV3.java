@@ -27,6 +27,7 @@ public class CheckItemV3 {
     @Column(name = "category_key")
     private String categoryKey;
 
+    @Column(name = "`order`")
     private String order;
 
     @Column(name = "zj_std_key")
@@ -37,6 +38,7 @@ public class CheckItemV3 {
 
     private String name;
 
+    @Column(name = "`desc`")
     private String desc;
 
     @Column(name = "common_issues")
