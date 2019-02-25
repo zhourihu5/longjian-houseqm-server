@@ -543,9 +543,17 @@ public class IssueServiceImpl implements IIssueService {
             }
             if (StringUtils.isNotBlank((String) issue_log_detail.get("RepairerFollowerIds"))) {
                 String replace = ((String) issue_log_detail.get("RepairerFollowerIds")).replace(",,", ",");
+
                 List<String> list = StringSplitToListUtil.removeStartAndEndStrAndSplit(replace, ",", ",");
                 for (String s : list) {
-                    uids.add(Integer.parseInt(s));
+                if(StringUtils.isNotBlank(s)){
+                    try{
+                        int b = Integer.valueOf(s).intValue();
+                        uids.add(b);
+                    }catch(NumberFormatException e){
+                        e.printStackTrace();
+                    }
+                }
                 }
             }
             List uidlist = CollectionUtil.removeDuplicate(uids);
@@ -557,7 +565,6 @@ public class IssueServiceImpl implements IIssueService {
         ArrayList<HouseQmCheckTaskIssueHistoryLogVo> result = Lists.newArrayList();
         boolean hasCreateLog = false;
         for (int i = 0; i < issue_log_info.size(); i++) {
-
             Map<String, Object> issue_log_detail = JSON.parseObject(issue_log_info.get(i).getDetail(), Map.class);
             HouseQmCheckTaskIssueHistoryLogVo single_item = new HouseQmCheckTaskIssueHistoryLogVo();
             single_item.setUser_id(issue_log_info.get(i).getSenderId());
@@ -644,7 +651,7 @@ public class IssueServiceImpl implements IIssueService {
                     HashMap<String, Object> log_data = Maps.newHashMap();
                     log_data.put("plan_end_on", issue_log_detail.get("PlanEndOn"));
                     log_data.put("followers", followers);
-                    log_item.setData(JSON.toJSONString(log_data));
+                log_item.setData(JSON.toJSONString(log_data));
                     items.add(log_item);
                     single_item.setItems(items);
 
