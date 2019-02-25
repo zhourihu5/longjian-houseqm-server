@@ -55,14 +55,6 @@ public class IssueListVo implements Serializable {
     private String check_item_name_path="";//检查项名称
     private String last_repairer_name="";//最后整改人姓名
 
-    @Data
-    @NoArgsConstructor
-    public class DetailVo{
-       private int issue_reason=0;//产生问题的原因,需要检索project_setting表此project的PROJ_ISSUE_REASON_LIST记录
-       private String issue_reason_detail="";//产生问题原因的文字描述
-       private String  issue_suggest="";//措施建议
-       private String potential_risk="";//潜在风险
-       private String preventive_action_detail="";//预防措施
-    }
+
 
 }

@@ -23,6 +23,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.slf4j.Logger;
 import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.Resource;
 import java.io.Serializable;
@@ -40,16 +41,12 @@ import java.util.stream.Collectors;
  * @Author: hy
  * @CreateDate: 2019/1/11 15:09
  */
-@Slf4j
 @Component
+@Data
+@Slf4j
+@Transactional
 public class HouseQmCheckTaskIssueHelperVo {
 
-    //Error error
-    private Error error;
-
-    //	houseQmCheckTaskSvc isvc.HouseqmSvc
-    //	areaSvc             isvc.AreaSvc
-    //	checkItemSvc        isvc.CheckItemSvc
     @Resource
     private HouseQmCheckTaskService houseQmCheckTaskService;
     @Resource
@@ -71,27 +68,21 @@ public class HouseQmCheckTaskIssueHelperVo {
     @Resource
     private HouseQmCheckTaskIssueAttachmentService houseQmCheckTaskIssueAttachmentService;
 
+    private Error error;
     private Map<String, CategoryV3> categoryMap;
     private Map<Integer, Area> areaMap;
     private Map<String, CheckItemV3> checkItemMap;
-
     private Map<String, UserInIssue> issueMembers;
     private Map<Integer, HouseQmCheckTask> taskMap;
-
     private Map<String, HouseQmCheckTaskIssueVo> oldIssueMap;
     private Map<String, HouseQmCheckTaskIssueVo> needInsertIssueMap;
     private Map<String, HouseQmCheckTaskIssueVo> needUpdateIssueMap;
-    // NeedDeleteIssueMap map[string]*m.HouseQmCheckTaskIssue
-
     private List<HouseQmCheckTaskIssueLogVo> issueLogs;
     private Map<String, Boolean> needDeleteAtIssueLogMap;//需要在入库后就打上delete_at标签的issue_log
-
     private List<HouseQmCheckTaskIssueAttachment> needInsertAttachement;
     private List<RemoveAttachement> needRemoveAttachement;
-
     private HouseQmCheckTaskIssueLogVo currentLog;
     private int currentProjectId;
-
     private List<ApiHouseQmCheckTaskReportRsp> droppedIssueLog;
     private List<ApiHouseQmCheckTaskReportRsp> droppedIssue;
 
@@ -114,10 +105,6 @@ public class HouseQmCheckTaskIssueHelperVo {
         this.currentProjectId = projectId;
 
         this.error = null;
-
-        //	helper.houseQmCheckTaskSvc = loader.SvcHouseqm()
-        //	helper.areaSvc = loader.SvcArea()
-        //	helper.checkItemSvc = loader.SvcCheckItem()
 
         return this;
     }
@@ -154,32 +141,33 @@ public class HouseQmCheckTaskIssueHelperVo {
                                                         int issueReason, String issueReasonDetail, String issueSuggest,
                                                         String potentialRisk, String preventiveActionDetail, String removeMemoAudioMd5List, int typ) {
 
-        // helper.currentLog.Detail = m.HouseQmCheckTaskIssueLogDetailStruct { }
-        this.currentLog.setDetail(new HouseQmCheckTaskIssueLogDetailStruct());
-        this.currentLog.getDetail().setAreaId(areaId);
-        this.currentLog.getDetail().setPosX(posX);
-        this.currentLog.getDetail().setPosY(posY);
+        HouseQmCheckTaskIssueLogDetailStruct detail = new HouseQmCheckTaskIssueLogDetailStruct();
 
-        this.currentLog.getDetail().setPlanEndOn(planEndOn);
-        this.currentLog.getDetail().setEndOn(endOn);
-        this.currentLog.getDetail().setRepairerId(repairerId);
-        this.currentLog.getDetail().setRepairerFollowerIds(repairerFollowerIds);
+        detail.setAreaId(areaId);
+        detail.setPosX(posX);
+        detail.setPosY(posY);
 
-        this.currentLog.getDetail().setCondition(condition);
-        this.currentLog.getDetail().setCategoryCls(categoryCls);
-        this.currentLog.getDetail().setCheckItemKey(checkItemKey);
-        this.currentLog.getDetail().setCategoryKey(categoryKey);
-        this.currentLog.getDetail().setIssueReason(issueReason);
+        detail.setPlanEndOn(planEndOn);
+        detail.setEndOn(endOn);
+        detail.setRepairerId(repairerId);
+        detail.setRepairerFollowerIds(repairerFollowerIds);
 
-        this.currentLog.getDetail().setIssueReasonDetail(issueReasonDetail);
-        this.currentLog.getDetail().setIssueSuggest(issueSuggest);
-        this.currentLog.getDetail().setPotentialRisk(potentialRisk);
-        this.currentLog.getDetail().setPreventiveActionDetail(preventiveActionDetail);
-        this.currentLog.getDetail().setRemoveMemoAudioMd5List(removeMemoAudioMd5List);
-        this.currentLog.getDetail().setTyp(typ);
-        this.currentLog.getDetail().setDrawingMD5(drawingMd5);
+        detail.setCondition(condition);
+        detail.setCategoryCls(categoryCls);
+        detail.setCheckItemKey(checkItemKey);
+        detail.setCategoryKey(categoryKey);
+        detail.setIssueReason(issueReason);
+
+        detail.setIssueReasonDetail(issueReasonDetail);
+        detail.setIssueSuggest(issueSuggest);
+        detail.setPotentialRisk(potentialRisk);
+        detail.setPreventiveActionDetail(preventiveActionDetail);
+        detail.setRemoveMemoAudioMd5List(removeMemoAudioMd5List);
+        detail.setTyp(typ);
+        detail.setDrawingMD5(drawingMd5);
 
         // log.Debug(helper.currentLog.Detail)
+        this.currentLog.setDetail(detail);
         return this;
     }
 
@@ -1106,143 +1094,4 @@ public class HouseQmCheckTaskIssueHelperVo {
     }
 
 
-    public Error getError() {
-        return error;
-    }
-
-    public void setError(Error error) {
-        this.error = error;
-    }
-
-    public Map<String, CategoryV3> getCategoryMap() {
-        return categoryMap;
-    }
-
-    public void setCategoryMap(Map<String, CategoryV3> categoryMap) {
-        this.categoryMap = categoryMap;
-    }
-
-    public Map<Integer, Area> getAreaMap() {
-        return areaMap;
-    }
-
-    public void setAreaMap(Map<Integer, Area> areaMap) {
-        this.areaMap = areaMap;
-    }
-
-    public Map<String, CheckItemV3> getCheckItemMap() {
-        return checkItemMap;
-    }
-
-    public void setCheckItemMap(Map<String, CheckItemV3> checkItemMap) {
-        this.checkItemMap = checkItemMap;
-    }
-
-    public Map<String, UserInIssue> getIssueMembers() {
-        return issueMembers;
-    }
-
-    public void setIssueMembers(Map<String, UserInIssue> issueMembers) {
-        this.issueMembers = issueMembers;
-    }
-
-    public Map<Integer, HouseQmCheckTask> getTaskMap() {
-        return taskMap;
-    }
-
-    public void setTaskMap(Map<Integer, HouseQmCheckTask> taskMap) {
-        this.taskMap = taskMap;
-    }
-
-    public Map<String, HouseQmCheckTaskIssueVo> getOldIssueMap() {
-        return oldIssueMap;
-    }
-
-    public void setOldIssueMap(Map<String, HouseQmCheckTaskIssueVo> oldIssueMap) {
-        this.oldIssueMap = oldIssueMap;
-    }
-
-    public Map<String, HouseQmCheckTaskIssueVo> getNeedInsertIssueMap() {
-        return needInsertIssueMap;
-    }
-
-    public void setNeedInsertIssueMap(Map<String, HouseQmCheckTaskIssueVo> needInsertIssueMap) {
-        this.needInsertIssueMap = needInsertIssueMap;
-    }
-
-    public Map<String, HouseQmCheckTaskIssueVo> getNeedUpdateIssueMap() {
-        return needUpdateIssueMap;
-    }
-
-    public void setNeedUpdateIssueMap(Map<String, HouseQmCheckTaskIssueVo> needUpdateIssueMap) {
-        this.needUpdateIssueMap = needUpdateIssueMap;
-    }
-
-    public List<HouseQmCheckTaskIssueLogVo> getIssueLogs() {
-        return issueLogs;
-    }
-
-    public void setIssueLogs(List<HouseQmCheckTaskIssueLogVo> issueLogs) {
-        this.issueLogs = issueLogs;
-    }
-
-    public Map<String, Boolean> getNeedDeleteAtIssueLogMap() {
-        return needDeleteAtIssueLogMap;
-    }
-
-    public void setNeedDeleteAtIssueLogMap(Map<String, Boolean> needDeleteAtIssueLogMap) {
-        this.needDeleteAtIssueLogMap = needDeleteAtIssueLogMap;
-    }
-
-    public List<HouseQmCheckTaskIssueAttachment> getNeedInsertAttachement() {
-        return needInsertAttachement;
-    }
-
-    public void setNeedInsertAttachement(List<HouseQmCheckTaskIssueAttachment> needInsertAttachement) {
-        this.needInsertAttachement = needInsertAttachement;
-    }
-
-    public List<RemoveAttachement> getNeedRemoveAttachement() {
-        return needRemoveAttachement;
-    }
-
-    public void setNeedRemoveAttachement(List<RemoveAttachement> needRemoveAttachement) {
-        this.needRemoveAttachement = needRemoveAttachement;
-    }
-
-    public HouseQmCheckTaskIssueLogVo getCurrentLog() {
-        return currentLog;
-    }
-
-    public void setCurrentLog(HouseQmCheckTaskIssueLogVo currentLog) {
-        this.currentLog = currentLog;
-    }
-
-    public int getCurrentProjectId() {
-        return currentProjectId;
-    }
-
-    public void setCurrentProjectId(int currentProjectId) {
-        this.currentProjectId = currentProjectId;
-    }
-
-    public List<ApiHouseQmCheckTaskReportRsp> getDroppedIssueLog() {
-        return droppedIssueLog;
-    }
-
-    public void setDroppedIssueLog(List<ApiHouseQmCheckTaskReportRsp> droppedIssueLog) {
-        this.droppedIssueLog = droppedIssueLog;
-    }
-
-    public List<ApiHouseQmCheckTaskReportRsp> getDroppedIssue() {
-        return droppedIssue;
-    }
-
-    public void setDroppedIssue(List<ApiHouseQmCheckTaskReportRsp> droppedIssue) {
-        this.droppedIssue = droppedIssue;
-    }
-
-    public static Logger getLog() {
-        return log;
-    }
 }
