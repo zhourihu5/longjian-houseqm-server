@@ -183,7 +183,7 @@ public class UserInHouseQmCheckTaskServiceImpl implements UserInHouseQmCheckTask
         }
         return userInHouseQmCheckTasks.size();
     }
-
+    @Transactional
     @Override
     @LFAssignDataSource("zhijian2")
     public UserInHouseQmCheckTask selectBysquadIdAnduserIdAndtaskIdAndNotDel(Integer squadId, Integer userId, Integer taskId) {
@@ -192,7 +192,7 @@ public class UserInHouseQmCheckTaskServiceImpl implements UserInHouseQmCheckTask
         criteria.andEqualTo("squadId", squadId).andEqualTo("userId", userId).andEqualTo("taskId", taskId).andIsNull("deleteAt");
         return userInHouseQmCheckTaskMapper.selectOneByExample(example);
     }
-
+    @Transactional
     @Override
     @LFAssignDataSource("zhijian2")
     public int update(UserInHouseQmCheckTask dbItem) {
@@ -212,13 +212,10 @@ public class UserInHouseQmCheckTaskServiceImpl implements UserInHouseQmCheckTask
     @Override
     @LFAssignDataSource("zhijian2")
     public int delete(UserInHouseQmCheckTask userInHouseQmCheckTask) {
-        List<UserInHouseQmCheckTask> tasks = userInHouseQmCheckTaskMapper.select(userInHouseQmCheckTask);
-        for (UserInHouseQmCheckTask task : tasks) {
+        UserInHouseQmCheckTask task = userInHouseQmCheckTaskMapper.selectOne(userInHouseQmCheckTask);
             task.setUpdateAt(new Date());
             task.setDeleteAt(new Date());
-            userInHouseQmCheckTaskMapper.updateByPrimaryKeySelective(task);
-        }
-        return tasks.size();
+        return  userInHouseQmCheckTaskMapper.updateByPrimaryKeySelective(task);
     }
 
     @Override
