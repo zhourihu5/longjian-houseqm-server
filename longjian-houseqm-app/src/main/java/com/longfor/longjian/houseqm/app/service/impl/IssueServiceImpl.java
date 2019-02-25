@@ -542,22 +542,17 @@ public class IssueServiceImpl implements IIssueService {
             if ((Integer) issue_log_detail.get("RepairerId") > 0) {
                 uids.add((Integer) issue_log_detail.get("RepairerId"));
             }
-            if (((String) issue_log_detail.get("RepairerFollowerIds")).length() > 0) {
+            if (StringUtils.isNotBlank((String) issue_log_detail.get("RepairerFollowerIds"))) {
                 String replace = ((String) issue_log_detail.get("RepairerFollowerIds")).replace(",,", ",");
-
-                if(StringUtils.isNotBlank(replace)&&!replace.contains("[")&&!replace.contains("]")){
-                    List<String>split = StringSplitToListUtil.removeStartAndEndStrAndSplit(replace, ",", ",");
-                    for (int j = 0; j < split.size(); j++) {
-                        uids.add(Integer.valueOf(split.get(j)));
-                    }
+                List<String> list = StringSplitToListUtil.removeStartAndEndStrAndSplit(replace, ",", ",");
+                for (String s : list) {
+                    uids.add(Integer.parseInt(s));
                 }
-
-                List uidlist = CollectionUtil.removeDuplicate(uids);
-                List<User> user_info = userService.searchByUserIdInAndNoDeleted(uidlist);
-                for (int j = 0; j < user_info.size(); j++) {
-                    user_id_real_name_map.put(user_info.get(j).getUserId(), user_info.get(j).getRealName());
-                }
-
+            }
+            List uidlist = CollectionUtil.removeDuplicate(uids);
+            List<User> user_info = userService.searchByUserIdInAndNoDeleted(uidlist);
+            for (int j = 0; j < user_info.size(); j++) {
+                user_id_real_name_map.put(user_info.get(j).getUserId(), user_info.get(j).getRealName());
             }
         }
         ArrayList<HouseQmCheckTaskIssueHistoryLogVo> result = Lists.newArrayList();
@@ -638,17 +633,15 @@ public class IssueServiceImpl implements IIssueService {
 /*
                 if (issue_log_info.get(i).getStatus().equals(HouseQmCheckTaskIssueLogStatus.Repairing.getValue())) {
 */
-                if (!StringUtils.isEmpty((String) issue_log_detail.get("RepairerFollowerIds"))) {
-                    String repairerFollowerIds = StringSplitToListUtil.removeStartAndEndStr((String) issue_log_detail.get("RepairerFollowerIds"), "[", "]");
-                    if(StringUtils.isNotBlank( StringSplitToListUtil.removeStartAndEndStr(repairerFollowerIds, "[", "]"))){
-                        List<Integer> followers_id = StringSplitToListUtil.splitToIdsComma(repairerFollowerIds, ",");
-                        for (int j = 0; j < followers_id.size(); j++) {
-                            if (user_id_real_name_map.containsKey(followers_id.get(j))) {
-                                followers.add(user_id_real_name_map.get(followers_id.get(j)));
-                            }
-
+                if (StringUtils.isNotBlank((String) issue_log_detail.get("RepairerFollowerIds"))) {
+                    List<Integer> followers_id = StringSplitToListUtil.splitToIdsComma((String) issue_log_detail.get("RepairerFollowerIds"), ",");
+                    for (int j = 0; j < followers_id.size(); j++) {
+                        if (user_id_real_name_map.containsKey(followers_id.get(j))) {
+                            followers.add(user_id_real_name_map.get(followers_id.get(j)));
                         }
+
                     }
+                }
                     HashMap<String, Object> log_data = Maps.newHashMap();
                     log_data.put("plan_end_on", issue_log_detail.get("PlanEndOn"));
                     log_data.put("followers", followers);
@@ -657,7 +650,7 @@ public class IssueServiceImpl implements IIssueService {
                     single_item.setItems(items);
 
                 }
-            }
+
             if (issue_log_info.get(i).getDesc().length() > 0) {
                 HouseQmCheckTaskIssueHistoryLogVo.HouseQmCheckTaskIssueHistoryLogItem log_items = new HouseQmCheckTaskIssueHistoryLogVo().new HouseQmCheckTaskIssueHistoryLogItem();
                 log_items.setLog_type(HouseQmCheckTaskActionLogType.AddDesc.getValue());
@@ -1119,7 +1112,9 @@ public class IssueServiceImpl implements IIssueService {
             status = HouseQmCheckTaskIssueStatusEnum.AssignNoReform.getId();
             issueInfo.setStatus(HouseQmCheckTaskIssueStatusEnum.AssignNoReform.getId());
         }
-        List<String> followers = StringSplitToListUtil.removeStartAndEndStrAndSplit(repairFollowerIds, ",", ",");
+
+                List<String> followers = StringSplitToListUtil.removeStartAndEndStrAndSplit(StringSplitToListUtil.removeStartAndEndStr(repairFollowerIds,"[","]"), ",", ",");
+
         if (!followers.contains(issueInfo.getRepairerId()) && repairerId > 0 && !repairerId.equals(issueInfo.getRepairerId())) {
             followers.add(String.valueOf(issueInfo.getRepairerId()));
             tempRepairerId = issueInfo.getRepairerId();
