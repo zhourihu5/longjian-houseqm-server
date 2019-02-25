@@ -277,5 +277,20 @@ public class IusseTaskListController {
         return iIssueService.updateIssueDetailByProjectAndUuid(userId, req.getProject_id(), req.getIssue_uuid(), req.getTyp(), req.getData());
     }
 
+    //【项目-过程检查-问题管理-问题详情】删除问题
+    @RequestMapping(value = "issue/delete", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+    public LjBaseResponse delete(HttpServletRequest request, @RequestParam(value = "project_id", required = true) Integer projectId,
+                                 @RequestParam(value = "issue_uuid", required = true) String issueUuid) {
+        LjBaseResponse response = new LjBaseResponse();
+        try {
+            ctrlTool.projPerm(request, "项目.工程检查.问题管理.删除");
+            iIssueService.deleteHouseqmCheckTaskIssueByProjectAndUuid(projectId, issueUuid);
+        } catch (Exception e) {
+            e.printStackTrace();
+            response.setResult(1);
+            response.setMessage(e.getMessage());
+        }
+        return response;
+    }
 
 }

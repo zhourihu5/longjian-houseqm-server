@@ -33,6 +33,7 @@ public class UserServiceImpl implements UserService {
      * @param users
      * @return
      */
+    @LFAssignDataSource("zhijian2_apisvr")
     public Map<Integer, User> selectByIds(List<Integer> users){
         if (users==null||users.size()<=0)return Maps.newHashMap();
         Example example = new Example(User.class);
@@ -44,6 +45,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
+    @LFAssignDataSource("zhijian2_apisvr")
     public List<User> searchByUserIdInAndNoDeleted(List<Integer> userIds) {
         Example example = new Example(User.class);
         Example.Criteria criteria = example.createCriteria();
@@ -53,6 +55,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
+    @LFAssignDataSource("zhijian2_apisvr")
     public User selectByUserIdAndNotDelete(Integer senderId) {
         Example example = new Example(User.class);
         Example.Criteria criteria = example.createCriteria();

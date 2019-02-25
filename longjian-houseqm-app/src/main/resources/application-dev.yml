@@ -47,9 +47,9 @@ longfor:
       clients:
         longjian-basic-server:
           permission:
-            url: http://172.17.96.88:8082/uc/inner/ # test 环境 192.168.37.157
+            url: http://192.168.37.157:8082/uc/inner/ # test 环境 192.168.37.157
           repossession:
-            url: http://172.17.96.88：8082/v3/api/repossession/ # dev 环境 172.17.96.88
+            url: http://172.17.96.88:8082/v3/api/repossession/ # dev 环境 172.17.96.88
           buildingqmexport:
             url: http://172.17.96.88:8082/papi/v3/bgtask/buildingqm/
           houseqmcheckissue:
@@ -95,7 +95,7 @@ longfor:
       notEmpty: true
     #多数据源配置
     database:
-      primary: custom02
+      primary: zhijian2
       connection:
         master:
           #默认数据源
@@ -140,6 +140,11 @@ longfor:
             #此属性控制池允许达到的最大大小，包括空闲和正在使用的连接。默认值：10
             maximum-pool-size: 10
         custom02:
+          driver-class-name: com.mysql.jdbc.Driver
+          url: jdbc:mysql://192.168.37.158:3306/zhijian2_apisvr?useUnicode=true&characterEncoding=UTF8 #192.168.36.95
+          username: zhijian
+          password: JM4tLp9u6pPANLhT
+        zhijian2_apisvr:
           driver-class-name: com.mysql.jdbc.Driver
           url: jdbc:mysql://192.168.37.158:3306/zhijian2_apisvr?useUnicode=true&characterEncoding=UTF8 #192.168.36.95
           username: zhijian

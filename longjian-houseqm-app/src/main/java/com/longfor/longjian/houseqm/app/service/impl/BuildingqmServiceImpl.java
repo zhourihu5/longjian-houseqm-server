@@ -126,8 +126,7 @@ public class BuildingqmServiceImpl implements IBuildingqmService {
             task.setCategory_cls(item.getCategoryCls());
             task.setRoot_category_key(item.getRootCategoryKey());
             task.setArea_ids(item.getAreaIds());
-            // 有可能是area_type?
-            task.setArea_types(item.getAreaTypes());
+            task.setArea_type(item.getAreaTypes());
             task.setPlan_begin_on((int) (item.getPlanBeginOn().getTime() / 1000));
             task.setPlan_end_on((int) (item.getPlanEndOn().getTime() / 1000));
             task.setCreate_at((int) (item.getCreateAt().getTime() / 1000));
@@ -2799,8 +2798,7 @@ public class BuildingqmServiceImpl implements IBuildingqmService {
             task.setCategory_cls(item.getCategoryCls());
             task.setRoot_category_key(item.getRootCategoryKey());
             task.setArea_ids(item.getAreaIds());
-            // 有可能是area_type?
-            task.setArea_types(item.getAreaTypes());
+            task.setArea_type(item.getAreaTypes());
             task.setPlan_begin_on((int) (item.getPlanBeginOn().getTime() / 1000));
             task.setPlan_end_on((int) (item.getPlanEndOn().getTime() / 1000));
             task.setCreate_at((int) (item.getCreateAt().getTime() / 1000));

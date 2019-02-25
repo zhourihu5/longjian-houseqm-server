@@ -7,6 +7,7 @@ import com.longfor.longjian.houseqm.domain.internalService.UserInHouseQmCheckTas
 import com.longfor.longjian.houseqm.po.zj2db.UserInHouseQmCheckTask;
 import com.longfor.longjian.houseqm.utils.ExampleUtil;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.collections.CollectionUtils;
 import org.springframework.stereotype.Service;
 import tk.mybatis.mapper.entity.Example;
 import org.springframework.transaction.annotation.Transactional;
@@ -272,7 +273,7 @@ public class UserInHouseQmCheckTaskServiceImpl implements UserInHouseQmCheckTask
         Example.Criteria criteria = example.createCriteria();
         criteria.andEqualTo("taskId", taskId).andEqualTo("userId", uid).andIsNull("deleteAt");
         List<UserInHouseQmCheckTask> tasks = userInHouseQmCheckTaskMapper.selectByExample(example);
-        return tasks!=null?tasks.get(0):null;
+        return CollectionUtils.isNotEmpty(tasks) ?tasks.get(0):null;
     }
 
 }
