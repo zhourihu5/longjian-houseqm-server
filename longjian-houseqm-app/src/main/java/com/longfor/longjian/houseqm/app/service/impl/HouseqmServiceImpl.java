@@ -18,9 +18,11 @@ import com.longfor.longjian.houseqm.consts.HouseQmCheckTaskIssueAttachmentPublic
 import com.longfor.longjian.houseqm.consts.HouseQmUserInIssueRoleTypeEnum;
 import com.longfor.longjian.houseqm.domain.internalService.*;
 import com.longfor.longjian.houseqm.po.zj2db.*;
+import com.longfor.longjian.houseqm.util.CollectionUtil;
 import com.longfor.longjian.houseqm.util.DateUtil;
 import com.longfor.longjian.houseqm.util.StringSplitToListUtil;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.collections.CollectionUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -76,7 +78,7 @@ public class HouseqmServiceImpl implements IHouseqmService {
         try {
             List<HouseQmCheckTaskIssueLog> houseQmCheckTaskIssueLogs = houseQmCheckTaskIssueLogService.searchHouseQmCheckTaskIssueLogByMyIdTaskIdLastIdUpdateAtGt(userId, deviceReq.getTask_id(), deviceReq.getLast_id(), deviceReq.getTimestamp(), limit, start, HouseQmUserInIssueRoleTypeEnum.Checker.getId());
             //获取最后一次的id
-            if (houseQmCheckTaskIssueLogs.size() > 0)
+            if (CollectionUtils.isNotEmpty(houseQmCheckTaskIssueLogs))
                 lastId = houseQmCheckTaskIssueLogs.get(houseQmCheckTaskIssueLogs.size() - 1).getId();
             myIssueListVo.setLast_id(lastId);
             List<String> uuids = new ArrayList<>();
@@ -150,7 +152,7 @@ public class HouseqmServiceImpl implements IHouseqmService {
         try {
             List<HouseQmCheckTaskIssue> houseQmCheckTaskIssues = houseQmCheckTaskIssueService.searchHouseQmCheckTaskIssueByMyIdTaskIdLastIdUpdateAtGt(userId, deviceReq.getTask_id(), deviceReq.getLast_id(), deviceReq.getTimestamp(), start, limit, HouseQmUserInIssueRoleTypeEnum.Checker.getId());
             // 上次获取的最后ID，首次拉取传`0`
-            if (houseQmCheckTaskIssues.size() > 0)
+            if (CollectionUtils.isNotEmpty(houseQmCheckTaskIssues))
                 lastId = houseQmCheckTaskIssues.get(houseQmCheckTaskIssues.size() - 1).getId();
             houseQmCheckTaskIssues.forEach(houseQmCheckTaskIssue -> {
                 ApiHouseQmCheckTaskIssueRsp houseQmCheckTaskIssueVo = new ApiHouseQmCheckTaskIssueRsp();
@@ -226,7 +228,7 @@ public class HouseqmServiceImpl implements IHouseqmService {
         Integer lastId = 0;
         try {
             List<HouseQmCheckTaskIssueUser> houseQmCheckTaskIssueUsers = houseQmCheckTaskIssueService.searchHouseQmCheckTaskIssueUserByTaskIdLastIdUpdateAtGt(deviceReq.getTask_id(), deviceReq.getLast_id(), deviceReq.getTimestamp(), start, limit);
-            lastId = houseQmCheckTaskIssueUsers.get(houseQmCheckTaskIssueUsers.size() - 1).getId();
+            if (CollectionUtils.isNotEmpty(houseQmCheckTaskIssueUsers))lastId = houseQmCheckTaskIssueUsers.get(houseQmCheckTaskIssueUsers.size() - 1).getId();
             houseQmCheckTaskIssueUsers.forEach(houseQmCheckTaskIssueUser -> {
                 ApiHouseQmCheckTaskIssueMemberRspVo apiHouseQmCheckTaskIssueMemberRspVo = new ApiHouseQmCheckTaskIssueMemberRspVo();
                 apiHouseQmCheckTaskIssueMemberRspVo.setId(houseQmCheckTaskIssueUser.getId());
@@ -244,6 +246,7 @@ public class HouseqmServiceImpl implements IHouseqmService {
             ljBaseResponse.setData(myIssueMemberListVo);
         } catch (Exception e) {
             log.error("error:" + e);
+            e.printStackTrace();
         }
         return ljBaseResponse;
     }
