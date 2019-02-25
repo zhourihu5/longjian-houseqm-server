@@ -119,6 +119,9 @@ public class StringSplitToListUtil {
      * @date 2018/12/22 0022
      */
     public static List<String> removeStartAndEndStrAndSplit(String str, String removeSep, String splitSep) {
+        if(StringUtils.isEmpty(str)){
+             return Lists.newArrayList();
+        }
         String s = StringUtils.removeStart(str, removeSep);
         String s1 = StringUtils.removeEnd(s, removeSep);
         List<String> strings = splitToStringComma(s1, splitSep);
