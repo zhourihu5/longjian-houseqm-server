@@ -93,11 +93,11 @@ public class BuildingqmController {
     @RequestMapping(value = "check_update/check", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     public LjBaseResponse<TaskIssueListVo> check(@Valid UpdateDeviceReq updateDeviceReq) {
 
-        Date taskUpdateTime = DateUtil.timeStampToDate(updateDeviceReq.getTask_update_time(), "yyyy-MM-dd");
-        Date issueUpdateTime = DateUtil.timeStampToDate(updateDeviceReq.getIssue_update_time(), "yyyy-MM-dd");
-        Date issueLogUpdateTime = DateUtil.timeStampToDate(updateDeviceReq.getIssue_log_update_time(), "yyyy-MM-dd");
-        Date taskMembersUpdateTime = DateUtil.timeStampToDate(updateDeviceReq.getTask_members_update_time(), "yyyy-MM-dd");
-        Date issueMembersUpdateTime = DateUtil.timeStampToDate(updateDeviceReq.getIssue_members_update_time(), "yyyy-MM-dd");
+        Date taskUpdateTime = DateUtil.timeStampToDate(updateDeviceReq.getTask_update_time(), "yyyy-MM-dd HH:mm:ss");
+        Date issueUpdateTime = DateUtil.timeStampToDate(updateDeviceReq.getIssue_update_time(), "yyyy-MM-dd HH:mm:ss");
+        Date issueLogUpdateTime = DateUtil.timeStampToDate(updateDeviceReq.getIssue_log_update_time(), "yyyy-MM-dd HH:mm:ss");
+        Date taskMembersUpdateTime = DateUtil.timeStampToDate(updateDeviceReq.getTask_members_update_time(), "yyyy-MM-dd HH:mm:ss");
+        Date issueMembersUpdateTime = DateUtil.timeStampToDate(updateDeviceReq.getIssue_members_update_time(), "yyyy-MM-dd HH:mm:ss");
 
         TaskIssueListVo taskIssueListVo = new TaskIssueListVo();
         TaskIssueListVo.TaskIussueVo item = taskIssueListVo.new TaskIussueVo();

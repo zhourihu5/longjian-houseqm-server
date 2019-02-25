@@ -78,7 +78,7 @@ public class HouseQmCheckTaskIssueHelperVo {
     private Map<String, HouseQmCheckTaskIssueVo> needInsertIssueMap;
     private Map<String, HouseQmCheckTaskIssueVo> needUpdateIssueMap;
     private List<HouseQmCheckTaskIssueLogVo> issueLogs;
-    private Map<String, Boolean> needDeleteAtIssueLogMap;//需要在入库后就打上delete_at标签的issue_log
+    private Map<String, Boolean> needDeleteAtIssueLogMap=new HashMap<>();//需要在入库后就打上delete_at标签的issue_log
     private List<HouseQmCheckTaskIssueAttachment> needInsertAttachement;
     private List<RemoveAttachement> needRemoveAttachement;
     private HouseQmCheckTaskIssueLogVo currentLog;
@@ -609,46 +609,48 @@ public class HouseQmCheckTaskIssueHelperVo {
         }
 
         for (HouseQmCheckTaskIssueLogVo log : this.issueLogs) {
-            if (this.needDeleteAtIssueLogMap.get(log.getUuid())) {
-                continue;
-            }
-            HouseQmCheckTaskIssueVo issue = this.needUpdateIssueMap.get(log.getIssueUuid());
+            if(log!=null) {
+                if (log.getUuid()!=null&&this.needDeleteAtIssueLogMap.get(log.getUuid())!=null&&this.needDeleteAtIssueLogMap.get(log.getUuid())) {
+                    continue;
+                }
+                HouseQmCheckTaskIssueVo issue = this.needUpdateIssueMap.get(log.getIssueUuid());
 
-            if (issue != null) {
-                // 如果某条问题不是工程的日常检查问题，说明是另外类型的推送问题，不需要处理。目前只支持工程部门的统计
-                if (CategoryClsTypeEnum.RCJC.getId().equals(issue.getCategoryCls())) {
-                    return;
-                }
-                HouseQmCheckTaskIssueStatusEnum e = null;
-                for (HouseQmCheckTaskIssueStatusEnum value : HouseQmCheckTaskIssueStatusEnum.values()) {
-                    if (value.getId().equals(log.getStatus())) {
-                        e = value;
+                if (issue != null) {
+                    // 如果某条问题不是工程的日常检查问题，说明是另外类型的推送问题，不需要处理。目前只支持工程部门的统计
+                    if (CategoryClsTypeEnum.RCJC.getId().equals(issue.getCategoryCls())) {
+                        return;
                     }
-                }
-                switch (e) {
-                    case AssignNoReform:
-                        msgPkg.appendAssigned(
-                                issue.getUuid(), issue.getProjectId(), issue.getTaskId(), issue.getSenderId(), log.getDetail().getRepairerId(),
-                                issue.getAreaId(), issue.getAreaPathAndId(), issue.getCategoryKey(),
-                                issue.getCategoryPathAndKey(), log.getSenderId(), log.getClientCreateAt()
-                        );
-                        break;
-                    case ReformNoCheck:
-                        msgPkg.appendReformed(
-                                issue.getUuid(), issue.getProjectId(), issue.getTaskId(), issue.getSenderId(), log.getDetail().getRepairerId(),
-                                issue.getAreaId(), issue.getAreaPathAndId(), issue.getCategoryKey(),
-                                issue.getCategoryPathAndKey(), log.getSenderId(), log.getClientCreateAt()
-                        );
-                        break;
-                    case CheckYes:
-                        msgPkg.appendChecked(
-                                issue.getUuid(), issue.getProjectId(), issue.getTaskId(), issue.getSenderId(), issue.getRepairerId(),
-                                issue.getAreaId(), issue.getAreaPathAndId(), issue.getCategoryKey(),
-                                issue.getCategoryPathAndKey(), log.getSenderId(), log.getClientCreateAt()
-                        );
-                        break;
-                    default:
-                        break;
+                    HouseQmCheckTaskIssueStatusEnum e = null;
+                    for (HouseQmCheckTaskIssueStatusEnum value : HouseQmCheckTaskIssueStatusEnum.values()) {
+                        if (value.getId().equals(log.getStatus())) {
+                            e = value;
+                        }
+                    }
+                    switch (e) {
+                        case AssignNoReform:
+                            msgPkg.appendAssigned(
+                                    issue.getUuid(), issue.getProjectId(), issue.getTaskId(), issue.getSenderId(), log.getDetail().getRepairerId(),
+                                    issue.getAreaId(), issue.getAreaPathAndId(), issue.getCategoryKey(),
+                                    issue.getCategoryPathAndKey(), log.getSenderId(), log.getClientCreateAt()
+                            );
+                            break;
+                        case ReformNoCheck:
+                            msgPkg.appendReformed(
+                                    issue.getUuid(), issue.getProjectId(), issue.getTaskId(), issue.getSenderId(), log.getDetail().getRepairerId(),
+                                    issue.getAreaId(), issue.getAreaPathAndId(), issue.getCategoryKey(),
+                                    issue.getCategoryPathAndKey(), log.getSenderId(), log.getClientCreateAt()
+                            );
+                            break;
+                        case CheckYes:
+                            msgPkg.appendChecked(
+                                    issue.getUuid(), issue.getProjectId(), issue.getTaskId(), issue.getSenderId(), issue.getRepairerId(),
+                                    issue.getAreaId(), issue.getAreaPathAndId(), issue.getCategoryKey(),
+                                    issue.getCategoryPathAndKey(), log.getSenderId(), log.getClientCreateAt()
+                            );
+                            break;
+                        default:
+                            break;
+                    }
                 }
             }
         }

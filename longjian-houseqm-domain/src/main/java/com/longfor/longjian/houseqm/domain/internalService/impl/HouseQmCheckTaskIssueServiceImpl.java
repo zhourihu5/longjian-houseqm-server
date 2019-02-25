@@ -31,10 +31,9 @@ import java.util.ArrayList;
  * @author Houyan
  * @date 2018/12/11 0011 15:39
  */
-@Transactional
+//@Transactional
 @Service
 @Slf4j
-@LFAssignDataSource("zhijian2")
 public class HouseQmCheckTaskIssueServiceImpl implements HouseQmCheckTaskIssueService {
     @Resource
     private HouseQmCheckTaskIssueMapper houseQmCheckTaskIssueMapper;

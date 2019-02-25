@@ -20,7 +20,7 @@ public class TaskVo implements Serializable {
     private int category_cls = 0;//模块类型 参数常量表
     private String root_category_key="";//任务类型的根节点
     private String area_ids="";//区域ID(只含顶层区域ID)(多个ID用半角逗号分隔)
-    private String  area_types="";//区域类型ID(楼层,户等)(多个ID用半角逗号分隔)
+    private String  area_type="";//区域类型ID(楼层,户等)(多个ID用半角逗号分隔)
     private int repairer_refund_permission = 0;//整改负责人退单权限：10=能退单 20=不能退单
     private int repairer_follower_permission = 0;//整改参与人权限：10=只能提交描述 20=可以完成整改
     private int checker_approve_permission = 0;//具有销项权的人能否销项由自己整改的问题：10=能销项 20=不能销项
