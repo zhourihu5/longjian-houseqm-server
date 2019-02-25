@@ -10,6 +10,7 @@ import com.longfor.longjian.houseqm.util.StringSplitToListUtil;
 import com.longfor.longjian.houseqm.util.StringUtil;
 import com.longfor.longjian.houseqm.utils.ExampleUtil;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.collections.CollectionUtils;
 import org.springframework.stereotype.Service;
 import tk.mybatis.mapper.entity.Example;
 
@@ -206,10 +207,11 @@ public class AreaServiceImpl implements AreaService {
 
 
     @LFAssignDataSource("zhijian2")
-    public List<Area> selectByAreaIds(List<Integer> integers) {
+    public List<Area> selectByAreaIds(List<Integer> ids) {
+        if (CollectionUtils.isEmpty(ids))return Lists.newArrayList();
         Example example = new Example(Area.class);
         Example.Criteria criteria = example.createCriteria();
-        criteria.andIn("id",integers).andIsNull("deleteAt");
+        criteria.andIn("id",ids).andIsNull("deleteAt");
         return areaMapper.selectByExample(example);
     }
 

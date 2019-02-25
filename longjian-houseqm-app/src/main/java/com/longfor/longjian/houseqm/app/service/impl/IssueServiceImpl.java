@@ -10,7 +10,6 @@ import com.longfor.longjian.common.push.xiaomi.XmPushUtil;
 import com.longfor.longjian.houseqm.app.utils.ExportUtils;
 import com.longfor.longjian.houseqm.app.test.DocumentHandler;
 import com.longfor.longjian.houseqm.app.vo.*;
-import com.longfor.longjian.houseqm.app.vo.IssueListVo.DetailVo;
 
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
@@ -509,15 +508,15 @@ public class IssueServiceImpl implements IIssueService {
             } else {
                 item.setLast_repairer_name("");
             }
-            DetailVo detailVo = item.new DetailVo();
+           /* DetailVo detailVo = item.new DetailVo();
             Map<String, Object> map = JsonUtil.GsonToMaps(issue.getDetail());
-
             detailVo.setIssue_reason(((Double) map.get("IssueReason")).intValue());
             detailVo.setIssue_reason_detail((String) map.get("IssueReasonDetail"));
             detailVo.setIssue_suggest((String) map.get("IssueSuggest"));
             detailVo.setPotential_risk((String) map.get("PotentialRisk"));
-            detailVo.setPreventive_action_detail((String) map.get("PreventiveActionDetail"));
-            item.setDetail(detailVo);
+            detailVo.setPreventive_action_detail((String) map.get("PreventiveActionDetail"));*/
+            DetailVo detail = JSON.parseObject(issue.getDetail(), DetailVo.class);
+            item.setDetail(detail);
             issueList.add(item);
         }
         /*pageInfo.setTotal(total);
@@ -542,28 +541,30 @@ public class IssueServiceImpl implements IIssueService {
             if ((Integer) issue_log_detail.get("RepairerId") > 0) {
                 uids.add((Integer) issue_log_detail.get("RepairerId"));
             }
-            if (((String) issue_log_detail.get("RepairerFollowerIds")).length() > 0) {
+            if (StringUtils.isNotBlank((String) issue_log_detail.get("RepairerFollowerIds"))) {
                 String replace = ((String) issue_log_detail.get("RepairerFollowerIds")).replace(",,", ",");
 
-                if(StringUtils.isNotBlank(replace)&&!replace.contains("[")&&!replace.contains("]")){
-                    List<String>split = StringSplitToListUtil.removeStartAndEndStrAndSplit(replace, ",", ",");
-                    for (int j = 0; j < split.size(); j++) {
-                        uids.add(Integer.valueOf(split.get(j)));
+                List<String> list = StringSplitToListUtil.removeStartAndEndStrAndSplit(replace, ",", ",");
+                for (String s : list) {
+                if(StringUtils.isNotBlank(s)){
+                    try{
+                        int b = Integer.valueOf(s).intValue();
+                        uids.add(b);
+                    }catch(NumberFormatException e){
+                        e.printStackTrace();
                     }
                 }
-
-                List uidlist = CollectionUtil.removeDuplicate(uids);
-                List<User> user_info = userService.searchByUserIdInAndNoDeleted(uidlist);
-                for (int j = 0; j < user_info.size(); j++) {
-                    user_id_real_name_map.put(user_info.get(j).getUserId(), user_info.get(j).getRealName());
                 }
-
+            }
+            List uidlist = CollectionUtil.removeDuplicate(uids);
+            List<User> user_info = userService.searchByUserIdInAndNoDeleted(uidlist);
+            for (int j = 0; j < user_info.size(); j++) {
+                user_id_real_name_map.put(user_info.get(j).getUserId(), user_info.get(j).getRealName());
             }
         }
         ArrayList<HouseQmCheckTaskIssueHistoryLogVo> result = Lists.newArrayList();
         boolean hasCreateLog = false;
         for (int i = 0; i < issue_log_info.size(); i++) {
-
             Map<String, Object> issue_log_detail = JSON.parseObject(issue_log_info.get(i).getDetail(), Map.class);
             HouseQmCheckTaskIssueHistoryLogVo single_item = new HouseQmCheckTaskIssueHistoryLogVo();
             single_item.setUser_id(issue_log_info.get(i).getSenderId());
@@ -638,27 +639,24 @@ public class IssueServiceImpl implements IIssueService {
 /*
                 if (issue_log_info.get(i).getStatus().equals(HouseQmCheckTaskIssueLogStatus.Repairing.getValue())) {
 */
-                if (!StringUtils.isEmpty((String) issue_log_detail.get("RepairerFollowerIds"))) {
-                    String repairerFollowerIds = StringSplitToListUtil.removeStartAndEndStr((String) issue_log_detail.get("RepairerFollowerIds"), "[", "]");
-                    if(StringUtils.isNotBlank( StringSplitToListUtil.removeStartAndEndStr(repairerFollowerIds, "[", "]"))){
-                        List<Integer> followers_id = StringSplitToListUtil.splitToIdsComma(repairerFollowerIds, ",");
-
-                        for (int j = 0; j < followers_id.size(); j++) {
-                            if (user_id_real_name_map.containsKey(followers_id.get(j))) {
-                                followers.add(user_id_real_name_map.get(followers_id.get(j)));
-                            }
-
+                if (StringUtils.isNotBlank((String) issue_log_detail.get("RepairerFollowerIds"))) {
+                    List<Integer> followers_id = StringSplitToListUtil.splitToIdsComma((String) issue_log_detail.get("RepairerFollowerIds"), ",");
+                    for (int j = 0; j < followers_id.size(); j++) {
+                        if (user_id_real_name_map.containsKey(followers_id.get(j))) {
+                            followers.add(user_id_real_name_map.get(followers_id.get(j)));
                         }
+
                     }
+                }
                     HashMap<String, Object> log_data = Maps.newHashMap();
                     log_data.put("plan_end_on", issue_log_detail.get("PlanEndOn"));
                     log_data.put("followers", followers);
-                    log_item.setData(JSON.toJSONString(log_data));
+                log_item.setData(JSON.toJSONString(log_data));
                     items.add(log_item);
                     single_item.setItems(items);
 
                 }
-            }
+
             if (issue_log_info.get(i).getDesc().length() > 0) {
                 HouseQmCheckTaskIssueHistoryLogVo.HouseQmCheckTaskIssueHistoryLogItem log_items = new HouseQmCheckTaskIssueHistoryLogVo().new HouseQmCheckTaskIssueHistoryLogItem();
                 log_items.setLog_type(HouseQmCheckTaskActionLogType.AddDesc.getValue());
@@ -1120,7 +1118,9 @@ public class IssueServiceImpl implements IIssueService {
             status = HouseQmCheckTaskIssueStatusEnum.AssignNoReform.getId();
             issueInfo.setStatus(HouseQmCheckTaskIssueStatusEnum.AssignNoReform.getId());
         }
-        List<String> followers = StringSplitToListUtil.removeStartAndEndStrAndSplit(repairFollowerIds, ",", ",");
+
+                List<String> followers = StringSplitToListUtil.removeStartAndEndStrAndSplit(StringSplitToListUtil.removeStartAndEndStr(repairFollowerIds,"[","]"), ",", ",");
+
         if (!followers.contains(issueInfo.getRepairerId()) && repairerId > 0 && !repairerId.equals(issueInfo.getRepairerId())) {
             followers.add(String.valueOf(issueInfo.getRepairerId()));
             tempRepairerId = issueInfo.getRepairerId();
@@ -1128,7 +1128,7 @@ public class IssueServiceImpl implements IIssueService {
         if (CollectionUtils.isNotEmpty(followers)) {
             List<String> strings = StringSplitToListUtil.removeStartAndEndStrAndSplit(StringUtils.join(followers, ","), ",", ",");
             Collections.replaceAll(strings, ",,", ",");
-            repairFollowerIds = "," + strings.toString() + ",";
+            repairFollowerIds = "," + StringSplitToListUtil.removeStartAndEndStr(strings.toString(),"[","]") + ",";
         }
         HashMap<String, Object> logDetail = Maps.newHashMap();
         logDetail.put("PlanEndOn", -1);
@@ -1172,12 +1172,10 @@ public class IssueServiceImpl implements IIssueService {
         }
         if (!issueInfo.getRepairerFollowerIds().equals(repairFollowerIds)) {
             String s = StringSplitToListUtil.removeStartAndEndStr(issueInfo.getRepairerFollowerIds(), "[", "]");
-
             // # 增加待办问题埋点
             List<Integer> oldRepairerFollowerIdList = StringSplitToListUtil.splitToIdsComma(s, ",");
-            String ss = StringSplitToListUtil.removeStartAndEndStr(repairFollowerIds, "[", "]");
 
-            List<Integer> userIds = StringSplitToListUtil.splitToIdsComma(ss, ",");
+            List<Integer> userIds = StringSplitToListUtil.splitToIdsComma(repairFollowerIds, ",");
 
             for (int i = 0; i < userIds.size(); i++) {
                 if (!oldRepairerFollowerIdList.contains(userIds.get(i)) && !userIds.get(i).equals(tempRepairerId)) {

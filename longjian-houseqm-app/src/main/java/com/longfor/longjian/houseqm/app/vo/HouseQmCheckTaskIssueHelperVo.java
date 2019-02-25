@@ -1,5 +1,6 @@
 package com.longfor.longjian.houseqm.app.vo;
 
+import com.alibaba.fastjson.JSON;
 import com.longfor.longjian.common.consts.EventQueueEnum;
 import com.longfor.longjian.common.consts.HouseQmCheckTaskIssueLogStatus;
 import com.longfor.longjian.common.consts.HouseQmCheckTaskIssueStatusEnum;
@@ -19,6 +20,10 @@ import com.longfor.longjian.houseqm.util.StringSplitToListUtil;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.slf4j.Logger;
+import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.Resource;
 import java.io.Serializable;
@@ -36,17 +41,12 @@ import java.util.stream.Collectors;
  * @Author: hy
  * @CreateDate: 2019/1/11 15:09
  */
+@Component
 @Data
-@NoArgsConstructor
 @Slf4j
-public class HouseQmCheckTaskIssueHelperVo implements Serializable {
+@Transactional
+public class HouseQmCheckTaskIssueHelperVo {
 
-    //Error error
-    private Error error;
-
-    //	houseQmCheckTaskSvc isvc.HouseqmSvc
-    //	areaSvc             isvc.AreaSvc
-    //	checkItemSvc        isvc.CheckItemSvc
     @Resource
     private HouseQmCheckTaskService houseQmCheckTaskService;
     @Resource
@@ -68,27 +68,21 @@ public class HouseQmCheckTaskIssueHelperVo implements Serializable {
     @Resource
     private HouseQmCheckTaskIssueAttachmentService houseQmCheckTaskIssueAttachmentService;
 
+    private Error error;
     private Map<String, CategoryV3> categoryMap;
     private Map<Integer, Area> areaMap;
     private Map<String, CheckItemV3> checkItemMap;
-
     private Map<String, UserInIssue> issueMembers;
     private Map<Integer, HouseQmCheckTask> taskMap;
-
     private Map<String, HouseQmCheckTaskIssueVo> oldIssueMap;
     private Map<String, HouseQmCheckTaskIssueVo> needInsertIssueMap;
     private Map<String, HouseQmCheckTaskIssueVo> needUpdateIssueMap;
-    // NeedDeleteIssueMap map[string]*m.HouseQmCheckTaskIssue
-
     private List<HouseQmCheckTaskIssueLogVo> issueLogs;
     private Map<String, Boolean> needDeleteAtIssueLogMap;//需要在入库后就打上delete_at标签的issue_log
-
     private List<HouseQmCheckTaskIssueAttachment> needInsertAttachement;
     private List<RemoveAttachement> needRemoveAttachement;
-
     private HouseQmCheckTaskIssueLogVo currentLog;
     private int currentProjectId;
-
     private List<ApiHouseQmCheckTaskReportRsp> droppedIssueLog;
     private List<ApiHouseQmCheckTaskReportRsp> droppedIssue;
 
@@ -111,10 +105,6 @@ public class HouseQmCheckTaskIssueHelperVo implements Serializable {
         this.currentProjectId = projectId;
 
         this.error = null;
-
-        //	helper.houseQmCheckTaskSvc = loader.SvcHouseqm()
-        //	helper.areaSvc = loader.SvcArea()
-        //	helper.checkItemSvc = loader.SvcCheckItem()
 
         return this;
     }
@@ -151,32 +141,33 @@ public class HouseQmCheckTaskIssueHelperVo implements Serializable {
                                                         int issueReason, String issueReasonDetail, String issueSuggest,
                                                         String potentialRisk, String preventiveActionDetail, String removeMemoAudioMd5List, int typ) {
 
-        // helper.currentLog.Detail = m.HouseQmCheckTaskIssueLogDetailStruct { }
-        this.currentLog.setDetail(new HouseQmCheckTaskIssueLogDetailStruct());
-        this.currentLog.getDetail().setAreaId(areaId);
-        this.currentLog.getDetail().setPosX(posX);
-        this.currentLog.getDetail().setPosY(posY);
+        HouseQmCheckTaskIssueLogDetailStruct detail = new HouseQmCheckTaskIssueLogDetailStruct();
 
-        this.currentLog.getDetail().setPlanEndOn(planEndOn);
-        this.currentLog.getDetail().setEndOn(endOn);
-        this.currentLog.getDetail().setRepairerId(repairerId);
-        this.currentLog.getDetail().setRepairerFollowerIds(repairerFollowerIds);
+        detail.setAreaId(areaId);
+        detail.setPosX(posX);
+        detail.setPosY(posY);
 
-        this.currentLog.getDetail().setCondition(condition);
-        this.currentLog.getDetail().setCategoryCls(categoryCls);
-        this.currentLog.getDetail().setCheckItemKey(checkItemKey);
-        this.currentLog.getDetail().setCategoryKey(categoryKey);
-        this.currentLog.getDetail().setIssueReason(issueReason);
+        detail.setPlanEndOn(planEndOn);
+        detail.setEndOn(endOn);
+        detail.setRepairerId(repairerId);
+        detail.setRepairerFollowerIds(repairerFollowerIds);
 
-        this.currentLog.getDetail().setIssueReasonDetail(issueReasonDetail);
-        this.currentLog.getDetail().setIssueSuggest(issueSuggest);
-        this.currentLog.getDetail().setPotentialRisk(potentialRisk);
-        this.currentLog.getDetail().setPreventiveActionDetail(preventiveActionDetail);
-        this.currentLog.getDetail().setRemoveMemoAudioMd5List(removeMemoAudioMd5List);
-        this.currentLog.getDetail().setTyp(typ);
-        this.currentLog.getDetail().setDrawingMD5(drawingMd5);
+        detail.setCondition(condition);
+        detail.setCategoryCls(categoryCls);
+        detail.setCheckItemKey(checkItemKey);
+        detail.setCategoryKey(categoryKey);
+        detail.setIssueReason(issueReason);
+
+        detail.setIssueReasonDetail(issueReasonDetail);
+        detail.setIssueSuggest(issueSuggest);
+        detail.setPotentialRisk(potentialRisk);
+        detail.setPreventiveActionDetail(preventiveActionDetail);
+        detail.setRemoveMemoAudioMd5List(removeMemoAudioMd5List);
+        detail.setTyp(typ);
+        detail.setDrawingMD5(drawingMd5);
 
         // log.Debug(helper.currentLog.Detail)
+        this.currentLog.setDetail(detail);
         return this;
     }
 
@@ -225,6 +216,7 @@ public class HouseQmCheckTaskIssueHelperVo implements Serializable {
                     try {
                         issue = getIssueFromDb(issueUuid);
                     } catch (Exception e) {
+                        e.printStackTrace();
                         log.warn("get houseqmissue error:" + e.getMessage() + ", issue_uuid: " + issueUuid);
                         this.setDroppedIssue(issueUuid, ApiDropDataReasonEnum.Other.getValue(), ApiDropDataReasonEnum.Other.getName());
                         return this;
@@ -458,7 +450,7 @@ public class HouseQmCheckTaskIssueHelperVo implements Serializable {
         }
         Map<String, Boolean> needPushIds = Maps.newHashMap();
         for (HouseQmCheckTaskIssueLogVo issue : this.issueLogs) {
-            if (!needDeleteIssueLogSet.get(issue.getIssueUuid()).equals(true)
+            if ((needDeleteIssueLogSet.get(issue.getIssueUuid())!=null&&!needDeleteIssueLogSet.get(issue.getIssueUuid()).equals(true))
                     && (HouseQmCheckTaskIssueStatusEnum.AssignNoReform.getId().equals(issue.getStatus()) ||
                     HouseQmCheckTaskIssueStatusEnum.ReformNoCheck.getId().equals(issue.getStatus()) || issue.getDetail().getRepairerId() > 0)) {
                 needPushIds.put(issue.getIssueUuid(), true);//排除删除，得到需要推送的uuid集合
@@ -1063,17 +1055,16 @@ public class HouseQmCheckTaskIssueHelperVo implements Serializable {
         taskIssueVo.setDeleteAt(issue.getDeleteAt());
         taskIssueVo.setAttachmentMd5List(issue.getAttachmentMd5List());
         taskIssueVo.setAudioMd5List(issue.getAudioMd5List());
-        HouseQmCheckTaskIssueDetail detail = new HouseQmCheckTaskIssueDetail();
         String detailstr = issue.getDetail();
         //{"IssueReason":0,"IssueReasonDetail":"","IssueSuggest":"","PotentialRisk":"","PreventiveActionDetail":""}
+        /*HouseQmCheckTaskIssueDetail detail = new HouseQmCheckTaskIssueDetail();
         Map<String, Object> map = JsonUtil.GsonToMaps(detailstr);
-
         detail.setIssueReason((Integer) map.get("IssueReason"));
         detail.setIssueReasonDetail((String) map.get("IssueReasonDetail"));
         detail.setIssueSuggest((String) map.get("IssueSuggest"));
         detail.setPotentialRisk((String) map.get("PotentialRisk"));
-        detail.setPreventiveActionDetail((String) map.get("PreventiveActionDetail"));
-
+        detail.setPreventiveActionDetail((String) map.get("PreventiveActionDetail"));*/
+        HouseQmCheckTaskIssueDetail detail = JSON.parseObject(detailstr, HouseQmCheckTaskIssueDetail.class);
 
         taskIssueVo.setDetail(detail);
 
@@ -1101,5 +1092,6 @@ public class HouseQmCheckTaskIssueHelperVo implements Serializable {
         this.droppedIssueLog.add(dropped);
         return this;
     }
+
 
 }
