@@ -58,8 +58,9 @@ public class HouseQmCheckTaskIssueLogServiceImpl implements HouseQmCheckTaskIssu
             issueLog.setCreateAt(new Date());
             issueLog.setUpdateAt(new Date());
             issueLog.setClientCreateAt(new Date());
+            houseQmCheckTaskIssueLogMapper.insertSelective(issueLog);
         }
-        return houseQmCheckTaskIssueLogMapper.insertList(hIssueLogs);
+        return hIssueLogs.size();
     }
 
     /**

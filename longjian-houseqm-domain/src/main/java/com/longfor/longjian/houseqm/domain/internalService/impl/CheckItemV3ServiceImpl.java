@@ -1,10 +1,12 @@
 package com.longfor.longjian.houseqm.domain.internalService.impl;
 
+import com.google.common.collect.Lists;
 import com.longfor.gaia.gfs.data.mybatis.datasource.LFAssignDataSource;
 import com.longfor.longjian.houseqm.dao.zj2db.CheckItemV3Mapper;
 import com.longfor.longjian.houseqm.domain.internalService.CheckItemV3Service;
 import com.longfor.longjian.houseqm.po.zj2db.CheckItemV3;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.collections.CollectionUtils;
 import org.springframework.stereotype.Service;
 import tk.mybatis.mapper.entity.Example;
 
@@ -32,7 +34,11 @@ public class CheckItemV3ServiceImpl implements CheckItemV3Service {
     @LFAssignDataSource("zhijian2")
     @Override
     public List<CheckItemV3> searchCheckItemyV3ByKeyInAndNoDeleted(List<String> checkItems) {
-        return checkItemV3Mapper.selectCheckItemyV3ByKeyInAndNoDeleted(checkItems,"false");
+        if (CollectionUtils.isEmpty(checkItems))return Lists.newArrayList();
+        Example example = new Example(CheckItemV3.class);
+        Example.Criteria criteria = example.createCriteria();
+        criteria.andIn("key",checkItems).andIsNull("deleteAt");
+        return checkItemV3Mapper.selectByExample(example);
     }
     @LFAssignDataSource("zhijian2")
     @Override
