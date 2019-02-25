@@ -10,7 +10,6 @@ import com.longfor.longjian.common.push.xiaomi.XmPushUtil;
 import com.longfor.longjian.houseqm.app.utils.ExportUtils;
 import com.longfor.longjian.houseqm.app.test.DocumentHandler;
 import com.longfor.longjian.houseqm.app.vo.*;
-import com.longfor.longjian.houseqm.app.vo.IssueListVo.DetailVo;
 
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
