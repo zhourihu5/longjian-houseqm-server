@@ -41,13 +41,14 @@ public class HouseqmIssueServiceImpl implements IHouseqmIssueService {
 
     @Resource
     private ProjectService projectService;
-
     @Resource
     private HouseQmCheckTaskIssueService houseQmCheckTaskIssueService;
     @Resource
     private ExportVo exportVo;
     @Resource
     private ExportFileRecordService exportFileRecordService;
+    @Resource
+    private HouseQmCheckTaskIssueHelperVo helper;
 
 
     // 删除问题
@@ -99,7 +100,7 @@ public class HouseqmIssueServiceImpl implements IHouseqmIssueService {
         List<HouseQmCheckTaskIssue> issues = houseQmCheckTaskIssueService.searchByProjIdAndUuidIn(project_id, uuids);
 
         int status = eInt;
-        HouseQmCheckTaskIssueHelperVo helper = new HouseQmCheckTaskIssueHelperVo();
+        //HouseQmCheckTaskIssueHelperVo helper = new HouseQmCheckTaskIssueHelperVo();
         helper.init(project_id);
         for (HouseQmCheckTaskIssue issue : issues) {
             if (HouseQmCheckTaskIssueStatusEnum.NoteNoAssign.getId().equals(issue.getStatus()) && repairer_id > 0) {
