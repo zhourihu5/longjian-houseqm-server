@@ -26,6 +26,7 @@ public class TeamServiceImpl implements TeamService {
 
 
     @Override
+    @LFAssignDataSource("zhijian2_apisvr")
     public List<Team> searchByTeamIdIn(List<Integer> team_ids) {
         Example example = new Example(Team.class);
         Example.Criteria criteria = example.createCriteria();
@@ -40,6 +41,7 @@ public class TeamServiceImpl implements TeamService {
      * @return
      */
     @Override
+    @LFAssignDataSource("zhijian2_apisvr")
     public Team selectByTeamId(int teamId){
         return teamMapper.selectByTeamId(teamId,"false");
     }
