@@ -133,8 +133,8 @@ public class IssueListController {
     public LjBaseResponse<DetailLogRspVo> detailLog(@RequestParam(value = "project_id", required = true) Integer projectId,
                                                     @RequestParam(value = "issue_uuid", required = true) String issueUuid) throws Exception {
         LjBaseResponse<DetailLogRspVo> response = new LjBaseResponse<>();
-       /* Integer userId = (Integer) sessionInfo.getBaseInfo("userId");
-        ctrlTool.projPerm(RequestContextHolderUtil.getRequest(), "项目.工程检查.问题管理.查看");*/
+        Integer userId = (Integer) sessionInfo.getBaseInfo("userId");
+        ctrlTool.projPerm(RequestContextHolderUtil.getRequest(), "项目.工程检查.问题管理.查看");
         List<HouseQmCheckTaskIssueHistoryLogVo> result = iIssueService.getHouseQmCheckTaskIssueActionLogByIssueUuid(issueUuid);
         DetailLogRspVo data = new DetailLogRspVo();
         data.setItems(result);
