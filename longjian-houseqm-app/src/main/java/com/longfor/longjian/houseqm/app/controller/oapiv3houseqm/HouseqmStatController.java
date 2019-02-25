@@ -1,4 +1,5 @@
 package com.longfor.longjian.houseqm.app.controller.oapiv3houseqm;
+import com.longfor.longjian.houseqm.app.vo.HouseQmStatAreaSituationIssueRspVo;
 
 import com.ctrip.framework.apollo.core.utils.StringUtils;
 import com.google.common.collect.Lists;
@@ -12,10 +13,7 @@ import com.longfor.longjian.houseqm.app.req.houseqmstat.*;
 import com.longfor.longjian.houseqm.app.service.IHouseqmStatService;
 import com.longfor.longjian.houseqm.app.service.IHouseqmStatisticService;
 import com.longfor.longjian.houseqm.app.vo.*;
-import com.longfor.longjian.houseqm.app.vo.houseqmstat.HouseQmStatInspectionSituationRspVo;
-import com.longfor.longjian.houseqm.app.vo.houseqmstat.InspectionHouseStatusInfoVo;
-import com.longfor.longjian.houseqm.app.vo.houseqmstat.StatCategoryStatRspVo;
-import com.longfor.longjian.houseqm.app.vo.houseqmstat.StatInspectionSituationSearchRspVo;
+import com.longfor.longjian.houseqm.app.vo.houseqmstat.*;
 import com.longfor.longjian.houseqm.consts.RepossessionStatusEnum;
 import com.longfor.longjian.houseqm.util.DateUtil;
 import com.longfor.longjian.houseqm.util.MathUtil;
@@ -570,8 +568,8 @@ public class HouseqmStatController {
      * @Param [req]
      **/
     @RequestMapping(value = "stat/area_situation", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
-    public LjBaseResponse<HouseQmStatAreaSituationIssueRspVo> areaSituation(HttpServletRequest request, @Valid StatAreaSituationReq req) {
-        LjBaseResponse<HouseQmStatAreaSituationIssueRspVo> response = new LjBaseResponse<>();
+    public LjBaseResponse<StatAreaSituationRspVo> areaSituation(HttpServletRequest request, @Valid StatAreaSituationReq req) {
+        LjBaseResponse<StatAreaSituationRspVo> response = new LjBaseResponse<>();
         try {
             ctrlTool.projPermMulti(request, new String[]{"项目.移动验房.统计.查看", "项目.工程检查.统计.查看"});
         } catch (Exception e) {
@@ -581,7 +579,9 @@ public class HouseqmStatController {
             return response;
         }
         try {
-            HouseQmStatAreaSituationIssueRspVo data = houseqmStatService.getAreaIssueTypeStatByProjectIdAreaIdCategoryCls(req.getProject_id(), req.getArea_id(), req.getCategory_cls());
+            HouseQmStatAreaSituationIssueRspVo result = houseqmStatService.getAreaIssueTypeStatByProjectIdAreaIdCategoryCls(req.getProject_id(), req.getArea_id(), req.getCategory_cls());
+            StatAreaSituationRspVo data = new StatAreaSituationRspVo();
+            data.setIssue(result);
             response.setData(data);
         } catch (Exception e) {
             e.printStackTrace();
