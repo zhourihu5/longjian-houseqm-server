@@ -1126,9 +1126,14 @@ public class IssueServiceImpl implements IIssueService {
             tempRepairerId = issueInfo.getRepairerId();
         }
         if (CollectionUtils.isNotEmpty(followers)) {
-            List<String> strings = StringSplitToListUtil.removeStartAndEndStrAndSplit(StringUtils.join(followers, ","), ",", ",");
-            Collections.replaceAll(strings, ",,", ",");
-            repairFollowerIds = "," + StringSplitToListUtil.removeStartAndEndStr(strings.toString(),"[","]") + ",";
+            String join = StringUtils.join(followers, ",");
+            List<String> strings = StringSplitToListUtil.removeStartAndEndStrAndSplit(join, ",", ",");
+           if(strings.contains(",,")){
+               Collections.replaceAll(strings, ",,", ",");
+           }
+            String s1 = strings.toString().replaceAll(" ","");
+            String s = StringSplitToListUtil.removeStartAndEndStr(s1, "[", "]");
+            repairFollowerIds = ","+s+",";
         }
         HashMap<String, Object> logDetail = Maps.newHashMap();
         logDetail.put("PlanEndOn", -1);
@@ -1317,7 +1322,7 @@ public class IssueServiceImpl implements IIssueService {
             single.setCreate_at(DateUtil.datetimeToTimeStamp(issueLogInfo.get(i).getCreateAt()));
             if (issueLogInfo.get(i).getAttachmentMd5List().length() > 0) {
                 List<String> attachmentMdeList = StringSplitToListUtil.removeStartAndEndStrAndSplit(issueLogInfo.get(i).getAttachmentMd5List(), ",", ",");
-                single.setAttachment_md5_list(attachmentMdeList.toString());
+                single.setAttachment_md5_list(StringSplitToListUtil.removeStartAndEndStr(attachmentMdeList.toString(),"[","]").replaceAll(" ",""));
             } else {
                 single.setAttachment_md5_list("");
             }
