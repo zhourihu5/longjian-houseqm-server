@@ -49,7 +49,7 @@ longfor:
           permission:
             url: http://172.17.96.88:8082/uc/inner/ # test 环境 192.168.37.157
           repossession:
-            url: http://172.17.96.88：8082/v3/api/repossession/ # dev 环境 172.17.96.88
+            url: http://172.17.96.88:8082/v3/api/repossession/ # dev 环境 172.17.96.88
           buildingqmexport:
             url: http://172.17.96.88:8082/papi/v3/bgtask/buildingqm/
           houseqmcheckissue:
