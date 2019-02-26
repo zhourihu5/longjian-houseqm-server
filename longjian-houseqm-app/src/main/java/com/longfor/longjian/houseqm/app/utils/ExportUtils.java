@@ -196,7 +196,7 @@ public class ExportUtils {
         //    wb.save(pathname)
         String dt = DateUtil.getNowTimeStr("MMddHHmmss");
         String r = new Random().ints(0, 65536).toString();
-        String pathname = String.format("%s/export_issue_excel_%s_%s.xlsx", EXPORT_PATH, dt, r);
+        String pathname = String.format("%s/export_issue_excel_%s_%s.xls", EXPORT_PATH, dt, r);
 
         return workbook;
     }
@@ -281,7 +281,7 @@ public class ExportUtils {
     // 导出 统计报告 -任务概况 -验房详情 导出excel 使用freemaker
     public static void exportStatExcel(String templateName, Map<String, Object> data, HttpServletResponse response, HttpServletRequest request) throws Exception {
         // 加载模板
-        File file = new File("temp.xlsx");// 临时名称
+        File file = new File("temp.xls");// 临时名称
         Configuration configuration = new Configuration();
         configuration.setDefaultEncoding("utf-8");
         ExportUtils exportUtils = new ExportUtils();
