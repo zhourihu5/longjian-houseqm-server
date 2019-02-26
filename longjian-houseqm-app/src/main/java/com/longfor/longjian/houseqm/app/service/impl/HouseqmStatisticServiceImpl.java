@@ -154,7 +154,7 @@ public class HouseqmStatisticServiceImpl implements IHouseqmStatisticService {
             }
         }
         List<ApiHouseQmRepairerStatVo> items = Lists.newArrayList();
-        for (Map.Entry<Integer,ApiHouseQmRepairerStatVo> stat : stat_map.entrySet()) {
+        for (Map.Entry<Integer, ApiHouseQmRepairerStatVo> stat : stat_map.entrySet()) {
             items.add(stat.getValue());
         }
         ProjectRepairerStatRspVo result = new ProjectRepairerStatRspVo();
@@ -229,7 +229,7 @@ public class HouseqmStatisticServiceImpl implements IHouseqmStatisticService {
         }
         ProjectCheckerStatRspVo result = new ProjectCheckerStatRspVo();
         List<ApiHouseQmCheckerStatVo> items = Lists.newArrayList();
-        for (Map.Entry<Integer,ApiHouseQmCheckerStatVo> stat : stat_map.entrySet()) {
+        for (Map.Entry<Integer, ApiHouseQmCheckerStatVo> stat : stat_map.entrySet()) {
             items.add(stat.getValue());
         }
         result.setItems(items);
@@ -237,7 +237,7 @@ public class HouseqmStatisticServiceImpl implements IHouseqmStatisticService {
     }
 
     private Map<Integer, String> createUsersMap(List<Integer> user_ids) {
-        if (user_ids.isEmpty())return Maps.newHashMap();
+        if (user_ids.isEmpty()) return Maps.newHashMap();
         List<User> resUser = userService.searchByUserIdInAndNoDeleted(user_ids);
         return resUser.stream().collect(Collectors.toMap(User::getUserId, User::getRealName));
     }
@@ -418,22 +418,25 @@ public class HouseqmStatisticServiceImpl implements IHouseqmStatisticService {
         HouseQmCheckTaskIssueStatusEnum e = null;
         for (HouseQmCheckTaskIssue issue : issues) {
             for (HouseQmCheckTaskIssueStatusEnum value : HouseQmCheckTaskIssueStatusEnum.values()) {
-                if (value.getId().equals(issue.getStatus())) e = value;
+                if (value.getId().equals(issue.getStatus())) {
+                    e = value;
+                    break;
+                }
             }
             //处理详细统计数
             if (e != null) {
                 switch (e) {
                     case NoteNoAssign://已记录未分配
-                        result.setIssue_recorded_count(issue.getPosX());
+                        result.setIssue_recorded_count(result.getIssue_recorded_count()+issue.getPosX());
                         break;
                     case AssignNoReform://已分配未整改
-                        result.setIssue_assigned_count(issue.getPosX());
+                        result.setIssue_assigned_count(result.getIssue_assigned_count()+issue.getPosX());
                         break;
                     case ReformNoCheck://已整改未验收
-                        result.setIssue_repaired_count(issue.getPosX());
+                        result.setIssue_repaired_count(result.getIssue_repaired_count()+issue.getPosX());
                         break;
                     case CheckYes://已验收
-                        result.setIssue_approveded_count(issue.getPosX());
+                        result.setIssue_approveded_count(result.getIssue_approveded_count()+issue.getPosX());
                         break;
                     default:
                         break;
@@ -1470,7 +1473,7 @@ public class HouseqmStatisticServiceImpl implements IHouseqmStatisticService {
 
     private Map<String, CheckItem> getCheckItemMapByCheckItemKeys(List<String> keys) {
         Map<String, CheckItem> map = new HashMap<>();
-        if (keys.isEmpty())return map;
+        if (keys.isEmpty()) return map;
         List<CheckItem> resCheckItems = checkItemService.SearchCheckItemByKeyIn(keys);
         for (CheckItem citem : resCheckItems) {
             map.put(citem.getKey(), citem);
@@ -1480,7 +1483,7 @@ public class HouseqmStatisticServiceImpl implements IHouseqmStatisticService {
 
     private Map<String, CategoryV3> getCategoryMapByCategoryKeys(List<String> keys) {
         Map<String, CategoryV3> map = new HashMap<>();
-        if (keys.isEmpty())return map;
+        if (keys.isEmpty()) return map;
         List<CategoryV3> resCategoryItems = categoryService.searchCategoryByKeyIn(keys);
         for (CategoryV3 cate : resCategoryItems) {
             map.put(cate.getKey(), cate);
@@ -1492,12 +1495,12 @@ public class HouseqmStatisticServiceImpl implements IHouseqmStatisticService {
             (ArrayList<SimpleHouseQmCheckTaskIssueStatVo> issueStatVoList) {
 
         Map<String, HouseQmIssueCategoryStatVo> categoryStatMap = new HashMap<>();
-        Map<String, HouseQmIssueCategoryStatVo> checkItemStatMap =new HashMap<>();
+        Map<String, HouseQmIssueCategoryStatVo> checkItemStatMap = new HashMap<>();
         ArrayList<String> categoryKeys = Lists.newArrayList();
         ArrayList<String> checkItemKeys = Lists.newArrayList();
 
         for (SimpleHouseQmCheckTaskIssueStatVo item : issueStatVoList) {
-            List<String> categoryPathKeys = StringSplitToListUtil.removeStartAndEndStrAndSplit(item.getCategoryPathAndKey(), "/," ,"/");
+            List<String> categoryPathKeys = StringSplitToListUtil.removeStartAndEndStrAndSplit(item.getCategoryPathAndKey(), "/,", "/");
             for (String key : categoryPathKeys) {
                 //判断key是否存在
                 if (!categoryStatMap.containsKey(key)) {
