@@ -302,7 +302,7 @@ public class BuildingqmController {
         Integer userId = (Integer) sessionInfo.getBaseInfo("userId");
         LjBaseResponse<Object> response = new LjBaseResponse<>();
         try {
-            ctrlTool.projPerm(request, "项目.工程检查.任务管理.编辑");
+            ctrlTool.projPerm(request, "项目.工程检查.任务管理.编辑");//todo uncomment this line
             buildingqmService.edit(userId, taskEditReq);
         } catch (Exception e) {
             e.printStackTrace();
