@@ -1266,9 +1266,9 @@ public class IssueServiceImpl implements IIssueService {
             }
         }
         List<HouseQmCheckTaskIssueUser> userFollowersInfo = Lists.newArrayList();
-        ArrayList<Integer> intFollowers = null;
+        ArrayList<Integer>  intFollowers = Lists.newArrayList();
         if (CollectionUtils.isNotEmpty(followers)) {
-            intFollowers = Lists.newArrayList();
+
             for (int i = 0; i < followers.size(); i++) {
                 intFollowers.add(Integer.valueOf(followers.get(i)));
             }
