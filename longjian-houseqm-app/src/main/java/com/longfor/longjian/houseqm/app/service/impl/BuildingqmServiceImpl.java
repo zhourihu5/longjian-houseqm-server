@@ -2090,7 +2090,7 @@ public class BuildingqmServiceImpl implements IBuildingqmService {
         List<Object> checkerGroupsDel = Lists.newArrayList();
         List<ApiBuildingQmTaskMemberInsertVo> needInsertCheckTaskSquadUser = Lists.newArrayList();
         List<UserInHouseQmCheckTask> needUpdateCheckTaskSquadUser = Lists.newArrayList();
-        Map<Object, Object> doNotNeedDeleteSquaduserPkId = Maps.newHashMap();
+        Map<Object, Object> doNotNeedDeleteSquaduserPkId = Maps.newHashMap();//fixme not add item
         beforeExecute(checkerGroupsAdd, checkerGroupsEdit, checkerGroupsDel, needInsertCheckTaskSquadUser, needUpdateCheckTaskSquadUser, doNotNeedDeleteSquaduserPkId, uid, taskEditReq, areaIds, areaTypes, planBeginOn, planEndOn, checkerGroups, repairerGroups, config);
         //    # 更新验房任务
         HouseQmCheckTask taskInfo = houseQmCheckTaskService.selectByTaskId(taskEditReq.getTask_id());
@@ -2267,12 +2267,13 @@ public class BuildingqmServiceImpl implements IBuildingqmService {
 
         }
 
-
+//        log.info("doNotNeedDeleteSquaduserPkId={}",JSON.toJSONString(doNotNeedDeleteSquaduserPkId));
         //  # 要删除的人员信息
         if (doNotNeedDeleteSquaduserPkId.size() > 0) {
             ArrayList<Object> needDeleteIds = Lists.newArrayList();
             for (Map.Entry<Object, Object> entry : doNotNeedDeleteSquaduserPkId.entrySet()) {
-                if (entry.getValue() == null) {
+                boolean notDelete= (boolean) entry.getValue();
+                if (!notDelete) {
                     needDeleteIds.add(entry.getKey());
                 }
             }
