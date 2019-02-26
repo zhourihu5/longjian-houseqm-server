@@ -354,10 +354,12 @@ public class BuildingqmController {
         return response;
     }
 
-    @RequestMapping(value = "stat/issue_statistic_export", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
-    public LjBaseResponse<ReportIssueVo> issueStatisticExport(@RequestParam(name = "category_cls", required = true) Integer category_cls,
-                                                              @RequestParam(name = "items", required = true) String items, HttpServletResponse response) throws IOException {
-
+        @RequestMapping(value = "stat/issue_statistic_export", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+    public LjBaseResponse<ReportIssueVo> issueStatisticExport(HttpServletRequest request, HttpServletResponse response) throws IOException {
+/*@RequestParam(name = "category_cls", required = true) Integer category_cls,
+                                                              @RequestParam(name = "items", required = true) String items,*/
+        String category_cls = request.getParameter("category_cls");
+        String items = request.getParameter("items");
         log.info(String.format("issue_statistic_export, category_cls=%s, items=%s",category_cls, items));
         LjBaseResponse<ReportIssueVo> ljBaseResponse = new LjBaseResponse();
         if (category_cls == null || StringUtils.isBlank(items)) {
