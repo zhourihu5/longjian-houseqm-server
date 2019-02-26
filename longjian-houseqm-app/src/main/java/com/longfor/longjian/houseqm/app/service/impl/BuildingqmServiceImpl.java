@@ -861,7 +861,10 @@ public class BuildingqmServiceImpl implements IBuildingqmService {
                 taskIds.add(item.getTask_id());
             }
             // # 公有录音
+/*
             List<Integer> md5List = StringSplitToListUtil.splitToIdsComma(item.getAudio_md5_list(), ",");
+*/
+            List<String> md5List = StringSplitToListUtil.removeStartAndEndStrAndSplit(item.getAudio_md5_list(), ",", ",");
             if (CollectionUtils.isNotEmpty(md5List)) {
                 md5List.forEach(items -> {
                     HouseQmCheckTaskIssueAttachment attachment = new HouseQmCheckTaskIssueAttachment();
@@ -874,7 +877,7 @@ public class BuildingqmServiceImpl implements IBuildingqmService {
                     attachment.setMd5(String.valueOf(items));
                     attachment.setStatus(CheckTaskIssueAttachmentStatus.Enable.getValue());
                     attachment.setClientCreateAt(DateUtil.transForDate(item.getClient_create_at()));
-                    attachmentInsertMap.put(String.valueOf(items), attachment);
+                    attachmentInsertMap.put(items, attachment);
                 });
             }
             //   # 私有录音
@@ -898,9 +901,6 @@ public class BuildingqmServiceImpl implements IBuildingqmService {
             for (ApiHouseQmCheckTaskIssueLogInfo.ApiHouseQmCheckTaskIssueLogDetailInfo detail : item.getDetail()) {
                 List<String> removeMemoMd5List = StringSplitToListUtil.removeStartAndEndStrAndSplit(detail.getRemove_memo_audio_md5_list(), ",", ",");
                 if (CollectionUtils.isNotEmpty(removeMemoMd5List)) {
-                    removeMemoMd5List.forEach(memo -> {
-
-                    });
                     for (String memo : removeMemoMd5List) {
                         if (attachmentInsertMap.containsKey(memo)) {
                             attachmentInsertMap.remove(memo);
@@ -950,7 +950,12 @@ public class BuildingqmServiceImpl implements IBuildingqmService {
                         dropped.add(msg);
                     } else {
                         Map detail = JSON.parseObject(issue.getDetail(), Map.class);
-                        String checkItemMD5 = (String) detail.get("CheckItemMD5");
+                        String checkItemMD5="";
+                        if(StringUtils.isNotBlank((String) detail.get("CheckItemMD5"))){
+                             checkItemMD5 = (String) detail.get("CheckItemMD5");
+                        }else{
+                             checkItemMD5="";
+                        }
                         List<ApiHouseQmCheckTaskIssueLogInfo.ApiHouseQmCheckTaskIssueLogDetailInfo> detail1 = item.getDetail();
                         for (int i = 0; i < detail1.size(); i++) {
                             if (isCheckItemChange(issue, item) || StringUtils.isEmpty(checkItemMD5) || StringUtils.isEmpty(detail1.get(i).getCheck_item_md5()) || detail1.get(i).getCheck_item_md5().equals(checkItemMD5)) {
@@ -1601,7 +1606,7 @@ public class BuildingqmServiceImpl implements IBuildingqmService {
                 issue.setCheckItemPathAndKey(getCheckItemPathAndKey(issue.getCheckItemKey()));
             }
             Integer newStatus = convertLogStatus(item.getStatus());
-            if (newStatus > 0) {
+            if (newStatus> 0) {
                 issue.setStatus(newStatus);
             }
             //  # 最后整改负责人
@@ -1861,7 +1866,12 @@ public class BuildingqmServiceImpl implements IBuildingqmService {
         switcher.put(CheckTaskIssueLogStatus.NoteNoAssign.getValue(), CheckTaskIssueStatus.NoteNoAssign.getValue());
         switcher.put(CheckTaskIssueLogStatus.CheckYes.getValue(), CheckTaskIssueStatus.CheckYes.getValue());
         switcher.put(CheckTaskIssueLogStatus.Cancel.getValue(), CheckTaskIssueStatus.Cancel.getValue());
-        return switcher.get(status);
+       if(switcher.get(status)!=null){
+           return switcher.get(status);
+       }else{
+           return 0;
+       }
+
     }
 
     private String getAreaPathAndId(Integer areaId) {
