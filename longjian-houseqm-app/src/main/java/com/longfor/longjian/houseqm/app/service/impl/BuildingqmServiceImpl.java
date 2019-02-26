@@ -1714,7 +1714,13 @@ public class BuildingqmServiceImpl implements IBuildingqmService {
             } else {
                 Map<Integer, Map<Integer, Integer>> integerMapMap = resultDict.get(item.getTaskId());
                 if (!integerMapMap.containsKey(item.getUserId())) {
+
+/*
                     resultDict.get(item.getTaskId()).get(item.getUserId()).put(item.getSquadId(), item.getCanApprove());
+*/
+                    HashMap<Integer, Integer> map = Maps.newHashMap();
+                    map.put(item.getSquadId(), item.getCanApprove());
+                    resultDict.get(item.getTaskId()).put(item.getUserId(),map);
                 } else {
                     if (!resultDict.get(item.getTaskId()).get(item.getUserId()).containsKey(item.getSquadId())) {
                         resultDict.get(item.getTaskId()).get(item.getUserId()).put(item.getSquadId(), item.getCanApprove());
@@ -1758,7 +1764,7 @@ public class BuildingqmServiceImpl implements IBuildingqmService {
             } else {
                 issue.setPosY(-1);
             }
-            if (!detail.getTitle().equals("-1")) {
+            if (StringUtils.isNotBlank(detail.getTitle())&&!detail.getTitle().equals("-1")) {
                 issue.setTitle(detail.getTitle());
             } else {
                 issue.setTitle("");
@@ -1787,7 +1793,7 @@ public class BuildingqmServiceImpl implements IBuildingqmService {
             issue.setDeleteUser(0);
             HashMap<Object, Object> details = Maps.newHashMap();
             details.put("CheckItemMD5", "");
-            if (detail.getIssue_reason() != -1) {
+            if (detail.getIssue_reason()!=null&&detail.getIssue_reason() != -1) {
                 details.put("IssueReason", detail.getIssue_reason());
             } else {
                 details.put("IssueReason", "");
@@ -1979,11 +1985,7 @@ public class BuildingqmServiceImpl implements IBuildingqmService {
     }
 
     private boolean datetimeZero(Date deleteAt) {
-        SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-        String dateString = formatter.format(deleteAt);
-        int i = DateUtil.datetimeToTimeStamp(deleteAt);
-        int i1 = DateUtil.datetimeToTimeStamp(new Date(0));
-        if (deleteAt == null || dateString.equals("0001-01-01 00:00:00") || dateString.equals("") || i <= i1) {
+        if (deleteAt == null ||  new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(deleteAt).equals("0001-01-01 00:00:00") ||  new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(deleteAt).equals("") || DateUtil.datetimeToTimeStamp(deleteAt) <= DateUtil.datetimeToTimeStamp(new Date(0))) {
             return true;
         } else {
             return false;

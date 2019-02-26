@@ -1,6 +1,7 @@
 package com.longfor.longjian.houseqm.app.vo;
 
 import com.longfor.longjian.common.base.LjBaseResponse;
+import com.longfor.longjian.common.base.LjBaseResponse;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
