@@ -40,6 +40,7 @@ import javax.annotation.Resource;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.*;
+import java.util.stream.Collectors;
 
 import static javax.swing.UIManager.get;
 
@@ -95,6 +96,8 @@ public class BuildingqmServiceImpl implements IBuildingqmService {
     HouseQmCheckTaskNotifyRecordService houseQmCheckTaskNotifyRecordService;
     @Resource
     private KafkaProducer kafkaProducer;
+    @Resource
+    private IssueServiceImpl issueService;
    /* @Resource
     UmPushUtil umPushUtil;
     @Resource
@@ -835,6 +838,7 @@ public class BuildingqmServiceImpl implements IBuildingqmService {
         UnmarshReportIssueRequestBody issueRequestBody = unmarshReportIssueRequest(data);
         List<String> dropLogUuids = checkLogUuid(issueRequestBody.getLog_uuids());
         IssueMapBody issueMapBody = createIcssueMap(issueRequestBody.getIssue_uuids());
+
         HashMap<String, HouseQmCheckTaskIssue> issueInsertMap = Maps.newHashMap();
         HashMap<Object, HouseQmCheckTaskIssue> issueUpdateMap = Maps.newHashMap();
         HashMap<String, ApiUserRoleInIssue> issueRoleMap = Maps.newHashMap();
@@ -846,6 +850,7 @@ public class BuildingqmServiceImpl implements IBuildingqmService {
         HashMap<HouseQmCheckTaskIssue, ApiRefundInfo> refundMap = Maps.newHashMap();
         ArrayList<Integer> taskIds = Lists.newArrayList();
         List<ApiHouseQmCheckTaskIssueLogInfo> issueLogs = issueRequestBody.getIssue_logs();
+
         List deleteIssueUuids = issueMapBody.getDelete_issue_uuids();
         for (ApiHouseQmCheckTaskIssueLogInfo item : issueLogs) {
             //  # log已经提交过，直接忽略这些log
@@ -857,11 +862,15 @@ public class BuildingqmServiceImpl implements IBuildingqmService {
                 dropped.add(msg);
                 continue;
             }
+
             if (!taskIds.contains(item.getTask_id()) && item.getTask_id() > 0) {
                 taskIds.add(item.getTask_id());
             }
             // # 公有录音
+/*
             List<Integer> md5List = StringSplitToListUtil.splitToIdsComma(item.getAudio_md5_list(), ",");
+*/
+            List<String> md5List = StringSplitToListUtil.removeStartAndEndStrAndSplit(item.getAudio_md5_list(), ",", ",");
             if (CollectionUtils.isNotEmpty(md5List)) {
                 md5List.forEach(items -> {
                     HouseQmCheckTaskIssueAttachment attachment = new HouseQmCheckTaskIssueAttachment();
@@ -874,7 +883,7 @@ public class BuildingqmServiceImpl implements IBuildingqmService {
                     attachment.setMd5(String.valueOf(items));
                     attachment.setStatus(CheckTaskIssueAttachmentStatus.Enable.getValue());
                     attachment.setClientCreateAt(DateUtil.transForDate(item.getClient_create_at()));
-                    attachmentInsertMap.put(String.valueOf(items), attachment);
+                    attachmentInsertMap.put(items, attachment);
                 });
             }
             //   # 私有录音
@@ -898,9 +907,6 @@ public class BuildingqmServiceImpl implements IBuildingqmService {
             for (ApiHouseQmCheckTaskIssueLogInfo.ApiHouseQmCheckTaskIssueLogDetailInfo detail : item.getDetail()) {
                 List<String> removeMemoMd5List = StringSplitToListUtil.removeStartAndEndStrAndSplit(detail.getRemove_memo_audio_md5_list(), ",", ",");
                 if (CollectionUtils.isNotEmpty(removeMemoMd5List)) {
-                    removeMemoMd5List.forEach(memo -> {
-
-                    });
                     for (String memo : removeMemoMd5List) {
                         if (attachmentInsertMap.containsKey(memo)) {
                             attachmentInsertMap.remove(memo);
@@ -950,7 +956,12 @@ public class BuildingqmServiceImpl implements IBuildingqmService {
                         dropped.add(msg);
                     } else {
                         Map detail = JSON.parseObject(issue.getDetail(), Map.class);
-                        String checkItemMD5 = (String) detail.get("CheckItemMD5");
+                        String checkItemMD5 = "";
+                        if (StringUtils.isNotBlank((String) detail.get("CheckItemMD5"))) {
+                            checkItemMD5 = (String) detail.get("CheckItemMD5");
+                        } else {
+                            checkItemMD5 = "";
+                        }
                         List<ApiHouseQmCheckTaskIssueLogInfo.ApiHouseQmCheckTaskIssueLogDetailInfo> detail1 = item.getDetail();
                         for (int i = 0; i < detail1.size(); i++) {
                             if (isCheckItemChange(issue, item) || StringUtils.isEmpty(checkItemMD5) || StringUtils.isEmpty(detail1.get(i).getCheck_item_md5()) || detail1.get(i).getCheck_item_md5().equals(checkItemMD5)) {
@@ -1170,6 +1181,12 @@ public class BuildingqmServiceImpl implements IBuildingqmService {
                  umPushUtil.sendIOSCustomizedcast();
                  //小米推送
                  xmPushUtil.sendMessageToUserAccounts();*/
+                ArrayList<String> ids = Lists.newArrayList();
+                for (Object push : pushList) {
+                    ids.add((String)push);
+                }
+                issueService.pushBaseMessage(0,ids,title,msg);
+
             }
             //   # 处理退单消息推送
             ArrayList<Integer> ids = Lists.newArrayList();
@@ -1190,6 +1207,10 @@ public class BuildingqmServiceImpl implements IBuildingqmService {
                      umPushUtil.sendIOSCustomizedcast();
                      //小米推送
                      xmPushUtil.sendMessageToUserAccounts();*/
+                    ArrayList<String> checker = Lists.newArrayList();
+                    ApiRefundInfo info = refundMap.get(item);
+                    if (info!=null)checker.add(info.getChecker()+"");
+                    issueService.pushBaseMessage(0,checker,title,msg);
                 }
             }
             // # 处理kafka数据统计消息
@@ -1720,7 +1741,7 @@ public class BuildingqmServiceImpl implements IBuildingqmService {
 */
                     HashMap<Integer, Integer> map = Maps.newHashMap();
                     map.put(item.getSquadId(), item.getCanApprove());
-                    resultDict.get(item.getTaskId()).put(item.getUserId(),map);
+                    resultDict.get(item.getTaskId()).put(item.getUserId(), map);
                 } else {
                     if (!resultDict.get(item.getTaskId()).get(item.getUserId()).containsKey(item.getSquadId())) {
                         resultDict.get(item.getTaskId()).get(item.getUserId()).put(item.getSquadId(), item.getCanApprove());
@@ -1764,7 +1785,7 @@ public class BuildingqmServiceImpl implements IBuildingqmService {
             } else {
                 issue.setPosY(-1);
             }
-            if (StringUtils.isNotBlank(detail.getTitle())&&!detail.getTitle().equals("-1")) {
+            if (StringUtils.isNotBlank(detail.getTitle()) && !detail.getTitle().equals("-1")) {
                 issue.setTitle(detail.getTitle());
             } else {
                 issue.setTitle("");
@@ -1793,7 +1814,7 @@ public class BuildingqmServiceImpl implements IBuildingqmService {
             issue.setDeleteUser(0);
             HashMap<Object, Object> details = Maps.newHashMap();
             details.put("CheckItemMD5", "");
-            if (detail.getIssue_reason()!=null&&detail.getIssue_reason() != -1) {
+            if (detail.getIssue_reason() != null && detail.getIssue_reason() != -1) {
                 details.put("IssueReason", detail.getIssue_reason());
             } else {
                 details.put("IssueReason", "");
@@ -1861,7 +1882,12 @@ public class BuildingqmServiceImpl implements IBuildingqmService {
         switcher.put(CheckTaskIssueLogStatus.NoteNoAssign.getValue(), CheckTaskIssueStatus.NoteNoAssign.getValue());
         switcher.put(CheckTaskIssueLogStatus.CheckYes.getValue(), CheckTaskIssueStatus.CheckYes.getValue());
         switcher.put(CheckTaskIssueLogStatus.Cancel.getValue(), CheckTaskIssueStatus.Cancel.getValue());
-        return switcher.get(status);
+        if (switcher.get(status) != null) {
+            return switcher.get(status);
+        } else {
+            return 0;
+        }
+
     }
 
     private String getAreaPathAndId(Integer areaId) {
@@ -1945,9 +1971,9 @@ public class BuildingqmServiceImpl implements IBuildingqmService {
 
     private IssueMapBody createIcssueMap(List<String> issueUuids) {
 
-        HashMap<Object, Object> resultDict = Maps.newHashMap();
-        HashMap<Object, Object> notifyStatDict = Maps.newHashMap();
-        ArrayList<Object> deleteIssueUuids = Lists.newArrayList();
+        Map<String, HouseQmCheckTaskIssue> resultDict = Maps.newHashMap();
+        Map<String, Map<String,Object>> notifyStatDict = Maps.newHashMap();
+        List<String> deleteIssueUuids = Lists.newArrayList();
 
         if (CollectionUtils.isEmpty(issueUuids)) {
             IssueMapBody body = new IssueMapBody();
@@ -1972,20 +1998,19 @@ public class BuildingqmServiceImpl implements IBuildingqmService {
         return issueMapBody;
     }
 
-    private Map ApiNotifyStat(Integer status, Integer repairerId, List<Integer> splitToIdsComma) {
+    private Map<String,Object> ApiNotifyStat(Integer status, Integer repairerId, List<Integer> repairer_follower_ids) {
         status = 0;
         repairerId = 0;
-        splitToIdsComma = Lists.newArrayList();
-        HashMap<Object, Object> map = Maps.newHashMap();
+        repairer_follower_ids = Lists.newArrayList();
+        Map<String, Object> map = Maps.newHashMap();
         map.put("status", status);
         map.put("repairerId", repairerId);
-        map.put("splitToIdsComma", splitToIdsComma);
-
+        map.put("splitToIdsComma", repairer_follower_ids);
         return map;
     }
 
     private boolean datetimeZero(Date deleteAt) {
-        if (deleteAt == null ||  new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(deleteAt).equals("0001-01-01 00:00:00") ||  new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(deleteAt).equals("") || DateUtil.datetimeToTimeStamp(deleteAt) <= DateUtil.datetimeToTimeStamp(new Date(0))) {
+        if (deleteAt == null || new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(deleteAt).equals("0001-01-01 00:00:00") || new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(deleteAt).equals("") || DateUtil.datetimeToTimeStamp(deleteAt) <= DateUtil.datetimeToTimeStamp(new Date(0))) {
             return true;
         } else {
             return false;
@@ -2002,7 +2027,6 @@ public class BuildingqmServiceImpl implements IBuildingqmService {
         lst.forEach(item -> {
             if (!result.contains(item.getUuid())) {
                 result.add(item.getUuid());
-
             }
         });
         return result;
@@ -2018,7 +2042,7 @@ public class BuildingqmServiceImpl implements IBuildingqmService {
         reportlist.forEach(item -> {
             ApiHouseQmCheckTaskIssueLogInfo items = new ApiHouseQmCheckTaskIssueLogInfo();
             items.setUuid((String) item.get("uuid"));
-            if (items.getUuid() == null) {
+            if (StringUtils.isBlank(items.getUuid())) {
                 log.info("uuid not exist, data=" + data + "");
                 throw new LjBaseRuntimeException(646, "uuid not exist");
             }
@@ -2028,41 +2052,160 @@ public class BuildingqmServiceImpl implements IBuildingqmService {
                 throw new LjBaseRuntimeException(651, "task_id not exist");
             }
             items.setIssue_uuid((String) item.get("issue_uuid"));
-            if (items.getIssue_uuid() == null) {
+            if ( StringUtils.isBlank(items.getIssue_uuid())) {
                 log.info("issue_uuid not exist, data=" + data + "");
                 throw new LjBaseRuntimeException(656, "issue_uuid not exist");
             }
-            items.setSender_id((Integer) item.get("sender_id"));
-            items.setDesc((String) item.get("desc"));
-            items.setStatus((Integer) item.get("status"));
-            items.setAttachment_md5_list((String) item.get("attachment_md5_list"));
-            items.setAudio_md5_list((String) item.get("audio_md5_list"));
-            items.setMemo_audio_md5_list((String) item.get("memo_audio_md5_list"));
-            items.setClient_create_at((Integer) item.get("client_create_at"));
+            if((Integer) item.get("sender_id")!=null){
+                items.setSender_id((Integer) item.get("sender_id"));
+            }else{
+                items.setSender_id(-1);
+            }
+            if(StringUtils.isBlank((String) item.get("desc"))){
+                items.setDesc((String) item.get("desc"));
+            }else{
+                items.setDesc("");
+            }
+            if((Integer) item.get("status")!=null){
+                items.setStatus((Integer) item.get("status"));
+            }else{
+                items.setStatus(-1);
+            }
+            if(StringUtils.isBlank((String) item.get("attachment_md5_list"))){
+                items.setAttachment_md5_list((String) item.get("attachment_md5_list"));
+            }else{
+                items.setAttachment_md5_list("");
+            }
+            if(StringUtils.isBlank((String) item.get("audio_md5_list"))){
+                items.setAudio_md5_list((String) item.get("audio_md5_list"));
+            }else{
+                items.setAudio_md5_list("");
+            }
+            if(StringUtils.isBlank( (String) item.get("memo_audio_md5_list"))){
+                items.setMemo_audio_md5_list((String) item.get("memo_audio_md5_list"));
+            }else {
+                items.setMemo_audio_md5_list("");
+            }
+            if((Integer) item.get("client_create_at")!=null){
+                items.setClient_create_at((Integer) item.get("client_create_at"));
+            }else{
+                items.setClient_create_at(-1);
+            }
             ApiHouseQmCheckTaskIssueLogInfo.ApiHouseQmCheckTaskIssueLogDetailInfo info = new ApiHouseQmCheckTaskIssueLogInfo().new ApiHouseQmCheckTaskIssueLogDetailInfo();
             Map detail = (Map) item.get("detail");
             if (detail != null) {
-                info.setArea_id((Integer) detail.get("area_id"));
-                info.setPos_x((Integer) detail.get("pos_x"));
-                info.setPos_y((Integer) detail.get("pos_y"));
-                info.setTyp((Integer) detail.get("typ"));
-                info.setPlan_end_on((Integer) detail.get("plan_end_on"));
-                info.setEnd_on((Integer) detail.get("end_on"));
-                info.setRepairer_id((Integer) detail.get("repairer_id"));
-                info.setRepairer_follower_ids((String) detail.get("repairer_follower_ids"));
-                info.setCondition((Integer) detail.get("condition"));
-                info.setCategory_cls((Integer) detail.get("category_cls"));
-                info.setCategory_key((String) detail.get("category_key"));
-                info.setDrawing_md5((String) detail.get("drawing_md5"));
-                info.setCheck_item_key((String) detail.get("check_item_key"));
-                info.setRemove_memo_audio_md5_list((String) detail.get("remove_memo_audio_md5_list"));
-                info.setTitle((String) detail.get("title"));
-                info.setCheck_item_md5((String) detail.get("check_item_md5"));
-                info.setIssue_reason((Integer) detail.get("issue_reason"));
-                info.setIssue_reason_detail((String) detail.get("issue_reason_detail"));
-                info.setIssue_suggest((String) detail.get("issue_suggest"));
-                info.setPotential_risk((String) detail.get("potential_risk"));
-                info.setPreventive_action_detail((String) detail.get("preventive_action_detail"));
+                if((Integer) detail.get("pos_y")!=null){
+                    info.setPos_y((Integer) detail.get("pos_y"));
+                }else{
+                    info.setPos_y((Integer) detail.get(-1));
+                }
+
+                if((Integer) detail.get("typ")!=null){
+                    info.setTyp((Integer) detail.get("typ"));
+                }else{
+                    info.setTyp(-1);
+                }
+
+                if((Integer) detail.get("plan_end_on")!=null){
+                    info.setPlan_end_on((Integer) detail.get("plan_end_on"));
+                }else{
+                    info.setPlan_end_on(-1);
+                }
+
+                if((Integer) detail.get("end_on")!=null){
+                    info.setEnd_on((Integer) detail.get("end_on"));
+                }else{
+                    info.setEnd_on(-1);
+                }
+
+                if((Integer) detail.get("repairer_id")!=null){
+                    info.setRepairer_id((Integer) detail.get("repairer_id"));
+                }else{
+                    info.setRepairer_id(-1);
+                }
+
+                if(StringUtils.isBlank((String) detail.get("repairer_follower_ids"))){
+                    info.setRepairer_follower_ids((String) detail.get("repairer_follower_ids"));
+                }else{
+                    info.setRepairer_follower_ids("");
+                }
+
+                if((Integer) detail.get("condition")!=null){
+                    info.setCondition((Integer) detail.get("condition"));
+                }else{
+                    info.setCondition(-1);
+                }
+
+                if((Integer) detail.get("category_cls")!=null){
+                    info.setCategory_cls((Integer) detail.get("category_cls"));
+                }else{
+                    info.setCategory_cls(-1);
+                }
+
+                if(StringUtils.isBlank((String) detail.get("category_key"))){
+                    info.setCategory_key((String) detail.get("category_key"));
+                }else{
+                    info.setCategory_key("");
+                }
+
+                if(StringUtils.isBlank((String) detail.get("drawing_md5"))){
+                    info.setDrawing_md5((String) detail.get("drawing_md5"));
+                }else{
+                    info.setDrawing_md5("");
+                }
+
+                if(StringUtils.isBlank((String) detail.get("check_item_key"))){
+                    info.setCheck_item_key((String) detail.get("check_item_key"));
+                }else{
+                    info.setCheck_item_key((String) detail.get("check_item_key"));
+                }
+
+                if(StringUtils.isBlank((String) detail.get("remove_memo_audio_md5_list"))){
+                    info.setRemove_memo_audio_md5_list((String) detail.get("remove_memo_audio_md5_list"));
+                }else{
+                    info.setRemove_memo_audio_md5_list((String) detail.get("remove_memo_audio_md5_list"));
+                }
+
+                if(StringUtils.isBlank((String) detail.get("title"))){
+                    info.setTitle((String) detail.get("title"));
+                }else{
+                    info.setTitle((String) detail.get("title"));
+                }
+
+                if(StringUtils.isBlank((String) detail.get("check_item_md5"))){
+                    info.setCheck_item_md5((String) detail.get("check_item_md5"));
+                }else{
+                    info.setCheck_item_md5((String) detail.get("check_item_md5"));
+                }
+
+                if((Integer) detail.get("issue_reason")!=null){
+                    info.setIssue_reason((Integer) detail.get("issue_reason"));
+                }else{
+                    info.setIssue_reason(-1);
+                }
+
+                if(StringUtils.isBlank((String) detail.get("issue_reason_detail"))){
+                    info.setIssue_reason_detail((String) detail.get("issue_reason_detail"));
+                }else{
+                    info.setIssue_reason_detail("");
+                }
+
+                if(StringUtils.isBlank((String) detail.get("issue_suggest"))){
+                    info.setIssue_suggest((String) detail.get("issue_suggest"));
+                }else{
+                    info.setIssue_suggest("");
+                }
+
+                if(StringUtils.isBlank((String) detail.get("potential_risk"))){
+                    info.setPotential_risk((String) detail.get("potential_risk"));
+                }else{
+                    info.setPotential_risk("");
+                }
+                if(StringUtils.isBlank((String) detail.get("preventive_action_detail"))){
+                    info.setPreventive_action_detail((String) detail.get("preventive_action_detail"));
+                }else{
+                    info.setPreventive_action_detail("");
+                }
             }
             List<ApiHouseQmCheckTaskIssueLogInfo.ApiHouseQmCheckTaskIssueLogDetailInfo> objects1 = Lists.newArrayList();
             objects1.add(info);
@@ -2274,7 +2417,7 @@ public class BuildingqmServiceImpl implements IBuildingqmService {
         if (doNotNeedDeleteSquaduserPkId.size() > 0) {
             ArrayList<Object> needDeleteIds = Lists.newArrayList();
             for (Map.Entry<Object, Object> entry : doNotNeedDeleteSquaduserPkId.entrySet()) {
-                boolean notDelete= (boolean) entry.getValue();
+                boolean notDelete = (boolean) entry.getValue();
                 if (!notDelete) {
                     needDeleteIds.add(entry.getKey());
                 }
@@ -2475,7 +2618,7 @@ public class BuildingqmServiceImpl implements IBuildingqmService {
         config_map.put("repaired_picture_status", taskReq.getRepaired_picture_status());
         config_map.put("issue_desc_status", taskReq.getIssue_desc_status());
         config_map.put("issue_default_desc", taskReq.getIssue_default_desc());
-        String config_info =  JSONObject.toJSONString(config_map);
+        String config_info = JSONObject.toJSONString(config_map);
         HouseQmCheckTask houseQmCheckTask = new HouseQmCheckTask();
         houseQmCheckTask.setProjectId(taskReq.getProject_id());
         houseQmCheckTask.setTaskId(taskObj);
@@ -2906,7 +3049,7 @@ public class BuildingqmServiceImpl implements IBuildingqmService {
     }
 
     @Override
-    public Map<String, Object> issuestatisticexport(Integer category_cls, String items) {
+    public Map<String, Object> issuestatisticexport(String category_cls, String items) {
         Integer result = 0;
         String message = "success";
         List<NodeDataVo> dataList = Lists.newArrayList();
@@ -2924,8 +3067,8 @@ public class BuildingqmServiceImpl implements IBuildingqmService {
             nodeDataVo.setPath_name(nodeDataVo.getKey() + "/");
             pathKeys.add(0, nodeDataVo.getKey());
             nodeDataVo.setPath_keys(pathKeys);
-            if(StringUtils.isBlank(nodeDataVo.getKey())||StringUtils.isBlank(nodeDataVo.getParent_key())|| nodeDataVo.getIssue_count()==null||StringUtils.isBlank(nodeDataVo.getName())){
-                        continue;
+            if (StringUtils.isBlank(nodeDataVo.getKey()) || StringUtils.isBlank(nodeDataVo.getParent_key()) || nodeDataVo.getIssue_count() == null || StringUtils.isBlank(nodeDataVo.getName())) {
+                continue;
             }
             dataList.add(nodeDataVo);
             dataMap.put(nodeDataVo.getKey(), nodeDataVo);
@@ -2953,7 +3096,7 @@ public class BuildingqmServiceImpl implements IBuildingqmService {
             }
         }
         for (NodeDataVo obj : dataList) {
-            if(obj.getValid_node()==false){
+            if (obj.getValid_node() == false) {
                 continue;
             }
             for (NodeDataVo item : dataList) {
@@ -3009,14 +3152,14 @@ public class BuildingqmServiceImpl implements IBuildingqmService {
 
 
         String dt = DateUtil.getNowTimeStr("yyyyMMddHHmmss");
-        String category_name = CategoryClsTypeEnum.getName(category_cls);
+        String category_name = CategoryClsTypeEnum.getName(Integer.valueOf(category_cls));
         if (category_name == null) category_name = "工程检查";
         String fileName = String.format("%s_问题详情_%s.xlsx", category_name, dt);
         Map<String, Object> map = Maps.newHashMap();
         map.put("fileName", fileName);
         map.put("workbook", wb);
-        map.put("result",result);
-        map.put("message",message);
+        map.put("result", result);
+        map.put("message", message);
         return map;
     }
 

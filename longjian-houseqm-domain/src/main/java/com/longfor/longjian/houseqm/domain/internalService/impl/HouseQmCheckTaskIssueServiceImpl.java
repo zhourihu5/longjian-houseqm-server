@@ -746,7 +746,7 @@ public class HouseQmCheckTaskIssueServiceImpl implements HouseQmCheckTaskIssueSe
     public List<HouseQmCheckTaskIssue> selectByUuids(List<String> issueUuids) {
         Example example = new Example(HouseQmCheckTaskIssue.class);
         example.createCriteria().andIn("uuid", issueUuids);
-        example.orderBy("clientCreateAt");
+        example.orderBy("clientCreateAt").desc();
         return houseQmCheckTaskIssueMapper.selectByExample(example);
     }
 
