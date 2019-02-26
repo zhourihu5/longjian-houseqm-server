@@ -2279,12 +2279,13 @@ public class BuildingqmServiceImpl implements IBuildingqmService {
 
         }
 
-
+//        log.info("doNotNeedDeleteSquaduserPkId={}",JSON.toJSONString(doNotNeedDeleteSquaduserPkId));
         //  # 要删除的人员信息
         if (doNotNeedDeleteSquaduserPkId.size() > 0) {
             ArrayList<Object> needDeleteIds = Lists.newArrayList();
             for (Map.Entry<Object, Object> entry : doNotNeedDeleteSquaduserPkId.entrySet()) {
-                if (entry.getValue() == null) {
+                boolean notDelete= (boolean) entry.getValue();
+                if (!notDelete) {
                     needDeleteIds.add(entry.getKey());
                 }
             }
