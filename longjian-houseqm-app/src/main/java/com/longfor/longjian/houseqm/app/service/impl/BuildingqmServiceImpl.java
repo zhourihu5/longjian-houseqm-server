@@ -2028,7 +2028,7 @@ public class BuildingqmServiceImpl implements IBuildingqmService {
         reportlist.forEach(item -> {
             ApiHouseQmCheckTaskIssueLogInfo items = new ApiHouseQmCheckTaskIssueLogInfo();
             items.setUuid((String) item.get("uuid"));
-            if (items.getUuid() == null) {
+            if (StringUtils.isBlank(items.getUuid())) {
                 log.info("uuid not exist, data=" + data + "");
                 throw new LjBaseRuntimeException(646, "uuid not exist");
             }
@@ -2038,41 +2038,160 @@ public class BuildingqmServiceImpl implements IBuildingqmService {
                 throw new LjBaseRuntimeException(651, "task_id not exist");
             }
             items.setIssue_uuid((String) item.get("issue_uuid"));
-            if (items.getIssue_uuid() == null) {
+            if ( StringUtils.isBlank(items.getIssue_uuid())) {
                 log.info("issue_uuid not exist, data=" + data + "");
                 throw new LjBaseRuntimeException(656, "issue_uuid not exist");
             }
-            items.setSender_id((Integer) item.get("sender_id"));
-            items.setDesc((String) item.get("desc"));
-            items.setStatus((Integer) item.get("status"));
-            items.setAttachment_md5_list((String) item.get("attachment_md5_list"));
-            items.setAudio_md5_list((String) item.get("audio_md5_list"));
-            items.setMemo_audio_md5_list((String) item.get("memo_audio_md5_list"));
-            items.setClient_create_at((Integer) item.get("client_create_at"));
+            if((Integer) item.get("sender_id")!=null){
+                items.setSender_id((Integer) item.get("sender_id"));
+            }else{
+                items.setSender_id(-1);
+            }
+            if(StringUtils.isBlank((String) item.get("desc"))){
+                items.setDesc((String) item.get("desc"));
+            }else{
+                items.setDesc("");
+            }
+            if((Integer) item.get("status")!=null){
+                items.setStatus((Integer) item.get("status"));
+            }else{
+                items.setStatus(-1);
+            }
+            if(StringUtils.isBlank((String) item.get("attachment_md5_list"))){
+                items.setAttachment_md5_list((String) item.get("attachment_md5_list"));
+            }else{
+                items.setAttachment_md5_list("");
+            }
+            if(StringUtils.isBlank((String) item.get("audio_md5_list"))){
+                items.setAudio_md5_list((String) item.get("audio_md5_list"));
+            }else{
+                items.setAudio_md5_list("");
+            }
+            if(StringUtils.isBlank( (String) item.get("memo_audio_md5_list"))){
+                items.setMemo_audio_md5_list((String) item.get("memo_audio_md5_list"));
+            }else {
+                items.setMemo_audio_md5_list("");
+            }
+            if((Integer) item.get("client_create_at")!=null){
+                items.setClient_create_at((Integer) item.get("client_create_at"));
+            }else{
+                items.setClient_create_at(-1);
+            }
             ApiHouseQmCheckTaskIssueLogInfo.ApiHouseQmCheckTaskIssueLogDetailInfo info = new ApiHouseQmCheckTaskIssueLogInfo().new ApiHouseQmCheckTaskIssueLogDetailInfo();
             Map detail = (Map) item.get("detail");
             if (detail != null) {
-                info.setArea_id((Integer) detail.get("area_id"));
-                info.setPos_x((Integer) detail.get("pos_x"));
-                info.setPos_y((Integer) detail.get("pos_y"));
-                info.setTyp((Integer) detail.get("typ"));
-                info.setPlan_end_on((Integer) detail.get("plan_end_on"));
-                info.setEnd_on((Integer) detail.get("end_on"));
-                info.setRepairer_id((Integer) detail.get("repairer_id"));
-                info.setRepairer_follower_ids((String) detail.get("repairer_follower_ids"));
-                info.setCondition((Integer) detail.get("condition"));
-                info.setCategory_cls((Integer) detail.get("category_cls"));
-                info.setCategory_key((String) detail.get("category_key"));
-                info.setDrawing_md5((String) detail.get("drawing_md5"));
-                info.setCheck_item_key((String) detail.get("check_item_key"));
-                info.setRemove_memo_audio_md5_list((String) detail.get("remove_memo_audio_md5_list"));
-                info.setTitle((String) detail.get("title"));
-                info.setCheck_item_md5((String) detail.get("check_item_md5"));
-                info.setIssue_reason((Integer) detail.get("issue_reason"));
-                info.setIssue_reason_detail((String) detail.get("issue_reason_detail"));
-                info.setIssue_suggest((String) detail.get("issue_suggest"));
-                info.setPotential_risk((String) detail.get("potential_risk"));
-                info.setPreventive_action_detail((String) detail.get("preventive_action_detail"));
+                if((Integer) detail.get("pos_y")!=null){
+                    info.setPos_y((Integer) detail.get("pos_y"));
+                }else{
+                    info.setPos_y((Integer) detail.get(-1));
+                }
+
+                if((Integer) detail.get("typ")!=null){
+                    info.setTyp((Integer) detail.get("typ"));
+                }else{
+                    info.setTyp(-1);
+                }
+
+                if((Integer) detail.get("plan_end_on")!=null){
+                    info.setPlan_end_on((Integer) detail.get("plan_end_on"));
+                }else{
+                    info.setPlan_end_on(-1);
+                }
+
+                if((Integer) detail.get("end_on")!=null){
+                    info.setEnd_on((Integer) detail.get("end_on"));
+                }else{
+                    info.setEnd_on(-1);
+                }
+
+                if((Integer) detail.get("repairer_id")!=null){
+                    info.setRepairer_id((Integer) detail.get("repairer_id"));
+                }else{
+                    info.setRepairer_id(-1);
+                }
+
+                if(StringUtils.isBlank((String) detail.get("repairer_follower_ids"))){
+                    info.setRepairer_follower_ids((String) detail.get("repairer_follower_ids"));
+                }else{
+                    info.setRepairer_follower_ids("");
+                }
+
+                if((Integer) detail.get("condition")!=null){
+                    info.setCondition((Integer) detail.get("condition"));
+                }else{
+                    info.setCondition(-1);
+                }
+
+                if((Integer) detail.get("category_cls")!=null){
+                    info.setCategory_cls((Integer) detail.get("category_cls"));
+                }else{
+                    info.setCategory_cls(-1);
+                }
+
+                if(StringUtils.isBlank((String) detail.get("category_key"))){
+                    info.setCategory_key((String) detail.get("category_key"));
+                }else{
+                    info.setCategory_key("");
+                }
+
+                if(StringUtils.isBlank((String) detail.get("drawing_md5"))){
+                    info.setDrawing_md5((String) detail.get("drawing_md5"));
+                }else{
+                    info.setDrawing_md5("");
+                }
+
+                if(StringUtils.isBlank((String) detail.get("check_item_key"))){
+                    info.setCheck_item_key((String) detail.get("check_item_key"));
+                }else{
+                    info.setCheck_item_key((String) detail.get("check_item_key"));
+                }
+
+                if(StringUtils.isBlank((String) detail.get("remove_memo_audio_md5_list"))){
+                    info.setRemove_memo_audio_md5_list((String) detail.get("remove_memo_audio_md5_list"));
+                }else{
+                    info.setRemove_memo_audio_md5_list((String) detail.get("remove_memo_audio_md5_list"));
+                }
+
+                if(StringUtils.isBlank((String) detail.get("title"))){
+                    info.setTitle((String) detail.get("title"));
+                }else{
+                    info.setTitle((String) detail.get("title"));
+                }
+
+                if(StringUtils.isBlank((String) detail.get("check_item_md5"))){
+                    info.setCheck_item_md5((String) detail.get("check_item_md5"));
+                }else{
+                    info.setCheck_item_md5((String) detail.get("check_item_md5"));
+                }
+
+                if((Integer) detail.get("issue_reason")!=null){
+                    info.setIssue_reason((Integer) detail.get("issue_reason"));
+                }else{
+                    info.setIssue_reason(-1);
+                }
+
+                if(StringUtils.isBlank((String) detail.get("issue_reason_detail"))){
+                    info.setIssue_reason_detail((String) detail.get("issue_reason_detail"));
+                }else{
+                    info.setIssue_reason_detail("");
+                }
+
+                if(StringUtils.isBlank((String) detail.get("issue_suggest"))){
+                    info.setIssue_suggest((String) detail.get("issue_suggest"));
+                }else{
+                    info.setIssue_suggest("");
+                }
+
+                if(StringUtils.isBlank((String) detail.get("potential_risk"))){
+                    info.setPotential_risk((String) detail.get("potential_risk"));
+                }else{
+                    info.setPotential_risk("");
+                }
+                if(StringUtils.isBlank((String) detail.get("preventive_action_detail"))){
+                    info.setPreventive_action_detail((String) detail.get("preventive_action_detail"));
+                }else{
+                    info.setPreventive_action_detail("");
+                }
             }
             List<ApiHouseQmCheckTaskIssueLogInfo.ApiHouseQmCheckTaskIssueLogDetailInfo> objects1 = Lists.newArrayList();
             objects1.add(info);
