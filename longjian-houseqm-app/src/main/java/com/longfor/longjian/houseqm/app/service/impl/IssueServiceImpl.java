@@ -316,7 +316,7 @@ public class IssueServiceImpl implements IIssueService {
         //        path = ret.get('path', '')
 
         String dt = DateUtil.getNowTimeStr("yyyyMMddHHmmss");
-        String fileName = String.format("%s-%s-问题列表_%s.xlsx", CategoryClsTypeEnum.getName(categoryCls), project_name, dt);
+        String fileName = String.format("%s-%s-问题列表_%s.xls", CategoryClsTypeEnum.getName(categoryCls), project_name, dt);
         Map<String, Object> map = Maps.newHashMap();
         map.put("fileName", fileName);
         map.put("workbook", wb);
@@ -1402,7 +1402,7 @@ public class IssueServiceImpl implements IIssueService {
         }
         List<Integer> repairerFollowerIds = null;
         if (StringUtils.isNotBlank(issueInfo.getRepairerFollowerIds())) {
-            if (StringUtils.isNotBlank( issueInfo.getRepairerFollowerIds())&&!issueInfo.getRepairerFollowerIds().contains("[")&&issueInfo.getRepairerFollowerIds().contains("]")) {
+            if (StringUtils.isNotBlank( issueInfo.getRepairerFollowerIds())) {
                 repairerFollowerIds = StringSplitToListUtil.splitToIdsComma(issueInfo.getRepairerFollowerIds(), ",");
                 if (repairerFollowerIds.contains(0)) {
                     repairerFollowerIds.remove(0);

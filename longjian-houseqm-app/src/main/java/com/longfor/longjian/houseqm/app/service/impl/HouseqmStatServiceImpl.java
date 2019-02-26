@@ -389,36 +389,38 @@ public class HouseqmStatServiceImpl implements IHouseqmStatService {
             for (HouseQmCheckTaskIssueStatusEnum value : HouseQmCheckTaskIssueStatusEnum.values()) {
                 if (res.getStatus().equals(value.getId())) e = value;
             }
-            switch (e) {
-                case NoteNoAssign:  //已记录未分配
-                    result.setIssue_recorded_count(res.getPosX());
-                    break;
-                case AssignNoReform://已分配未整改
-                    result.setIssue_assigned_count(res.getPosX());
-                    break;
-                case ReformNoCheck://已整改未验收
-                    result.setIssue_repaired_count(res.getPosX());
-                    break;
-                case CheckYes://已验收
-                    result.setIssue_approveded_count(res.getPosX());
-                    break;
-                default:
-                    break;
-            }
+            if (e!=null){
+                switch (e) {
+                    case NoteNoAssign:  //已记录未分配
+                        result.setIssue_recorded_count(res.getPosX());
+                        break;
+                    case AssignNoReform://已分配未整改
+                        result.setIssue_assigned_count(res.getPosX());
+                        break;
+                    case ReformNoCheck://已整改未验收
+                        result.setIssue_repaired_count(res.getPosX());
+                        break;
+                    case CheckYes://已验收
+                        result.setIssue_approveded_count(res.getPosX());
+                        break;
+                    default:
+                        break;
+                }
 
-            //处理状态统计
-            switch (e) {
-                case NoProblem:
-                    result.setRecord_count(result.getRecord_count() + res.getPosX());
-                    break;
-                case ReformNoCheck:
-                case AssignNoReform:
-                case CheckYes:
-                case NoteNoAssign:
-                    result.setIssue_count(result.getIssue_count() + res.getPosX());
-                    break;
-                default:
-                    break;
+                //处理状态统计
+                switch (e) {
+                    case NoProblem:
+                        result.setRecord_count(result.getRecord_count() + res.getPosX());
+                        break;
+                    case ReformNoCheck:
+                    case AssignNoReform:
+                    case CheckYes:
+                    case NoteNoAssign:
+                        result.setIssue_count(result.getIssue_count() + res.getPosX());
+                        break;
+                    default:
+                        break;
+                }
             }
         }
 
