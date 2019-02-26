@@ -2092,7 +2092,7 @@ public class BuildingqmServiceImpl implements IBuildingqmService {
         List<Object> checkerGroupsDel = Lists.newArrayList();
         List<ApiBuildingQmTaskMemberInsertVo> needInsertCheckTaskSquadUser = Lists.newArrayList();
         List<UserInHouseQmCheckTask> needUpdateCheckTaskSquadUser = Lists.newArrayList();
-        Map<Object, Object> doNotNeedDeleteSquaduserPkId = Maps.newHashMap();//fixme not add item
+        Map<Object, Object> doNotNeedDeleteSquaduserPkId = Maps.newHashMap();
         beforeExecute(checkerGroupsAdd, checkerGroupsEdit, checkerGroupsDel, needInsertCheckTaskSquadUser, needUpdateCheckTaskSquadUser, doNotNeedDeleteSquaduserPkId, uid, taskEditReq, areaIds, areaTypes, planBeginOn, planEndOn, checkerGroups, repairerGroups, config);
         //    # 更新验房任务
         HouseQmCheckTask taskInfo = houseQmCheckTaskService.selectByTaskId(taskEditReq.getTask_id());
