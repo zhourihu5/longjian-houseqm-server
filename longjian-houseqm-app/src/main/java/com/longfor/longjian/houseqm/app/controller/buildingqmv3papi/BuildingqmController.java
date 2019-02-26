@@ -12,6 +12,7 @@ import com.longfor.longjian.houseqm.app.service.IBuildingqmService;
 import com.longfor.longjian.houseqm.app.service.ICheckUpdateService;
 import com.longfor.longjian.houseqm.app.utils.FileUtil;
 import com.longfor.longjian.houseqm.app.vo.*;
+import com.longfor.longjian.houseqm.app.vo.buildingqm.ReportIssueReq;
 import com.longfor.longjian.houseqm.consts.CommonGlobalEnum;
 import com.longfor.longjian.houseqm.po.zj2db.HouseQmCheckTaskSquad;
 import com.longfor.longjian.houseqm.util.DateUtil;
@@ -343,12 +344,11 @@ public class BuildingqmController {
      * @return
      */
     @RequestMapping(value = "buildingqm/report_issue", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
-    public LjBaseResponse<ReportIssueVo> reportIssue(@RequestParam(name = "project_id", required = true) Integer projectId,
-
-                                                     @RequestParam(name = "data", required = true) String data) {
-        log.info("report_issue, project_id=" + projectId + ", data=" + data + "");
+    public LjBaseResponse<ReportIssueVo> reportIssue(ReportIssueReq req) {
+        //log.info("report_issue, project_id=" + projectId + ", data=" + data + "");
         Integer userId = (Integer) sessionInfo.getBaseInfo("userId");
-        ReportIssueVo reportIssueVo = buildingqmService.reportIssue(userId, projectId, data);
+        userId=9;
+        ReportIssueVo reportIssueVo = buildingqmService.reportIssue(userId, req.getProject_id(), req.getData());
         LjBaseResponse<ReportIssueVo> response = new LjBaseResponse<>();
         response.setData(reportIssueVo);
         return response;
