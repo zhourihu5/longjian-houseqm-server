@@ -455,6 +455,7 @@ public class HouseqmStatisticServiceImpl implements IHouseqmStatisticService {
                     default:
                         break;
                 }
+                e=null;
             }
         }
         return result;

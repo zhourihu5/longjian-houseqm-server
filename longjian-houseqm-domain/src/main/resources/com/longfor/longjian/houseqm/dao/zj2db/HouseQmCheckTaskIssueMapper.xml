@@ -818,7 +818,7 @@
                 #{item}
             </foreach>
         </if>
-        AND area_path_and_id LIKE #{areaId}
+        AND area_path_and_id LIKE concat('',#{areaId})
         AND delete_at IS NULL
         GROUP BY area_path
     </select>
