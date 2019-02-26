@@ -700,7 +700,7 @@ public class HouseQmCheckTaskIssueServiceImpl implements HouseQmCheckTaskIssueSe
     @LFAssignDataSource("zhijian2")
     public void update(HouseQmCheckTaskIssue issue_info) {
         issue_info.setUpdateAt(new Date());
-        houseQmCheckTaskIssueMapper.updateByPrimaryKey(issue_info);
+        houseQmCheckTaskIssueMapper.updateByPrimaryKeySelective(issue_info);
 
     }
 
