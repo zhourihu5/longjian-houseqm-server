@@ -40,6 +40,7 @@ import javax.annotation.Resource;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.*;
+import java.util.stream.Collectors;
 
 import static javax.swing.UIManager.get;
 
@@ -95,6 +96,8 @@ public class BuildingqmServiceImpl implements IBuildingqmService {
     HouseQmCheckTaskNotifyRecordService houseQmCheckTaskNotifyRecordService;
     @Resource
     private KafkaProducer kafkaProducer;
+    @Resource
+    private IssueServiceImpl issueService;
    /* @Resource
     UmPushUtil umPushUtil;
     @Resource
@@ -835,6 +838,7 @@ public class BuildingqmServiceImpl implements IBuildingqmService {
         UnmarshReportIssueRequestBody issueRequestBody = unmarshReportIssueRequest(data);
         List<String> dropLogUuids = checkLogUuid(issueRequestBody.getLog_uuids());
         IssueMapBody issueMapBody = createIcssueMap(issueRequestBody.getIssue_uuids());
+
         HashMap<String, HouseQmCheckTaskIssue> issueInsertMap = Maps.newHashMap();
         HashMap<Object, HouseQmCheckTaskIssue> issueUpdateMap = Maps.newHashMap();
         HashMap<String, ApiUserRoleInIssue> issueRoleMap = Maps.newHashMap();
@@ -846,6 +850,7 @@ public class BuildingqmServiceImpl implements IBuildingqmService {
         HashMap<HouseQmCheckTaskIssue, ApiRefundInfo> refundMap = Maps.newHashMap();
         ArrayList<Integer> taskIds = Lists.newArrayList();
         List<ApiHouseQmCheckTaskIssueLogInfo> issueLogs = issueRequestBody.getIssue_logs();
+
         List deleteIssueUuids = issueMapBody.getDelete_issue_uuids();
         for (ApiHouseQmCheckTaskIssueLogInfo item : issueLogs) {
             //  # log已经提交过，直接忽略这些log
@@ -857,6 +862,7 @@ public class BuildingqmServiceImpl implements IBuildingqmService {
                 dropped.add(msg);
                 continue;
             }
+
             if (!taskIds.contains(item.getTask_id()) && item.getTask_id() > 0) {
                 taskIds.add(item.getTask_id());
             }
@@ -950,11 +956,11 @@ public class BuildingqmServiceImpl implements IBuildingqmService {
                         dropped.add(msg);
                     } else {
                         Map detail = JSON.parseObject(issue.getDetail(), Map.class);
-                        String checkItemMD5="";
-                        if(StringUtils.isNotBlank((String) detail.get("CheckItemMD5"))){
-                             checkItemMD5 = (String) detail.get("CheckItemMD5");
-                        }else{
-                             checkItemMD5="";
+                        String checkItemMD5 = "";
+                        if (StringUtils.isNotBlank((String) detail.get("CheckItemMD5"))) {
+                            checkItemMD5 = (String) detail.get("CheckItemMD5");
+                        } else {
+                            checkItemMD5 = "";
                         }
                         List<ApiHouseQmCheckTaskIssueLogInfo.ApiHouseQmCheckTaskIssueLogDetailInfo> detail1 = item.getDetail();
                         for (int i = 0; i < detail1.size(); i++) {
@@ -1175,6 +1181,12 @@ public class BuildingqmServiceImpl implements IBuildingqmService {
                  umPushUtil.sendIOSCustomizedcast();
                  //小米推送
                  xmPushUtil.sendMessageToUserAccounts();*/
+                ArrayList<String> ids = Lists.newArrayList();
+                for (Object push : pushList) {
+                    ids.add((String)push);
+                }
+                issueService.pushBaseMessage(0,ids,title,msg);
+
             }
             //   # 处理退单消息推送
             ArrayList<Integer> ids = Lists.newArrayList();
@@ -1195,6 +1207,10 @@ public class BuildingqmServiceImpl implements IBuildingqmService {
                      umPushUtil.sendIOSCustomizedcast();
                      //小米推送
                      xmPushUtil.sendMessageToUserAccounts();*/
+                    ArrayList<String> checker = Lists.newArrayList();
+                    ApiRefundInfo info = refundMap.get(item);
+                    if (info!=null)checker.add(info.getChecker()+"");
+                    issueService.pushBaseMessage(0,checker,title,msg);
                 }
             }
             // # 处理kafka数据统计消息
@@ -1606,7 +1622,7 @@ public class BuildingqmServiceImpl implements IBuildingqmService {
                 issue.setCheckItemPathAndKey(getCheckItemPathAndKey(issue.getCheckItemKey()));
             }
             Integer newStatus = convertLogStatus(item.getStatus());
-            if (newStatus> 0) {
+            if (newStatus > 0) {
                 issue.setStatus(newStatus);
             }
             //  # 最后整改负责人
@@ -1725,7 +1741,7 @@ public class BuildingqmServiceImpl implements IBuildingqmService {
 */
                     HashMap<Integer, Integer> map = Maps.newHashMap();
                     map.put(item.getSquadId(), item.getCanApprove());
-                    resultDict.get(item.getTaskId()).put(item.getUserId(),map);
+                    resultDict.get(item.getTaskId()).put(item.getUserId(), map);
                 } else {
                     if (!resultDict.get(item.getTaskId()).get(item.getUserId()).containsKey(item.getSquadId())) {
                         resultDict.get(item.getTaskId()).get(item.getUserId()).put(item.getSquadId(), item.getCanApprove());
@@ -1769,7 +1785,7 @@ public class BuildingqmServiceImpl implements IBuildingqmService {
             } else {
                 issue.setPosY(-1);
             }
-            if (StringUtils.isNotBlank(detail.getTitle())&&!detail.getTitle().equals("-1")) {
+            if (StringUtils.isNotBlank(detail.getTitle()) && !detail.getTitle().equals("-1")) {
                 issue.setTitle(detail.getTitle());
             } else {
                 issue.setTitle("");
@@ -1798,7 +1814,7 @@ public class BuildingqmServiceImpl implements IBuildingqmService {
             issue.setDeleteUser(0);
             HashMap<Object, Object> details = Maps.newHashMap();
             details.put("CheckItemMD5", "");
-            if (detail.getIssue_reason()!=null&&detail.getIssue_reason() != -1) {
+            if (detail.getIssue_reason() != null && detail.getIssue_reason() != -1) {
                 details.put("IssueReason", detail.getIssue_reason());
             } else {
                 details.put("IssueReason", "");
@@ -1866,11 +1882,11 @@ public class BuildingqmServiceImpl implements IBuildingqmService {
         switcher.put(CheckTaskIssueLogStatus.NoteNoAssign.getValue(), CheckTaskIssueStatus.NoteNoAssign.getValue());
         switcher.put(CheckTaskIssueLogStatus.CheckYes.getValue(), CheckTaskIssueStatus.CheckYes.getValue());
         switcher.put(CheckTaskIssueLogStatus.Cancel.getValue(), CheckTaskIssueStatus.Cancel.getValue());
-       if(switcher.get(status)!=null){
-           return switcher.get(status);
-       }else{
-           return 0;
-       }
+        if (switcher.get(status) != null) {
+            return switcher.get(status);
+        } else {
+            return 0;
+        }
 
     }
 
@@ -1955,9 +1971,9 @@ public class BuildingqmServiceImpl implements IBuildingqmService {
 
     private IssueMapBody createIcssueMap(List<String> issueUuids) {
 
-        HashMap<Object, Object> resultDict = Maps.newHashMap();
-        HashMap<Object, Object> notifyStatDict = Maps.newHashMap();
-        ArrayList<Object> deleteIssueUuids = Lists.newArrayList();
+        Map<String, HouseQmCheckTaskIssue> resultDict = Maps.newHashMap();
+        Map<String, Map<String,Object>> notifyStatDict = Maps.newHashMap();
+        List<String> deleteIssueUuids = Lists.newArrayList();
 
         if (CollectionUtils.isEmpty(issueUuids)) {
             IssueMapBody body = new IssueMapBody();
@@ -1982,20 +1998,19 @@ public class BuildingqmServiceImpl implements IBuildingqmService {
         return issueMapBody;
     }
 
-    private Map ApiNotifyStat(Integer status, Integer repairerId, List<Integer> splitToIdsComma) {
+    private Map<String,Object> ApiNotifyStat(Integer status, Integer repairerId, List<Integer> repairer_follower_ids) {
         status = 0;
         repairerId = 0;
-        splitToIdsComma = Lists.newArrayList();
-        HashMap<Object, Object> map = Maps.newHashMap();
+        repairer_follower_ids = Lists.newArrayList();
+        Map<String, Object> map = Maps.newHashMap();
         map.put("status", status);
         map.put("repairerId", repairerId);
-        map.put("splitToIdsComma", splitToIdsComma);
-
+        map.put("splitToIdsComma", repairer_follower_ids);
         return map;
     }
 
     private boolean datetimeZero(Date deleteAt) {
-        if (deleteAt == null ||  new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(deleteAt).equals("0001-01-01 00:00:00") ||  new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(deleteAt).equals("") || DateUtil.datetimeToTimeStamp(deleteAt) <= DateUtil.datetimeToTimeStamp(new Date(0))) {
+        if (deleteAt == null || new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(deleteAt).equals("0001-01-01 00:00:00") || new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(deleteAt).equals("") || DateUtil.datetimeToTimeStamp(deleteAt) <= DateUtil.datetimeToTimeStamp(new Date(0))) {
             return true;
         } else {
             return false;
@@ -2402,7 +2417,7 @@ public class BuildingqmServiceImpl implements IBuildingqmService {
         if (doNotNeedDeleteSquaduserPkId.size() > 0) {
             ArrayList<Object> needDeleteIds = Lists.newArrayList();
             for (Map.Entry<Object, Object> entry : doNotNeedDeleteSquaduserPkId.entrySet()) {
-                boolean notDelete= (boolean) entry.getValue();
+                boolean notDelete = (boolean) entry.getValue();
                 if (!notDelete) {
                     needDeleteIds.add(entry.getKey());
                 }
@@ -2603,7 +2618,7 @@ public class BuildingqmServiceImpl implements IBuildingqmService {
         config_map.put("repaired_picture_status", taskReq.getRepaired_picture_status());
         config_map.put("issue_desc_status", taskReq.getIssue_desc_status());
         config_map.put("issue_default_desc", taskReq.getIssue_default_desc());
-        String config_info =  JSONObject.toJSONString(config_map);
+        String config_info = JSONObject.toJSONString(config_map);
         HouseQmCheckTask houseQmCheckTask = new HouseQmCheckTask();
         houseQmCheckTask.setProjectId(taskReq.getProject_id());
         houseQmCheckTask.setTaskId(taskObj);
@@ -3052,8 +3067,8 @@ public class BuildingqmServiceImpl implements IBuildingqmService {
             nodeDataVo.setPath_name(nodeDataVo.getKey() + "/");
             pathKeys.add(0, nodeDataVo.getKey());
             nodeDataVo.setPath_keys(pathKeys);
-            if(StringUtils.isBlank(nodeDataVo.getKey())||StringUtils.isBlank(nodeDataVo.getParent_key())|| nodeDataVo.getIssue_count()==null||StringUtils.isBlank(nodeDataVo.getName())){
-                        continue;
+            if (StringUtils.isBlank(nodeDataVo.getKey()) || StringUtils.isBlank(nodeDataVo.getParent_key()) || nodeDataVo.getIssue_count() == null || StringUtils.isBlank(nodeDataVo.getName())) {
+                continue;
             }
             dataList.add(nodeDataVo);
             dataMap.put(nodeDataVo.getKey(), nodeDataVo);
@@ -3081,7 +3096,7 @@ public class BuildingqmServiceImpl implements IBuildingqmService {
             }
         }
         for (NodeDataVo obj : dataList) {
-            if(obj.getValid_node()==false){
+            if (obj.getValid_node() == false) {
                 continue;
             }
             for (NodeDataVo item : dataList) {
@@ -3143,8 +3158,8 @@ public class BuildingqmServiceImpl implements IBuildingqmService {
         Map<String, Object> map = Maps.newHashMap();
         map.put("fileName", fileName);
         map.put("workbook", wb);
-        map.put("result",result);
-        map.put("message",message);
+        map.put("result", result);
+        map.put("message", message);
         return map;
     }
 

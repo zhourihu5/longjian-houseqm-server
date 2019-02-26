@@ -1645,7 +1645,7 @@ public class IssueServiceImpl implements IIssueService {
     }
 
 
-    private void pushBaseMessage(Integer taskId, ArrayList<String> notifyUserIds, String title, String msg) {
+    public void pushBaseMessage(Integer taskId, ArrayList<String> notifyUserIds, String title, String msg) {
         ArrayList<String> alias = Lists.newArrayList();
         for (int i = 0; i < notifyUserIds.size(); i++) {
             alias.add("user_id_" + ENTERPRISEID + "_" + notifyUserIds.get(i) + "");
