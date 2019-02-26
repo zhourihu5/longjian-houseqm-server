@@ -338,16 +338,12 @@ public class BuildingqmController {
 
     /**
      * http://192.168.37.159:3000/project/8/interface/api/3260  提交问题日志
-     *
-     * @param projectId
-     * @param data
-     * @return
      */
     @RequestMapping(value = "buildingqm/report_issue", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     public LjBaseResponse<ReportIssueVo> reportIssue(ReportIssueReq req) {
-        //log.info("report_issue, project_id=" + projectId + ", data=" + data + "");
+        log.info("report_issue, project_id=" + req.getData() + ", data=" + req.getData()+ "");
         Integer userId = (Integer) sessionInfo.getBaseInfo("userId");
-        userId=9;
+        //userId=9;
         ReportIssueVo reportIssueVo = buildingqmService.reportIssue(userId, req.getProject_id(), req.getData());
         LjBaseResponse<ReportIssueVo> response = new LjBaseResponse<>();
         response.setData(reportIssueVo);
