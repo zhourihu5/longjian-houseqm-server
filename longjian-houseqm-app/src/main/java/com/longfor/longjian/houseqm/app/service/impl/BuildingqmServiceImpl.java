@@ -2768,6 +2768,7 @@ public class BuildingqmServiceImpl implements IBuildingqmService {
                 log.info("name not exist, data='unmarshCheckerGroups'");
                 throw new LjBaseRuntimeException(-99, "direct_approve_ids not exist");
             }
+
             objVo.setReassign_ids((String) checkergroups.get("reassign_ids"));
             result.add(objVo);
         });

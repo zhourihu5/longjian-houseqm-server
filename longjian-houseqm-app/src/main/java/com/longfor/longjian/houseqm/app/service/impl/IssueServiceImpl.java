@@ -1556,7 +1556,7 @@ public class IssueServiceImpl implements IIssueService {
             ArrayList<String> storeKeyList = Lists.newArrayList();
             for (String attachment : StringSplitToListUtil.splitToStringComma(issue.getAttachmentMd5List(), ",")) {
                 if (attachmentMap.containsKey(attachment) && attachmentMap.get(attachment).getStoreKey().length() > 0) {
-                    if (detailVo.getAttachment_path().size() > 2) {
+                    if (detailVo.getAttachment_path().size() >= 2) {
                         break;
                     }
                     String attachmentPath = "/data/zhijian/" + attachmentMap.get(attachment).getStoreKey();
