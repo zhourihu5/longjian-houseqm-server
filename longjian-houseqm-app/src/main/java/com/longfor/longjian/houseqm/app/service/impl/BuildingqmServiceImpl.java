@@ -2012,7 +2012,6 @@ public class BuildingqmServiceImpl implements IBuildingqmService {
         lst.forEach(item -> {
             if (!result.contains(item.getUuid())) {
                 result.add(item.getUuid());
-
             }
         });
         return result;
@@ -3035,7 +3034,7 @@ public class BuildingqmServiceImpl implements IBuildingqmService {
     }
 
     @Override
-    public Map<String, Object> issuestatisticexport(Integer category_cls, String items) {
+    public Map<String, Object> issuestatisticexport(String category_cls, String items) {
         Integer result = 0;
         String message = "success";
         List<NodeDataVo> dataList = Lists.newArrayList();
@@ -3138,7 +3137,7 @@ public class BuildingqmServiceImpl implements IBuildingqmService {
 
 
         String dt = DateUtil.getNowTimeStr("yyyyMMddHHmmss");
-        String category_name = CategoryClsTypeEnum.getName(category_cls);
+        String category_name = CategoryClsTypeEnum.getName(Integer.valueOf(category_cls));
         if (category_name == null) category_name = "工程检查";
         String fileName = String.format("%s_问题详情_%s.xlsx", category_name, dt);
         Map<String, Object> map = Maps.newHashMap();
