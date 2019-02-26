@@ -119,28 +119,30 @@ public class HouseqmStatServiceImpl implements IHouseqmStatService {
 
         //取出对应状态条件path
         if (!status.equals(StatisticFormRepossessionStatusEnum.All.getId())) {
-            if (status.equals(StatisticFormRepossessionStatusEnum.None.getId())) {
+            if (status.equals(StatisticFormRepossessionStatusEnum.None.getId())) {//未检查
                 List<String> checkedAreaPaths = getRepossessAreaPathListByTaskIdAndStatusesAndClientUpdateAt(task_id, Collections.singletonList(StatisticFormRepossessionStatusEnum.None.getId()), startTime, endTime);
                 //求差集
                 taskAreaPaths.removeAll(checkedAreaPaths);
                 areaPaths = taskAreaPaths;
-            } else {
+            } else {//业主只看房／已查验  业主收楼 业主拒绝收楼
                 areaPaths = getRepossessAreaPathListByTaskIdAndStatusesAndClientUpdateAt(task_id, Collections.singletonList(status), startTime, endTime);
             }
-        } else {
+        } else {//全部
             areaPaths = taskAreaPaths;
         }
         // 筛选问题状态
         // 区分是否存在问题
         if (issue_status.equals(StatisticFormInspectionIssueStatusEnum.HasIssue.getId())) {
             List<String> checkedAreaPaths = houseqmStaticService.getHasIssueTaskCheckedAreaPathListByTaskId(task_id, true, null, area_id);
-            //求交集
+            //求交集 源码求交集
             areaPaths.retainAll(checkedAreaPaths);
+            //areaPaths.removeAll(checkedAreaPaths);
         } else if (issue_status.equals(StatisticFormInspectionIssueStatusEnum.NoProblem.getId())) {
             // 不存在问题的包括了那些未检查，就是 所有-已查验存在问题的
             List<String> checkedAreaPaths = houseqmStaticService.getHasIssueTaskCheckedAreaPathListByTaskId(task_id, true, null, area_id);
             // 取差集
             areaPaths.removeAll(checkedAreaPaths);
+            //areaPaths.retainAll(checkedAreaPaths);
         }
         //过滤掉不在任务中的path
         //出现此种情况的原因：在已上传验房报告的情况下，将已有数据的楼栋从任务中移除掉了
@@ -387,21 +389,24 @@ public class HouseqmStatServiceImpl implements IHouseqmStatService {
             //处理详细统计数
             HouseQmCheckTaskIssueStatusEnum e = null;
             for (HouseQmCheckTaskIssueStatusEnum value : HouseQmCheckTaskIssueStatusEnum.values()) {
-                if (res.getStatus().equals(value.getId())) e = value;
+                if (res.getStatus().equals(value.getId())) {
+                    e = value;
+                    break;
+                }
             }
-            if (e!=null){
+            if (e != null) {
                 switch (e) {
                     case NoteNoAssign:  //已记录未分配
-                        result.setIssue_recorded_count(res.getPosX());
+                        result.setIssue_recorded_count(result.getIssue_recorded_count()+res.getPosX());
                         break;
                     case AssignNoReform://已分配未整改
-                        result.setIssue_assigned_count(res.getPosX());
+                        result.setIssue_assigned_count(result.getIssue_assigned_count()+res.getPosX());
                         break;
                     case ReformNoCheck://已整改未验收
-                        result.setIssue_repaired_count(res.getPosX());
+                        result.setIssue_repaired_count(result.getIssue_repaired_count()+res.getPosX());
                         break;
                     case CheckYes://已验收
-                        result.setIssue_approveded_count(res.getPosX());
+                        result.setIssue_approveded_count(result.getIssue_approveded_count()+res.getPosX());
                         break;
                     default:
                         break;
@@ -421,6 +426,7 @@ public class HouseqmStatServiceImpl implements IHouseqmStatService {
                     default:
                         break;
                 }
+                e=null;
             }
         }
 
@@ -745,9 +751,7 @@ public class HouseqmStatServiceImpl implements IHouseqmStatService {
         List<Integer> areaIds = Lists.newArrayList();
         for (HouseQmCheckTask item : tasks) {
             List<Integer> areaList = StringUtil.strToInts(item.getAreaIds(), ",");
-            for (Integer i : areaList) {
-                areaIds.add(i);
-            }
+            areaIds.addAll(areaList);
         }
         //去重
         HashSet<Integer> set = Sets.newHashSet(areaIds);
