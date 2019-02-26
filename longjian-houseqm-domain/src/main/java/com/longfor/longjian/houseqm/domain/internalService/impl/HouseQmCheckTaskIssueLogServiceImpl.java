@@ -71,6 +71,7 @@ public class HouseQmCheckTaskIssueLogServiceImpl implements HouseQmCheckTaskIssu
      */
     @LFAssignDataSource("zhijian2")
     public List<HouseQmCheckTaskIssueLog> searchByIssueUuid(Set<String> issueUuids) {
+        if (CollectionUtils.isEmpty(issueUuids))return Lists.newArrayList();
         List<HouseQmCheckTaskIssueLog> houseQmCheckTaskIssueLogs = houseQmCheckTaskIssueLogMapper.selectByIssueUuid(issueUuids, "false");
         return houseQmCheckTaskIssueLogs;
     }

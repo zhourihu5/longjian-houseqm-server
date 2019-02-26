@@ -79,9 +79,7 @@ public class HouseQmCheckTaskSquadServiceImpl implements HouseQmCheckTaskSquadSe
     @LFAssignDataSource("zhijian2")
     public int delete(HouseQmCheckTaskSquad dbItem) {
         HouseQmCheckTaskSquad squad = houseQmCheckTaskSquadMapper.selectOne(dbItem);
-            squad.setUpdateAt(new Date());
             squad.setDeleteAt(new Date());
-            houseQmCheckTaskSquadMapper.updateByPrimaryKeySelective(squad);
         return  houseQmCheckTaskSquadMapper.updateByPrimaryKeySelective(squad);
     }
 

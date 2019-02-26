@@ -281,7 +281,7 @@ public class ExportUtils {
     // 导出 统计报告 -任务概况 -验房详情 导出excel 使用freemaker
     public static void exportStatExcel(String templateName, Map<String, Object> data, HttpServletResponse response, HttpServletRequest request) throws Exception {
         // 加载模板
-        File file = new File("temp.xls");// 临时名称
+        File file = new File("temp.xlsx");// 临时名称
         Configuration configuration = new Configuration();
         configuration.setDefaultEncoding("utf-8");
         ExportUtils exportUtils = new ExportUtils();

@@ -89,8 +89,8 @@ public class V3HouseqmStatController {
         title += "－" + StatisticFormInspectionStatusEnum.getName(req.getStatus());
         title += "－" + StatisticFormInspectionIssueStatusEnum.getName(req.getIssue_status());
 
-        response.setHeader("Content-Type", "application/vnd.ms-excel; charset=utf-8");
-        response.setHeader("Content-Disposition", " attachment; filename=" + new String(title.getBytes("gbk"), "iso8859-1") + ".xls"); //File name extension was wrong
+        //response.setHeader("Content-Type", "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet; charset=utf-8");
+        response.setHeader("Content-Disposition", " attachment; filename=" + new String(title.getBytes("gbk"), "iso8859-1") + ".xlsx"); //File name extension was wrong
         response.setHeader("Expires", " 0");
         // 导出
         Map<String, Object> map = Maps.newHashMap();
