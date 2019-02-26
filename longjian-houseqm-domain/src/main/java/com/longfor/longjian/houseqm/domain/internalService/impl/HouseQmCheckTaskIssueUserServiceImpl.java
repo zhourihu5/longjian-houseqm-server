@@ -1,6 +1,7 @@
 package com.longfor.longjian.houseqm.domain.internalService.impl;
 
 import com.longfor.gaia.gfs.data.mybatis.datasource.LFAssignDataSource;
+import com.longfor.longjian.common.util.DateUtil;
 import com.longfor.longjian.houseqm.dao.zj2db.HouseQmCheckTaskIssueUserMapper;
 import com.longfor.longjian.houseqm.domain.internalService.HouseQmCheckTaskIssueUserService;
 import com.longfor.longjian.houseqm.po.zj2db.HouseQmCheckTaskIssueUser;
@@ -48,7 +49,13 @@ public class HouseQmCheckTaskIssueUserServiceImpl implements HouseQmCheckTaskIss
      */
     @LFAssignDataSource(value = "zhijian2")
     public List<HouseQmCheckTaskIssueUser> searchByUserIdAndTaskIdAndCreateAt(int userId, int taskId,int timestamp){
-        List<HouseQmCheckTaskIssueUser> houseQmCheckTaskIssueUsers = houseQmCheckTaskIssueUserMapper.selectByUserIdAndTaskIdAndCreateAt(userId, taskId, timestamp,"false");
+        Example example = new Example(HouseQmCheckTaskIssueUser.class);
+        Example.Criteria criteria = example.createCriteria();
+        criteria.andEqualTo("userId",userId).andEqualTo("taskId",taskId);
+        criteria.andGreaterThan("createAt", DateUtil.timestampToString(timestamp,"yyyy-MM-dd"));
+        ExampleUtil.addDeleteAtJudge(example);
+        //List<HouseQmCheckTaskIssueUser> houseQmCheckTaskIssueUsers = houseQmCheckTaskIssueUserMapper.selectByUserIdAndTaskIdAndCreateAt(userId, taskId, timestamp,"false");
+        List<HouseQmCheckTaskIssueUser> houseQmCheckTaskIssueUsers = houseQmCheckTaskIssueUserMapper.selectByExample(example);
         return houseQmCheckTaskIssueUsers;
     }
 

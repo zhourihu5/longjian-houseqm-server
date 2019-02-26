@@ -217,7 +217,12 @@ public class HouseQmCheckTaskIssueServiceImpl implements HouseQmCheckTaskIssueSe
      */
     @LFAssignDataSource("zhijian2")
     public List<HouseQmCheckTaskIssue> searchByIssueUuidsAndclientCreateAt(Set<String> issueUuids, int timestamp) {
-        List<HouseQmCheckTaskIssue> taskIssues = houseQmCheckTaskIssueMapper.selectByIssueUuidsAndclientCreateAt(issueUuids, timestamp, "false");
+        Example example = new Example(HouseQmCheckTaskIssue.class);
+        Example.Criteria criteria = example.createCriteria();
+        if (issueUuids.size() > 0) criteria.andIn("uuid", issueUuids);
+        criteria.andLessThan("clientCreateAt",com.longfor.longjian.common.util.DateUtil.timestampToString(timestamp,"yyyy-MM-dd"));
+        ExampleUtil.addDeleteAtJudge(example);
+        List<HouseQmCheckTaskIssue> taskIssues = houseQmCheckTaskIssueMapper.selectByExample(example);
         return taskIssues;
     }
 
