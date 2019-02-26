@@ -376,6 +376,7 @@ public class HouseqmStatServiceImpl implements IHouseqmStatService {
             if (areaInfo == null) throw new Exception(ErrorEnum.DB_ITEM_UNFOUND.getMessage());
             areaPath = areaInfo.getPath() + areaInfo.getId() + "/%";
         } else return null;
+        // 添加delete_at is null
         List<HouseQmCheckTaskIssue> issues = houseQmCheckTaskIssueService.searchByProjIdAndCategoryClsAndAreaPathAndIdLikeGroupByStatus(project_id, category_cls, areaPath);
 
         HouseQmStatAreaSituationIssueRspVo result = new HouseQmStatAreaSituationIssueRspVo();
