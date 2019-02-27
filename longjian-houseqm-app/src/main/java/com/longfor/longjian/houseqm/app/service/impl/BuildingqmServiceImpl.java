@@ -3089,7 +3089,10 @@ public class BuildingqmServiceImpl implements IBuildingqmService {
             nodeDataVo.setPath_name(nodeDataVo.getKey() + "/");
             pathKeys.add(0, nodeDataVo.getKey());
             nodeDataVo.setPath_keys(pathKeys);
-            if (StringUtils.isBlank(nodeDataVo.getKey()) || StringUtils.isBlank(nodeDataVo.getParent_key()) || nodeDataVo.getIssue_count() == null || StringUtils.isBlank(nodeDataVo.getName())) {
+            if (StringUtils.isBlank(nodeDataVo.getKey())
+//                    || StringUtils.isBlank(nodeDataVo.getParent_key())
+                    || nodeDataVo.getIssue_count() == null
+                    || StringUtils.isBlank(nodeDataVo.getName())) {
                 continue;
             }
             dataList.add(nodeDataVo);
@@ -3099,23 +3102,32 @@ public class BuildingqmServiceImpl implements IBuildingqmService {
         ArrayList<String> path_key = Lists.newArrayList();
         for (NodeDataVo item : dataList) {
             String parentKey = item.getParent_key();
+            log.info("item={}",JSON.toJSONString(item));
             while (parentKey.length() > 0) {
                 item.setPath_name(String.format("%s/%s", parentKey, item.getPath_name()));
                 path_key.add(0, parentKey);
                 item.setPath_keys(path_key);
+                log.info("parentKey={}",parentKey);
                 if (dataMap.containsKey(parentKey)) {
+                    log.info("valid");
                     parentKey = dataMap.get(parentKey).getParent_key();
                 } else {
+                    log.info("not valid");
                     item.setValid_node(false);
                     break;
                 }
             }
+
             dataMap.get(item.getKey()).setPath_name(item.getPath_name());
             dataMap.get(item.getKey()).setPath_keys(item.getPath_keys());
             dataMap.get(item.getKey()).setValid_node(item.getValid_node());
             if (item.getPath_keys().size() > maxCol) {
                 maxCol = item.getPath_keys().size();
             }
+        }
+        boolean debug=false;//todo just for debug
+        if(debug){
+            throw new RuntimeException("comment this line to close debug and exception");
         }
         for (NodeDataVo obj : dataList) {
             if (obj.getValid_node() == false) {
@@ -3139,8 +3151,10 @@ public class BuildingqmServiceImpl implements IBuildingqmService {
             dataMap.get(obj.getKey()).setChild_count(obj.getChild_count());
         }
         List<NodeVo> nodeTree = Lists.newArrayList();
+        log.info("dataList={},itemsList={}",JSON.toJSONString(dataList),JSON.toJSONString(itemsList));
         for (int i = 1; i < maxCol + 1; i++) {
             for (NodeDataVo item : dataList) {
+//                item.setValid_node(true);//todo just for debug
                 if (!item.getValid_node()) {
                     continue;
                 }
@@ -3166,6 +3180,7 @@ public class BuildingqmServiceImpl implements IBuildingqmService {
                 }
             }
         }
+        log.info("nodeTree={},maxCol={}",JSON.toJSONString(nodeTree),maxCol);
         SXSSFWorkbook wb = ExportUtils.exportIssueStatisticExcel(nodeTree, maxCol);
         //path = ret.get('path', '')
         //        dt = datetime.datetime.strftime(datetime.datetime.now(), '%Y%m%d%H%M%S')
