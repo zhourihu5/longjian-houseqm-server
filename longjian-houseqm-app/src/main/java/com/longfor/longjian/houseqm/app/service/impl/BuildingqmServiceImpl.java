@@ -1781,6 +1781,7 @@ public class BuildingqmServiceImpl implements IBuildingqmService {
         issue.setSenderId(uid);
         List<ApiHouseQmCheckTaskIssueLogInfo.ApiHouseQmCheckTaskIssueLogDetailInfo> detail1 = log.getDetail();
         detail1.forEach(detail -> {
+
             if (detail.getPlan_end_on() != -1) {
                 issue.setPlanEndOn(DateUtil.transForDate(detail.getPlan_end_on()));
             }
@@ -2114,7 +2115,7 @@ public class BuildingqmServiceImpl implements IBuildingqmService {
             ApiHouseQmCheckTaskIssueLogInfo.ApiHouseQmCheckTaskIssueLogDetailInfo info = new ApiHouseQmCheckTaskIssueLogInfo().new ApiHouseQmCheckTaskIssueLogDetailInfo();
             Map detail = (Map) item.get("detail");
             if (detail != null) {
-                info.setPos_y(detail.get("area_id")!=null?((Integer) detail.get("area_id")):(-1));
+                info.setArea_id(detail.get("area_id")!=null?((Integer) detail.get("area_id")):(-1));
                 if ((Integer) detail.get("pos_y") != null) {
                     info.setPos_y((Integer) detail.get("pos_y"));
                 } else {
