@@ -2114,6 +2114,7 @@ public class BuildingqmServiceImpl implements IBuildingqmService {
             ApiHouseQmCheckTaskIssueLogInfo.ApiHouseQmCheckTaskIssueLogDetailInfo info = new ApiHouseQmCheckTaskIssueLogInfo().new ApiHouseQmCheckTaskIssueLogDetailInfo();
             Map detail = (Map) item.get("detail");
             if (detail != null) {
+                info.setPos_y(detail.get("area_id")!=null?((Integer) detail.get("area_id")):(-1));
                 if ((Integer) detail.get("pos_y") != null) {
                     info.setPos_y((Integer) detail.get("pos_y"));
                 } else {
