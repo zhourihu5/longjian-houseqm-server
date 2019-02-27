@@ -3124,10 +3124,10 @@ public class BuildingqmServiceImpl implements IBuildingqmService {
                 maxCol = item.getPath_keys().size();
             }
         }
-        boolean debug=false;//todo just for debug
-        if(debug){
-            throw new RuntimeException("comment this line to close debug and exception");
-        }
+//        boolean debug=false;//todo just for debug
+//        if(debug){
+//            throw new RuntimeException("comment this line to close debug and exception");
+//        }
         for (NodeDataVo obj : dataList) {
             if (obj.getValid_node() == false) {
                 continue;
