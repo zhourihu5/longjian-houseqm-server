@@ -2446,7 +2446,7 @@ public class BuildingqmServiceImpl implements IBuildingqmService {
                 for (int i = 0; i < needDeleteIds.size(); i++) {
                     List<UserInHouseQmCheckTask> userlist = userInHouseQmCheckTaskService.selectByIdAndTaskId(needDeleteIds.get(i), taskEditReq.getTask_id());
                     for (int j = 0; j < userlist.size(); j++) {
-                        int one = userInHouseQmCheckTaskService.delete(userlist.get(i));
+                        int one = userInHouseQmCheckTaskService.delete(userlist.get(j));
                         if (one <= 0) {
                             log.info("UserInHouseQmCheckTaskDao().delete failed");
                             throw new LjBaseRuntimeException(-99, "删除人员失败");
