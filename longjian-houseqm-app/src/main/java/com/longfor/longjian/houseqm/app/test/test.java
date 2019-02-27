@@ -1,7 +1,10 @@
 package com.longfor.longjian.houseqm.app.test;
 
 import com.google.common.collect.Lists;
+import com.longfor.gaia.gfs.data.mybatis.datasource.LFAssignDataSource;
 import com.longfor.longjian.houseqm.app.utils.FileUtil;
+import com.longfor.longjian.houseqm.dao.zj2db.UserInHouseQmCheckTaskMapper;
+import com.longfor.longjian.houseqm.po.zj2db.UserInHouseQmCheckTask;
 import com.longfor.longjian.houseqm.util.DateUtil;
 import freemarker.template.Configuration;
 import freemarker.template.Template;
@@ -9,7 +12,9 @@ import freemarker.template.TemplateException;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import sun.misc.BASE64Encoder;
+import tk.mybatis.mapper.entity.Example;
 
+import javax.annotation.Resource;
 import javax.servlet.ServletOutputStream;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -60,11 +65,4 @@ public class test {
        //多文件导出
          new DocumentHandler().exportWordBatch(req,resp,objects,numbers,"notify_template.ftl");
     }
-    public static void main(String[] args) {
-            String str="12312312";
-        int i = str.indexOf("4");
-        System.out.println(i);
-    }
-
-
 }

@@ -322,7 +322,7 @@ public class HouseqmStaticService {
             map.put("types", types);
         }
         if (areaId > 0) {
-            map.put("areaId", "%%/" + areaId + "/%%");
+            map.put("areaId", "%/" + areaId + "/%");
         }
         if (statuses != null) {
             map.put("statuses", statuses);

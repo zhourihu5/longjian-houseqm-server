@@ -217,7 +217,12 @@ public class HouseQmCheckTaskIssueServiceImpl implements HouseQmCheckTaskIssueSe
      */
     @LFAssignDataSource("zhijian2")
     public List<HouseQmCheckTaskIssue> searchByIssueUuidsAndclientCreateAt(Set<String> issueUuids, int timestamp) {
-        List<HouseQmCheckTaskIssue> taskIssues = houseQmCheckTaskIssueMapper.selectByIssueUuidsAndclientCreateAt(issueUuids, timestamp, "false");
+        Example example = new Example(HouseQmCheckTaskIssue.class);
+        Example.Criteria criteria = example.createCriteria();
+        if (issueUuids.size() > 0) criteria.andIn("uuid", issueUuids);
+        criteria.andLessThan("clientCreateAt",com.longfor.longjian.common.util.DateUtil.timestampToString(timestamp,"yyyy-MM-dd"));
+        ExampleUtil.addDeleteAtJudge(example);
+        List<HouseQmCheckTaskIssue> taskIssues = houseQmCheckTaskIssueMapper.selectByExample(example);
         return taskIssues;
     }
 
@@ -700,7 +705,7 @@ public class HouseQmCheckTaskIssueServiceImpl implements HouseQmCheckTaskIssueSe
     @LFAssignDataSource("zhijian2")
     public void update(HouseQmCheckTaskIssue issue_info) {
         issue_info.setUpdateAt(new Date());
-        houseQmCheckTaskIssueMapper.updateByPrimaryKey(issue_info);
+        houseQmCheckTaskIssueMapper.updateByPrimaryKeySelective(issue_info);
 
     }
 
@@ -728,12 +733,14 @@ public class HouseQmCheckTaskIssueServiceImpl implements HouseQmCheckTaskIssueSe
 
     @Override
     @LFAssignDataSource("zhijian2")
-    public int add(HouseQmCheckTaskIssue issue) {
+    public Integer add(HouseQmCheckTaskIssue issue) {
         issue.setUpdateAt(new Date());
         issue.setCreateAt(new Date());
         issue.setClientCreateAt(new Date());
-        return houseQmCheckTaskIssueMapper.insert(issue);
+        //int affect = houseQmCheckTaskIssueMapper.insert(issue);
+        houseQmCheckTaskIssueMapper.insert(issue);
 
+        return issue.getId();
     }
 
     @Override
@@ -741,7 +748,7 @@ public class HouseQmCheckTaskIssueServiceImpl implements HouseQmCheckTaskIssueSe
     public List<HouseQmCheckTaskIssue> selectByUuids(List<String> issueUuids) {
         Example example = new Example(HouseQmCheckTaskIssue.class);
         example.createCriteria().andIn("uuid", issueUuids);
-        example.orderBy("clientCreateAt");
+        example.orderBy("clientCreateAt").desc();
         return houseQmCheckTaskIssueMapper.selectByExample(example);
     }
 

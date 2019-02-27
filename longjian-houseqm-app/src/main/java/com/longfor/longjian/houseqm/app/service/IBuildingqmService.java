@@ -32,5 +32,5 @@ public interface IBuildingqmService {
      * @param items
      * @return
      */
-    Map<String, Object> issuestatisticexport(Integer category_cls, String items);
+    Map<String, Object> issuestatisticexport(String category_cls, String items);
 }

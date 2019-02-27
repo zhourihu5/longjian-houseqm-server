@@ -7,6 +7,7 @@ import com.longfor.longjian.houseqm.domain.internalService.UserInHouseQmCheckTas
 import com.longfor.longjian.houseqm.po.zj2db.UserInHouseQmCheckTask;
 import com.longfor.longjian.houseqm.utils.ExampleUtil;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.collections.CollectionUtils;
 import org.springframework.stereotype.Service;
 import tk.mybatis.mapper.entity.Example;
 import org.springframework.transaction.annotation.Transactional;
@@ -183,7 +184,7 @@ public class UserInHouseQmCheckTaskServiceImpl implements UserInHouseQmCheckTask
         }
         return userInHouseQmCheckTasks.size();
     }
-
+    @Transactional
     @Override
     @LFAssignDataSource("zhijian2")
     public UserInHouseQmCheckTask selectBysquadIdAnduserIdAndtaskIdAndNotDel(Integer squadId, Integer userId, Integer taskId) {
@@ -192,7 +193,7 @@ public class UserInHouseQmCheckTaskServiceImpl implements UserInHouseQmCheckTask
         criteria.andEqualTo("squadId", squadId).andEqualTo("userId", userId).andEqualTo("taskId", taskId).andIsNull("deleteAt");
         return userInHouseQmCheckTaskMapper.selectOneByExample(example);
     }
-
+    @Transactional
     @Override
     @LFAssignDataSource("zhijian2")
     public int update(UserInHouseQmCheckTask dbItem) {
@@ -212,13 +213,9 @@ public class UserInHouseQmCheckTaskServiceImpl implements UserInHouseQmCheckTask
     @Override
     @LFAssignDataSource("zhijian2")
     public int delete(UserInHouseQmCheckTask userInHouseQmCheckTask) {
-        List<UserInHouseQmCheckTask> tasks = userInHouseQmCheckTaskMapper.select(userInHouseQmCheckTask);
-        for (UserInHouseQmCheckTask task : tasks) {
-            task.setUpdateAt(new Date());
+        UserInHouseQmCheckTask task = userInHouseQmCheckTaskMapper.selectOne(userInHouseQmCheckTask);
             task.setDeleteAt(new Date());
-            userInHouseQmCheckTaskMapper.updateByPrimaryKeySelective(task);
-        }
-        return tasks.size();
+        return  userInHouseQmCheckTaskMapper.updateByPrimaryKeySelective(task);
     }
 
     @Override
@@ -275,7 +272,7 @@ public class UserInHouseQmCheckTaskServiceImpl implements UserInHouseQmCheckTask
         Example.Criteria criteria = example.createCriteria();
         criteria.andEqualTo("taskId", taskId).andEqualTo("userId", uid).andIsNull("deleteAt");
         List<UserInHouseQmCheckTask> tasks = userInHouseQmCheckTaskMapper.selectByExample(example);
-        return tasks!=null?tasks.get(0):null;
+        return CollectionUtils.isNotEmpty(tasks) ?tasks.get(0):null;
     }
 
 }

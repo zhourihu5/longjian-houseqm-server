@@ -196,7 +196,7 @@ public class ExportUtils {
         //    wb.save(pathname)
         String dt = DateUtil.getNowTimeStr("MMddHHmmss");
         String r = new Random().ints(0, 65536).toString();
-        String pathname = String.format("%s/export_issue_excel_%s_%s.xlsx", EXPORT_PATH, dt, r);
+        String pathname = String.format("%s/export_issue_excel_%s_%s.xls", EXPORT_PATH, dt, r);
 
         return workbook;
     }

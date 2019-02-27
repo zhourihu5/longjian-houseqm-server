@@ -77,7 +77,7 @@ public class IssueListController {
             SXSSFWorkbook wb = (SXSSFWorkbook) map.get("workbook");
             response.setContentType("application/vnd.ms-excel");
             response.setCharacterEncoding("utf-8");
-            response.setHeader("Content-Disposition", "attachment;filename=" + new String(fileName.getBytes("gbk"), "iso8859-1") + ".xlsx");
+            response.setHeader("Content-Disposition", "attachment;filename=" + new String(fileName.getBytes("gbk"), "iso8859-1") + ".xls");
             wb.write(os);
             os.flush();
         } catch (IOException e) {
@@ -198,9 +198,9 @@ public class IssueListController {
 
     //导出整改回复单
     @RequestMapping(value = "repair_reply_export", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
-    public LjBaseResponse<Object> repairReplyExport(HttpServletRequest request, HttpServletResponse response,
-                                                    @RequestParam(value = "project_id", required = true) Integer projectId,
-                                                    @RequestParam(value = "issue_ids", required = true) String issueIds) throws IOException {
+    public LjBaseResponse<Object> repairReplyExport(HttpServletRequest request, HttpServletResponse response) throws IOException {
+        String projectId = request.getParameter("project_id");
+        String issueIds=  request.getParameter("issue_ids");
         log.info("repair_reply_export, project_id=" + projectId + ", issue_ids=" + issueIds);
         if (projectId == null || issueIds == null) {
             LjBaseResponse<Object> objectTaskResponse = new LjBaseResponse<>();
@@ -210,7 +210,7 @@ public class IssueListController {
         }
         ServletOutputStream os = response.getOutputStream();
         try {
-            Map<String, Object> map = iIssueService.repairReplyExport(projectId, issueIds);
+            Map<String, Object> map = iIssueService.repairReplyExport(Integer.parseInt(projectId), issueIds);
             XWPFDocument doc = (XWPFDocument) map.get("doc");
             String filename = (String) map.get("filename");
             //response.setContentType("application/vnd.ms-word");

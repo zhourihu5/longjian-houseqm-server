@@ -1,11 +1,13 @@
 package com.longfor.longjian.houseqm.domain.internalService.impl;
 
+import com.google.common.collect.Lists;
 import com.longfor.gaia.gfs.data.mybatis.datasource.LFAssignDataSource;
 import com.longfor.longjian.houseqm.dao.zj2db.HouseQmCheckTaskIssueAttachmentMapper;
 import com.longfor.longjian.houseqm.domain.internalService.HouseQmCheckTaskIssueAttachmentService;
 import com.longfor.longjian.houseqm.po.zj2db.HouseQmCheckTaskIssueAttachment;
 import com.longfor.longjian.houseqm.utils.ExampleUtil;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.collections.CollectionUtils;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import tk.mybatis.mapper.entity.Example;
@@ -64,6 +66,7 @@ public class HouseQmCheckTaskIssueAttachmentServiceImpl implements  HouseQmCheck
      */
     @LFAssignDataSource("zhijian2")
     public List<HouseQmCheckTaskIssueAttachment> searchByIssueUuid(Set<String> issueUuids){
+        if (CollectionUtils.isEmpty(issueUuids))return Lists.newArrayList();
         List<HouseQmCheckTaskIssueAttachment> houseQmCheckTaskIssueAttachments = houseQmCheckTaskIssueAttachmentMapper.selectByIssueUuid(issueUuids, "false");
         return houseQmCheckTaskIssueAttachments;
     }

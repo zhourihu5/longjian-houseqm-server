@@ -60,6 +60,11 @@
             <artifactId>spring-boot-configuration-processor</artifactId>
             <optional>true</optional>
         </dependency>
+        <dependency>
+            <groupId>javax.validation</groupId>
+            <artifactId>validation-api</artifactId>
+            <version>2.0.1.Final</version>
+        </dependency>
 
         <!--POI 文件导出 excel -->
         <!-- https://mvnrepository.com/artifact/org.apache.poi/poi -->
