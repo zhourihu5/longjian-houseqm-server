@@ -228,7 +228,7 @@ public class ExportUtils {
                 XWPFParagraph pI2 = cell.addParagraph();
                 XWPFRun rI2 = pI2.createRun();
                 rI2.setText(String.format("%s回复：%s", (index + 1 < 10 ? "   " : "    "), issue.getAnsw_content().replace("\n", " ")));
-                if (issue.getAnsw_attachment_path().size() > 0) {
+                if (CollectionUtils.isNotEmpty(issue.getAnsw_attachment_path())) {
                     XWPFParagraph pI3 = cell.addParagraph();
                     XWPFRun rI3 = pI3.createRun();
                     rI3.setText((index + 1 < 10 ? "   " : "    "));
