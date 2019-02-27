@@ -2081,7 +2081,7 @@ public class BuildingqmServiceImpl implements IBuildingqmService {
             } else {
                 items.setSender_id(-1);
             }
-            if (StringUtils.isBlank((String) item.get("desc"))) {
+            if (StringUtils.isNotBlank((String) item.get("desc"))) {
                 items.setDesc((String) item.get("desc"));
             } else {
                 items.setDesc("");
@@ -2091,17 +2091,17 @@ public class BuildingqmServiceImpl implements IBuildingqmService {
             } else {
                 items.setStatus(-1);
             }
-            if (StringUtils.isBlank((String) item.get("attachment_md5_list"))) {
+            if (StringUtils.isNotBlank((String) item.get("attachment_md5_list"))) {
                 items.setAttachment_md5_list((String) item.get("attachment_md5_list"));
             } else {
                 items.setAttachment_md5_list("");
             }
-            if (StringUtils.isBlank((String) item.get("audio_md5_list"))) {
+            if (StringUtils.isNotBlank((String) item.get("audio_md5_list"))) {
                 items.setAudio_md5_list((String) item.get("audio_md5_list"));
             } else {
                 items.setAudio_md5_list("");
             }
-            if (StringUtils.isBlank((String) item.get("memo_audio_md5_list"))) {
+            if (StringUtils.isNotBlank((String) item.get("memo_audio_md5_list"))) {
                 items.setMemo_audio_md5_list((String) item.get("memo_audio_md5_list"));
             } else {
                 items.setMemo_audio_md5_list("");
@@ -2144,7 +2144,7 @@ public class BuildingqmServiceImpl implements IBuildingqmService {
                     info.setRepairer_id(-1);
                 }
 
-                if (StringUtils.isBlank((String) detail.get("repairer_follower_ids"))) {
+                if (StringUtils.isNotBlank((String) detail.get("repairer_follower_ids"))) {
                     info.setRepairer_follower_ids((String) detail.get("repairer_follower_ids"));
                 } else {
                     info.setRepairer_follower_ids("");
@@ -2162,37 +2162,37 @@ public class BuildingqmServiceImpl implements IBuildingqmService {
                     info.setCategory_cls(-1);
                 }
 
-                if (StringUtils.isBlank((String) detail.get("category_key"))) {
+                if (StringUtils.isNotBlank((String) detail.get("category_key"))) {
                     info.setCategory_key((String) detail.get("category_key"));
                 } else {
                     info.setCategory_key("");
                 }
 
-                if (StringUtils.isBlank((String) detail.get("drawing_md5"))) {
+                if (StringUtils.isNotBlank((String) detail.get("drawing_md5"))) {
                     info.setDrawing_md5((String) detail.get("drawing_md5"));
                 } else {
                     info.setDrawing_md5("");
                 }
 
-                if (StringUtils.isBlank((String) detail.get("check_item_key"))) {
+                if (StringUtils.isNotBlank((String) detail.get("check_item_key"))) {
                     info.setCheck_item_key((String) detail.get("check_item_key"));
                 } else {
                     info.setCheck_item_key((String) detail.get("check_item_key"));
                 }
 
-                if (StringUtils.isBlank((String) detail.get("remove_memo_audio_md5_list"))) {
+                if (StringUtils.isNotBlank((String) detail.get("remove_memo_audio_md5_list"))) {
                     info.setRemove_memo_audio_md5_list((String) detail.get("remove_memo_audio_md5_list"));
                 } else {
                     info.setRemove_memo_audio_md5_list((String) detail.get("remove_memo_audio_md5_list"));
                 }
 
-                if (StringUtils.isBlank((String) detail.get("title"))) {
+                if (StringUtils.isNotBlank((String) detail.get("title"))) {
                     info.setTitle((String) detail.get("title"));
                 } else {
                     info.setTitle((String) detail.get("title"));
                 }
 
-                if (StringUtils.isBlank((String) detail.get("check_item_md5"))) {
+                if (StringUtils.isNotBlank((String) detail.get("check_item_md5"))) {
                     info.setCheck_item_md5((String) detail.get("check_item_md5"));
                 } else {
                     info.setCheck_item_md5((String) detail.get("check_item_md5"));
@@ -2204,24 +2204,24 @@ public class BuildingqmServiceImpl implements IBuildingqmService {
                     info.setIssue_reason(-1);
                 }
 
-                if (StringUtils.isBlank((String) detail.get("issue_reason_detail"))) {
+                if (StringUtils.isNotBlank((String) detail.get("issue_reason_detail"))) {
                     info.setIssue_reason_detail((String) detail.get("issue_reason_detail"));
                 } else {
                     info.setIssue_reason_detail("");
                 }
 
-                if (StringUtils.isBlank((String) detail.get("issue_suggest"))) {
+                if (StringUtils.isNotBlank((String) detail.get("issue_suggest"))) {
                     info.setIssue_suggest((String) detail.get("issue_suggest"));
                 } else {
                     info.setIssue_suggest("");
                 }
 
-                if (StringUtils.isBlank((String) detail.get("potential_risk"))) {
+                if (StringUtils.isNotBlank((String) detail.get("potential_risk"))) {
                     info.setPotential_risk((String) detail.get("potential_risk"));
                 } else {
                     info.setPotential_risk("");
                 }
-                if (StringUtils.isBlank((String) detail.get("preventive_action_detail"))) {
+                if (StringUtils.isNotBlank((String) detail.get("preventive_action_detail"))) {
                     info.setPreventive_action_detail((String) detail.get("preventive_action_detail"));
                 } else {
                     info.setPreventive_action_detail("");
