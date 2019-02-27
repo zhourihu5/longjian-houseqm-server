@@ -1,5 +1,6 @@
 package com.longfor.longjian.houseqm.app.controller.buildingqmv3papi;
 
+import com.alibaba.fastjson.JSON;
 import com.google.common.collect.Lists;
 import com.longfor.longjian.common.base.LjBaseResponse;
 import com.longfor.longjian.common.util.CtrlTool;
@@ -22,15 +23,13 @@ import org.apache.poi.xssf.streaming.SXSSFWorkbook;
 import org.springframework.http.MediaType;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
+import springfox.documentation.spring.web.json.Json;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
-import java.io.BufferedInputStream;
-import java.io.FileInputStream;
-import java.io.IOException;
-import java.io.OutputStream;
+import java.io.*;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -362,18 +361,49 @@ public class BuildingqmController {
             ljBaseResponse.setResult(Integer.parseInt(CommonGlobalEnum.RES_ERROR.getId().toString()));
             ljBaseResponse.setMessage("args error");
             return ljBaseResponse;
+//            return;
         }
         Map<String, Object> map = buildingqmService.issuestatisticexport(category_cls, items);
-        log.info(String.format("export issue statistic, result=%d, message=%s, path=%s",Integer.parseInt(map.get("result").toString()),map.get("message").toString(),map.get("path").toString()));
+//        log.info("export issue statistic map={}", map);
+        log.info("export issue statistic, result={}, message={}, path={}",map.get("result"),map.get("message"),map.get("path"));
         if(Integer.parseInt(map.get("result").toString()) !=0){
             ljBaseResponse.setResult(Integer.parseInt(map.get("result").toString()));
             ljBaseResponse.setMessage(map.get("message").toString());
             return ljBaseResponse;
+//            return;
         }
-        response.addHeader("Content-Disposition", String.format("attachment; filename=\"%s\"",map.get("filename").toString()));
+            String agent = request.getHeader("USER-AGENT");
+            System.out.println("browser agent==" + agent);
+            //todo fix bug chinese charactor encoding in diferent browser
+            String fileNames= map.get("fileName").toString();
+            String codedfilename = "";
+            if (null != agent && -1 != agent.indexOf("MSIE") || null != agent && -1 != agent.indexOf("Trident")) {// ie
+                System.out.println("ie");
+                String name = java.net.URLEncoder.encode(fileNames, "UTF-8");
+                codedfilename = name;
+            } else if (null != agent && -1 != agent.indexOf("Mozilla")) {// 火狐,chrome等
+                System.out.println("chrome");
+                codedfilename = new String(fileNames.getBytes("UTF-8"), "iso-8859-1");
+            } else {
+                System.out.println("other browser");
+                //String fileName = String.format("%s_问题详情_%s.xlsx", category_name, dt);
+                codedfilename = "issue_detail.xlsx";
+            }
+
+            response.addHeader("Content-Disposition",
+                    "attachment;filename=" + codedfilename);
+
+            response.addHeader("Content-Type", "application/vnd.ms-excel; charset=utf-8");
+            response.addHeader("Expires", "0");
         SXSSFWorkbook workbook = (SXSSFWorkbook) map.get("workbook");
-        workbook.write(response.getOutputStream());
+        workbook.write(response.getOutputStream());//todo uncomment this line
+        //todo just for debug
+//            File file=FileUtil.createFile("/Users/huzhou/workspace/longjian/longjian-houseqm-server/test.xlsx");//todo just for debug
+//            FileOutputStream fileOutputStream=new FileOutputStream(file);//todo just for debug
+//            workbook.write(fileOutputStream);//todo just for debug
+
         //FileUtil.Load(map.get("path").toString(),response);
-        return ljBaseResponse;
+//        return ljBaseResponse;
+            return null;
     }
 }
