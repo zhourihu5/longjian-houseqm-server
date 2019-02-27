@@ -1,5 +1,5 @@
-server.port: 8082 #8081
-management.port: 9982 #9982
+#start
+
 
 spring:
   application:
@@ -22,7 +22,8 @@ management:
     enabled: false
 
 # gaia gfs 配置
-
+server.port: 8082
+management.port: 9982 #9982
 longfor:
   web:
     swagger:
