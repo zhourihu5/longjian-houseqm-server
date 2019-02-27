@@ -5,12 +5,13 @@ import javax.persistence.*;
 
 @Table(name = "house_qm_check_task_issue")
 public class HouseQmCheckTaskIssue {
+
     /**
      * 记录ID（也用作问题ID）
      */
     @Id
+    @GeneratedValue(generator = "JDBC")
     private Integer id;
-
     /**
      * 项目ID（关联project表id字段）
      */

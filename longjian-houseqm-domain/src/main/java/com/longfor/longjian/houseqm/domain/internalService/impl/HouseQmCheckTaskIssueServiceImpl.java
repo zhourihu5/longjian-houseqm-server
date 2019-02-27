@@ -733,12 +733,14 @@ public class HouseQmCheckTaskIssueServiceImpl implements HouseQmCheckTaskIssueSe
 
     @Override
     @LFAssignDataSource("zhijian2")
-    public int add(HouseQmCheckTaskIssue issue) {
+    public Integer add(HouseQmCheckTaskIssue issue) {
         issue.setUpdateAt(new Date());
         issue.setCreateAt(new Date());
         issue.setClientCreateAt(new Date());
-        return houseQmCheckTaskIssueMapper.insert(issue);
+        //int affect = houseQmCheckTaskIssueMapper.insert(issue);
+        houseQmCheckTaskIssueMapper.insert(issue);
 
+        return issue.getId();
     }
 
     @Override

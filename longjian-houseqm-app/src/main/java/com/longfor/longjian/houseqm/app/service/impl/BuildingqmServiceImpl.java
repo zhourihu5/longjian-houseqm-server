@@ -933,7 +933,9 @@ public class BuildingqmServiceImpl implements IBuildingqmService {
                     List<ApiHouseQmCheckTaskIssueLogInfo.ApiHouseQmCheckTaskIssueLogDetailInfo> detail1 = item.getDetail();
                     for (int i = 0; i < detail1.size(); i++) {
                         if (isCheckItemChange(issue, item) || StringUtils.isEmpty(checkItemMD5) || StringUtils.isEmpty(detail1.get(i).getCheck_item_md5()) || detail1.get(i).getCheck_item_md5().equals(checkItemMD5)) {
-                            HouseQmCheckTaskIssue issues = modifyIssue(refundMap, issueRoleMap, issue, item, true);
+                            Map<String,Object> modifyIssueMap = modifyIssue(refundMap, issueRoleMap, issue, item, true);
+                            HouseQmCheckTaskIssue issues = (HouseQmCheckTaskIssue) modifyIssueMap.get("issue");
+                            refundMap = (HashMap<HouseQmCheckTaskIssue, ApiRefundInfo>)modifyIssueMap.get("refundMap");
                             issueInsertMap.put(item.getIssue_uuid(), issues);
                             logInsertList.add(createIssueLog(projectId, item));
 
@@ -965,7 +967,9 @@ public class BuildingqmServiceImpl implements IBuildingqmService {
                         List<ApiHouseQmCheckTaskIssueLogInfo.ApiHouseQmCheckTaskIssueLogDetailInfo> detail1 = item.getDetail();
                         for (int i = 0; i < detail1.size(); i++) {
                             if (isCheckItemChange(issue, item) || StringUtils.isEmpty(checkItemMD5) || StringUtils.isEmpty(detail1.get(i).getCheck_item_md5()) || detail1.get(i).getCheck_item_md5().equals(checkItemMD5)) {
-                                HouseQmCheckTaskIssue issues = modifyIssue(refundMap, issueRoleMap, issue, item, null);
+                                Map<String,Object> modifyIssueMap = modifyIssue(refundMap, issueRoleMap, issue, item, null);
+                                HouseQmCheckTaskIssue issues = (HouseQmCheckTaskIssue) modifyIssueMap.get("issue");
+                                refundMap = (HashMap<HouseQmCheckTaskIssue, ApiRefundInfo>)modifyIssueMap.get("refundMap");
                                 issueUpdateMap.put(item.getIssue_uuid(), issues);
                                 logInsertList.add(createIssueLog(projectId, item));
 
@@ -980,198 +984,205 @@ public class BuildingqmServiceImpl implements IBuildingqmService {
                     logInsertList.add(createIssueLog(projectId, item));
                 }
             }
-            // # 获取相关任务检查人组信息
-            Map<Integer, Map<Integer, Map<Integer, Integer>>> checkerMap = createCheckerMap(taskIds);
-            //  # 处理新增问题
-            for (Map.Entry<String, HouseQmCheckTaskIssue> entry : issueInsertMap.entrySet()) {
-                HouseQmCheckTaskIssue issue = (HouseQmCheckTaskIssue) entry.getValue();
-                int one = houseQmCheckTaskIssueService.add(issue);
-                if (one <= 0) {
-                    log.info("insert new issue failed, data=" + JSON.toJSONString(issue) + "");
-                }
-                // # 写入推送记录
-                if (CheckTaskIssueStatus.NoteNoAssign.getValue().equals(issue.getStatus())) {
-                    List<Integer> desUserIds = getIssueCheckerList(checkerMap, issue, null);
-                    desUserIds.forEach(userId -> {
-                        pushList.add(userId);
-                    });
-                    if (CollectionUtils.isNotEmpty(desUserIds)) {
-                        HouseQmCheckTaskNotifyRecord itemNotify = new HouseQmCheckTaskNotifyRecord();
-                        itemNotify.setProjectId(issue.getProjectId());
-                        itemNotify.setTaskId(issue.getTaskId());
-                        itemNotify.setSrcUserId(0);
-                        itemNotify.setDesUserIds(StringUtils.join(desUserIds, ","));
-                        itemNotify.setModuleId(ModuleInfoEnum.GCGL.getValue());
-                        itemNotify.setIssueId(issue.getId());
-                        itemNotify.setIssueStatus(CheckTaskIssueStatus.NoteNoAssign.getValue());
-                        itemNotify.setExtraInfo("");
-                        notifyList.add(itemNotify);
-                    }
-                } else if (CheckTaskIssueStatus.AssignNoReform.getValue().equals(issue.getStatus())) {
-                    ArrayList<Integer> desUserIds = Lists.newArrayList();
-                    if (issue.getRepairerId() > 0) {
-                        desUserIds.add(issue.getRepairerId());
-                        pushList.add(issue.getRepairerId());
-                    }
-                    List<Integer> idsComma = StringSplitToListUtil.splitToIdsComma(issue.getRepairerFollowerIds(), ",");
-                    idsComma.forEach(user -> {
-                        if (user > 0 && !desUserIds.contains(user)) {
-                            desUserIds.add(user);
-                            pushList.add(user);
-                        }
-                    });
-                    if (CollectionUtils.isNotEmpty(desUserIds)) {
-                        HouseQmCheckTaskNotifyRecord itemNotify = new HouseQmCheckTaskNotifyRecord();
-                        itemNotify.setProjectId(issue.getProjectId());
-                        itemNotify.setTaskId(issue.getTaskId());
-                        itemNotify.setSrcUserId(0);
-                        itemNotify.setDesUserIds(StringUtils.join(desUserIds, ","));
-                        itemNotify.setModuleId(ModuleInfoEnum.GCGL.getValue());
-                        itemNotify.setIssueId(issue.getId());
-                        itemNotify.setIssueStatus(CheckTaskIssueStatus.AssignNoReform.getValue());
-                        itemNotify.setExtraInfo("");
-                        notifyList.add(itemNotify);
-                    }
-                }
-            }
-            //  # 处理更新问题
-            for (Map.Entry<Object, HouseQmCheckTaskIssue> entry : issueUpdateMap.entrySet()) {
-                HouseQmCheckTaskIssue issue = (HouseQmCheckTaskIssue) entry.getValue();
-                try {
-                    houseQmCheckTaskIssueService.update(issue);
-                } catch (Exception e) {
-                    log.info("insert new issue failed, data=" + JSON.toJSONString(issue) + "");
-                    e.printStackTrace();
-                }
-                // # 写入推送记录
-                Map<Object, Map> notifyStatMap = issueMapBody.getNotify_stat_map();
-                if (CheckTaskIssueStatus.AssignNoReform.getValue().equals(issue.getStatus())) {
-                    List<Integer> desUserIds = Lists.newArrayList();
+        }
 
-                    if (issue.getRepairerId() > 0 && (!issue.getRepairerId().equals(notifyStatMap.get(issue.getUuid()).get("repairerId")) || CheckTaskIssueStatus.ReformNoCheck.getValue().equals(notifyStatMap.get(issue.getUuid()).get("status")))) {
-                        desUserIds.add(issue.getRepairerId());
-                        pushList.add(issue.getRepairerId());
-                    }
-                    List<Integer> idsComma = StringSplitToListUtil.splitToIdsComma(issue.getRepairerFollowerIds(), ",");
-                    idsComma.forEach(user -> {
-                        List splitToIdsComma = (List) notifyStatMap.get(issue.getUuid()).get("splitToIdsComma");
-                        if (user > 0 && (splitToIdsComma.contains(user) || CheckTaskIssueStatus.ReformNoCheck.getValue().equals(notifyStatMap.get(issue.getUuid()).get("status")))) {
-                            desUserIds.add(user);
-                            pushList.add(user);
-                        }
-                    });
-                    if (CollectionUtils.isNotEmpty(desUserIds)) {
-                        HouseQmCheckTaskNotifyRecord itemNotify = new HouseQmCheckTaskNotifyRecord();
-                        itemNotify.setProjectId(issue.getProjectId());
-                        itemNotify.setTaskId(issue.getTaskId());
-                        itemNotify.setSrcUserId(0);
-                        itemNotify.setDesUserIds(StringUtils.join(desUserIds, ","));
-                        itemNotify.setModuleId(ModuleInfoEnum.GCGL.getValue());
-                        itemNotify.setIssueId(issue.getId());
-                        itemNotify.setIssueStatus(CheckTaskIssueStatus.NoteNoAssign.getValue());
-                        itemNotify.setExtraInfo("");
-                        notifyList.add(itemNotify);
-                    }
-                } else if (CheckTaskIssueStatus.ReformNoCheck.getValue().equals(issue.getStatus()) &&
-                        CheckTaskIssueStatus.ReformNoCheck.getValue().equals(notifyStatMap.get(issue.getUuid()).get("status"))) {
-                    ArrayList<Integer> desUserIds = getIssueCheckerList(checkerMap, issue, true);
-                    desUserIds.forEach(userId -> {
-                        pushList.add(userId);
-                    });
-                    if (CollectionUtils.isNotEmpty(desUserIds)) {
-                        HouseQmCheckTaskNotifyRecord itemNotify = new HouseQmCheckTaskNotifyRecord();
-                        itemNotify.setProjectId(issue.getProjectId());
-                        itemNotify.setTaskId(issue.getTaskId());
-                        itemNotify.setSrcUserId(0);
-                        itemNotify.setDesUserIds(StringUtils.join(desUserIds, ","));
-                        itemNotify.setModuleId(ModuleInfoEnum.GCGL.getValue());
-                        itemNotify.setIssueId(issue.getId());
-                        itemNotify.setIssueStatus(CheckTaskIssueStatus.ReformNoCheck.getValue());
-                        itemNotify.setExtraInfo("");
-                        notifyList.add(itemNotify);
-                    }
-                }
+        // # 获取相关任务检查人组信息
+        Map<Integer, Map<Integer, Map<Integer, Integer>>> checkerMap = createCheckerMap(taskIds);
+
+        //  # 处理新增问题
+        for (Map.Entry<String, HouseQmCheckTaskIssue> entry : issueInsertMap.entrySet()) {
+            HouseQmCheckTaskIssue issue = (HouseQmCheckTaskIssue) entry.getValue();
+            Integer res = houseQmCheckTaskIssueService.add(issue);
+            if (res==null) {
+                log.info("insert new issue failed, data=" + JSON.toJSONString(issue) + "");
+            }else {
+                issue.setId(res);
             }
-            //    # 处理新增问题人员角色
-            for (Map.Entry<String, ApiUserRoleInIssue> entry : issueRoleMap.entrySet()) {
-                Map<ApiUserRoleInIssue.RoleUser, Boolean> role = issueRoleMap.get(entry.getKey()).getUser_role();
-                for (Map.Entry<ApiUserRoleInIssue.RoleUser, Boolean> entrys : role.entrySet()) {
-                    HouseQmCheckTaskIssueUser houseQmCheckTaskIssueUser = new HouseQmCheckTaskIssueUser();
-                    houseQmCheckTaskIssueUser.setTaskId(issueRoleMap.get(entry.getKey()).getTask_id());
-                    houseQmCheckTaskIssueUser.setIssueUuid(entry.getKey());
-                    houseQmCheckTaskIssueUser.setUserId(entrys.getKey().getUser_id());
-                    houseQmCheckTaskIssueUser.setRoleType(entrys.getKey().getRole_type());
-                    try {
-                        houseQmCheckTaskIssueUserService.add(houseQmCheckTaskIssueUser);
-                    } catch (Exception e) {
-                        log.info("insert new role failed, data=" + JSON.toJSONString(houseQmCheckTaskIssueUser) + "");
-                        e.printStackTrace();
-                    }
-                }
-            }
-            //  # 处理新增附件
-            for (Map.Entry<String, HouseQmCheckTaskIssueAttachment> entry : attachmentInsertMap.entrySet()) {
-                int one = houseQmCheckTaskIssueAttachmentService.add(entry.getValue());
-                if (one <= 0) {
-                    log.info("insert new attachment failed, data=" + JSON.toJSONString(entry.getValue()) + "");
-                }
-            }
-            // # 处理移除附件
-            attachmentRemoveList.forEach(attachment -> {
-                HouseQmCheckTaskIssueAttachment issueAttachment = houseQmCheckTaskIssueAttachmentService.selectByMd5AndNotDel(attachment);
-                if (issueAttachment == null) {
-                    log.info("remove attachment failed, md5=" + attachment + "");
-                }
-            });
-            //# 处理新增问题日志
-            logInsertList.forEach(loginsert -> {
-                try {
-                    houseQmCheckTaskIssueLogService.add(loginsert);
-                } catch (Exception e) {
-                    log.info("insert new log failed, data=" + JSON.toJSONString(logInsertList) + "");
-                    e.printStackTrace();
-                }
-            });
-            //     # 处理退单情况融合推送
-            for (Map.Entry<HouseQmCheckTaskIssue, ApiRefundInfo> entry : refundMap.entrySet()) {
-                List<Integer> desUserIds = getIssueCheckerList(checkerMap, entry.getKey(), null);
+            // # 写入推送记录
+            if (CheckTaskIssueStatus.NoteNoAssign.getValue().equals(issue.getStatus())) {
+                List<Integer> desUserIds = getIssueCheckerList(checkerMap, issue, null);
+                desUserIds.forEach(userId -> {
+                    pushList.add(userId);
+                });
                 if (CollectionUtils.isNotEmpty(desUserIds)) {
                     HouseQmCheckTaskNotifyRecord itemNotify = new HouseQmCheckTaskNotifyRecord();
-                    itemNotify.setProjectId(entry.getKey().getProjectId());
-                    itemNotify.setTaskId(entry.getKey().getTaskId());
+                    itemNotify.setProjectId(issue.getProjectId());
+                    itemNotify.setTaskId(issue.getTaskId());
                     itemNotify.setSrcUserId(0);
                     itemNotify.setDesUserIds(StringUtils.join(desUserIds, ","));
                     itemNotify.setModuleId(ModuleInfoEnum.GCGL.getValue());
-                    itemNotify.setIssueId(entry.getKey().getId());
+                    itemNotify.setIssueId(issue.getId());
                     itemNotify.setIssueStatus(CheckTaskIssueStatus.NoteNoAssign.getValue());
                     itemNotify.setExtraInfo("");
                     notifyList.add(itemNotify);
                 }
-            }
-            // # 处理融合消息中心推送通知
-            if (CollectionUtils.isNotEmpty(notifyList)) {
-                ArrayList<HouseQmCheckTaskNotifyRecord> dataSource = Lists.newArrayList();
-                notifyList.forEach(notify -> {
-                    HouseQmCheckTaskNotifyRecord houseQmCheckTaskNotifyRecord = new HouseQmCheckTaskNotifyRecord();
-                    houseQmCheckTaskNotifyRecord.setProjectId(notify.getProjectId());
-                    houseQmCheckTaskNotifyRecord.setTaskId(notify.getTaskId());
-                    houseQmCheckTaskNotifyRecord.setSrcUserId(notify.getSrcUserId());
-                    houseQmCheckTaskNotifyRecord.setDesUserIds(notify.getDesUserIds());
-                    houseQmCheckTaskNotifyRecord.setModuleId(notify.getModuleId());
-                    houseQmCheckTaskNotifyRecord.setIssueId(notify.getIssueId());
-                    houseQmCheckTaskNotifyRecord.setIssueStatus(notify.getIssueStatus());
-                    houseQmCheckTaskNotifyRecord.setExtraInfo(notify.getExtraInfo());
-                    houseQmCheckTaskNotifyRecord.setCreateAt(new Date());
-                    houseQmCheckTaskNotifyRecord.setUpdateAt(new Date());
-                    dataSource.add(houseQmCheckTaskNotifyRecord);
+            } else if (CheckTaskIssueStatus.AssignNoReform.getValue().equals(issue.getStatus())) {
+                ArrayList<Integer> desUserIds = Lists.newArrayList();
+                if (issue.getRepairerId() > 0) {
+                    desUserIds.add(issue.getRepairerId());
+                    pushList.add(issue.getRepairerId());
+                }
+                List<Integer> idsComma = StringSplitToListUtil.splitToIdsComma(issue.getRepairerFollowerIds(), ",");
+                idsComma.forEach(user -> {
+                    if (user > 0 && !desUserIds.contains(user)) {
+                        desUserIds.add(user);
+                        pushList.add(user);
+                    }
                 });
-                houseQmCheckTaskNotifyRecordService.addMany(dataSource);
+                if (CollectionUtils.isNotEmpty(desUserIds)) {
+                    HouseQmCheckTaskNotifyRecord itemNotify = new HouseQmCheckTaskNotifyRecord();
+                    itemNotify.setProjectId(issue.getProjectId());
+                    itemNotify.setTaskId(issue.getTaskId());
+                    itemNotify.setSrcUserId(0);
+                    itemNotify.setDesUserIds(StringUtils.join(desUserIds, ","));
+                    itemNotify.setModuleId(ModuleInfoEnum.GCGL.getValue());
+                    itemNotify.setIssueId(issue.getId());
+                    itemNotify.setIssueStatus(CheckTaskIssueStatus.AssignNoReform.getValue());
+                    itemNotify.setExtraInfo("");
+                    notifyList.add(itemNotify);
+                }
             }
-            //  # 处理代办事项消息推送
-            if (CollectionUtils.isNotEmpty(pushList)) {
-                String title = "新的待处理问题";
-                String msg = "您在［工程检查］有新的待处理问题，请进入App同步更新。";
-                ////todo 消息推送
+        }
+
+        //  # 处理更新问题
+        for (Map.Entry<Object, HouseQmCheckTaskIssue> entry : issueUpdateMap.entrySet()) {
+            HouseQmCheckTaskIssue issue = (HouseQmCheckTaskIssue) entry.getValue();
+            try {
+                houseQmCheckTaskIssueService.update(issue);
+            } catch (Exception e) {
+                log.info("insert new issue failed, data=" + JSON.toJSONString(issue) + "");
+                e.printStackTrace();
+            }
+            // # 写入推送记录
+            Map<Object, Map> notifyStatMap = issueMapBody.getNotify_stat_map();
+            if (CheckTaskIssueStatus.AssignNoReform.getValue().equals(issue.getStatus())) {
+                List<Integer> desUserIds = Lists.newArrayList();
+
+                if (issue.getRepairerId() > 0 && (!issue.getRepairerId().equals(notifyStatMap.get(issue.getUuid()).get("repairerId")) || CheckTaskIssueStatus.ReformNoCheck.getValue().equals(notifyStatMap.get(issue.getUuid()).get("status")))) {
+                    desUserIds.add(issue.getRepairerId());
+                    pushList.add(issue.getRepairerId());
+                }
+                List<Integer> idsComma = StringSplitToListUtil.splitToIdsComma(issue.getRepairerFollowerIds(), ",");
+                idsComma.forEach(user -> {
+                    List splitToIdsComma = (List) notifyStatMap.get(issue.getUuid()).get("splitToIdsComma");
+                    if (user > 0 && (splitToIdsComma.contains(user) || CheckTaskIssueStatus.ReformNoCheck.getValue().equals(notifyStatMap.get(issue.getUuid()).get("status")))) {
+                        desUserIds.add(user);
+                        pushList.add(user);
+                    }
+                });
+                if (CollectionUtils.isNotEmpty(desUserIds)) {
+                    HouseQmCheckTaskNotifyRecord itemNotify = new HouseQmCheckTaskNotifyRecord();
+                    itemNotify.setProjectId(issue.getProjectId());
+                    itemNotify.setTaskId(issue.getTaskId());
+                    itemNotify.setSrcUserId(0);
+                    itemNotify.setDesUserIds(StringUtils.join(desUserIds, ","));
+                    itemNotify.setModuleId(ModuleInfoEnum.GCGL.getValue());
+                    itemNotify.setIssueId(issue.getId());
+                    itemNotify.setIssueStatus(CheckTaskIssueStatus.NoteNoAssign.getValue());
+                    itemNotify.setExtraInfo("");
+                    notifyList.add(itemNotify);
+                }
+            } else if (CheckTaskIssueStatus.ReformNoCheck.getValue().equals(issue.getStatus()) &&
+                    CheckTaskIssueStatus.ReformNoCheck.getValue().equals(notifyStatMap.get(issue.getUuid()).get("status"))) {
+                ArrayList<Integer> desUserIds = getIssueCheckerList(checkerMap, issue, true);
+                desUserIds.forEach(userId -> {
+                    pushList.add(userId);
+                });
+                if (CollectionUtils.isNotEmpty(desUserIds)) {
+                    HouseQmCheckTaskNotifyRecord itemNotify = new HouseQmCheckTaskNotifyRecord();
+                    itemNotify.setProjectId(issue.getProjectId());
+                    itemNotify.setTaskId(issue.getTaskId());
+                    itemNotify.setSrcUserId(0);
+                    itemNotify.setDesUserIds(StringUtils.join(desUserIds, ","));
+                    itemNotify.setModuleId(ModuleInfoEnum.GCGL.getValue());
+                    itemNotify.setIssueId(issue.getId());
+                    itemNotify.setIssueStatus(CheckTaskIssueStatus.ReformNoCheck.getValue());
+                    itemNotify.setExtraInfo("");
+                    notifyList.add(itemNotify);
+                }
+            }
+        }
+
+        //    # 处理新增问题人员角色
+        for (Map.Entry<String, ApiUserRoleInIssue> entry : issueRoleMap.entrySet()) {
+            Map<ApiUserRoleInIssue.RoleUser, Boolean> role = issueRoleMap.get(entry.getKey()).getUser_role();
+            for (Map.Entry<ApiUserRoleInIssue.RoleUser, Boolean> entrys : role.entrySet()) {
+                HouseQmCheckTaskIssueUser houseQmCheckTaskIssueUser = new HouseQmCheckTaskIssueUser();
+                houseQmCheckTaskIssueUser.setTaskId(issueRoleMap.get(entry.getKey()).getTask_id());
+                houseQmCheckTaskIssueUser.setIssueUuid(entry.getKey());
+                houseQmCheckTaskIssueUser.setUserId(entrys.getKey().getUser_id());
+                houseQmCheckTaskIssueUser.setRoleType(entrys.getKey().getRole_type());
+                try {
+                    houseQmCheckTaskIssueUserService.add(houseQmCheckTaskIssueUser);
+                } catch (Exception e) {
+                    log.info("insert new role failed, data=" + JSON.toJSONString(houseQmCheckTaskIssueUser) + "");
+                    e.printStackTrace();
+                }
+            }
+        }
+        //  # 处理新增附件
+        for (Map.Entry<String, HouseQmCheckTaskIssueAttachment> entry : attachmentInsertMap.entrySet()) {
+            int one = houseQmCheckTaskIssueAttachmentService.add(entry.getValue());
+            if (one <= 0) {
+                log.info("insert new attachment failed, data=" + JSON.toJSONString(entry.getValue()) + "");
+            }
+        }
+        // # 处理移除附件
+        attachmentRemoveList.forEach(attachment -> {
+            HouseQmCheckTaskIssueAttachment issueAttachment = houseQmCheckTaskIssueAttachmentService.selectByMd5AndNotDel(attachment);
+            if (issueAttachment == null) {
+                log.info("remove attachment failed, md5=" + attachment + "");
+            }
+        });
+        //# 处理新增问题日志
+        logInsertList.forEach(loginsert -> {
+            try {
+                houseQmCheckTaskIssueLogService.add(loginsert);
+            } catch (Exception e) {
+                log.info("insert new log failed, data=" + JSON.toJSONString(logInsertList) + "");
+                e.printStackTrace();
+            }
+        });
+        //     # 处理退单情况融合推送
+        for (Map.Entry<HouseQmCheckTaskIssue, ApiRefundInfo> entry : refundMap.entrySet()) {
+            List<Integer> desUserIds = getIssueCheckerList(checkerMap, entry.getKey(), null);
+            if (CollectionUtils.isNotEmpty(desUserIds)) {
+                HouseQmCheckTaskNotifyRecord itemNotify = new HouseQmCheckTaskNotifyRecord();
+                itemNotify.setProjectId(entry.getKey().getProjectId());
+                itemNotify.setTaskId(entry.getKey().getTaskId());
+                itemNotify.setSrcUserId(0);
+                itemNotify.setDesUserIds(StringUtils.join(desUserIds, ","));
+                itemNotify.setModuleId(ModuleInfoEnum.GCGL.getValue());
+                itemNotify.setIssueId(entry.getKey().getId());
+                itemNotify.setIssueStatus(CheckTaskIssueStatus.NoteNoAssign.getValue());
+                itemNotify.setExtraInfo("");
+                notifyList.add(itemNotify);
+            }
+        }
+        // # 处理融合消息中心推送通知
+        if (CollectionUtils.isNotEmpty(notifyList)) {
+            ArrayList<HouseQmCheckTaskNotifyRecord> dataSource = Lists.newArrayList();
+            notifyList.forEach(notify -> {
+                HouseQmCheckTaskNotifyRecord houseQmCheckTaskNotifyRecord = new HouseQmCheckTaskNotifyRecord();
+                houseQmCheckTaskNotifyRecord.setProjectId(notify.getProjectId());
+                houseQmCheckTaskNotifyRecord.setTaskId(notify.getTaskId());
+                houseQmCheckTaskNotifyRecord.setSrcUserId(notify.getSrcUserId());
+                houseQmCheckTaskNotifyRecord.setDesUserIds(notify.getDesUserIds());
+                houseQmCheckTaskNotifyRecord.setModuleId(notify.getModuleId());
+                houseQmCheckTaskNotifyRecord.setIssueId(notify.getIssueId());
+                houseQmCheckTaskNotifyRecord.setIssueStatus(notify.getIssueStatus());
+                houseQmCheckTaskNotifyRecord.setExtraInfo(notify.getExtraInfo());
+                houseQmCheckTaskNotifyRecord.setCreateAt(new Date());
+                houseQmCheckTaskNotifyRecord.setUpdateAt(new Date());
+                dataSource.add(houseQmCheckTaskNotifyRecord);
+            });
+            houseQmCheckTaskNotifyRecordService.addMany(dataSource);
+        }
+        //  # 处理代办事项消息推送
+        if (CollectionUtils.isNotEmpty(pushList)) {
+            String title = "新的待处理问题";
+            String msg = "您在［工程检查］有新的待处理问题，请进入App同步更新。";
+            ////todo 消息推送
               /*   notify_srv = NotifyMessage()
                  notify_srv.push_base_message(0, push_list, title, msg)
                  task_id, des_user_ids, title, description
@@ -1181,24 +1192,24 @@ public class BuildingqmServiceImpl implements IBuildingqmService {
                  umPushUtil.sendIOSCustomizedcast();
                  //小米推送
                  xmPushUtil.sendMessageToUserAccounts();*/
-                ArrayList<String> ids = Lists.newArrayList();
-                for (Object push : pushList) {
-                    ids.add((Integer) push+"");
-                }
-                issueService.pushBaseMessage(0, ids, title, msg);
-
+            ArrayList<String> ids = Lists.newArrayList();
+            for (Object push : pushList) {
+                ids.add((Integer) push + "");
             }
-            //   # 处理退单消息推送
-            ArrayList<Integer> ids = Lists.newArrayList();
-            if (refundMap.size() > 0) {
-                for (Map.Entry<HouseQmCheckTaskIssue, ApiRefundInfo> entry : refundMap.entrySet()) {
-                    ids.add(refundMap.get(entry.getKey()).getRepairer());
-                }
-                Map userMap = createUsersMap(ids);
-                String title = "新的待处理问题";
-                for (Map.Entry<HouseQmCheckTaskIssue, ApiRefundInfo> entry : refundMap.entrySet()) {
-                    String msg = "[],退回了一条问题，请进入[工程检查]App跟进处理";
-                    ////todo 消息推送
+            issueService.pushBaseMessage(0, ids, title, msg);
+
+        }
+        //   # 处理退单消息推送
+        ArrayList<Integer> ids = Lists.newArrayList();
+        if (refundMap.size() > 0) {
+            for (Map.Entry<HouseQmCheckTaskIssue, ApiRefundInfo> entry : refundMap.entrySet()) {
+                ids.add(refundMap.get(entry.getKey()).getRepairer());
+            }
+            Map userMap = createUsersMap(ids);
+            String title = "新的待处理问题";
+            for (Map.Entry<HouseQmCheckTaskIssue, ApiRefundInfo> entry : refundMap.entrySet()) {
+                String msg = "[],退回了一条问题，请进入[工程检查]App跟进处理";
+                ////todo 消息推送
                    /*  notify_srv = NotifyMessage();
                      notify_srv.push_base_message(0, push_list, title, msg);
                      //安卓推送
@@ -1207,112 +1218,112 @@ public class BuildingqmServiceImpl implements IBuildingqmService {
                      umPushUtil.sendIOSCustomizedcast();
                      //小米推送
                      xmPushUtil.sendMessageToUserAccounts();*/
-                    ArrayList<String> checker = Lists.newArrayList();
-                    ApiRefundInfo info = refundMap.get(item);
-                    if (info != null) checker.add(info.getChecker() + "");
-                    issueService.pushBaseMessage(0, checker, title, msg);
-                }
+                ArrayList<String> checker = Lists.newArrayList();
+                ApiRefundInfo info = refundMap.get(entry);
+                if (info != null) checker.add(info.getChecker() + "");
+                issueService.pushBaseMessage(0, checker, title, msg);
             }
-            // # 处理kafka数据统计消息
-            ArrayList<ApiHouseQmIssue> kafkaCreated = Lists.newArrayList();
-            ArrayList<ApiHouseQmIssue> kafkaAssigned = Lists.newArrayList();
-            ArrayList<ApiHouseQmIssue> kafkaReformed = Lists.newArrayList();
-            ArrayList<ApiHouseQmIssue> kafkaChecked = Lists.newArrayList();
-            for (Map.Entry<String, HouseQmCheckTaskIssue> entry : issueInsertMap.entrySet()) {
-                HouseQmCheckTaskIssue issue = entry.getValue();
-                if (!issue.getCategoryCls().equals(CategoryClsTypeEnum.RCJC.getValue())) {
-                    continue;
-                }
-                ApiHouseQmIssue apiHouseQmIssue = new ApiHouseQmIssue();
-                apiHouseQmIssue.setUuid(issue.getUuid());
-                apiHouseQmIssue.setProj_id(issue.getProjectId());
-                apiHouseQmIssue.setTask_id(issue.getTaskId());
-                apiHouseQmIssue.setChecker_id(issue.getSenderId());
-                apiHouseQmIssue.setRepairer_id(0);
-                apiHouseQmIssue.setArea_id(issue.getAreaId());
-                apiHouseQmIssue.setArea_path_and_id(issue.getAreaPathAndId());
-                apiHouseQmIssue.setCategory_key(issue.getCategoryKey());
-                apiHouseQmIssue.setCategory_path_and_key(issue.getCategoryPathAndKey());
-                apiHouseQmIssue.setSender_id(issue.getSenderId());
-                apiHouseQmIssue.setTimestamp(DateUtil.datetimeToTimeStamp(issue.getClientCreateAt()));
-                kafkaCreated.add(apiHouseQmIssue);
-                if (issue.getStatus().equals(CheckTaskIssueStatus.AssignNoReform.getValue())) {
-                    ApiHouseQmIssue apiHouseQm = new ApiHouseQmIssue();
-                    apiHouseQm.setUuid(issue.getUuid());
-                    apiHouseQm.setProj_id(issue.getProjectId());
-                    apiHouseQm.setTask_id(issue.getTaskId());
-                    apiHouseQm.setChecker_id(issue.getSenderId());
-                    apiHouseQm.setRepairer_id(issue.getRepairerId());
-                    apiHouseQm.setArea_id(issue.getAreaId());
-                    apiHouseQm.setArea_path_and_id(issue.getAreaPathAndId());
-                    apiHouseQm.setCategory_key(issue.getCategoryKey());
-                    apiHouseQm.setCategory_path_and_key(issue.getCategoryPathAndKey());
-                    apiHouseQm.setSender_id(issue.getSenderId());
-                    apiHouseQm.setTimestamp(DateUtil.datetimeToTimeStamp(issue.getClientCreateAt()));
-                    kafkaAssigned.add(apiHouseQm);
-                }
-            }
-            for (ApiHouseQmCheckTaskIssueLogInfo log : issueLogs) {
-                if (!issueUpdateMap.containsKey(log.getIssue_uuid())) {
-                    continue;
-                }
-                HouseQmCheckTaskIssue issue = issueUpdateMap.get(log.getIssue_uuid());
-                if (!issue.getCategoryCls().equals(CategoryClsTypeEnum.RCJC.getValue())) {
-                    continue;
-                }
-                if (log.getStatus().equals(CheckTaskIssueStatus.AssignNoReform.getValue())) {
-                    ApiHouseQmIssue apiHouseQm = new ApiHouseQmIssue();
-                    apiHouseQm.setUuid(issue.getUuid());
-                    apiHouseQm.setProj_id(issue.getProjectId());
-                    apiHouseQm.setTask_id(issue.getTaskId());
-                    apiHouseQm.setChecker_id(issue.getSenderId());
-                    apiHouseQm.setRepairer_id(issue.getRepairerId());
-                    apiHouseQm.setArea_id(issue.getAreaId());
-                    apiHouseQm.setArea_path_and_id(issue.getAreaPathAndId());
-                    apiHouseQm.setCategory_key(issue.getCategoryKey());
-                    apiHouseQm.setCategory_path_and_key(issue.getCategoryPathAndKey());
-                    apiHouseQm.setSender_id(log.getSender_id());
-                    apiHouseQm.setTimestamp(log.getClient_create_at());
-                    kafkaAssigned.add(apiHouseQm);
-
-                } else if (log.getStatus().equals(CheckTaskIssueStatus.ReformNoCheck.getValue())) {
-                    ApiHouseQmIssue apiHouseQm = new ApiHouseQmIssue();
-                    apiHouseQm.setUuid(issue.getUuid());
-                    apiHouseQm.setProj_id(issue.getProjectId());
-                    apiHouseQm.setTask_id(issue.getTaskId());
-                    apiHouseQm.setChecker_id(issue.getSenderId());
-                    apiHouseQm.setRepairer_id(issue.getRepairerId());
-                    apiHouseQm.setArea_id(issue.getAreaId());
-                    apiHouseQm.setArea_path_and_id(issue.getAreaPathAndId());
-                    apiHouseQm.setCategory_key(issue.getCategoryKey());
-                    apiHouseQm.setCategory_path_and_key(issue.getCategoryPathAndKey());
-                    apiHouseQm.setSender_id(log.getSender_id());
-                    apiHouseQm.setTimestamp(log.getClient_create_at());
-                    kafkaReformed.add(apiHouseQm);
-                } else if (log.getStatus().equals(CheckTaskIssueStatus.CheckYes.getValue())) {
-                    ApiHouseQmIssue apiHouseQm = new ApiHouseQmIssue();
-                    apiHouseQm.setUuid(issue.getUuid());
-                    apiHouseQm.setProj_id(issue.getProjectId());
-                    apiHouseQm.setTask_id(issue.getTaskId());
-                    apiHouseQm.setChecker_id(issue.getSenderId());
-                    apiHouseQm.setRepairer_id(issue.getRepairerId());
-                    apiHouseQm.setArea_id(issue.getAreaId());
-                    apiHouseQm.setArea_path_and_id(issue.getAreaPathAndId());
-                    apiHouseQm.setCategory_key(issue.getCategoryKey());
-                    apiHouseQm.setCategory_path_and_key(issue.getCategoryPathAndKey());
-                    apiHouseQm.setSender_id(log.getSender_id());
-                    apiHouseQm.setTimestamp(log.getClient_create_at());
-                    kafkaChecked.add(apiHouseQm);
-                }
-            }
-            ApiHouseQmIssueReport report = new ApiHouseQmIssueReport();
-            report.setCreated_issues(kafkaCreated);
-            report.setAssigned_issues(kafkaAssigned);
-            report.setReformed_issues(kafkaReformed);
-            report.setChecked_issues(kafkaChecked);
-            //kafka消息推送
-            kafkaProducer.produce(EventQueueEnum.PKG_HOUSEQM_ISSUE_REPORTED.getValue(), report);
         }
+        // # 处理kafka数据统计消息
+        ArrayList<ApiHouseQmIssue> kafkaCreated = Lists.newArrayList();
+        ArrayList<ApiHouseQmIssue> kafkaAssigned = Lists.newArrayList();
+        ArrayList<ApiHouseQmIssue> kafkaReformed = Lists.newArrayList();
+        ArrayList<ApiHouseQmIssue> kafkaChecked = Lists.newArrayList();
+        for (Map.Entry<String, HouseQmCheckTaskIssue> entry : issueInsertMap.entrySet()) {
+            HouseQmCheckTaskIssue issue = entry.getValue();
+            if (!issue.getCategoryCls().equals(CategoryClsTypeEnum.RCJC.getValue())) {
+                continue;
+            }
+            ApiHouseQmIssue apiHouseQmIssue = new ApiHouseQmIssue();
+            apiHouseQmIssue.setUuid(issue.getUuid());
+            apiHouseQmIssue.setProj_id(issue.getProjectId());
+            apiHouseQmIssue.setTask_id(issue.getTaskId());
+            apiHouseQmIssue.setChecker_id(issue.getSenderId());
+            apiHouseQmIssue.setRepairer_id(0);
+            apiHouseQmIssue.setArea_id(issue.getAreaId());
+            apiHouseQmIssue.setArea_path_and_id(issue.getAreaPathAndId());
+            apiHouseQmIssue.setCategory_key(issue.getCategoryKey());
+            apiHouseQmIssue.setCategory_path_and_key(issue.getCategoryPathAndKey());
+            apiHouseQmIssue.setSender_id(issue.getSenderId());
+            apiHouseQmIssue.setTimestamp(DateUtil.datetimeToTimeStamp(issue.getClientCreateAt()));
+            kafkaCreated.add(apiHouseQmIssue);
+            if (issue.getStatus().equals(CheckTaskIssueStatus.AssignNoReform.getValue())) {
+                ApiHouseQmIssue apiHouseQm = new ApiHouseQmIssue();
+                apiHouseQm.setUuid(issue.getUuid());
+                apiHouseQm.setProj_id(issue.getProjectId());
+                apiHouseQm.setTask_id(issue.getTaskId());
+                apiHouseQm.setChecker_id(issue.getSenderId());
+                apiHouseQm.setRepairer_id(issue.getRepairerId());
+                apiHouseQm.setArea_id(issue.getAreaId());
+                apiHouseQm.setArea_path_and_id(issue.getAreaPathAndId());
+                apiHouseQm.setCategory_key(issue.getCategoryKey());
+                apiHouseQm.setCategory_path_and_key(issue.getCategoryPathAndKey());
+                apiHouseQm.setSender_id(issue.getSenderId());
+                apiHouseQm.setTimestamp(DateUtil.datetimeToTimeStamp(issue.getClientCreateAt()));
+                kafkaAssigned.add(apiHouseQm);
+            }
+        }
+        for (ApiHouseQmCheckTaskIssueLogInfo log : issueLogs) {
+            if (!issueUpdateMap.containsKey(log.getIssue_uuid())) {
+                continue;
+            }
+            HouseQmCheckTaskIssue issue = issueUpdateMap.get(log.getIssue_uuid());
+            if (!issue.getCategoryCls().equals(CategoryClsTypeEnum.RCJC.getValue())) {
+                continue;
+            }
+            if (log.getStatus().equals(CheckTaskIssueStatus.AssignNoReform.getValue())) {
+                ApiHouseQmIssue apiHouseQm = new ApiHouseQmIssue();
+                apiHouseQm.setUuid(issue.getUuid());
+                apiHouseQm.setProj_id(issue.getProjectId());
+                apiHouseQm.setTask_id(issue.getTaskId());
+                apiHouseQm.setChecker_id(issue.getSenderId());
+                apiHouseQm.setRepairer_id(issue.getRepairerId());
+                apiHouseQm.setArea_id(issue.getAreaId());
+                apiHouseQm.setArea_path_and_id(issue.getAreaPathAndId());
+                apiHouseQm.setCategory_key(issue.getCategoryKey());
+                apiHouseQm.setCategory_path_and_key(issue.getCategoryPathAndKey());
+                apiHouseQm.setSender_id(log.getSender_id());
+                apiHouseQm.setTimestamp(log.getClient_create_at());
+                kafkaAssigned.add(apiHouseQm);
+
+            } else if (log.getStatus().equals(CheckTaskIssueStatus.ReformNoCheck.getValue())) {
+                ApiHouseQmIssue apiHouseQm = new ApiHouseQmIssue();
+                apiHouseQm.setUuid(issue.getUuid());
+                apiHouseQm.setProj_id(issue.getProjectId());
+                apiHouseQm.setTask_id(issue.getTaskId());
+                apiHouseQm.setChecker_id(issue.getSenderId());
+                apiHouseQm.setRepairer_id(issue.getRepairerId());
+                apiHouseQm.setArea_id(issue.getAreaId());
+                apiHouseQm.setArea_path_and_id(issue.getAreaPathAndId());
+                apiHouseQm.setCategory_key(issue.getCategoryKey());
+                apiHouseQm.setCategory_path_and_key(issue.getCategoryPathAndKey());
+                apiHouseQm.setSender_id(log.getSender_id());
+                apiHouseQm.setTimestamp(log.getClient_create_at());
+                kafkaReformed.add(apiHouseQm);
+            } else if (log.getStatus().equals(CheckTaskIssueStatus.CheckYes.getValue())) {
+                ApiHouseQmIssue apiHouseQm = new ApiHouseQmIssue();
+                apiHouseQm.setUuid(issue.getUuid());
+                apiHouseQm.setProj_id(issue.getProjectId());
+                apiHouseQm.setTask_id(issue.getTaskId());
+                apiHouseQm.setChecker_id(issue.getSenderId());
+                apiHouseQm.setRepairer_id(issue.getRepairerId());
+                apiHouseQm.setArea_id(issue.getAreaId());
+                apiHouseQm.setArea_path_and_id(issue.getAreaPathAndId());
+                apiHouseQm.setCategory_key(issue.getCategoryKey());
+                apiHouseQm.setCategory_path_and_key(issue.getCategoryPathAndKey());
+                apiHouseQm.setSender_id(log.getSender_id());
+                apiHouseQm.setTimestamp(log.getClient_create_at());
+                kafkaChecked.add(apiHouseQm);
+            }
+        }
+        ApiHouseQmIssueReport report = new ApiHouseQmIssueReport();
+        report.setCreated_issues(kafkaCreated);
+        report.setAssigned_issues(kafkaAssigned);
+        report.setReformed_issues(kafkaReformed);
+        report.setChecked_issues(kafkaChecked);
+        //kafka消息推送
+        kafkaProducer.produce(EventQueueEnum.PKG_HOUSEQM_ISSUE_REPORTED.getValue(), report);
+
         ReportIssueVo vo = new ReportIssueVo();
         vo.setDropped(dropped);
         return vo;
@@ -1391,7 +1402,7 @@ public class BuildingqmServiceImpl implements IBuildingqmService {
         private Integer checker;
     }
 
-    private HouseQmCheckTaskIssue modifyIssue(HashMap<HouseQmCheckTaskIssue, ApiRefundInfo> refundMap, HashMap<String, ApiUserRoleInIssue> issueRoleMap, HouseQmCheckTaskIssue issue, ApiHouseQmCheckTaskIssueLogInfo item, Boolean b) {
+    private Map<String, Object> modifyIssue(Map<HouseQmCheckTaskIssue, ApiRefundInfo> refundMap, HashMap<String, ApiUserRoleInIssue> issueRoleMap, HouseQmCheckTaskIssue issue, ApiHouseQmCheckTaskIssueLogInfo item, Boolean b) {
         //  # 判断是否修改检查项
         if (isCheckItemChange(issue, item)) {
             log.info("check_item info need to update");
@@ -1513,10 +1524,13 @@ public class BuildingqmServiceImpl implements IBuildingqmService {
             }
             issue.setDetail(JSON.toJSONString(map));
         });
-        return issue;
+        Map<String, Object> resmap = Maps.newHashMap();
+        resmap.put("issue",issue);
+        resmap.put("refundMap",refundMap);
+        return resmap;
     }
 
-    private HouseQmCheckTaskIssue refundIssue(HashMap<String, ApiUserRoleInIssue> issueRoleMap, HouseQmCheckTaskIssue issue, ApiHouseQmCheckTaskIssueLogInfo item) {
+    private Map<String, Object> refundIssue(HashMap<String, ApiUserRoleInIssue> issueRoleMap, HouseQmCheckTaskIssue issue, ApiHouseQmCheckTaskIssueLogInfo item) {
         issue.setRepairerId(0);
         issue.setRepairerFollowerIds("");
         issue.setLastRepairer(0);
@@ -1602,10 +1616,13 @@ public class BuildingqmServiceImpl implements IBuildingqmService {
             }
             issue.setDetail(JSON.toJSONString(map));
         });
-        return issue;
+        Map<String, Object> resmap = Maps.newHashMap();
+        resmap.put("issue",issue);
+        resmap.put("refundMap", Maps.newHashMap());
+        return resmap;
     }
 
-    private HouseQmCheckTaskIssue reassignIssue(HashMap<String, ApiUserRoleInIssue> issueRoleMap, HouseQmCheckTaskIssue issue, ApiHouseQmCheckTaskIssueLogInfo item) {
+    private Map<String, Object> reassignIssue(HashMap<String, ApiUserRoleInIssue> issueRoleMap, HouseQmCheckTaskIssue issue, ApiHouseQmCheckTaskIssueLogInfo item) {
         issue.setRepairerId(0);
         issue.setRepairerFollowerIds("");
         issue.setLastRepairer(0);
@@ -1699,7 +1716,10 @@ public class BuildingqmServiceImpl implements IBuildingqmService {
             }
             issue.setDetail(JSON.toJSONString(map));
         });
-        return issue;
+        Map<String, Object> resmap = Maps.newHashMap();
+        resmap.put("issue",issue);
+        resmap.put("refundMap", Maps.newHashMap());
+        return resmap;
     }
 
     private boolean isCheckItemChange(HouseQmCheckTaskIssue issue, ApiHouseQmCheckTaskIssueLogInfo item) {
@@ -1829,12 +1849,12 @@ public class BuildingqmServiceImpl implements IBuildingqmService {
             } else {
                 details.put("IssueSuggest", "");
             }
-            if (StringUtils.isNotEmpty(detail.getPotential_risk())&&!detail.getPotential_risk().equals("-1")) {
+            if (StringUtils.isNotEmpty(detail.getPotential_risk()) && !detail.getPotential_risk().equals("-1")) {
                 details.put("PotentialRisk", detail.getPotential_risk());
             } else {
                 details.put("PotentialRisk", "");
             }
-            if (StringUtils.isNotEmpty(detail.getPreventive_action_detail())&&!detail.getPreventive_action_detail().equals("-1")) {
+            if (StringUtils.isNotEmpty(detail.getPreventive_action_detail()) && !detail.getPreventive_action_detail().equals("-1")) {
                 details.put("PreventiveActionDetail", detail.getPreventive_action_detail());
             } else {
                 details.put("PreventiveActionDetail", "");
