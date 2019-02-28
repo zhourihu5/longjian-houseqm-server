@@ -53,22 +53,24 @@ public class FixingPresetAppController {
 
         List<AppFixingPresetProtoVo> items = Lists.newArrayList();
         LjBaseResponse<AppListFixingPresetVo> response = new LjBaseResponse<>();
-        for (int i = 0; i < fixingPresetData.size(); i++) {
-            AppFixingPresetProtoVo vo = new AppFixingPresetProtoVo();
-            vo.setId(String.valueOf(fixingPresetData.get(i).getId()));
-            vo.setProject_id(fixingPresetData.get(i).getProjectId());
-            vo.setArea_id(fixingPresetData.get(i).getAreaId());
-            vo.setRoot_category_key(fixingPresetData.get(i).getRootCategoryKey());
-            vo.setCategory_key(fixingPresetData.get(i).getCategoryKey());
-            vo.setCheck_item_key(fixingPresetData.get(i).getCheckItemKey());
-            vo.setUser_ids(fixingPresetData.get(i).getUserIds());
-            vo.setMinutes(fixingPresetData.get(i).getMinutes());
-            if (fixingPresetData.get(i).getMinutes() > 0) {
-                vo.setDays(fixingPresetData.get(i).getMinutes() / 1440);
-            } else {
-                vo.setDays(fixingPresetData.get(i).getMinutes());
+        if(fixingPresetData!=null) {
+            for (int i = 0; i < fixingPresetData.size(); i++) {
+                AppFixingPresetProtoVo vo = new AppFixingPresetProtoVo();
+                vo.setId(String.valueOf(fixingPresetData.get(i).getId()));
+                vo.setProject_id(fixingPresetData.get(i).getProjectId());
+                vo.setArea_id(fixingPresetData.get(i).getAreaId());
+                vo.setRoot_category_key(fixingPresetData.get(i).getRootCategoryKey());
+                vo.setCategory_key(fixingPresetData.get(i).getCategoryKey());
+                vo.setCheck_item_key(fixingPresetData.get(i).getCheckItemKey());
+                vo.setUser_ids(fixingPresetData.get(i).getUserIds());
+                vo.setMinutes(fixingPresetData.get(i).getMinutes());
+                if (fixingPresetData.get(i).getMinutes() > 0) {
+                    vo.setDays(fixingPresetData.get(i).getMinutes() / 1440);
+                } else {
+                    vo.setDays(fixingPresetData.get(i).getMinutes());
+                }
+                items.add(vo);
             }
-            items.add(vo);
         }
         AppListFixingPresetVo presetVo = new AppListFixingPresetVo();
         presetVo.setItems(items);

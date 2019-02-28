@@ -5,6 +5,7 @@ import freemarker.template.Configuration;
 import freemarker.template.ObjectWrapper;
 import freemarker.template.Template;
 import freemarker.template.TemplateException;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.compress.archivers.zip.ZipUtil;
 import org.apache.http.util.EntityUtils;
 import org.springframework.web.util.WebUtils;
@@ -25,6 +26,7 @@ import java.util.Properties;
 /**
  * Created by Dongshun on 2019/2/15.
  */
+@Slf4j
 public class DocumentHandler {
     //Configuration存储一些全局常量和常用设置
     public static Configuration configuration = null;
@@ -58,22 +60,23 @@ public class DocumentHandler {
             e.printStackTrace();
         }
 
-        Writer out = null;
-        try{
-            out = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(outFile), "utf-8"));
+        //Writer out = null;
+        try(Writer out = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(outFile), "utf-8"))){
+            //out = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(outFile), "utf-8"));
+            t.process(dataMap, out);
             status = true;
         }catch(Exception e1) {
             e1.printStackTrace();
         }
 
-        try{
+        /*try{
             t.process(dataMap, out);
             out.close();
         }catch(TemplateException e){
             e.printStackTrace();
         } catch (IOException e) {
             e.printStackTrace();
-        }
+        }*/
 
         return status;
     }
@@ -87,8 +90,8 @@ public class DocumentHandler {
      */
     public boolean exportDoc(String tempName, String docName, Map<?, ?> dataMap, HttpServletResponse resp) {
         boolean status = false;
-        ServletOutputStream sos = null;
-        InputStream fin = null;
+        //ServletOutputStream sos = null;
+        //InputStream fin = null;
         if (resp != null) {
             resp.reset();
         }
@@ -110,32 +113,50 @@ public class DocumentHandler {
         String name = "temp" + (int) (Math.random() * 100000) + ".doc";
         File outFile = new File(name);
 
-        Writer out = null;
-        try {
-            out = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(outFile), "utf-8"));
+        //Writer out = null;
+        try(Writer out =new BufferedWriter(new OutputStreamWriter(new FileOutputStream(outFile), "utf-8"))) {
+           // out = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(outFile), "utf-8"));
+            t.process(dataMap, out);
             status = true;
         } catch (Exception e1) {
             e1.printStackTrace();
         }
 
-        try {
+        /*try {
             t.process(dataMap, out);
             out.close();
         } catch (TemplateException e) {
             e.printStackTrace();
         } catch (IOException e) {
             e.printStackTrace();
-        }
+        }*/
 
-        try {
-            fin = new FileInputStream(outFile);
+        try ( InputStream fin = new FileInputStream(outFile);ServletOutputStream sos = resp.getOutputStream()){
+            //fin = new FileInputStream(outFile);
+            if(resp!=null) {
+                resp.setCharacterEncoding("utf-8");
+                resp.setContentType("application/msword");
+                resp.setHeader("Content-disposition", "attachment;filename=" + docName + ".doc");
+            }
+            docName = new String(docName.getBytes("UTF-8"), "ISO-8859-1");
+            byte[] buffer = new byte[512]; // 缓冲区
+            int bytesToRead = -1;
+            while ((bytesToRead = fin.read(buffer)) != -1) {
+                sos.write(buffer, 0, bytesToRead);
+            }
         } catch (FileNotFoundException e) {
             e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }finally{
+            if (outFile != null) {
+                outFile.delete(); // 删除临时文件
+            }
         }
         // 文档下载
-        resp.setCharacterEncoding("utf-8");
-        resp.setContentType("application/msword");
-        try {
+        //resp.setCharacterEncoding("utf-8");
+       // resp.setContentType("application/msword");
+        /*try {
             docName = new String(docName.getBytes("UTF-8"), "ISO-8859-1");
         } catch (UnsupportedEncodingException e1) {
             e1.printStackTrace();
@@ -145,8 +166,8 @@ public class DocumentHandler {
             sos = resp.getOutputStream();
         } catch (IOException e) {
             e.printStackTrace();
-        }
-        byte[] buffer = new byte[512]; // 缓冲区
+        }*/
+       /* byte[] buffer = new byte[512]; // 缓冲区
         int bytesToRead = -1;
         // 通过循环将读入的Word文件的内容输出到浏览器中
         try {
@@ -170,7 +191,7 @@ public class DocumentHandler {
                 }
             if (outFile != null)
                 outFile.delete(); // 删除临时文件
-        }
+        }*/
 
         return status;
     }
@@ -183,12 +204,13 @@ public class DocumentHandler {
         if (!file.exists()) {
             return "";
         }
-        InputStream in = null;
+        //InputStream in = null;
         byte[] data = null;
-        try {
-            in = new FileInputStream(file);
+        try (InputStream in =new FileInputStream(file)){
+            //in = new FileInputStream(file);
             data = new byte[in.available()];
-            in.read(data);
+            int readCount=in.read(data);
+            log.info("getImageBase:read bytes-"+readCount);
             in.close();
         } catch (IOException e) {
             e.printStackTrace();
@@ -264,19 +286,20 @@ public class DocumentHandler {
     private static File createDoc(Map<?, ?> dataMap, Template template,String filename) {
         File f = new File(filename);
         Template t = template;
-        Writer w =null;
-        FileOutputStream fos=null;
-        try {
+        //Writer w =null;
+        //FileOutputStream fos=null;
+        try (FileOutputStream fos=new FileOutputStream(f);Writer w =new OutputStreamWriter(fos, "utf-8")){
             // 这个地方不能使用FileWriter因为需要指定编码类型否则生成的Word文档会因为有无法识别的编码而无法打开
-            fos=new FileOutputStream(f);
-            w = new OutputStreamWriter(fos, "utf-8");
+            //fos=new FileOutputStream(f);
+            //w = new OutputStreamWriter(fos, "utf-8");
             //不要偷懒写成下面酱紫: 否则无法关闭fos流，打zip包时存取被拒抛异常
             //w = new OutputStreamWriter(new FileOutputStream(f), "utf-8");
             t.process(dataMap, w);
         } catch (Exception ex) {
             ex.printStackTrace();
             throw new RuntimeException(ex);
-        } finally {
+        }
+        /*finally {
             try {
                 fos.close();
                 w.close();
@@ -284,7 +307,7 @@ public class DocumentHandler {
                 e.printStackTrace();
             }
 
-        }
+        }*/
         return f;
     }
 

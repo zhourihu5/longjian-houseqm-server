@@ -15,7 +15,7 @@ import java.util.Date;
  */
 public class DateUtil {
 
-    private static final SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-mm-dd hh:mm:ss");
+    //private static final SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-mm-dd hh:mm:ss");
 
     public static final boolean datetimeZero(Date date) {
         //315532800000L=dateFormat.parse("1980-01-01 08:00:00").getTime()
@@ -26,6 +26,8 @@ public class DateUtil {
     }
 
     public static final String formatBySec(Date date) {
+
+        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-mm-dd hh:mm:ss");
         return dateFormat.format(date);
     }
 
@@ -113,7 +115,7 @@ public class DateUtil {
      * @date 2018/12/22 0022
      */
     public static Date timeStampToDate(int timestamp, String partten) {
-        long timeLong = new Long(timestamp).longValue() * 1000;
+        long timeLong = timestamp * 1000;
         DateFormat ymdhmsFormat = new SimpleDateFormat(partten);
         String nowTimeStr = ymdhmsFormat.format(timeLong);
         Date timeDate = null;

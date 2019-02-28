@@ -1255,7 +1255,7 @@ public class HouseqmStatisticServiceImpl implements IHouseqmStatisticService {
         List<Integer> result = Lists.newArrayList();
         String[] ids = idstr.split(sep);
         for (String id : ids) {
-            id.trim();
+            id=id.trim();
             if (id.equals("")) continue;
             int i = Integer.parseInt(id);
             result.add(i);

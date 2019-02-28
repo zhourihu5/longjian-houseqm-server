@@ -198,7 +198,7 @@ public class HouseqmStaticService {
      */
     private List<Integer> splitToIdsComma(String ids, String sep) {
         List<Integer> list = Lists.newArrayList();
-        ids.trim();
+        ids=ids.trim();
         String[] str = ids.split(sep);
         List<String> areaList = Arrays.asList(str);
         for (String s : areaList) {
@@ -215,6 +215,9 @@ public class HouseqmStaticService {
 
         for (int i = 0; i < taskIds.size(); i++) {
             List<Area> areas = searchTargetAreaByTaskId(prodectId, taskIds.get(i));
+            if(areas==null){
+                continue;
+            }
             int total = areas.size();
             List<RepossessionStatus> items = repossessionStatusService.searchByTaskIdAreaIdLike(taskIds.get(i), areaId);
             List<String> hasIssuePaths = getHasIssueTaskCheckedAreaPathListByTaskId(taskIds.get(i), true, null, areaId);

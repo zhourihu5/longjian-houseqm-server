@@ -1203,7 +1203,7 @@ public class IssueServiceImpl implements IIssueService {
             List<String> oldRepairerFollowerIdList = StringSplitToListUtil.removeStartAndEndStrAndSplit(s, ",", ",");
             List<String> userIds = StringSplitToListUtil.removeStartAndEndStrAndSplit(repairFollowerIds, ",", ",");
             for (int i = 0; i < userIds.size(); i++) {
-                if (!oldRepairerFollowerIdList.contains(userIds.get(i)) && !userIds.get(i).equals(tempRepairerId)) {
+                if (!oldRepairerFollowerIdList.contains(userIds.get(i)) && !userIds.get(i).equals(String.valueOf(tempRepairerId))) {
                     notifyUserIds.add(userIds.get(i));
                 }
             }

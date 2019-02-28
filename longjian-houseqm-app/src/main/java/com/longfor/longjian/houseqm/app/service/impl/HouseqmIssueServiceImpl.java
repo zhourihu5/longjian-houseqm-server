@@ -153,7 +153,7 @@ public class HouseqmIssueServiceImpl implements IHouseqmIssueService {
         String fileName = cfg_base_dir + "/" + inputFileName;
         byte[] data = JSON.toJSONBytes(args);
         writeInput(data, cfg_base_dir,inputFileName);*/
-        long randCount = Math.abs(random.nextLong());
+        long randCount = random.nextLong();
         String base_dir = exportVo.getBase_dir();
         Integer ts = DateUtil.datetimeToTimeStamp(new Date());
         String base_uri = exportVo.getBase_uri();
@@ -180,15 +180,20 @@ public class HouseqmIssueServiceImpl implements IHouseqmIssueService {
             if (!file.exists()) {
                 file.createNewFile();
             }
-            FileOutputStream out;
-            //out = new FileOutputStream(String.format("%s", filepath));
-            out = new FileOutputStream(String.format("D:/%s",exportName));
-            //String data1 = new String(data,"utf-8");
-            OutputStreamWriter op = new OutputStreamWriter(out, "utf-8");
-            op.append(data);
-            //out.write(data);
-            op.flush();
-            op.close();
+             //out = new FileOutputStream(String.format("%s", filepath));
+            try(FileOutputStream out= new FileOutputStream(String.format("D:/%s",exportName));
+                OutputStreamWriter op =new OutputStreamWriter(out, "utf-8")) {
+//            out = new FileOutputStream(String.format("D:/%s",exportName));
+//            //String data1 = new String(data,"utf-8");
+//            OutputStreamWriter op = new OutputStreamWriter(out, "utf-8");
+                op.append(data);
+                //out.write(data);
+                op.flush();
+            }catch(Exception e){
+                e.printStackTrace();
+                log.error(e.getMessage());
+            }
+            //op.close();
         /*out.write(data);
         out.close();*/
         } catch (IOException e) {

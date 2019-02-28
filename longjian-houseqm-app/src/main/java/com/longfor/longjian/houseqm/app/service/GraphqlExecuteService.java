@@ -73,10 +73,10 @@ public class GraphqlExecuteService {
 
 
         if (CollectionUtils.isNotEmpty(errors)) {
-            for (GraphQLError error : errors) {
-                log.error("{}#graphql error {} details:{}", serviceName, error.getErrorType(), error.getMessage());
-                throw new LjBaseRuntimeException(410, error.getMessage());
-            }
+            //for (GraphQLError error : errors) {
+                log.error("{}#graphql error {} details:{}", serviceName, errors.get(0).getErrorType(), errors.get(0).getMessage());
+                throw new LjBaseRuntimeException(410, errors.get(0).getMessage());
+            //}
         }
 
         log.debug("{}#execute - data: {}", serviceName, data);

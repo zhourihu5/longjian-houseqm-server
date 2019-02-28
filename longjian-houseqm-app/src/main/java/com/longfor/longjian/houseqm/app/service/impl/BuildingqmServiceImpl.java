@@ -2019,13 +2019,13 @@ public class BuildingqmServiceImpl implements IBuildingqmService {
     }
 
     private Map<String, Object> ApiNotifyStat(Integer status, Integer repairerId, List<Integer> repairer_follower_ids) {
-        status = 0;
-        repairerId = 0;
-        repairer_follower_ids = Lists.newArrayList();
+        Integer nstatus = 0;
+        Integer nrepairerId = 0;
+       List<Integer> nrepairer_follower_ids = Lists.newArrayList();
         Map<String, Object> map = Maps.newHashMap();
-        map.put("status", status);
-        map.put("repairerId", repairerId);
-        map.put("splitToIdsComma", repairer_follower_ids);
+        map.put("status", nstatus);
+        map.put("repairerId", nrepairerId);
+        map.put("splitToIdsComma", nrepairer_follower_ids);
         return map;
     }
 
@@ -2174,29 +2174,29 @@ public class BuildingqmServiceImpl implements IBuildingqmService {
                     info.setDrawing_md5("");
                 }
 
-                if (StringUtils.isBlank((String) detail.get("check_item_key"))) {
+                //if (StringUtils.isBlank((String) detail.get("check_item_key"))) {
                     info.setCheck_item_key((String) detail.get("check_item_key"));
-                } else {
-                    info.setCheck_item_key((String) detail.get("check_item_key"));
-                }
+               // } else {
+               //     info.setCheck_item_key((String) detail.get("check_item_key"));
+               // }
 
-                if (StringUtils.isBlank((String) detail.get("remove_memo_audio_md5_list"))) {
+               // if (StringUtils.isBlank((String) detail.get("remove_memo_audio_md5_list"))) {
                     info.setRemove_memo_audio_md5_list((String) detail.get("remove_memo_audio_md5_list"));
-                } else {
-                    info.setRemove_memo_audio_md5_list((String) detail.get("remove_memo_audio_md5_list"));
-                }
+                //} else {
+               //     info.setRemove_memo_audio_md5_list((String) detail.get("remove_memo_audio_md5_list"));
+                //}
 
-                if (StringUtils.isBlank((String) detail.get("title"))) {
+                //if (StringUtils.isBlank((String) detail.get("title"))) {
                     info.setTitle((String) detail.get("title"));
-                } else {
-                    info.setTitle((String) detail.get("title"));
-                }
+               // } else {
+              //      info.setTitle((String) detail.get("title"));
+               // }
 
-                if (StringUtils.isBlank((String) detail.get("check_item_md5"))) {
+                //if (StringUtils.isBlank((String) detail.get("check_item_md5"))) {
                     info.setCheck_item_md5((String) detail.get("check_item_md5"));
-                } else {
-                    info.setCheck_item_md5((String) detail.get("check_item_md5"));
-                }
+              //  } else {
+               //     info.setCheck_item_md5((String) detail.get("check_item_md5"));
+               // }
 
                 if ((Integer) detail.get("issue_reason") != null) {
                     info.setIssue_reason((Integer) detail.get("issue_reason"));
