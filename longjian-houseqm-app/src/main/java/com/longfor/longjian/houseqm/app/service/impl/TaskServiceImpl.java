@@ -121,7 +121,7 @@ public class TaskServiceImpl implements ITaskService {
             // 删除任务
             int affect3 = houseQmCheckTaskService.removeHouseQmCheckTaskByProjectIdAndTaskId(project_id, task_id);
         } catch (Exception e) {
-            e.printStackTrace();
+            log.error("error:",e.getMessage());
             throw new LjBaseRuntimeException(500, e.getMessage());
         }
     }

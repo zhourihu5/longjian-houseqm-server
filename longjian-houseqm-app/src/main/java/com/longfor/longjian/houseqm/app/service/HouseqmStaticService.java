@@ -109,7 +109,7 @@ public class HouseqmStaticService {
             }
             return vo;
         } catch (Exception e) {
-            e.printStackTrace();
+            log.error("error:",e.getMessage());
         }
         return null;
     }

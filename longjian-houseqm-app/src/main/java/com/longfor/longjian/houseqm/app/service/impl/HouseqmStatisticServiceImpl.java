@@ -511,7 +511,7 @@ public class HouseqmStatisticServiceImpl implements IHouseqmStatisticService {
             }
             return houseStatVo;
         } catch (Exception e) {
-            e.printStackTrace();
+            log.error("error:",e.getMessage());
             return null;
         }
     }
@@ -1109,7 +1109,7 @@ public class HouseqmStatisticServiceImpl implements IHouseqmStatisticService {
             houseQmCheckTaskIssueVo.setTotal(dto.getTotal());
             houseQmCheckTaskIssueVo.setItems(vos);
         } catch (Exception e) {
-            e.printStackTrace();
+            log.error("error:",e.getMessage());
         }
         return houseQmCheckTaskIssueVo;
     }
@@ -1361,95 +1361,6 @@ public class HouseqmStatisticServiceImpl implements IHouseqmStatisticService {
             }
 
         }
-
-
-
-/*        // boolean isStatLevel3 = false;
-        for (Map.Entry<String, Object> entrys : map.entrySet()) {
-            if (entrys.getKey().equals("categoryKeys")) {
-                List<String> keys = (List<String>) entrys.getValue();
-                categoryMap = getCategoryMapByCategoryKeys(keys);
-            }
-            if (entrys.getKey().equals("checkItemKeys")) {
-                List<String> keys = (List<String>) entrys.getValue();
-                checkItemMap = getCheckItemMapByCheckItemKeys(keys);
-            }
-            if (categoryMap.size() > 0) {
-                String rootKey = "";
-                for (Map.Entry<String, CategoryV3> entry : categoryMap.entrySet()) {
-                    String newStr = entry.getValue().getPath().substring(1, entry.getValue().getPath().length());
-                    String[] split = newStr.split("/");
-*//*
-                    split[split.length]= entry.getValue().getKey();
-*//*
-                    rootKey = split[0];
-                }
-                isStatLevel3 = isCategoryStatLevelThree(rootKey);
-            }
-            if (entrys.getKey().equals("categoryStatMap")) {
-                HashMap<String, HouseQmIssueCategoryStatVo> categoryStatMap = (HashMap<String, HouseQmIssueCategoryStatVo>) entrys.getValue();
-
-                for (Map.Entry<String, HouseQmIssueCategoryStatVo> entry : categoryStatMap.entrySet()) {
-                    for (Map.Entry<String, CategoryV3> Entry : categoryMap.entrySet()) {
-
-                        if (entry.getValue().getKey().equals(Entry.getKey())) {
-                            boolean isRoot = false;
-
-                            //通过“/”进行匹配
-                            int level = 0;
-
-                            String str = Entry.getValue().getPath();
-
-                            for (int i = 0; i < str.length(); i++) {
-                                if (str.charAt(i) == '/') {
-                                    level++;
-                                }
-                            }
-                            //需要跳过三级
-                            if (isStatLevel3) {
-                                if (level < 3) {
-                                    continue;
-                                } else if (level == 3) {
-                                    isRoot = true;
-                                }
-                            } else {
-                                if (level < 2) {
-                                    continue;
-                                } else if (level == 2) {
-                                    isRoot = true;
-                                }
-
-                            }
-                            entry.getValue().setName(Entry.getValue().getName());
-
-                            if (!isRoot) {
-                                entry.getValue().setParentKey(Entry.getValue().getFatherKey());
-                            }
-                            r.add(entry.getValue());
-                        }
-                    }
-                }
-            }
-            if (entrys.getKey().equals("checkItemStatMap")) {
-                HashMap<String, HouseQmIssueCategoryStatVo> checkItemStatMap = (HashMap<String, HouseQmIssueCategoryStatVo>) entrys.getValue();
-                for (Map.Entry<String, HouseQmIssueCategoryStatVo> entryS : checkItemStatMap.entrySet()) {
-                    for (Map.Entry<String, CheckItem> Entry : checkItemMap.entrySet()) {
-
-                        if (entryS.getValue().getKey().equals(Entry.getKey())) {
-                            entryS.getValue().setName(Entry.getValue().getName());
-                            entryS.getValue().setParentKey(Entry.getValue().getCategoryKey());
-                            entryS.getValue().setKey("C" + Entry.getValue().getKey());
-                            r.add(entryS.getValue());
-                        }
-
-
-                    }
-                }
-
-            }
-
-        }*/
-
         return r;
     }
 
