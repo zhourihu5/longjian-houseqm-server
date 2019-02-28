@@ -363,7 +363,7 @@ public class BuildingqmController {
             ljBaseResponse.setMessage("args error");
             return ljBaseResponse;
         }
-        Map<String, Object> map = buildingqmService.issuestatisticexport(category_cls, items);
+        Map<String, Object> map = buildingqmService.issuestatisticexport(category_cls, items,response);
 //        log.info("export issue statistic map={}", map);
         log.info("export issue statistic, result={}, message={}, path={}",map.get("result"),map.get("message"),map.get("path"));
         if(Integer.parseInt(map.get("result").toString()) !=0){

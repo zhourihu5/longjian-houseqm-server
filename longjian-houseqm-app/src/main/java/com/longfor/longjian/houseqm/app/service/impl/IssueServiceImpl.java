@@ -1587,12 +1587,12 @@ public class IssueServiceImpl implements IIssueService {
                     String attachmentPath = "/lhdata/pictures/" + attachmentMap.get(attachment).getStoreKey();
                         storeKeyList.add(attachmentPath);
                 }
+                detailVo.setAttachment_path(storeKeyList);
             }
-            detailVo.setAttachment_path(storeKeyList);
             input.add(detailVo);
         }
-        HashMap<String, Object> map = Maps.newHashMap();
         if(issueIds.size()==1){
+            HashMap<String, Object> map = Maps.newHashMap();
             //单个文件直接导出
             ArrayList<Object> picList = Lists.newArrayList();
             for (ExportNotifyDetailVo vo : input) {
@@ -1619,6 +1619,7 @@ public class IssueServiceImpl implements IIssueService {
             List<Map<String,Object>> docList = Lists.newArrayList();
             List<Object> picList = Lists.newArrayList();
             for (ExportNotifyDetailVo vo : input) {
+                HashMap<String, Object> map = Maps.newHashMap();
                 issueIdsList.add(String.valueOf(vo.getIssue_id()));
                 //基本数据
                 map.put("name",vo.getTask_name());
