@@ -3082,7 +3082,7 @@ public class BuildingqmServiceImpl implements IBuildingqmService {
         HashMap<String, NodeDataVo> dataMap = Maps.newHashMap();
         JSONArray jsonArray = JSON.parseArray(items);
         List<Map> itemsList = jsonArray.toJavaList(Map.class);
-        List<String> pathKeys = Lists.newArrayList();
+//        List<String> pathKeys = Lists.newArrayList();
         for (Map<String, Object> item : itemsList) {
             NodeDataVo nodeDataVo = new NodeDataVo();
             nodeDataVo.setKey((String) item.get("key"));
@@ -3091,8 +3091,7 @@ public class BuildingqmServiceImpl implements IBuildingqmService {
             nodeDataVo.setName((String) item.get("name"));
             nodeDataVo.setValid_node(true);
             nodeDataVo.setPath_name(nodeDataVo.getKey() + "/");
-            pathKeys.add(0, nodeDataVo.getKey());
-            nodeDataVo.setPath_keys(pathKeys);
+            nodeDataVo.getPath_keys().add(0, nodeDataVo.getKey());
             if (StringUtils.isBlank(nodeDataVo.getKey())
 //                    || StringUtils.isBlank(nodeDataVo.getParent_key())
                     || nodeDataVo.getIssue_count() == null
@@ -3103,14 +3102,13 @@ public class BuildingqmServiceImpl implements IBuildingqmService {
             dataMap.put(nodeDataVo.getKey(), nodeDataVo);
         }
         int maxCol = 0;
-        ArrayList<String> path_key = Lists.newArrayList();
+//        ArrayList<String> path_key = Lists.newArrayList();
         for (NodeDataVo item : dataList) {
             String parentKey = item.getParent_key();
             log.info("item={}",JSON.toJSONString(item));
             while (parentKey.length() > 0) {
                 item.setPath_name(String.format("%s/%s", parentKey, item.getPath_name()));
-                path_key.add(0, parentKey);
-                item.setPath_keys(path_key);
+                item.getPath_keys().add(0, parentKey);
                 log.info("parentKey={}",parentKey);
                 if (dataMap.containsKey(parentKey)) {
                     log.info("valid");
@@ -3149,6 +3147,7 @@ public class BuildingqmServiceImpl implements IBuildingqmService {
                     if (isLast) {
                         Integer child_count = obj.getChild_count();
                         child_count += 1;
+                        obj.setChild_count(child_count);
                     }
                 }
             }
