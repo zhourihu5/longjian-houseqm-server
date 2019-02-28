@@ -338,7 +338,7 @@ public class BuildingqmController {
      * http://192.168.37.159:3000/project/8/interface/api/3260  提交问题日志
      */
     @RequestMapping(value = "buildingqm/report_issue", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
-    public LjBaseResponse<ReportIssueVo> reportIssue(ReportIssueReq req) {
+    public LjBaseResponse<ReportIssueVo> reportIssue(@Validated ReportIssueReq req) {
         log.info("report_issue, project_id=" + req.getData() + ", data=" + req.getData()+ "");
         Integer userId = (Integer) sessionInfo.getBaseInfo("userId");
         //userId=9;
@@ -405,5 +405,39 @@ public class BuildingqmController {
         //FileUtil.Load(map.get("path").toString(),response);
 //        return ljBaseResponse;
             return null;
+    }
+    @RequestMapping(value = "test", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+    public void testFileNameEncode(HttpServletRequest request, HttpServletResponse response) throws IOException {
+        response.setCharacterEncoding("UTF-8");
+        //todo fix bug chinese charactor encoding in diferent browser
+        String fileNames= "测试汉字文件名.txt";
+        String codedfilename = URLEncoder.encode(fileNames, "utf-8");
+            String agent = request.getHeader("USER-AGENT");
+            System.out.println("browser agent==" + agent);
+            if (null != agent && -1 != agent.indexOf("MSIE") || null != agent && -1 != agent.indexOf("Trident")) {// ie
+                System.out.println("ie");
+                String name = java.net.URLEncoder.encode(fileNames, "UTF-8");
+                codedfilename = name;
+            } else if (null != agent && -1 != agent.indexOf("Mozilla")) {// 火狐,chrome等
+                System.out.println("Mozilla");
+                if(null != agent && -1 != agent.indexOf("Chrome")){
+                    System.out.println("Chrome");
+                }else if(null != agent && -1 != agent.indexOf("Firefox")){
+                    System.out.println("Firefox");
+                }
+                codedfilename = new String(fileNames.getBytes("UTF-8"), "iso-8859-1");
+            } else {
+                System.out.println("other browser");
+                //String fileName = String.format("%s_问题详情_%s.xlsx", category_name, dt);
+//                codedfilename = "test.txt";
+            }
+
+        response.addHeader("Content-Disposition",
+                "attachment;filename=" + codedfilename);
+
+        response.addHeader("Content-Type", "application/vnd.ms-excel; charset=utf-8");
+        response.addHeader("Expires", "0");
+        String content="你好，内容是汉字。Hello,this is english";
+        response.getOutputStream().write(content.getBytes());
     }
 }

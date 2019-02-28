@@ -18,16 +18,16 @@ import java.io.Serializable;
 public class HouseQmIssue implements Serializable {
 
     private String uuid;
-    private int proj_id;
-    private int task_id;
-    private int checker_id;
-    private int repairer_id;
-    private int area_id;
+    private Integer proj_id;
+    private Integer task_id;
+    private Integer checker_id;
+    private Integer repairer_id;
+    private Integer area_id;
     private String area_path_and_id;
     private String category_key;
     private String category_path_and_key;
-    private int sender_id;
-    private long timestamp;
+    private Integer sender_id;
+    private Long timestamp;
 
     public HouseQmIssue(String uuid, int proj_id, int task_id, int checker_id, int repairer_id, int area_id, String area_path_and_id, String category_key, String category_path_and_key, int sender_id, long timestamp) {
         this.uuid = uuid;

@@ -19,7 +19,7 @@ import java.util.List;
 @NoArgsConstructor
 public class HouseqmStatisticTaskIssueRepairListRsp implements Serializable {
     private List<HouseqmStatisticCategoryIssueListRspMsgVo.ApiTaskIssueRepairListRsp> issue_list;
-    private int total;
+    private Integer total;
 
 
 }

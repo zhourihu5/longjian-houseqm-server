@@ -4,6 +4,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.omg.CORBA.INTERNAL;
 
+import javax.validation.constraints.NotNull;
 import java.io.Serializable;
 import java.util.List;
 
@@ -18,7 +19,9 @@ import java.util.List;
 @Data
 @NoArgsConstructor
 public class ReportIssueReq implements Serializable {
+    @NotNull
     private Integer project_id;
+    @NotNull
     private String data;
 
 }

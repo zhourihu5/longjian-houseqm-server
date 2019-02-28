@@ -20,6 +20,6 @@ public class ApiHouseQmCheckTaskReportRsp implements Serializable {
     //	ReasonType int    `json:"reason_type" zpf_reqd:"true" zpf_name:"reason_type"` // 抛弃原因类型
     //	Reason     string `json:"reason" zpf_reqd:"true" zpf_name:"reason"`           // 抛弃原因说明
     private String uuid;
-    private int reason_type;
+    private Integer reason_type;
     private String reason;
 }

@@ -503,7 +503,7 @@ public class IssueServiceImpl implements IIssueService {
             item.setStatus(issue.getStatus());
             item.setAttachment_md5_list(issue.getAttachmentMd5List());
             item.setClient_create_at(DateUtil.datetimeToTimeStamp(issue.getClientCreateAt()));
-            item.setLast_assigner(issue.getLastAssigner());
+            item.setLast_assigner(issue.getLastAssigner()!=null?issue.getLastAssigner():0);
             item.setLast_assigner_at(DateUtil.datetimeToTimeStamp(issue.getLastAssignAt()));
             item.setLast_repairer(issue.getLastRepairer()!=null?issue.getLastRepairer():0);
             item.setLast_repairer_at(DateUtil.datetimeToTimeStamp(issue.getLastRepairerAt()));

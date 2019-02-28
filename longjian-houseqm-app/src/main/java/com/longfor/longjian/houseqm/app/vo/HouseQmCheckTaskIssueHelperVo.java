@@ -255,7 +255,7 @@ public class HouseQmCheckTaskIssueHelperVo {
             HouseQmCheckTaskIssueVo newIssue = (HouseQmCheckTaskIssueVo) map.get("houseqmissue");
             UserInIssue newIssueRole = (UserInIssue) map.get("issueRole");
             String tempIssueUid = this.currentLog.getIssueUuid();
-            if (newIssueRole.isModified()) {
+            if (newIssueRole.getModified()) {
                 this.issueMembers.put(tempIssueUid, newIssueRole);
             }
         } else if (inOld) {
@@ -275,7 +275,7 @@ public class HouseQmCheckTaskIssueHelperVo {
                 if (changed) {
                     this.needUpdateIssueMap.put(issueUuid, modifiedIssue);
                 }
-                if (newIssueRole.isModified()) {
+                if (newIssueRole.getModified()) {
                     this.issueMembers.put(tempIssueUid, newIssueRole);
                 }
 
@@ -295,7 +295,7 @@ public class HouseQmCheckTaskIssueHelperVo {
                 if (changed) {
                     this.needUpdateIssueMap.put(issueUuid, modifiedIssue);
                 }
-                if (newIssueRole.isModified()) {
+                if (newIssueRole.getModified()) {
                     this.issueMembers.put(tempIssueUid, newIssueRole);
                 }
             }
@@ -311,7 +311,7 @@ public class HouseQmCheckTaskIssueHelperVo {
             if (changed) {
                 this.needUpdateIssueMap.put(issueUuid, modifiedIssue);
             }
-            if (newIssueRole.isModified()) {
+            if (newIssueRole.getModified()) {
                 this.issueMembers.put(tempIssueUid, newIssueRole);
             }
         }
