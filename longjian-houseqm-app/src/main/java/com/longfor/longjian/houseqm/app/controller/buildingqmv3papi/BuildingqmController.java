@@ -350,18 +350,18 @@ public class BuildingqmController {
     }
 
         @RequestMapping(value = "stat/issue_statistic_export", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
-    public LjBaseResponse<ReportIssueVo> issueStatisticExport(HttpServletRequest request, HttpServletResponse response) throws IOException {
+    public LjBaseResponse<ReportIssueVo> issueStatisticExport(@RequestParam(name = "category_cls", required = true) Integer category_cls,
+                                                              @RequestParam(name = "items", required = true) String items,HttpServletRequest request, HttpServletResponse response) throws IOException {
 /*@RequestParam(name = "category_cls", required = true) Integer category_cls,
                                                               @RequestParam(name = "items", required = true) String items,*/
-        String category_cls = request.getParameter("category_cls");
-        String items = request.getParameter("items");
+       /* String category_cls = request.getParameter("category_cls");
+        String items = request.getParameter("items");*/
         log.info(String.format("issue_statistic_export, category_cls=%s, items=%s",category_cls, items));
         LjBaseResponse<ReportIssueVo> ljBaseResponse = new LjBaseResponse();
         if (category_cls == null || StringUtils.isBlank(items)) {
             ljBaseResponse.setResult(Integer.parseInt(CommonGlobalEnum.RES_ERROR.getId().toString()));
             ljBaseResponse.setMessage("args error");
             return ljBaseResponse;
-//            return;
         }
         Map<String, Object> map = buildingqmService.issuestatisticexport(category_cls, items);
 //        log.info("export issue statistic map={}", map);

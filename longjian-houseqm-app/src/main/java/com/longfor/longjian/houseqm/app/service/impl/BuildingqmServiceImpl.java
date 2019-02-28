@@ -37,6 +37,9 @@ import org.springframework.stereotype.Repository;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
+import javax.servlet.http.HttpServletResponse;
+import java.io.IOException;
+import java.net.URLEncoder;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.*;
@@ -2116,6 +2119,7 @@ public class BuildingqmServiceImpl implements IBuildingqmService {
             Map detail = (Map) item.get("detail");
             if (detail != null) {
                 info.setArea_id(detail.get("area_id")!=null?((Integer) detail.get("area_id")):(-1));
+                info.setPos_x(detail.get("pos_x")!=null?((Integer) detail.get("pos_x")):(-1));
                 if ((Integer) detail.get("pos_y") != null) {
                     info.setPos_y((Integer) detail.get("pos_y"));
                 } else {
@@ -2149,7 +2153,7 @@ public class BuildingqmServiceImpl implements IBuildingqmService {
                 if (StringUtils.isNotBlank((String) detail.get("repairer_follower_ids"))) {
                     info.setRepairer_follower_ids((String) detail.get("repairer_follower_ids"));
                 } else {
-                    info.setRepairer_follower_ids("");
+                    info.setRepairer_follower_ids("-1");
                 }
 
                 if ((Integer) detail.get("condition") != null) {
@@ -2173,37 +2177,37 @@ public class BuildingqmServiceImpl implements IBuildingqmService {
                 if (StringUtils.isNotBlank((String) detail.get("drawing_md5"))) {
                     info.setDrawing_md5((String) detail.get("drawing_md5"));
                 } else {
-                    info.setDrawing_md5("");
+                    info.setDrawing_md5("-1");
                 }
 
                 if (StringUtils.isNotBlank((String) detail.get("check_item_key"))) {
                     info.setCheck_item_key((String) detail.get("check_item_key"));
                 } else {
-                    info.setCheck_item_key((String) detail.get("check_item_key"));
+                    info.setCheck_item_key((String) detail.get("-1"));
                 }
 
                 if (StringUtils.isNotBlank((String) detail.get("remove_memo_audio_md5_list"))) {
                     info.setRemove_memo_audio_md5_list((String) detail.get("remove_memo_audio_md5_list"));
                 } else {
-                    info.setRemove_memo_audio_md5_list((String) detail.get("remove_memo_audio_md5_list"));
+                    info.setRemove_memo_audio_md5_list((String) detail.get("-1"));
                 }
 
                 if (StringUtils.isNotBlank((String) detail.get("title"))) {
                     info.setTitle((String) detail.get("title"));
                 } else {
-                    info.setTitle((String) detail.get("title"));
+                    info.setTitle((String) detail.get(""));
                 }
 
                 if (StringUtils.isNotBlank((String) detail.get("check_item_md5"))) {
                     info.setCheck_item_md5((String) detail.get("check_item_md5"));
                 } else {
-                    info.setCheck_item_md5((String) detail.get("check_item_md5"));
+                    info.setCheck_item_md5((String) detail.get(""));
                 }
 
                 if ((Integer) detail.get("issue_reason") != null) {
                     info.setIssue_reason((Integer) detail.get("issue_reason"));
                 } else {
-                    info.setIssue_reason(-1);
+                    info.setIssue_reason(0);
                 }
 
                 if (StringUtils.isNotBlank((String) detail.get("issue_reason_detail"))) {
@@ -3071,7 +3075,7 @@ public class BuildingqmServiceImpl implements IBuildingqmService {
     }
 
     @Override
-    public Map<String, Object> issuestatisticexport(String category_cls, String items) {
+    public Map<String, Object> issuestatisticexport(Integer category_cls, String items, HttpServletResponse response) {
         Integer result = 0;
         String message = "success";
         List<NodeDataVo> dataList = Lists.newArrayList();
@@ -3191,6 +3195,18 @@ public class BuildingqmServiceImpl implements IBuildingqmService {
         String category_name = CategoryClsTypeEnum.getName(Integer.valueOf(category_cls));
         if (category_name == null) category_name = "工程检查";
         String fileName = String.format("%s_问题详情_%s.xlsx", category_name, dt);
+
+        try {
+        response.addHeader("Content-Disposition", String.format("attachment; filename=\"%s\"",fileName));
+    /*    SXSSFWorkbook workbook = (SXSSFWorkbook) map.get("workbook");*/
+
+            wb.write(response.getOutputStream());
+
+        response.getOutputStream().flush();
+       response.getOutputStream().close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
         Map<String, Object> map = Maps.newHashMap();
         map.put("fileName", fileName);
         map.put("workbook", wb);
