@@ -179,7 +179,7 @@ public interface HouseQmCheckTaskIssueService {
 
     HouseQmCheckTaskIssue selectByTaskIdAndUuidAndNotDel(Integer taskId, String issueUuid);
 
-    int add(HouseQmCheckTaskIssue issue);
+    Integer add(HouseQmCheckTaskIssue issue);
 
     List<HouseQmCheckTaskIssue> selectByUuids(List<String> issueUuids);
 }

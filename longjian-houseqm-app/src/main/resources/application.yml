@@ -22,7 +22,6 @@ logging:
     com.longfor.longjian: debug
     graphql.GraphQL: debug
 
-
 management:
   security:
     enabled: false

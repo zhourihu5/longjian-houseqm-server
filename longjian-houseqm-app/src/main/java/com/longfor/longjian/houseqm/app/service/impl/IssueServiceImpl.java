@@ -1727,7 +1727,11 @@ public class IssueServiceImpl implements IIssueService {
     private Map<String, HouseQmCheckTaskIssueLog> createIssueLogMap(List<String> issue_uuids) {
         if (CollectionUtils.isEmpty(issue_uuids)) return Maps.newHashMap();
         List<HouseQmCheckTaskIssueLog> lst = houseQmCheckTaskIssueLogService.selectByIssueUuIdInAndStatus(issue_uuids, CheckTaskIssueStatus.ReformNoCheck.getValue());
-        return lst.stream().collect(Collectors.toMap(HouseQmCheckTaskIssueLog::getIssueUuid, log -> log));
+        Map<String, HouseQmCheckTaskIssueLog> map = Maps.newHashMap();
+        for (HouseQmCheckTaskIssueLog item : lst) {
+            map.put(item.getIssueUuid(),item);
+        }
+        return map;
     }
 
     /**
