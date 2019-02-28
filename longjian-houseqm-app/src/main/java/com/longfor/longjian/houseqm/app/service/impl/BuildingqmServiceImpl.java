@@ -1534,9 +1534,9 @@ public class BuildingqmServiceImpl implements IBuildingqmService {
     }
 
     private Map<String, Object> refundIssue(HashMap<String, ApiUserRoleInIssue> issueRoleMap, HouseQmCheckTaskIssue issue, ApiHouseQmCheckTaskIssueLogInfo item) {
-        issue.setRepairerId(0);
+        /*issue.setRepairerId(0);
         issue.setRepairerFollowerIds("");
-        issue.setLastRepairer(0);
+        issue.setLastRepairer(0);*/
         //issue.setLastRepairerAt(DateUtil.strToDate("0001-01-01 00:00:00", "yyyy-MM-dd-HH-mm-ss"));
         issue.setPlanEndOn(new Date(0));
         Integer newStatus = convertLogStatus(item.getStatus());
@@ -1626,9 +1626,9 @@ public class BuildingqmServiceImpl implements IBuildingqmService {
     }
 
     private Map<String, Object> reassignIssue(HashMap<String, ApiUserRoleInIssue> issueRoleMap, HouseQmCheckTaskIssue issue, ApiHouseQmCheckTaskIssueLogInfo item) {
-        issue.setRepairerId(0);
+        /*issue.setRepairerId(0);
         issue.setRepairerFollowerIds("");
-        issue.setLastRepairer(0);
+        issue.setLastRepairer(0);*/
         //issue.setLastRepairerAt(DateUtil.strToDate("0001-01-01 00:00:00", "yyyy-MM-dd-HH-mm-ss"));
         issue.setPlanEndOn(new Date(0));
         List<ApiHouseQmCheckTaskIssueLogInfo.ApiHouseQmCheckTaskIssueLogDetailInfo> detail = item.getDetail();
@@ -2023,13 +2023,13 @@ public class BuildingqmServiceImpl implements IBuildingqmService {
     }
 
     private Map<String, Object> ApiNotifyStat(Integer status, Integer repairerId, List<Integer> repairer_follower_ids) {
-        status = 0;
-        repairerId = 0;
-        repairer_follower_ids = Lists.newArrayList();
+        Integer nstatus = 0;
+        Integer nrepairerId = 0;
+        List<Integer> n_repairer_follower_ids = Lists.newArrayList();
         Map<String, Object> map = Maps.newHashMap();
-        map.put("status", status);
-        map.put("repairerId", repairerId);
-        map.put("splitToIdsComma", repairer_follower_ids);
+        map.put("status", nstatus);
+        map.put("repairerId", nrepairerId);
+        map.put("splitToIdsComma", n_repairer_follower_ids);
         return map;
     }
 

@@ -75,6 +75,7 @@ public class BuildingqmController {
             response.setData(vo);
         } catch (Exception e) {
             e.printStackTrace();
+            log.error("error:",e.getMessage());
             response.setResult(1);
             response.setMessage(e.getMessage());
         }
