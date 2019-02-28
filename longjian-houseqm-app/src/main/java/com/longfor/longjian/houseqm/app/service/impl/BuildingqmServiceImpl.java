@@ -1537,7 +1537,7 @@ public class BuildingqmServiceImpl implements IBuildingqmService {
         issue.setRepairerId(0);
         issue.setRepairerFollowerIds("");
         issue.setLastRepairer(0);
-        issue.setLastRepairerAt(DateUtil.strToDate("0001-01-01 00:00:00", "yyyy-MM-dd-HH-mm-ss"));
+        //issue.setLastRepairerAt(DateUtil.strToDate("0001-01-01 00:00:00", "yyyy-MM-dd-HH-mm-ss"));
         issue.setPlanEndOn(new Date(0));
         Integer newStatus = convertLogStatus(item.getStatus());
         if (newStatus > 0) {
@@ -1629,7 +1629,7 @@ public class BuildingqmServiceImpl implements IBuildingqmService {
         issue.setRepairerId(0);
         issue.setRepairerFollowerIds("");
         issue.setLastRepairer(0);
-        issue.setLastRepairerAt(DateUtil.strToDate("0001-01-01 00:00:00", "yyyy-MM-dd-HH-mm-ss"));
+        //issue.setLastRepairerAt(DateUtil.strToDate("0001-01-01 00:00:00", "yyyy-MM-dd-HH-mm-ss"));
         issue.setPlanEndOn(new Date(0));
         List<ApiHouseQmCheckTaskIssueLogInfo.ApiHouseQmCheckTaskIssueLogDetailInfo> detail = item.getDetail();
         detail.forEach(detailInfo -> {
