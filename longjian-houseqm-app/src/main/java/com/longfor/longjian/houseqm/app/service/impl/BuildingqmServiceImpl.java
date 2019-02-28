@@ -37,6 +37,9 @@ import org.springframework.stereotype.Repository;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
+import javax.servlet.http.HttpServletResponse;
+import java.io.IOException;
+import java.net.URLEncoder;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.*;
@@ -3072,14 +3075,14 @@ public class BuildingqmServiceImpl implements IBuildingqmService {
     }
 
     @Override
-    public Map<String, Object> issuestatisticexport(String category_cls, String items) {
+    public Map<String, Object> issuestatisticexport(Integer category_cls, String items, HttpServletResponse response) {
         Integer result = 0;
         String message = "success";
         List<NodeDataVo> dataList = Lists.newArrayList();
         HashMap<String, NodeDataVo> dataMap = Maps.newHashMap();
         JSONArray jsonArray = JSON.parseArray(items);
         List<Map> itemsList = jsonArray.toJavaList(Map.class);
-        List<String> pathKeys = Lists.newArrayList();
+//        List<String> pathKeys = Lists.newArrayList();
         for (Map<String, Object> item : itemsList) {
             NodeDataVo nodeDataVo = new NodeDataVo();
             nodeDataVo.setKey((String) item.get("key"));
@@ -3088,8 +3091,7 @@ public class BuildingqmServiceImpl implements IBuildingqmService {
             nodeDataVo.setName((String) item.get("name"));
             nodeDataVo.setValid_node(true);
             nodeDataVo.setPath_name(nodeDataVo.getKey() + "/");
-            pathKeys.add(0, nodeDataVo.getKey());
-            nodeDataVo.setPath_keys(pathKeys);
+            nodeDataVo.getPath_keys().add(0, nodeDataVo.getKey());
             if (StringUtils.isBlank(nodeDataVo.getKey())
 //                    || StringUtils.isBlank(nodeDataVo.getParent_key())
                     || nodeDataVo.getIssue_count() == null
@@ -3100,14 +3102,13 @@ public class BuildingqmServiceImpl implements IBuildingqmService {
             dataMap.put(nodeDataVo.getKey(), nodeDataVo);
         }
         int maxCol = 0;
-        ArrayList<String> path_key = Lists.newArrayList();
+//        ArrayList<String> path_key = Lists.newArrayList();
         for (NodeDataVo item : dataList) {
             String parentKey = item.getParent_key();
             log.info("item={}",JSON.toJSONString(item));
             while (parentKey.length() > 0) {
                 item.setPath_name(String.format("%s/%s", parentKey, item.getPath_name()));
-                path_key.add(0, parentKey);
-                item.setPath_keys(path_key);
+                item.getPath_keys().add(0, parentKey);
                 log.info("parentKey={}",parentKey);
                 if (dataMap.containsKey(parentKey)) {
                     log.info("valid");
@@ -3146,6 +3147,7 @@ public class BuildingqmServiceImpl implements IBuildingqmService {
                     if (isLast) {
                         Integer child_count = obj.getChild_count();
                         child_count += 1;
+                        obj.setChild_count(child_count);
                     }
                 }
             }
@@ -3193,6 +3195,18 @@ public class BuildingqmServiceImpl implements IBuildingqmService {
         String category_name = CategoryClsTypeEnum.getName(Integer.valueOf(category_cls));
         if (category_name == null) category_name = "工程检查";
         String fileName = String.format("%s_问题详情_%s.xlsx", category_name, dt);
+
+        try {
+        response.addHeader("Content-Disposition", String.format("attachment; filename=\"%s\"",fileName));
+    /*    SXSSFWorkbook workbook = (SXSSFWorkbook) map.get("workbook");*/
+
+            wb.write(response.getOutputStream());
+
+        response.getOutputStream().flush();
+       response.getOutputStream().close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
         Map<String, Object> map = Maps.newHashMap();
         map.put("fileName", fileName);
         map.put("workbook", wb);

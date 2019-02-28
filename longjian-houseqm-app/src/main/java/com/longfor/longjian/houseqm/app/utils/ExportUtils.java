@@ -559,10 +559,13 @@ public class ExportUtils {
             } else {
                 cell.setCellValue("细项");
             }
+            SXSSFCell cell2 = row.createCell(cur_column + i+1);
+            cell2.setCellValue("问题数");
+            cur_column+=1;
 
         }
-        cur_row = 2;
-        int cur_col = 1;
+        cur_row = 1;
+        int cur_col = 0;
         exportTree(workbook, sheet, nodeTree, cur_row, cur_col);
 
         String dt = DateUtil.getNowTimeStr("MMddHHmmss");
@@ -577,25 +580,28 @@ public class ExportUtils {
         for (NodeVo node : tree) {
             int end_row = row + node.getData().getChild_count() - 1;
             int end_column = col;
-            log.info("row={},end_row={},col={},end_column={}", row, end_row, col, end_column);
+            log.info("row={},end_row={},col={},end_column={}",row,end_row,col,end_column);
             //合并单元格
             //1：开始行 2：结束行  3：开始列 4：结束列
 //            CellRangeAddress region = new CellRangeAddress(row, col, end_row, end_column);
-            if (end_row >= row) {
-                CellRangeAddress region = new CellRangeAddress(row, end_row, col, end_column);
+            if(end_row>row){
+                CellRangeAddress region = new CellRangeAddress(row,  end_row,col, end_column);
                 sheet.addMergedRegion(region);
             }
-            //创建行
-            SXSSFRow row1 = sheet.createRow(row);
+            SXSSFRow row1= sheet.getRow(row);
+            if(row1==null){
+                //创建行
+                row1= sheet.createRow(row);
+            }
             //创捷列
             SXSSFCell cell = row1.createCell(col);
             CellStyle cellStyle = workbook.createCellStyle();
             cellStyle.setVerticalAlignment(CENTER);//垂直居中
             cell.setCellValue(node.getData().getName());
-            log.info("cell.getStringCellValue={}", cell.getStringCellValue());
+            log.info("cell.getStringCellValue={}",cell.getStringCellValue());
             //合并
-            if (end_row >= row) {
-                sheet.addMergedRegion(new CellRangeAddress(row, end_row, col + 1, end_column + 1));
+            if(end_row>row) {
+                sheet.addMergedRegion(new CellRangeAddress(row,  end_row,col + 1, end_column + 1));
             }
 
             //创捷列
@@ -606,11 +612,11 @@ public class ExportUtils {
             if (CollectionUtils.isNotEmpty(node.getChild_list())) {
                 exportTree(workbook, sheet, node.getChild_list(), row, col + 2);
             }
-            if (node.getData().getChild_count() > 0) {
-                row += node.getData().getChild_count();
-            } else {
-                row += 1;
-            }
+//            if(node.getData().getChild_count()>0){
+            row += node.getData().getChild_count();
+//            }else {
+//                row+=1;
+//            }
         }
 
     }
