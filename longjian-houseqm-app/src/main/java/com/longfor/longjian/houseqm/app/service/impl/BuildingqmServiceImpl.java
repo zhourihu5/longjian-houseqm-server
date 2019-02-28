@@ -2181,25 +2181,25 @@ public class BuildingqmServiceImpl implements IBuildingqmService {
                 }
 
                 //if (StringUtils.isBlank((String) detail.get("check_item_key"))) {
-                    info.setCheck_item_key((String) detail.get("check_item_key"));
+                    info.setCheck_item_key(detail.get("check_item_key")!=null?(String) detail.get("check_item_key"):"-1");
                // } else {
                //     info.setCheck_item_key((String) detail.get("check_item_key"));
                // }
 
                // if (StringUtils.isBlank((String) detail.get("remove_memo_audio_md5_list"))) {
-                    info.setRemove_memo_audio_md5_list((String) detail.get("remove_memo_audio_md5_list"));
+                    info.setRemove_memo_audio_md5_list(detail.get("remove_memo_audio_md5_list")!=null?(String) detail.get("remove_memo_audio_md5_list"):"-1");
                 //} else {
                //     info.setRemove_memo_audio_md5_list((String) detail.get("remove_memo_audio_md5_list"));
                 //}
 
                 //if (StringUtils.isBlank((String) detail.get("title"))) {
-                    info.setTitle((String) detail.get("title"));
+                    info.setTitle(detail.get("title")!=null?(String) detail.get("title"):"");
                // } else {
               //      info.setTitle((String) detail.get("title"));
                // }
 
                 //if (StringUtils.isBlank((String) detail.get("check_item_md5"))) {
-                    info.setCheck_item_md5((String) detail.get("check_item_md5"));
+                    info.setCheck_item_md5(detail.get("check_item_md5")!=null?(String) detail.get("check_item_md5"):"");
               //  } else {
                //     info.setCheck_item_md5((String) detail.get("check_item_md5"));
                // }
