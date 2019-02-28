@@ -1608,6 +1608,7 @@ public class IssueServiceImpl implements IIssueService {
                         try {
                             picList.add(DocumentHandler.getImageBase(s));
                         } catch (Exception e) {
+
                             log.error("Exception={}",e.getMessage());
                             e.printStackTrace();
 
