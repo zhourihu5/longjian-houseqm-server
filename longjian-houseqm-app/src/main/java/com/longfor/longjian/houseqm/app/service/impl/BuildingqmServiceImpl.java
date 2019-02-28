@@ -1536,9 +1536,9 @@ public class BuildingqmServiceImpl implements IBuildingqmService {
     private Map<String, Object> refundIssue(HashMap<String, ApiUserRoleInIssue> issueRoleMap, HouseQmCheckTaskIssue issue, ApiHouseQmCheckTaskIssueLogInfo item) {
         /*issue.setRepairerId(0);
         issue.setRepairerFollowerIds("");
-        issue.setLastRepairer(0);*/
-        //issue.setLastRepairerAt(DateUtil.strToDate("0001-01-01 00:00:00", "yyyy-MM-dd-HH-mm-ss"));
-        issue.setPlanEndOn(new Date(0));
+        issue.setLastRepairer(0);
+        issue.setLastRepairerAt(DateUtil.strToDate("0001-01-01 00:00:00", "yyyy-MM-dd-HH-mm-ss"));
+        issue.setPlanEndOn(new Date(0));*/
         Integer newStatus = convertLogStatus(item.getStatus());
         if (newStatus > 0) {
             issue.setStatus(newStatus);
@@ -1628,9 +1628,9 @@ public class BuildingqmServiceImpl implements IBuildingqmService {
     private Map<String, Object> reassignIssue(HashMap<String, ApiUserRoleInIssue> issueRoleMap, HouseQmCheckTaskIssue issue, ApiHouseQmCheckTaskIssueLogInfo item) {
         /*issue.setRepairerId(0);
         issue.setRepairerFollowerIds("");
-        issue.setLastRepairer(0);*/
-        //issue.setLastRepairerAt(DateUtil.strToDate("0001-01-01 00:00:00", "yyyy-MM-dd-HH-mm-ss"));
-        issue.setPlanEndOn(new Date(0));
+        issue.setLastRepairer(0);
+        issue.setLastRepairerAt(DateUtil.strToDate("0001-01-01 00:00:00", "yyyy-MM-dd-HH-mm-ss"));
+        issue.setPlanEndOn(new Date(0));*/
         List<ApiHouseQmCheckTaskIssueLogInfo.ApiHouseQmCheckTaskIssueLogDetailInfo> detail = item.getDetail();
         detail.forEach(detailInfo -> {
             if (!detailInfo.getCategory_key().equals("-1")) {
