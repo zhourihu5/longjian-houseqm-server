@@ -30,6 +30,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
 import java.io.*;
+import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -370,23 +371,24 @@ public class BuildingqmController {
             return ljBaseResponse;
 //            return;
         }
-            String agent = request.getHeader("USER-AGENT");
-            System.out.println("browser agent==" + agent);
+            response.setCharacterEncoding("UTF-8");
             //todo fix bug chinese charactor encoding in diferent browser
             String fileNames= map.get("fileName").toString();
-            String codedfilename = "";
-            if (null != agent && -1 != agent.indexOf("MSIE") || null != agent && -1 != agent.indexOf("Trident")) {// ie
-                System.out.println("ie");
-                String name = java.net.URLEncoder.encode(fileNames, "UTF-8");
-                codedfilename = name;
-            } else if (null != agent && -1 != agent.indexOf("Mozilla")) {// 火狐,chrome等
-                System.out.println("chrome");
-                codedfilename = new String(fileNames.getBytes("UTF-8"), "iso-8859-1");
-            } else {
-                System.out.println("other browser");
-                //String fileName = String.format("%s_问题详情_%s.xlsx", category_name, dt);
-                codedfilename = "issue_detail.xlsx";
-            }
+            String codedfilename = URLEncoder.encode(fileNames, "utf-8");
+//            String agent = request.getHeader("USER-AGENT");
+//            System.out.println("browser agent==" + agent);
+//            if (null != agent && -1 != agent.indexOf("MSIE") || null != agent && -1 != agent.indexOf("Trident")) {// ie
+//                System.out.println("ie");
+//                String name = java.net.URLEncoder.encode(fileNames, "UTF-8");
+//                codedfilename = name;
+//            } else if (null != agent && -1 != agent.indexOf("Mozilla")) {// 火狐,chrome等
+//                System.out.println("chrome");
+//                codedfilename = new String(fileNames.getBytes("UTF-8"), "iso-8859-1");
+//            } else {
+//                System.out.println("other browser");
+//                //String fileName = String.format("%s_问题详情_%s.xlsx", category_name, dt);
+//                codedfilename = "issue_detail.xlsx";
+//            }
 
             response.addHeader("Content-Disposition",
                     "attachment;filename=" + codedfilename);

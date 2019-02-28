@@ -249,6 +249,7 @@ public class FileUtil {
         }
     }
 
+
     //压缩文件，inputFileName表示要压缩的文件（可以为目录）,zipFileName表示压缩后的zip文件
     public static void zip(String inputFileName, String zipFileName) throws Exception {
         File f = new File(zipFileName);

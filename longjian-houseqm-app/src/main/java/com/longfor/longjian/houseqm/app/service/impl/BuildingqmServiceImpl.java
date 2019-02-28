@@ -29,6 +29,7 @@ import com.longfor.longjian.houseqm.util.*;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.beanutils.BeanUtils;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 
@@ -39,13 +40,10 @@ import org.springframework.stereotype.Service;
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
-import java.net.URLEncoder;
+import java.lang.reflect.InvocationTargetException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.*;
-import java.util.stream.Collectors;
-
-import static javax.swing.UIManager.get;
 
 /**
  * @author lipeishuai
@@ -101,11 +99,6 @@ public class BuildingqmServiceImpl implements IBuildingqmService {
     private KafkaProducer kafkaProducer;
     @Resource
     private IssueServiceImpl issueService;
-   /* @Resource
-    UmPushUtil umPushUtil;
-    @Resource
-    XmPushUtil xmPushUtil;*/
-
 
     /**
      * @param userId
@@ -113,31 +106,43 @@ public class BuildingqmServiceImpl implements IBuildingqmService {
      */
     public TaskListVo myTaskList(Integer userId) {
 
-        List<UserInHouseQmCheckTask> user_tasks = userInHouseQmCheckTaskService.searchByUserId(userId);
+        List<UserInHouseQmCheckTask> userTasks = userInHouseQmCheckTaskService.searchByUserId(userId);
         Set<Integer> taskIds = Sets.newHashSet();
 
-        for (UserInHouseQmCheckTask task : user_tasks) {
+        for (UserInHouseQmCheckTask task : userTasks) {
             taskIds.add(task.getTaskId());
         }
 
-        Map<Integer, ApiBuildingQmCheckTaskConfig> task_map = creatTaskMap(taskIds);
-        List<HouseQmCheckTask> houseqm_tasks = houseQmCheckTaskService.selectByTaskIdsEvenDeleted(taskIds);
+        Map<Integer, ApiBuildingQmCheckTaskConfig> taskMap = creatTaskMap(taskIds);
+        List<HouseQmCheckTask> houseqmTasks = houseQmCheckTaskService.selectByTaskIdsEvenDeleted(taskIds);
         List<TaskVo> vos = Lists.newArrayList();
+        buildTaskVo(vos,houseqmTasks,taskMap);
+        TaskListVo taskListVo = new TaskListVo();
+        taskListVo.setTask_list(vos);
+
+        return taskListVo;
+    }
+
+    private void setTaskVoProperties(TaskVo task,HouseQmCheckTask item){
+        task.setTask_id(item.getTaskId());
+        task.setProject_id(item.getProjectId());
+        task.setName(item.getName());
+        task.setStatus(item.getStatus());
+        task.setCategory_cls(item.getCategoryCls());
+        task.setRoot_category_key(item.getRootCategoryKey());
+        task.setArea_ids(item.getAreaIds());
+        task.setArea_type(item.getAreaTypes());
+        task.setPlan_begin_on((int) (item.getPlanBeginOn().getTime() / 1000));
+        task.setPlan_end_on((int) (item.getPlanEndOn().getTime() / 1000));
+        task.setCreate_at((int) (item.getCreateAt().getTime() / 1000));
+        task.setUpdate_at((int) (item.getUpdateAt().getTime() / 1000));
+        task.setDelete_at(DateUtil.datetimeToTimeStamp(item.getDeleteAt()));
+    }
+
+    private void buildTaskVo(List<TaskVo> vos,List<HouseQmCheckTask> houseqm_tasks,Map<Integer, ApiBuildingQmCheckTaskConfig> task_map){
         for (HouseQmCheckTask item : houseqm_tasks) {
             TaskVo task = new TaskVo();
-            task.setTask_id(item.getTaskId());
-            task.setProject_id(item.getProjectId());
-            task.setName(item.getName());
-            task.setStatus(item.getStatus());
-            task.setCategory_cls(item.getCategoryCls());
-            task.setRoot_category_key(item.getRootCategoryKey());
-            task.setArea_ids(item.getAreaIds());
-            task.setArea_type(item.getAreaTypes());
-            task.setPlan_begin_on((int) (item.getPlanBeginOn().getTime() / 1000));
-            task.setPlan_end_on((int) (item.getPlanEndOn().getTime() / 1000));
-            task.setCreate_at((int) (item.getCreateAt().getTime() / 1000));
-            task.setUpdate_at((int) (item.getUpdateAt().getTime() / 1000));
-            task.setDelete_at(DateUtil.datetimeToTimeStamp(item.getDeleteAt()));
+            setTaskVoProperties(task,item);
 
             if (task_map.containsKey(task.getTask_id())) {
 
@@ -159,15 +164,7 @@ public class BuildingqmServiceImpl implements IBuildingqmService {
             }
             vos.add(task);
         }
-
-
-        //fullAllTaskConfigVO(task_map, houseqm_tasks, vos);
-        TaskListVo taskListVo = new TaskListVo();
-        taskListVo.setTask_list(vos);
-
-        return taskListVo;
     }
-
     /**
      * @param taskIdsStr
      * @return
@@ -328,8 +325,8 @@ public class BuildingqmServiceImpl implements IBuildingqmService {
         return myIssuePatchListVo;
     }
 
-    @Override
-    public void create(Integer uid, TaskReq taskReq) {
+    private Map<String,Object> prepareForCreateOrEdit(TaskReq taskReq){
+        Map<String,Object> paramMap=new HashMap<>();
         List<Integer> areaIds = StringSplitToListUtil.splitToIdsComma(taskReq.getArea_ids(), ",");
         if (CollectionUtils.isEmpty(areaIds)) {
             throw new LjBaseRuntimeException(-99, "区域不能为空");
@@ -353,18 +350,32 @@ public class BuildingqmServiceImpl implements IBuildingqmService {
         String planBeginOn = taskReq.getPlan_begin_on() + " 00:00:00";
         String planEndOn = taskReq.getPlan_end_on() + " 23:59:59";
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        Date begin =null;
+        Date endon =null;
         try {
-            Date begin = sdf.parse(planBeginOn);
-            Date endon = sdf.parse(planEndOn);
+             begin = sdf.parse(planBeginOn);
+            endon = sdf.parse(planEndOn);
             if (DateUtil.datetimeToTimeStamp(endon) < DateUtil.datetimeToTimeStamp(begin)) {
                 throw new LjBaseRuntimeException(-99, "计划结束时间有误");
             }
         } catch (ParseException e) {
             log.error("error:",e.getMessage());
         }
-        Execute(uid, taskReq, areaIds, areaTypes, planBeginOn, planEndOn, checkerGroups, repairerGroups, config);
-
-
+        paramMap.put("areaIds",areaIds);
+        paramMap.put("areaTypes",areaTypes);
+        paramMap.put("planBeginOn",planBeginOn);
+        paramMap.put("planEndOn",planEndOn);
+        paramMap.put("checkerGroups",checkerGroups);
+        paramMap.put("repairerGroups",repairerGroups);
+        paramMap.put("config",config);
+        paramMap.put("begin",begin);
+        paramMap.put("endon",endon);
+        return paramMap;
+    }
+    @Override
+    public void create(Integer uid, TaskReq taskReq) {
+        Map<String,Object> paramMap=prepareForCreateOrEdit(taskReq);
+        Execute(uid, taskReq, (List<Integer>)paramMap.get("areaIds"), (List<Integer>) paramMap.get("areaTypes"), (String)paramMap.get("planBeginOn"), (String)paramMap.get("planEndOn"), (List<ApiBuildingQmTaskMemberGroupVo>)paramMap.get("checkerGroups"), (List<ApiBuildingQmTaskMemberGroupVo>)paramMap.get("repairerGroups"), (ConfigVo)paramMap.get("config"));
     }
 
     @Override
@@ -374,41 +385,16 @@ public class BuildingqmServiceImpl implements IBuildingqmService {
 
     @Override
     public void edit(Integer uid, TaskEditReq taskEditReq) {
-        List<Integer> areaIds = StringSplitToListUtil.splitToIdsComma(taskEditReq.getArea_ids(), ",");
-        if (CollectionUtils.isEmpty(areaIds)) {
-            throw new LjBaseRuntimeException(-99, "区域不能为空");
-        }
-        List<Integer> areaTypes = StringSplitToListUtil.splitToIdsComma(taskEditReq.getArea_types(), ",");
-        if (CollectionUtils.isEmpty(areaTypes)) {
-            throw new LjBaseRuntimeException(-99, "区域类型不能为空");
-        }
-        List<ApiBuildingQmCheckTaskSquadObjVo> groupsInfo = unmarshCheckerGroups(taskEditReq.getChecker_groups());
-        if (CollectionUtils.isEmpty(groupsInfo)) {
-            throw new LjBaseRuntimeException(-99, "检查人组不能为空");
-        }
-        List<ApiBuildingQmTaskMemberGroupVo> checkerGroups = createCheckerGroups(groupsInfo);
-        List<Integer> repairerIds = StringSplitToListUtil.splitToIdsComma(taskEditReq.getRepairer_ids(), ",");
-        if (CollectionUtils.isEmpty(repairerIds)) {
-            throw new LjBaseRuntimeException(-99, "整改人不能为空");
-        }
-        List<ApiBuildingQmTaskMemberGroupVo> repairerGroups = createRepairerGroups("整改人组", repairerIds);
-
-        ConfigVo config = unmarshPushStrategy(taskEditReq.getPush_strategy_config());
-        String planBeginOn = taskEditReq.getPlan_begin_on() + " 00:00:00";
-        String planEndOn = taskEditReq.getPlan_end_on() + " 23:59:59";
-        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-        Date begin = null;
-        Date endon = null;
+        TaskReq taskReq=new TaskReq();
         try {
-            begin = sdf.parse(planBeginOn);
-            endon = sdf.parse(planEndOn);
-            if (DateUtil.datetimeToTimeStamp(endon) < DateUtil.datetimeToTimeStamp(begin)) {
-                throw new LjBaseRuntimeException(-99, "计划结束时间有误");
-            }
-        } catch (ParseException e) {
-            log.error("error:",e.getMessage());
+            BeanUtils.copyProperties(taskReq,taskEditReq);
+        } catch (IllegalAccessException e) {
+            e.printStackTrace();
+        } catch (InvocationTargetException e) {
+            e.printStackTrace();
         }
-        editExecute(begin, endon, uid, taskEditReq, areaIds, areaTypes, planBeginOn, planEndOn, checkerGroups, repairerGroups, config);
+        Map<String,Object> paramMap=this.prepareForCreateOrEdit(taskReq);
+        editExecute((Date)paramMap.get("begin"), (Date)paramMap.get("endon"), uid, taskEditReq, (List<Integer>)paramMap.get("areaIds"), (List<Integer>) paramMap.get("areaTypes"), (String)paramMap.get("planBeginOn"), (String)paramMap.get("planEndOn"), (List<ApiBuildingQmTaskMemberGroupVo>)paramMap.get("checkerGroups"), (List<ApiBuildingQmTaskMemberGroupVo>)paramMap.get("repairerGroups"), (ConfigVo)paramMap.get("config"));
 
     }
 
@@ -1531,11 +1517,11 @@ public class BuildingqmServiceImpl implements IBuildingqmService {
     }
 
     private Map<String, Object> refundIssue(HashMap<String, ApiUserRoleInIssue> issueRoleMap, HouseQmCheckTaskIssue issue, ApiHouseQmCheckTaskIssueLogInfo item) {
-        issue.setRepairerId(0);
+        /*issue.setRepairerId(0);
         issue.setRepairerFollowerIds("");
         issue.setLastRepairer(0);
         issue.setLastRepairerAt(DateUtil.strToDate("0001-01-01 00:00:00", "yyyy-MM-dd-HH-mm-ss"));
-        issue.setPlanEndOn(new Date(0));
+        issue.setPlanEndOn(new Date(0));*/
         Integer newStatus = convertLogStatus(item.getStatus());
         if (newStatus > 0) {
             issue.setStatus(newStatus);
@@ -1623,11 +1609,11 @@ public class BuildingqmServiceImpl implements IBuildingqmService {
     }
 
     private Map<String, Object> reassignIssue(HashMap<String, ApiUserRoleInIssue> issueRoleMap, HouseQmCheckTaskIssue issue, ApiHouseQmCheckTaskIssueLogInfo item) {
-        issue.setRepairerId(0);
+        /*issue.setRepairerId(0);
         issue.setRepairerFollowerIds("");
         issue.setLastRepairer(0);
         issue.setLastRepairerAt(DateUtil.strToDate("0001-01-01 00:00:00", "yyyy-MM-dd-HH-mm-ss"));
-        issue.setPlanEndOn(new Date(0));
+        issue.setPlanEndOn(new Date(0));*/
         List<ApiHouseQmCheckTaskIssueLogInfo.ApiHouseQmCheckTaskIssueLogDetailInfo> detail = item.getDetail();
         detail.forEach(detailInfo -> {
             if (!detailInfo.getCategory_key().equals("-1")) {
@@ -2951,7 +2937,7 @@ public class BuildingqmServiceImpl implements IBuildingqmService {
      * @param maps
      * @param houseQmCheckTasks
      */
-    private void fullAllTaskConfigVO(Map<Integer, ApiBuildingQmCheckTaskConfig> maps,
+    /*private void fullAllTaskConfigVO(Map<Integer, ApiBuildingQmCheckTaskConfig> maps,
                                      List<HouseQmCheckTask> houseQmCheckTasks, List<TaskVo> vos) {
 
         if (CollectionUtils.isEmpty(houseQmCheckTasks)) {
@@ -2995,7 +2981,7 @@ public class BuildingqmServiceImpl implements IBuildingqmService {
             }
             vos.add(task);
         }
-    }
+    }*/
 
 
     /**
@@ -3189,7 +3175,7 @@ public class BuildingqmServiceImpl implements IBuildingqmService {
 
 
         String dt = DateUtil.getNowTimeStr("yyyyMMddHHmmss");
-        String category_name = CategoryClsTypeEnum.getName(category_cls);
+        String category_name = CategoryClsTypeEnum.getName(Integer.valueOf(category_cls));
         if (category_name == null) category_name = "工程检查";
         String fileName = String.format("%s_问题详情_%s.xlsx", category_name, dt);
 
