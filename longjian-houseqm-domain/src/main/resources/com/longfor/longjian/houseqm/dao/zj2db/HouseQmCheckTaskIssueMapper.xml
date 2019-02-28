@@ -57,7 +57,7 @@
     <resultMap id="checkerIssueStat" type="com.longfor.longjian.houseqm.po.CheckerIssueStat">
         <result column="project_id" property="projectId" jdbcType="INTEGER"/>
         <result column="task_id" property="taskId" jdbcType="INTEGER"/>
-        <result column="user_id" property="userId" jdbcType="INTEGER"/>
+        <result column="sender_id" property="userId" jdbcType="INTEGER"/>
         <result column="area_id" property="areaId" jdbcType="INTEGER"/>
         <result column="area_path_and_id" property="areaPathAndId" jdbcType="VARCHAR"/>
         <result column="count" property="count" jdbcType="INTEGER"/>
@@ -264,7 +264,7 @@
         </if>
     </select>
     <select id="selectByProjectIdAndTaskIdIn" resultMap="checkerIssueStat">
-        SELECT area_id,typ,sender_id AS user_id,area_path_and_id,COUNT(*) AS count
+        SELECT area_id,`typ`,sender_id AS user_id,area_path_and_id,COUNT(*) AS count
         from house_qm_check_task_issue
         WHERE project_id=#{projectId} AND task_id IN
         <foreach collection="taskIds" item="taskId" open="(" separator="," close=")" index="index">
@@ -313,12 +313,12 @@
         GROUP BY area_path_and_id
     </select>
     <select id="selectByProjectIdAndTaskId" resultMap="checkerIssueStat">
-        select area_id,typ,sender_id,area_path_and_id,COUNT(area_id) AS count FROM house_qm_check_task_issue
+        select area_id,`typ`,sender_id,area_path_and_id,COUNT(area_id) AS count FROM house_qm_check_task_issue
         WHERE project_id=#{projectId} AND task_id=#{taskId}
         <if test="deleted=='false'">
             and delete_at IS NULL
         </if>
-        GROUP BY area_id,typ
+        GROUP BY area_id,`typ`
     </select>
     <select id="selectByTaskIdAndAreaPathAndIdLike" resultMap="BaseResultMap">
         SELECT status,COUNT(*) as pos_x from house_qm_check_task_issue
