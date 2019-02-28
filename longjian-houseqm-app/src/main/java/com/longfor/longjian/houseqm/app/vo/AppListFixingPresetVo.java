@@ -10,7 +10,7 @@ import java.util.List;
 @NoArgsConstructor
 public class AppListFixingPresetVo implements Serializable {
 
-    private int last_id;
+    private Integer last_id;
     private List<AppFixingPresetProtoVo> items;
 
 }

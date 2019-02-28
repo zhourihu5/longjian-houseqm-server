@@ -21,56 +21,56 @@ public class MyIssuePatchListVo implements Serializable{
     @Data
     @NoArgsConstructor
     public class LogVo implements Serializable{
-        private int id;
-        private int project_id;
-        private int task_id;
+        private Integer id;
+        private Integer project_id;
+        private Integer task_id;
         private String uuid;
         private String issue_uuid;
-        private int sender_id;
+        private Integer sender_id;
         private String desc;
-        private int status;
+        private Integer status;
         private String attachment_md5_list;
         private String audio_md5_list;
         private String memo_audio_md5_list;
-        private int client_create_at;
+        private Integer client_create_at;
         private LogDetailVo detail;
-        private int update_at;
-        private int delete_at;
+        private Integer update_at;
+        private Integer delete_at;
     }
 
     @Data
     @NoArgsConstructor
     public class AttachmentVo implements Serializable{
-        private int id;
-        private int project_id;
-        private int task_id;
+        private Integer id;
+        private Integer project_id;
+        private Integer task_id;
         private String issue_uuid;
-        private int user_id;
-        private int public_type;
-        private int attachment_type;
+        private Integer user_id;
+        private Integer public_type;
+        private Integer attachment_type;
         private String md5;
-        private int status;
-        private int update_at;
-        private int delete_at;
+        private Integer status;
+        private Integer update_at;
+        private Integer delete_at;
     }
 
     @Data
     @NoArgsConstructor
     public class LogDetailVo implements Serializable{
         private String title;
-        private int area_id;
-        private int pos_x;
-        private int pos_y;
-        private int typ;
-        private int plan_end_on;
-        private int end_on;
-        private int repairer_id;
+        private Integer area_id;
+        private Integer pos_x;
+        private Integer pos_y;
+        private Integer typ;
+        private Integer plan_end_on;
+        private Integer end_on;
+        private Integer repairer_id;
         private String repairer_follower_ids;
-        private int condition;
-        private int category_cls;
+        private Integer condition;
+        private Integer category_cls;
         private String category_key;
         private String check_item_key;
-        private int issue_reason;
+        private Integer issue_reason;
         private String issue_reason_detail;
         private String issue_suggest;
         private String potential_risk;

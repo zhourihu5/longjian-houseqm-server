@@ -19,15 +19,15 @@ public class TaskRoleListVo implements Serializable{
     @NoArgsConstructor
     public class TaskRoleVo implements Serializable {
 
-        private int id;
-        private int user_id;
-        private int squad_id;
-        private int role_type;
-        private int  can_approve;
-        private int can_direct_approve;
-        private int can_reassign;
+        private Integer id;
+        private Integer user_id;
+        private Integer squad_id;
+        private Integer role_type;
+        private Integer  can_approve;
+        private Integer can_direct_approve;
+        private Integer can_reassign;
         private String real_name;
-        private int  task_id;
+        private Integer  task_id;
     }
 
 }

@@ -13,7 +13,7 @@ import java.util.List;
 @NoArgsConstructor
 public class HouseqmStatisticTaskCheckitemStatRspMsgVo implements Serializable {
     List<ApiHouseQmCheckItemIssueStat> items;
-    private  int date_type;
+    private  Integer date_type;
 
 
     @Data

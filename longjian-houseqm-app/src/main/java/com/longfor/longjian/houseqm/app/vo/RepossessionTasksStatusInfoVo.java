@@ -12,20 +12,20 @@ import java.io.Serializable;
 @NoArgsConstructor
 public class RepossessionTasksStatusInfoVo implements Serializable {
     private String TaskName;
-    private int Total;
-    private int CheckedCount;
-    private int UncheckedCount;
+    private Integer Total;
+    private Integer CheckedCount;
+    private Integer UncheckedCount;
     private String CheckedRate;
-    private int AcceptCount;
-    private int UnacceptCount;
-    private int HasIssueCount;
-    private int NoIssueCount;
-    private int AcceptHasIssueCount;
-    private int AcceptNoIssueCount;
-    private int AcceptHasIssueSignCount;
-    private int AcceptNoIssueSignCount;
-    private int RejectCount;
-    private int OnlyWatch;
-    private int RepairConfirmCount;
-    private int AcceptApprovedCount;
+    private Integer AcceptCount;
+    private Integer UnacceptCount;
+    private Integer HasIssueCount;
+    private Integer NoIssueCount;
+    private Integer AcceptHasIssueCount;
+    private Integer AcceptNoIssueCount;
+    private Integer AcceptHasIssueSignCount;
+    private Integer AcceptNoIssueSignCount;
+    private Integer RejectCount;
+    private Integer OnlyWatch;
+    private Integer RepairConfirmCount;
+    private Integer AcceptApprovedCount;
 }

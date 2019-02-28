@@ -20,10 +20,10 @@ public class SearchListVo implements Serializable {
   @NoArgsConstructor
   public class SearchVo implements Serializable {
 
-    private int id;
+    private Integer id;
     private String  name;
-    private int  team_id;
-    private int status;
-    private int update_at;
+    private Integer  team_id;
+    private Integer status;
+    private Integer update_at;
   }
 }

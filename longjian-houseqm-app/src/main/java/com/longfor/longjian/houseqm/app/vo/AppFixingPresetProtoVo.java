@@ -11,12 +11,12 @@ import java.io.Serializable;
 @NoArgsConstructor
 public class AppFixingPresetProtoVo implements Serializable {
     private String id;
-    private int project_id;
-    private int area_id;
+    private Integer project_id;
+    private Integer area_id;
     private String root_category_key;
     private String category_key;
     private String check_item_key;
     private String user_ids;
-    private int days;
-    private int minutes;
+    private Integer days;
+    private Integer minutes;
 }
