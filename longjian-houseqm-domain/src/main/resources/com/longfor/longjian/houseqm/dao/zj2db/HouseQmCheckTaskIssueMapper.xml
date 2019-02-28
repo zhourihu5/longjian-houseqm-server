@@ -273,7 +273,7 @@
         <if test="deleted =='false'">
             and delete_at is NULL
         </if>
-        GROUP BY area_id,sender_id,typ
+        GROUP BY area_id,typ
     </select>
     <select id="selectCreateAtByProjectIdAndTaskIdsIn" resultMap="checkerIssueStat">
         SELECT DATE_FORMAT(client_create_at,'%Y-%m-%d') AS date from house_qm_check_task_issue

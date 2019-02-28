@@ -48,13 +48,13 @@ longfor:
       clients:
         longjian-basic-server:
           permission:
-            url: http://172.17.96.88:8082/uc/inner/ # test 环境 192.168.37.157
+            url: http://192.168.37.157:8082/uc/inner/ # test 环境 192.168.37.157
           repossession:
-            url: http://172.17.96.88:8082/v3/api/repossession/ # dev 环境 172.17.96.88
+            url: http://192.168.37.157:8082/v3/api/repossession/ # dev 环境 172.17.96.88
           buildingqmexport:
-            url: http://172.17.96.88:8082/papi/v3/bgtask/buildingqm/
+            url: http://192.168.37.157:8082/papi/v3/bgtask/buildingqm/
           houseqmcheckissue:
-            url: http://172.17.96.88:8082/v3/stat_export/houseqm_check_task_issue/
+            url: http://192.168.37.157:8082/v3/stat_export/houseqm_check_task_issue/
         config:
           permission:
             connectTimeout: 5000
@@ -241,29 +241,29 @@ push_config:
   rhapp:
     app_key_android: "5a1fdb14a40fa353430000d8"
     app_master_secret_android: "wzqmrawvme9qfmv8mveyawxldbmyv7kf"
-    app_key_ios: "5ba9d3bab465f5a845000335"
-    app_master_secret_ios: "s8258p7gu0lza6rcv4wvup0tbibbmfsj"
+    app_key_ios: "5b559ccb8f4a9d7a4800000f"
+    app_master_secret_ios: "zzl7yp8youbkvto9os8ucs1x2fu6rdw2"
     app_secret_xiao_mi: "/5oICHq74zbknpIQITgrRQ=="
     package_name_xiao_mi: "cn.smartinspection.combine.debug"
   ydyf:
     app_key_android: "56ef621667e58edcc2000e7e"
     app_master_secret_android: "wzqhrc6nk4ovucurknxrxu5cobeqh5ns"
-    app_key_ios: "5ba9d3bab465f5a845000335"
-    app_master_secret_ios: "s8258p7gu0lza6rcv4wvup0tbibbmfsj"
+    app_key_ios: "5b559ccb8f4a9d7a4800000f"
+    app_master_secret_ios: "zzl7yp8youbkvto9os8ucs1x2fu6rdw2"
     app_secret_xiao_mi: "MUhJVuiHkecIdZ5rupmetg=="
     package_name_xiao_mi: "cn.smartinspection.houseqm3.debug"
   gcgl:
     app_key_android: "56ef621667e58edcc2000e7e"
     app_master_secret_android: "wzqhrc6nk4ovucurknxrxu5cobeqh5ns"
-    app_key_ios: "5ba9d3bab465f5a845000335"
-    app_master_secret_ios: "s8258p7gu0lza6rcv4wvup0tbibbmfsj"
+    app_key_ios: "5b559ccb8f4a9d7a4800000f"
+    app_master_secret_ios: "zzl7yp8youbkvto9os8ucs1x2fu6rdw2"
     app_secret_xiao_mi: "MUhJVuiHkecIdZ5rupmetg=="
     package_name_xiao_mi: "cn.smartinspection.houseqm3.debug"
   gxgl:
     app_key_android: "57ecce9de0f55acbe6001f68"
     app_master_secrect_android: "2iaweb5ssaceme9yol7hrtbwbyq0ngix"
-    app_key_ios: "5ba9d3bab465f5a845000335"
-    app_master_secret_ios: "s8258p7gu0lza6rcv4wvup0tbibbmfsj"
+    app_key_ios: "5b559ccb8f4a9d7a4800000f"
+    app_master_secret_ios: "zzl7yp8youbkvto9os8ucs1x2fu6rdw2"
     app_secret_xiao_mi: "vdvG+lOHl8yY7bZR8VRXug=="
     package_name_xiao_mi:  "cn.smartinspection.keyprocedure.keyprocedure"
 display_logo_url: assets/favicon.png
@@ -274,6 +274,5 @@ display_system_name: 智检
   # app_key_ios: "5ba9d3bab465f5a845000335"
   # app_master_secret_ios: "s8258p7gu0lza6rcv4wvup0tbibbmfsj"
   # test
-  # app_key_ios: "5b559ccb8f4a9d7a4800000f"
-  # app_master_secret_ios: "zzl7yp8youbkvto9os8ucs1x2fu6rdw2"
+
 #########

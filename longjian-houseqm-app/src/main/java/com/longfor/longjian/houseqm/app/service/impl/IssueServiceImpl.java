@@ -9,6 +9,7 @@ import com.longfor.longjian.common.push.UmPushUtil;
 import com.longfor.longjian.common.push.xiaomi.XmPushUtil;
 import com.longfor.longjian.houseqm.app.utils.ExportUtils;
 import com.longfor.longjian.houseqm.app.test.DocumentHandler;
+import com.longfor.longjian.houseqm.app.utils.FileUtil;
 import com.longfor.longjian.houseqm.app.vo.*;
 
 import com.google.common.collect.Lists;
@@ -504,7 +505,7 @@ public class IssueServiceImpl implements IIssueService {
             item.setClient_create_at(DateUtil.datetimeToTimeStamp(issue.getClientCreateAt()));
             item.setLast_assigner(issue.getLastAssigner());
             item.setLast_assigner_at(DateUtil.datetimeToTimeStamp(issue.getLastAssignAt()));
-            item.setLast_repairer(issue.getLastRepairer());
+            item.setLast_repairer(issue.getLastRepairer()!=null?issue.getLastRepairer():0);
             item.setLast_repairer_at(DateUtil.datetimeToTimeStamp(issue.getLastRepairerAt()));
             item.setDestroy_user(issue.getDestroyUser());
             item.setDestroy_at(DateUtil.datetimeToTimeStamp(issue.getDestroyAt()));
@@ -1584,13 +1585,14 @@ public class IssueServiceImpl implements IIssueService {
                     if (detailVo.getAttachment_path().size() >= 2) {
                         break;
                     }
-                    String attachmentPath = "/lhdata/pictures/" + attachmentMap.get(attachment).getStoreKey();
+                    String attachmentPath = FileUtil.execDir()+File.separator + attachmentMap.get(attachment).getStoreKey();//todo verify
                         storeKeyList.add(attachmentPath);
                 }
                 detailVo.setAttachment_path(storeKeyList);
             }
             input.add(detailVo);
         }
+        log.info("input={}",JSON.toJSONString(input));
         if(issueIds.size()==1){
             HashMap<String, Object> map = Maps.newHashMap();
             //单个文件直接导出
@@ -1600,11 +1602,14 @@ public class IssueServiceImpl implements IIssueService {
                 map.put("buwei",vo.getArea_name());
                 map.put("neirong",vo.getCheck_item_name());
                 map.put("content",vo.getContent().replace("\n",""));
+                log.info("getAttachment_path={}",vo.getAttachment_path());
                 if(vo.getAttachment_path().size()>0){
                     for (String s : vo.getAttachment_path()) {
                         try {
                             picList.add(DocumentHandler.getImageBase(s));
                         } catch (Exception e) {
+
+                            log.error("Exception={}",e.getMessage());
                             e.printStackTrace();
 
                         }
@@ -1612,6 +1617,7 @@ public class IssueServiceImpl implements IIssueService {
                 }
                 map.put("image",picList);
             }
+            log.info("picList={}",JSON.toJSONString(picList));
             new DocumentHandler().exportDoc("notify_template", "整改通知单_" + issueIds.get(0), map, response);
         }else{
             //多个word文件打包成zip
@@ -1626,6 +1632,7 @@ public class IssueServiceImpl implements IIssueService {
                 map.put("buwei",vo.getArea_name());
                 map.put("neirong",vo.getCheck_item_name());
                 map.put("content",vo.getContent().replace("\n",""));
+                log.info("getAttachment_path={}",vo.getAttachment_path());
                 if(CollectionUtils.isNotEmpty(vo.getAttachment_path())){
                     List<String> attachment_path = vo.getAttachment_path();
                     for (String s : attachment_path) {
@@ -1633,6 +1640,7 @@ public class IssueServiceImpl implements IIssueService {
                             //导出图片
                             picList.add(DocumentHandler.getImageBase(s));
                         } catch (Exception e) {
+                            log.error("Exception={}",e.getMessage());
                             e.printStackTrace();
 
                         }
@@ -1640,6 +1648,7 @@ public class IssueServiceImpl implements IIssueService {
                 }
                 map.put("image",picList);
                 docList.add(map);
+                log.info("picList={}",JSON.toJSONString(picList));
             }
             //导出
             boolean b=   new DocumentHandler().exportWordBatch(request,response,docList,issueIdsList,"notify_template.ftl");
