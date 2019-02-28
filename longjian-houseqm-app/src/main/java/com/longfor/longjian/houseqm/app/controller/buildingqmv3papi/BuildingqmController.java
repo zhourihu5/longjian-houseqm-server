@@ -74,7 +74,6 @@ public class BuildingqmController {
             TaskListVo vo = buildingqmService.myTaskList(userId);
             response.setData(vo);
         } catch (Exception e) {
-            e.printStackTrace();
             log.error("error:",e.getMessage());
             response.setResult(1);
             response.setMessage(e.getMessage());
@@ -151,7 +150,7 @@ public class BuildingqmController {
             taskIssueListVo.setItem(item);
             respone.setData(taskIssueListVo);
         } catch (Exception e) {
-            e.printStackTrace();
+            log.error("error:",e.getMessage());
             respone.setResult(1);
             respone.setMessage(e.getMessage());
         }
@@ -173,7 +172,7 @@ public class BuildingqmController {
             TaskMemberListVo vo = buildingqmService.taskSquadsMembers(taskIds);
             response.setData(vo);
         } catch (Exception e) {
-            e.printStackTrace();
+            log.error("error:",e.getMessage());
             response.setResult(1);
             response.setMessage(e.getMessage());
         }
@@ -198,7 +197,7 @@ public class BuildingqmController {
             MyIssuePatchListVo miplv = buildingqmService.myIssuePathList(userId, req.getTask_id(), req.getTimestamp());
             response.setData(miplv);
         } catch (Exception e) {
-            e.printStackTrace();
+            log.error("error:",e.getMessage());
             response.setResult(1);
             response.setMessage(e.getMessage());
         }
@@ -235,7 +234,7 @@ public class BuildingqmController {
             ctrlTool.projPerm(request, "项目.工程检查.任务管理.新增");
             buildingqmService.create(userId, taskReq);
         } catch (Exception e) {
-            e.printStackTrace();
+            log.error("error:",e.getMessage());
             response.setResult(1);
             response.setMessage(e.getMessage());
         }
@@ -269,8 +268,7 @@ public class BuildingqmController {
             houseQmCheckTaskSquadListRspVoList.setSquad_list(squad_list);
             response.setData(houseQmCheckTaskSquadListRspVoList);
         } catch (Exception e) {
-            e.printStackTrace();
-            log.error(e.getMessage());
+            log.error("error:",e.getMessage());
             response.setResult(1);
             response.setMessage(e.getMessage());
         }
@@ -307,8 +305,7 @@ public class BuildingqmController {
             ctrlTool.projPerm(request, "项目.工程检查.任务管理.编辑");
             buildingqmService.edit(userId, taskEditReq);
         } catch (Exception e) {
-            e.printStackTrace();
-            log.error(e.getMessage());
+            log.error("error:",e.getMessage());
             response.setResult(1);
             response.setMessage(e.getMessage());
         }

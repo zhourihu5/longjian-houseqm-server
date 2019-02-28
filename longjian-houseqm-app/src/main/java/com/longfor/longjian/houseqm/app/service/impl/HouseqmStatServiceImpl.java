@@ -736,7 +736,6 @@ public class HouseqmStatServiceImpl implements IHouseqmStatService {
             }
             taskAreaListVo.setAreas(list);
         } catch (Exception e) {
-            e.printStackTrace();
             taskAreaListVo.setAreas(new ArrayList<TaskAreaListVo.TaskAreaVo>());
         }
         return taskAreaListVo;

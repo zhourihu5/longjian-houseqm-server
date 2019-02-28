@@ -575,7 +575,7 @@ public class IssueServiceImpl implements IIssueService {
                         int b = Integer.valueOf(s).intValue();
                         uids.add(b);
                     }catch(NumberFormatException e){
-                        e.printStackTrace();
+                        log.error("error:",e.getMessage());
                     }
                 }
                 }
@@ -1114,7 +1114,7 @@ public class IssueServiceImpl implements IIssueService {
             map.put("filename", filename);
             map.put("doc", doc);
         } catch (Exception e) {
-            e.printStackTrace();
+            log.error("error:",e.getMessage());
             // 导出失败
             throw new LjBaseRuntimeException(500, "word 导出失败");
         }
@@ -1605,7 +1605,7 @@ public class IssueServiceImpl implements IIssueService {
                         try {
                             picList.add(DocumentHandler.getImageBase(s));
                         } catch (Exception e) {
-                            e.printStackTrace();
+                            log.error("error:",e.getMessage());
 
                         }
                     }
@@ -1633,7 +1633,7 @@ public class IssueServiceImpl implements IIssueService {
                             //导出图片
                             picList.add(DocumentHandler.getImageBase(s));
                         } catch (Exception e) {
-                            e.printStackTrace();
+                            log.error("error:",e.getMessage());
 
                         }
                     }

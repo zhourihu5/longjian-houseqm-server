@@ -106,7 +106,6 @@ public class V3HouseqmStatController {
             wb.write(os);
             os.flush();
         } catch (IOException e) {
-            e.printStackTrace();
             log.error("验房详情 excel 导出异常");
             ljBaseResponse.setResult(1);
             ljBaseResponse.setMessage(e.getMessage());

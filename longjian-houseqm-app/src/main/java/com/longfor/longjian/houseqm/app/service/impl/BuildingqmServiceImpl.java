@@ -360,7 +360,7 @@ public class BuildingqmServiceImpl implements IBuildingqmService {
                 throw new LjBaseRuntimeException(-99, "计划结束时间有误");
             }
         } catch (ParseException e) {
-            e.printStackTrace();
+            log.error("error:",e.getMessage());
         }
         Execute(uid, taskReq, areaIds, areaTypes, planBeginOn, planEndOn, checkerGroups, repairerGroups, config);
 
@@ -406,7 +406,7 @@ public class BuildingqmServiceImpl implements IBuildingqmService {
                 throw new LjBaseRuntimeException(-99, "计划结束时间有误");
             }
         } catch (ParseException e) {
-            e.printStackTrace();
+            log.error("error:",e.getMessage());
         }
         editExecute(begin, endon, uid, taskEditReq, areaIds, areaTypes, planBeginOn, planEndOn, checkerGroups, repairerGroups, config);
 
@@ -1054,7 +1054,6 @@ public class BuildingqmServiceImpl implements IBuildingqmService {
                 houseQmCheckTaskIssueService.update(issue);
             } catch (Exception e) {
                 log.info("insert new issue failed, data=" + JSON.toJSONString(issue) + "");
-                e.printStackTrace();
             }
             // # 写入推送记录
             Map<Object, Map> notifyStatMap = issueMapBody.getNotify_stat_map();
@@ -1119,7 +1118,6 @@ public class BuildingqmServiceImpl implements IBuildingqmService {
                     houseQmCheckTaskIssueUserService.add(houseQmCheckTaskIssueUser);
                 } catch (Exception e) {
                     log.info("insert new role failed, data=" + JSON.toJSONString(houseQmCheckTaskIssueUser) + "");
-                    e.printStackTrace();
                 }
             }
         }
@@ -1143,7 +1141,6 @@ public class BuildingqmServiceImpl implements IBuildingqmService {
                 houseQmCheckTaskIssueLogService.add(loginsert);
             } catch (Exception e) {
                 log.info("insert new log failed, data=" + JSON.toJSONString(logInsertList) + "");
-                e.printStackTrace();
             }
         });
         //     # 处理退单情况融合推送
@@ -2847,7 +2844,7 @@ public class BuildingqmServiceImpl implements IBuildingqmService {
         try {
             return sdf.parse(time);
         } catch (ParseException e) {
-            e.printStackTrace();
+            log.error("error:",e.getMessage());
         }
         return null;
     }
@@ -3205,7 +3202,7 @@ public class BuildingqmServiceImpl implements IBuildingqmService {
         response.getOutputStream().flush();
        response.getOutputStream().close();
         } catch (IOException e) {
-            e.printStackTrace();
+            log.error("error:",e.getMessage());
         }
         Map<String, Object> map = Maps.newHashMap();
         map.put("fileName", fileName);

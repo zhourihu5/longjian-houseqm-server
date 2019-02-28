@@ -172,7 +172,7 @@ public class FileUtil {
                     out.write(buffer, 0, L);
                 }
             }catch (Exception e){
-                e.printStackTrace();
+                log.error("error:",e.getMessage());
             }
            // FileOutputStream out = new FileOutputStream(dstFile);
             //FileInputStream in = new FileInputStream(srcFile);
@@ -216,7 +216,6 @@ public class FileUtil {
         try(ZipOutputStream out = new ZipOutputStream(new FileOutputStream(zipFileName))){
             zip(out, inputFileName, "");
         }catch (Exception e){
-            e.printStackTrace();
             log.error(e.getMessage());
         }
        // zip(out, inputFileName, "");

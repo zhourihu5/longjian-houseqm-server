@@ -78,7 +78,7 @@ public class TaskController {
         try {
             ctrlTool.projPermMulti(request, new String[]{"项目.移动验房.任务管理.查看", "项目.工程检查.任务管理.查看"});
         } catch (Exception e) {
-            e.printStackTrace();
+            log.error("error:",e.getMessage());
         }
         // 如果没有页数，默认取1000个
         if (req.getPage() == 0) {
@@ -95,7 +95,6 @@ public class TaskController {
         try {
             teamGroup = iTaskListService.getTopTeam(proj.getTeamId());
         } catch (Exception e) {
-            e.printStackTrace();
             log.warn(e.getMessage());
             response.setResult(1);
             response.setMessage(e.getMessage());
@@ -180,7 +179,7 @@ public class TaskController {
             ctrlTool.projPermMulti(request, new String[]{"项目.移动验房.任务管理.删除", "项目.工程检查.任务管理.删除"});
             taskService.deleteHouseQmCheckTaskByProjTaskId(req.getProject_id(), req.getTask_id());
         } catch (Exception e) {
-            e.printStackTrace();
+            log.error("error:",e.getMessage());
             response.setMessage(e.getMessage());
             response.setResult(1);
         }
@@ -223,7 +222,7 @@ public class TaskController {
             response.setData(data);
             response.setResult(0);
         } catch (Exception e) {
-            e.printStackTrace();
+            log.error("error:",e.getMessage());
             response.setResult(1);
             response.setMessage(e.getMessage());
         }

@@ -81,7 +81,6 @@ public class IssueListController {
             wb.write(os);
             os.flush();
         } catch (IOException e) {
-            e.printStackTrace();
             log.error("excel 导出异常");
             ljBaseResponse.setResult(1);
             ljBaseResponse.setMessage(e.getMessage());
@@ -114,7 +113,7 @@ public class IssueListController {
 
             response.setData(result);
         } catch (Exception e) {
-            e.printStackTrace();
+            log.error("error:",e.getMessage());
             response.setResult(1);
             response.setMessage(e.getMessage());
             response.setMsg(e.getMessage());
@@ -219,7 +218,7 @@ public class IssueListController {
             doc.write(os);
             os.flush();
         } catch (IOException e) {
-            e.printStackTrace();
+            log.error("error:",e.getMessage());
         } finally {
             if (os != null) {
                 os.close();
@@ -243,7 +242,7 @@ public class IssueListController {
         try {
             ctrlTool.projPerm(request, "项目.工程检查.问题管理.查看");
         } catch (Exception e) {
-            e.printStackTrace();
+            log.error("error:",e.getMessage());
             response.setResult(1);
             response.setMessage(e.getMessage());
         }
@@ -306,7 +305,7 @@ public class IssueListController {
             ctrlTool.projPerm(request, "项目.工程检查.问题管理.删除");
             iIssueService.deleteHouseqmCheckTaskIssueByProjectAndUuid(projectId, issueUuid);
         } catch (Exception e) {
-            e.printStackTrace();
+            log.error("error:",e.getMessage());
             response.setResult(1);
             response.setMessage(e.getMessage());
         }
@@ -331,7 +330,7 @@ public class IssueListController {
         try {
             ctrlTool.projPerm(request, "项目.移动验房.问题管理.编辑");
         } catch (Exception e) {
-            e.printStackTrace();
+            log.error("error:",e.getMessage());
         }
         LjBaseResponse taskResponse = iIssueService.updateIssueRepairInfoByProjectAndUuid(userId, repairerId, repairFollowerIds, projectId, issueUuid);
         return taskResponse;
@@ -354,7 +353,7 @@ public class IssueListController {
         try {
             ctrlTool.projPerm(request, "项目.工程检查.问题管理.查看");
         } catch (Exception e) {
-            e.printStackTrace();
+            log.error("error:",e.getMessage());
         }
         LjBaseResponse taskResponse = iIssueService.updeteIssueDescByUuid(projectId, issueUuid, userId, content);
         return taskResponse;
@@ -376,7 +375,7 @@ public class IssueListController {
         try {
             ctrlTool.projPerm(request, "项目.工程检查.问题管理.查看");
         } catch (Exception e) {
-            e.printStackTrace();
+            log.error("error:",e.getMessage());
         }
         LjBaseResponse taskResponse = iIssueService.updateIssuePlanEndOnByProjectAndUuid(projectId, issueUuid, userId, plan_end_on);
         return taskResponse;
@@ -400,7 +399,7 @@ public class IssueListController {
         try {
             ctrlTool.projPerm(request, "项目.移动验房.问题管理.编辑");
         } catch (Exception e) {
-            e.printStackTrace();
+            log.error("error:",e.getMessage());
         }
         LjBaseResponse taskResponse = iIssueService.updateIssueApproveStatusByUuid(projectId, issueUuid, userId, status, content);
         return taskResponse;
@@ -420,7 +419,7 @@ public class IssueListController {
         try {
             ctrlTool.projPerm(request, "项目.工程检查.问题管理.查看");
         } catch (Exception e) {
-            e.printStackTrace();
+            log.error("error:",e.getMessage());
         }
         LjBaseResponse<List<HouseQmCheckTaskIssueDetailRepairLogVo>> result = iIssueService.getDetailRepairLogByIssueUuid(issueUuid);
 
@@ -445,7 +444,7 @@ public class IssueListController {
         try {
             ctrlTool.projPerm(request, "项目.工程检查.问题管理.查看");
         } catch (Exception e) {
-            e.printStackTrace();
+            log.error("error:",e.getMessage());
         }
         LjBaseResponse<IssueInfoVo> result = iIssueService.getHouseQmCheckTaskIssueDetailBaseByProjectAndUuid(userId, projectId, issueUuid);
 
@@ -460,7 +459,7 @@ public class IssueListController {
         try {
             ctrlTool.projPerm(request,"项目.工程检查.问题管理.编辑");
         } catch (Exception e) {
-            e.printStackTrace();
+            log.error("error:",e.getMessage());
             response.setResult(1);
             response.setMessage("PermissionDenied");
             return response;
