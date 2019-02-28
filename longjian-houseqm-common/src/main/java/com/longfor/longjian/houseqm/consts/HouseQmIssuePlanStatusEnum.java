@@ -13,19 +13,8 @@ public enum HouseQmIssuePlanStatusEnum {
         return value;
     }
 
-    public void setValue(String value) {
-        this.value = value;
-    }
-
     public Integer getId() {
         return id;
-    }
-
-    public void setId(Integer id) {
-        this.id = id;
-    }
-
-    HouseQmIssuePlanStatusEnum() {
     }
 
     HouseQmIssuePlanStatusEnum(Integer id,String value) {

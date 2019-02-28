@@ -15,16 +15,8 @@ public enum GroupModuleEnum {
         return id;
     }
 
-    public void setId(String id) {
-        this.id = id;
-    }
-
     public String getValue() {
         return value;
-    }
-
-    public void setValue(String value) {
-        this.value = value;
     }
 
     GroupModuleEnum(String id, String value) {

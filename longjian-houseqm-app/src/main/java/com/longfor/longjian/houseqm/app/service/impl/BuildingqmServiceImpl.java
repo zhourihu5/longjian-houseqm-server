@@ -387,11 +387,11 @@ public class BuildingqmServiceImpl implements IBuildingqmService {
     public void edit(Integer uid, TaskEditReq taskEditReq) {
         TaskReq taskReq=new TaskReq();
         try {
-            BeanUtils.copyProperties(taskReq,taskEditReq);
+          BeanUtils.copyProperties(taskReq,taskEditReq);
         } catch (IllegalAccessException e) {
-            e.printStackTrace();
+           log.error(e.getMessage());
         } catch (InvocationTargetException e) {
-            e.printStackTrace();
+            log.error(e.getMessage());
         }
         Map<String,Object> paramMap=this.prepareForCreateOrEdit(taskReq);
         editExecute((Date)paramMap.get("begin"), (Date)paramMap.get("endon"), uid, taskEditReq, (List<Integer>)paramMap.get("areaIds"), (List<Integer>) paramMap.get("areaTypes"), (String)paramMap.get("planBeginOn"), (String)paramMap.get("planEndOn"), (List<ApiBuildingQmTaskMemberGroupVo>)paramMap.get("checkerGroups"), (List<ApiBuildingQmTaskMemberGroupVo>)paramMap.get("repairerGroups"), (ConfigVo)paramMap.get("config"));
@@ -3175,7 +3175,7 @@ public class BuildingqmServiceImpl implements IBuildingqmService {
 
 
         String dt = DateUtil.getNowTimeStr("yyyyMMddHHmmss");
-        String category_name = CategoryClsTypeEnum.getName(Integer.valueOf(category_cls));
+        String category_name = CategoryClsTypeEnum.getName(category_cls);
         if (category_name == null) category_name = "工程检查";
         String fileName = String.format("%s_问题详情_%s.xlsx", category_name, dt);
 
