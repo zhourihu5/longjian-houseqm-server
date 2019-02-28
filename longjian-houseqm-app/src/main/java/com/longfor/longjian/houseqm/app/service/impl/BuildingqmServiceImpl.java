@@ -37,6 +37,9 @@ import org.springframework.stereotype.Repository;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
+import javax.servlet.http.HttpServletResponse;
+import java.io.IOException;
+import java.net.URLEncoder;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.*;
@@ -263,17 +266,17 @@ public class BuildingqmServiceImpl implements IBuildingqmService {
         for (HouseQmCheckTaskIssueLog issueLog : houseQmCheckTaskIssueLogs) {
             MyIssuePatchListVo.LogVo logVo = myIssuePatchListVo.new LogVo();
             logVo.setId(issueLog.getId());
-            logVo.setProjectId(issueLog.getProjectId());
-            logVo.setTaskId(issueLog.getTaskId());
+            logVo.setProject_id(issueLog.getProjectId());
+            logVo.setTask_id(issueLog.getTaskId());
             logVo.setUuid(issueLog.getUuid());
-            logVo.setIssueUuid(issueLog.getIssueUuid());
-            logVo.setSenderId(issueLog.getSenderId());
+            logVo.setIssue_uuid(issueLog.getIssueUuid());
+            logVo.setSender_id(issueLog.getSenderId());
             logVo.setDesc(issueLog.getDesc());
             logVo.setStatus(issueLog.getStatus());
-            logVo.setAttachmentMd5List(issueLog.getAttachmentMd5List());
-            logVo.setAudioMd5List(issueLog.getAudioMd5List());
-            logVo.setMemoAudioMd5List(issueLog.getMemoAudioMd5List());
-            logVo.setClientCreateAt(DateUtil.datetimeToTimeStamp(issueLog.getClientCreateAt()));
+            logVo.setAttachment_md5_list(issueLog.getAttachmentMd5List());
+            logVo.setAudio_md5_list(issueLog.getAudioMd5List());
+            logVo.setMemo_audio_md5_list(issueLog.getMemoAudioMd5List());
+            logVo.setClient_create_at(DateUtil.datetimeToTimeStamp(issueLog.getClientCreateAt()));
 
             JSONObject dic_detail = JSONObject.parseObject(issueLog.getDetail());
             MyIssuePatchListVo.LogDetailVo detail = myIssuePatchListVo.new LogDetailVo();
@@ -298,8 +301,8 @@ public class BuildingqmServiceImpl implements IBuildingqmService {
             detail.setPotential_risk(dic_detail.getString("PotentialRisk"));
             detail.setPreventive_action_detail(dic_detail.getString("PreventiveActionDetail"));
             logVo.setDetail(detail);
-            logVo.setUpdateAt(DateUtil.datetimeToTimeStamp(issueLog.getUpdateAt()));
-            logVo.setDeleteAt(DateUtil.datetimeToTimeStamp(issueLog.getDeleteAt()));
+            logVo.setUpdate_at(DateUtil.datetimeToTimeStamp(issueLog.getUpdateAt()));
+            logVo.setDelete_at(DateUtil.datetimeToTimeStamp(issueLog.getDeleteAt()));
             logs.add(logVo);
         }
         if (!logs.isEmpty()) myIssuePatchListVo.setLog_list(logs);
@@ -2020,13 +2023,13 @@ public class BuildingqmServiceImpl implements IBuildingqmService {
     }
 
     private Map<String, Object> ApiNotifyStat(Integer status, Integer repairerId, List<Integer> repairer_follower_ids) {
-        status = 0;
-        repairerId = 0;
-        repairer_follower_ids = Lists.newArrayList();
+        Integer nstatus = 0;
+        Integer nrepairerId = 0;
+        List<Integer> n_repairer_follower_ids = Lists.newArrayList();
         Map<String, Object> map = Maps.newHashMap();
-        map.put("status", status);
-        map.put("repairerId", repairerId);
-        map.put("splitToIdsComma", repairer_follower_ids);
+        map.put("status", nstatus);
+        map.put("repairerId", nrepairerId);
+        map.put("splitToIdsComma", n_repairer_follower_ids);
         return map;
     }
 
@@ -2177,29 +2180,29 @@ public class BuildingqmServiceImpl implements IBuildingqmService {
                     info.setDrawing_md5("-1");
                 }
 
-                if (StringUtils.isNotBlank((String) detail.get("check_item_key"))) {
-                    info.setCheck_item_key((String) detail.get("check_item_key"));
-                } else {
-                    info.setCheck_item_key((String) detail.get("-1"));
-                }
+                //if (StringUtils.isBlank((String) detail.get("check_item_key"))) {
+                    info.setCheck_item_key(detail.get("check_item_key")!=null?(String) detail.get("check_item_key"):"-1");
+               // } else {
+               //     info.setCheck_item_key((String) detail.get("check_item_key"));
+               // }
 
-                if (StringUtils.isNotBlank((String) detail.get("remove_memo_audio_md5_list"))) {
-                    info.setRemove_memo_audio_md5_list((String) detail.get("remove_memo_audio_md5_list"));
-                } else {
-                    info.setRemove_memo_audio_md5_list((String) detail.get("-1"));
-                }
+               // if (StringUtils.isBlank((String) detail.get("remove_memo_audio_md5_list"))) {
+                    info.setRemove_memo_audio_md5_list(detail.get("remove_memo_audio_md5_list")!=null?(String) detail.get("remove_memo_audio_md5_list"):"-1");
+                //} else {
+               //     info.setRemove_memo_audio_md5_list((String) detail.get("remove_memo_audio_md5_list"));
+                //}
 
-                if (StringUtils.isNotBlank((String) detail.get("title"))) {
-                    info.setTitle((String) detail.get("title"));
-                } else {
-                    info.setTitle((String) detail.get(""));
-                }
+                //if (StringUtils.isBlank((String) detail.get("title"))) {
+                    info.setTitle(detail.get("title")!=null?(String) detail.get("title"):"");
+               // } else {
+              //      info.setTitle((String) detail.get("title"));
+               // }
 
-                if (StringUtils.isNotBlank((String) detail.get("check_item_md5"))) {
-                    info.setCheck_item_md5((String) detail.get("check_item_md5"));
-                } else {
-                    info.setCheck_item_md5((String) detail.get(""));
-                }
+                //if (StringUtils.isBlank((String) detail.get("check_item_md5"))) {
+                    info.setCheck_item_md5(detail.get("check_item_md5")!=null?(String) detail.get("check_item_md5"):"");
+              //  } else {
+               //     info.setCheck_item_md5((String) detail.get("check_item_md5"));
+               // }
 
                 if ((Integer) detail.get("issue_reason") != null) {
                     info.setIssue_reason((Integer) detail.get("issue_reason"));
@@ -3072,14 +3075,14 @@ public class BuildingqmServiceImpl implements IBuildingqmService {
     }
 
     @Override
-    public Map<String, Object> issuestatisticexport(String category_cls, String items) {
+    public Map<String, Object> issuestatisticexport(Integer category_cls, String items, HttpServletResponse response) {
         Integer result = 0;
         String message = "success";
         List<NodeDataVo> dataList = Lists.newArrayList();
         HashMap<String, NodeDataVo> dataMap = Maps.newHashMap();
         JSONArray jsonArray = JSON.parseArray(items);
         List<Map> itemsList = jsonArray.toJavaList(Map.class);
-        List<String> pathKeys = Lists.newArrayList();
+//        List<String> pathKeys = Lists.newArrayList();
         for (Map<String, Object> item : itemsList) {
             NodeDataVo nodeDataVo = new NodeDataVo();
             nodeDataVo.setKey((String) item.get("key"));
@@ -3088,8 +3091,7 @@ public class BuildingqmServiceImpl implements IBuildingqmService {
             nodeDataVo.setName((String) item.get("name"));
             nodeDataVo.setValid_node(true);
             nodeDataVo.setPath_name(nodeDataVo.getKey() + "/");
-            pathKeys.add(0, nodeDataVo.getKey());
-            nodeDataVo.setPath_keys(pathKeys);
+            nodeDataVo.getPath_keys().add(0, nodeDataVo.getKey());
             if (StringUtils.isBlank(nodeDataVo.getKey())
 //                    || StringUtils.isBlank(nodeDataVo.getParent_key())
                     || nodeDataVo.getIssue_count() == null
@@ -3100,14 +3102,13 @@ public class BuildingqmServiceImpl implements IBuildingqmService {
             dataMap.put(nodeDataVo.getKey(), nodeDataVo);
         }
         int maxCol = 0;
-        ArrayList<String> path_key = Lists.newArrayList();
+//        ArrayList<String> path_key = Lists.newArrayList();
         for (NodeDataVo item : dataList) {
             String parentKey = item.getParent_key();
             log.info("item={}",JSON.toJSONString(item));
             while (parentKey.length() > 0) {
                 item.setPath_name(String.format("%s/%s", parentKey, item.getPath_name()));
-                path_key.add(0, parentKey);
-                item.setPath_keys(path_key);
+                item.getPath_keys().add(0, parentKey);
                 log.info("parentKey={}",parentKey);
                 if (dataMap.containsKey(parentKey)) {
                     log.info("valid");
@@ -3146,6 +3147,7 @@ public class BuildingqmServiceImpl implements IBuildingqmService {
                     if (isLast) {
                         Integer child_count = obj.getChild_count();
                         child_count += 1;
+                        obj.setChild_count(child_count);
                     }
                 }
             }
@@ -3190,9 +3192,21 @@ public class BuildingqmServiceImpl implements IBuildingqmService {
 
 
         String dt = DateUtil.getNowTimeStr("yyyyMMddHHmmss");
-        String category_name = CategoryClsTypeEnum.getName(Integer.valueOf(category_cls));
+        String category_name = CategoryClsTypeEnum.getName(category_cls);
         if (category_name == null) category_name = "工程检查";
         String fileName = String.format("%s_问题详情_%s.xlsx", category_name, dt);
+
+        try {
+        response.addHeader("Content-Disposition", String.format("attachment; filename=\"%s\"",fileName));
+    /*    SXSSFWorkbook workbook = (SXSSFWorkbook) map.get("workbook");*/
+
+            wb.write(response.getOutputStream());
+
+        response.getOutputStream().flush();
+       response.getOutputStream().close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
         Map<String, Object> map = Maps.newHashMap();
         map.put("fileName", fileName);
         map.put("workbook", wb);

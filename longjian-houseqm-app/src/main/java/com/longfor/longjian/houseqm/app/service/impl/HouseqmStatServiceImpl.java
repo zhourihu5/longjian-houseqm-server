@@ -677,6 +677,7 @@ public class HouseqmStatServiceImpl implements IHouseqmStatService {
         Map<String, Boolean> areaMap = Maps.newHashMap();
         for (CheckerIssueStat l : list) {
             String areapath = l.getAreaId() + "/";
+
             String fatherPath = l.getAreaPathAndId().replace(areapath, "");
             // 以下应使用枚举类，由于未改动包结构 先写死
             if (l.getTyp().equals(HouseQmCheckTaskIssueEnum.Record.getId())) {

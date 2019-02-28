@@ -1,5 +1,6 @@
 package com.longfor.longjian.houseqm.app.vo;
 
+import com.google.common.collect.Lists;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
@@ -17,5 +18,5 @@ public class ExportNotifyDetailVo implements Serializable {
     private String area_name="";
     private String check_item_name="";
     private String content="";
-    private List<String> attachment_path;
+    private List<String> attachment_path= Lists.newArrayList();
 }

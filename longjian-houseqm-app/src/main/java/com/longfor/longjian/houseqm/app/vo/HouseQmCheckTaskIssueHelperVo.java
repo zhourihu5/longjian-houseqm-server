@@ -608,7 +608,7 @@ public class HouseQmCheckTaskIssueHelperVo {
             }
         }
 
-        for (HouseQmCheckTaskIssueLogVo log : this.issueLogs) {
+        outer:for (HouseQmCheckTaskIssueLogVo log : this.issueLogs) {
             if(log!=null) {
                 if (log.getUuid()!=null&&this.needDeleteAtIssueLogMap.get(log.getUuid())!=null&&this.needDeleteAtIssueLogMap.get(log.getUuid())) {
                     continue;
@@ -625,6 +625,9 @@ public class HouseQmCheckTaskIssueHelperVo {
                         if (value.getId().equals(log.getStatus())) {
                             e = value;
                         }
+                    }
+                    if(e==null){
+                        continue outer;
                     }
                     switch (e) {
                         case AssignNoReform:
@@ -666,7 +669,7 @@ public class HouseQmCheckTaskIssueHelperVo {
         HouseqmSquadUserCache cache = new HouseqmSquadUserCache();
         cache.setCache(Maps.newHashMap());
 
-        for (HouseQmCheckTaskIssueVo issue : issueList) {
+        outer:for (HouseQmCheckTaskIssueVo issue : issueList) {
             if (CategoryClsTypeEnum.RCJC.getId().equals(issue.getCategoryCls())) {
                 continue;
             }
@@ -675,6 +678,9 @@ public class HouseQmCheckTaskIssueHelperVo {
                 if (value.getId().equals(issue.getStatus())) {
                     e = value;
                 }
+            }
+            if(e==null){
+                continue outer;
             }
             switch (e) {
                 case AssignNoReform: {
@@ -996,6 +1002,9 @@ public class HouseQmCheckTaskIssueHelperVo {
         HouseQmCheckTaskIssueLogStatusEnum e = null;
         for (HouseQmCheckTaskIssueLogStatusEnum value : HouseQmCheckTaskIssueLogStatusEnum.values()) {
             if (logStatus == value.getId()) e = value;
+        }
+        if(e==null){
+            return -1;
         }
         switch (e) {
             case NoProblem:
