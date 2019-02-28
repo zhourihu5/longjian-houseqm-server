@@ -21,6 +21,6 @@ public class UserInIssue implements Serializable {
     //	Modified bool
     //	TaskId   int
     private Map<Integer,Integer> userRole;
-    private boolean modified;
-    private int taskId;
+    private Boolean modified;
+    private Integer taskId;
 }

@@ -340,7 +340,7 @@ public class BuildingqmController {
      * http://192.168.37.159:3000/project/8/interface/api/3260  提交问题日志
      */
     @RequestMapping(value = "buildingqm/report_issue", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
-    public LjBaseResponse<ReportIssueVo> reportIssue(ReportIssueReq req) {
+    public LjBaseResponse<ReportIssueVo> reportIssue(@Validated ReportIssueReq req) {
         log.info("report_issue, project_id=" + req.getData() + ", data=" + req.getData()+ "");
         Integer userId = (Integer) sessionInfo.getBaseInfo("userId");
         //userId=9;
