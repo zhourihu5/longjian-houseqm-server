@@ -132,7 +132,9 @@ public class DocumentHandler {
         } catch (IOException e) {
             e.printStackTrace();
         }*/
-
+        if(resp==null){
+            return false;
+        }
         try ( InputStream fin = new FileInputStream(outFile);ServletOutputStream sos = resp.getOutputStream()){
             //fin = new FileInputStream(outFile);
             if(resp!=null) {

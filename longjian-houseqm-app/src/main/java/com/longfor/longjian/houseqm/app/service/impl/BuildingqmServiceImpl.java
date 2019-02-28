@@ -2023,13 +2023,13 @@ public class BuildingqmServiceImpl implements IBuildingqmService {
     }
 
     private Map<String, Object> ApiNotifyStat(Integer status, Integer repairerId, List<Integer> repairer_follower_ids) {
-        status = 0;
-        repairerId = 0;
-        repairer_follower_ids = Lists.newArrayList();
+        Integer nstatus = 0;
+        Integer nrepairerId = 0;
+        List<Integer> n_repairer_follower_ids = Lists.newArrayList();
         Map<String, Object> map = Maps.newHashMap();
-        map.put("status", status);
-        map.put("repairerId", repairerId);
-        map.put("splitToIdsComma", repairer_follower_ids);
+        map.put("status", nstatus);
+        map.put("repairerId", nrepairerId);
+        map.put("splitToIdsComma", n_repairer_follower_ids);
         return map;
     }
 
@@ -3192,7 +3192,7 @@ public class BuildingqmServiceImpl implements IBuildingqmService {
 
 
         String dt = DateUtil.getNowTimeStr("yyyyMMddHHmmss");
-        String category_name = CategoryClsTypeEnum.getName(Integer.valueOf(category_cls));
+        String category_name = CategoryClsTypeEnum.getName(category_cls);
         if (category_name == null) category_name = "工程检查";
         String fileName = String.format("%s_问题详情_%s.xlsx", category_name, dt);
 
