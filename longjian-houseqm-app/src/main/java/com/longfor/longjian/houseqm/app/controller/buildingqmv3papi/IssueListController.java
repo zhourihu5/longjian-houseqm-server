@@ -215,7 +215,7 @@ public class IssueListController {
             String filename = (String) map.get("filename");
             //response.setContentType("application/vnd.ms-word");
             response.setCharacterEncoding("utf-8");
-            response.setHeader("Content-Disposition", "attachment;filename=" + new String(filename.getBytes("gbk"), "iso8859-1"));
+            response.setHeader("Content-Disposition", "attachment;filename=" + new String(filename.getBytes("utf-8"), "iso8859-1"));
             doc.write(os);
             os.flush();
         } catch (IOException e) {

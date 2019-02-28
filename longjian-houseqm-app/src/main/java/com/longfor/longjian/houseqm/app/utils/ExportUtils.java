@@ -9,6 +9,7 @@ import com.longfor.longjian.houseqm.utils.ExampleUtil;
 import freemarker.template.Configuration;
 import freemarker.template.Template;
 import freemarker.template.TemplateException;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.apache.poi.ooxml.POIXMLDocument;
@@ -52,6 +53,7 @@ import static org.apache.poi.ss.usermodel.VerticalAlignment.forInt;
  * @Author: hy
  * @CreateDate: 2019/2/16 13:35
  */
+@Slf4j
 @Component
 public class ExportUtils {
 
@@ -228,7 +230,7 @@ public class ExportUtils {
                 XWPFParagraph pI2 = cell.addParagraph();
                 XWPFRun rI2 = pI2.createRun();
                 rI2.setText(String.format("%s回复：%s", (index + 1 < 10 ? "   " : "    "), issue.getAnsw_content().replace("\n", " ")));
-                if (issue.getAnsw_attachment_path().size() > 0) {
+                if (CollectionUtils.isNotEmpty(issue.getAnsw_attachment_path())) {
                     XWPFParagraph pI3 = cell.addParagraph();
                     XWPFRun rI3 = pI3.createRun();
                     rI3.setText((index + 1 < 10 ? "   " : "    "));
@@ -281,7 +283,7 @@ public class ExportUtils {
     // 导出 统计报告 -任务概况 -验房详情 导出excel 使用freemaker
     public static void exportStatExcel(String templateName, Map<String, Object> data, HttpServletResponse response, HttpServletRequest request) throws Exception {
         // 加载模板
-        File file = new File("temp.xlsx");// 临时名称
+        File file = new File("temp.xls");// 临时名称
         Configuration configuration = new Configuration();
         configuration.setDefaultEncoding("utf-8");
         ExportUtils exportUtils = new ExportUtils();
@@ -444,11 +446,11 @@ public class ExportUtils {
         cellStyle.setBorderRight(BorderStyle.THIN);
         cellStyle.setBorderTop(BorderStyle.THIN);
         cellStyle.setBorderBottom(BorderStyle.THIN);
-        int cur_row = 1;
-        int cur_column = 1;
+        int cur_row = 0;
+        int cur_column = 0;
+        //创建行
+        SXSSFRow row = sheet.createRow(cur_row);
         for (int i = 0; i < maxCol; i++) {
-            //创建行
-            SXSSFRow row = sheet.createRow(cur_row);
             //创捷列
             SXSSFCell cell = row.createCell(cur_column + i);
             //内容
@@ -457,10 +459,13 @@ public class ExportUtils {
             } else {
                 cell.setCellValue("细项");
             }
+            SXSSFCell cell2 = row.createCell(cur_column + i+1);
+            cell2.setCellValue("问题数");
+            cur_column+=1;
 
         }
-        cur_row = 2;
-        int cur_col = 1;
+        cur_row = 1;
+        int cur_col = 0;
         exportTree(workbook, sheet, nodeTree, cur_row, cur_col);
 
         String dt = DateUtil.getNowTimeStr("MMddHHmmss");
@@ -475,30 +480,43 @@ public class ExportUtils {
         for (NodeVo node : tree) {
             int end_row = row + node.getData().getChild_count() - 1;
             int end_column = col;
+            log.info("row={},end_row={},col={},end_column={}",row,end_row,col,end_column);
             //合并单元格
             //1：开始行 2：结束行  3：开始列 4：结束列
-            CellRangeAddress region = new CellRangeAddress(row, col, end_row, end_column);
-            sheet.addMergedRegion(region);
+//            CellRangeAddress region = new CellRangeAddress(row, col, end_row, end_column);
+            if(end_row>row){
+                CellRangeAddress region = new CellRangeAddress(row,  end_row,col, end_column);
+                sheet.addMergedRegion(region);
+            }
+            SXSSFRow row1= sheet.getRow(row);
+            if(row1==null){
             //创建行
-            SXSSFRow row1 = sheet.createRow(row);
+                row1= sheet.createRow(row);
+            }
             //创捷列
             SXSSFCell cell = row1.createCell(col);
             CellStyle cellStyle = workbook.createCellStyle();
             cellStyle.setVerticalAlignment(CENTER);//垂直居中
             cell.setCellValue(node.getData().getName());
+            log.info("cell.getStringCellValue={}",cell.getStringCellValue());
             //合并
-            sheet.addMergedRegion(new CellRangeAddress(row, col + 1, end_row, end_column + 1));
-            //创建行
-            SXSSFRow row2 = sheet.createRow(row);
+            if(end_row>row) {
+                sheet.addMergedRegion(new CellRangeAddress(row,  end_row,col + 1, end_column + 1));
+            }
+
             //创捷列
-            SXSSFCell cell1 = row2.createCell(col + 1);
+            SXSSFCell cell1 = row1.createCell(col + 1);
             CellStyle cellStyles = workbook.createCellStyle();
             cellStyles.setVerticalAlignment(CENTER);//垂直居中
             cell1.setCellValue(String.valueOf(node.getData().getIssue_count()));
             if (CollectionUtils.isNotEmpty(node.getChild_list())) {
                 exportTree(workbook, sheet, node.getChild_list(), row, col + 2);
             }
-            row += node.getData().getChild_count();
+//            if(node.getData().getChild_count()>0){
+                row += node.getData().getChild_count();
+//            }else {
+//                row+=1;
+//            }
         }
 
     }
