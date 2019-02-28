@@ -263,17 +263,17 @@ public class BuildingqmServiceImpl implements IBuildingqmService {
         for (HouseQmCheckTaskIssueLog issueLog : houseQmCheckTaskIssueLogs) {
             MyIssuePatchListVo.LogVo logVo = myIssuePatchListVo.new LogVo();
             logVo.setId(issueLog.getId());
-            logVo.setProjectId(issueLog.getProjectId());
-            logVo.setTaskId(issueLog.getTaskId());
+            logVo.setProject_id(issueLog.getProjectId());
+            logVo.setTask_id(issueLog.getTaskId());
             logVo.setUuid(issueLog.getUuid());
-            logVo.setIssueUuid(issueLog.getIssueUuid());
-            logVo.setSenderId(issueLog.getSenderId());
+            logVo.setIssue_uuid(issueLog.getIssueUuid());
+            logVo.setSender_id(issueLog.getSenderId());
             logVo.setDesc(issueLog.getDesc());
             logVo.setStatus(issueLog.getStatus());
-            logVo.setAttachmentMd5List(issueLog.getAttachmentMd5List());
-            logVo.setAudioMd5List(issueLog.getAudioMd5List());
-            logVo.setMemoAudioMd5List(issueLog.getMemoAudioMd5List());
-            logVo.setClientCreateAt(DateUtil.datetimeToTimeStamp(issueLog.getClientCreateAt()));
+            logVo.setAttachment_md5_list(issueLog.getAttachmentMd5List());
+            logVo.setAudio_md5_list(issueLog.getAudioMd5List());
+            logVo.setMemo_audio_md5_list(issueLog.getMemoAudioMd5List());
+            logVo.setClient_create_at(DateUtil.datetimeToTimeStamp(issueLog.getClientCreateAt()));
 
             JSONObject dic_detail = JSONObject.parseObject(issueLog.getDetail());
             MyIssuePatchListVo.LogDetailVo detail = myIssuePatchListVo.new LogDetailVo();
@@ -298,8 +298,8 @@ public class BuildingqmServiceImpl implements IBuildingqmService {
             detail.setPotential_risk(dic_detail.getString("PotentialRisk"));
             detail.setPreventive_action_detail(dic_detail.getString("PreventiveActionDetail"));
             logVo.setDetail(detail);
-            logVo.setUpdateAt(DateUtil.datetimeToTimeStamp(issueLog.getUpdateAt()));
-            logVo.setDeleteAt(DateUtil.datetimeToTimeStamp(issueLog.getDeleteAt()));
+            logVo.setUpdate_at(DateUtil.datetimeToTimeStamp(issueLog.getUpdateAt()));
+            logVo.setDelete_at(DateUtil.datetimeToTimeStamp(issueLog.getDeleteAt()));
             logs.add(logVo);
         }
         if (!logs.isEmpty()) myIssuePatchListVo.setLog_list(logs);
