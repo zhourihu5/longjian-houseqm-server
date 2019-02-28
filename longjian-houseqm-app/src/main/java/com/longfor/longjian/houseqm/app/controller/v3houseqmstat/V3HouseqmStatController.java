@@ -19,6 +19,7 @@ import com.longfor.longjian.houseqm.po.zj2db.HouseQmCheckTask;
 import com.longfor.longjian.houseqm.util.StringUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
+import org.apache.poi.xssf.streaming.SXSSFWorkbook;
 import org.springframework.http.MediaType;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -30,6 +31,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.IOException;
 import java.io.OutputStream;
 import java.net.URL;
 import java.util.ArrayList;
@@ -89,14 +91,28 @@ public class V3HouseqmStatController {
         title += "－" + StatisticFormInspectionStatusEnum.getName(req.getStatus());
         title += "－" + StatisticFormInspectionIssueStatusEnum.getName(req.getIssue_status());
 
-        //response.setHeader("Content-Type", "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet; charset=utf-8");
+        response.setHeader("Content-Type", "application/vnd.ms-excel; charset=utf-8");
         response.setHeader("Content-Disposition", " attachment; filename=" + new String(title.getBytes("utf-8"), "iso8859-1") + ".xlsx"); //File name extension was wrong
         response.setHeader("Expires", " 0");
         // 导出
-        Map<String, Object> map = Maps.newHashMap();
+        /*Map<String, Object> map = Maps.newHashMap();
         map.put("details", details);
-        ExportUtils.exportStatExcel("inspection_situation_excel_fhys.ftl", map, response, request);
+        ExportUtils.exportStatExcel("inspection_situation_excel_fhys.ftl", map, response, request);*/
 
-        return new LjBaseResponse<>();
+        LjBaseResponse<Object> ljBaseResponse = new LjBaseResponse<>();
+        ServletOutputStream os = response.getOutputStream();
+        try {
+            SXSSFWorkbook wb = ExportUtils.exportInspectionSituationExcel(details);
+            wb.write(os);
+            os.flush();
+        } catch (IOException e) {
+            e.printStackTrace();
+            log.error("验房详情 excel 导出异常");
+            ljBaseResponse.setResult(1);
+            ljBaseResponse.setMessage(e.getMessage());
+        } finally {
+            os.close();
+        }
+        return ljBaseResponse;
     }
 }

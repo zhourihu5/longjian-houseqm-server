@@ -22,20 +22,20 @@ public class MyIssuePatchListVo implements Serializable{
     @NoArgsConstructor
     public class LogVo implements Serializable{
         private int id;
-        private int projectId;
-        private int taskId;
+        private int project_id;
+        private int task_id;
         private String uuid;
-        private String issueUuid;
-        private int senderId;
+        private String issue_uuid;
+        private int sender_id;
         private String desc;
         private int status;
-        private String attachmentMd5List;
-        private String audioMd5List;
-        private String memoAudioMd5List;
-        private int clientCreateAt;
+        private String attachment_md5_list;
+        private String audio_md5_list;
+        private String memo_audio_md5_list;
+        private int client_create_at;
         private LogDetailVo detail;
-        private int updateAt;
-        private int deleteAt;
+        private int update_at;
+        private int delete_at;
     }
 
     @Data
