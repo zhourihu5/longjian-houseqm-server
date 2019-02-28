@@ -64,7 +64,7 @@ public class TaskCheckedAreasController {
             data.setCheck_area_ids(checkAreaIds);
             taskResponse.setData(data);
         } catch (Exception e) {
-            e.printStackTrace();
+            log.error("error:",e.getMessage());
             taskResponse.setResult(1);
             taskResponse.setMessage(e.getMessage());
         }

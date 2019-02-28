@@ -31,7 +31,7 @@ import java.util.Properties;
 @Slf4j
 public class DocumentHandler {
     //Configuration存储一些全局常量和常用设置
-    public static Configuration configuration = null;
+    private  static  Configuration configuration = null;
 
     //构造函数生成实例并设置编码
     public DocumentHandler() {
@@ -59,7 +59,7 @@ public class DocumentHandler {
             t = configuration.getTemplate(tempName+".ftl");
             t.setEncoding("utf-8");
         } catch (IOException e) {
-            e.printStackTrace();
+            log.error("error:",e.getMessage());
         }
 
         //Writer out = null;
@@ -68,7 +68,7 @@ public class DocumentHandler {
             t.process(dataMap, out);
             status = true;
         }catch(Exception e1) {
-            e1.printStackTrace();
+            log.error("error:",e1.getMessage());
         }
 
         /*try{
@@ -108,7 +108,7 @@ public class DocumentHandler {
             t = configuration.getTemplate(tempName + ".ftl");
             t.setEncoding("utf-8");
         } catch (IOException e) {
-            e.printStackTrace();
+            log.error("error:",e.getMessage());
         }
 
         // 输出文档路径及名称 ,以临时文件的形式导出服务器，再进行下载
@@ -121,7 +121,7 @@ public class DocumentHandler {
             t.process(dataMap, out);
             status = true;
         } catch (Exception e1) {
-            e1.printStackTrace();
+            log.error("error:",e1.getMessage());
         }
 
         /*try {
@@ -149,9 +149,9 @@ public class DocumentHandler {
                 sos.write(buffer, 0, bytesToRead);
             }
         } catch (FileNotFoundException e) {
-            e.printStackTrace();
+            log.error("error:",e.getMessage());
         } catch (IOException e) {
-            e.printStackTrace();
+            log.error("error:",e.getMessage());
         }finally{
             if (outFile != null) {
                 outFile.delete(); // 删除临时文件
@@ -217,7 +217,7 @@ public class DocumentHandler {
             log.info("getImageBase:read bytes-"+readCount);
             in.close();
         } catch (IOException e) {
-            e.printStackTrace();
+            log.error("error:",e.getMessage());
         }
         BASE64Encoder encoder = new BASE64Encoder();
         return encoder.encode(data);
@@ -235,7 +235,7 @@ public class DocumentHandler {
         try {
             response .addHeader("Content-Disposition", "attachment;filename="+String.format("%s%s%s",  URLEncoder.encode("整改通知单_", "utf-8"),str.replace("_", ""),".zip"));
         } catch (UnsupportedEncodingException e) {
-            e.printStackTrace();
+            log.error("error:",e.getMessage());
         }
 
         configuration.setClassForTemplateLoading(DocumentHandler.class, "/templates");
@@ -267,7 +267,7 @@ public class DocumentHandler {
             status=true;
 
         }catch (Exception e) {
-            e.printStackTrace();
+            log.error("error:",e.getMessage());
         }
         finally {
             try {
@@ -279,7 +279,7 @@ public class DocumentHandler {
                     ZipUtils.deleteFile(directory);
                 }
             } catch (Exception e2) {
-                e2.printStackTrace();
+                log.error("error:",e2.getMessage());
             }
 
         }
@@ -300,8 +300,8 @@ public class DocumentHandler {
             //w = new OutputStreamWriter(new FileOutputStream(f), "utf-8");
             t.process(dataMap, w);
         } catch (Exception ex) {
-            ex.printStackTrace();
-            throw new RuntimeException(ex);
+            log.error("error:",ex.getMessage());
+
         }
         /*finally {
             try {

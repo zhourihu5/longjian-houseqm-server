@@ -172,7 +172,6 @@ public class HouseqmStatController {
             ctrlTool.projPermMulti(request, new String[]{"项目.移动验房.统计.查看", "项目.工程检查.统计.查看"});
         } catch (Exception e) {
             log.error(e.getMessage());
-            e.printStackTrace();
             response.setResult(1);
             response.setMessage(e.getMessage());
             return response;
@@ -183,7 +182,6 @@ public class HouseqmStatController {
             response.setData(checkerStatListVo);
         } catch (Exception e) {
             log.warn(e.getMessage());
-            e.printStackTrace();
             response.setMessage(e.getMessage());
             response.setResult(1);
         }
@@ -202,7 +200,6 @@ public class HouseqmStatController {
         try {
             ctrlTool.projPermMulti(request, new String[]{"项目.移动验房.统计.查看", "项目.工程检查.统计.查看"});
         } catch (Exception e) {
-            e.printStackTrace();
             log.error(e.getMessage());
             response.setMessage(e.getMessage());
             response.setResult(1);
@@ -213,7 +210,6 @@ public class HouseqmStatController {
             ProjectDailyListVo pdv = houseqmStatService.searchTaskSituationDailyByProjTaskIdInOnPage(req.getProject_id(), taskIdList, req.getPage(), req.getPage_size());
             response.setData(pdv);
         } catch (Exception e) {
-            e.printStackTrace();
             log.warn(e.getMessage());
             response.setMessage(e.getMessage());
             response.setResult(1);
@@ -233,7 +229,6 @@ public class HouseqmStatController {
         try {
             ctrlTool.projPermMulti(request, new String[]{"项目.移动验房.统计.查看", "项目.工程检查.统计.查看"});
         } catch (Exception e) {
-            e.printStackTrace();
             log.error(e.getMessage());
             response.setMessage(e.getMessage());
             response.setResult(1);
@@ -259,7 +254,6 @@ public class HouseqmStatController {
                 totalStat.setRecords_count(totalStat.getRecords_count() + item.getRecords_count());
                 items.add(item);
             } catch (Exception e) {
-                e.printStackTrace();
                 log.warn(e.getMessage());
                 response.setMessage(e.getMessage());
                 response.setResult(1);
@@ -283,7 +277,6 @@ public class HouseqmStatController {
         try {
             ctrlTool.projPermMulti(request, new String[]{"项目.移动验房.统计.查看", "项目.工程检查.统计.查看"});
         } catch (Exception e) {
-            e.printStackTrace();
             log.error(e.getMessage());
             response.setMessage(e.getMessage());
             response.setResult(1);
@@ -294,7 +287,6 @@ public class HouseqmStatController {
             TaskAreaListVo talv = houseqmStatService.searchAreasByProjTaskIdTyp(req.getProject_id(), req.getTask_id(), req.getTyp());
             response.setData(talv);
         } catch (Exception e) {
-            e.printStackTrace();
             log.warn(e.getMessage());
             response.setMessage(e.getMessage());
             response.setResult(1);
@@ -314,8 +306,7 @@ public class HouseqmStatController {
         try {
             ctrlTool.projPermMulti(request, new String[]{"项目.移动验房.统计.查看", "项目.工程检查.统计.查看"});
         } catch (Exception e) {
-            e.printStackTrace();
-            log.error(e.getMessage());
+            log.error("error:",e.getMessage());
             response.setMessage(e.getMessage());
             response.setResult(1);
             return response;
@@ -324,7 +315,7 @@ public class HouseqmStatController {
             AreaTaskListVo areaTaskListVo = houseqmStatService.searchHouseQmCheckTaskByProjIdAreaIdCategoryClsIn(req.getProject_id(), req.getArea_id(), Arrays.asList(req.getCategory_cls()));
             response.setData(areaTaskListVo);
         } catch (Exception e) {
-            e.printStackTrace();
+            log.error("error:",e.getMessage());
             response.setMessage(e.getMessage());
             response.setResult(1);
         }
@@ -344,7 +335,7 @@ public class HouseqmStatController {
         try {
             ctrlTool.projPermMulti(request, new String[]{"项目.移动验房.统计.查看", "项目.工程检查.统计.查看"});
         } catch (Exception e) {
-            e.printStackTrace();
+            log.error("error:",e.getMessage());
             response.setResult(1);
             response.setMessage(e.getMessage());
             return response;
@@ -361,7 +352,7 @@ public class HouseqmStatController {
             taskStatVo.setHouse(house);
             response.setData(taskStatVo);
         } catch (Exception e) {
-            e.printStackTrace();
+            log.error("error:",e.getMessage());
             response.setMessage(e.getMessage());
             response.setResult(1);
         }
@@ -381,7 +372,7 @@ public class HouseqmStatController {
         try {
             ctrlTool.projPermMulti(request, new String[]{"项目.移动验房.统计.查看", "项目.工程检查.统计.查看"});
         } catch (Exception e) {
-            e.printStackTrace();
+            log.error("error:",e.getMessage());
             response.setMessage(e.getMessage());
             response.setResult(1);
             return response;
@@ -390,7 +381,7 @@ public class HouseqmStatController {
         try {
             t = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").parse("0001-01-01 00:00:00");
         } catch (ParseException e) {
-            e.printStackTrace();
+            log.error("error:",e.getMessage());
         }
         try {
             TaskRepairStatVo taskRepairStatVo = houseqmStatisticService.searchIssueRepairStatisticByProjTaskIdAreaIdBeginOnEndOn(req.getProject_id(), req.getTask_id(), 0, t, t);
@@ -411,7 +402,7 @@ public class HouseqmStatController {
             res.setItem(result);
             response.setData(res);
         } catch (Exception e) {
-            e.printStackTrace();
+            log.error("error:",e.getMessage());
             response.setMessage(e.getMessage());
             response.setResult(1);
         }
@@ -452,7 +443,7 @@ public class HouseqmStatController {
             data.setStatus(status);
             response.setData(data);
         } catch (Exception e) {
-            e.printStackTrace();
+            log.error("error:",e.getMessage());
             response.setMessage(e.getMessage());
             response.setResult(1);
         }
@@ -484,7 +475,7 @@ public class HouseqmStatController {
             StatHouseqmCompleteDailyRspVo data = houseqmStatisticService.searchRepossessionStatusCompleteDaily(req.getProject_id(), taskIds, beginOn, endOn, req.getPage(), req.getPage_size());
             response.setData(data);
         } catch (Exception e) {
-            e.printStackTrace();
+            log.error("error:",e.getMessage());
             response.setMessage(e.getMessage());
             response.setResult(1);
         }
@@ -519,7 +510,7 @@ public class HouseqmStatController {
             data.setItems(result);
             response.setData(data);
         } catch (Exception e) {
-            e.printStackTrace();
+            log.error("error:",e.getMessage());
             response.setMessage(e.getMessage());
             response.setResult(1);
             return response;
@@ -555,7 +546,7 @@ public class HouseqmStatController {
             data.setItems(res);
             response.setData(data);
         } catch (Exception e) {
-            e.printStackTrace();
+            log.error("error:",e.getMessage());
             response.setMessage(e.getMessage());
             response.setResult(1);
             return response;
@@ -577,7 +568,7 @@ public class HouseqmStatController {
         try {
             ctrlTool.projPermMulti(request, new String[]{"项目.移动验房.统计.查看", "项目.工程检查.统计.查看"});
         } catch (Exception e) {
-            e.printStackTrace();
+            log.error("error:",e.getMessage());
             response.setMessage(e.getMessage());
             response.setResult(1);
             return response;
@@ -588,7 +579,7 @@ public class HouseqmStatController {
             data.setIssue(result);
             response.setData(data);
         } catch (Exception e) {
-            e.printStackTrace();
+            log.error("error:",e.getMessage());
             response.setMessage(e.getMessage());
             response.setResult(1);
             return response;

@@ -134,7 +134,7 @@ public class HouseqmIssueServiceImpl implements IHouseqmIssueService {
         try {
             helper.execute();
         } catch (Exception e) {
-            e.printStackTrace();
+            log.error("error:",e.getMessage());
         }
         List<String> dropUuids = Lists.newArrayList();
         List<ApiHouseQmCheckTaskReportRsp> droppedIssue = helper.getDroppedIssue();
@@ -186,14 +186,13 @@ public class HouseqmIssueServiceImpl implements IHouseqmIssueService {
                 //out.write(data);
                 op.flush();
             }catch(Exception e){
-                e.printStackTrace();
                 log.error(e.getMessage());
             }
             //op.close();
         /*out.write(data);
         out.close();*/
         } catch (IOException e) {
-            e.printStackTrace();
+            log.error(e.getMessage());
         }
     }
 

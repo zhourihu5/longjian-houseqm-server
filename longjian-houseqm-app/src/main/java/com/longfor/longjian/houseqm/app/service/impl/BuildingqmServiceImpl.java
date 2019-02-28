@@ -20,6 +20,7 @@ import com.longfor.longjian.houseqm.app.vo.export.NodeVo;
 import com.longfor.longjian.houseqm.consts.DropDataReasonEnum;
 import com.longfor.longjian.houseqm.domain.internalService.*;
 import com.longfor.longjian.houseqm.innervo.ApiBuildingQmCheckTaskConfig;
+import com.longfor.longjian.houseqm.innervo.ApiBuildingQmCheckTaskMsg;
 import com.longfor.longjian.houseqm.po.zhijian2_apisvr.User;
 import com.longfor.longjian.houseqm.po.zhijian2_notify.PushStrategyAssignTime;
 import com.longfor.longjian.houseqm.po.zhijian2_notify.PushStrategyCategoryOverdue;
@@ -123,45 +124,62 @@ public class BuildingqmServiceImpl implements IBuildingqmService {
         return taskListVo;
     }
 
-    private void setTaskVoProperties(TaskVo task,HouseQmCheckTask item){
-        task.setTask_id(item.getTaskId());
-        task.setProject_id(item.getProjectId());
-        task.setName(item.getName());
-        task.setStatus(item.getStatus());
-        task.setCategory_cls(item.getCategoryCls());
-        task.setRoot_category_key(item.getRootCategoryKey());
-        task.setArea_ids(item.getAreaIds());
-        task.setArea_type(item.getAreaTypes());
-        task.setPlan_begin_on((int) (item.getPlanBeginOn().getTime() / 1000));
-        task.setPlan_end_on((int) (item.getPlanEndOn().getTime() / 1000));
-        task.setCreate_at((int) (item.getCreateAt().getTime() / 1000));
-        task.setUpdate_at((int) (item.getUpdateAt().getTime() / 1000));
-        task.setDelete_at(DateUtil.datetimeToTimeStamp(item.getDeleteAt()));
+    public static void setTaskProperties(TaskVo tvo, ApiBuildingQmCheckTaskMsg abm,Map<Integer, ApiBuildingQmCheckTaskConfig> taskMap,HouseQmCheckTask checkTask  ){
+        ApiBuildingQmCheckTaskMsg task =new ApiBuildingQmCheckTaskMsg();
+        task.setProject_id(checkTask.getProjectId());
+        task.setTask_id(checkTask.getTaskId());
+        task.setName(checkTask.getName());
+        task.setStatus(checkTask.getStatus());
+        task.setCategory_cls(checkTask.getCategoryCls());
+        task.setRoot_category_key(checkTask.getRootCategoryKey());
+        task.setArea_ids(checkTask.getAreaIds());
+        task.setArea_types(checkTask.getAreaTypes());
+
+        if (taskMap.containsKey(task.getTask_id())) {
+            ApiBuildingQmCheckTaskConfig cfg = taskMap.get(task.getTask_id());
+            task.setRepairer_refund_permission(cfg.getRepairer_refund_permission());
+            task.setRepairer_follower_permission(cfg.getRepairer_follower_permission());
+            task.setChecker_approve_permission(cfg.getChecker_approve_permission());
+            task.setRepaired_picture_status(cfg.getRepaired_picture_status());
+            task.setIssue_desc_status(cfg.getIssue_desc_status());
+            task.setIssue_default_desc(cfg.getIssue_default_desc());
+        } else {
+            task.setRepairer_refund_permission(CheckTaskRepairerRefundPermission.No.getValue());
+            task.setRepairer_follower_permission(CheckTaskRepairerFollowerPermission.CompleteRepair.getValue());
+            task.setChecker_approve_permission(CheckerApprovePermission.No.getValue());
+            task.setRepaired_picture_status(CheckTaskRepairedPictureEnum.UnForcePicture.getValue());
+            task.setIssue_desc_status(CheckTaskIssueDescEnum.Arbitrary.getValue());
+            task.setIssue_default_desc("(该问题无文字描述)");
+        }
+        task.setPlan_begin_on(DateUtil.datetimeToTimeStamp(checkTask.getPlanBeginOn()));
+        task.setPlan_end_on(DateUtil.datetimeToTimeStamp(checkTask.getPlanEndOn()));
+        task.setCreate_at(DateUtil.datetimeToTimeStamp(checkTask.getCreateAt()));
+        task.setUpdate_at(DateUtil.datetimeToTimeStamp(checkTask.getUpdateAt()));
+        task.setDelete_at(DateUtil.datetimeToTimeStamp(checkTask.getDeleteAt()));
+        if(tvo!=null){
+            try {
+                BeanUtils.copyProperties(tvo,task);
+            } catch (IllegalAccessException e) {
+                e.printStackTrace();
+            } catch (InvocationTargetException e) {
+                e.printStackTrace();
+            }
+        }
+        if(abm!=null){
+            try {
+                BeanUtils.copyProperties(abm,task);
+            } catch (IllegalAccessException e) {
+                e.printStackTrace();
+            } catch (InvocationTargetException e) {
+                e.printStackTrace();
+            }
+        }
     }
 
-    private void buildTaskVo(List<TaskVo> vos,List<HouseQmCheckTask> houseqm_tasks,Map<Integer, ApiBuildingQmCheckTaskConfig> task_map){
-        for (HouseQmCheckTask item : houseqm_tasks) {
+    private void buildTaskVo(List<TaskVo> vos,List<HouseQmCheckTask> houseqmTasks,Map<Integer, ApiBuildingQmCheckTaskConfig> taskMap){
+        for (HouseQmCheckTask item : houseqmTasks) {
             TaskVo task = new TaskVo();
-            setTaskVoProperties(task,item);
-
-            if (task_map.containsKey(task.getTask_id())) {
-
-                ApiBuildingQmCheckTaskConfig cfg = task_map.get(task.getTask_id());
-                task.setRepairer_refund_permission(cfg.getRepairer_refund_permission());
-                task.setRepairer_follower_permission(cfg.getRepairer_follower_permission());
-                task.setChecker_approve_permission(cfg.getChecker_approve_permission());
-                task.setRepaired_picture_status(cfg.getRepaired_picture_status());
-                task.setIssue_desc_status(cfg.getIssue_desc_status());
-                task.setIssue_default_desc(cfg.getIssue_default_desc());
-            } else {
-
-                task.setRepairer_refund_permission(CheckTaskRepairerRefundPermission.No.getValue());
-                task.setRepairer_follower_permission(CheckTaskRepairerFollowerPermission.CompleteRepair.getValue());
-                task.setChecker_approve_permission(CheckerApprovePermission.No.getValue());
-                task.setRepaired_picture_status(CheckTaskRepairedPictureEnum.UnForcePicture.getValue());
-                task.setIssue_desc_status(CheckTaskIssueDescEnum.Arbitrary.getValue());
-                task.setIssue_default_desc("该问题无文字描述");
-            }
+            BuildingqmServiceImpl.setTaskProperties(task,null,taskMap,item);
             vos.add(task);
         }
     }
@@ -359,7 +377,7 @@ public class BuildingqmServiceImpl implements IBuildingqmService {
                 throw new LjBaseRuntimeException(-99, "计划结束时间有误");
             }
         } catch (ParseException e) {
-            e.printStackTrace();
+            log.error("error:",e.getMessage());
         }
         paramMap.put("areaIds",areaIds);
         paramMap.put("areaTypes",areaTypes);
@@ -1040,7 +1058,6 @@ public class BuildingqmServiceImpl implements IBuildingqmService {
                 houseQmCheckTaskIssueService.update(issue);
             } catch (Exception e) {
                 log.info("insert new issue failed, data=" + JSON.toJSONString(issue) + "");
-                e.printStackTrace();
             }
             // # 写入推送记录
             Map<Object, Map> notifyStatMap = issueMapBody.getNotify_stat_map();
@@ -1105,7 +1122,6 @@ public class BuildingqmServiceImpl implements IBuildingqmService {
                     houseQmCheckTaskIssueUserService.add(houseQmCheckTaskIssueUser);
                 } catch (Exception e) {
                     log.info("insert new role failed, data=" + JSON.toJSONString(houseQmCheckTaskIssueUser) + "");
-                    e.printStackTrace();
                 }
             }
         }
@@ -1129,7 +1145,6 @@ public class BuildingqmServiceImpl implements IBuildingqmService {
                 houseQmCheckTaskIssueLogService.add(loginsert);
             } catch (Exception e) {
                 log.info("insert new log failed, data=" + JSON.toJSONString(logInsertList) + "");
-                e.printStackTrace();
             }
         });
         //     # 处理退单情况融合推送
@@ -2833,7 +2848,7 @@ public class BuildingqmServiceImpl implements IBuildingqmService {
         try {
             return sdf.parse(time);
         } catch (ParseException e) {
-            e.printStackTrace();
+            log.error("error:",e.getMessage());
         }
         return null;
     }
@@ -3178,7 +3193,7 @@ public class BuildingqmServiceImpl implements IBuildingqmService {
 
 
         String dt = DateUtil.getNowTimeStr("yyyyMMddHHmmss");
-        String category_name = CategoryClsTypeEnum.getName(Integer.valueOf(category_cls));
+        String category_name = CategoryClsTypeEnum.getName(category_cls);
         if (category_name == null) category_name = "工程检查";
         String fileName = String.format("%s_问题详情_%s.xlsx", category_name, dt);
 
@@ -3191,7 +3206,7 @@ public class BuildingqmServiceImpl implements IBuildingqmService {
         response.getOutputStream().flush();
        response.getOutputStream().close();
         } catch (IOException e) {
-            e.printStackTrace();
+            log.error("error:",e.getMessage());
         }
         Map<String, Object> map = Maps.newHashMap();
         map.put("fileName", fileName);

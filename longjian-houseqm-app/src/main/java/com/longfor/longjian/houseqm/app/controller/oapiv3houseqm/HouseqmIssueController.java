@@ -90,7 +90,7 @@ public class HouseqmIssueController {
         try {
             ctrlTool.projPermMulti(request, new String[]{"项目.移动验房.问题管理.查看", "项目.工程检查.问题管理.查看"});
         } catch (Exception e) {
-            e.printStackTrace();
+            log.error("error:",e.getMessage());
             log.error(e.getMessage());
             response.setResult(1);
             response.setMessage(e.getMessage());
@@ -119,7 +119,7 @@ public class HouseqmIssueController {
             try {
                 issueList = iHouseqmIssueService.searchHouseQmIssueListByProjUuidIn(req.getProject_id(), uuids);
             } catch (Exception e) {
-                e.printStackTrace();
+                log.error("error:",e.getMessage());
             }
             HashMap<Integer, Boolean> taskMap = Maps.newHashMap();
             issueList.forEach(issue -> taskMap.put(issue.getTaskId(), true));
@@ -288,7 +288,7 @@ public class HouseqmIssueController {
             data.setFails(fails);
             response.setData(data);
         } catch (Exception e) {
-            e.printStackTrace();
+            log.error("error:",e.getMessage());
             response.setResult(1);
             response.setMessage(e.getMessage());
         }
@@ -316,8 +316,7 @@ public class HouseqmIssueController {
             data.setFails(fails);
             response.setData(data);
         } catch (Exception e) {
-            e.printStackTrace();
-            log.error(e.getMessage());
+            log.error("error:",e.getMessage());
             response.setResult(1);
             response.setMessage(e.getMessage());
         }
@@ -350,7 +349,7 @@ public class HouseqmIssueController {
             data.setFails(fails);
             response.setData(data);
         } catch (Exception e) {
-            e.printStackTrace();
+            log.error("error:",e.getMessage());
             log.error(e.getMessage());
             response.setResult(1);
             response.setMessage(e.getMessage());
@@ -384,7 +383,7 @@ public class HouseqmIssueController {
                     try {
                         value = URLEncoder.encode(value, "UTF-8");
                     } catch (UnsupportedEncodingException e) {
-                        e.printStackTrace();
+                        log.error("error:",e.getMessage());
                     }
                     sb.append(value + "&");
                 }
