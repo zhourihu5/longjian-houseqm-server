@@ -26,6 +26,7 @@ import com.longfor.longjian.houseqm.po.zj2db.*;
 import com.longfor.longjian.houseqm.util.*;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections.CollectionUtils;
+import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang.StringUtils;
 import org.apache.poi.xssf.streaming.SXSSFWorkbook;
 import org.apache.poi.xwpf.usermodel.XWPFDocument;
@@ -36,6 +37,8 @@ import org.springframework.stereotype.Service;
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import java.io.File;
+import java.net.URL;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -1577,15 +1580,15 @@ public class IssueServiceImpl implements IIssueService {
             detailVo.setContent(issue.getContent());
             ArrayList<String> storeKeyList = Lists.newArrayList();
             for (String attachment : StringSplitToListUtil.splitToStringComma(issue.getAttachmentMd5List(), ",")) {
-                if (attachmentMap.containsKey(attachment) && attachmentMap.get(attachment).getStoreKey().length() > 0) {
+                if (attachmentMap.containsKey(attachment) && (attachmentMap.get(attachment).getStoreKey()).length() > 0) {
                     if (detailVo.getAttachment_path().size() >= 2) {
                         break;
                     }
-                    String attachmentPath = "/data/zhijian/" + attachmentMap.get(attachment).getStoreKey();
-                    storeKeyList.add(attachmentPath);
-                    detailVo.setAttachment_path(storeKeyList);
+                    String attachmentPath = "/lhdata/pictures/" + attachmentMap.get(attachment).getStoreKey();
+                        storeKeyList.add(attachmentPath);
                 }
             }
+            detailVo.setAttachment_path(storeKeyList);
             input.add(detailVo);
         }
         HashMap<String, Object> map = Maps.newHashMap();
@@ -1622,8 +1625,9 @@ public class IssueServiceImpl implements IIssueService {
                 map.put("buwei",vo.getArea_name());
                 map.put("neirong",vo.getCheck_item_name());
                 map.put("content",vo.getContent().replace("\n",""));
-                if(vo.getAttachment_path().size()>0){
-                    for (String s : vo.getAttachment_path()) {
+                if(CollectionUtils.isNotEmpty(vo.getAttachment_path())){
+                    List<String> attachment_path = vo.getAttachment_path();
+                    for (String s : attachment_path) {
                         try {
                             //导出图片
                             picList.add(DocumentHandler.getImageBase(s));

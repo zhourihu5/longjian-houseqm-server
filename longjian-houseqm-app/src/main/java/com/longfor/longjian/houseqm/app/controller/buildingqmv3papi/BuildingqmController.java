@@ -351,11 +351,12 @@ public class BuildingqmController {
     }
 
         @RequestMapping(value = "stat/issue_statistic_export", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
-    public LjBaseResponse<ReportIssueVo> issueStatisticExport(HttpServletRequest request, HttpServletResponse response) throws IOException {
+    public LjBaseResponse<ReportIssueVo> issueStatisticExport(@RequestParam(name = "category_cls", required = true) Integer category_cls,
+                                                              @RequestParam(name = "items", required = true) String items,HttpServletRequest request, HttpServletResponse response) throws IOException {
 /*@RequestParam(name = "category_cls", required = true) Integer category_cls,
                                                               @RequestParam(name = "items", required = true) String items,*/
-        String category_cls = request.getParameter("category_cls");
-        String items = request.getParameter("items");
+       /* String category_cls = request.getParameter("category_cls");
+        String items = request.getParameter("items");*/
         log.info(String.format("issue_statistic_export, category_cls=%s, items=%s",category_cls, items));
         LjBaseResponse<ReportIssueVo> ljBaseResponse = new LjBaseResponse();
         if (category_cls == null || StringUtils.isBlank(items)) {
@@ -363,17 +364,16 @@ public class BuildingqmController {
             ljBaseResponse.setMessage("args error");
             return ljBaseResponse;
         }
-        Map<String, Object> map = buildingqmService.issuestatisticexport(category_cls, items);
-        log.info(String.format("export issue statistic, result=%d, message=%s, path=%s",Integer.parseInt(map.get("result").toString()),map.get("message").toString(),map.get("path").toString()));
-        if(Integer.parseInt(map.get("result").toString()) !=0){
-            ljBaseResponse.setResult(Integer.parseInt(map.get("result").toString()));
-            ljBaseResponse.setMessage(map.get("message").toString());
+        Map<String, Object> map = buildingqmService.issuestatisticexport(category_cls, items,response);
+/*
+        log.info(String.format("export issue statistic, result=%d, message=%s, path=%s",Integer.parseInt((String) map.get("result")),map.get("message"),map.get("path").toString()));
+*/
+
+            if((Integer)map.get("result")!=0 ){
+            ljBaseResponse.setResult(Integer.parseInt((String) map.get("result")));
+            ljBaseResponse.setMessage((String) map.get("message"));
             return ljBaseResponse;
         }
-        response.addHeader("Content-Disposition", String.format("attachment; filename=\"%s\"",map.get("filename").toString()));
-        SXSSFWorkbook workbook = (SXSSFWorkbook) map.get("workbook");
-        workbook.write(response.getOutputStream());
-        //FileUtil.Load(map.get("path").toString(),response);
         return ljBaseResponse;
     }
 }

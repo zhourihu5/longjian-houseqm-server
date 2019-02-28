@@ -90,12 +90,12 @@ public class V3HouseqmStatController {
         title += "－" + StatisticFormInspectionIssueStatusEnum.getName(req.getIssue_status());
 
         //response.setHeader("Content-Type", "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet; charset=utf-8");
-        response.setHeader("Content-Disposition", " attachment; filename=" + new String(title.getBytes("gbk"), "iso8859-1") + ".xlsx"); //File name extension was wrong
+        response.setHeader("Content-Disposition", " attachment; filename=" + new String(title.getBytes("gbk"), "iso8859-1") + ".xls"); //File name extension was wrong
         response.setHeader("Expires", " 0");
         // 导出
         Map<String, Object> map = Maps.newHashMap();
         map.put("details", details);
-        ExportUtils.exportStatExcel("inspection_situation_excel_fhys.ftl", map, response, request);
+        ExportUtils.exportStatExcel("1.ftl", map, response, request);
 
         return new LjBaseResponse<>();
     }

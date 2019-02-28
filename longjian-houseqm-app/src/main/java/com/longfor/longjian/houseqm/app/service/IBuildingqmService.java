@@ -5,6 +5,7 @@ import com.longfor.longjian.houseqm.app.req.TaskReq;
 import com.longfor.longjian.houseqm.app.vo.*;
 import com.longfor.longjian.houseqm.po.zj2db.HouseQmCheckTaskSquad;
 
+import javax.servlet.http.HttpServletResponse;
 import java.util.List;
 import java.util.Map;
 
@@ -32,5 +33,5 @@ public interface IBuildingqmService {
      * @param items
      * @return
      */
-    Map<String, Object> issuestatisticexport(String category_cls, String items);
+    Map<String, Object> issuestatisticexport(Integer category_cls, String items, HttpServletResponse response);
 }

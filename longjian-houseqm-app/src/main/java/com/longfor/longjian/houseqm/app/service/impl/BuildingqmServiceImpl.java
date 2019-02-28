@@ -37,6 +37,9 @@ import org.springframework.stereotype.Repository;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
+import javax.servlet.http.HttpServletResponse;
+import java.io.IOException;
+import java.net.URLEncoder;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.*;
@@ -3049,7 +3052,7 @@ public class BuildingqmServiceImpl implements IBuildingqmService {
     }
 
     @Override
-    public Map<String, Object> issuestatisticexport(String category_cls, String items) {
+    public Map<String, Object> issuestatisticexport(Integer category_cls, String items, HttpServletResponse response) {
         Integer result = 0;
         String message = "success";
         List<NodeDataVo> dataList = Lists.newArrayList();
@@ -3155,6 +3158,18 @@ public class BuildingqmServiceImpl implements IBuildingqmService {
         String category_name = CategoryClsTypeEnum.getName(Integer.valueOf(category_cls));
         if (category_name == null) category_name = "工程检查";
         String fileName = String.format("%s_问题详情_%s.xlsx", category_name, dt);
+
+        try {
+        response.addHeader("Content-Disposition", String.format("attachment; filename=\"%s\"",fileName));
+    /*    SXSSFWorkbook workbook = (SXSSFWorkbook) map.get("workbook");*/
+
+            wb.write(response.getOutputStream());
+
+        response.getOutputStream().flush();
+       response.getOutputStream().close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
         Map<String, Object> map = Maps.newHashMap();
         map.put("fileName", fileName);
         map.put("workbook", wb);
