@@ -86,6 +86,9 @@ public class PushServiceImpl implements PushService {
                         e = value;
                     }
                 }
+                if(e==null){
+                    continue;
+                }
                 switch (e) {
                     case AssignNoReform: {
                         userIds.add(issue.getRepairerId());

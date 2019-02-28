@@ -41,13 +41,22 @@ public class ZipUtils {
                 }
             } else {
                 out.putNextEntry(new ZipEntry(base));
-                FileInputStream in = new FileInputStream(f);
+                try(FileInputStream in = new FileInputStream(f)){
+                    int b;
+                    //System.out.println(base);
+                    while ((b = in.read()) != -1) {
+                        out.write(b);
+                    }
+                }catch (Exception e){
+                    e.printStackTrace();
+                }
+               /* FileInputStream in = new FileInputStream(f);
                 int b;
                 //System.out.println(base);
                 while ((b = in.read()) != -1) {
                     out.write(b);
                 }
-                in.close();
+                in.close();*/
             }
         }
 
@@ -57,16 +66,21 @@ public class ZipUtils {
          * @param zipPath 生成的zip文件存在路径（包括文件名）
          */
         public static void createZip(String sourcePath, String zipPath) {
-            FileOutputStream fos = null;
-            ZipOutputStream zos = null;
-            try {
-                fos = new FileOutputStream(zipPath);
-                zos = new ZipOutputStream(fos);
+            //FileOutputStream fos = null;
+            //ZipOutputStream zos = null;
+            try (FileOutputStream fos =new FileOutputStream(zipPath);ZipOutputStream zos =new ZipOutputStream(fos)){
+               //fos = new FileOutputStream(zipPath);
+                //zos = new ZipOutputStream(fos);
                 writeZip(new File(sourcePath), "", zos);
             } catch (FileNotFoundException e) {
                 log.error("ZipUtils createZip  Failed to create ZIP file", e);
+            } catch (IOException e) {
+                e.printStackTrace();
+                log.error(e.getMessage());
             } finally {
-                try {
+                //压缩成功后，删除打包前的文件
+                deleteFile( new File(sourcePath) );
+                /*try {
                     if (zos != null) {
                         log.debug("ZipUtils createZip Create a ZIP file successfully! the path in:{}",zipPath);
                         zos.close();
@@ -75,7 +89,7 @@ public class ZipUtils {
                     }
                 } catch (IOException e) {
                     log.error("ZipUtils createZip  Failed to create ZIP file", e);
-                }
+                }*/
             }
         }
 
@@ -89,9 +103,9 @@ public class ZipUtils {
                         writeZip(f, parentPath, zos);
                     }
                 } else {
-                    FileInputStream fis = null;
-                    try {
-                        fis = new FileInputStream(file);
+                    //FileInputStream fis = null;
+                    try (FileInputStream fis = new FileInputStream(file)){
+                       // fis = new FileInputStream(file);
                         ZipEntry ze = new ZipEntry(parentPath + file.getName());
                         zos.putNextEntry(ze);
                         byte[] content = new byte[1024];
@@ -104,7 +118,8 @@ public class ZipUtils {
                         log.error("ZipUtils createZip  Failed to create ZIP file",e);
                     } catch (IOException e) {
                         log.error("ZipUtils createZip  Failed to create ZIP file",e);
-                    } finally {
+                    }
+                    /*finally {
                         try {
                             if (fis != null) {
                                 fis.close();
@@ -112,7 +127,7 @@ public class ZipUtils {
                         } catch (IOException e) {
                             log.error("ZipUtils createZip  Failed to create ZIP file",e);
                         }
-                    }
+                    }*/
                 }
             }
         }
@@ -125,18 +140,20 @@ public class ZipUtils {
                     File a = new File(oldResPath.get(m));
                     // 如果已经是具体文件，读取
                     if (a.isFile()) {
-                        FileInputStream input = new FileInputStream(a);
-                        FileOutputStream output = new FileOutputStream(newResPath + "/" + (a.getName()).toString());
-                        byte[] b = new byte[1024 * 4];
-                        int len;
-                        while ((len = input.read(b)) != -1) {
-                            output.write(b, 0, len);
+                        try (FileInputStream input = new FileInputStream(a); FileOutputStream output = new FileOutputStream(newResPath + "/" + (a.getName()).toString())) {
+                            // FileInputStream input = new FileInputStream(a);
+                            //FileOutputStream output = new FileOutputStream(newResPath + "/" + (a.getName()).toString());
+                            byte[] b = new byte[1024 * 4];
+                            int len;
+                            while ((len = input.read(b)) != -1) {
+                                output.write(b, 0, len);
+                            }
+                        } catch (IOException e) {
+                            e.printStackTrace();
                         }
-                        output.flush();
-                        output.close();
-                        input.close();
+                    }
                         // 如果文件夹下还存在文件，遍历，直到得到具体的文件
-                    } else {
+                   else {
                         String[] file = a.list();
                         File temp = null;
                         for (int i = 0; i < file.length; i++) {
@@ -147,16 +164,26 @@ public class ZipUtils {
                             }
 
                             if (temp.isFile()) {
-                                FileInputStream input = new FileInputStream(temp);
-                                FileOutputStream output = new FileOutputStream(newResPath + "/" + (temp.getName()).toString());
-                                byte[] b = new byte[1024 * 4];
+                                try( FileInputStream input = new FileInputStream(temp);FileOutputStream output = new FileOutputStream(newResPath + "/" + (temp.getName()).toString())){
+                                    byte[] b = new byte[1024 * 4];
+                                    int len;
+                                    while ((len = input.read(b)) != -1) {
+                                        output.write(b, 0, len);
+                                    }
+                                }catch (Exception e){
+                                    e.printStackTrace();
+                                    log.error(e.getMessage());
+                                }
+                                //FileInputStream input = new FileInputStream(temp);
+                               //FileOutputStream output = new FileOutputStream(newResPath + "/" + (temp.getName()).toString());
+                                /*byte[] b = new byte[1024 * 4];
                                 int len;
                                 while ((len = input.read(b)) != -1) {
                                     output.write(b, 0, len);
                                 }
                                 output.flush();
                                 output.close();
-                                input.close();
+                                input.close();*/
                             }
                             if (temp.isDirectory()) {
                                 List<String> oldChildPath = new ArrayList<String>();

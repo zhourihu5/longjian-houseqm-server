@@ -3,6 +3,7 @@ package com.longfor.longjian.houseqm.app.utils;
 import com.longfor.longjian.houseqm.app.vo.ExportReplyDetail;
 import com.longfor.longjian.houseqm.app.vo.export.NodeDataVo;
 import com.longfor.longjian.houseqm.app.vo.export.NodeVo;
+import com.longfor.longjian.houseqm.app.vo.houseqmstat.InspectionHouseStatusInfoVo;
 import com.longfor.longjian.houseqm.app.vo.issuelist.ExcelIssueData;
 import com.longfor.longjian.houseqm.util.DateUtil;
 import com.longfor.longjian.houseqm.utils.ExampleUtil;
@@ -66,8 +67,7 @@ public class ExportUtils {
 
     // 导出excel 不带图片 问题列表
     public static SXSSFWorkbook exportExcel(List<ExcelIssueData> data, boolean condition_open) {
-        //File file = FileUtil.createFile(path);
-        //OutputStream out = new FileOutputStream(file);
+
         SXSSFWorkbook workbook = new SXSSFWorkbook();
         SXSSFSheet sheet = workbook.createSheet();
 
@@ -192,10 +192,7 @@ public class ExportUtils {
             }
 
         }
-        // dt = datetime.datetime.strftime(datetime.datetime.now(), '%m%d%H%M%S')
-        //    r = '%04x' % random.randint(0, 65536)
-        //    pathname = '%s/export_issue_excel_%s_%s.xlsx' % (config.EXPORT_PATH, dt, r)
-        //    wb.save(pathname)
+
         String dt = DateUtil.getNowTimeStr("MMddHHmmss");
         String r = new Random().ints(0, 65536).toString();
         String pathname = String.format("%s/export_issue_excel_%s_%s.xls", EXPORT_PATH, dt, r);
@@ -283,7 +280,7 @@ public class ExportUtils {
     // 导出 统计报告 -任务概况 -验房详情 导出excel 使用freemaker
     public static void exportStatExcel(String templateName, Map<String, Object> data, HttpServletResponse response, HttpServletRequest request) throws Exception {
         // 加载模板
-        File file = new File("temp.xls");// 临时名称
+        File file = new File("temp.xlsx");// 临时名称
         Configuration configuration = new Configuration();
         configuration.setDefaultEncoding("utf-8");
         ExportUtils exportUtils = new ExportUtils();
@@ -297,6 +294,109 @@ public class ExportUtils {
         // 导出文件
         FileUtil.Load(file.getAbsolutePath(), response);
         file.delete(); // 删除临时文件
+
+    }
+
+    public static SXSSFWorkbook exportInspectionSituationExcel(List<InspectionHouseStatusInfoVo> data) {
+        SXSSFWorkbook workbook = new SXSSFWorkbook();
+        SXSSFSheet sheet = workbook.createSheet();
+
+        CellStyle titilecellStyle = workbook.createCellStyle();
+        Font base_font = workbook.createFont();
+        base_font.setFontName("宋体");//字体
+        base_font.setBold(true);//加粗
+        base_font.setFontHeightInPoints((short) 12);
+
+        titilecellStyle.setFont(base_font);
+        titilecellStyle.setVerticalAlignment(CENTER);//垂直居中
+        titilecellStyle.setWrapText(true);//文字换行
+        titilecellStyle.setAlignment(HorizontalAlignment.CENTER);//水平居中
+        titilecellStyle.setBorderLeft(BorderStyle.THIN);
+        titilecellStyle.setBorderRight(BorderStyle.THIN);
+        titilecellStyle.setBorderTop(BorderStyle.THIN);
+        titilecellStyle.setBorderBottom(BorderStyle.THIN);
+
+        CellStyle cellStyle = workbook.createCellStyle();
+        Font base_font1 = workbook.createFont();
+        base_font1.setFontName("宋体");
+        base_font1.setBold(false);
+        base_font1.setFontHeightInPoints((short) 10.5);
+        cellStyle.setFont(base_font1);
+        cellStyle.setVerticalAlignment(CENTER);//垂直居中
+        cellStyle.setWrapText(true);//文字换行
+        cellStyle.setAlignment(HorizontalAlignment.CENTER);//水平居中
+        cellStyle.setBorderLeft(BorderStyle.THIN);
+        cellStyle.setBorderRight(BorderStyle.THIN);
+        cellStyle.setBorderTop(BorderStyle.THIN);
+        cellStyle.setBorderBottom(BorderStyle.THIN);
+
+
+        sheet.setColumnWidth(getColumnIndexByName("A"), 9 * 256);
+        sheet.setColumnWidth(getColumnIndexByName("B"), 9 * 256);
+        sheet.setColumnWidth(getColumnIndexByName("C"), 9 * 256);
+        sheet.setColumnWidth(getColumnIndexByName("D"), 9 * 256);
+        sheet.setColumnWidth(getColumnIndexByName("E"), 7 * 256);
+        sheet.setColumnWidth(getColumnIndexByName("F"), 7 * 256);
+        sheet.setColumnWidth(getColumnIndexByName("G"), 7 * 256);
+
+        //表头
+        List<String> title = new ArrayList<>();
+        title.addAll(Arrays.asList(new String[]{"楼栋", "楼层", "户名称", "户状态", "问题数", "整改数", "销项数"}));
+
+        SXSSFRow row0 = sheet.createRow(0);
+        row0.setHeightInPoints((float) 31.2);
+
+        for (int i = 0; i < title.size(); i++) {
+            SXSSFCell cell = row0.createCell(i);
+            cell.setCellStyle(titilecellStyle);
+            cell.setCellValue(title.get(i));
+        }
+
+        //表中数据
+        for (int rowInx = 0; rowInx < data.size(); rowInx++) {
+            InspectionHouseStatusInfoVo issue = data.get(rowInx);
+            SXSSFRow row = sheet.createRow(rowInx + 1);//第二行
+            row.setHeightInPoints((float) 14.4);
+            int curColumn = 0;//单元格 0
+
+            List<String> areaPathName = issue.getAreaPathName();
+            SXSSFCell cell = row.createCell(curColumn++);
+            cell.setCellStyle(cellStyle);
+            if (CollectionUtils.isNotEmpty(areaPathName)) {
+                cell.setCellValue(areaPathName.get(0));
+                cell = row.createCell(curColumn++);
+                cell.setCellStyle(cellStyle);
+                if (areaPathName.size() > 1) cell.setCellValue(areaPathName.get(1));
+                else cell.setCellValue(areaPathName.get(0));
+            } else {
+                cell.setCellValue("");
+                cell = row.createCell(curColumn++);
+                cell.setCellStyle(cellStyle);
+                cell.setCellValue("");
+            }
+
+            cell = row.createCell(curColumn++);
+            cell.setCellStyle(cellStyle);
+            cell.setCellValue(issue.getAreaName());
+
+            cell = row.createCell(curColumn++);
+            cell.setCellStyle(cellStyle);
+            cell.setCellValue(issue.getStatusName());
+
+            cell = row.createCell(curColumn++);
+            cell.setCellStyle(cellStyle);
+            cell.setCellValue(issue.getIssueCount());
+
+            cell = row.createCell(curColumn++);
+            cell.setCellStyle(cellStyle);
+            cell.setCellValue(issue.getIssueRepairedCount());
+
+            cell = row.createCell(curColumn++);
+            cell.setCellStyle(cellStyle);
+            cell.setCellValue(issue.getIssueApprovededCount());
+
+        }
+        return workbook;
 
     }
 
@@ -490,7 +590,7 @@ public class ExportUtils {
             }
             SXSSFRow row1= sheet.getRow(row);
             if(row1==null){
-            //创建行
+                //创建行
                 row1= sheet.createRow(row);
             }
             //创捷列
@@ -513,7 +613,7 @@ public class ExportUtils {
                 exportTree(workbook, sheet, node.getChild_list(), row, col + 2);
             }
 //            if(node.getData().getChild_count()>0){
-                row += node.getData().getChild_count();
+            row += node.getData().getChild_count();
 //            }else {
 //                row+=1;
 //            }

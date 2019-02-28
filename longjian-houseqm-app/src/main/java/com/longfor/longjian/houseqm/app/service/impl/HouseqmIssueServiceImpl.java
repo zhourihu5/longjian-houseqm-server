@@ -25,6 +25,8 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStreamWriter;
+import java.security.NoSuchAlgorithmException;
+import java.security.SecureRandom;
 import java.util.*;
 
 /**
@@ -49,7 +51,11 @@ public class HouseqmIssueServiceImpl implements IHouseqmIssueService {
     private ExportFileRecordService exportFileRecordService;
     @Resource
     private HouseQmCheckTaskIssueHelperVo helper;
+    private Random rand;
 
+    public HouseqmIssueServiceImpl() throws NoSuchAlgorithmException {
+        rand= SecureRandom.getInstanceStrong();
+    }
 
     // 删除问题
     @Override
@@ -142,18 +148,8 @@ public class HouseqmIssueServiceImpl implements IHouseqmIssueService {
     public ExportFileRecord create(int userId, Integer teamId, Integer project_id, int exportType, Map<String, String> args, String exportName, Date executeAt) throws Exception {
         //生成随机数
         Random random = new Random(Long.MAX_VALUE);
-        /*long randCount = Math.abs(random.nextLong());
-        long ts = new Date().getTime();
-        //读取配置 export - basedir baseuri
-        String cfg_base_dir = exportVo.getBase_dir();
-        String cfg_base_uri = exportVo.getBase_uri();
-        //输入输出文件名
-        String inputFileName = randCount + ts + ".input";
-        String outputFileName = "export/" + randCount + ts + ".output";
-        String fileName = cfg_base_dir + "/" + inputFileName;
-        byte[] data = JSON.toJSONBytes(args);
-        writeInput(data, cfg_base_dir,inputFileName);*/
-        long randCount = Math.abs(random.nextLong());
+
+        long randCount = (long) (rand.nextDouble() * Long.MAX_VALUE);
         String base_dir = exportVo.getBase_dir();
         Integer ts = DateUtil.datetimeToTimeStamp(new Date());
         String base_uri = exportVo.getBase_uri();
@@ -180,15 +176,20 @@ public class HouseqmIssueServiceImpl implements IHouseqmIssueService {
             if (!file.exists()) {
                 file.createNewFile();
             }
-            FileOutputStream out;
-            //out = new FileOutputStream(String.format("%s", filepath));
-            out = new FileOutputStream(String.format("D:/%s",exportName));
-            //String data1 = new String(data,"utf-8");
-            OutputStreamWriter op = new OutputStreamWriter(out, "utf-8");
-            op.append(data);
-            //out.write(data);
-            op.flush();
-            op.close();
+             //out = new FileOutputStream(String.format("%s", filepath));
+            try(FileOutputStream out= new FileOutputStream(String.format("D:/%s",exportName));
+                OutputStreamWriter op =new OutputStreamWriter(out, "utf-8")) {
+//            out = new FileOutputStream(String.format("D:/%s",exportName));
+//            //String data1 = new String(data,"utf-8");
+//            OutputStreamWriter op = new OutputStreamWriter(out, "utf-8");
+                op.append(data);
+                //out.write(data);
+                op.flush();
+            }catch(Exception e){
+                e.printStackTrace();
+                log.error(e.getMessage());
+            }
+            //op.close();
         /*out.write(data);
         out.close();*/
         } catch (IOException e) {

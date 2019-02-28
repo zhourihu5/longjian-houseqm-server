@@ -266,17 +266,17 @@ public class BuildingqmServiceImpl implements IBuildingqmService {
         for (HouseQmCheckTaskIssueLog issueLog : houseQmCheckTaskIssueLogs) {
             MyIssuePatchListVo.LogVo logVo = myIssuePatchListVo.new LogVo();
             logVo.setId(issueLog.getId());
-            logVo.setProjectId(issueLog.getProjectId());
-            logVo.setTaskId(issueLog.getTaskId());
+            logVo.setProject_id(issueLog.getProjectId());
+            logVo.setTask_id(issueLog.getTaskId());
             logVo.setUuid(issueLog.getUuid());
-            logVo.setIssueUuid(issueLog.getIssueUuid());
-            logVo.setSenderId(issueLog.getSenderId());
+            logVo.setIssue_uuid(issueLog.getIssueUuid());
+            logVo.setSender_id(issueLog.getSenderId());
             logVo.setDesc(issueLog.getDesc());
             logVo.setStatus(issueLog.getStatus());
-            logVo.setAttachmentMd5List(issueLog.getAttachmentMd5List());
-            logVo.setAudioMd5List(issueLog.getAudioMd5List());
-            logVo.setMemoAudioMd5List(issueLog.getMemoAudioMd5List());
-            logVo.setClientCreateAt(DateUtil.datetimeToTimeStamp(issueLog.getClientCreateAt()));
+            logVo.setAttachment_md5_list(issueLog.getAttachmentMd5List());
+            logVo.setAudio_md5_list(issueLog.getAudioMd5List());
+            logVo.setMemo_audio_md5_list(issueLog.getMemoAudioMd5List());
+            logVo.setClient_create_at(DateUtil.datetimeToTimeStamp(issueLog.getClientCreateAt()));
 
             JSONObject dic_detail = JSONObject.parseObject(issueLog.getDetail());
             MyIssuePatchListVo.LogDetailVo detail = myIssuePatchListVo.new LogDetailVo();
@@ -301,8 +301,8 @@ public class BuildingqmServiceImpl implements IBuildingqmService {
             detail.setPotential_risk(dic_detail.getString("PotentialRisk"));
             detail.setPreventive_action_detail(dic_detail.getString("PreventiveActionDetail"));
             logVo.setDetail(detail);
-            logVo.setUpdateAt(DateUtil.datetimeToTimeStamp(issueLog.getUpdateAt()));
-            logVo.setDeleteAt(DateUtil.datetimeToTimeStamp(issueLog.getDeleteAt()));
+            logVo.setUpdate_at(DateUtil.datetimeToTimeStamp(issueLog.getUpdateAt()));
+            logVo.setDelete_at(DateUtil.datetimeToTimeStamp(issueLog.getDeleteAt()));
             logs.add(logVo);
         }
         if (!logs.isEmpty()) myIssuePatchListVo.setLog_list(logs);
@@ -1534,10 +1534,10 @@ public class BuildingqmServiceImpl implements IBuildingqmService {
     }
 
     private Map<String, Object> refundIssue(HashMap<String, ApiUserRoleInIssue> issueRoleMap, HouseQmCheckTaskIssue issue, ApiHouseQmCheckTaskIssueLogInfo item) {
-        issue.setRepairerId(0);
+        /*issue.setRepairerId(0);
         issue.setRepairerFollowerIds("");
-        issue.setLastRepairer(0);
-        issue.setLastRepairerAt(DateUtil.strToDate("0001-01-01 00:00:00", "yyyy-MM-dd-HH-mm-ss"));
+        issue.setLastRepairer(0);*/
+        //issue.setLastRepairerAt(DateUtil.strToDate("0001-01-01 00:00:00", "yyyy-MM-dd-HH-mm-ss"));
         issue.setPlanEndOn(new Date(0));
         Integer newStatus = convertLogStatus(item.getStatus());
         if (newStatus > 0) {
@@ -1626,10 +1626,10 @@ public class BuildingqmServiceImpl implements IBuildingqmService {
     }
 
     private Map<String, Object> reassignIssue(HashMap<String, ApiUserRoleInIssue> issueRoleMap, HouseQmCheckTaskIssue issue, ApiHouseQmCheckTaskIssueLogInfo item) {
-        issue.setRepairerId(0);
+        /*issue.setRepairerId(0);
         issue.setRepairerFollowerIds("");
-        issue.setLastRepairer(0);
-        issue.setLastRepairerAt(DateUtil.strToDate("0001-01-01 00:00:00", "yyyy-MM-dd-HH-mm-ss"));
+        issue.setLastRepairer(0);*/
+        //issue.setLastRepairerAt(DateUtil.strToDate("0001-01-01 00:00:00", "yyyy-MM-dd-HH-mm-ss"));
         issue.setPlanEndOn(new Date(0));
         List<ApiHouseQmCheckTaskIssueLogInfo.ApiHouseQmCheckTaskIssueLogDetailInfo> detail = item.getDetail();
         detail.forEach(detailInfo -> {
@@ -2023,13 +2023,13 @@ public class BuildingqmServiceImpl implements IBuildingqmService {
     }
 
     private Map<String, Object> ApiNotifyStat(Integer status, Integer repairerId, List<Integer> repairer_follower_ids) {
-        status = 0;
-        repairerId = 0;
-        repairer_follower_ids = Lists.newArrayList();
+        Integer nstatus = 0;
+        Integer nrepairerId = 0;
+        List<Integer> n_repairer_follower_ids = Lists.newArrayList();
         Map<String, Object> map = Maps.newHashMap();
-        map.put("status", status);
-        map.put("repairerId", repairerId);
-        map.put("splitToIdsComma", repairer_follower_ids);
+        map.put("status", nstatus);
+        map.put("repairerId", nrepairerId);
+        map.put("splitToIdsComma", n_repairer_follower_ids);
         return map;
     }
 
@@ -2180,29 +2180,29 @@ public class BuildingqmServiceImpl implements IBuildingqmService {
                     info.setDrawing_md5("-1");
                 }
 
-                if (StringUtils.isNotBlank((String) detail.get("check_item_key"))) {
-                    info.setCheck_item_key((String) detail.get("check_item_key"));
-                } else {
-                    info.setCheck_item_key((String) detail.get("-1"));
-                }
+                //if (StringUtils.isBlank((String) detail.get("check_item_key"))) {
+                    info.setCheck_item_key(detail.get("check_item_key")!=null?(String) detail.get("check_item_key"):"-1");
+               // } else {
+               //     info.setCheck_item_key((String) detail.get("check_item_key"));
+               // }
 
-                if (StringUtils.isNotBlank((String) detail.get("remove_memo_audio_md5_list"))) {
-                    info.setRemove_memo_audio_md5_list((String) detail.get("remove_memo_audio_md5_list"));
-                } else {
-                    info.setRemove_memo_audio_md5_list((String) detail.get("-1"));
-                }
+               // if (StringUtils.isBlank((String) detail.get("remove_memo_audio_md5_list"))) {
+                    info.setRemove_memo_audio_md5_list(detail.get("remove_memo_audio_md5_list")!=null?(String) detail.get("remove_memo_audio_md5_list"):"-1");
+                //} else {
+               //     info.setRemove_memo_audio_md5_list((String) detail.get("remove_memo_audio_md5_list"));
+                //}
 
-                if (StringUtils.isNotBlank((String) detail.get("title"))) {
-                    info.setTitle((String) detail.get("title"));
-                } else {
-                    info.setTitle((String) detail.get(""));
-                }
+                //if (StringUtils.isBlank((String) detail.get("title"))) {
+                    info.setTitle(detail.get("title")!=null?(String) detail.get("title"):"");
+               // } else {
+              //      info.setTitle((String) detail.get("title"));
+               // }
 
-                if (StringUtils.isNotBlank((String) detail.get("check_item_md5"))) {
-                    info.setCheck_item_md5((String) detail.get("check_item_md5"));
-                } else {
-                    info.setCheck_item_md5((String) detail.get(""));
-                }
+                //if (StringUtils.isBlank((String) detail.get("check_item_md5"))) {
+                    info.setCheck_item_md5(detail.get("check_item_md5")!=null?(String) detail.get("check_item_md5"):"");
+              //  } else {
+               //     info.setCheck_item_md5((String) detail.get("check_item_md5"));
+               // }
 
                 if ((Integer) detail.get("issue_reason") != null) {
                     info.setIssue_reason((Integer) detail.get("issue_reason"));

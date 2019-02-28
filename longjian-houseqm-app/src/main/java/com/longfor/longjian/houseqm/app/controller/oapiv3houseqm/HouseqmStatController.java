@@ -250,6 +250,10 @@ public class HouseqmStatController {
         for (Integer taskId : taskIdList) {
             try {
                 ProjectOveralListVo.ProjectOveralVo item = houseqmStatService.getInspectTaskStatByProjTaskId(req.getProject_id(), taskId);
+               if(item==null){
+                   continue;
+               }
+
                 totalStat.setChecked_count(totalStat.getChecked_count() + item.getChecked_count());
                 totalStat.setIssue_count(totalStat.getIssue_count() + item.getIssue_count());
                 totalStat.setRecords_count(totalStat.getRecords_count() + item.getRecords_count());

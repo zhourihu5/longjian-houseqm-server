@@ -25,7 +25,7 @@ public class MathUtil {
         BigDecimal decimalb= new BigDecimal(b);
         BigDecimal divide = decimala.divide(decimalb,4,BigDecimal.ROUND_HALF_UP);
         BigDecimal perc = new BigDecimal(100);
-        perc.setScale(2,BigDecimal.ROUND_HALF_UP);
+        perc=perc.setScale(2,BigDecimal.ROUND_HALF_UP);
         BigDecimal multiply = divide.multiply(perc);
         /*DecimalFormat df = new DecimalFormat("0.00");
         String result = df.format((float) a / (float) b * 100.0);*/
@@ -46,7 +46,7 @@ public class MathUtil {
         BigDecimal decimalb= new BigDecimal(b);
         BigDecimal divide = decimala.divide(decimalb,4,BigDecimal.ROUND_HALF_UP);
         BigDecimal perc = new BigDecimal(100);
-        perc.setScale(2,BigDecimal.ROUND_HALF_UP);
+        perc =perc.setScale(2,BigDecimal.ROUND_HALF_UP);
         BigDecimal multiply = divide.multiply(perc);
         /*DecimalFormat df = new DecimalFormat("0.00");
         String result = df.format((float) a / (float) b * 100.0);*/

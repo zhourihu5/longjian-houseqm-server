@@ -130,9 +130,9 @@ public class FileUtil {
     }
 
     public static boolean addLine(File file, String msg) {
-        FileOutputStream os = null;
-        try {
-            os = new FileOutputStream(file, true);
+       // FileOutputStream os = null;
+        try (FileOutputStream os =  new FileOutputStream(file, true)){
+           // os = new FileOutputStream(file, true);
             os.write(msg.getBytes());
             os.write("\r\n".getBytes());
             os.flush();
@@ -141,11 +141,12 @@ public class FileUtil {
         } catch (Exception e) {
             log.error("write file error", e);
             return false;
-        } finally {
+        }
+        /*finally {
             if (os != null) {
                 os = null;
             }
-        }
+        }*/
     }
 
     public static boolean copyFile(String src, String dst) {
@@ -164,9 +165,18 @@ public class FileUtil {
                 dstFile.getParentFile().mkdirs();
                 dstFile.createNewFile();
             }
-            FileOutputStream out = new FileOutputStream(dstFile);
-            FileInputStream in = new FileInputStream(srcFile);
-            byte[] buffer = new byte[1024];
+            try(FileOutputStream out = new FileOutputStream(dstFile);FileInputStream in = new FileInputStream(srcFile)){
+                byte[] buffer = new byte[1024];
+                int L = 0;
+                while ((L = in.read(buffer)) != -1) {
+                    out.write(buffer, 0, L);
+                }
+            }catch (Exception e){
+                e.printStackTrace();
+            }
+           // FileOutputStream out = new FileOutputStream(dstFile);
+            //FileInputStream in = new FileInputStream(srcFile);
+            /*byte[] buffer = new byte[1024];
             int L = 0;
             while ((L = in.read(buffer)) != -1) {
                 out.write(buffer, 0, L);
@@ -177,7 +187,7 @@ public class FileUtil {
             }
             if (in != null) {
                 in.close();
-            }
+            }*/
             return true;
         } catch (Exception e) {
             log.error("cpoy file error", e);
@@ -202,9 +212,15 @@ public class FileUtil {
     }
 
     private static void zip(File inputFileName, String zipFileName) throws Exception {
-        ZipOutputStream out = new ZipOutputStream(new FileOutputStream(zipFileName));
-        zip(out, inputFileName, "");
-        out.close();
+        //ZipOutputStream out = new ZipOutputStream(new FileOutputStream(zipFileName));
+        try(ZipOutputStream out = new ZipOutputStream(new FileOutputStream(zipFileName))){
+            zip(out, inputFileName, "");
+        }catch (Exception e){
+            e.printStackTrace();
+            log.error(e.getMessage());
+        }
+       // zip(out, inputFileName, "");
+        //out.close();
     }
 
     private static void zip(ZipOutputStream out, File f, String base) throws Exception {
@@ -216,12 +232,21 @@ public class FileUtil {
             }
         } else {
             out.putNextEntry(new ZipEntry(base));
-            BufferedInputStream in = new BufferedInputStream(new FileInputStream(f));
-            int c;
+            //BufferedInputStream in = new BufferedInputStream(new FileInputStream(f));
+            try(BufferedInputStream in = new BufferedInputStream(new FileInputStream(f))){
+                int c;
+                while ((c = in.read()) != -1) {
+                    out.write(c);
+                }
+            }catch (Exception e){
+                e.printStackTrace();
+                log.error(e.getMessage());
+            }
+           /* int c;
             while ((c = in.read()) != -1) {
                 out.write(c);
             }
-            in.close();
+            in.close();*/
         }
     }
 
@@ -250,9 +275,9 @@ public class FileUtil {
      */
     public static String completedFilePath(String relativePath) {
         String[] dirs = relativePath.split("/");
-        StringBuffer path = null;
+        StringBuffer path = new StringBuffer();
         try {
-            path = new StringBuffer(new File("").getCanonicalPath()).append(File.separator);
+            path.append(new File("").getCanonicalPath()).append(File.separator);
             for (String dir : dirs) {
                 if (StringUtils.isEmpty(dir)) {
                     continue;

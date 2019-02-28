@@ -67,5 +67,4 @@ public class test {
        //多文件导出
          new DocumentHandler().exportWordBatch(req,resp,objects,numbers,"notify_template.ftl");
     }
-
 }
