@@ -115,7 +115,7 @@ public class DateUtil {
      * @date 2018/12/22 0022
      */
     public static Date timeStampToDate(int timestamp, String partten) {
-        long timeLong = timestamp * 1000;
+        long timeLong = timestamp * 1000l;
         DateFormat ymdhmsFormat = new SimpleDateFormat(partten);
         String nowTimeStr = ymdhmsFormat.format(timeLong);
         Date timeDate = null;
