@@ -19,17 +19,7 @@ public enum CommonGlobalEnum {
     public Object getId() {
         return id;
     }
-
-    public void setId(Object id) {
-        this.id = id;
-    }
-
     public String getValue() {
         return value;
     }
-
-    public void setValue(String value) {
-        this.value = value;
-    }
-
 }

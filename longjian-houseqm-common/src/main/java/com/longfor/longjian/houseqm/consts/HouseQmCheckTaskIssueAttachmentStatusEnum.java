@@ -21,16 +21,8 @@ public enum HouseQmCheckTaskIssueAttachmentStatusEnum {
         return id;
     }
 
-    public void setId(Integer id) {
-        this.id = id;
-    }
-
     public String getValue() {
         return value;
-    }
-
-    public void setValue(String value) {
-        this.value = value;
     }
 
     HouseQmCheckTaskIssueAttachmentStatusEnum(Integer id, String value) {

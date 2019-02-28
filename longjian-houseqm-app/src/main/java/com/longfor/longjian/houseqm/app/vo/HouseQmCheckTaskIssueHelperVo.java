@@ -216,7 +216,6 @@ public class HouseQmCheckTaskIssueHelperVo {
                     try {
                         issue = getIssueFromDb(issueUuid);
                     } catch (Exception e) {
-                        e.printStackTrace();
                         log.warn("get houseqmissue error:" + e.getMessage() + ", issue_uuid: " + issueUuid);
                         this.setDroppedIssue(issueUuid, ApiDropDataReasonEnum.Other.getValue(), ApiDropDataReasonEnum.Other.getName());
                         return this;

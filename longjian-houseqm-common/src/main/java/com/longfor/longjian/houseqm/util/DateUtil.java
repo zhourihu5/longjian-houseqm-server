@@ -2,6 +2,8 @@ package com.longfor.longjian.houseqm.util;
 
 import org.apache.commons.lang.StringUtils;
 import org.joda.time.DateTime;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.text.DateFormat;
 import java.text.ParseException;
@@ -14,7 +16,7 @@ import java.util.Date;
  * @date 2018/12/19 0019 17:28
  */
 public class DateUtil {
-
+    private static final Logger logger = LoggerFactory.getLogger(DateUtil.class);
     //private static final SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-mm-dd hh:mm:ss");
 
     public static final boolean datetimeZero(Date date) {
@@ -56,7 +58,7 @@ public class DateUtil {
                 date = sdf.parse(str);
             }
         } catch (ParseException e) {
-            e.printStackTrace();
+            logger.error("error:",e.getMessage());
         }
         return date;
     }
@@ -75,7 +77,7 @@ public class DateUtil {
             Date d2 = sdf.parse(s2);
             return ((d1.getTime() - d2.getTime()) / (24 * 3600 * 1000));
         } catch (ParseException e) {
-            e.printStackTrace();
+            logger.error("error:",e.getMessage());
         }
         return 0;
     }
@@ -96,7 +98,7 @@ public class DateUtil {
             try {
                 initDate = formatter.parse("1980-01-01 08:00:00");
             } catch (ParseException e) {
-                e.printStackTrace();
+                logger.error("error:",e.getMessage());
             }
             if (strdt.equals("0001-01-01 00:00:00") || strdt.equals("") || !dt.after(initDate)) {
                 return 0;
@@ -122,7 +124,7 @@ public class DateUtil {
         try {
             timeDate = ymdhmsFormat.parse(nowTimeStr);
         } catch (ParseException e) {
-            e.printStackTrace();
+            logger.error("error:",e.getMessage());
         }
         return timeDate;
     }
@@ -154,7 +156,7 @@ public class DateUtil {
                 String str = sdf.format(msl);
                 temp = sdf.parse(str);
             } catch (ParseException e) {
-                e.printStackTrace();
+                logger.error("error:",e.getMessage());
             }
         }
         return temp;

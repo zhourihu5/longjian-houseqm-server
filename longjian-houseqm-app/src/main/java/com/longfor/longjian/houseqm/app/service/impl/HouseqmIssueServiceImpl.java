@@ -89,7 +89,7 @@ public class HouseqmIssueServiceImpl implements IHouseqmIssueService {
         try {
             helper.execute();
         } catch (Exception e) {
-            e.printStackTrace();
+            log.error("error:",e.getMessage());
         }
         List<String> dropUuids = Lists.newArrayList();
         List<ApiHouseQmCheckTaskReportRsp> droppedIssue = helper.getDroppedIssue();

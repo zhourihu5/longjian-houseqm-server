@@ -238,7 +238,6 @@ public class FileUtil {
                     out.write(c);
                 }
             }catch (Exception e){
-                e.printStackTrace();
                 log.error(e.getMessage());
             }
            /* int c;
@@ -351,12 +350,12 @@ public class FileUtil {
                 os.flush();
             }
         } catch (IOException e) {
-            e.printStackTrace();
+            log.error("error:",e.getMessage());
         } finally {
             try {
                 if (bis != null) bis.close();
             } catch (IOException e) {
-                e.printStackTrace();
+                log.error("error:",e.getMessage());
             }
         }
     }

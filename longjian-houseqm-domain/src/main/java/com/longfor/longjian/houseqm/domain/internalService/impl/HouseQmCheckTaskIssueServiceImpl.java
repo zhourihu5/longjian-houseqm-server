@@ -181,8 +181,7 @@ public class HouseQmCheckTaskIssueServiceImpl implements HouseQmCheckTaskIssueSe
             }
             return taskIssues.size();
         } catch (Exception e) {
-            e.printStackTrace();
-            log.warn(e.getMessage());
+            log.error("error:",e.getMessage());
             return 0;
         }
     }
@@ -421,7 +420,6 @@ public class HouseQmCheckTaskIssueServiceImpl implements HouseQmCheckTaskIssueSe
             return houseQmCheckTaskIssueAttachments;
         } catch (Exception e) {
             log.error("error:" + e);
-            e.printStackTrace();
         }
         return Lists.newArrayList();
     }

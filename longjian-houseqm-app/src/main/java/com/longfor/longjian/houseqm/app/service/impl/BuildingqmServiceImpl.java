@@ -405,11 +405,11 @@ public class BuildingqmServiceImpl implements IBuildingqmService {
     public void edit(Integer uid, TaskEditReq taskEditReq) {
         TaskReq taskReq=new TaskReq();
         try {
-            BeanUtils.copyProperties(taskReq,taskEditReq);
+          BeanUtils.copyProperties(taskReq,taskEditReq);
         } catch (IllegalAccessException e) {
-            e.printStackTrace();
+           log.error(e.getMessage());
         } catch (InvocationTargetException e) {
-            e.printStackTrace();
+            log.error(e.getMessage());
         }
         Map<String,Object> paramMap=this.prepareForCreateOrEdit(taskReq);
         editExecute((Date)paramMap.get("begin"), (Date)paramMap.get("endon"), uid, taskEditReq, (List<Integer>)paramMap.get("areaIds"), (List<Integer>) paramMap.get("areaTypes"), (String)paramMap.get("planBeginOn"), (String)paramMap.get("planEndOn"), (List<ApiBuildingQmTaskMemberGroupVo>)paramMap.get("checkerGroups"), (List<ApiBuildingQmTaskMemberGroupVo>)paramMap.get("repairerGroups"), (ConfigVo)paramMap.get("config"));
