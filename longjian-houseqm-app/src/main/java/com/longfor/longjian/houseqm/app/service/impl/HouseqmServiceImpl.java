@@ -135,7 +135,6 @@ public class HouseqmServiceImpl implements IHouseqmService {
             taskResponse.setData(myIssueListVo);
         } catch (Exception e) {
             log.error("error:" + e);
-            e.printStackTrace();
         }
         return taskResponse;
     }
@@ -212,8 +211,7 @@ public class HouseqmServiceImpl implements IHouseqmService {
             myIssueListVo.setLast_id(lastId);
             taskResponse.setData(myIssueListVo);
         } catch (Exception e) {
-            log.error("error" + e);
-            e.printStackTrace();
+            log.error("error:",e.getMessage());
         }
         return taskResponse;
     }
@@ -246,7 +244,6 @@ public class HouseqmServiceImpl implements IHouseqmService {
             ljBaseResponse.setData(myIssueMemberListVo);
         } catch (Exception e) {
             log.error("error:" + e);
-            e.printStackTrace();
         }
         return ljBaseResponse;
     }
@@ -296,7 +293,6 @@ public class HouseqmServiceImpl implements IHouseqmService {
             ljBaseResponse.setData(myIssueAttachListVo);
         } catch (Exception e) {
             log.error("error:" + e);
-            e.printStackTrace();
         }
         return ljBaseResponse;
     }

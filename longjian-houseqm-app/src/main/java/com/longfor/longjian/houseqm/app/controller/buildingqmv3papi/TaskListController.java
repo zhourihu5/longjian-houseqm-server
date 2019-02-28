@@ -60,7 +60,7 @@ public class TaskListController {
             taskResponse.setMsg("success");
             taskResponse.setData(taskListVo);
         } catch (Exception e) {
-            e.printStackTrace();
+            log.error("error:",e.getMessage());
             taskResponse.setResult(1);
             taskResponse.setMessage(e.getMessage());
         }
@@ -83,7 +83,7 @@ public class TaskListController {
             TaskRoleListVo roleListVos = taskListService.taskRole(req.getTask_id());
             taskResponse.setData(roleListVos);
         } catch (Exception e) {
-            e.printStackTrace();
+            log.error("error:",e.getMessage());
             taskResponse.setResult(1);
             taskResponse.setMessage(e.getMessage());
         }

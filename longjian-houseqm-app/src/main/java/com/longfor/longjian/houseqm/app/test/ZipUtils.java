@@ -48,7 +48,7 @@ public class ZipUtils {
                         out.write(b);
                     }
                 }catch (Exception e){
-                    e.printStackTrace();
+                    log.error("error:",e.getMessage());
                 }
                /* FileInputStream in = new FileInputStream(f);
                 int b;
@@ -75,7 +75,6 @@ public class ZipUtils {
             } catch (FileNotFoundException e) {
                 log.error("ZipUtils createZip  Failed to create ZIP file", e);
             } catch (IOException e) {
-                e.printStackTrace();
                 log.error(e.getMessage());
             } finally {
                 //压缩成功后，删除打包前的文件
@@ -149,7 +148,7 @@ public class ZipUtils {
                                 output.write(b, 0, len);
                             }
                         } catch (IOException e) {
-                            e.printStackTrace();
+                            log.error("error:",e.getMessage());
                         }
                     }
                         // 如果文件夹下还存在文件，遍历，直到得到具体的文件
@@ -171,7 +170,6 @@ public class ZipUtils {
                                         output.write(b, 0, len);
                                     }
                                 }catch (Exception e){
-                                    e.printStackTrace();
                                     log.error(e.getMessage());
                                 }
                                 //FileInputStream input = new FileInputStream(temp);

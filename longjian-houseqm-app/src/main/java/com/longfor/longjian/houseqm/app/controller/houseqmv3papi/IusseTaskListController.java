@@ -73,7 +73,7 @@ public class IusseTaskListController {
         try {
             ctrlTool.projPerm(request, "项目.移动验房.问题管理.查看");
         } catch (Exception e) {
-            e.printStackTrace();
+            log.error("error:",e.getMessage());
         }
         //通过id projectId 判断
         TaskResponse<HouseQmCheckTaskSimpleRspVo.TaskList> response = new TaskResponse<>();
@@ -127,7 +127,7 @@ public class IusseTaskListController {
         try {
             ctrlTool.projPerm(request, "项目.移动验房.问题管理.查看");
         } catch (Exception e) {
-            e.printStackTrace();
+            log.error("error:",e.getMessage());
             response.setResult(1);
             response.setCode(1);
             response.setMessage("PermissionDenied");
@@ -149,7 +149,7 @@ public class IusseTaskListController {
         try {
             ctrlTool.projPerm(request, "项目.工程检查.问题管理.查看");
         } catch (Exception e) {
-            e.printStackTrace();
+            log.error("error:",e.getMessage());
             response.setResult(1);
             response.setMessage(e.getMessage());
         }
@@ -204,7 +204,7 @@ public class IusseTaskListController {
         try {
             ctrlTool.projPerm(request, "项目.工程检查.问题管理.查看");
         } catch (Exception e) {
-            e.printStackTrace();
+            log.error("error:",e.getMessage());
         }
         LjBaseResponse<IssueInfoVo> result = iIssueService.getHouseQmCheckTaskIssueDetailBaseByProjectAndUuid(userId, projectId, issueUuid);
 
@@ -220,7 +220,7 @@ public class IusseTaskListController {
         try {
             ctrlTool.projPerm(request, "项目.工程检查.问题管理.查看");
         } catch (Exception e) {
-            e.printStackTrace();
+            log.error("error:",e.getMessage());
         }
         LjBaseResponse taskResponse = iIssueService.updeteIssueDescByUuid(projectId, issueUuid, userId, content);
         return taskResponse;
@@ -249,7 +249,7 @@ public class IusseTaskListController {
         try {
             ctrlTool.projPerm(request, "项目.工程检查.问题管理.查看");
         } catch (Exception e) {
-            e.printStackTrace();
+            log.error("error:",e.getMessage());
         }
         LjBaseResponse<List<HouseQmCheckTaskIssueDetailRepairLogVo>> result = iIssueService.getDetailRepairLogByIssueUuid(issueUuid);
 
@@ -268,7 +268,7 @@ public class IusseTaskListController {
         try {
             ctrlTool.projPerm(request, "项目.工程检查.问题管理.编辑");
         } catch (Exception e) {
-            e.printStackTrace();
+            log.error("error:",e.getMessage());
             response.setResult(1);
             response.setMessage("PermissionDenied");
             return response;
@@ -286,7 +286,7 @@ public class IusseTaskListController {
             ctrlTool.projPerm(request, "项目.工程检查.问题管理.删除");
             iIssueService.deleteHouseqmCheckTaskIssueByProjectAndUuid(projectId, issueUuid);
         } catch (Exception e) {
-            e.printStackTrace();
+            log.error("error:",e.getMessage());
             response.setResult(1);
             response.setMessage(e.getMessage());
         }
