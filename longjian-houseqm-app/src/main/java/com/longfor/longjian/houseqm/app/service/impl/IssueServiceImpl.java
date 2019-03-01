@@ -1375,7 +1375,7 @@ public class IssueServiceImpl implements IIssueService {
             allUserId.add(issueInfo.getSenderId());
         }
         List<Integer> repairerFollowerIds = null;
-        if (StringUtils.isNotBlank(issueInfo.getRepairerFollowerIds())&&StringUtils.isNotBlank( issueInfo.getRepairerFollowerIds())) {
+        if (StringUtils.isNotBlank(issueInfo.getRepairerFollowerIds())) {
                 repairerFollowerIds = StringSplitToListUtil.splitToIdsComma(issueInfo.getRepairerFollowerIds(), ",");
                 if (repairerFollowerIds.contains(0)) {
                     repairerFollowerIds.remove(0);
