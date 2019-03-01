@@ -1,4 +1,4 @@
-package com.longfor.longjian.houseqm.app.feginClient;
+package com.longfor.longjian.houseqm.app.feginclient1;
 
 import com.longfor.gaia.gfs.web.feign.LFFeignClient;
 import com.longfor.gaia.gfs.web.feign.config.LFFeignConfiguration;
@@ -12,7 +12,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 
 /**
  * @ProjectName: longjian-houseqm-server
- * @Package: com.longfor.longjian.houseqm.app.feginClient
+ * @Package: com.longfor.longjian.houseqm.app.feginclient
  * @ClassName: IHouseqmCheckTaskIssueFeignService
  * @Description: java类作用描述
  * @Author: hy

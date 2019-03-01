@@ -127,9 +127,7 @@ public class IusseTaskListController {
             response.setMessage("PermissionDenied");
             return response;
         }
-        IssueListRsp result = iIssueService.list(req.getProject_id(), req.getCategory_cls(), req.getTask_id(), req.getCategory_key(), req.getCheck_item_key(),
-                req.getArea_ids(), req.getStatus_in(), req.getChecker_id(), req.getRepairer_id(), req.getType(), req.getCondition(), req.getKey_word(),
-                req.getCreate_on_begin(), req.getCreate_on_end(), req.is_overdue(), req.getPage(), req.getPage_size());
+        IssueListRsp result = iIssueService.list(req);
 
         response.setData(result);
         return response;

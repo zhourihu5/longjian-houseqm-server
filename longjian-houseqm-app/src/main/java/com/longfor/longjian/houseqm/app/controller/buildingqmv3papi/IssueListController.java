@@ -51,6 +51,9 @@ public class IssueListController {
     @Resource
     private SessionInfo sessionInfo;
 
+    private static  final String PROJECT_ID="project_id";
+    private static  final String ISSUE_IDS="issue_ids";
+
     /**
      * @return com.longfor.longjian.common.base.LjBaseResponse<java.lang.Object>
      * @Author hy
@@ -68,9 +71,7 @@ public class IssueListController {
         // 导出execel
         ServletOutputStream os = response.getOutputStream();
         try {
-            Map<String, Object> map = iIssueService.exportExcel(uid, req.getProject_id(), req.getCategory_cls(), req.getTask_id(), req.getCategory_key(), req.getCheck_item_key(),
-                    req.getArea_ids(), req.getStatus_in(), req.getChecker_id(), req.getRepairer_id(), req.getType(), req.getCondition(), req.getKey_word(),
-                    req.getCreate_on_begin(), req.getCreate_on_end(), req.getIs_overdue());
+            Map<String, Object> map = iIssueService.exportExcel(uid,req);
             String fileName = (String) map.get("fileName");
             SXSSFWorkbook wb = (SXSSFWorkbook) map.get("workbook");
             response.setContentType("application/vnd.ms-excel");
@@ -104,9 +105,7 @@ public class IssueListController {
         TaskResponse<IssueListRsp> response = new TaskResponse<>();
         try {
             ctrlTool.projPerm(request, "项目.工程检查.问题管理.查看");
-            IssueListRsp result = iIssueService.list(req.getProject_id(), req.getCategory_cls(), req.getTask_id(), req.getCategory_key(), req.getCheck_item_key(),
-                    req.getArea_ids(), req.getStatus_in(), req.getChecker_id(), req.getRepairer_id(), req.getType(), req.getCondition(), req.getKey_word(),
-                    req.getCreate_on_begin(), req.getCreate_on_end(), req.is_overdue(), req.getPage(), req.getPage_size());
+            IssueListRsp result = iIssueService.list(req);
 
             response.setData(result);
         } catch (Exception e) {
@@ -140,10 +139,10 @@ public class IssueListController {
 
     @RequestMapping(value = "repair_notify_export2/", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     public LjBaseResponse<Object> repairNotifyExport2(HttpServletRequest request, HttpServletResponse response) {
-        String projectId = request.getParameter("project_id");
-        String issueUuid = request.getParameter("issue_ids");
-        log.info("repair_notify_export2, project_id=" + projectId + ", issue_ids=" + issueUuid + "");
-        Integer userId = (Integer) sessionInfo.getBaseInfo("userId");
+        String projectId = request.getParameter(PROJECT_ID);
+        String issueUuid = request.getParameter(ISSUE_IDS);
+        log.info("repair_notify_export2, PROJECT_ID=" + projectId + ", issue_ids=" + issueUuid + "");
+        Integer userId = SessionUtil.getUid(sessionInfo);
         if (projectId == null || issueUuid == null) {
             LjBaseResponse<Object> objectTaskResponse = new LjBaseResponse<>();
             objectTaskResponse.setMessage("args error");
@@ -162,10 +161,10 @@ public class IssueListController {
     }
     @RequestMapping(value = "repair_notify_export", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     public LjBaseResponse<Object> repairNotifyExport(HttpServletRequest request, HttpServletResponse response) {
-        String projectId = request.getParameter("project_id");
-        String issueUuid=  request.getParameter("issue_ids");
-        log.info("repair_notify_export, project_id=" + projectId + ", issue_ids=" + issueUuid + "");
-        Integer userId = (Integer) sessionInfo.getBaseInfo("userId");
+        String projectId = request.getParameter(PROJECT_ID);
+        String issueUuid=  request.getParameter(ISSUE_IDS);
+        log.info("repair_notify_export, project_id=" + projectId + ", ISSUE_IDS=" + issueUuid + "");
+        Integer userId = SessionUtil.getUid(sessionInfo);
         if (projectId == null || issueUuid == null) {
             LjBaseResponse<Object> objectTaskResponse = new LjBaseResponse<>();
             objectTaskResponse.setMessage("args error");
@@ -311,7 +310,7 @@ public class IssueListController {
                                        @RequestParam(value = "issue_uuid", required = true) String issueUuid,
                                        @RequestParam(value = "repairer_id", required = false, defaultValue = "0") Integer repairerId,
                                        @RequestParam(value = "repair_follower_ids", required = false, defaultValue = "") String repairFollowerIds) {
-        Integer userId = (Integer) sessionInfo.getBaseInfo("userId");
+        Integer userId = SessionUtil.getUid(sessionInfo);
         try {
             ctrlTool.projPerm(request, "项目.移动验房.问题管理.编辑");
         } catch (Exception e) {
@@ -334,7 +333,7 @@ public class IssueListController {
     public LjBaseResponse addDesc(HttpServletRequest request, @RequestParam(value = "project_id", required = true) Integer projectId,
                                   @RequestParam(value = "issue_uuid", required = true) String issueUuid,
                                   @RequestParam(value = "content", required = true) String content) {
-        Integer userId = (Integer) sessionInfo.getBaseInfo("userId");
+        Integer userId = SessionUtil.getUid(sessionInfo);
         try {
             ctrlTool.projPerm(request, "项目.工程检查.问题管理.查看");
         } catch (Exception e) {
@@ -356,7 +355,7 @@ public class IssueListController {
     public LjBaseResponse editPlanEndOn(HttpServletRequest request, @RequestParam(value = "project_id", required = true) Integer projectId,
                                         @RequestParam(value = "issue_uuid", required = true) String issueUuid,
                                         @RequestParam(value = "plan_end_on", required = false, defaultValue = "0") Integer plan_end_on) {
-        Integer userId = (Integer) sessionInfo.getBaseInfo("userId");
+        Integer userId = SessionUtil.getUid(sessionInfo);
         try {
             ctrlTool.projPerm(request, "项目.工程检查.问题管理.查看");
         } catch (Exception e) {
@@ -380,7 +379,7 @@ public class IssueListController {
                                       @RequestParam(value = "issue_uuid", required = true) String issueUuid,
                                       @RequestParam(value = "status", required = true) Integer status,
                                       @RequestParam(value = "content", required = true) String content) {
-        Integer userId = (Integer) sessionInfo.getBaseInfo("userId");
+        Integer userId = SessionUtil.getUid(sessionInfo);
         try {
             ctrlTool.projPerm(request, "项目.移动验房.问题管理.编辑");
         } catch (Exception e) {

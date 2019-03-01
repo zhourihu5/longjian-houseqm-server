@@ -10,6 +10,7 @@ import com.longfor.longjian.houseqm.app.req.UpdateDeviceReq;
 import com.longfor.longjian.houseqm.app.req.buildingqm.MyIssuePatchListReq;
 import com.longfor.longjian.houseqm.app.service.IBuildingqmService;
 import com.longfor.longjian.houseqm.app.service.ICheckUpdateService;
+import com.longfor.longjian.houseqm.app.utils.SessionUtil;
 import com.longfor.longjian.houseqm.app.vo.*;
 import com.longfor.longjian.houseqm.app.vo.buildingqm.ReportIssueReq;
 import com.longfor.longjian.houseqm.consts.CommonGlobalEnum;
@@ -58,6 +59,9 @@ public class BuildingqmController {
     @Resource
     private CtrlTool ctrlTool;
 
+    private static final  String PARAN="yyyy-MM-dd HH:mm:ss";
+    private static final  String UTF="UTF-8";
+
     /**
      * 项目下获取我的任务列表
      * http://192.168.37.159:3000/project/8/interface/api/626
@@ -67,13 +71,13 @@ public class BuildingqmController {
     @RequestMapping(value = "buildingqm/my_task_list", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     public LjBaseResponse<TaskListVo> myTaskList() {
         log.info("my_task_list");
-        Integer userId = (Integer) sessionInfo.getBaseInfo("userId");
+        Integer userId = SessionUtil.getUid(sessionInfo);
         LjBaseResponse<TaskListVo> response = new LjBaseResponse<>();
         try {
             TaskListVo vo = buildingqmService.myTaskList(userId);
             response.setData(vo);
         } catch (Exception e) {
-            log.error("error:", e.getMessage());
+            log.error("任务列表异常:", e.getMessage());
             response.setResult(1);
             response.setMessage(e.getMessage());
         }
@@ -92,11 +96,11 @@ public class BuildingqmController {
     @RequestMapping(value = "check_update/check", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     public LjBaseResponse<TaskIssueListVo> check(@Valid UpdateDeviceReq updateDeviceReq) {
 
-        Date taskUpdateTime = DateUtil.timeStampToDate(updateDeviceReq.getTask_update_time(), "yyyy-MM-dd HH:mm:ss");
-        Date issueUpdateTime = DateUtil.timeStampToDate(updateDeviceReq.getIssue_update_time(), "yyyy-MM-dd HH:mm:ss");
-        Date issueLogUpdateTime = DateUtil.timeStampToDate(updateDeviceReq.getIssue_log_update_time(), "yyyy-MM-dd HH:mm:ss");
-        Date taskMembersUpdateTime = DateUtil.timeStampToDate(updateDeviceReq.getTask_members_update_time(), "yyyy-MM-dd HH:mm:ss");
-        Date issueMembersUpdateTime = DateUtil.timeStampToDate(updateDeviceReq.getIssue_members_update_time(), "yyyy-MM-dd HH:mm:ss");
+        Date taskUpdateTime = DateUtil.timeStampToDate(updateDeviceReq.getTask_update_time(), PARAN);
+        Date issueUpdateTime = DateUtil.timeStampToDate(updateDeviceReq.getIssue_update_time(), PARAN);
+        Date issueLogUpdateTime = DateUtil.timeStampToDate(updateDeviceReq.getIssue_log_update_time(), PARAN);
+        Date taskMembersUpdateTime = DateUtil.timeStampToDate(updateDeviceReq.getTask_members_update_time(), PARAN);
+        Date issueMembersUpdateTime = DateUtil.timeStampToDate(updateDeviceReq.getIssue_members_update_time(), PARAN);
 
         TaskIssueListVo taskIssueListVo = new TaskIssueListVo();
         TaskIssueListVo.TaskIussueVo item = taskIssueListVo.new TaskIussueVo();
@@ -149,7 +153,7 @@ public class BuildingqmController {
             taskIssueListVo.setItem(item);
             respone.setData(taskIssueListVo);
         } catch (Exception e) {
-            log.error("error:", e.getMessage());
+            log.error("任务更新异常:", e.getMessage());
             respone.setResult(1);
             respone.setMessage(e.getMessage());
         }
@@ -171,7 +175,7 @@ public class BuildingqmController {
             TaskMemberListVo vo = buildingqmService.taskSquadsMembers(taskIds);
             response.setData(vo);
         } catch (Exception e) {
-            log.error("error:", e.getMessage());
+            log.error("获取任务角色列表异常:", e.getMessage());
             response.setResult(1);
             response.setMessage(e.getMessage());
         }
@@ -188,7 +192,7 @@ public class BuildingqmController {
     @RequestMapping(value = "buildingqm/my_issue_patch_list", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     public LjBaseResponse<MyIssuePatchListVo> myIssuePatchList(@Validated MyIssuePatchListReq req) {
         log.info("my_issue_patch_list, task_id= " + req.getTask_id() + ", timestamp= " + req.getTimestamp());
-        Integer userId = (Integer) sessionInfo.getBaseInfo("userId");
+        Integer userId = SessionUtil.getUid(sessionInfo);
         LjBaseResponse<MyIssuePatchListVo> response = new LjBaseResponse<>();
         try {
             if (req.getLast_id() == null) req.setLast_id(0);
@@ -196,7 +200,7 @@ public class BuildingqmController {
             MyIssuePatchListVo miplv = buildingqmService.myIssuePathList(userId, req.getTask_id(), req.getTimestamp());
             response.setData(miplv);
         } catch (Exception e) {
-            log.error("error:", e.getMessage());
+            log.error("补全与我相关问题信息异常:", e.getMessage());
             response.setResult(1);
             response.setMessage(e.getMessage());
         }
@@ -227,13 +231,13 @@ public class BuildingqmController {
                 "issue_desc_status=" + taskReq.getIssue_desc_status() + ", " +
                 "issue_default_desc=" + taskReq.getIssue_default_desc() + "," +
                 " push_strategy_config=" + taskReq.getPush_strategy_config() + "");
-        Integer userId = (Integer) sessionInfo.getBaseInfo("userId");
+        Integer userId = SessionUtil.getUid(sessionInfo);
         LjBaseResponse<Object> response = new LjBaseResponse<>();
         try {
             ctrlTool.projPerm(request, "项目.工程检查.任务管理.新增");
             buildingqmService.create(userId, taskReq);
         } catch (Exception e) {
-            log.error("error:", e.getMessage());
+            log.error("项目下创建任务异常:", e.getMessage());
             response.setResult(1);
             response.setMessage(e.getMessage());
         }
@@ -251,7 +255,6 @@ public class BuildingqmController {
     public LjBaseResponse<HouseQmCheckTaskSquadListRspVo.HouseQmCheckTaskSquadListRspVoList> taskSquad(HttpServletRequest request, @RequestParam(name = "project_id", required = true) String projectId,
                                                                                                        @RequestParam(name = "task_id", required = true) String taskId) {
         LjBaseResponse<HouseQmCheckTaskSquadListRspVo.HouseQmCheckTaskSquadListRspVoList> response = new LjBaseResponse<>();
-        Integer userId = (Integer) sessionInfo.getBaseInfo("userId");
         try {
             ctrlTool.projPerm(request, "项目.工程检查.任务管理.查看");
             List<HouseQmCheckTaskSquad> info = buildingqmService.searchHouseqmCheckTaskSquad(projectId, taskId);
@@ -267,7 +270,7 @@ public class BuildingqmController {
             houseQmCheckTaskSquadListRspVoList.setSquad_list(squad_list);
             response.setData(houseQmCheckTaskSquadListRspVoList);
         } catch (Exception e) {
-            log.error("error:", e.getMessage());
+            log.error("项目下获取检查组信息异常:", e.getMessage());
             response.setResult(1);
             response.setMessage(e.getMessage());
         }
@@ -297,14 +300,13 @@ public class BuildingqmController {
                 "issue_desc_status=" + taskEditReq.getIssue_desc_status() + ", " +
                 "issue_default_desc=" + taskEditReq.getIssue_default_desc() + "," +
                 " push_strategy_config=" + taskEditReq.getPush_strategy_config() + "");
-        Integer userId = (Integer) sessionInfo.getBaseInfo("userId");
+        Integer userId = SessionUtil.getUid(sessionInfo);
         LjBaseResponse<Object> response = new LjBaseResponse<>();
         try {
-            //uncomment this line
             ctrlTool.projPerm(request, "项目.工程检查.任务管理.编辑");
             buildingqmService.edit(userId, taskEditReq);
         } catch (Exception e) {
-            log.error("error:", e.getMessage());
+            log.error("项目下任务内容修改异常:", e.getMessage());
             response.setResult(1);
             response.setMessage(e.getMessage());
         }
@@ -338,7 +340,7 @@ public class BuildingqmController {
     @RequestMapping(value = "buildingqm/report_issue", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     public LjBaseResponse<ReportIssueVo> reportIssue(@Validated ReportIssueReq req) {
         log.info("report_issue, project_id=" + req.getData() + ", data=" + req.getData() + "");
-        Integer userId = (Integer) sessionInfo.getBaseInfo("userId");
+        Integer userId = SessionUtil.getUid(sessionInfo);
         //userId=9;
         ReportIssueVo reportIssueVo = buildingqmService.reportIssue(userId, req.getProject_id(), req.getData());
         LjBaseResponse<ReportIssueVo> response = new LjBaseResponse<>();
@@ -364,8 +366,7 @@ public class BuildingqmController {
             ljBaseResponse.setMessage(map.get("message").toString());
             return ljBaseResponse;
         }
-        response.setCharacterEncoding("UTF-8");
-        //todo fix bug chinese charactor encoding in diferent browser
+        response.setCharacterEncoding(UTF);
         String fileNames = map.get("fileName").toString();
 
         response.addHeader("Content-Disposition",

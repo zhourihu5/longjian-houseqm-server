@@ -6,7 +6,7 @@ import com.longfor.longjian.common.base.LjBaseResponse;
 import com.longfor.longjian.common.exception.LjBaseRuntimeException;
 import com.longfor.longjian.common.util.CtrlTool;
 import com.longfor.longjian.common.util.SessionInfo;
-import com.longfor.longjian.houseqm.app.feginClient.IHouseqmCheckTaskIssueFeignService;
+import com.longfor.longjian.houseqm.app.feginclient1.IHouseqmCheckTaskIssueFeignService;
 import com.longfor.longjian.houseqm.app.req.issue.IssueBatchAppointReq;
 import com.longfor.longjian.houseqm.app.req.issue.IssueBatchApproveReq;
 import com.longfor.longjian.houseqm.app.req.issue.IssueBatchDeleteReq;

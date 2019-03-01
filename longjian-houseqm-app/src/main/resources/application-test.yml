@@ -1,5 +1,6 @@
 #start
-
+server.port: 8082
+management.port: 9982 #9982
 
 spring:
   application:
@@ -13,7 +14,7 @@ spring:
         register: true
         healthCheckInterval: 600s
         fail-fast: false
-        preferIpAddress: true
+        #preferIpAddress: true
     sleuth:
       enabled: true
 
@@ -22,8 +23,6 @@ management:
     enabled: false
 
 # gaia gfs 配置
-server.port: 8082
-management.port: 9982 #9982
 longfor:
   web:
     swagger:
