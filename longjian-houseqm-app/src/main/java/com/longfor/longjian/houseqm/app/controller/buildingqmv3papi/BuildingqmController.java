@@ -1,6 +1,5 @@
 package com.longfor.longjian.houseqm.app.controller.buildingqmv3papi;
 
-import com.alibaba.fastjson.JSON;
 import com.google.common.collect.Lists;
 import com.longfor.longjian.common.base.LjBaseResponse;
 import com.longfor.longjian.common.util.CtrlTool;
@@ -11,7 +10,7 @@ import com.longfor.longjian.houseqm.app.req.UpdateDeviceReq;
 import com.longfor.longjian.houseqm.app.req.buildingqm.MyIssuePatchListReq;
 import com.longfor.longjian.houseqm.app.service.IBuildingqmService;
 import com.longfor.longjian.houseqm.app.service.ICheckUpdateService;
-import com.longfor.longjian.houseqm.app.utils.FileUtil;
+import com.longfor.longjian.houseqm.app.utils.SessionUtil;
 import com.longfor.longjian.houseqm.app.vo.*;
 import com.longfor.longjian.houseqm.app.vo.buildingqm.ReportIssueReq;
 import com.longfor.longjian.houseqm.consts.CommonGlobalEnum;
@@ -23,7 +22,6 @@ import org.apache.poi.xssf.streaming.SXSSFWorkbook;
 import org.springframework.http.MediaType;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
-import springfox.documentation.spring.web.json.Json;
 
 import javax.annotation.Resource;
 import javax.servlet.ServletOutputStream;
@@ -70,13 +68,13 @@ public class BuildingqmController {
     @RequestMapping(value = "buildingqm/my_task_list", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     public LjBaseResponse<TaskListVo> myTaskList() {
         log.info("my_task_list");
-        Integer userId = (Integer) sessionInfo.getBaseInfo("userId");
+        Integer userId = SessionUtil.getUid(sessionInfo);
         LjBaseResponse<TaskListVo> response = new LjBaseResponse<>();
         try {
             TaskListVo vo = buildingqmService.myTaskList(userId);
             response.setData(vo);
         } catch (Exception e) {
-            log.error("error:", e.getMessage());
+            log.error("任务列表异常:", e.getMessage());
             response.setResult(1);
             response.setMessage(e.getMessage());
         }
@@ -152,7 +150,7 @@ public class BuildingqmController {
             taskIssueListVo.setItem(item);
             respone.setData(taskIssueListVo);
         } catch (Exception e) {
-            log.error("error:", e.getMessage());
+            log.error("任务更新异常:", e.getMessage());
             respone.setResult(1);
             respone.setMessage(e.getMessage());
         }
@@ -191,7 +189,7 @@ public class BuildingqmController {
     @RequestMapping(value = "buildingqm/my_issue_patch_list", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     public LjBaseResponse<MyIssuePatchListVo> myIssuePatchList(@Validated MyIssuePatchListReq req) {
         log.info("my_issue_patch_list, task_id= " + req.getTask_id() + ", timestamp= " + req.getTimestamp());
-        Integer userId = (Integer) sessionInfo.getBaseInfo("userId");
+        Integer userId = SessionUtil.getUid(sessionInfo);
         LjBaseResponse<MyIssuePatchListVo> response = new LjBaseResponse<>();
         try {
             if (req.getLast_id() == null) req.setLast_id(0);
@@ -230,7 +228,7 @@ public class BuildingqmController {
                 "issue_desc_status=" + taskReq.getIssue_desc_status() + ", " +
                 "issue_default_desc=" + taskReq.getIssue_default_desc() + "," +
                 " push_strategy_config=" + taskReq.getPush_strategy_config() + "");
-        Integer userId = (Integer) sessionInfo.getBaseInfo("userId");
+        Integer userId = SessionUtil.getUid(sessionInfo);
         LjBaseResponse<Object> response = new LjBaseResponse<>();
         try {
             ctrlTool.projPerm(request, "项目.工程检查.任务管理.新增");
@@ -254,7 +252,6 @@ public class BuildingqmController {
     public LjBaseResponse<HouseQmCheckTaskSquadListRspVo.HouseQmCheckTaskSquadListRspVoList> taskSquad(HttpServletRequest request, @RequestParam(name = "project_id", required = true) String projectId,
                                                                                                        @RequestParam(name = "task_id", required = true) String taskId) {
         LjBaseResponse<HouseQmCheckTaskSquadListRspVo.HouseQmCheckTaskSquadListRspVoList> response = new LjBaseResponse<>();
-        Integer userId = (Integer) sessionInfo.getBaseInfo("userId");
         try {
             ctrlTool.projPerm(request, "项目.工程检查.任务管理.查看");
             List<HouseQmCheckTaskSquad> info = buildingqmService.searchHouseqmCheckTaskSquad(projectId, taskId);
@@ -300,7 +297,7 @@ public class BuildingqmController {
                 "issue_desc_status=" + taskEditReq.getIssue_desc_status() + ", " +
                 "issue_default_desc=" + taskEditReq.getIssue_default_desc() + "," +
                 " push_strategy_config=" + taskEditReq.getPush_strategy_config() + "");
-        Integer userId = (Integer) sessionInfo.getBaseInfo("userId");
+        Integer userId = SessionUtil.getUid(sessionInfo);
         LjBaseResponse<Object> response = new LjBaseResponse<>();
         try {
             //uncomment this line
@@ -341,7 +338,7 @@ public class BuildingqmController {
     @RequestMapping(value = "buildingqm/report_issue", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     public LjBaseResponse<ReportIssueVo> reportIssue(@Validated ReportIssueReq req) {
         log.info("report_issue, project_id=" + req.getData() + ", data=" + req.getData() + "");
-        Integer userId = (Integer) sessionInfo.getBaseInfo("userId");
+        Integer userId = SessionUtil.getUid(sessionInfo);
         //userId=9;
         ReportIssueVo reportIssueVo = buildingqmService.reportIssue(userId, req.getProject_id(), req.getData());
         LjBaseResponse<ReportIssueVo> response = new LjBaseResponse<>();
@@ -361,16 +358,13 @@ public class BuildingqmController {
             return ljBaseResponse;
         }
         Map<String, Object> map = buildingqmService.issuestatisticexport(category_cls, items, response);
-//        log.info("export issue statistic map={}", map);
         log.info("export issue statistic, result={}, message={}, path={}", map.get("result"), map.get("message"), map.get("path"));
         if (Integer.parseInt(map.get("result").toString()) != 0) {
             ljBaseResponse.setResult(Integer.parseInt(map.get("result").toString()));
             ljBaseResponse.setMessage(map.get("message").toString());
             return ljBaseResponse;
-//            return;
         }
         response.setCharacterEncoding("UTF-8");
-        //todo fix bug chinese charactor encoding in diferent browser
         String fileNames = map.get("fileName").toString();
 
         response.addHeader("Content-Disposition",
@@ -380,7 +374,7 @@ public class BuildingqmController {
         response.addHeader("Expires", "0");
         SXSSFWorkbook workbook = (SXSSFWorkbook) map.get("workbook");
         ServletOutputStream os = response.getOutputStream();
-        workbook.write(os);//todo uncomment this line
+        workbook.write(os);
         os.flush();
         os.close();
         return ljBaseResponse;
@@ -389,11 +383,9 @@ public class BuildingqmController {
     @RequestMapping(value = "test", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     public void testFileNameEncode(HttpServletRequest request, HttpServletResponse response) throws IOException {
         response.setCharacterEncoding("UTF-8");
-        //todo fix bug chinese charactor encoding in diferent browser
         String fileNames = "测试汉字文件名.txt";
         String codedfilename = URLEncoder.encode(fileNames, "utf-8");
         String agent = request.getHeader("USER-AGENT");
-        System.out.println("browser agent==" + agent);
         if (null != agent && -1 != agent.indexOf("MSIE") || null != agent && -1 != agent.indexOf("Trident")) {// ie
             System.out.println("ie");
             String name = java.net.URLEncoder.encode(fileNames, "UTF-8");
@@ -407,9 +399,6 @@ public class BuildingqmController {
             }
             codedfilename = new String(fileNames.getBytes("UTF-8"), "iso-8859-1");
         } else {
-            System.out.println("other browser");
-            //String fileName = String.format("%s_问题详情_%s.xlsx", category_name, dt);
-//                codedfilename = "test.txt";
         }
 
         response.addHeader("Content-Disposition",
