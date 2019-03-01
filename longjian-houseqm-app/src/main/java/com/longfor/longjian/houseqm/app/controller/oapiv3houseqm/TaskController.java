@@ -57,7 +57,7 @@ public class TaskController {
                                                       @RequestParam(value = "task_id") Integer taskId) {
 
         HouseQmCheckTaskRspVo houseQmCheckTaskRspVo = taskService.getHouseQmCheckTaskByProjTaskId(projectId, taskId);
-        LjBaseResponse<HouseQmCheckTaskRspVo> response = new LjBaseResponse<HouseQmCheckTaskRspVo>();
+        LjBaseResponse<HouseQmCheckTaskRspVo> response = new LjBaseResponse<>();
         response.setData(houseQmCheckTaskRspVo);
 
         return response;
@@ -199,7 +199,7 @@ public class TaskController {
             log.debug("task_role --->" + res);
             List<Integer> uids = res.stream().map(UserInHouseQmCheckTask::getUserId).collect(Collectors.toList());
             Map<Integer, User> userMap = taskService.getUsersByIds(uids);
-            List<HouseQmCheckTaskRoleListRspVo> role_list = Lists.newArrayList();
+            List<HouseQmCheckTaskRoleListRspVo> roleList = Lists.newArrayList();
             for (UserInHouseQmCheckTask item : res) {
                 HouseQmCheckTaskRoleListRspVo role = new HouseQmCheckTaskRoleListRspVo();
                 role.setId(item.getId());
@@ -212,10 +212,10 @@ public class TaskController {
                 if (userMap.containsKey(role.getUser_id())) {
                     role.setReal_name(userMap.get(role.getUser_id()).getRealName());
                 }
-                role_list.add(role);
+                roleList.add(role);
             }
             TaskTaskRoleRspVo data = new TaskTaskRoleRspVo();
-            data.setRole_list(role_list);
+            data.setRole_list(roleList);
             response.setData(data);
             response.setResult(0);
         } catch (Exception e) {

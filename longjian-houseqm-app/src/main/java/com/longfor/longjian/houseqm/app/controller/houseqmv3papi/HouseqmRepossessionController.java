@@ -50,10 +50,10 @@ public class HouseqmRepossessionController {
      * @Param
      **/
     @RequestMapping(value = "get", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
-    public TaskResponse<RepossessionGetRspVo> get(@RequestParam(required = true, name = "task_ids") String task_ids,
+    public TaskResponse<RepossessionGetRspVo> get(@RequestParam(required = true, name = "task_ids") String taskIds,
                                                   @RequestParam(required = true, name = "timestamp") Integer timestamp) {
-        log.info("get, task_ids=" + task_ids + ", timestamp=" + timestamp);
-        LjBaseResponse<Object> result = iRepossessionFeignService.get(task_ids, timestamp);
+        log.info("get, task_ids=" + taskIds + ", timestamp=" + timestamp);
+        LjBaseResponse<Object> result = iRepossessionFeignService.get(taskIds, timestamp);
         Object data = result.getData();
         String jsonString = JSON.toJSONString(data);
         JSONObject jsonObject = JSONObject.parseObject(jsonString);

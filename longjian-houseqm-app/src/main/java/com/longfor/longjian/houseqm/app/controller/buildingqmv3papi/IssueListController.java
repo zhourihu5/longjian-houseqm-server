@@ -230,7 +230,7 @@ public class IssueListController {
             response.setResult(1);
             response.setMessage(e.getMessage());
         }
-        List<ProjectSettingConfigVo.HouseQmIssueReason> reason_list = Lists.newArrayList();
+        List<ProjectSettingConfigVo.HouseQmIssueReason> reasonList = Lists.newArrayList();
         Integer reasonId = 0;
 
         List<ProjectSettingV2> projectSetting = iIssueService.getProjectSettingId(projectId);
@@ -252,10 +252,10 @@ public class IssueListController {
                 reasonId = projectSetting.get(i).getId();
             }
             if (projectSetting.get(i).getsKey().equals("PROJ_ISSUE_REASON_LIST")) {
-                ProjectSettingConfigVo.HouseQmIssueReason single_reason = new ProjectSettingConfigVo().new HouseQmIssueReason();
-                single_reason.setId(projectSetting.get(i).getId());
-                single_reason.setValue(projectSetting.get(i).getValue());
-                reason_list.add(single_reason);
+                ProjectSettingConfigVo.HouseQmIssueReason singleReason = new ProjectSettingConfigVo().new HouseQmIssueReason();
+                singleReason.setId(projectSetting.get(i).getId());
+                singleReason.setValue(projectSetting.get(i).getValue());
+                reasonList.add(singleReason);
             }
         }
         if (reasonId > 0) {
@@ -264,11 +264,11 @@ public class IssueListController {
                     ProjectSettingConfigVo.HouseQmIssueReason singleReason = new ProjectSettingConfigVo().new HouseQmIssueReason();
                     singleReason.setId(projectSetting.get(i).getId());
                     singleReason.setValue(projectSetting.get(i).getValue());
-                    reason_list.add(singleReason);
+                    reasonList.add(singleReason);
                 }
             }
         }
-        vo.setReason_list(reason_list);
+        vo.setReason_list(reasonList);
         response.setData(vo);
         return response;
     }
@@ -316,8 +316,7 @@ public class IssueListController {
         } catch (Exception e) {
             log.error("修改整改责任人异常:",e.getMessage());
         }
-        LjBaseResponse taskResponse = iIssueService.updateIssueRepairInfoByProjectAndUuid(userId, repairerId, repairFollowerIds, projectId, issueUuid);
-        return taskResponse;
+        return iIssueService.updateIssueRepairInfoByProjectAndUuid(userId, repairerId, repairFollowerIds, projectId, issueUuid);
     }
 
 
@@ -339,8 +338,7 @@ public class IssueListController {
         } catch (Exception e) {
             log.error("追加描述异常:",e.getMessage());
         }
-        LjBaseResponse taskResponse = iIssueService.updeteIssueDescByUuid(projectId, issueUuid, userId, content);
-        return taskResponse;
+        return iIssueService.updeteIssueDescByUuid(projectId, issueUuid, userId, content);
     }
 
     /**
@@ -348,21 +346,20 @@ public class IssueListController {
      *
      * @param projectId
      * @param issueUuid
-     * @param plan_end_on
+     * @param planEndOn
      * @return
      */
     @RequestMapping(value = "edit_plan_end_on", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     public LjBaseResponse editPlanEndOn(HttpServletRequest request, @RequestParam(value = "project_id", required = true) Integer projectId,
                                         @RequestParam(value = "issue_uuid", required = true) String issueUuid,
-                                        @RequestParam(value = "plan_end_on", required = false, defaultValue = "0") Integer plan_end_on) {
+                                        @RequestParam(value = "plan_end_on", required = false, defaultValue = "0") Integer planEndOn) {
         Integer userId = SessionUtil.getUid(sessionInfo);
         try {
             ctrlTool.projPerm(request, "项目.工程检查.问题管理.查看");
         } catch (Exception e) {
             log.error("更新完成时间异常:",e.getMessage());
         }
-        LjBaseResponse taskResponse = iIssueService.updateIssuePlanEndOnByProjectAndUuid(projectId, issueUuid, userId, plan_end_on);
-        return taskResponse;
+        return iIssueService.updateIssuePlanEndOnByProjectAndUuid(projectId, issueUuid, userId, planEndOn);
     }
 
     /**
@@ -385,8 +382,7 @@ public class IssueListController {
         } catch (Exception e) {
             log.error("销项问题异常:",e.getMessage());
         }
-        LjBaseResponse taskResponse = iIssueService.updateIssueApproveStatusByUuid(projectId, issueUuid, userId, status, content);
-        return taskResponse;
+        return iIssueService.updateIssueApproveStatusByUuid(projectId, issueUuid, userId, status, content);
     }
 
     /**
@@ -429,9 +425,8 @@ public class IssueListController {
         } catch (Exception e) {
             log.error("问题详情鉴权异常:",e.getMessage());
         }
-        LjBaseResponse<IssueInfoVo> result = iIssueService.getHouseQmCheckTaskIssueDetailBaseByProjectAndUuid(userId, projectId, issueUuid);
 
-        return result;
+        return iIssueService.getHouseQmCheckTaskIssueDetailBaseByProjectAndUuid(userId, projectId, issueUuid);
     }
 
     //【项目-过程检查-问题管理-问题详情】其他信息编辑

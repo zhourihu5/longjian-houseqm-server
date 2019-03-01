@@ -144,7 +144,7 @@ public class IusseTaskListController {
             response.setResult(1);
             response.setMessage(e.getMessage());
         }
-        List<ProjectSettingConfigVo.HouseQmIssueReason> reason_list = Lists.newArrayList();
+        List<ProjectSettingConfigVo.HouseQmIssueReason> reasonList = Lists.newArrayList();
         Integer reasonId = 0;
 
         List<ProjectSettingV2> projectSetting = iIssueService.getProjectSettingId(projectId);
@@ -166,10 +166,10 @@ public class IusseTaskListController {
                 reasonId = projectSetting.get(i).getId();
             }
             if (projectSetting.get(i).getsKey().equals("PROJ_ISSUE_REASON_LIST")) {
-                ProjectSettingConfigVo.HouseQmIssueReason single_reason = new ProjectSettingConfigVo().new HouseQmIssueReason();
-                single_reason.setId(projectSetting.get(i).getId());
-                single_reason.setValue(projectSetting.get(i).getValue());
-                reason_list.add(single_reason);
+                ProjectSettingConfigVo.HouseQmIssueReason singleReason = new ProjectSettingConfigVo().new HouseQmIssueReason();
+                singleReason.setId(projectSetting.get(i).getId());
+                singleReason.setValue(projectSetting.get(i).getValue());
+                reasonList.add(singleReason);
             }
         }
         if (reasonId > 0) {
@@ -178,11 +178,11 @@ public class IusseTaskListController {
                     ProjectSettingConfigVo.HouseQmIssueReason singleReason = new ProjectSettingConfigVo().new HouseQmIssueReason();
                     singleReason.setId(projectSetting.get(i).getId());
                     singleReason.setValue(projectSetting.get(i).getValue());
-                    reason_list.add(singleReason);
+                    reasonList.add(singleReason);
                 }
             }
         }
-        vo.setReason_list(reason_list);
+        vo.setReason_list(reasonList);
         response.setData(vo);
         return response;
     }
@@ -197,9 +197,8 @@ public class IusseTaskListController {
         } catch (Exception e) {
             log.error("我的问题-项目下问题详情鉴权:",e.getMessage());
         }
-        LjBaseResponse<IssueInfoVo> result = iIssueService.getHouseQmCheckTaskIssueDetailBaseByProjectAndUuid(userId, projectId, issueUuid);
 
-        return result;
+        return iIssueService.getHouseQmCheckTaskIssueDetailBaseByProjectAndUuid(userId, projectId, issueUuid);
     }
 
     //工程检查- 我的问题 -项目下问题详情追加描述
@@ -213,8 +212,7 @@ public class IusseTaskListController {
         } catch (Exception e) {
             log.error("我的问题 -项目下问题详情追加描述 鉴权异常:",e.getMessage());
         }
-        LjBaseResponse taskResponse = iIssueService.updeteIssueDescByUuid(projectId, issueUuid, userId, content);
-        return taskResponse;
+        return iIssueService.updeteIssueDescByUuid(projectId, issueUuid, userId, content);
     }
 
     //工程检查- 我的问题 问题详情
