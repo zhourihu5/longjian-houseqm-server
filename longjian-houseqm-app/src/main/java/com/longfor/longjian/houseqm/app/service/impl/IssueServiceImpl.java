@@ -21,7 +21,6 @@ import com.longfor.longjian.houseqm.app.vo.issuelist.ExcelIssueData;
 import com.longfor.longjian.houseqm.app.vo.issuelist.IssueListRsp;
 import com.longfor.longjian.houseqm.consts.AppPlatformTypeEnum;
 import com.longfor.longjian.houseqm.consts.CommonGlobalEnum;
-import com.longfor.longjian.houseqm.consts.HouseQmCheckTaskIssueLogStatusEnum;
 import com.longfor.longjian.houseqm.consts.HouseQmUserInIssueRoleTypeEnum;
 import com.longfor.longjian.houseqm.domain.internalService.*;
 import com.longfor.longjian.houseqm.po.zhijian2_apisvr.User;
@@ -29,7 +28,6 @@ import com.longfor.longjian.houseqm.po.zj2db.*;
 import com.longfor.longjian.houseqm.util.*;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections.CollectionUtils;
-import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang.StringUtils;
 import org.apache.poi.xssf.streaming.SXSSFWorkbook;
 import org.apache.poi.xwpf.usermodel.XWPFDocument;
@@ -41,7 +39,6 @@ import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.File;
-import java.net.URL;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -53,29 +50,30 @@ import java.util.stream.Collectors;
 @Service
 @Slf4j
 public class IssueServiceImpl implements IIssueService {
+
     @Value("${push_config.enterprise_id}")
-    private String ENTERPRISEID;
-
-    @Value("${push_config.gcgl.app_key_android}")
-    private String APP_KEY_ANDROID;
+    private String enterpriseId;
+     @Value("${push_config.gcgl.app_key_android}")
+    private  String appKeyAndroid;
+    
     @Value("${push_config.gcgl.app_master_secret_android}")
-    private String APP_MASTER_SECRET_ANDROID;
+    private  String appMasterSecretAndroid;
     @Value("${push_config.gcgl.app_key_ios}")
-    private String APP_KEY_IOS;
+    private String appKeyIOS;
+    
     @Value("${push_config.gcgl.app_master_secret_ios}")
-    private String APP_MASTER_SECRET_IOS;
+    private  String appMasterSecretIOS;
+    
     @Value("${push_config.gcgl.app_secret_xiao_mi}")
-    private String APP_SECRET_XIAO_MI;
+    private  String appSecretXiaoMi;
+    
     @Value("${push_config.gcgl.package_name_xiao_mi}")
-    private String PACKAGE_NAME_XIAO_MI;
-
-
+    private  String packageNameXiaomi;
+    
     @Resource
     private HouseQmCheckTaskIssueAttachmentService houseQmCheckTaskIssueAttachmentService;
     @Resource
     private HouseQmCheckTaskIssueUserService houseQmCheckTaskIssueUserService;
-    @Resource
-    private HouseQmCheckTaskNotifyRecordService houseQmCheckTaskNotifyRecordService;
     @Resource
     private HouseQmCheckTaskIssueService houseQmCheckTaskIssueService;
     @Resource
@@ -103,7 +101,7 @@ public class IssueServiceImpl implements IIssueService {
 
     @Value("${env_info.host_list}")
     private String envInfo;
-    private String ILLEGAL_CHARACTERS_RE = "[\\000-\\010]|[\\013-\\014]|[\\016-\\037]|\\xef|\\xbf";
+    private static final String ILLEGAL_CHARACTERS_RE = "[\\000-\\010]|[\\013-\\014]|[\\016-\\037]|\\xef|\\xbf";
 
 
     @Override
@@ -1651,16 +1649,16 @@ public class IssueServiceImpl implements IIssueService {
     public void pushBaseMessage(Integer taskId, ArrayList<String> notifyUserIds, String title, String msg) {
         ArrayList<String> alias = Lists.newArrayList();
         for (int i = 0; i < notifyUserIds.size(); i++) {
-            alias.add("user_id_" + ENTERPRISEID + "_" + notifyUserIds.get(i) + "");
+            alias.add("user_id_" + enterpriseId + "_" + notifyUserIds.get(i) + "");
         }
 
         String alia = StringUtils.join(alias, ",");
-        UmPushUtil.sendAndroidCustomizedcast(APP_KEY_ANDROID, APP_MASTER_SECRET_ANDROID,
+        UmPushUtil.sendAndroidCustomizedcast(appKeyAndroid, appMasterSecretAndroid,
                 alia, AppPlatformTypeEnum.PUSH_PLATFORM_UMENG_ANDROID.getValue(),
                 "Android", title, msg, msg, String.valueOf(taskId));
-        UmPushUtil.sendIOSCustomizedcast(APP_KEY_IOS, APP_MASTER_SECRET_IOS, alia,
+        UmPushUtil.sendIOSCustomizedcast(appKeyIOS, appMasterSecretIOS, alia,
                 AppPlatformTypeEnum.PUSH_PLATFORM_UMENG_IOS.getValue(), msg, String.valueOf(taskId));
-        XmPushUtil.sendMessageToUserAccounts(APP_SECRET_XIAO_MI, PACKAGE_NAME_XIAO_MI, title, msg, alias);
+        XmPushUtil.sendMessageToUserAccounts(appSecretXiaoMi, packageNameXiaomi, title, msg, alias);
     }
 
 
