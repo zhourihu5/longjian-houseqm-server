@@ -87,7 +87,11 @@ public class HouseQmCheckTaskIssueServiceImpl implements HouseQmCheckTaskIssueSe
     @LFAssignDataSource("zhijian2")
     public List<HouseQmCheckTaskIssue> searchByTaskIdInGroupByTaskIdAndStatus(List<Integer> taskIds) {
         if (CollectionUtils.isEmpty(taskIds)) return Lists.newArrayList();
-        else return houseQmCheckTaskIssueMapper.searchByTaskIdInGroupByTaskIdAndStatus(taskIds);
+        Example example = new Example(HouseQmCheckTaskIssue.class);
+        Example.Criteria criteria = example.createCriteria();
+        criteria.andIn("taskId", taskIds);
+        ExampleUtil.addDeleteAtJudge(example);
+        return houseQmCheckTaskIssueMapper.selectByExample(example);
     }
 
     @Override
