@@ -5,13 +5,10 @@ import com.longfor.gaia.gfs.data.mybatis.datasource.LFAssignDataSource;
 import com.longfor.longjian.houseqm.dao.zj2db.HouseQmCheckTaskIssueAttachmentMapper;
 import com.longfor.longjian.houseqm.domain.internalService.HouseQmCheckTaskIssueAttachmentService;
 import com.longfor.longjian.houseqm.po.zj2db.HouseQmCheckTaskIssueAttachment;
-import com.longfor.longjian.houseqm.utils.ExampleUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections.CollectionUtils;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 import tk.mybatis.mapper.entity.Example;
-
 import javax.annotation.Resource;
 import java.util.Date;
 import java.util.List;
@@ -59,11 +56,6 @@ public class HouseQmCheckTaskIssueAttachmentServiceImpl implements  HouseQmCheck
         return houseQmCheckTaskIssueAttachmentMapper.updateByExampleSelective(attachment,example);
     }
 
-    /**
-     * 根据问题uuid 查 取 未删除的 数据
-     * @param issueUuids
-     * @return
-     */
     @LFAssignDataSource("zhijian2")
     public List<HouseQmCheckTaskIssueAttachment> searchByIssueUuid(Set<String> issueUuids){
         if (CollectionUtils.isEmpty(issueUuids))return Lists.newArrayList();

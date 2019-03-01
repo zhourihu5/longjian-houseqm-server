@@ -1,7 +1,6 @@
 package com.longfor.longjian.houseqm.app.controller.papiv3;
 
 import com.longfor.longjian.common.base.LjBaseResponse;
-import com.longfor.longjian.common.util.DateUtil;
 import com.longfor.longjian.houseqm.app.feginClient.IBuildingqmExportFeignService;
 import com.longfor.longjian.houseqm.app.req.bgtask.ExportBuildingExcelReq;
 import com.longfor.longjian.houseqm.app.vo.bgtask.ExportPptRspVo;
@@ -9,13 +8,10 @@ import com.longfor.longjian.houseqm.app.vo.bgtask.ExportRsp;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.MediaType;
 import org.springframework.validation.annotation.Validated;
-import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-
 import javax.annotation.Resource;
-import javax.validation.Valid;
-import java.util.Date;
+
 
 /**
  * @ProjectName: longjian-houseqm-server

@@ -3,7 +3,6 @@ package com.longfor.longjian.houseqm.app.feginClient;
 import com.longfor.gaia.gfs.web.feign.LFFeignClient;
 import com.longfor.gaia.gfs.web.feign.config.LFFeignConfiguration;
 import com.longfor.longjian.common.base.LjBaseResponse;
-import com.longfor.longjian.houseqm.app.req.houseqmrepossession.RepossessionGetReq;
 import com.longfor.longjian.houseqm.app.req.houseqmrepossession.RepossessionReportReq;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Service;

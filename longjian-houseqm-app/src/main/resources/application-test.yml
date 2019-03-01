@@ -6,7 +6,7 @@ spring:
     name: longjian-houseqm-app
   cloud:
     consul:
-      enabled: true # true
+      enabled: false # true
       host: 127.0.0.1 # 127.0.0.1
       port: 8500
       discovery:

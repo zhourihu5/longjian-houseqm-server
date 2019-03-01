@@ -6,7 +6,6 @@ import com.longfor.longjian.common.exception.LjBaseRuntimeException;
 import com.longfor.longjian.houseqm.app.service.ITaskService;
 import com.longfor.longjian.houseqm.app.vo.HouseQmCheckTaskRspVo;
 import com.longfor.longjian.houseqm.app.vo.task.HouseQmCheckTaskListAndTotalVo;
-import com.longfor.longjian.houseqm.consts.ErrorEnum;
 import com.longfor.longjian.houseqm.domain.internalService.*;
 import com.longfor.longjian.houseqm.po.zj2db.HouseQmCheckTask;
 import com.longfor.longjian.houseqm.po.zj2db.HouseQmCheckTaskIssue;
@@ -17,8 +16,6 @@ import com.longfor.longjian.houseqm.util.StringSplitToListUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Repository;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
-
 import javax.annotation.Resource;
 import java.util.List;
 import java.util.Map;
@@ -58,11 +55,7 @@ public class TaskServiceImpl implements ITaskService {
         return result;
     }
 
-    /**
-     * @param projectId
-     * @param taskId
-     * @return
-     */
+
     public HouseQmCheckTaskRspVo getHouseQmCheckTaskByProjTaskId(Integer projectId, Integer taskId) {
         HouseQmCheckTask houseQmCheckTask = houseQmCheckTaskRspService.getHouseQmCheckTaskByProjTaskId(projectId, taskId);
         HouseQmCheckTaskRspVo houseQmCheckTaskRspVo = new HouseQmCheckTaskRspVo();
@@ -82,12 +75,6 @@ public class TaskServiceImpl implements ITaskService {
         return houseQmCheckTaskRspVo;
     }
 
-
-    /**
-     * @param projectId
-     * @param taskId
-     * @return
-     */
     public List<Integer> getHouseqmCheckTaskCheckedAreas(Integer projectId, Integer taskId) {
         List<Integer> result = Lists.newArrayList();
         HouseQmCheckTask areaIdsInfo = houseQmCheckTaskService.selectAreaIdsByProjectIdAndTaskIdAndNoDeleted(projectId, taskId);
@@ -103,13 +90,7 @@ public class TaskServiceImpl implements ITaskService {
         return result;
     }
 
-    /*
-     * @Author hy
-     * @Description  删除移动验房单个任务 1.删除这个任务想关的整改人 2.删除这个任务
-     * @Date 11:20 2019/1/9
-     * @Param [project_id, task_id]
-     * @return void
-     **/
+
     @Override
     @LFAssignDataSource("zhijian2")
     public void deleteHouseQmCheckTaskByProjTaskId(Integer project_id, Integer task_id) {
@@ -121,7 +102,7 @@ public class TaskServiceImpl implements ITaskService {
             // 删除任务
             int affect3 = houseQmCheckTaskService.removeHouseQmCheckTaskByProjectIdAndTaskId(project_id, task_id);
         } catch (Exception e) {
-            log.error("error:",e.getMessage());
+            log.error(e.getMessage());
             throw new LjBaseRuntimeException(500, e.getMessage());
         }
     }

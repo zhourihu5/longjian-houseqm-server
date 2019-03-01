@@ -24,7 +24,6 @@ import com.longfor.longjian.houseqm.po.zj2db.UserInHouseQmCheckTask;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
-
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
@@ -78,7 +77,7 @@ public class TaskController {
         try {
             ctrlTool.projPermMulti(request, new String[]{"项目.移动验房.任务管理.查看", "项目.工程检查.任务管理.查看"});
         } catch (Exception e) {
-            log.error("error:",e.getMessage());
+            log.error(e.getMessage());
         }
         // 如果没有页数，默认取1000个
         if (req.getPage() == 0) {
@@ -87,7 +86,6 @@ public class TaskController {
         }
         ProjectBase proj = (ProjectBase) this.sessionInfo.getBaseInfo("cur_proj");
         HouseQmCheckTaskListAndTotalVo result = taskService.searchHouseQmCheckTaskByProjCategoryClsStatusPage(proj.getId(), req.getCategory_cls(), req.getStatus(), req.getPage(), req.getPage_size());
-        //HouseQmCheckTaskListAndTotalVo result = taskService.searchHouseQmCheckTaskByProjCategoryClsStatusPage(req.getProject_id(), req.getCategory_cls(), req.getStatus(), req.getPage(), req.getPage_size());
         List<HouseQmCheckTask> res = result.getList();
         Integer total = result.getTotal();
         Team teamGroup = null;
@@ -178,7 +176,7 @@ public class TaskController {
             ctrlTool.projPermMulti(request, new String[]{"项目.移动验房.任务管理.删除", "项目.工程检查.任务管理.删除"});
             taskService.deleteHouseQmCheckTaskByProjTaskId(req.getProject_id(), req.getTask_id());
         } catch (Exception e) {
-            log.error("error:",e.getMessage());
+            log.error(e.getMessage());
             response.setMessage(e.getMessage());
             response.setResult(1);
         }
@@ -221,7 +219,7 @@ public class TaskController {
             response.setData(data);
             response.setResult(0);
         } catch (Exception e) {
-            log.error("error:",e.getMessage());
+            log.error(e.getMessage());
             response.setResult(1);
             response.setMessage(e.getMessage());
         }

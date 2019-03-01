@@ -30,9 +30,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Repository;
 import org.springframework.stereotype.Service;
-
 import javax.annotation.Resource;
-import java.text.SimpleDateFormat;
 import java.util.*;
 
 /**
@@ -232,10 +230,7 @@ public class TaskListServiceImpl implements ITaskListService {
         return taskRoleListVo;
     }
 
-    /**
-     * @param userIds
-     * @return
-     */
+
     private Map<Integer, User> creatUsersMap(List<Integer> userIds) {
         List<User> userList = userService.searchByUserIdInAndNoDeleted(userIds);
         HashMap<Integer, User> userDict = Maps.newHashMap();
@@ -245,10 +240,6 @@ public class TaskListServiceImpl implements ITaskListService {
         return userDict;
     }
 
-    /**
-     * @param taskIds
-     * @return
-     */
     private Map<Integer, ApiBuildingQmCheckTaskConfig> creatTaskMap(Set<Integer> taskIds) {
         HashMap<Integer, ApiBuildingQmCheckTaskConfig> taskMap = Maps.newHashMap();
         List<HouseQmCheckTask> taskList = houseQmCheckTaskService.selectByTaskIds(taskIds);
@@ -276,10 +267,6 @@ public class TaskListServiceImpl implements ITaskListService {
         return taskMap;
     }
 
-    /**
-     * @param teamId
-     * @return
-     */
     public Team getTopTeam(int teamId) {
         Team team = null;
         for (int i = 0; i < 15; i++) {
@@ -302,12 +289,7 @@ public class TaskListServiceImpl implements ITaskListService {
     @Value("team_group_100194")
     private String teamGrop;
 
-    /**
-     * //读取生成配置的auto.yaml
-     *
-     * @param teamId
-     * @return
-     */
+
     private String getExportIssueConfig(int teamId) {
         String export_issue = null;
         if (teamGrop.equals("team_group_" + teamId)) {
@@ -315,11 +297,6 @@ public class TaskListServiceImpl implements ITaskListService {
         }
         return export_issue;
     }
-
-    /**
-     * @param taskIds
-     * @return
-     */
     private TaskPushStrategyVo creatTaskPushStrategyMap(Set<Integer> taskIds) {
         TaskPushStrategyVo taskPushStrategyVo = new TaskPushStrategyVo();
         HashMap<Integer, PushStrategyAssignTime> assignTimeMap = Maps.newHashMap();

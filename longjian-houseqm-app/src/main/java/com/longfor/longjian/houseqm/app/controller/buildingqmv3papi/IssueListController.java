@@ -23,7 +23,6 @@ import org.apache.poi.xwpf.usermodel.XWPFDocument;
 import org.springframework.http.MediaType;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
-
 import javax.annotation.Resource;
 import javax.servlet.ServletOutputStream;
 import javax.servlet.http.HttpServletRequest;
@@ -183,15 +182,6 @@ public class IssueListController {
 
         return null;
     }
-
-
-
-
-
-
-
-
-
     //导出整改回复单
     @RequestMapping(value = "repair_reply_export", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     public LjBaseResponse<Object> repairReplyExport(HttpServletRequest request, HttpServletResponse response) throws IOException {
@@ -209,7 +199,6 @@ public class IssueListController {
             Map<String, Object> map = iIssueService.repairReplyExport(Integer.parseInt(projectId), issueIds);
             XWPFDocument doc = (XWPFDocument) map.get("doc");
             String filename = (String) map.get("filename");
-            //response.setContentType("application/vnd.ms-word");
             response.setCharacterEncoding("utf-8");
             response.setHeader("Content-Disposition", "attachment;filename=" + new String(filename.getBytes("utf-8"), "iso8859-1"));
             doc.write(os);

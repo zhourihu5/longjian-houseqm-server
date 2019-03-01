@@ -576,15 +576,7 @@ public class HouseQmCheckTaskIssueServiceImpl implements HouseQmCheckTaskIssueSe
         return houseQmCheckTaskIssueMapper.selectIssueRepairCountByProjectIdAndCategoryClsAndTypInAndStatusInAndNoDeletedAndDongTai(condiMap);
     }
 
-    /**
-     * @param task_id
-     * @param issueUpdateTime
-     * @param userIds
-     * @param issueUuids
-     * @return com.longfor.longjian.houseqm.po.zj2db.HouseQmCheckTaskIssue
-     * @author hy
-     * @date 2018/12/25 0025
-     */
+
     @Override
     @LFAssignDataSource("zhijian2")
     public HouseQmCheckTaskIssue selectIdByTaskIdAndIdGtAndUpdateAtGtAndSenderIdInOrUuidInAndNoDeletedOrderById(Integer task_id, Date issueUpdateTime, List<Integer> userIds, List<String> issueUuids) {
@@ -607,14 +599,7 @@ public class HouseQmCheckTaskIssueServiceImpl implements HouseQmCheckTaskIssueSe
         else return result.get(0);
     }
 
-    /**
-     * @param userIds
-     * @param task_id
-     * @param issueUuids
-     * @return java.util.List<com.longfor.longjian.houseqm.po.zj2db.HouseQmCheckTaskIssue>
-     * @author hy
-     * @date 2018/12/25 0025
-     */
+
     @Override
     @LFAssignDataSource("zhijian2")
     public List<HouseQmCheckTaskIssue> selectUuidBySenderIdInOrTaskIdAndUuidIn(List<Integer> userIds, Integer task_id, List<String> issueUuids) {

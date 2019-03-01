@@ -68,7 +68,7 @@ public class IusseTaskListController {
         try {
             ctrlTool.projPerm(request, "项目.移动验房.问题管理.查看");
         } catch (Exception e) {
-            log.error("error:",e.getMessage());
+            log.error(e.getMessage());
         }
         //通过id projectId 判断
         TaskResponse<HouseQmCheckTaskSimpleRspVo.TaskList> response = new TaskResponse<>();
@@ -142,7 +142,7 @@ public class IusseTaskListController {
         try {
             ctrlTool.projPerm(request, "项目.工程检查.问题管理.查看");
         } catch (Exception e) {
-            log.error("error:",e.getMessage());
+            log.error(e.getMessage());
             response.setResult(1);
             response.setMessage(e.getMessage());
         }
@@ -240,7 +240,7 @@ public class IusseTaskListController {
         try {
             ctrlTool.projPerm(request, "项目.工程检查.问题管理.查看");
         } catch (Exception e) {
-            log.error("error:",e.getMessage());
+            log.error(e.getMessage());
         }
         LjBaseResponse<List<HouseQmCheckTaskIssueDetailRepairLogVo>> result = iIssueService.getDetailRepairLogByIssueUuid(issueUuid);
 

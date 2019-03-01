@@ -18,14 +18,12 @@ import com.longfor.longjian.houseqm.consts.HouseQmCheckTaskIssueAttachmentPublic
 import com.longfor.longjian.houseqm.consts.HouseQmUserInIssueRoleTypeEnum;
 import com.longfor.longjian.houseqm.domain.internalService.*;
 import com.longfor.longjian.houseqm.po.zj2db.*;
-import com.longfor.longjian.houseqm.util.CollectionUtil;
 import com.longfor.longjian.houseqm.util.DateUtil;
 import com.longfor.longjian.houseqm.util.StringSplitToListUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections.CollectionUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 import java.util.*;
@@ -37,9 +35,9 @@ public class HouseqmServiceImpl implements IHouseqmService {
     private static final Integer HOUSEQM_API_GET_PER_TIME = 5000;
     @Resource
     private AreaService areaService;
-    @Autowired
+    @Resource
     private HouseQmCheckTaskIssueLogService houseQmCheckTaskIssueLogService;
-    @Autowired
+    @Resource
     private HouseQmCheckTaskIssueService houseQmCheckTaskIssueService;
     @Resource
     private HouseQmCheckTaskService houseQmCheckTaskService;
@@ -74,7 +72,8 @@ public class HouseqmServiceImpl implements IHouseqmService {
         Integer userId = (Integer) sessionInfo.getBaseInfo("userId");
         Integer start = 0;
         Integer lastId = 0;
-        Integer limit = HOUSEQM_API_GET_PER_TIME;//可能会导致接口出现504 请求超时
+        //可能会导致接口出现504 请求超时
+        Integer limit = HOUSEQM_API_GET_PER_TIME;
         try {
             List<HouseQmCheckTaskIssueLog> houseQmCheckTaskIssueLogs = houseQmCheckTaskIssueLogService.searchHouseQmCheckTaskIssueLogByMyIdTaskIdLastIdUpdateAtGt(userId, deviceReq.getTask_id(), deviceReq.getLast_id(), deviceReq.getTimestamp(), limit, start, HouseQmUserInIssueRoleTypeEnum.Checker.getId());
             //获取最后一次的id
@@ -95,11 +94,7 @@ public class HouseqmServiceImpl implements IHouseqmService {
             houseQmCheckTaskIssueLogs.forEach(item -> {
                 ApiHouseQmCheckTaskIssueLogDetailRspVo rspVo = JSON.parseObject(item.getDetail(), new TypeReference<ApiHouseQmCheckTaskIssueLogDetailRspVo>() {
                 });
-                /*rspVo.setTitle("");
-                rspVo.setArea_id(0);
-                rspVo.setPos_x(0);
-                rspVo.setPos_y(0);
-                rspVo.setTyp(0);*/
+
                 rspVo.setCategory_cls(0);
 
                 HouseQmCheckTaskIssue houseQmCheckTaskIssue = mIssue.get(item.getIssueUuid());
@@ -134,7 +129,7 @@ public class HouseqmServiceImpl implements IHouseqmService {
             myIssueListVo.setIssue_list(result);
             taskResponse.setData(myIssueListVo);
         } catch (Exception e) {
-            log.error("error:" + e);
+            log.error(e.getMessage());
         }
         return taskResponse;
     }
@@ -194,7 +189,6 @@ public class HouseqmServiceImpl implements IHouseqmService {
                 String detail = houseQmCheckTaskIssue.getDetail();
                 Map map = JSON.parseObject(detail, Map.class);
 
-                //{"IssueReason":0,"IssueReasonDetail":"","IssueSuggest":"","PotentialRisk":"","PreventiveActionDetail":""}
                 ApiHouseQmCheckTaskIssueDetail issueDetail = new ApiHouseQmCheckTaskIssueDetail();
                 issueDetail.setIssue_reason((Integer) map.get("IssueReason"));
                 issueDetail.setIssue_reason_detail((String) map.get("IssueReasonDetail"));
@@ -204,14 +198,13 @@ public class HouseqmServiceImpl implements IHouseqmService {
                 houseQmCheckTaskIssueVo.setDetail(issueDetail);
                 houseQmCheckTaskIssueVo.setUpdate_at(DateUtil.datetimeToTimeStamp(houseQmCheckTaskIssue.getUpdateAt()));
                 houseQmCheckTaskIssueVo.setDelete_at(houseQmCheckTaskIssue.getDeleteAt() == null ? 0 : DateUtil.datetimeToTimeStamp(houseQmCheckTaskIssue.getDeleteAt()));
-                //String IssueVoJson = JsonUtil.GsonString(houseQmCheckTaskIssueVo);
                 items.add(houseQmCheckTaskIssueVo);
             });
             myIssueListVo.setIssue_list(items);
             myIssueListVo.setLast_id(lastId);
             taskResponse.setData(myIssueListVo);
         } catch (Exception e) {
-            log.error("error:",e.getMessage());
+            log.error(e.getMessage());
         }
         return taskResponse;
     }
@@ -236,7 +229,6 @@ public class HouseqmServiceImpl implements IHouseqmService {
                 apiHouseQmCheckTaskIssueMemberRspVo.setIssue_uuid(houseQmCheckTaskIssueUser.getIssueUuid());
                 apiHouseQmCheckTaskIssueMemberRspVo.setUpdate_at(DateUtil.datetimeToTimeStamp(houseQmCheckTaskIssueUser.getUpdateAt()));
                 apiHouseQmCheckTaskIssueMemberRspVo.setDelete_at(houseQmCheckTaskIssueUser.getDeleteAt() == null ? 0 : DateUtil.datetimeToTimeStamp(houseQmCheckTaskIssueUser.getDeleteAt()));
-                //String rspVoJson = JSON.toJSONString(apiHouseQmCheckTaskIssueMemberRspVo);
                 memberList.add(apiHouseQmCheckTaskIssueMemberRspVo);
             });
             myIssueMemberListVo.setMember_list(memberList);

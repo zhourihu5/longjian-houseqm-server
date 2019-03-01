@@ -49,7 +49,7 @@ public class ZipUtils {
                         out.write(b);
                     }
                 }catch (Exception e){
-                    log.error("error:",e.getMessage());
+                    log.error(e.getMessage());
                 }
                /* FileInputStream in = new FileInputStream(f);
                 int b;
@@ -149,7 +149,7 @@ public class ZipUtils {
                                 output.write(b, 0, len);
                             }
                         } catch (IOException e) {
-                            log.error("error:",e.getMessage());
+                            log.error(e.getMessage());
                         }
                     }
                         // 如果文件夹下还存在文件，遍历，直到得到具体的文件

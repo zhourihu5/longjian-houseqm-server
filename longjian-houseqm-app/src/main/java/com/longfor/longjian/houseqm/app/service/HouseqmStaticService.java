@@ -44,7 +44,7 @@ public class HouseqmStaticService {
     @Resource
     UserInHouseQmCheckTaskService userInHouseQmCheckTaskService;
 
-    public List<HouseQmCheckTaskSimpleRspVo> SearchHouseQmCheckTaskByProjCategoryCls(Integer project_id, Integer category_cls) {
+    public List<HouseQmCheckTaskSimpleRspVo> searchHouseQmCheckTaskByProjCategoryCls(Integer project_id, Integer category_cls) {
         List<HouseQmCheckTask> houseQmCheckTasks = houseQmCheckTaskService.selectByProjectIdAndCategoryCls(project_id, category_cls);
         ArrayList<HouseQmCheckTaskSimpleRspVo> hQCTSRlist = new ArrayList<>();
         for (int i = 0; i < houseQmCheckTasks.size(); i++) {
@@ -62,7 +62,7 @@ public class HouseqmStaticService {
         return hQCTSRlist;
     }
 
-    public CheckTaskHouseStatInfoVo GetHouseQmCheckTaskHouseStatByTaskId(Integer prodectId, Integer taskId, Integer areaId) {
+    public CheckTaskHouseStatInfoVo getHouseQmCheckTaskHouseStatByTaskId(Integer prodectId, Integer taskId, Integer areaId) {
         try {
             CheckTaskHouseStatInfoVo vo = new CheckTaskHouseStatInfoVo();
             vo.setApprovedCount(0);
@@ -109,7 +109,7 @@ public class HouseqmStaticService {
             }
             return vo;
         } catch (Exception e) {
-            log.error("error:",e.getMessage());
+            log.error(e.getMessage());
         }
         return null;
     }
@@ -147,7 +147,7 @@ public class HouseqmStaticService {
         return msgVo;
     }
 
-    public List<ApiBuildingInfo> PSelectByFatherId(Integer prodectId) {
+    public List<ApiBuildingInfo> pSelectByFatherId(Integer prodectId) {
         List<Area> areaList = areaService.selectByFatherId(prodectId, 0);
         ArrayList<ApiBuildingInfo> buildlist = Lists.newArrayList();
 
@@ -190,12 +190,7 @@ public class HouseqmStaticService {
         return maps;
     }
 
-    /**
-     * 字符串分割 转换为int类型的
-     *
-     * @param ids
-     * @return
-     */
+
     private List<Integer> splitToIdsComma(String ids, String sep) {
         List<Integer> list = Lists.newArrayList();
         ids=ids.trim();
@@ -313,7 +308,6 @@ public class HouseqmStaticService {
     }
 
     public List<String> getHasIssueTaskCheckedAreaPathListByTaskId(Integer taskId, boolean onlyIssue, List<Integer> statuses, Integer areaId) {
-        List<HouseQmCheckTaskIssueAreaGroupModel> result = Lists.newArrayList();
         //通过问题状态，只取出里面相关部分(如果是无问题的，是取出所有，然后扣除掉有问题的)
         List<Integer> types = Lists.newArrayList();
         types.add(HouseQmCheckTaskIssueTypeEnum.FindProblem.getId());
@@ -348,8 +342,8 @@ public class HouseqmStaticService {
         if (CollectionUtils.isEmpty(areaIds) || CollectionUtils.isEmpty(areaTypes)) {
             return null;
         }
-        List<Area> areas = areaService.searchAreaListByRootIdAndTypes(prodectId, areaIds, areaTypes);
-        return areas;
+        return  areaService.searchAreaListByRootIdAndTypes(prodectId, areaIds, areaTypes);
+
     }
 
     public List<UserInHouseQmCheckTask> searchUserInHouseQmCheckTaskByUserIdRoleType(Integer uid, Integer id) {

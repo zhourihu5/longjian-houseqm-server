@@ -285,7 +285,7 @@ public class BuildingqmSettingService {
                 String str = sdf.format(msl);
                 temp = sdf.parse(str);
             } catch (ParseException e) {
-                log.error("error:",e.getMessage());
+                log.error(e.getMessage());
             }
         }
         return temp;

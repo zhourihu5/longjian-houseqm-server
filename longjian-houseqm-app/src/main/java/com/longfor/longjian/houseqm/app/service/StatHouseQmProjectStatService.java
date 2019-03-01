@@ -39,19 +39,9 @@ public class StatHouseQmProjectStatService {
     @Resource
     ProjectService projectService;
 
-    public static final String TIME_FORMAT = "yyyy-MM-dd";
+    private static final String TIME_FORMAT = "yyyy-MM-dd";
 
 
-    /**
-     * @param groupId
-     * @param categoryKey
-     * @param timeFrameType
-     * @param teamIds
-     * @param timeFrameBegin
-     * @param timeFrameEnd
-     * @param timeFrameMax
-     * @return
-     */
     public List<StatDataVo> searchStat(Integer groupId, String categoryKey, String timeFrameType, List<Integer> teamIds, Date timeFrameBegin,
                                        Date timeFrameEnd, Integer timeFrameMax) {
 
@@ -103,13 +93,7 @@ public class StatHouseQmProjectStatService {
         return  statDataVos;
     }
 
-    /**
-     * 转换后放入集合
-     *
-     * @param stat
-     * @param timeFrame
-     * @param statDataVos
-     */
+
     private void tranferDataVo(StatHouseQmProjectDailyStat stat, TimeFrame timeFrame, List<StatDataVo>  statDataVos){
 
         if(stat == null){

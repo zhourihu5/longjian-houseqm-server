@@ -1,6 +1,5 @@
 package com.longfor.longjian.houseqm.app.controller.oapiv3houseqm;
 
-import com.alibaba.fastjson.JSON;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.longfor.longjian.common.base.LjBaseResponse;
@@ -14,8 +13,6 @@ import com.longfor.longjian.houseqm.app.req.issue.IssueBatchDeleteReq;
 import com.longfor.longjian.houseqm.app.req.issue.IssueExportPdfReq;
 import com.longfor.longjian.houseqm.app.service.IHouseqmIssueService;
 import com.longfor.longjian.houseqm.app.vo.IssueBatchAppointRspVo;
-import com.longfor.longjian.houseqm.app.vo.houseqmissue.HouseqmCheckTaskIssueIndexJsonReqMsg;
-import com.longfor.longjian.houseqm.app.vo.houseqmissue.HouseqmCheckTaskIssueIndexJsonRspMsg;
 import com.longfor.longjian.houseqm.app.vo.houseqmissue.IssueBatchApproveRspVo;
 import com.longfor.longjian.houseqm.app.vo.houseqmissue.IssueBatchDeleteRspVo;
 import com.longfor.longjian.houseqm.consts.ErrorEnum;
@@ -28,7 +25,6 @@ import com.longfor.longjian.houseqm.po.zj2db.HouseQmCheckTaskIssue;
 import com.longfor.longjian.houseqm.po.zj2db.Project;
 import com.longfor.longjian.houseqm.util.DateUtil;
 import com.longfor.longjian.houseqm.util.StringSplitToListUtil;
-
 import com.longfor.longjian.houseqm.util.StringUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections.CollectionUtils;
@@ -43,8 +39,6 @@ import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 import java.io.UnsupportedEncodingException;
-import java.net.URI;
-import java.net.URL;
 import java.net.URLEncoder;
 import java.util.*;
 
@@ -90,7 +84,6 @@ public class HouseqmIssueController {
         try {
             ctrlTool.projPermMulti(request, new String[]{"项目.移动验房.问题管理.查看", "项目.工程检查.问题管理.查看"});
         } catch (Exception e) {
-            log.error("error:",e.getMessage());
             log.error(e.getMessage());
             response.setResult(1);
             response.setMessage(e.getMessage());
@@ -119,7 +112,7 @@ public class HouseqmIssueController {
             try {
                 issueList = iHouseqmIssueService.searchHouseQmIssueListByProjUuidIn(req.getProject_id(), uuids);
             } catch (Exception e) {
-                log.error("error:",e.getMessage());
+                log.error(e.getMessage());
             }
             HashMap<Integer, Boolean> taskMap = Maps.newHashMap();
             issueList.forEach(issue -> taskMap.put(issue.getTaskId(), true));
@@ -142,37 +135,6 @@ public class HouseqmIssueController {
                 taskName.append("、");
             }
         }
-       /* HouseqmCheckTaskIssueIndexJsonReqMsg reqMsg = new HouseqmCheckTaskIssueIndexJsonReqMsg();
-        reqMsg.setSafeCallKey("268494d141d8054585ef5943e75e49f2");
-        reqMsg.setCategory_cls(req.getCategory_cls());
-        reqMsg.setProject_id(req.getProject_id());
-        reqMsg.setTask_id(req.getTask_id());
-        reqMsg.setTask_name(taskName.toString());
-        reqMsg.setCategory_key(req.getCategory_key());
-        reqMsg.setCheck_item_key(req.getCheck_item_key());
-        reqMsg.setChecker_id(req.getChecker_id());
-        reqMsg.setRepairer_id(req.getRepairer_id());
-        reqMsg.setType(req.getType());
-        reqMsg.setCondition(req.getCondition());
-        reqMsg.setCreate_on_begin(req.getCreate_on_begin());
-        reqMsg.setCreate_on_end(req.getCreate_on_end());
-        reqMsg.setIs_overdue(req.getIs_overdue());
-
-        reqMsg.setArea_ids(req.getArea_ids());
-        reqMsg.setStatus_in(req.getStatus_in());
-        reqMsg.setUuids(StringUtil.strToStrs(req.getUuids(), ","));*/
-
-        /*try {
-            LjBaseResponse<HouseqmCheckTaskIssueIndexJsonRspMsg> result = iHouseqmCheckTaskIssueFeignService.indexJson(reqMsg);
-            response.setResult(0);
-            response.setMessage("success");
-        } catch (Exception e) {
-            e.printStackTrace();
-            response.setResult(1);
-            response.setMessage(e.getMessage());
-            throw new LjBaseRuntimeException(500, e.getMessage());
-        }*/
-
         String url = statExportServerAddr + "/stat_export/houseqm_check_task_issue/index_json/?";
         // 参数
         Map<String, String> urlargs = Maps.newHashMap();
@@ -288,7 +250,7 @@ public class HouseqmIssueController {
             data.setFails(fails);
             response.setData(data);
         } catch (Exception e) {
-            log.error("error:",e.getMessage());
+            log.error(e.getMessage());
             response.setResult(1);
             response.setMessage(e.getMessage());
         }
@@ -316,7 +278,7 @@ public class HouseqmIssueController {
             data.setFails(fails);
             response.setData(data);
         } catch (Exception e) {
-            log.error("error:",e.getMessage());
+            log.error(e.getMessage());
             response.setResult(1);
             response.setMessage(e.getMessage());
         }
@@ -349,7 +311,7 @@ public class HouseqmIssueController {
             data.setFails(fails);
             response.setData(data);
         } catch (Exception e) {
-            log.error("error:",e.getMessage());
+            log.error(e.getMessage());
             log.error(e.getMessage());
             response.setResult(1);
             response.setMessage(e.getMessage());
@@ -383,7 +345,7 @@ public class HouseqmIssueController {
                     try {
                         value = URLEncoder.encode(value, "UTF-8");
                     } catch (UnsupportedEncodingException e) {
-                        log.error("error:",e.getMessage());
+                        log.error(e.getMessage());
                     }
                     sb.append(value + "&");
                 }

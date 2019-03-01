@@ -576,7 +576,7 @@ public class IssueServiceImpl implements IIssueService {
                         int b = Integer.valueOf(s).intValue();
                         uids.add(b);
                     }catch(NumberFormatException e){
-                        log.error("error:",e.getMessage());
+                        log.error(e.getMessage());
                     }
                 }
                 }
@@ -1007,18 +1007,6 @@ public class IssueServiceImpl implements IIssueService {
         dataMap.put("request", list2);
         String str = DateUtil.getNowTimeStr("yyyy_MM_dd_hh_mm_ss");
         boolean b = new DocumentHandler().exportDoc("notify_template2", "导出问题通知单_" + str.replace("_", ""), dataMap, resp);
-
-
-      /*  User user = UserDao().get(uid);
-        if (user!=null){
-             userName=user.getRealName();
-        }else {
-             userName="";
-        }
-
-      String  path = exportRepairNotify2(input, userName);
-                String filename="整改通知单_ +"+DateUtil.getNowTimeStr("yyyy-MM-dd-HH-mm-ss")+"+.docx";
-*/
         return b;
     }
 
@@ -1115,7 +1103,7 @@ public class IssueServiceImpl implements IIssueService {
             map.put("filename", filename);
             map.put("doc", doc);
         } catch (Exception e) {
-            log.error("error:",e.getMessage());
+            log.error(e.getMessage());
             // 导出失败
             throw new LjBaseRuntimeException(500, "word 导出失败");
         }
@@ -1638,7 +1626,7 @@ public class IssueServiceImpl implements IIssueService {
                             //导出图片
                             picList.add(DocumentHandler.getImageBase(s));
                         } catch (Exception e) {
-                            log.error("error:",e.getMessage());
+                            log.error(e.getMessage());
 
                         }
                     }

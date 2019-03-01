@@ -26,11 +26,7 @@ public class PushStrategyCategoryOverdueServiceImpl implements PushStrategyCateg
 
     @Resource
     PushStrategyCategoryOverdueMapper pushStrategyCategoryOverdueMapper;
-    /**
-     *
-     * @param taskIds
-     * @return
-     */
+
     @LFAssignDataSource("zhijian2_notify")
     public List<PushStrategyCategoryOverdue> searchByTaskIds(Set<Integer> taskIds){
         return pushStrategyCategoryOverdueMapper.selectByTaskIds(taskIds,"false");
