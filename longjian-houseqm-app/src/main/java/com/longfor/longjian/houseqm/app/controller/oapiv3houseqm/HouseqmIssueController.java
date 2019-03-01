@@ -117,7 +117,7 @@ public class HouseqmIssueController {
             HashMap<Integer, Boolean> taskMap = Maps.newHashMap();
             issueList.forEach(issue -> taskMap.put(issue.getTaskId(), true));
             List<Integer> taskIds = new ArrayList<>(taskMap.keySet());
-            if (taskIds.size() > 0) {
+            if (CollectionUtils.isNotEmpty(taskIds)) {
                 taskList = houseQmCheckTaskService.searchHouseQmCheckTaskByTaskIdIn(taskIds);
             }
         } else {
@@ -321,7 +321,7 @@ public class HouseqmIssueController {
 
     private List<String> filterIssueUuidByProjIdTaskIdUuids(int projId, int taskId, String uuidStr) {
         List<String> issueUuids = StringSplitToListUtil.splitToStringComma(uuidStr, ",");
-        if (issueUuids.size() == 0) return null;
+        if (issueUuids.isEmpty()) return null;
         List<HouseQmCheckTaskIssue> issues = houseQmCheckTaskIssueService.searchHouseQmCheckTaskIssueByTaskIdUuidIn(taskId, issueUuids);
         List<String> uuids = Lists.newArrayList();
         for (HouseQmCheckTaskIssue issue : issues) {

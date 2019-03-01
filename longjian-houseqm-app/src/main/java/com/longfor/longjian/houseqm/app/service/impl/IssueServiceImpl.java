@@ -245,6 +245,7 @@ public class IssueServiceImpl implements IIssueService {
         if (req.getRepairer_id() != null && req.getRepairer_id() > 0) condiMap.put("repairerId", req.getRepairer_id());
         if (req.getCreate_on_begin().length() > 0) condiMap.put("clientCreateAtGte", req.getCreate_on_begin() + " 00:00:00");
         if (req.getCreate_on_end().length() > 0) condiMap.put("clientCreateAtLte", req.getCreate_on_end() + " 23:59:59");
+        if (req.getIs_overdue()==null) req.setIs_overdue(false);
         if (req.getIs_overdue()) {
             List<Integer> status1 = Lists.newArrayList();
             List<Integer> status2 = Lists.newArrayList();
