@@ -100,16 +100,32 @@ public class IssueServiceImpl implements IIssueService {
     @Value("${env_info.host_list}")
     private String envInfo;
     private static final String ILLEGAL_CHARACTERS_RE = "[\\000-\\010]|[\\013-\\014]|[\\016-\\037]|\\xef|\\xbf";
-
-
+    private static final String CAN_NOT_FIND_THIS_ISSUE="找不到此问题";
+    private static final String NO_CHANGES="没有改变";
+    private static final String ISSUE_REASON="IssueReason";
+    private static final String ISSUE_REASON_DETAIL="IssueReasonDetail";
+    private static final String ISSUE_SUGGEST="IssueSuggest";
+    private static final String POTENTIAL_RISK="PotentialRisk";
+    private static final String PREVENTIVE_ACTION_DETAIL="PreventiveActionDetail";
+    private static final String PLAN_END_ON="PlanEndOn";
+    private static final String END_ON="EndOn";
+    private static final String REPAIRER_ID="RepairerId";
+    private static final String REPAIRER_FOLLOWER_IDS="RepairerFollowerIds";
+    private static final String CONDITION="Condition";
+    private static final String AREA_ID="AreaId";
+    private static final String TITLE="Title";
+    private static final String CHECK_ITEM_KEY="CheckItemKey";
+    private static final String CATEGORY_CLS="CategoryCls";
+    private static final String CATEGORY_KEY="CategoryKey";
+    private static final String DRAWING_MD5="DrawingMD5";
+    private static final String REMOVE_MEMO_AUDIO_MD5_LIST="RemoveMemoAudioMd5List";
     @Override
-    public LjBaseResponse<Object> updateIssueDetailByProjectAndUuid(Integer userId, Integer project_id, String issue_uuid, Integer typ, String data) {
+    public LjBaseResponse<Object> updateIssueDetailByProjectAndUuid(Integer userId, Integer projectId, String issueUuid, Integer typ, String data) {
         LjBaseResponse<Object> result = new LjBaseResponse<>();
-        String time_now = DateUtil.getNowTimeStr("yyyy-MM-dd HH:mm:ss");
-        HouseQmCheckTaskIssue issue_info = getIssueByProjectIdAndUuid(project_id, issue_uuid);
-        if (issue_info==null){
+       HouseQmCheckTaskIssue issueInfo = getIssueByProjectIdAndUuid(projectId, issueUuid);
+        if (issueInfo==null){
             result.setResult(1);
-            result.setMessage("找不到此问题");
+            result.setMessage(CAN_NOT_FIND_THIS_ISSUE);
             return result;
         }
         int reason = -1;
@@ -118,66 +134,66 @@ public class IssueServiceImpl implements IIssueService {
         String potentialRisk = "-1";
         String preventiveActionDetail = "-1";
 
-        int DetailTypeReason = 1;
-        int DetailTypeReasonDetail = 2;
-        int DetailTypeSuggest = 3;
-        int DetailTypePotentialRisk = 4;
-        int DetailTypePreventiveActionDetail = 5;
+        int detailTypeReason = 1;
+        int detailTypeReasonDetail = 2;
+        int detailTypeSuggest = 3;
+        int detailTypePotentialRisk = 4;
+        int detailTypePreventiveActionDetail = 5;
 
-        Map<String,Object> issue_detail = JSON.parseObject(issue_info.getDetail(), Map.class);
+        Map<String,Object> issueDetail = JSON.parseObject(issueInfo.getDetail(), Map.class);
 
-        if (typ==DetailTypeReason){
+        if (typ==detailTypeReason){
             reason=Integer.parseInt(data);
-            issue_detail.put("IssueReason",reason);
+            issueDetail.put(ISSUE_REASON,reason);
         }
-        if (typ==DetailTypeReasonDetail){
+        if (typ==detailTypeReasonDetail){
             issueReasonDetail=data;
-            issue_detail.put("IssueReasonDetail",data);
+            issueDetail.put(ISSUE_REASON_DETAIL,data);
         }
-        if (typ==DetailTypeSuggest){
+        if (typ==detailTypeSuggest){
             issueSuggest=data;
-            issue_detail.put("IssueSuggest",data);
+            issueDetail.put(ISSUE_SUGGEST,data);
         }
-        if (typ==DetailTypePotentialRisk){
+        if (typ==detailTypePotentialRisk){
             potentialRisk=data;
-            issue_detail.put("PotentialRisk",data);
+            issueDetail.put(POTENTIAL_RISK,data);
         }
-        if (typ==DetailTypePreventiveActionDetail){
+        if (typ==detailTypePreventiveActionDetail){
             preventiveActionDetail=data;
-            issue_detail.put("PreventiveActionDetail",data);
+            issueDetail.put(PREVENTIVE_ACTION_DETAIL,data);
         }
-        issue_info.setDetail(JSON.toJSONString(issue_detail));
-        issue_info.setUpdateAt(new Date());
-        houseQmCheckTaskIssueService.update(issue_info);
+        issueInfo.setDetail(JSON.toJSONString(issueDetail));
+        issueInfo.setUpdateAt(new Date());
+        houseQmCheckTaskIssueService.update(issueInfo);
 
         Map<String, Object> logDetail = Maps.newHashMap();
-        logDetail.put("PlanEndOn", -1);
-        logDetail.put("EndOn", -1);
-        logDetail.put("RepairerId", -1);
-        logDetail.put("RepairerFollowerIds", "");
-        logDetail.put("Condition", -1);
-        logDetail.put("AreaId", -1);
+        logDetail.put(PLAN_END_ON, -1);
+        logDetail.put(END_ON, -1);
+        logDetail.put(REPAIRER_ID, -1);
+        logDetail.put(REPAIRER_FOLLOWER_IDS, "");
+        logDetail.put(CONDITION, -1);
+        logDetail.put(AREA_ID, -1);
         logDetail.put("PosX", -1);
         logDetail.put("PosY", -1);
         logDetail.put("Typ", -1);
-        logDetail.put("Title", "");
-        logDetail.put("CheckItemKey", "");
-        logDetail.put("CategoryCls", -1);
-        logDetail.put("CategoryKey", "");
-        logDetail.put("DrawingMD5", "");
-        logDetail.put("RemoveMemoAudioMd5List", "");
-        logDetail.put("IssueReason", reason);
-        logDetail.put("IssueReasonDetail", issueReasonDetail);
-        logDetail.put("IssueSuggest", issueSuggest);
-        logDetail.put("PotentialRisk", potentialRisk);
-        logDetail.put("PreventiveActionDetail", preventiveActionDetail);
+        logDetail.put(TITLE, "");
+        logDetail.put(CHECK_ITEM_KEY, "");
+        logDetail.put(CATEGORY_CLS, -1);
+        logDetail.put(CATEGORY_KEY, "");
+        logDetail.put(DRAWING_MD5, "");
+        logDetail.put(REMOVE_MEMO_AUDIO_MD5_LIST, "");
+        logDetail.put(ISSUE_REASON, reason);
+        logDetail.put(ISSUE_REASON_DETAIL, issueReasonDetail);
+        logDetail.put(ISSUE_SUGGEST, issueSuggest);
+        logDetail.put(POTENTIAL_RISK, potentialRisk);
+        logDetail.put(PREVENTIVE_ACTION_DETAIL, preventiveActionDetail);
 
         int status= HouseQmCheckTaskIssueLogStatus.EditBaseInfo.getValue();
         HouseQmCheckTaskIssueLog newIssueLog = new HouseQmCheckTaskIssueLog();
-        newIssueLog.setTaskId(issue_info.getTaskId());
-        newIssueLog.setProjectId(issue_info.getProjectId());
+        newIssueLog.setTaskId(issueInfo.getTaskId());
+        newIssueLog.setProjectId(issueInfo.getProjectId());
         newIssueLog.setUuid(UUID.randomUUID().toString().replace("-",""));
-        newIssueLog.setIssueUuid(issue_info.getUuid());
+        newIssueLog.setIssueUuid(issueInfo.getUuid());
         newIssueLog.setSenderId(userId);
         newIssueLog.setStatus(status);
         newIssueLog.setAttachmentMd5List("");
@@ -533,11 +549,11 @@ public class IssueServiceImpl implements IIssueService {
             }
            /* DetailVo detailVo = item.new DetailVo();
             Map<String, Object> map = JsonUtil.GsonToMaps(issue.getDetail());
-            detailVo.setIssue_reason(((Double) map.get("IssueReason")).intValue());
-            detailVo.setIssue_reason_detail((String) map.get("IssueReasonDetail"));
-            detailVo.setIssue_suggest((String) map.get("IssueSuggest"));
-            detailVo.setPotential_risk((String) map.get("PotentialRisk"));
-            detailVo.setPreventive_action_detail((String) map.get("PreventiveActionDetail"));*/
+            detailVo.setIssue_reason(((Double) map.get(ISSUE_REASON)).intValue());
+            detailVo.setIssue_reason_detail((String) map.get(ISSUE_REASON_DETAIL));
+            detailVo.setIssue_suggest((String) map.get(ISSUE_SUGGEST));
+            detailVo.setPotential_risk((String) map.get(POTENTIAL_RISK));
+            detailVo.setPreventive_action_detail((String) map.get(PREVENTIVE_ACTION_DETAIL));*/
             DetailVo detail = JSON.parseObject(issue.getDetail(), DetailVo.class);
             item.setDetail(detail);
             issueList.add(item);
@@ -551,9 +567,9 @@ public class IssueServiceImpl implements IIssueService {
 
     @Override
     public List<HouseQmCheckTaskIssueHistoryLogVo> getHouseQmCheckTaskIssueActionLogByIssueUuid(String issueUuid) {
-        HouseQmCheckTaskIssue issue_info = houseQmCheckTaskIssueService.selectByUuidAndNotDelete(issueUuid);
-        if (issue_info == null) {
-            throw new LjBaseRuntimeException(272, "找不到此问题");
+        HouseQmCheckTaskIssue issueInfo = houseQmCheckTaskIssueService.selectByUuidAndNotDelete(issueUuid);
+        if (issueInfo == null) {
+            throw new LjBaseRuntimeException(272, CAN_NOT_FIND_THIS_ISSUE);
         }
         List<HouseQmCheckTaskIssueLog> issue_log_info = houseQmCheckTaskIssueLogService.selectByUuidAndNotDelete(issueUuid);
         ArrayList<Integer> uids = Lists.newArrayList();
@@ -561,11 +577,11 @@ public class IssueServiceImpl implements IIssueService {
         for (int i = 0; i < issue_log_info.size(); i++) {
             uids.add(issue_log_info.get(i).getSenderId());
             Map<String, Object> issue_log_detail = JSON.parseObject(issue_log_info.get(i).getDetail(), Map.class);
-            if ((Integer) issue_log_detail.get("RepairerId") > 0) {
-                uids.add((Integer) issue_log_detail.get("RepairerId"));
+            if ((Integer) issue_log_detail.get(REPAIRER_ID) > 0) {
+                uids.add((Integer) issue_log_detail.get(REPAIRER_ID));
             }
-            if (StringUtils.isNotBlank((String) issue_log_detail.get("RepairerFollowerIds"))) {
-                String replace = ((String) issue_log_detail.get("RepairerFollowerIds")).replace(",,", ",");
+            if (StringUtils.isNotBlank((String) issue_log_detail.get(REPAIRER_FOLLOWER_IDS))) {
+                String replace = ((String) issue_log_detail.get(REPAIRER_FOLLOWER_IDS)).replace(",,", ",");
 
                 List<String> list = StringSplitToListUtil.removeStartAndEndStrAndSplit(replace, ",", ",");
                 for (String s : list) {
@@ -609,18 +625,18 @@ public class IssueServiceImpl implements IIssueService {
             if (issue_log_info.get(i).getStatus().equals(HouseQmCheckTaskIssueLogStatus.Repairing.getValue())) {
                 HouseQmCheckTaskIssueHistoryLogVo.HouseQmCheckTaskIssueHistoryLogItem log_item = new HouseQmCheckTaskIssueHistoryLogVo().new HouseQmCheckTaskIssueHistoryLogItem();
                 log_item.setLog_type(HouseQmCheckTaskActionLogType.Assign.getValue());
-                log_item.setTarget_user_id((Integer) issue_log_detail.get("RepairerId"));
-                log_item.setTarget_user_name(user_id_real_name_map.get(issue_log_detail.get("RepairerId")));
+                log_item.setTarget_user_id((Integer) issue_log_detail.get(REPAIRER_ID));
+                log_item.setTarget_user_name(user_id_real_name_map.get(issue_log_detail.get(REPAIRER_ID)));
                 ArrayList<String> followers = Lists.newArrayList();
-                if ((Integer) issue_log_detail.get("RepairerFollowerIds") > 0) {
+                if ((Integer) issue_log_detail.get(REPAIRER_FOLLOWER_IDS) > 0) {
 
-                    List<Integer> followers_id = StringSplitToListUtil.splitToIdsComma((String) issue_log_detail.get("RepairerFollowerIds"), ",");
+                    List<Integer> followers_id = StringSplitToListUtil.splitToIdsComma((String) issue_log_detail.get(REPAIRER_FOLLOWER_IDS), ",");
                     for (int j = 0; j < followers_id.size(); j++) {
                         followers.add(user_id_real_name_map.get(followers_id.get(j)));
                     }
                 }
                 HashMap<String, Object> log_data = Maps.newHashMap();
-                log_data.put("plan_end_on", issue_log_detail.get("PlanEndOn"));
+                log_data.put("plan_end_on", issue_log_detail.get(PLAN_END_ON));
                 log_data.put("followers", followers);
                 log_item.setData(JSON.toJSONString(log_data));
                 items.add(log_item);
@@ -647,14 +663,14 @@ public class IssueServiceImpl implements IIssueService {
                 result.add(single_item);
                 continue;
             }
-            if ((Integer) issue_log_detail.get("PlanEndOn") != -1 || (Integer) issue_log_detail.get("RepairerId") > 0 || (
-                    !issue_log_detail.get("RepairerFollowerIds").equals("-1") &&
-                            ((String) issue_log_detail.get("RepairerFollowerIds")).length() > 0)) {
+            if ((Integer) issue_log_detail.get(PLAN_END_ON) != -1 || (Integer) issue_log_detail.get(REPAIRER_ID) > 0 || (
+                    !issue_log_detail.get(REPAIRER_FOLLOWER_IDS).equals("-1") &&
+                            ((String) issue_log_detail.get(REPAIRER_FOLLOWER_IDS)).length() > 0)) {
                 HouseQmCheckTaskIssueHistoryLogVo.HouseQmCheckTaskIssueHistoryLogItem log_item = new HouseQmCheckTaskIssueHistoryLogVo().new HouseQmCheckTaskIssueHistoryLogItem();
                 log_item.setLog_type(HouseQmCheckTaskActionLogType.Assign.getValue());
-                log_item.setTarget_user_id((Integer) issue_log_detail.get("RepairerId"));
-                if ((Integer) issue_log_detail.get("RepairerId") > 0) {
-                    log_item.setTarget_user_name(user_id_real_name_map.get(issue_log_detail.get("RepairerId")));
+                log_item.setTarget_user_id((Integer) issue_log_detail.get(REPAIRER_ID));
+                if ((Integer) issue_log_detail.get(REPAIRER_ID) > 0) {
+                    log_item.setTarget_user_name(user_id_real_name_map.get(issue_log_detail.get(REPAIRER_ID)));
                 } else {
                     log_item.setTarget_user_name("");
                 }
@@ -662,8 +678,8 @@ public class IssueServiceImpl implements IIssueService {
 /*
                 if (issue_log_info.get(i).getStatus().equals(HouseQmCheckTaskIssueLogStatus.Repairing.getValue())) {
 */
-                if (StringUtils.isNotBlank((String) issue_log_detail.get("RepairerFollowerIds"))) {
-                    List<Integer> followers_id = StringSplitToListUtil.splitToIdsComma((String) issue_log_detail.get("RepairerFollowerIds"), ",");
+                if (StringUtils.isNotBlank((String) issue_log_detail.get(REPAIRER_FOLLOWER_IDS))) {
+                    List<Integer> followers_id = StringSplitToListUtil.splitToIdsComma((String) issue_log_detail.get(REPAIRER_FOLLOWER_IDS), ",");
                     for (int j = 0; j < followers_id.size(); j++) {
                         if (user_id_real_name_map.containsKey(followers_id.get(j))) {
                             followers.add(user_id_real_name_map.get(followers_id.get(j)));
@@ -672,7 +688,7 @@ public class IssueServiceImpl implements IIssueService {
                     }
                 }
                     HashMap<String, Object> log_data = Maps.newHashMap();
-                    log_data.put("plan_end_on", issue_log_detail.get("PlanEndOn"));
+                    log_data.put("plan_end_on", issue_log_detail.get(PLAN_END_ON));
                     log_data.put("followers", followers);
                 log_item.setData(JSON.toJSONString(log_data));
                     items.add(log_item);
@@ -700,7 +716,7 @@ public class IssueServiceImpl implements IIssueService {
         if (!hasCreateLog) {
             HouseQmCheckTaskIssueHistoryLogVo history_log = new HouseQmCheckTaskIssueHistoryLogVo();
             HouseQmCheckTaskIssue issue_infos = houseQmCheckTaskIssueService.selectByUuidAndNotDelete(issueUuid);
-            Integer senderId = issue_info.getSenderId();
+            Integer senderId = issueInfo.getSenderId();
             User user_info = userService.selectByUserIdAndNotDelete(senderId);
             history_log.setUser_id(senderId);
             history_log.setUser_name(user_info.getRealName());
@@ -719,13 +735,13 @@ public class IssueServiceImpl implements IIssueService {
 
     @Override
     public void deleteHouseqmCheckTaskIssueByProjectAndUuid(Integer projectId, String issueUuid) {
-        HouseQmCheckTaskIssue issue_info = getIssueByProjectIdAndUuid(projectId, issueUuid);
-        if (issue_info == null) {
-            throw new LjBaseRuntimeException(-1, "找不到此问题");
+        HouseQmCheckTaskIssue issueInfo = getIssueByProjectIdAndUuid(projectId, issueUuid);
+        if (issueInfo == null) {
+            throw new LjBaseRuntimeException(-1, CAN_NOT_FIND_THIS_ISSUE);
         }
-        issue_info.setUpdateAt(new Date());
-        issue_info.setDeleteAt(new Date());
-        houseQmCheckTaskIssueService.update(issue_info);
+        issueInfo.setUpdateAt(new Date());
+        issueInfo.setDeleteAt(new Date());
+        houseQmCheckTaskIssueService.update(issueInfo);
     }
 
     @Override
@@ -734,7 +750,7 @@ public class IssueServiceImpl implements IIssueService {
         if (issueInfo == null) {
             LjBaseResponse<Object> response = new LjBaseResponse<>();
             response.setResult(1);
-            response.setMessage("找不到此问题");
+            response.setMessage(CAN_NOT_FIND_THIS_ISSUE);
             return response;
         }
 
@@ -770,26 +786,26 @@ public class IssueServiceImpl implements IIssueService {
 
 
         HashMap<String, Object> logDetail = Maps.newHashMap();
-        logDetail.put("PlanEndOn", -1);
-        logDetail.put("EndOn", -1);
-        logDetail.put("RepairerId", -1);
-        logDetail.put("RepairerFollowerIds", "");
-        logDetail.put("Condition", -1);
-        logDetail.put("AreaId", -1);
+        logDetail.put(PLAN_END_ON, -1);
+        logDetail.put(END_ON, -1);
+        logDetail.put(REPAIRER_ID, -1);
+        logDetail.put(REPAIRER_FOLLOWER_IDS, "");
+        logDetail.put(CONDITION, -1);
+        logDetail.put(AREA_ID, -1);
         logDetail.put("PosX", -1);
         logDetail.put("PosY", -1);
         logDetail.put("Typ", -1);
-        logDetail.put("Title", "");
-        logDetail.put("CheckItemKey", "");
-        logDetail.put("CategoryCls", -1);
-        logDetail.put("CategoryKey", "");
-        logDetail.put("DrawingMD5", "");
-        logDetail.put("RemoveMemoAudioMd5List", "");
-        logDetail.put("IssueReason", -1);
-        logDetail.put("IssueReasonDetail", "");
-        logDetail.put("IssueSuggest", "");
-        logDetail.put("PotentialRisk", "");
-        logDetail.put("PreventiveActionDetail", "");
+        logDetail.put(TITLE, "");
+        logDetail.put(CHECK_ITEM_KEY, "");
+        logDetail.put(CATEGORY_CLS, -1);
+        logDetail.put(CATEGORY_KEY, "");
+        logDetail.put(DRAWING_MD5, "");
+        logDetail.put(REMOVE_MEMO_AUDIO_MD5_LIST, "");
+        logDetail.put(ISSUE_REASON, -1);
+        logDetail.put(ISSUE_REASON_DETAIL, "");
+        logDetail.put(ISSUE_SUGGEST, "");
+        logDetail.put(POTENTIAL_RISK, "");
+        logDetail.put(PREVENTIVE_ACTION_DETAIL, "");
 
         HouseQmCheckTaskIssueLog newIssueLog = new HouseQmCheckTaskIssueLog();
         newIssueLog.setProjectId(projectId);
@@ -816,14 +832,14 @@ public class IssueServiceImpl implements IIssueService {
         if (issueInfo == null) {
             LjBaseResponse<Object> response = new LjBaseResponse<>();
             response.setResult(1);
-            response.setMessage("找不到此问题");
+            response.setMessage(CAN_NOT_FIND_THIS_ISSUE);
             return response;
         }
         if (DateUtil.datetimeToTimeStamp(issueInfo.getPlanEndOn())
                 == plan_end_on) {
             LjBaseResponse<Object> response = new LjBaseResponse<>();
             response.setResult(0);
-            response.setMessage("没有改变");
+            response.setMessage(NO_CHANGES);
             return response;
         }
         issueInfo.setPlanEndOn(DateUtil.transForDate(plan_end_on));
@@ -834,26 +850,26 @@ public class IssueServiceImpl implements IIssueService {
             status = HouseQmCheckTaskIssueStatusEnum.AssignNoReform.getId();
         }
         HashMap<String, Object> detail = Maps.newHashMap();
-        detail.put("PlanEndOn", -1);
-        detail.put("EndOn", -1);
-        detail.put("RepairerId", -1);
-        detail.put("RepairerFollowerIds", "");
-        detail.put("Condition", -1);
-        detail.put("AreaId", -1);
+        detail.put(PLAN_END_ON, -1);
+        detail.put(END_ON, -1);
+        detail.put(REPAIRER_ID, -1);
+        detail.put(REPAIRER_FOLLOWER_IDS, "");
+        detail.put(CONDITION, -1);
+        detail.put(AREA_ID, -1);
         detail.put("PosX", -1);
         detail.put("PosY", -1);
         detail.put("Typ", -1);
-        detail.put("Title", "");
-        detail.put("CheckItemKey", "");
-        detail.put("CategoryCls", -1);
-        detail.put("CategoryKey", "");
-        detail.put("DrawingMD5", "");
-        detail.put("RemoveMemoAudioMd5List", "");
-        detail.put("IssueReason", -1);
-        detail.put("IssueReasonDetail", "");
-        detail.put("IssueSuggest", "");
-        detail.put("PotentialRisk", "");
-        detail.put("PreventiveActionDetail", "");
+        detail.put(TITLE, "");
+        detail.put(CHECK_ITEM_KEY, "");
+        detail.put(CATEGORY_CLS, -1);
+        detail.put(CATEGORY_KEY, "");
+        detail.put(DRAWING_MD5, "");
+        detail.put(REMOVE_MEMO_AUDIO_MD5_LIST, "");
+        detail.put(ISSUE_REASON, -1);
+        detail.put(ISSUE_REASON_DETAIL, "");
+        detail.put(ISSUE_SUGGEST, "");
+        detail.put(POTENTIAL_RISK, "");
+        detail.put(PREVENTIVE_ACTION_DETAIL, "");
         HouseQmCheckTaskIssueLog issueLog = new HouseQmCheckTaskIssueLog();
         issueLog.setProjectId(issueInfo.getProjectId());
         issueLog.setTaskId(issueInfo.getTaskId());
@@ -879,7 +895,7 @@ public class IssueServiceImpl implements IIssueService {
         if (issueInfo == null) {
             LjBaseResponse<Object> response = new LjBaseResponse<>();
             response.setResult(1);
-            response.setMessage("找不到此问题");
+            response.setMessage(CAN_NOT_FIND_THIS_ISSUE);
             return response;
         }
         if (issueInfo.getStatus().equals(status)) {
@@ -910,26 +926,26 @@ public class IssueServiceImpl implements IIssueService {
         issueInfo.setDestroyUser(uid);
         houseQmCheckTaskIssueService.update(issueInfo);
         HashMap<String, Object> logDetail = Maps.newHashMap();
-        logDetail.put("PlanEndOn", -1);
-        logDetail.put("EndOn", -1);
-        logDetail.put("RepairerId", -1);
-        logDetail.put("RepairerFollowerIds", "");
-        logDetail.put("Condition", -1);
-        logDetail.put("AreaId", -1);
+        logDetail.put(PLAN_END_ON, -1);
+        logDetail.put(END_ON, -1);
+        logDetail.put(REPAIRER_ID, -1);
+        logDetail.put(REPAIRER_FOLLOWER_IDS, "");
+        logDetail.put(CONDITION, -1);
+        logDetail.put(AREA_ID, -1);
         logDetail.put("PosX", -1);
         logDetail.put("PosY", -1);
         logDetail.put("Typ", -1);
-        logDetail.put("Title", "");
-        logDetail.put("CheckItemKey", "");
-        logDetail.put("CategoryCls", -1);
-        logDetail.put("CategoryKey", "");
-        logDetail.put("DrawingMD5", "");
-        logDetail.put("RemoveMemoAudioMd5List", "");
-        logDetail.put("IssueReason", -1);
-        logDetail.put("IssueReasonDetail", "");
-        logDetail.put("IssueSuggest", "");
-        logDetail.put("PotentialRisk", "");
-        logDetail.put("PreventiveActionDetail", "");
+        logDetail.put(TITLE, "");
+        logDetail.put(CHECK_ITEM_KEY, "");
+        logDetail.put(CATEGORY_CLS, -1);
+        logDetail.put(CATEGORY_KEY, "");
+        logDetail.put(DRAWING_MD5, "");
+        logDetail.put(REMOVE_MEMO_AUDIO_MD5_LIST, "");
+        logDetail.put(ISSUE_REASON, -1);
+        logDetail.put(ISSUE_REASON_DETAIL, "");
+        logDetail.put(ISSUE_SUGGEST, "");
+        logDetail.put(POTENTIAL_RISK, "");
+        logDetail.put(PREVENTIVE_ACTION_DETAIL, "");
         HouseQmCheckTaskIssueLog issueLog = new HouseQmCheckTaskIssueLog();
         issueLog.setProjectId(issueInfo.getProjectId());
         issueLog.setTaskId(issueInfo.getTaskId());
@@ -972,8 +988,8 @@ public class IssueServiceImpl implements IIssueService {
             ExportNotifyDetail2Vo vo = new ExportNotifyDetail2Vo();
             vo.setIssue_id(issueList.get(i).getId());
             vo.setContent(issueList.get(i).getContent());
-            if ((String) JSON.parseObject(issueList.get(i).getDetail(), Map.class).get("IssueSuggest") != null) {
-                vo.setIssue_suggest((String) JSON.parseObject(issueList.get(i).getDetail(), Map.class).get("IssueSuggest"));
+            if ((String) JSON.parseObject(issueList.get(i).getDetail(), Map.class).get(ISSUE_SUGGEST) != null) {
+                vo.setIssue_suggest((String) JSON.parseObject(issueList.get(i).getDetail(), Map.class).get(ISSUE_SUGGEST));
             } else {
                 vo.setIssue_suggest("");
             }
@@ -1100,9 +1116,9 @@ public class IssueServiceImpl implements IIssueService {
                     }
                 }
             }
-            List<ExportReplyDetail.ExportIssueDetail> issue_detail = input.getIssue_detail();
-            issue_detail.add(detail);
-            input.setIssue_detail(issue_detail);
+            List<ExportReplyDetail.ExportIssueDetail> issueDetail = input.getIssue_detail();
+            issueDetail.add(detail);
+            input.setIssue_detail(issueDetail);
         }
         // 调用方法导出word
         Map<String, Object> map = Maps.newHashMap();
@@ -1134,7 +1150,7 @@ public class IssueServiceImpl implements IIssueService {
         if (issueInfo == null) {
             LjBaseResponse<Object> response = new LjBaseResponse<>();
             response.setResult(1);
-            response.setMessage("找不到此问题");
+            response.setMessage(CAN_NOT_FIND_THIS_ISSUE);
             return response;
         }
         Integer status = -1;
@@ -1160,29 +1176,29 @@ public class IssueServiceImpl implements IIssueService {
             repairFollowerIds = ","+s+",";
         }
         HashMap<String, Object> logDetail = Maps.newHashMap();
-        logDetail.put("PlanEndOn", -1);
-        logDetail.put("EndOn", -1);
-        logDetail.put("RepairerId", -1);
-        logDetail.put("RepairerFollowerIds", "");
-        logDetail.put("Condition", -1);
-        logDetail.put("AreaId", -1);
+        logDetail.put(PLAN_END_ON, -1);
+        logDetail.put(END_ON, -1);
+        logDetail.put(REPAIRER_ID, -1);
+        logDetail.put(REPAIRER_FOLLOWER_IDS, "");
+        logDetail.put(CONDITION, -1);
+        logDetail.put(AREA_ID, -1);
         logDetail.put("PosX", -1);
         logDetail.put("PosY", -1);
         logDetail.put("Typ", -1);
-        logDetail.put("Title", "");
-        logDetail.put("CheckItemKey", "-1");
-        logDetail.put("CategoryCls", -1);
-        logDetail.put("CategoryKey", "-1");
-        logDetail.put("DrawingMD5", "-1");
-        logDetail.put("RemoveMemoAudioMd5List", "-1");
-        logDetail.put("IssueReason", -1);
-        logDetail.put("IssueReasonDetail", "-1");
-        logDetail.put("IssueSuggest", "-1");
-        logDetail.put("PotentialRisk", "-1");
-        logDetail.put("PreventiveActionDetail", "-1");
+        logDetail.put(TITLE, "");
+        logDetail.put(CHECK_ITEM_KEY, "-1");
+        logDetail.put(CATEGORY_CLS, -1);
+        logDetail.put(CATEGORY_KEY, "-1");
+        logDetail.put(DRAWING_MD5, "-1");
+        logDetail.put(REMOVE_MEMO_AUDIO_MD5_LIST, "-1");
+        logDetail.put(ISSUE_REASON, -1);
+        logDetail.put(ISSUE_REASON_DETAIL, "-1");
+        logDetail.put(ISSUE_SUGGEST, "-1");
+        logDetail.put(POTENTIAL_RISK, "-1");
+        logDetail.put(PREVENTIVE_ACTION_DETAIL, "-1");
         if (repairerId.equals(issueInfo.getRepairerId()) && repairFollowerIds.equals(issueInfo.getRepairerFollowerIds())) {
             LjBaseResponse<Object> response = new LjBaseResponse<>();
-            response.setMessage("没有改变");
+            response.setMessage(NO_CHANGES);
             return response;
         }
         if (!issueInfo.getRepairerId().equals(repairerId)) {
@@ -1194,7 +1210,7 @@ public class IssueServiceImpl implements IIssueService {
             }
             issueInfo.setRepairerId(repairerId);
             notifyUserIds.add(String.valueOf(repairerId));//# 增加待办问题埋点
-            logDetail.put("RepairerId", issueInfo.getRepairerId());
+            logDetail.put(REPAIRER_ID, issueInfo.getRepairerId());
         }
         if (issueInfo.getRepairerId().equals(0)) {
             issueInfo.setStatus(HouseQmCheckTaskIssueStatus.NoteNoAssign.getValue());
@@ -1209,7 +1225,7 @@ public class IssueServiceImpl implements IIssueService {
                     notifyUserIds.add(userIds.get(i));
                 }
             }
-            logDetail.put("RepairerFollowerIds", repairFollowerIds);
+            logDetail.put(REPAIRER_FOLLOWER_IDS, repairFollowerIds);
             issueInfo.setRepairerFollowerIds(repairFollowerIds);
 
         }
@@ -1279,7 +1295,7 @@ public class IssueServiceImpl implements IIssueService {
         ArrayList<HouseQmCheckTaskIssueUser> insertData = Lists.newArrayList();
         HashMap<Object, Object> baseData = Maps.newHashMap();
         baseData.put("task_id", issueInfo.getTaskId());
-        baseData.put("issue_uuid", issueInfo.getUuid());
+        baseData.put("issueUuid", issueInfo.getUuid());
         baseData.put("role_type", HouseQmUserInIssueRoleTypeEnum.RepairerFollower.getId());
         baseData.put("create_at", new Date());
         baseData.put("update_at", new Date());
@@ -1312,7 +1328,7 @@ public class IssueServiceImpl implements IIssueService {
     public LjBaseResponse<List<HouseQmCheckTaskIssueDetailRepairLogVo>> getDetailRepairLogByIssueUuid(String issueUuid) {
         HouseQmCheckTaskIssue issueInfo = houseQmCheckTaskIssueService.selectByUuidAndNotDelete(issueUuid);
         if (issueInfo == null) {
-            throw new LjBaseRuntimeException(272, "找不到此问题");
+            throw new LjBaseRuntimeException(272, CAN_NOT_FIND_THIS_ISSUE);
         }
         ArrayList<Integer> issueLogStatus = Lists.newArrayList();
         issueLogStatus.add(HouseQmCheckTaskIssueLogStatus.ReformNoCheck.getValue());
@@ -1322,7 +1338,7 @@ public class IssueServiceImpl implements IIssueService {
         if (one < 1) {
             LjBaseResponse<List<HouseQmCheckTaskIssueDetailRepairLogVo>> response = new LjBaseResponse<>();
             response.setResult(0);
-            response.setMessage("找不到此问题");
+            response.setMessage(CAN_NOT_FIND_THIS_ISSUE);
             return response;
 
         }
@@ -1364,7 +1380,7 @@ public class IssueServiceImpl implements IIssueService {
         if (issueInfo == null) {
             LjBaseResponse<IssueInfoVo> response = new LjBaseResponse<>();
             response.setResult(1);
-            response.setMessage("找不到此问题");
+            response.setMessage(CAN_NOT_FIND_THIS_ISSUE);
             return response;
         }
         Integer taskId = issueInfo.getTaskId();
@@ -1464,11 +1480,11 @@ public class IssueServiceImpl implements IIssueService {
             audios.add(houseQmCheckTaskIssueAttachment);
         }
         HashMap<String, Object> detailMap = Maps.newHashMap();
-        detailMap.put("issue_reason", issueDetail.get("IssueReason"));
-        detailMap.put("issue_reason_detail", issueDetail.get("IssueReasonDetail"));
-        detailMap.put("issue_suggest", issueDetail.get("IssueSuggest"));
-        detailMap.put("potential_risk", issueDetail.get("PotentialRisk"));
-        detailMap.put("preventive_action_detail", issueDetail.get("PreventiveActionDetail"));
+        detailMap.put("issue_reason", issueDetail.get(ISSUE_REASON));
+        detailMap.put("issue_reason_detail", issueDetail.get(ISSUE_REASON_DETAIL));
+        detailMap.put("issue_suggest", issueDetail.get(ISSUE_SUGGEST));
+        detailMap.put("potential_risk", issueDetail.get(POTENTIAL_RISK));
+        detailMap.put("preventive_action_detail", issueDetail.get(PREVENTIVE_ACTION_DETAIL));
         ArrayList<IssueInfoVo.HouseQmCheckTaskIssueDetailEditLog> editLogs = Lists.newArrayList();
 
         //  # 为什么是-1？不知道，照着之前能到写的
