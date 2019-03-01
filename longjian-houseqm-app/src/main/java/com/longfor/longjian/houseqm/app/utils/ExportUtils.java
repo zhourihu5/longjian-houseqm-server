@@ -1,5 +1,6 @@
 package com.longfor.longjian.houseqm.app.utils;
 
+import com.longfor.longjian.common.exception.LjBaseRuntimeException;
 import com.longfor.longjian.houseqm.app.vo.ExportReplyDetail;
 import com.longfor.longjian.houseqm.app.vo.export.NodeDataVo;
 import com.longfor.longjian.houseqm.app.vo.export.NodeVo;
@@ -293,8 +294,9 @@ public class ExportUtils {
         writer.close();
         // 导出文件
         FileUtil.Load(file.getAbsolutePath(), response);
-        file.delete(); // 删除临时文件
-
+        if(! file.delete()){
+            throw  new LjBaseRuntimeException(-1,"excel删除失败");
+        }
     }
 
     public static SXSSFWorkbook exportInspectionSituationExcel(List<InspectionHouseStatusInfoVo> data) {
@@ -429,7 +431,7 @@ public class ExportUtils {
         try {
             xmlToken = XmlToken.Factory.parse(picXml);
         } catch (XmlException xe) {
-            xe.printStackTrace();
+           log.error(xe.getMessage());
         }
         inline.set(xmlToken);
         inline.setDistT(0);
@@ -509,7 +511,7 @@ public class ExportUtils {
         try {
             xmlToken = XmlToken.Factory.parse(picXml);
         } catch (XmlException xe) {
-            xe.printStackTrace();
+           log.error("error:"+xe);
         }
         inline.set(xmlToken);
         //graphicData.set(xmlToken);

@@ -1,4 +1,5 @@
 package com.longfor.longjian.houseqm.app.test;
+import com.longfor.longjian.common.exception.LjBaseRuntimeException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import java.io.*;
@@ -202,16 +203,20 @@ public class ZipUtils {
          * @param file
          */
         public static void deleteFile(File file) {
-            if (file.exists()) {                               // 判断文件是否存在
-                if (file.isFile()) {                           // 判断是否是文件
-                    file.delete();
-                } else if (file.isDirectory()) {               // 否则如果它是一个目录
-                    File files[] = file.listFiles();           // 声明目录下所有的文件 files[];
-                    for (int i = 0; i < files.length; i++) {   // 遍历目录下所有的文件
-                        deleteFile(files[i]);                  // 把每个文件 用这个方法进行迭代
+            if (file.exists()) {
+                if (file.isFile()) {
+                    if(!file.delete()){
+                        throw  new LjBaseRuntimeException(-1,"文件删除失败");
+                    }
+                } else if (file.isDirectory()) {
+                    File files[] = file.listFiles();
+                    for (int i = 0; i < files.length; i++) {
+                        deleteFile(files[i]);
                     }
                 }
-                file.delete();
+              if( !file.delete()){
+                  throw  new LjBaseRuntimeException(-1,"文件删除失败");
+              }
             }
         }
 
@@ -234,11 +239,11 @@ public class ZipUtils {
             // excel文件路径
             oldResPath.add("d:\\a.xlsx");
             oldResPath.add("d:\\b.xlsx");
-            String newResPath = "d:\\" + "excel" + dateToString(); // 生成的文件夹名
-            String zipPath = newResPath + ".zip";                  // 压缩问价夹名
+            String newResPath = "d:\\" + "excel" + dateToString();
+            String zipPath = newResPath + ".zip";
 
-            copyResource(oldResPath, newResPath);                  // 把excel拷贝到同个文件目录下
-            createZip(newResPath, zipPath);                        // 打包改目录成.zip包
+            copyResource(oldResPath, newResPath);
+            createZip(newResPath, zipPath);
         }
     }
 

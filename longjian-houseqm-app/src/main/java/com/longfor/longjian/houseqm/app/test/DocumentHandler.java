@@ -1,5 +1,6 @@
 package com.longfor.longjian.houseqm.app.test;
 
+import com.longfor.longjian.common.exception.LjBaseRuntimeException;
 import com.longfor.longjian.houseqm.util.DateUtil;
 import freemarker.template.Configuration;
 import freemarker.template.ObjectWrapper;
@@ -140,10 +141,10 @@ public class DocumentHandler {
             if(resp!=null) {
                 resp.setCharacterEncoding("utf-8");
                 resp.setContentType("application/msword");
+                docName = new String(docName.getBytes("UTF-8"), "ISO-8859-1");
                 resp.setHeader("Content-disposition", "attachment;filename=" + docName + ".doc");
             }
-            docName = new String(docName.getBytes("UTF-8"), "ISO-8859-1");
-            byte[] buffer = new byte[512]; // 缓冲区
+            byte[] buffer = new byte[512];
             int bytesToRead = -1;
             while ((bytesToRead = fin.read(buffer)) != -1) {
                 sos.write(buffer, 0, bytesToRead);
@@ -154,7 +155,9 @@ public class DocumentHandler {
             log.error("error:",e.getMessage());
         }finally{
             if (outFile != null) {
-                outFile.delete(); // 删除临时文件
+                if(outFile.delete()){
+                   log.info("文件删除成功");
+                }
             }
         }
         // 文档下载
@@ -273,7 +276,10 @@ public class DocumentHandler {
             try {
                 if (fin!=null) fin.close();
                 if (out!=null) out.close();
-                if (zipfile!=null) zipfile.delete();
+                if (zipfile!=null)if(!zipfile.delete()){
+                    throw new LjBaseRuntimeException(-1,"zip文件删除失败");
+                }
+
                 if (directory!=null) {
                     //递归删除目录及目录下文件
                     ZipUtils.deleteFile(directory);
