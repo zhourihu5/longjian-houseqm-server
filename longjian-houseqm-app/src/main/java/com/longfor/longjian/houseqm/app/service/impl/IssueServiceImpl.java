@@ -223,6 +223,7 @@ public class IssueServiceImpl implements IIssueService {
         Map<String, Object> condiMap = Maps.newHashMap();
         condiMap.put("projectId", req.getProject_id());
         condiMap.put("categoryCls", req.getCategory_cls());
+        if (req.getTask_id()==null)req.setTask_id(0);
         if (req.getTask_id() != null && req.getTask_id() > 0) condiMap.put("taskId", req.getTask_id());
         if (req.getStatus_in().length() > 0) condiMap.put("status", statusInList);
         if (req.getCategory_key().length() > 0) condiMap.put("categoryPathAndKey", "%/" + req.getCategory_key() + "/%");
@@ -234,9 +235,13 @@ public class IssueServiceImpl implements IIssueService {
             }
             condiMap.put("areaPathAndId", areaPathAndIdLikeList);
         }
+        if (req.getType()==null)req.setType(0);
         if (req.getType() != null && req.getType() > 0) condiMap.put("type", req.getType());
+        if (req.getCondition()==null)req.setCondition(0);
         if (req.getCondition() != null && req.getCondition() > 0) condiMap.put("condition", req.getCondition());
+        if (req.getChecker_id()==null)req.setChecker_id(0);
         if (req.getChecker_id() != null && req.getChecker_id() > 0) condiMap.put("senderId", req.getChecker_id());
+        if (req.getRepairer_id()==null)req.setRepairer_id(0);
         if (req.getRepairer_id() != null && req.getRepairer_id() > 0) condiMap.put("repairerId", req.getRepairer_id());
         if (req.getCreate_on_begin().length() > 0) condiMap.put("clientCreateAtGte", req.getCreate_on_begin() + " 00:00:00");
         if (req.getCreate_on_end().length() > 0) condiMap.put("clientCreateAtLte", req.getCreate_on_end() + " 23:59:59");
