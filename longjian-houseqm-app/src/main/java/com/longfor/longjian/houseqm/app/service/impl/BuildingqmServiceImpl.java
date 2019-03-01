@@ -160,18 +160,18 @@ public class BuildingqmServiceImpl implements IBuildingqmService {
             try {
                 BeanUtils.copyProperties(tvo, task);
             } catch (IllegalAccessException e) {
-                e.printStackTrace();
+              log.error(e.getMessage());
             } catch (InvocationTargetException e) {
-                e.printStackTrace();
+                log.error(e.getMessage());
             }
         }
         if (abm != null) {
             try {
                 BeanUtils.copyProperties(abm, task);
             } catch (IllegalAccessException e) {
-                e.printStackTrace();
+                log.error(e.getMessage());
             } catch (InvocationTargetException e) {
-                e.printStackTrace();
+                log.error(e.getMessage());
             }
         }
     }
