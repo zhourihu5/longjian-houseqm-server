@@ -1,6 +1,7 @@
 package com.longfor.longjian.houseqm.app.utils;
 
 import com.longfor.longjian.common.exception.CommonRuntimeException;
+import com.longfor.longjian.common.exception.LjBaseRuntimeException;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang.StringUtils;
 
@@ -103,7 +104,9 @@ public class FileUtil {
                 return f;
             }
             f.getParentFile().mkdirs();
-            f.createNewFile();
+          if(  !f.createNewFile()){
+              throw  new LjBaseRuntimeException(-1,"创建文件失败");
+          }
             if (f.isDirectory()) {
                 throw new RuntimeException("filePath is dir:" + filePath);
             }
@@ -163,7 +166,9 @@ public class FileUtil {
             }
             if (!dstFile.exists()) {
                 dstFile.getParentFile().mkdirs();
-                dstFile.createNewFile();
+            if(!dstFile.createNewFile()){
+               throw  new LjBaseRuntimeException(-1,"创建文件失败");
+            }
             }
             try(FileOutputStream out = new FileOutputStream(dstFile);FileInputStream in = new FileInputStream(srcFile)){
                 byte[] buffer = new byte[1024];
@@ -200,14 +205,18 @@ public class FileUtil {
             return;
         }
         if (!rootFile.isDirectory()) {
-            rootFile.delete();
+           if( !rootFile.delete()){
+                throw  new LjBaseRuntimeException(-1,"删除文件失败");
+           }
             return;
         }
         File[] subFiles = rootFile.listFiles();
         for (File subFile : subFiles) {
             deleteFile(subFile);
         }
-        rootFile.delete();
+        if( !rootFile.delete()){
+            throw  new LjBaseRuntimeException(-1,"删除文件失败");
+        }
 
     }
 
