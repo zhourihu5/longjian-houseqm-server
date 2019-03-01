@@ -1,4 +1,4 @@
-package com.longfor.longjian.houseqm.app.feginClient;
+package com.longfor.longjian.houseqm.app.feginclient;
 
 import com.longfor.gaia.gfs.web.feign.LFFeignClient;
 import com.longfor.gaia.gfs.web.feign.config.LFFeignConfiguration;
@@ -7,7 +7,6 @@ import com.longfor.longjian.common.req.feignClientReq.ProjectPermissionReq;
 import com.longfor.longjian.common.req.feignClientReq.TeamPermissionReq;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Service;
-import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 
@@ -15,7 +14,7 @@ import javax.validation.Valid;
 
 /**
  * @ProjectName: longjian-houseqm-server
- * @Package: com.longfor.longjian.houseqm.app.feginClient
+ * @Package: com.longfor.longjian.houseqm.app.feginclient
  * @ClassName: IPermissionFeignService
  * @Description: java类作用描述
  * @Author: hy
