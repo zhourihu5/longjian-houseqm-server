@@ -68,7 +68,7 @@ public class IusseTaskListController {
         try {
             ctrlTool.projPerm(request, "项目.移动验房.问题管理.查看");
         } catch (Exception e) {
-            log.error("error:",e.getMessage());
+            log.error(e.getMessage());
         }
         //通过id projectId 判断
         TaskResponse<HouseQmCheckTaskSimpleRspVo.TaskList> response = new TaskResponse<>();
@@ -127,9 +127,7 @@ public class IusseTaskListController {
             response.setMessage("PermissionDenied");
             return response;
         }
-        IssueListRsp result = iIssueService.list(req.getProject_id(), req.getCategory_cls(), req.getTask_id(), req.getCategory_key(), req.getCheck_item_key(),
-                req.getArea_ids(), req.getStatus_in(), req.getChecker_id(), req.getRepairer_id(), req.getType(), req.getCondition(), req.getKey_word(),
-                req.getCreate_on_begin(), req.getCreate_on_end(), req.is_overdue(), req.getPage(), req.getPage_size());
+        IssueListRsp result = iIssueService.list(req);
 
         response.setData(result);
         return response;
@@ -142,7 +140,7 @@ public class IusseTaskListController {
         try {
             ctrlTool.projPerm(request, "项目.工程检查.问题管理.查看");
         } catch (Exception e) {
-            log.error("error:",e.getMessage());
+            log.error(e.getMessage());
             response.setResult(1);
             response.setMessage(e.getMessage());
         }
@@ -240,7 +238,7 @@ public class IusseTaskListController {
         try {
             ctrlTool.projPerm(request, "项目.工程检查.问题管理.查看");
         } catch (Exception e) {
-            log.error("error:",e.getMessage());
+            log.error(e.getMessage());
         }
         LjBaseResponse<List<HouseQmCheckTaskIssueDetailRepairLogVo>> result = iIssueService.getDetailRepairLogByIssueUuid(issueUuid);
 

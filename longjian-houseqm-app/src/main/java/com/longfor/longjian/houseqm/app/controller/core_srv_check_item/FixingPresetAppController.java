@@ -7,6 +7,7 @@ import com.longfor.longjian.houseqm.app.vo.AppFixingPresetProtoVo;
 import com.longfor.longjian.houseqm.app.vo.AppListFixingPresetVo;
 import com.longfor.longjian.houseqm.po.zj2db.FixingPreset;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.collections.CollectionUtils;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -45,12 +46,11 @@ public class FixingPresetAppController {
     ) {
         List<FixingPreset> fixingPresetData = fixingPresetService.appGetFixingPreset(projectId, lastId, timestamp, limit);
 
-        if (fixingPresetData != null && fixingPresetData.size() > 0) {
+        if (CollectionUtils.isNotEmpty(fixingPresetData)) {
             lastId = fixingPresetData.get(fixingPresetData.size() - 1).getId();
         } else {
             lastId = -1;
         }
-
         List<AppFixingPresetProtoVo> items = Lists.newArrayList();
         LjBaseResponse<AppListFixingPresetVo> response = new LjBaseResponse<>();
         if(fixingPresetData!=null) {
@@ -79,6 +79,4 @@ public class FixingPresetAppController {
 
         return response;
     }
-
-
 }

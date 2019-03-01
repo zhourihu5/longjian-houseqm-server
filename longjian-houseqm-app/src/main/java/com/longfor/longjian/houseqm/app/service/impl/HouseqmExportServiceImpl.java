@@ -21,19 +21,11 @@ import com.longfor.longjian.houseqm.util.StringSplitToListUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Service;
-
 import javax.annotation.Resource;
 import java.util.*;
 import java.util.stream.Collectors;
 
-/**
- * @ProjectName: longjian-houseqm-server
- * @Package: com.longfor.longjian.houseqm.app.service.impl
- * @ClassName: HouseqmExportServiceImpl
- * @Description: java类作用描述
- * @Author: hy
- * @CreateDate: 2019/1/14 10:08
- */
+
 @Service
 @Slf4j
 public class HouseqmExportServiceImpl implements IHouseqmExportService {
@@ -205,17 +197,6 @@ public class HouseqmExportServiceImpl implements IHouseqmExportService {
         if (res.size() <= 0) {
             return "";//errors.New("没有任何导出数据。")
         }
-        // shellPath, err := filepath.Abs("shell/export_project_orders.py")
-
-
 
         return null;
-    }
-
-  /*  public static void main(String[] args) {
-        List<Integer> list = Arrays.asList(1, 2, 3);
-        String s = StringUtils.join(list, "/");
-        System.out.println(s);
-
-    }*/
-}
+    }}

@@ -7,7 +7,6 @@ import com.longfor.longjian.houseqm.po.zj2db.FixingPreset;
 import com.longfor.longjian.houseqm.util.DateUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
-
 import javax.annotation.Resource;
 import java.util.Date;
 import java.util.List;
@@ -30,7 +29,6 @@ public class FixingPresetAppServiceImpl implements FixingPresetAppService {
         }else{
             //int 转成date
             Date time = DateUtil.transForDate(timestamp);
-
             return fixingPresetService.selectByProAndIdAndUpdate(projectId,lastId,limit,time);
         }
     }

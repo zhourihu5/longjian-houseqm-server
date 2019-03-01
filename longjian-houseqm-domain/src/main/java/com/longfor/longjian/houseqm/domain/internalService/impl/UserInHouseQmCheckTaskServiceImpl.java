@@ -72,10 +72,7 @@ public class UserInHouseQmCheckTaskServiceImpl implements UserInHouseQmCheckTask
         return userInHouseQmCheckTaskMapper.selectByExample(example);
     }
 
-    /**
-     * @param userId
-     * @return
-     */
+
     @LFAssignDataSource("zhijian2")
     public List<UserInHouseQmCheckTask> searchByUserId(Integer userId) {
         Example example = new Example(UserInHouseQmCheckTask.class);
@@ -85,20 +82,13 @@ public class UserInHouseQmCheckTaskServiceImpl implements UserInHouseQmCheckTask
         return userInHouseQmCheckTaskMapper.selectByExample(example);
     }
 
-    /**
-     * @param taskIdList
-     * @return
-     */
+
     @LFAssignDataSource("zhijian2")
     public List<UserInHouseQmCheckTask> selectByTaskIds(Set<Integer> taskIdList) {
         List<Integer> list = taskIdList.stream().collect(Collectors.toList());
         return userInHouseQmCheckTaskMapper.selectByTaskIds(list, "false");
     }
 
-    /**
-     * @param taskIdList
-     * @return
-     */
     @LFAssignDataSource("zhijian2")
     public List<UserInHouseQmCheckTask> selectByTaskIdsEvenDeleted(Set<Integer> taskIdList) {
         Example example = new Example(UserInHouseQmCheckTask.class);
@@ -117,14 +107,7 @@ public class UserInHouseQmCheckTaskServiceImpl implements UserInHouseQmCheckTask
         return userInHouseQmCheckTaskMapper.selectByExample(example);
     }
 
-    /**
-     * @param checker
-     * @param uid
-     * @param task_id
-     * @return java.util.List<com.longfor.longjian.houseqm.po.zj2db.UserInHouseQmCheckTask>
-     * @author hy
-     * @date 2018/12/25 0025
-     */
+
     @Override
     @LFAssignDataSource("zhijian2")
     public List<UserInHouseQmCheckTask> selectSquadIdByTaskIdAndUserIdAndRoleTypeAndNoDeleted(Integer checker, Integer uid, Integer task_id) {
@@ -135,12 +118,7 @@ public class UserInHouseQmCheckTaskServiceImpl implements UserInHouseQmCheckTask
         return userInHouseQmCheckTaskMapper.selectByExample(example);
     }
 
-    /**
-     * @param squadIds
-     * @return java.util.List<com.longfor.longjian.houseqm.po.zj2db.UserInHouseQmCheckTask>
-     * @author hy
-     * @date 2018/12/25 0025
-     */
+
     @Override
     @LFAssignDataSource("zhijian2")
     public List<UserInHouseQmCheckTask> selectUserIdBySquadIdInAndNoDeleted(List<Integer> squadIds) {
@@ -152,12 +130,7 @@ public class UserInHouseQmCheckTaskServiceImpl implements UserInHouseQmCheckTask
         return userInHouseQmCheckTaskMapper.selectByExample(example);
     }
 
-    /**
-     * @param task_id
-     * @return com.longfor.longjian.houseqm.po.zj2db.UserInHouseQmCheckTask
-     * @author hy
-     * @date 2018/12/25 0025
-     */
+
     @Override
     @LFAssignDataSource("zhijian2")
     public List<UserInHouseQmCheckTask> selectUpdateAtByTaskIdAndNoDeletedOrderByUpdateAt(Integer task_id) {

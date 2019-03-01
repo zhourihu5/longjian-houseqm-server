@@ -1,12 +1,10 @@
 package com.longfor.longjian.houseqm.app.controller.v3houseqmstat;
 
 import com.google.common.collect.Lists;
-import com.google.common.collect.Maps;
 import com.longfor.longjian.common.base.LjBaseResponse;
 import com.longfor.longjian.common.util.CtrlTool;
 import com.longfor.longjian.houseqm.app.req.v3houseqmstat.InspectionSituationExportReq;
 import com.longfor.longjian.houseqm.app.service.IHouseqmStatService;
-import com.longfor.longjian.houseqm.app.service.IHouseqmStatisticService;
 import com.longfor.longjian.houseqm.app.utils.ExportUtils;
 import com.longfor.longjian.houseqm.app.vo.houseqmstat.InspectionHouseStatusInfoVo;
 import com.longfor.longjian.houseqm.consts.RepossessionStatusEnum;
@@ -24,20 +22,12 @@ import org.springframework.http.MediaType;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-
 import javax.annotation.Resource;
 import javax.servlet.ServletOutputStream;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import java.io.File;
-import java.io.FileInputStream;
 import java.io.IOException;
-import java.io.OutputStream;
-import java.net.URL;
-import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 /**
  * @ProjectName: longjian-houseqm-server
@@ -94,11 +84,6 @@ public class V3HouseqmStatController {
         response.setHeader("Content-Type", "application/vnd.ms-excel; charset=utf-8");
         response.setHeader("Content-Disposition", " attachment; filename=" + new String(title.getBytes("utf-8"), "iso8859-1") + ".xlsx"); //File name extension was wrong
         response.setHeader("Expires", " 0");
-        // 导出
-        /*Map<String, Object> map = Maps.newHashMap();
-        map.put("details", details);
-        ExportUtils.exportStatExcel("inspection_situation_excel_fhys.ftl", map, response, request);*/
-
         LjBaseResponse<Object> ljBaseResponse = new LjBaseResponse<>();
         ServletOutputStream os = response.getOutputStream();
         try {

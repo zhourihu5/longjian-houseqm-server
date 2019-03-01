@@ -7,6 +7,8 @@ import com.longfor.longjian.common.consts.checktask.*;
 import com.longfor.longjian.common.exception.LjBaseRuntimeException;
 import com.longfor.longjian.common.push.UmPushUtil;
 import com.longfor.longjian.common.push.xiaomi.XmPushUtil;
+import com.longfor.longjian.houseqm.app.req.IssueListDoActionReq;
+import com.longfor.longjian.houseqm.app.req.bgtask.ExportBuildingExcelReq;
 import com.longfor.longjian.houseqm.app.utils.ExportUtils;
 import com.longfor.longjian.houseqm.app.test.DocumentHandler;
 import com.longfor.longjian.houseqm.app.utils.FileUtil;
@@ -212,18 +214,18 @@ public class IssueServiceImpl implements IIssueService {
     }
 
     @Override
-    public Map<String, Object> exportExcel(Integer uid, Integer projectId, Integer categoryCls, Integer taskId, String categoryKey, String checkItemKey, String areaIds, String statusIn, Integer checkerId, Integer repairerId, Integer type, Integer condition, String keyWord, String createOnBegin, String createOnEnd, Boolean isOverDue) {
+    public Map<String, Object> exportExcel(Integer uid, ExportBuildingExcelReq req) {
 
         //准备数据
-        List<Integer> areaIdList = StringSplitToListUtil.splitToIdsComma(areaIds, ",");
-        List<Integer> statusInList = StringSplitToListUtil.splitToIdsComma(statusIn, ",");
+        List<Integer> areaIdList = StringSplitToListUtil.splitToIdsComma(req.getArea_ids(), ",");
+        List<Integer> statusInList = StringSplitToListUtil.splitToIdsComma(req.getStatus_in(), ",");
         Map<String, Object> condiMap = Maps.newHashMap();
-        condiMap.put("projectId", projectId);
-        condiMap.put("categoryCls", categoryCls);
-        if (taskId != null && taskId > 0) condiMap.put("taskId", taskId);
-        if (statusIn.length() > 0) condiMap.put("status", statusInList);
-        if (categoryKey.length() > 0) condiMap.put("categoryPathAndKey", "%/" + categoryKey + "/%");
-        if (checkItemKey.length() > 0) condiMap.put("checkItemKey", checkItemKey);
+        condiMap.put("projectId", req.getProject_id());
+        condiMap.put("categoryCls", req.getCategory_cls());
+        if (req.getTask_id() != null && req.getTask_id() > 0) condiMap.put("taskId", req.getTask_id());
+        if (req.getStatus_in().length() > 0) condiMap.put("status", statusInList);
+        if (req.getCategory_key().length() > 0) condiMap.put("categoryPathAndKey", "%/" + req.getCategory_key() + "/%");
+        if (req.getCheck_item_key().length() > 0) condiMap.put("checkItemKey", req.getCheck_item_key());
         if (areaIdList.size() > 0) {
             List<String> areaPathAndIdLikeList = Lists.newArrayList();
             for (Integer i : areaIdList) {
@@ -231,13 +233,13 @@ public class IssueServiceImpl implements IIssueService {
             }
             condiMap.put("areaPathAndId", areaPathAndIdLikeList);
         }
-        if (type != null && type > 0) condiMap.put("type", type);
-        if (condition != null && condition > 0) condiMap.put("condition", condition);
-        if (checkerId != null && checkerId > 0) condiMap.put("senderId", checkerId);
-        if (repairerId != null && repairerId > 0) condiMap.put("repairerId", repairerId);
-        if (createOnBegin.length() > 0) condiMap.put("clientCreateAtGte", createOnBegin + " 00:00:00");
-        if (createOnEnd.length() > 0) condiMap.put("clientCreateAtLte", createOnEnd + " 23:59:59");
-        if (isOverDue) {
+        if (req.getType() != null && req.getType() > 0) condiMap.put("type", req.getType());
+        if (req.getCondition() != null && req.getCondition() > 0) condiMap.put("condition", req.getCondition());
+        if (req.getChecker_id() != null && req.getChecker_id() > 0) condiMap.put("senderId", req.getChecker_id());
+        if (req.getRepairer_id() != null && req.getRepairer_id() > 0) condiMap.put("repairerId", req.getRepairer_id());
+        if (req.getCreate_on_begin().length() > 0) condiMap.put("clientCreateAtGte", req.getCreate_on_begin() + " 00:00:00");
+        if (req.getCreate_on_end().length() > 0) condiMap.put("clientCreateAtLte", req.getCreate_on_end() + " 23:59:59");
+        if (req.getIs_overdue()) {
             List<Integer> status1 = Lists.newArrayList();
             List<Integer> status2 = Lists.newArrayList();
             status1.add(HouseQmCheckTaskIssueStatusEnum.NoteNoAssign.getId());
@@ -247,10 +249,10 @@ public class IssueServiceImpl implements IIssueService {
             status2.add(HouseQmCheckTaskIssueStatusEnum.CheckYes.getId());
             condiMap.put("status2", status2);
         }
-        if (keyWord.length() > 0) {//content like xxx
-            condiMap.put("content", "%/" + keyWord + "/%");
-            if (StringSplitToListUtil.isInteger(keyWord)) {// or id=xxx
-                condiMap.put("id", keyWord);
+        if (req.getKey_word().length() > 0) {//content like xxx
+            condiMap.put("content", "%/" + req.getKey_word() + "/%");
+            if (StringSplitToListUtil.isInteger(req.getKey_word())) {// or id=xxx
+                condiMap.put("id", req.getKey_word());
             }
         }
         condiMap.put("deleted", "false");
@@ -301,7 +303,7 @@ public class IssueServiceImpl implements IIssueService {
         Map<Integer, User> user_map = createUserMap(user_ids);
         Map<Integer, Area> area_map = createAreaMap(area_paths);
         boolean condition_open = false;
-        ProjectSetting condition_setting = projectSettingService.getSettingByProjectIdSKey(projectId, "PROJ_ISSUE_CONDITION");
+        ProjectSetting condition_setting = projectSettingService.getSettingByProjectIdSKey(req.getProject_id(), "PROJ_ISSUE_CONDITION");
         if (condition_setting != null && condition_setting.getValue().equals("是")) {
             condition_open = true;
         }
@@ -347,7 +349,7 @@ public class IssueServiceImpl implements IIssueService {
         }
 
         String project_name = "";
-        Project project = projectService.getOneByProjId(projectId);
+        Project project = projectService.getOneByProjId(req.getProject_id());
         if (project != null) project_name = project.getName();
         // 数据 格式化到表格 输出
         SXSSFWorkbook wb = ExportUtils.exportExcel(data, condition_open);
@@ -355,7 +357,7 @@ public class IssueServiceImpl implements IIssueService {
         //        path = ret.get('path', '')
 
         String dt = DateUtil.getNowTimeStr("yyyyMMddHHmmss");
-        String fileName = String.format("%s-%s-问题列表_%s.xls", CategoryClsTypeEnum.getName(categoryCls), project_name, dt);
+        String fileName = String.format("%s-%s-问题列表_%s.xls", CategoryClsTypeEnum.getName(req.getCategory_cls()), project_name, dt);
         Map<String, Object> map = Maps.newHashMap();
         map.put("fileName", fileName);
         map.put("workbook", wb);
@@ -388,13 +390,11 @@ public class IssueServiceImpl implements IIssueService {
     }
 
     @Override
-    public IssueListRsp list(Integer projectId, Integer categoryCls, Integer taskId, String categoryKey, String checkItemKey, String areaIds, String statusIn,
-                             Integer checkerId, Integer repairerId, Integer type, Integer condition, String keyWord, String createOnBegin,
-                             String createOnEnd, Boolean isOverDue, Integer pageNum, Integer pageSize) {
+    public IssueListRsp list(IssueListDoActionReq req) {
 
         //PageInfo<IssueListVo> pageInfo = new PageInfo<>();
         IssueListRsp issueListRsp = new IssueListRsp();
-        Integer start = (pageNum - 1) * pageSize;
+        Integer start = (req.getPage()- 1) * req.getPage_size();
 
         //读取配置信息 env_info = dict(**config.ENV_INFO)  host_list: longjianapp.longhu.net lh.zj.com
         String[] hosts = envInfo.trim().split(" ");
@@ -404,15 +404,15 @@ public class IssueServiceImpl implements IIssueService {
         } else {
             host = "";
         }
-        List<Integer> areaIdList = StringSplitToListUtil.splitToIdsComma(areaIds, ",");
-        List<Integer> statusInList = StringSplitToListUtil.splitToIdsComma(statusIn, ",");
+        List<Integer> areaIdList = StringSplitToListUtil.splitToIdsComma(req.getArea_ids(), ",");
+        List<Integer> statusInList = StringSplitToListUtil.splitToIdsComma(req.getStatus_in(), ",");
         Map<String, Object> condiMap = Maps.newHashMap();
-        condiMap.put("projectId", projectId);
-        condiMap.put("categoryCls", categoryCls);
-        if (taskId != null && taskId > 0) condiMap.put("taskId", taskId);
-        if (statusIn.length() > 0) condiMap.put("status", statusInList);
-        if (categoryKey.length() > 0) condiMap.put("categoryPathAndKey", "%/" + categoryKey + "/%");
-        if (checkItemKey.length() > 0) condiMap.put("checkItemKey", checkItemKey);
+        condiMap.put("projectId", req.getProject_id());
+        condiMap.put("categoryCls", req.getCategory_cls());
+        if (req.getTask_id() != null && req.getTask_id() > 0) condiMap.put("taskId", req.getTask_id());
+        if (req.getStatus_in().length() > 0) condiMap.put("status", statusInList);
+        if (req.getCategory_key().length() > 0) condiMap.put("categoryPathAndKey", "%/" + req.getCategory_key() + "/%");
+        if (req.getCheck_item_key().length() > 0) condiMap.put("checkItemKey", req.getCheck_item_key());
         if (areaIdList.size() > 0) {
             List<String> areaPathAndIdLikeList = Lists.newArrayList();
             for (Integer i : areaIdList) {
@@ -420,13 +420,13 @@ public class IssueServiceImpl implements IIssueService {
             }
             condiMap.put("areaPathAndId", areaPathAndIdLikeList);
         }
-        if (type != null && type > 0) condiMap.put("type", type);
-        if (condition != null && condition > 0) condiMap.put("condition", condition);
-        if (checkerId != null && checkerId > 0) condiMap.put("senderId", checkerId);
-        if (repairerId != null && repairerId > 0) condiMap.put("repairerId", repairerId);
-        if (createOnBegin.length() > 0) condiMap.put("clientCreateAtGte", createOnBegin + " 00:00:00");
-        if (createOnEnd.length() > 0) condiMap.put("clientCreateAtLte", createOnEnd + " 23:59:59");
-        if (isOverDue) {
+        if (req.getType() != null && req.getType() > 0) condiMap.put("type", req.getType());
+        if (req.getCondition() != null && req.getCondition() > 0) condiMap.put("condition", req.getCondition());
+        if (req.getChecker_id() != null && req.getChecker_id() > 0) condiMap.put("senderId", req.getChecker_id());
+        if (req.getRepairer_id() != null && req.getRepairer_id() > 0) condiMap.put("repairerId", req.getRepairer_id());
+        if (req.getCreate_on_begin().length() > 0) condiMap.put("clientCreateAtGte", req.getCreate_on_begin() + " 00:00:00");
+        if (req.getCreate_on_end().length() > 0) condiMap.put("clientCreateAtLte", req.getCreate_on_end() + " 23:59:59");
+        if (req.is_overdue()) {
             List<Integer> status1 = Lists.newArrayList();
             List<Integer> status2 = Lists.newArrayList();
             status1.add(HouseQmCheckTaskIssueStatusEnum.NoteNoAssign.getId());
@@ -436,17 +436,17 @@ public class IssueServiceImpl implements IIssueService {
             status2.add(HouseQmCheckTaskIssueStatusEnum.CheckYes.getId());
             condiMap.put("status2", status2);
         }
-        if (keyWord.length() > 0) {//content like xxx
-            condiMap.put("content", "%" + keyWord + "%");
-            if (StringSplitToListUtil.isInteger(keyWord)) {// or id=xxx
-                condiMap.put("id", keyWord);
+        if (req.getKey_word().length() > 0) {//content like xxx
+            condiMap.put("content", "%" + req.getKey_word() + "%");
+            if (StringSplitToListUtil.isInteger(req.getKey_word())) {// or id=xxx
+                condiMap.put("id", req.getKey_word());
             }
         }
         condiMap.put("deleted", "false");
         // 调用HouseQmCheckTaskIssueService
         Integer total = houseQmCheckTaskIssueService.searchTotalByProjectIdAndCategoryClsAndNoDeletedAndDongTai(condiMap);
         condiMap.put("start", start);
-        condiMap.put("pageSize", pageSize);
+        condiMap.put("pageSize", req.getPage_size());
         condiMap.put("reverse", true);
         List<HouseQmCheckTaskIssue> validIssues = houseQmCheckTaskIssueService.searchByPageAndProjectIdAndCategoryClsAndNoDeletedAndDongTai(condiMap);
         // category_keys, repairers, check_items, area_paths, attachments = [], [], [], [], []
@@ -558,8 +558,7 @@ public class IssueServiceImpl implements IIssueService {
             item.setDetail(detail);
             issueList.add(item);
         }
-        /*pageInfo.setTotal(total);
-        pageInfo.setList(issueList);*/
+
         issueListRsp.setTotal(total);
         issueListRsp.setIssue_list(issueList);
         return issueListRsp;
@@ -590,7 +589,7 @@ public class IssueServiceImpl implements IIssueService {
                         int b = Integer.valueOf(s).intValue();
                         uids.add(b);
                     }catch(NumberFormatException e){
-                        log.error("error:",e.getMessage());
+                        log.error(e.getMessage());
                     }
                 }
                 }
@@ -1021,18 +1020,6 @@ public class IssueServiceImpl implements IIssueService {
         dataMap.put("request", list2);
         String str = DateUtil.getNowTimeStr("yyyy_MM_dd_hh_mm_ss");
         boolean b = new DocumentHandler().exportDoc("notify_template2", "导出问题通知单_" + str.replace("_", ""), dataMap, resp);
-
-
-      /*  User user = UserDao().get(uid);
-        if (user!=null){
-             userName=user.getRealName();
-        }else {
-             userName="";
-        }
-
-      String  path = exportRepairNotify2(input, userName);
-                String filename="整改通知单_ +"+DateUtil.getNowTimeStr("yyyy-MM-dd-HH-mm-ss")+"+.docx";
-*/
         return b;
     }
 
@@ -1129,7 +1116,7 @@ public class IssueServiceImpl implements IIssueService {
             map.put("filename", filename);
             map.put("doc", doc);
         } catch (Exception e) {
-            log.error("error:",e.getMessage());
+            log.error(e.getMessage());
             // 导出失败
             throw new LjBaseRuntimeException(500, "word 导出失败");
         }

@@ -119,11 +119,7 @@ public class AreaServiceImpl implements AreaService {
         return areaMapper.selectOneByExample(example);
     }
 
-    /**
-     * @param areaIds
-     * @param areaList
-     * @return
-     */
+
     @LFAssignDataSource("zhijian2")
     public List<Integer> getIntersectAreas(List<Integer> areaIds, List<Integer> areaList) {
         // 取出两个ids中的所有path
@@ -171,13 +167,6 @@ public class AreaServiceImpl implements AreaService {
         return result.stream().collect(Collectors.toSet()).stream().collect(Collectors.toList());
     }
 
-
-    /**
-     * @param projectId
-     * @param rootIds
-     * @param types
-     * @return
-     */
     @LFAssignDataSource("zhijian2")
     public List<Area> searchAreaListByRootIdAndTypes(Integer projectId, List<Integer> rootIds, List<Integer> types) {
         Example example = new Example(Area.class);
@@ -236,19 +225,10 @@ public class AreaServiceImpl implements AreaService {
         return areaMapper.selectAreaByIdInAndNoDeleted(areaPaths, "false");
     }
 
-  /*  @Override
-    @LFAssignDataSource("zhijian2")
-    public List<Area> selectAreaByIds(List<Integer> areaIds) {
-        return areaMapper.selectAreaByIds(areaIds);
-    }*/
 
 
-    /**
-     * 字符串筛选
-     *
-     * @param paths
-     * @return
-     */
+
+
     private List<String> getUnionPaths(List<String> paths) {
         Collections.sort(paths);
         String lastPath = "Nothing";
@@ -262,11 +242,6 @@ public class AreaServiceImpl implements AreaService {
         return result;
     }
 
-
-    /**
-     * @param areas
-     * @return
-     */
     private List<Area> remainTopAreas(List<Area> areas) {
         List<String> paths = Lists.newArrayList();
         Map<String, Area> areaMap = Maps.newHashMap();

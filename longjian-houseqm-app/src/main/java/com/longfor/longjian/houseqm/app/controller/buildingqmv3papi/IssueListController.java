@@ -23,7 +23,6 @@ import org.apache.poi.xwpf.usermodel.XWPFDocument;
 import org.springframework.http.MediaType;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
-
 import javax.annotation.Resource;
 import javax.servlet.ServletOutputStream;
 import javax.servlet.http.HttpServletRequest;
@@ -72,9 +71,7 @@ public class IssueListController {
         // 导出execel
         ServletOutputStream os = response.getOutputStream();
         try {
-            Map<String, Object> map = iIssueService.exportExcel(uid, req.getProject_id(), req.getCategory_cls(), req.getTask_id(), req.getCategory_key(), req.getCheck_item_key(),
-                    req.getArea_ids(), req.getStatus_in(), req.getChecker_id(), req.getRepairer_id(), req.getType(), req.getCondition(), req.getKey_word(),
-                    req.getCreate_on_begin(), req.getCreate_on_end(), req.getIs_overdue());
+            Map<String, Object> map = iIssueService.exportExcel(uid,req);
             String fileName = (String) map.get("fileName");
             SXSSFWorkbook wb = (SXSSFWorkbook) map.get("workbook");
             response.setContentType("application/vnd.ms-excel");
@@ -108,9 +105,7 @@ public class IssueListController {
         TaskResponse<IssueListRsp> response = new TaskResponse<>();
         try {
             ctrlTool.projPerm(request, "项目.工程检查.问题管理.查看");
-            IssueListRsp result = iIssueService.list(req.getProject_id(), req.getCategory_cls(), req.getTask_id(), req.getCategory_key(), req.getCheck_item_key(),
-                    req.getArea_ids(), req.getStatus_in(), req.getChecker_id(), req.getRepairer_id(), req.getType(), req.getCondition(), req.getKey_word(),
-                    req.getCreate_on_begin(), req.getCreate_on_end(), req.is_overdue(), req.getPage(), req.getPage_size());
+            IssueListRsp result = iIssueService.list(req);
 
             response.setData(result);
         } catch (Exception e) {
@@ -186,15 +181,6 @@ public class IssueListController {
 
         return null;
     }
-
-
-
-
-
-
-
-
-
     //导出整改回复单
     @RequestMapping(value = "repair_reply_export", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     public LjBaseResponse<Object> repairReplyExport(HttpServletRequest request, HttpServletResponse response) throws IOException {
@@ -212,7 +198,6 @@ public class IssueListController {
             Map<String, Object> map = iIssueService.repairReplyExport(Integer.parseInt(projectId), issueIds);
             XWPFDocument doc = (XWPFDocument) map.get("doc");
             String filename = (String) map.get("filename");
-            //response.setContentType("application/vnd.ms-word");
             response.setCharacterEncoding("utf-8");
             response.setHeader("Content-Disposition", "attachment;filename=" + new String(filename.getBytes("utf-8"), "iso8859-1"));
             doc.write(os);

@@ -1,9 +1,6 @@
 package com.longfor.longjian.houseqm.app.service.impl;
 
 import java.util.Date;
-
-
-
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
@@ -455,12 +452,7 @@ public class HouseqmStatisticServiceImpl implements IHouseqmStatisticService {
         return result;
     }
 
-    /**
-     * @param projectId
-     * @param taskId
-     * @param areaId
-     * @return
-     */
+
     public TaskStatVo.HouseStatVo getHouseQmCheckTaskHouseStatByTaskId(Integer projectId, Integer taskId, Integer areaId) {
         try {
             TaskStatVo.HouseStatVo houseStatVo = new TaskStatVo().new HouseStatVo();
@@ -510,14 +502,7 @@ public class HouseqmStatisticServiceImpl implements IHouseqmStatisticService {
         }
     }
 
-    /**
-     * @param projectId
-     * @param taskId
-     * @param areaId
-     * @param beginOn
-     * @param endOn
-     * @return
-     */
+
     public TaskRepairStatVo searchIssueRepairStatisticByProjTaskIdAreaIdBeginOnEndOn(Integer projectId, Integer taskId, Integer areaId, Date beginOn, Date endOn) {
         List<IssueRepairCount> issueCounts = null;
         List<Integer> types = Lists.newArrayList();
@@ -571,16 +556,9 @@ public class HouseqmStatisticServiceImpl implements IHouseqmStatisticService {
 
         taskRepairStatVo.setItem(item);
         return taskRepairStatVo;
-
-
     }
 
-    /**
-     * @param
-     * @return com.longfor.longjian.houseqm.app.vo.ProjectDailyListVo
-     * @author hy
-     * @date 2018/12/22 0022
-     */
+
     @Override
     public HouseqmStatisticCategoryIssueListRspMsgVo taskIssueRepairList(Integer projectId, Integer taskId, Integer areaId, Integer beginOn, Integer endOn, Integer timestamp, Integer planStatus, String source, Integer page, Integer pageSize) {
         Date beginOn1 = DateUtil.timeStampToDate(0, YYYY_MM_DD);
@@ -595,7 +573,6 @@ public class HouseqmStatisticServiceImpl implements IHouseqmStatisticService {
         if (planStatus <= 0 || planStatus > 5) throw new LjBaseRuntimeException(500, "invalid plan_status.");
         List<Integer> categoryClsList = getCategoryClsList(source);
         // 没有deleted_at is null
-        // HouseQmCheckTaskIssueListVo issueListVo = searchHouseQmCheckTaskIssueByProjTaskIdClsInAreaIdPlanStatusBeginOnEndOnPage(projectId, taskId, categoryClsList, areaId, planStatus, beginOn1, endOn1, page, pageSize);
         HouseQmCheckTaskIssueListDto issueListVo = houseQmCheckTaskIssueService.selectCountByProjectIdAndCategoryClsAndTypeAndStatusInAndDongTai2(projectId, taskId, categoryClsList, areaId, planStatus, beginOn1, endOn1, page, pageSize);
         HouseQmCheckTaskIssueListVo houseQmCheckTaskIssueListVo = new HouseQmCheckTaskIssueListVo();
         houseQmCheckTaskIssueListVo.setHouseQmCheckTaskIssues(issueListVo.getHouseQmCheckTaskIssues());
@@ -682,17 +659,7 @@ public class HouseqmStatisticServiceImpl implements IHouseqmStatisticService {
         return issueListRspMsgVo;
     }
 
-    /**
-     * @param projectId
-     * @param source
-     * @param areaId
-     * @param beginOn
-     * @param endOn
-     * @param timestamp
-     * @return com.longfor.longjian.houseqm.app.vo.IssueRepairStatisticVo
-     * @author hy
-     * @date 2018/12/24 0024
-     */
+
     @Override
     public IssueRepairStatisticVo projectIssueRepair(Integer projectId, String source, Integer areaId, Integer beginOn, Integer endOn, Integer timestamp) {
         Date beginOn1 = DateUtil.timeStampToDate(beginOn, YYYY_MM_DD);
@@ -716,7 +683,7 @@ public class HouseqmStatisticServiceImpl implements IHouseqmStatisticService {
         ArrayList<Integer> taskIds = Lists.newArrayList();
         taskIds.add(taskId);
         // 读取出正常检查任务的统计
-        CheckTaskHouseStatInfoVo normalStat = houseqmStaticService.GetHouseQmCheckTaskHouseStatByTaskId(prodectId, taskId, areaId);
+        CheckTaskHouseStatInfoVo normalStat = houseqmStaticService.getHouseQmCheckTaskHouseStatByTaskId(prodectId, taskId, areaId);
         // 读取出移动验房部分的统计
         RepossessionTasksStatusInfoVo repossessionInfo = houseqmStaticService.getRepossessionTasksStatusInfo(prodectId, taskIds, areaId);
         HouseQmCheckTaskHouseStatInfoVo result = new HouseQmCheckTaskHouseStatInfoVo();
@@ -901,16 +868,7 @@ public class HouseqmStatisticServiceImpl implements IHouseqmStatisticService {
     }
 
 
-    /**
-     * @param projectId
-     * @param categoryClsList
-     * @param areaId
-     * @param beginOn1
-     * @param endOn1
-     * @return com.longfor.longjian.houseqm.app.vo.IssueRepairStatisticVo
-     * @author hy
-     * @date 2018/12/24 0024
-     */
+
     private IssueRepairStatisticVo searchIssueRepairStatisticByProjCategoryClsInAreaIdBeginOnEndOn(Integer projectId, List<Integer> categoryClsList, Integer areaId, Date beginOn1, Date endOn1) {
         String nowStr = DateUtil.getNowTimeStr("yyyy-MM-dd HH:mm:ss");
         HashMap<String, Object> condiMap = new HashMap<>();
@@ -954,20 +912,7 @@ public class HouseqmStatisticServiceImpl implements IHouseqmStatisticService {
         return item;
     }
 
-    /**
-     * @param projectId
-     * @param taskId
-     * @param categoryClsList
-     * @param areaId
-     * @param planStatus
-     * @param beginOn
-     * @param endOn
-     * @param page
-     * @param pageSize
-     * @return com.longfor.longjian.houseqm.app.vo.HouseQmCheckTaskIssueListVo
-     * @author hy
-     * @date 2018/12/22 0022
-     */
+
     private HouseQmCheckTaskIssueListVo searchHouseQmCheckTaskIssueByProjTaskIdClsInAreaIdPlanStatusBeginOnEndOnPage(Integer projectId, Integer taskId, List<Integer> categoryClsList, Integer areaId, Integer planStatus, Date beginOn, Date endOn, Integer page, Integer pageSize) {
         HashMap<String, Object> condiMap = Maps.newHashMap();
         condiMap.put(PROJECT_ID, projectId);

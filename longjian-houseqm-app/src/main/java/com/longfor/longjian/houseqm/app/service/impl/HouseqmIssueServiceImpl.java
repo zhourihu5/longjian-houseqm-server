@@ -18,9 +18,7 @@ import com.longfor.longjian.houseqm.po.zj2db.Project;
 import com.longfor.longjian.houseqm.util.DateUtil;
 import com.longfor.longjian.houseqm.util.StringSplitToListUtil;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Service;
-
 import javax.annotation.Resource;
 import java.io.File;
 import java.io.FileOutputStream;
@@ -29,15 +27,6 @@ import java.io.OutputStreamWriter;
 import java.security.NoSuchAlgorithmException;
 import java.security.SecureRandom;
 import java.util.*;
-
-/**
- * @ProjectName: longjian-houseqm-server
- * @Package: com.longfor.longjian.houseqm.app.service.impl
- * @ClassName: HouseqmIssueServiceImpl
- * @Description: java类作用描述
- * @Author: hy
- * @CreateDate: 2019/1/10 17:27
- */
 @Service
 @Slf4j
 public class HouseqmIssueServiceImpl implements IHouseqmIssueService {
@@ -63,7 +52,7 @@ public class HouseqmIssueServiceImpl implements IHouseqmIssueService {
     public void deleteHouseQmCheckTaskIssueByProjUuid(Integer project_id, String issueUuid) throws Exception {
         int affect = houseQmCheckTaskIssueService.deleteHouseQmCheckTaskIssueByProjUuid(project_id, issueUuid);
         if (affect <= 0) {
-            throw new Exception("删除问题失败");
+            throw new LjBaseRuntimeException(-1,"删除问题失败");
         }
     }
 
@@ -90,7 +79,7 @@ public class HouseqmIssueServiceImpl implements IHouseqmIssueService {
         try {
             helper.execute();
         } catch (Exception e) {
-            log.error("error:",e.getMessage());
+            log.error(e.getMessage());
         }
         List<String> dropUuids = Lists.newArrayList();
         List<ApiHouseQmCheckTaskReportRsp> droppedIssue = helper.getDroppedIssue();
@@ -107,7 +96,6 @@ public class HouseqmIssueServiceImpl implements IHouseqmIssueService {
         List<HouseQmCheckTaskIssue> issues = houseQmCheckTaskIssueService.searchByProjIdAndUuidIn(project_id, uuids);
 
         int status = eInt;
-        //HouseQmCheckTaskIssueHelperVo helper = new HouseQmCheckTaskIssueHelperVo();
         helper.init(project_id);
         for (HouseQmCheckTaskIssue issue : issues) {
             if (HouseQmCheckTaskIssueStatusEnum.NoteNoAssign.getId().equals(issue.getStatus()) && repairer_id > 0) {
@@ -135,7 +123,7 @@ public class HouseqmIssueServiceImpl implements IHouseqmIssueService {
         try {
             helper.execute();
         } catch (Exception e) {
-            log.error("error:",e.getMessage());
+            log.error(e.getMessage());
         }
         List<String> dropUuids = Lists.newArrayList();
         List<ApiHouseQmCheckTaskReportRsp> droppedIssue = helper.getDroppedIssue();

@@ -60,7 +60,7 @@ public class DocumentHandler {
             t = configuration.getTemplate(tempName+".ftl");
             t.setEncoding("utf-8");
         } catch (IOException e) {
-            log.error("error:",e.getMessage());
+            log.error(e.getMessage());
         }
 
         //Writer out = null;
@@ -109,7 +109,7 @@ public class DocumentHandler {
             t = configuration.getTemplate(tempName + ".ftl");
             t.setEncoding("utf-8");
         } catch (IOException e) {
-            log.error("error:",e.getMessage());
+            log.error(e.getMessage());
         }
 
         // 输出文档路径及名称 ,以临时文件的形式导出服务器，再进行下载
@@ -150,9 +150,9 @@ public class DocumentHandler {
                 sos.write(buffer, 0, bytesToRead);
             }
         } catch (FileNotFoundException e) {
-            log.error("error:",e.getMessage());
+            log.error(e.getMessage());
         } catch (IOException e) {
-            log.error("error:",e.getMessage());
+            log.error(e.getMessage());
         }finally{
             if (outFile != null) {
                 if(outFile.delete()){
@@ -220,7 +220,7 @@ public class DocumentHandler {
             log.info("getImageBase:read bytes-"+readCount);
             in.close();
         } catch (IOException e) {
-            log.error("error:",e.getMessage());
+            log.error(e.getMessage());
         }
         BASE64Encoder encoder = new BASE64Encoder();
         return encoder.encode(data);
@@ -238,7 +238,7 @@ public class DocumentHandler {
         try {
             response .addHeader("Content-Disposition", "attachment;filename="+String.format("%s%s%s",  URLEncoder.encode("整改通知单_", "utf-8"),str.replace("_", ""),".zip"));
         } catch (UnsupportedEncodingException e) {
-            log.error("error:",e.getMessage());
+            log.error(e.getMessage());
         }
 
         configuration.setClassForTemplateLoading(DocumentHandler.class, "/templates");
@@ -270,7 +270,7 @@ public class DocumentHandler {
             status=true;
 
         }catch (Exception e) {
-            log.error("error:",e.getMessage());
+            log.error(e.getMessage());
         }
         finally {
             try {

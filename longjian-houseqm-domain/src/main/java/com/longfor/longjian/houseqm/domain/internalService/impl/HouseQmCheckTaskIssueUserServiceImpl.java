@@ -73,13 +73,6 @@ public class HouseQmCheckTaskIssueUserServiceImpl implements HouseQmCheckTaskIss
         return houseQmCheckTaskIssueUserMapper.selectIssueUUIDByUserIdAndTaskIdAndNoDeleted(uid,task_id,"false");
     }
 
-    /**
-     *
-     * @author hy
-     * @date 2018/12/25 0025
-     * @param task_id
-     * @return com.longfor.longjian.houseqm.po.zj2db.HouseQmCheckTaskIssueUser
-     */
     @Override
     @LFAssignDataSource(value = "zhijian2")
     public HouseQmCheckTaskIssueUser selectUpdateAtByTaskIdAndNoDeletedOrderByUpdateAt(Integer task_id) {

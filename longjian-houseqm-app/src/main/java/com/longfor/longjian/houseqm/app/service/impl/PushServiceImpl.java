@@ -20,14 +20,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-/**
- * @ProjectName: longjian-houseqm-server
- * @Package: com.longfor.longjian.houseqm.app.service.impl
- * @ClassName: PushServiceImpl
- * @Description: java类作用描述
- * @Author: hy
- * @CreateDate: 2019/1/12 17:52
- */
 @Service
 @Slf4j
 public class PushServiceImpl implements PushService {
@@ -43,7 +35,7 @@ public class PushServiceImpl implements PushService {
     @Override
     public void sendUPushByIssues(List<HouseQmCheckTaskIssueVo> issues) throws Exception {
         if (issues == null || issues.isEmpty()) {
-            log.warn("send_upush_empty！");
+            log.warn("send_upush_empty");
             return;
         }
         // 按TaskId把Issue分组
