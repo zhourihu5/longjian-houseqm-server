@@ -35,18 +35,7 @@ public class GraphqlExecuteService {
     private CachingPreparsedDocumentProvider cachingPreparsedDocumentProvider;
 
 
-    /**
-     * 1. 将VariableVO转为Map
-     * 2. 解析Schema并缓存
-     * 3. Graphql执行Schema
-     *
-     * @param groupId
-     * @param serviceName:  仅用于标记不同的Service和日志
-     * @param query         : query
-     * @param variableVo    : 参数值对
-     * @param graphQLSchema ：绑定和执行的Schema
-     * @return
-     */
+
     public Object execute(Integer groupId, String serviceName, String query, VariableVo variableVo, GraphQLSchema graphQLSchema) {
 
         Map<String, Object> variables = null;
@@ -73,10 +62,8 @@ public class GraphqlExecuteService {
 
 
         if (CollectionUtils.isNotEmpty(errors)) {
-            //for (GraphQLError error : errors) {
                 log.error("{}#graphql error {} details:{}", serviceName, errors.get(0).getErrorType(), errors.get(0).getMessage());
                 throw new LjBaseRuntimeException(410, errors.get(0).getMessage());
-            //}
         }
 
         log.debug("{}#execute - data: {}", serviceName, data);

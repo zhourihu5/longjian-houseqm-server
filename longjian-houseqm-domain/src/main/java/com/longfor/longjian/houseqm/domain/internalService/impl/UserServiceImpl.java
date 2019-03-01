@@ -27,12 +27,7 @@ public class UserServiceImpl implements UserService {
     @Resource
     UserMapper userMapper;
 
-    /**
-     * go 代码 unscoped = true
-     * getUsersByIds()
-     * @param users
-     * @return
-     */
+
     @LFAssignDataSource("zhijian2_apisvr")
     public Map<Integer, User> selectByIds(List<Integer> users){
         if (users==null||users.size()<=0)return Maps.newHashMap();

@@ -381,34 +381,4 @@ public class BuildingqmController {
         os.close();
         return ljBaseResponse;
     }
-
-    @RequestMapping(value = "test", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
-    public void testFileNameEncode(HttpServletRequest request, HttpServletResponse response) throws IOException {
-        response.setCharacterEncoding(UTF);
-        String fileNames = "测试汉字文件名.txt";
-        String codedfilename = URLEncoder.encode(fileNames, "utf-8");
-        String agent = request.getHeader("USER-AGENT");
-        if (null != agent && -1 != agent.indexOf("MSIE") || null != agent && -1 != agent.indexOf("Trident")) {// ie
-            log.debug("ie");
-            String name = java.net.URLEncoder.encode(fileNames, UTF);
-            codedfilename = name;
-        } else if (null != agent && -1 != agent.indexOf("Mozilla")) {// 火狐,chrome等
-            log.debug("Mozilla");
-            if (null != agent && -1 != agent.indexOf("Chrome")) {
-                log.debug("Chrome");
-            } else if (null != agent && -1 != agent.indexOf("Firefox")) {
-                log.debug("Firefox");
-            }
-            codedfilename = new String(fileNames.getBytes(UTF), "iso-8859-1");
-        } else {
-        }
-
-        response.addHeader("Content-Disposition",
-                "attachment;filename=" + codedfilename);
-
-        response.addHeader("Content-Type", "application/vnd.ms-excel; charset=utf-8");
-        response.addHeader("Expires", "0");
-        String content = "你好，内容是汉字。Hello,this is english";
-        response.getOutputStream().write(content.getBytes());
-    }
 }

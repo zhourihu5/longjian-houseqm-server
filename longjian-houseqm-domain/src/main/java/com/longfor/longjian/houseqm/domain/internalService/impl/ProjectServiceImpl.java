@@ -13,14 +13,7 @@ import javax.annotation.Resource;
 import java.util.ArrayList;
 import java.util.List;
 
-/**
- * @ProjectName: longjian-houseqm-server
- * @Package: com.longfor.longjian.houseqm.domain.internalService.impl
- * @ClassName: ProjectServiceImpl
- * @Description: java类作用描述
- * @Author: hy
- * @CreateDate: 2019/1/10 17:30
- */
+
 @Service
 @Slf4j
 public class ProjectServiceImpl implements ProjectService {

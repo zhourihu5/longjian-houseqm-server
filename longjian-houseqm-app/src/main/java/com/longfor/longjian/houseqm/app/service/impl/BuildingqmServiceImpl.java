@@ -40,7 +40,6 @@ import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletResponse;
-import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -101,10 +100,7 @@ public class BuildingqmServiceImpl implements IBuildingqmService {
     @Resource
     private IssueServiceImpl issueService;
 
-    /**
-     * @param userId
-     * @return
-     */
+
     public TaskListVo myTaskList(Integer userId) {
 
         List<UserInHouseQmCheckTask> userTasks = userInHouseQmCheckTaskService.searchByUserId(userId);
@@ -149,7 +145,7 @@ public class BuildingqmServiceImpl implements IBuildingqmService {
             task.setChecker_approve_permission(CheckerApprovePermission.No.getValue());
             task.setRepaired_picture_status(CheckTaskRepairedPictureEnum.UnForcePicture.getValue());
             task.setIssue_desc_status(CheckTaskIssueDescEnum.Arbitrary.getValue());
-            task.setIssue_default_desc("(该问题无文字描述)");
+            task.setIssue_default_desc("该问题无文字描述");
         }
         task.setPlan_begin_on(DateUtil.datetimeToTimeStamp(checkTask.getPlanBeginOn()));
         task.setPlan_end_on(DateUtil.datetimeToTimeStamp(checkTask.getPlanEndOn()));
@@ -158,19 +154,23 @@ public class BuildingqmServiceImpl implements IBuildingqmService {
         task.setDelete_at(DateUtil.datetimeToTimeStamp(checkTask.getDeleteAt()));
         if (tvo != null) {
             try {
-                BeanUtils.copyProperties(tvo, task);
+                try {
+                    BeanUtils.copyProperties(tvo, task);
+                } catch (InvocationTargetException e) {
+                    log.error(e.getMessage());
+                }
             } catch (IllegalAccessException e) {
               log.error(e.getMessage());
-            } catch (InvocationTargetException e) {
-                log.error(e.getMessage());
             }
         }
         if (abm != null) {
             try {
-                BeanUtils.copyProperties(abm, task);
+                try {
+                    BeanUtils.copyProperties(abm, task);
+                } catch (InvocationTargetException e) {
+                    log.error(e.getMessage());
+                }
             } catch (IllegalAccessException e) {
-                log.error(e.getMessage());
-            } catch (InvocationTargetException e) {
                 log.error(e.getMessage());
             }
         }
@@ -875,9 +875,6 @@ public class BuildingqmServiceImpl implements IBuildingqmService {
                 taskIds.add(item.getTask_id());
             }
             // # 公有录音
-/*
-            List<Integer> md5List = StringSplitToListUtil.splitToIdsComma(item.getAudio_md5_list(), ",");
-*/
             List<String> md5List = StringSplitToListUtil.removeStartAndEndStrAndSplit(item.getAudio_md5_list(), ",", ",");
             if (CollectionUtils.isNotEmpty(md5List)) {
                 md5List.forEach(items -> {
@@ -2027,11 +2024,11 @@ public class BuildingqmServiceImpl implements IBuildingqmService {
     private Map<String, Object> ApiNotifyStat(Integer status, Integer repairerId, List<Integer> repairer_follower_ids) {
         Integer nstatus = 0;
         Integer nrepairerId = 0;
-        List<Integer> n_repairer_follower_ids = Lists.newArrayList();
+        List<Integer> repairerFollowerIds = Lists.newArrayList();
         Map<String, Object> map = Maps.newHashMap();
         map.put("status", nstatus);
         map.put("repairerId", nrepairerId);
-        map.put("splitToIdsComma", n_repairer_follower_ids);
+        map.put("splitToIdsComma", repairerFollowerIds);
         return map;
     }
 
@@ -2044,11 +2041,11 @@ public class BuildingqmServiceImpl implements IBuildingqmService {
 
     }
 
-    private List checkLogUuid(List<String> log_uuids) {
-        if (CollectionUtils.isEmpty(log_uuids)) {
+    private List checkLogUuid(List<String> logUuids) {
+        if (CollectionUtils.isEmpty(logUuids)) {
             return Lists.newArrayList();
         }
-        List<HouseQmCheckTaskIssueLog> lst = houseQmCheckTaskIssueLogService.selectByUuidsAndNotDelete(log_uuids);
+        List<HouseQmCheckTaskIssueLog> lst = houseQmCheckTaskIssueLogService.selectByUuidsAndNotDelete(logUuids);
         ArrayList<String> result = Lists.newArrayList();
         lst.forEach(item -> {
             if (!result.contains(item.getUuid())) {
@@ -2182,29 +2179,17 @@ public class BuildingqmServiceImpl implements IBuildingqmService {
                     info.setDrawing_md5("-1");
                 }
 
-                //if (StringUtils.isBlank((String) detail.get("check_item_key"))) {
                 info.setCheck_item_key(detail.get("check_item_key") != null ? (String) detail.get("check_item_key") : "-1");
-                // } else {
-                //     info.setCheck_item_key((String) detail.get("check_item_key"));
-                // }
 
-                // if (StringUtils.isBlank((String) detail.get("remove_memo_audio_md5_list"))) {
+
                 info.setRemove_memo_audio_md5_list(detail.get("remove_memo_audio_md5_list") != null ? (String) detail.get("remove_memo_audio_md5_list") : "-1");
-                //} else {
-                //     info.setRemove_memo_audio_md5_list((String) detail.get("remove_memo_audio_md5_list"));
-                //}
 
-                //if (StringUtils.isBlank((String) detail.get("title"))) {
+
+
                 info.setTitle(detail.get("title") != null ? (String) detail.get("title") : "");
-                // } else {
-                //      info.setTitle((String) detail.get("title"));
-                // }
 
-                //if (StringUtils.isBlank((String) detail.get("check_item_md5"))) {
+
                 info.setCheck_item_md5(detail.get("check_item_md5") != null ? (String) detail.get("check_item_md5") : "");
-                //  } else {
-                //     info.setCheck_item_md5((String) detail.get("check_item_md5"));
-                // }
 
                 if ((Integer) detail.get("issue_reason") != null) {
                     info.setIssue_reason((Integer) detail.get("issue_reason"));
@@ -2440,7 +2425,6 @@ public class BuildingqmServiceImpl implements IBuildingqmService {
 
         }
 
-//        log.info("doNotNeedDeleteSquaduserPkId={}",JSON.toJSONString(doNotNeedDeleteSquaduserPkId));
         //  # 要删除的人员信息
         if (doNotNeedDeleteSquaduserPkId.size() > 0) {
             ArrayList<Object> needDeleteIds = Lists.newArrayList();
@@ -2570,8 +2554,8 @@ public class BuildingqmServiceImpl implements IBuildingqmService {
                 item.setUserIds(config.getConfig_category_threshold().getUser_ids());
                 item.setThreshold(config.getConfig_category_threshold().getThreshold());
                 item.setScanEndOn(DateUtil.timeStampToDate(DateUtil.datetimeToTimeStamp(taskInfo.getPlanEndOn()) + (30 * 24 * 60 * 60), " yyyy-MM-dd HH-mm-ss"));
-                int Num = pushStrategyCategoryThresholdService.add(item);
-                if (Num <= 0) {
+                int nums = pushStrategyCategoryThresholdService.add(item);
+                if (nums <= 0) {
                     log.info("PushStrategyCategoryOverdueDao().add failed");
                 }
 
@@ -2692,24 +2676,24 @@ public class BuildingqmServiceImpl implements IBuildingqmService {
                 log.info("create task squad failed");
                 throw new LjBaseRuntimeException(-99, "'创建任务组失败'");
             }
-            List<Integer> user_ids = checkerGroups.get(i).getUser_ids();
-            for (int j = 0; j < user_ids.size(); j++) {
+            List<Integer> userIds = checkerGroups.get(i).getUser_ids();
+            for (int j = 0; j < userIds.size(); j++) {
 
                 Integer canApprove = CheckTaskRoleCanApproveType.No.getValue();
                 Integer canDirectApprove = CheckTaskRoleCanDirectApproveType.No.getValue();
                 Integer canReassign = CheckTaskRoleCanReassignType.No.getValue();
-                if (checkerGroups.get(i).getApprove_ids().contains(user_ids.get(j))) {
+                if (checkerGroups.get(i).getApprove_ids().contains(userIds.get(j))) {
                     canApprove = CheckTaskRoleCanApproveType.Yes.getValue();
                 }
-                if (checkerGroups.get(i).getApprove_ids().contains(user_ids.get(j)) && checkerGroups.get(i).getDirect_approve_ids().contains(user_ids.get(j))) {
+                if (checkerGroups.get(i).getApprove_ids().contains(userIds.get(j)) && checkerGroups.get(i).getDirect_approve_ids().contains(userIds.get(j))) {
                     canDirectApprove = CheckTaskRoleCanDirectApproveType.Yes.getValue();
                 }
-                if ((checkerGroups.get(i).getReassign_ids().contains(user_ids.get(j)))) {
+                if ((checkerGroups.get(i).getReassign_ids().contains(userIds.get(j)))) {
                     canReassign = CheckTaskRoleCanReassignType.Yes.getValue();
                 }
                 UserInHouseQmCheckTask qmCheckTask = new UserInHouseQmCheckTask();
                 qmCheckTask.setSquadId(squadInfo);
-                qmCheckTask.setUserId(user_ids.get(j));
+                qmCheckTask.setUserId(userIds.get(j));
                 qmCheckTask.setRoleType(checkerGroups.get(i).getGroup_role());
                 qmCheckTask.setProjectId(taskReq.getProject_id());
                 qmCheckTask.setTaskId(taskObj);
@@ -2827,10 +2811,10 @@ public class BuildingqmServiceImpl implements IBuildingqmService {
 
     }
 
-    private Integer convertCategoryCls(Integer category_cls) {
+    private Integer convertCategoryCls(Integer categoryCls) {
         CategoryClsTypeEnum[] values = CategoryClsTypeEnum.values();
         for (int i = 0; i < values.length; i++) {
-            if (category_cls.equals(values[i].getValue())) {
+            if (categoryCls.equals(values[i].getValue())) {
                 return ModuleInfoEnum.GCGL.getValue();
             }
         }
@@ -2854,45 +2838,45 @@ public class BuildingqmServiceImpl implements IBuildingqmService {
         return null;
     }
 
-    private ConfigVo unmarshPushStrategy(String push_strategy_config) {
+    private ConfigVo unmarshPushStrategy(String pushStrategyConfig) {
         ConfigVo configVo = new ConfigVo();
-        if (StringUtils.isEmpty(push_strategy_config)) {
+        if (StringUtils.isEmpty(pushStrategyConfig)) {
             return new ConfigVo();
         }
-        Map<String, Object> push_strategys_config = JSON.parseObject(push_strategy_config, Map.class);
-        Map assign_time = (Map) push_strategys_config.get("assign_time");
-        Map category_overdue = (Map) push_strategys_config.get("category_overdue");
-        Map category_threshold = (Map) push_strategys_config.get("category_threshold");
-        if (assign_time != null) {
-            String push_time = (String) assign_time.get("push_time");
-            String user_ids = (String) assign_time.get("user_ids");
-            if (push_time.length() > 0 && user_ids.length() > 0) {
+        Map<String, Object> pushStrategysConfig = JSON.parseObject(pushStrategyConfig, Map.class);
+        Map assignTime = (Map) pushStrategysConfig.get("assign_time");
+        Map categoryOverdue = (Map) pushStrategysConfig.get("category_overdue");
+        Map categoryThreshold = (Map) pushStrategysConfig.get("category_threshold");
+        if (assignTime != null) {
+            String pushTime = (String) assignTime.get("push_time");
+            String userIds = (String) assignTime.get("user_ids");
+            if (pushTime.length() > 0 && userIds.length() > 0) {
                 ConfigVo.ApiPushStrategyAssignTime config_assign_time = new ConfigVo().new ApiPushStrategyAssignTime();
-                config_assign_time.setPush_time(push_time);
-                config_assign_time.setUser_ids(user_ids);
+                config_assign_time.setPush_time(pushTime);
+                config_assign_time.setUser_ids(userIds);
                 configVo.setConfig_assign_time(config_assign_time);
             }
-            if (category_overdue != null) {
-                String category_keys = (String) category_overdue.get("category_keys");
-                String userIds = (String) category_overdue.get("user_ids");
-                if (category_keys.length() > 0 && userIds.length() > 0) {
-                    ConfigVo.ApiPushStrategyCategoryOverdue config_category_overdue = new ConfigVo().new ApiPushStrategyCategoryOverdue();
-                    config_category_overdue.setCategory_keys(category_keys);
-                    config_category_overdue.setUser_ids(userIds);
-                    configVo.setConfig_category_overdue(config_category_overdue);
+            if (categoryOverdue != null) {
+                String categoryKeys = (String) categoryOverdue.get("category_keys");
+                String uIds = (String) categoryOverdue.get("user_ids");
+                if (StringUtils.isNotBlank(categoryKeys) &&StringUtils.isNotBlank(uIds) ) {
+                    ConfigVo.ApiPushStrategyCategoryOverdue configCategoryOverdue = new ConfigVo().new ApiPushStrategyCategoryOverdue();
+                    configCategoryOverdue.setCategory_keys(categoryKeys);
+                    configCategoryOverdue.setUser_ids(userIds);
+                    configVo.setConfig_category_overdue(configCategoryOverdue);
                 }
 
             }
-            if (category_threshold != null) {
-                String category_keys = (String) category_threshold.get("category_keys");
-                String userIds = (String) category_threshold.get("user_ids");
-                Integer threshold = (Integer) category_threshold.get("threshold");
-                if (category_keys.length() > 0 && userIds.length() > 0 && threshold > 0) {
-                    ConfigVo.ApiPushStrategyCategoryThreshold config_category_threshold = new ConfigVo().new ApiPushStrategyCategoryThreshold();
-                    config_category_threshold.setCategory_keys(category_keys);
-                    config_category_threshold.setUser_ids(userIds);
-                    config_category_threshold.setThreshold(threshold);
-                    configVo.setConfig_category_threshold(config_category_threshold);
+            if (categoryThreshold != null) {
+                String categoryKeys = (String) categoryThreshold.get("category_keys");
+                String usIds = (String) categoryThreshold.get("user_ids");
+                Integer threshold = (Integer) categoryThreshold.get("threshold");
+                if (categoryKeys.length() > 0 && usIds.length() > 0 && threshold > 0) {
+                    ConfigVo.ApiPushStrategyCategoryThreshold configCategoryThreshold = new ConfigVo().new ApiPushStrategyCategoryThreshold();
+                    configCategoryThreshold.setCategory_keys(categoryKeys);
+                    configCategoryThreshold.setUser_ids(usIds);
+                    configCategoryThreshold.setThreshold(threshold);
+                    configVo.setConfig_category_threshold(configCategoryThreshold);
                 }
 
             }
@@ -3084,7 +3068,6 @@ public class BuildingqmServiceImpl implements IBuildingqmService {
         HashMap<String, NodeDataVo> dataMap = Maps.newHashMap();
         JSONArray jsonArray = JSON.parseArray(items);
         List<Map> itemsList = jsonArray.toJavaList(Map.class);
-//        List<String> pathKeys = Lists.newArrayList();
         for (Map<String, Object> item : itemsList) {
             NodeDataVo nodeDataVo = new NodeDataVo();
             nodeDataVo.setKey((String) item.get("key"));
@@ -3104,7 +3087,6 @@ public class BuildingqmServiceImpl implements IBuildingqmService {
             dataMap.put(nodeDataVo.getKey(), nodeDataVo);
         }
         int maxCol = 0;
-//        ArrayList<String> path_key = Lists.newArrayList();
         for (NodeDataVo item : dataList) {
             String parentKey = item.getParent_key();
             log.info("item={}", JSON.toJSONString(item));

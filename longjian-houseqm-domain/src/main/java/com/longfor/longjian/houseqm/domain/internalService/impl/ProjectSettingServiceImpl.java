@@ -11,14 +11,7 @@ import tk.mybatis.mapper.entity.Example;
 
 import javax.annotation.Resource;
 
-/**
- * @ProjectName: longjian-houseqm-server
- * @Package: com.longfor.longjian.houseqm.domain.internalService.impl
- * @ClassName: ProjectSettingServiceImpl
- * @Description: java类作用描述
- * @Author: hy
- * @CreateDate: 2019/1/14 16:38
- */
+
 @Service
 @Slf4j
 public class ProjectSettingServiceImpl implements ProjectSettingService {

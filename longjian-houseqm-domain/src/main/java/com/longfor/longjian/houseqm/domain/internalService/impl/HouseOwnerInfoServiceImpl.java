@@ -12,14 +12,7 @@ import tk.mybatis.mapper.entity.Example;
 import javax.annotation.Resource;
 import java.util.List;
 
-/**
- * @ProjectName: longjian-houseqm-server
- * @Package: com.longfor.longjian.houseqm.domain.internalService.impl
- * @ClassName: HouseOwnerInfoServiceImpl
- * @Description: java类作用描述
- * @Author: hy
- * @CreateDate: 2019/1/14 17:46
- */
+
 @Service
 @Slf4j
 public class HouseOwnerInfoServiceImpl implements HouseOwnerInfoService {

@@ -1,7 +1,6 @@
 package com.longfor.longjian.houseqm.app.controller.houseqmv3papi;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
-
 import com.longfor.longjian.common.base.LjBaseResponse;
 import com.longfor.longjian.houseqm.app.feginclient1.IRepossessionFeignService;
 import com.longfor.longjian.houseqm.app.req.houseqmrepossession.RepossessionReportReq;
@@ -11,7 +10,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.MediaType;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
-
 import javax.annotation.Resource;
 
 /**

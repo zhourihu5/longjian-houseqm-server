@@ -177,7 +177,7 @@ public class FileUtil {
                     out.write(buffer, 0, L);
                 }
             }catch (Exception e){
-                log.error("error:",e.getMessage());
+                log.error(e.getMessage());
             }
            // FileOutputStream out = new FileOutputStream(dstFile);
             //FileInputStream in = new FileInputStream(srcFile);
@@ -359,12 +359,12 @@ public class FileUtil {
                 os.flush();
             }
         } catch (IOException e) {
-            log.error("error:",e.getMessage());
+            log.error(e.getMessage());
         } finally {
             try {
                 if (bis != null) bis.close();
             } catch (IOException e) {
-                log.error("error:",e.getMessage());
+                log.error(e.getMessage());
             }
         }
     }

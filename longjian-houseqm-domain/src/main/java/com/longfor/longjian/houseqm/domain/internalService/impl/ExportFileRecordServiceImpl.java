@@ -7,19 +7,9 @@ import com.longfor.longjian.houseqm.po.zj2db.ExportFileRecord;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import tk.mybatis.mapper.entity.Example;
-
 import javax.annotation.Resource;
 import java.util.Date;
 
-/**
- * @ProjectName: longjian-houseqm-server
- * @Package: com.longfor.longjian.houseqm.domain.internalService.impl
- * @ClassName: ExportFileRecordServiceImpl
- * @Description: java类作用描述
- * @Author: hy
- * @CreateDate: 2019/1/11 11:37
- */
 @Service
 @Slf4j
 public class ExportFileRecordServiceImpl implements ExportFileRecordService {

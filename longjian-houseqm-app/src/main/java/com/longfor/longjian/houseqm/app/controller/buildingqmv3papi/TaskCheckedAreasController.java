@@ -9,11 +9,8 @@ import com.longfor.longjian.houseqm.app.vo.taskcheckedareas.CheckedAreasRsp;
 import com.longfor.longjian.houseqm.util.StringSplitToListUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.MediaType;
-import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
-
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
@@ -64,7 +61,7 @@ public class TaskCheckedAreasController {
             data.setCheck_area_ids(checkAreaIds);
             taskResponse.setData(data);
         } catch (Exception e) {
-            log.error("error:",e.getMessage());
+            log.error(e.getMessage());
             taskResponse.setResult(1);
             taskResponse.setMessage(e.getMessage());
         }

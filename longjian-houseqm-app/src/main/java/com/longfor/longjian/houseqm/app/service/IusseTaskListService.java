@@ -44,7 +44,7 @@ public class IusseTaskListService {
 
     public List<HouseQmCheckTaskSimpleRspVo> selectByProjectIdAndCategoryCls(Integer projectId, Integer categoryCls) {
         List<HouseQmCheckTask> houseQmCheckTaskList = houseQmCheckTaskService.selectByProjectIdAndCategoryCls(projectId, categoryCls);
-        ArrayList<HouseQmCheckTaskSimpleRspVo> hQmCheckTaskList = new ArrayList<HouseQmCheckTaskSimpleRspVo>();
+        ArrayList<HouseQmCheckTaskSimpleRspVo> hQmCheckTaskList = new ArrayList<>();
         for (int i = 0; i < houseQmCheckTaskList.size(); i++) {
             HouseQmCheckTaskSimpleRspVo rspVo = new HouseQmCheckTaskSimpleRspVo();
             rspVo.setProject_id(houseQmCheckTaskList.get(i).getProjectId());

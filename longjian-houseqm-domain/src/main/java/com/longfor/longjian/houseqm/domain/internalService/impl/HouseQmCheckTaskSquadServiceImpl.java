@@ -28,20 +28,14 @@ public class HouseQmCheckTaskSquadServiceImpl implements HouseQmCheckTaskSquadSe
     HouseQmCheckTaskSquadMapper houseQmCheckTaskSquadMapper;
 
 
-    /**
-     * @param taskIdList
-     * @return
-     */
+
     @LFAssignDataSource("zhijian2")
     public List<HouseQmCheckTaskSquad> selectByTaskIds(Set<Integer> taskIdList) {
 
         return houseQmCheckTaskSquadMapper.selectByTaskIds(taskIdList, "false");
     }
 
-    /**
-     * @param taskIdList
-     * @return
-     */
+
     @LFAssignDataSource("zhijian2")
     public List<HouseQmCheckTaskSquad> selectByTaskIdsEvenDeleted(Set<Integer> taskIdList) {
         Example example = new Example(HouseQmCheckTaskSquad.class);

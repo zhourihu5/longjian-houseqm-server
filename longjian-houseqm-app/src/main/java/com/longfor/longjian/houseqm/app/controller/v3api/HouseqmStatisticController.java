@@ -29,16 +29,12 @@ import org.springframework.web.bind.annotation.RestController;
 import com.longfor.longjian.common.base.LjBaseResponse;
 import com.longfor.longjian.houseqm.app.req.ProjectReq;
 import com.longfor.longjian.houseqm.app.service.HouseqmStaticService;
-
 import com.longfor.longjian.houseqm.app.vo.*;
 import com.longfor.longjian.houseqm.consts.TimeStauEnum;
 import com.longfor.longjian.houseqm.domain.internalService.AreaService;
-
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.RequestParam;
-
-
 import javax.annotation.Resource;
 import javax.validation.Valid;
 import java.text.DecimalFormat;
@@ -119,7 +115,7 @@ public class HouseqmStatisticController {
             response.setMessage("success");
             response.setResult(0);
         } catch (Exception e) {
-            log.error("error:",e.getMessage());
+            log.error(e.getMessage());
             response.setMessage(e.getMessage());
             response.setResult(1);
         }
@@ -132,7 +128,7 @@ public class HouseqmStatisticController {
                                                                      @RequestParam(value = "task_id") Integer taskId,
                                                                      @RequestParam(value = "area_id") Integer areaId,
                                                                      @RequestParam(value = "timestamp") Integer timestamp) {
-        CheckTaskHouseStatInfoVo checkTaskHouseStatInfo = houseqmStaticService.GetHouseQmCheckTaskHouseStatByTaskId(prodectId, taskId, areaId);
+        CheckTaskHouseStatInfoVo checkTaskHouseStatInfo = houseqmStaticService.getHouseQmCheckTaskHouseStatByTaskId(prodectId, taskId, areaId);
         HouseQmTaskHouseStatVo houseStatVo = new HouseQmTaskHouseStatVo();
         houseStatVo.setHouse_checked_percent(getPercentage(checkTaskHouseStatInfo.getCheckedCount(), checkTaskHouseStatInfo.getHouseCount()));
         houseStatVo.setHouse_repaired_percent(getPercentage(checkTaskHouseStatInfo.getRepairedCount(), checkTaskHouseStatInfo.getHasIssueCount()));
@@ -305,7 +301,6 @@ public class HouseqmStatisticController {
             c.add(Calendar.DAY_OF_MONTH, 1);// +1天
             endOns = c.getTime();
         }
-        //List<HouseQmIssueCategoryStatVo> categoryStatlist = iHouseqmStatisticService.searchHouseQmIssueCategoryStatByProjTaskIdAreaIdBeginOnEndOn(projectId, taskId, areaId, begin, endOns);
         StatCategoryStatRspVo result = iHouseqmStatService.searchHouseQmIssueCategoryStatByProjTaskIdAreaIdBeginOnEndOn(projectId, taskId, areaId, begin, endOns);
         List<HouseQmStatCategorySituationRspVo> items = result.getItems();
         List<HouseQmIssueCategoryStatVo> categoryStatlist= Lists.newArrayList();
@@ -463,7 +458,7 @@ public class HouseqmStatisticController {
     @RequestMapping(value = "project_building_list", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     public LjBaseResponse<HouseqmStatisticProjectBuildingListRspMsgVo> projectBuildingList(@RequestParam(value = "project_id") Integer prodectId,
                                                                                            @RequestParam(value = "timestamp") Integer timestamp) {
-        List<ApiBuildingInfo> buildingInfoList = houseqmStaticService.PSelectByFatherId(prodectId);
+        List<ApiBuildingInfo> buildingInfoList = houseqmStaticService.pSelectByFatherId(prodectId);
         HouseqmStatisticProjectBuildingListRspMsgVo msgVo = new HouseqmStatisticProjectBuildingListRspMsgVo();
         msgVo.setItems(buildingInfoList);
         LjBaseResponse<HouseqmStatisticProjectBuildingListRspMsgVo> response = new LjBaseResponse<>();
