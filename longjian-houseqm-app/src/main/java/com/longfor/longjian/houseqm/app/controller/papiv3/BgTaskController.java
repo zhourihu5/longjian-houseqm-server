@@ -1,7 +1,7 @@
 package com.longfor.longjian.houseqm.app.controller.papiv3;
 
 import com.longfor.longjian.common.base.LjBaseResponse;
-import com.longfor.longjian.houseqm.app.feginclient.IBuildingqmExportFeignService;
+import com.longfor.longjian.houseqm.app.feginclient1.IBuildingqmExportFeignService;
 import com.longfor.longjian.houseqm.app.req.bgtask.ExportBuildingExcelReq;
 import com.longfor.longjian.houseqm.app.vo.bgtask.ExportRsp;
 import lombok.extern.slf4j.Slf4j;
