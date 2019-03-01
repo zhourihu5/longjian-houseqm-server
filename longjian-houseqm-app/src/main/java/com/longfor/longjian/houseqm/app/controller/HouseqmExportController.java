@@ -45,9 +45,9 @@ public class HouseqmExportController {
      **/
     @GetMapping(value = "project_orders",produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     public LjBaseResponse projectOrders(ProjectOrdersReq req, HttpServletResponse resp){
-        //ctrlTool.projPermMulti(request,perms);
 
-        Date beginOn=null,endOn=null;
+        Date beginOn=null;
+        Date endOn=null;
         if (!req.getBegin_on().equals("")){
             beginOn=DateUtil.strToDate(req.getBegin_on(),"yyyy-MM-dd");
         }

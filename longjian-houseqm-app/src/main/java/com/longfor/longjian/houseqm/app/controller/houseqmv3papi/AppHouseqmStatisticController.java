@@ -7,6 +7,7 @@ import com.longfor.longjian.houseqm.app.req.houseqmstatisticapp.ProjectIssueStat
 import com.longfor.longjian.houseqm.app.req.houseqmstatisticapp.ProjectListReq;
 import com.longfor.longjian.houseqm.app.req.houseqmstatisticapp.ProjectRepairerStatReq;
 import com.longfor.longjian.houseqm.app.service.IHouseqmStatisticService;
+import com.longfor.longjian.houseqm.app.utils.SessionUtil;
 import com.longfor.longjian.houseqm.app.vo.TaskResponse;
 import com.longfor.longjian.houseqm.app.vo.houseqmstatisticapp.ProjectCheckerStatRspVo;
 import com.longfor.longjian.houseqm.app.vo.houseqmstatisticapp.ProjectIssueStatRspVo;
@@ -14,7 +15,6 @@ import com.longfor.longjian.houseqm.app.vo.houseqmstatisticapp.ProjectListRspVo;
 import com.longfor.longjian.houseqm.app.vo.houseqmstatisticapp.ProjectRepairerStatRspVo;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.MediaType;
-import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -52,12 +52,12 @@ public class AppHouseqmStatisticController {
     public TaskResponse<ProjectListRspVo> projectList(HttpServletRequest request, @Valid ProjectListReq req) {
         TaskResponse<ProjectListRspVo> response = new TaskResponse<>();
         log.info("project_list, source=" + req.getSource() + ", timestamp=" + req.getTimestamp());
-        Integer userId = (Integer) sessionInfo.getBaseInfo("userId");
+        Integer userId = SessionUtil.getUid(sessionInfo);
         try {
             ProjectListRspVo items = iHouseqmStatisticService.projectList(userId, req.getSource(), req.getTimestamp());
             response.setData(items);
         } catch (Exception e) {
-            log.error("error:",e.getMessage());
+            log.error("获取项目列表error:",e.getMessage());
             response.setResult(1);
             response.setMessage(e.getMessage());
         }
@@ -77,14 +77,14 @@ public class AppHouseqmStatisticController {
     public LjBaseResponse<ProjectIssueStatRspVo> projectIssueStat(HttpServletRequest request, @Valid ProjectIssueStatReq req) {
         LjBaseResponse<ProjectIssueStatRspVo> response = new LjBaseResponse<>();
         log.info("project_issue_stat, project_id=" + req.getProject_id() + ", source=" + req.getSource() + ", area_id=" + req.getArea_id() + ", timestamp=" + req.getTimestamp());
-        Integer userId = (Integer) sessionInfo.getBaseInfo("userId");
+        Integer userId = SessionUtil.getUid(sessionInfo);
         try {
             if (req.getArea_id()==null)req.setArea_id(0);
             if (req.getTimestamp()==null)req.setTimestamp(0);
             ProjectIssueStatRspVo item = iHouseqmStatisticService.projectIssueStat(userId, req.getProject_id(), req.getSource(), req.getArea_id(), req.getTimestamp());
             response.setData(item);
         } catch (Exception e) {
-            log.error("error:",e.getMessage());
+            log.error("项目汇总状态error:",e.getMessage());
             response.setResult(1);
             response.setMessage(e.getMessage());
         }
@@ -103,7 +103,7 @@ public class AppHouseqmStatisticController {
     public TaskResponse<ProjectCheckerStatRspVo> projectCheckerStat(HttpServletRequest request, @Valid ProjectCheckerStatReq req) {
         TaskResponse<ProjectCheckerStatRspVo> response = new TaskResponse<>();
         log.info("project_checker_stat, project_id=" + req.getProject_id() + ", task_id=" + req.getTask_id() + ", source=" + req.getSource() + ", stat_begin=" + req.getStat_begin() + ", stat_end=" + req.getStat_end() + ", timestamp=" + req.getTimestamp());
-        Integer userId = (Integer) sessionInfo.getBaseInfo("userId");
+        Integer userId = SessionUtil.getUid(sessionInfo);
         try {
             if (req.getTask_id()==null) req.setTask_id(0);
             if (req.getStat_begin()==null) req.setStat_begin(0);
@@ -112,7 +112,7 @@ public class AppHouseqmStatisticController {
             ProjectCheckerStatRspVo item = iHouseqmStatisticService.projectCheckerStat(userId, req.getProject_id(), req.getTask_id(), req.getSource(), req.getStat_begin(), req.getStat_end(), req.getTimestamp());
             response.setData(item);
         } catch (Exception e) {
-            log.error("error:",e.getMessage());
+            log.error("项目/任务检查人员统计error:",e.getMessage());
             response.setResult(1);
             response.setMessage(e.getMessage());
         }
@@ -131,7 +131,7 @@ public class AppHouseqmStatisticController {
     public TaskResponse<ProjectRepairerStatRspVo> projectRepairerStat(HttpServletRequest request, @Valid ProjectRepairerStatReq req) {
         TaskResponse<ProjectRepairerStatRspVo> response = new TaskResponse<>();
         log.info("project_repairer_stat, project_id=" + req.getProject_id() + ", task_id=" + req.getTask_id() + ", source=" + req.getSource() + ", stat_begin=" + req.getStat_begin() + ", stat_end=" + req.getStat_end() + ", timestamp=" + req.getTimestamp());
-        Integer userId = (Integer) sessionInfo.getBaseInfo("userId");
+        Integer userId = SessionUtil.getUid(sessionInfo);
         try {
             if (req.getTask_id()==null) req.setTask_id(0);
             if (req.getStat_begin()==null) req.setStat_begin(0);
@@ -140,7 +140,7 @@ public class AppHouseqmStatisticController {
             ProjectRepairerStatRspVo items = iHouseqmStatisticService.projectRepairerStat(userId, req.getProject_id(), req.getTask_id(), req.getSource(), req.getStat_begin(), req.getStat_end(), req.getTimestamp());
             response.setData(items);
         } catch (Exception e) {
-            log.error("error:",e.getMessage());
+            log.error("项目/任务整改人员统计error:",e.getMessage());
             response.setResult(1);
             response.setMessage(e.getMessage());
         }
