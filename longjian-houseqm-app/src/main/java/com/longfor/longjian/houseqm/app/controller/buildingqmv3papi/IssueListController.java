@@ -72,9 +72,7 @@ public class IssueListController {
         // 导出execel
         ServletOutputStream os = response.getOutputStream();
         try {
-            Map<String, Object> map = iIssueService.exportExcel(uid, req.getProject_id(), req.getCategory_cls(), req.getTask_id(), req.getCategory_key(), req.getCheck_item_key(),
-                    req.getArea_ids(), req.getStatus_in(), req.getChecker_id(), req.getRepairer_id(), req.getType(), req.getCondition(), req.getKey_word(),
-                    req.getCreate_on_begin(), req.getCreate_on_end(), req.getIs_overdue());
+            Map<String, Object> map = iIssueService.exportExcel(uid,req);
             String fileName = (String) map.get("fileName");
             SXSSFWorkbook wb = (SXSSFWorkbook) map.get("workbook");
             response.setContentType("application/vnd.ms-excel");
@@ -108,9 +106,7 @@ public class IssueListController {
         TaskResponse<IssueListRsp> response = new TaskResponse<>();
         try {
             ctrlTool.projPerm(request, "项目.工程检查.问题管理.查看");
-            IssueListRsp result = iIssueService.list(req.getProject_id(), req.getCategory_cls(), req.getTask_id(), req.getCategory_key(), req.getCheck_item_key(),
-                    req.getArea_ids(), req.getStatus_in(), req.getChecker_id(), req.getRepairer_id(), req.getType(), req.getCondition(), req.getKey_word(),
-                    req.getCreate_on_begin(), req.getCreate_on_end(), req.is_overdue(), req.getPage(), req.getPage_size());
+            IssueListRsp result = iIssueService.list(req);
 
             response.setData(result);
         } catch (Exception e) {

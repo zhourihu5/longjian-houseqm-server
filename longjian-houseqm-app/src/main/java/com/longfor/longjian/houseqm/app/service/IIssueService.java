@@ -1,6 +1,8 @@
 package com.longfor.longjian.houseqm.app.service;
 
 import com.longfor.longjian.common.base.LjBaseResponse;
+import com.longfor.longjian.houseqm.app.req.IssueListDoActionReq;
+import com.longfor.longjian.houseqm.app.req.bgtask.ExportBuildingExcelReq;
 import com.longfor.longjian.houseqm.app.vo.*;
 import com.longfor.longjian.houseqm.app.vo.issuelist.IssueListRsp;
 import com.longfor.longjian.houseqm.po.zj2db.ProjectSettingV2;
@@ -18,34 +20,15 @@ import java.util.Map;
 public interface IIssueService {
 
 
-    Map<String, Object> exportExcel(Integer uid, Integer project_id, Integer category_cls, Integer task_id, String category_key, String check_item_key, String area_ids, String status_in, Integer checker_id, Integer repairer_id, Integer type, Integer condition, String key_word, String create_on_begin, String create_on_end, Boolean is_overdue);
+    Map<String, Object> exportExcel(Integer uid, ExportBuildingExcelReq req);
 
     /**
      *
      * @author hy
      * @date 2018/12/21 0021
-     * @param projectId
-     * @param categoryCls
-     * @param taskId
-     * @param categoryKey
-     * @param checkItemKey
-     * @param areaIds
-     * @param statusIn
-     * @param checkerId
-     * @param repairerId
-     * @param type
-     * @param condition
-     * @param keyWord
-     * @param createOnBegin
-     * @param createOnEnd
-     * @param isOverDue
-     * @param pageNum
-     * @param pageSize
      * @return com.longfor.gaia.gfs.core.bean.PageInfo<com.longfor.longjian.houseqm.app.vo.IssueListVo>
      */
-    IssueListRsp list(Integer projectId, Integer categoryCls, Integer taskId, String categoryKey, String checkItemKey,
-                      String areaIds, String statusIn, Integer checkerId, Integer repairerId, Integer type, Integer condition, String keyWord,
-                      String createOnBegin, String createOnEnd, Boolean isOverDue, Integer pageNum, Integer pageSize);
+    IssueListRsp list(IssueListDoActionReq req);
 
     List<HouseQmCheckTaskIssueHistoryLogVo> getHouseQmCheckTaskIssueActionLogByIssueUuid(String issueUuid);
 
