@@ -54,16 +54,15 @@ public class ExportUtils {
     @Value("${export_path}")
     private static String exportPath;
 
-    private static List<String> colNameList = Arrays.asList(new String[]{"A", "B", "C", "D", "E", "F", "G", "H", "I", "J", "K", "L", "M", "N", "O", "P", "Q", "R", "S", "T", "U", "V", "W", "X", "Y", "Z",
+    private static List<String> colNameList = Arrays.asList("A", "B", "C", "D", "E", "F", "G", "H", "I", "J", "K", "L", "M", "N", "O", "P", "Q", "R", "S", "T", "U", "V", "W", "X", "Y", "Z",
             "AA", "AB", "AC", "AD", "AE", "AF", "AG", "AH", "AI", "AJ", "AK", "AL", "AM", "AN", "AO", "AP", "AQ", "AR", "AS", "AT", "AU", "AV", "AW", "AX", "AY", "AZ",
-            "BA", "BB", "BC", "BD", "BE", "BF", "BG", "BH", "BI", "BJ", "BK", "BL", "BM", "BN", "BO", "BP", "BQ", "BR", "BS", "BT", "BU", "BV", "BW", "BX", "BY", "BZ"});
+            "BA", "BB", "BC", "BD", "BE", "BF", "BG", "BH", "BI", "BJ", "BK", "BL", "BM", "BN", "BO", "BP", "BQ", "BR", "BS", "BT", "BU", "BV", "BW", "BX", "BY", "BZ"                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                      );
 
     private ExportUtils(){
         
     }
-    // 导出excel 不带图片 问题列表
-    public static SXSSFWorkbook exportExcel(List<ExcelIssueData> data, boolean conditionOpen) {
 
+    private static Map<String,Object> initWorkbook(){
         SXSSFWorkbook workbook = new SXSSFWorkbook();
         SXSSFSheet sheet = workbook.createSheet();
 
@@ -81,7 +80,19 @@ public class ExportUtils {
         cellStyle.setBorderRight(BorderStyle.THIN);
         cellStyle.setBorderTop(BorderStyle.THIN);
         cellStyle.setBorderBottom(BorderStyle.THIN);
+        Map<String,Object> result=new HashMap<>();
+        result.put("workbook",workbook);
+        result.put("sheet",sheet);
+        result.put("cellStyle",cellStyle);
+        return result;
+    }
+    // 导出excel 不带图片 问题列表
+    public static SXSSFWorkbook exportExcel(List<ExcelIssueData> data, boolean conditionOpen) {
 
+        Map<String,Object> initParam=initWorkbook();
+        SXSSFWorkbook workbook =(SXSSFWorkbook)initParam.get("workbook");
+        SXSSFSheet sheet = (SXSSFSheet)initParam.get("sheet");
+        CellStyle cellStyle =(CellStyle)initParam.get("cellStyle");
         sheet.setColumnWidth(getColumnIndexByName("B"), 25 * 256);
         sheet.setColumnWidth(getColumnIndexByName("D"), 30 * 256);
         sheet.setColumnWidth(getColumnIndexByName("I"), 40 * 256);
@@ -295,23 +306,10 @@ public class ExportUtils {
     }
 
     public static SXSSFWorkbook exportInspectionSituationExcel(List<InspectionHouseStatusInfoVo> data) {
-        SXSSFWorkbook workbook = new SXSSFWorkbook();
-        SXSSFSheet sheet = workbook.createSheet();
-
-        CellStyle titilecellStyle = workbook.createCellStyle();
-        Font baseFont = workbook.createFont();
-        baseFont.setFontName("宋体");//字体
-        baseFont.setBold(true);//加粗
-        baseFont.setFontHeightInPoints((short) 12);
-
-        titilecellStyle.setFont(baseFont);
-        titilecellStyle.setVerticalAlignment(CENTER);//垂直居中
-        titilecellStyle.setWrapText(true);//文字换行
-        titilecellStyle.setAlignment(HorizontalAlignment.CENTER);//水平居中
-        titilecellStyle.setBorderLeft(BorderStyle.THIN);
-        titilecellStyle.setBorderRight(BorderStyle.THIN);
-        titilecellStyle.setBorderTop(BorderStyle.THIN);
-        titilecellStyle.setBorderBottom(BorderStyle.THIN);
+        Map<String,Object> initParam=initWorkbook();
+        SXSSFWorkbook workbook =(SXSSFWorkbook)initParam.get("workbook");
+        SXSSFSheet sheet = (SXSSFSheet)initParam.get("sheet");
+        CellStyle titilecellStyle =(CellStyle)initParam.get("cellStyle");
 
         CellStyle cellStyle = workbook.createCellStyle();
         Font base_font1 = workbook.createFont();
@@ -528,21 +526,9 @@ public class ExportUtils {
 
 
     public static SXSSFWorkbook exportIssueStatisticExcel(List<NodeVo> nodeTree, int maxCol) {
-        SXSSFWorkbook workbook = new SXSSFWorkbook();
-        SXSSFSheet sheet = workbook.createSheet();
-        CellStyle cellStyle = workbook.createCellStyle();
-        Font baseFont = workbook.createFont();
-        baseFont.setFontName("宋体");//字体
-        baseFont.setBold(true);//加粗
-        baseFont.setFontHeightInPoints((short) 14);
-        cellStyle.setFont(baseFont);
-        cellStyle.setVerticalAlignment(CENTER);//垂直居中
-        cellStyle.setWrapText(true);//文字换行
-        cellStyle.setAlignment(HorizontalAlignment.CENTER);//水平居中
-        cellStyle.setBorderLeft(BorderStyle.THIN);
-        cellStyle.setBorderRight(BorderStyle.THIN);
-        cellStyle.setBorderTop(BorderStyle.THIN);
-        cellStyle.setBorderBottom(BorderStyle.THIN);
+        Map<String,Object> initParam=initWorkbook();
+        SXSSFWorkbook workbook =(SXSSFWorkbook)initParam.get("workbook");
+        SXSSFSheet sheet = (SXSSFSheet)initParam.get("sheet");
         int cur_row = 0;
         int cur_column = 0;
         //创建行
