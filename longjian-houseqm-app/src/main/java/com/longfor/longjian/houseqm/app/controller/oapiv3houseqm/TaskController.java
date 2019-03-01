@@ -86,7 +86,6 @@ public class TaskController {
             req.setPage_size(1000);
         }
         ProjectBase proj = (ProjectBase) this.sessionInfo.getBaseInfo("cur_proj");
-
         HouseQmCheckTaskListAndTotalVo result = taskService.searchHouseQmCheckTaskByProjCategoryClsStatusPage(proj.getId(), req.getCategory_cls(), req.getStatus(), req.getPage(), req.getPage_size());
         //HouseQmCheckTaskListAndTotalVo result = taskService.searchHouseQmCheckTaskByProjCategoryClsStatusPage(req.getProject_id(), req.getCategory_cls(), req.getStatus(), req.getPage(), req.getPage_size());
         List<HouseQmCheckTask> res = result.getList();
