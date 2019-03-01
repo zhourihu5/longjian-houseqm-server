@@ -1,6 +1,5 @@
 package com.longfor.longjian.houseqm.app.utils;
 
-import com.longfor.longjian.common.exception.LjBaseRuntimeException;
 import com.longfor.longjian.houseqm.app.vo.ExportReplyDetail;
 import com.longfor.longjian.houseqm.app.vo.export.NodeVo;
 import com.longfor.longjian.houseqm.app.vo.houseqmstat.InspectionHouseStatusInfoVo;
@@ -208,9 +207,7 @@ public class ExportUtils {
 
         }
 
-        String dt = DateUtil.getNowTimeStr(MMDDHHMMSS);
-        String r = new Random().ints(0, 65536).toString();
-       
+        
         return workbook;
     }
 
@@ -548,13 +545,13 @@ public class ExportUtils {
 
     private static void exportTree(SXSSFWorkbook workbook, SXSSFSheet sheet, List<NodeVo> tree, int row, int col) {
         for (NodeVo node : tree) {
-            int end_row = row + node.getData().getChild_count() - 1;
-            int end_column = col;
-            log.info("row={},end_row={},col={},end_column={}",row,end_row,col,end_column);
+            int endRow = row + node.getData().getChild_count() - 1;
+            int endColumn = col;
+            log.info("row={},endRow={},col={},endColumn={}",row,endRow,col,endColumn);
             //合并单元格
             //1：开始行 2：结束行  3：开始列 4：结束列
-            if(end_row>row){
-                CellRangeAddress region = new CellRangeAddress(row,  end_row,col, end_column);
+            if(endRow>row){
+                CellRangeAddress region = new CellRangeAddress(row,  endRow,col, endColumn);
                 sheet.addMergedRegion(region);
             }
             SXSSFRow row1= sheet.getRow(row);
@@ -569,8 +566,8 @@ public class ExportUtils {
             cell.setCellValue(node.getData().getName());
             log.info("cell.getStringCellValue={}",cell.getStringCellValue());
             //合并
-            if(end_row>row) {
-                sheet.addMergedRegion(new CellRangeAddress(row,  end_row,col + 1, end_column + 1));
+            if(endRow>row) {
+                sheet.addMergedRegion(new CellRangeAddress(row,  endRow,col + 1, endColumn + 1));
             }
 
             //创捷列
