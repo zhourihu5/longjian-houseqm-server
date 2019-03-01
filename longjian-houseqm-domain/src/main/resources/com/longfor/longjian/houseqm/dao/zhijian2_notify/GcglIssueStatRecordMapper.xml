@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.longfor.longjian.houseqm.dao.zhijian2_notify.GcglIssueStatRecordMapper" >
+  <resultMap id="BaseResultMap" type="com.longfor.longjian.houseqm.po.zhijian2_notify.GcglIssueStatRecord" >
+    <!--
+      WARNING - @mbg.generated
+    -->
+    <id column="id" property="id" jdbcType="INTEGER" />
+    <result column="uuid" property="uuid" jdbcType="VARCHAR" />
+    <result column="title" property="title" jdbcType="VARCHAR" />
+    <result column="description" property="description" jdbcType="VARCHAR" />
+    <result column="notice_type" property="noticeType" jdbcType="INTEGER" />
+    <result column="source_type" property="sourceType" jdbcType="INTEGER" />
+    <result column="team_id" property="teamId" jdbcType="INTEGER" />
+    <result column="project_id" property="projectId" jdbcType="INTEGER" />
+    <result column="src_user_id" property="srcUserId" jdbcType="INTEGER" />
+    <result column="des_user_id" property="desUserId" jdbcType="INTEGER" />
+    <result column="module_id" property="moduleId" jdbcType="INTEGER" />
+    <result column="content" property="content" jdbcType="VARCHAR" />
+    <result column="behavior_type" property="behaviorType" jdbcType="INTEGER" />
+    <result column="behavior_name" property="behaviorName" jdbcType="VARCHAR" />
+    <result column="extra_info" property="extraInfo" jdbcType="VARCHAR" />
+    <result column="issue_ids" property="issueIds" jdbcType="VARCHAR" />
+    <result column="create_at" property="createAt" jdbcType="TIMESTAMP" />
+    <result column="update_at" property="updateAt" jdbcType="TIMESTAMP" />
+    <result column="delete_at" property="deleteAt" jdbcType="TIMESTAMP" />
+  </resultMap>
+  <sql id="Base_Column_List" >
+    <!--
+      WARNING - @mbg.generated
+    -->
+    id, uuid, title, description, notice_type, source_type, team_id, project_id, src_user_id, 
+    des_user_id, module_id, content, behavior_type, behavior_name, extra_info, issue_ids, 
+    create_at, update_at, delete_at
+  </sql>
+</mapper>
