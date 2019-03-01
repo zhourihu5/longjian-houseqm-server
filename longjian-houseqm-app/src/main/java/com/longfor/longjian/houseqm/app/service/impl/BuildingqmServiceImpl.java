@@ -626,15 +626,14 @@ public class BuildingqmServiceImpl implements IBuildingqmService {
         List<Integer> usersIds = CollectionUtil.removeDuplicate(usersId);
         List<User> userIdRealNameInfo = userService.searchByUserIdInAndNoDeleted(usersIds);
         HashMap<Integer, String> userIdRealNameMap = Maps.newHashMap();
-        userIdRealNameInfo.forEach(item -> {
-            userIdRealNameMap.put(item.getUserId(), item.getRealName());
-        });
+        userIdRealNameInfo.forEach(item ->
+            userIdRealNameMap.put(item.getUserId(), item.getRealName())
+        );
         List<FileResource> fileMd5StoreKeyInfo = fileResourceService.searchFileResourceByFileMd5InAndNoDeleted(fileMd5s);
         HashMap<String, String> fileMd5StoreKeyMap = Maps.newHashMap();
-        fileMd5StoreKeyInfo.forEach(item -> {
-            /*  i.store_key.split("://")[-1]*/
-            fileMd5StoreKeyMap.put(item.getFileMd5(), item.getStoreKey());
-        });
+        fileMd5StoreKeyInfo.forEach(item ->
+            fileMd5StoreKeyMap.put(item.getFileMd5(), item.getStoreKey())
+        );
         List<String> areaIds = StringSplitToListUtil.removeStartAndEndStrAndSplit(issueInfo.getAreaPathAndId().replace("//", "/"), "/", "/");
         ArrayList<Integer> areaIdsList = Lists.newArrayList();
         areaIds.forEach(item -> {
