@@ -1,6 +1,5 @@
 package com.longfor.longjian.houseqm.app.controller.buildingqmv3papi;
 
-import com.alibaba.fastjson.JSON;
 import com.google.common.collect.Lists;
 import com.longfor.longjian.common.base.LjBaseResponse;
 import com.longfor.longjian.common.util.CtrlTool;
@@ -11,7 +10,6 @@ import com.longfor.longjian.houseqm.app.req.UpdateDeviceReq;
 import com.longfor.longjian.houseqm.app.req.buildingqm.MyIssuePatchListReq;
 import com.longfor.longjian.houseqm.app.service.IBuildingqmService;
 import com.longfor.longjian.houseqm.app.service.ICheckUpdateService;
-import com.longfor.longjian.houseqm.app.utils.FileUtil;
 import com.longfor.longjian.houseqm.app.vo.*;
 import com.longfor.longjian.houseqm.app.vo.buildingqm.ReportIssueReq;
 import com.longfor.longjian.houseqm.consts.CommonGlobalEnum;
@@ -23,7 +21,6 @@ import org.apache.poi.xssf.streaming.SXSSFWorkbook;
 import org.springframework.http.MediaType;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
-import springfox.documentation.spring.web.json.Json;
 
 import javax.annotation.Resource;
 import javax.servlet.ServletOutputStream;

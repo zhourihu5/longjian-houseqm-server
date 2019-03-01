@@ -31,15 +31,15 @@ import java.io.IOException;
 @Slf4j
 public class StatGroupController {
 
-    private final static String teamRankStat_tip = "teamRankStat";
+    private final static String TEAMRANKSTAT_TIP = "teamRankStat";
 
     /**
      * 项目进度统计
      */
-    private final static String progressStat_tip = "progressStat";
-    private final static String projectStat_tip = "projectStat";
-    private final static String projectRankStat_tip = "projectRankStat";
-    private final static String categoryStat_tip = "categoryStat";
+    private final static String PROGRESSSTAT_TIP = "progressStat";
+    private final static String PROJECTSTAT_TIP = "projectStat";
+    private final static String PROJECTRANKSTAT_TIP = "projectRankStat";
+    private final static String CATEGORYSTAT_TIP = "categoryStat";
 
 
 
@@ -68,17 +68,17 @@ public class StatGroupController {
 
             Object statListVo = null;
             switch(tip){
-                case teamRankStat_tip:
+                case TEAMRANKSTAT_TIP:
                     break;
-                case progressStat_tip:
-                    statListVo = graphqlExecuteService.execute(groupId, progressStat_tip, statGroupReq.getQuery(),
+                case PROGRESSSTAT_TIP:
+                    statListVo = graphqlExecuteService.execute(groupId, PROGRESSSTAT_TIP, statGroupReq.getQuery(),
                             statGroupReq.getVariables(), groupProgressStatSchema.buildSchema());
                     break;
-                case projectStat_tip:
+                case PROJECTSTAT_TIP:
                     break;
-                case projectRankStat_tip:
+                case PROJECTRANKSTAT_TIP:
                     break;
-                case categoryStat_tip:
+                case CATEGORYSTAT_TIP:
                     break;
                 default:
                     break;
