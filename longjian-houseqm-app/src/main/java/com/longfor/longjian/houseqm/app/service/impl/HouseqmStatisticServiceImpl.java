@@ -2,7 +2,6 @@ package com.longfor.longjian.houseqm.app.service.impl;
 
 import java.util.Date;
 
-import java.lang.String;
 
 
 import com.google.common.collect.Lists;
@@ -88,73 +87,73 @@ public class HouseqmStatisticServiceImpl implements IHouseqmStatisticService {
     private UserService userService;
 
     @Override
-    public ProjectRepairerStatRspVo projectRepairerStat(int uid, Integer project_id, Integer task_id, String source, Integer stat_begin, Integer stat_end, Integer timestamp) {
-        String statBegin = "2000-01-01 00:00:00";
-        String statEnd = "2100-01-01 23:59:59";
-        if (!stat_begin.equals(0)) {
-            statBegin = com.longfor.longjian.common.util.DateUtil.timestampToString(stat_begin);
+    public ProjectRepairerStatRspVo projectRepairerStat(int uid, Integer projectId, Integer taskId, String source, Integer statBegin, Integer statEnd, Integer timestamp) {
+        String statBeginStr = "2000-01-01 00:00:00";
+        String statEndStr = "2100-01-01 23:59:59";
+        if (!statBegin.equals(0)) {
+            statBeginStr = com.longfor.longjian.common.util.DateUtil.timestampToString(statBegin);
         }
-        if (!stat_end.equals(0)) {
-            statEnd = com.longfor.longjian.common.util.DateUtil.timestampToString(stat_end);
+        if (!statEnd.equals(0)) {
+            statEndStr = com.longfor.longjian.common.util.DateUtil.timestampToString(statEnd);
         }
-        List<Integer> category_cls_list = getCategoryClsListByProjectList(source);
-        List<Integer> my_task_ids = Lists.newArrayList();
-        List<UserInHouseQmCheckTask> task_list = userInHouseQmCheckTaskService.searchByUserIdAndRoleType(uid, HouseQmCheckTaskRoleTypeEnum.Checker.getId());
-        for (UserInHouseQmCheckTask task : task_list) {
-            if (!my_task_ids.contains(task.getTaskId())) {
-                my_task_ids.add(task.getTaskId());
+        List<Integer> categoryClsList = getCategoryClsListByProjectList(source);
+        List<Integer> myTaskIds = Lists.newArrayList();
+        List<UserInHouseQmCheckTask> taskList = userInHouseQmCheckTaskService.searchByUserIdAndRoleType(uid, HouseQmCheckTaskRoleTypeEnum.Checker.getId());
+        for (UserInHouseQmCheckTask task : taskList) {
+            if (!myTaskIds.contains(task.getTaskId())) {
+                myTaskIds.add(task.getTaskId());
             }
         }
-        List<Integer> task_ids = Lists.newArrayList();
-        if (task_id > 0) {
-            task_ids.add(task_id);
+        List<Integer> taskIds = Lists.newArrayList();
+        if (taskId > 0) {
+            taskIds.add(taskId);
         } else {
-            List<Integer> temp_task_ids = Lists.newArrayList();
-            List<HouseQmCheckTask> taskList = houseQmCheckTaskService.searchByProjectIdAndCategoryClsIn(project_id, category_cls_list);
-            for (HouseQmCheckTask task : taskList) {
-                if (!temp_task_ids.contains(task.getTaskId())) {
-                    temp_task_ids.add(task.getTaskId());
+            List<Integer> tempTaskIds = Lists.newArrayList();
+            List<HouseQmCheckTask> newTaskList = houseQmCheckTaskService.searchByProjectIdAndCategoryClsIn(projectId, categoryClsList);
+            for (HouseQmCheckTask task : newTaskList) {
+                if (!tempTaskIds.contains(task.getTaskId())) {
+                    tempTaskIds.add(task.getTaskId());
                 }
             }
-            for (Integer id : temp_task_ids) {
-                if (my_task_ids.contains(id)) {
-                    task_ids.add(id);
+            for (Integer id : tempTaskIds) {
+                if (myTaskIds.contains(id)) {
+                    taskIds.add(id);
                 }
             }
         }
-        List<UserInHouseQmCheckTask> user_list = userInHouseQmCheckTaskService.searchByTaskIdInAndRoleType(task_ids, HouseQmCheckTaskRoleTypeEnum.Repairer.getId());
-        List<Integer> all_user_ids = Lists.newArrayList();
-        for (UserInHouseQmCheckTask user : user_list) {
-            if (!all_user_ids.contains(user.getUserId())) {
-                all_user_ids.add(user.getUserId());
+        List<UserInHouseQmCheckTask> userList = userInHouseQmCheckTaskService.searchByTaskIdInAndRoleType(taskIds, HouseQmCheckTaskRoleTypeEnum.Repairer.getId());
+        List<Integer> allUserIds = Lists.newArrayList();
+        for (UserInHouseQmCheckTask user : userList) {
+            if (!allUserIds.contains(user.getUserId())) {
+                allUserIds.add(user.getUserId());
             }
         }
-        Map<Integer, String> user_map = createUsersMap(all_user_ids);
-        Map<Integer, ApiHouseQmRepairerStatVo> stat_map = Maps.newHashMap();
-        for (Integer repairer_id : all_user_ids) {
+        Map<Integer, String> userMap = createUsersMap(allUserIds);
+        Map<Integer, ApiHouseQmRepairerStatVo> statMap = Maps.newHashMap();
+        for (Integer repairerId : allUserIds) {
             ApiHouseQmRepairerStatVo stat = new ApiHouseQmRepairerStatVo();
-            stat.setUser_id(repairer_id);
-            stat.setReal_name(user_map.getOrDefault(repairer_id, ""));
-            stat_map.put(repairer_id, stat);
+            stat.setUser_id(repairerId);
+            stat.setReal_name(userMap.getOrDefault(repairerId, ""));
+            statMap.put(repairerId, stat);
         }
         List<Integer> typs = Lists.newArrayList(HouseQmCheckTaskIssueTypeEnum.FindProblem.getId(), HouseQmCheckTaskIssueTypeEnum.Difficult.getId());
         List<Integer> status = Lists.newArrayList(HouseQmCheckTaskIssueStatusEnum.AssignNoReform.getId(), HouseQmCheckTaskIssueStatusEnum.ReformNoCheck.getId(), HouseQmCheckTaskIssueStatusEnum.CheckYes.getId());
 
-        List<HouseQmCheckTaskIssue> issue_list = houseQmCheckTaskIssueService.searchByProjIdAndCategoryClsInAndRepairerIdAndClientCreateAtAndTypInAndStatusInAndTaskIdOrderByClientCreateAt(project_id, category_cls_list, statBegin, statEnd, typs, status, task_id, my_task_ids);
+        List<HouseQmCheckTaskIssue> issueList = houseQmCheckTaskIssueService.searchByProjIdAndCategoryClsInAndRepairerIdAndClientCreateAtAndTypInAndStatusInAndTaskIdOrderByClientCreateAt(projectId, categoryClsList, statBeginStr, statEndStr, typs, status, taskId, myTaskIds);
 
-        for (HouseQmCheckTaskIssue item : issue_list) {
-            if (stat_map.containsKey(item.getRepairerId())) {
+        for (HouseQmCheckTaskIssue item : issueList) {
+            if (statMap.containsKey(item.getRepairerId())) {
                 if (HouseQmCheckTaskIssueStatusEnum.AssignNoReform.getId().equals(item.getStatus())) {
-                    stat_map.get(item.getRepairerId()).setIssue_assigned_count(stat_map.get(item.getRepairerId()).getIssue_assigned_count() + 1);
+                    statMap.get(item.getRepairerId()).setIssue_assigned_count(statMap.get(item.getRepairerId()).getIssue_assigned_count() + 1);
                 } else if (HouseQmCheckTaskIssueStatusEnum.ReformNoCheck.getId().equals(item.getStatus())) {
-                    stat_map.get(item.getRepairerId()).setIssue_repaired_count(stat_map.get(item.getRepairerId()).getIssue_repaired_count() + 1);
+                    statMap.get(item.getRepairerId()).setIssue_repaired_count(statMap.get(item.getRepairerId()).getIssue_repaired_count() + 1);
                 } else if (HouseQmCheckTaskIssueStatusEnum.CheckYes.getId().equals(item.getStatus())) {
-                    stat_map.get(item.getRepairerId()).setIssue_approveded_count(stat_map.get(item.getRepairerId()).getIssue_approveded_count() + 1);
+                    statMap.get(item.getRepairerId()).setIssue_approveded_count(statMap.get(item.getRepairerId()).getIssue_approveded_count() + 1);
                 }
             }
         }
         List<ApiHouseQmRepairerStatVo> items = Lists.newArrayList();
-        for (Map.Entry<Integer, ApiHouseQmRepairerStatVo> stat : stat_map.entrySet()) {
+        for (Map.Entry<Integer, ApiHouseQmRepairerStatVo> stat : statMap.entrySet()) {
             items.add(stat.getValue());
         }
         ProjectRepairerStatRspVo result = new ProjectRepairerStatRspVo();
@@ -163,7 +162,7 @@ public class HouseqmStatisticServiceImpl implements IHouseqmStatisticService {
     }
 
     @Override
-    public ProjectCheckerStatRspVo projectCheckerStat(int uid, Integer project_id, Integer task_id, String source, Integer stat_begin, Integer stat_end, Integer timestamp) {
+    public ProjectCheckerStatRspVo projectCheckerStat(int uid, Integer projectId, Integer taskId, String source, Integer stat_begin, Integer stat_end, Integer timestamp) {
         String statBegin = "2000-01-01 00:00:00";
         String statEnd = "2100-01-01 23:59:59";
         if (!stat_begin.equals(0)) {
@@ -172,79 +171,79 @@ public class HouseqmStatisticServiceImpl implements IHouseqmStatisticService {
         if (!stat_end.equals(0)) {
             statEnd = com.longfor.longjian.common.util.DateUtil.timestampToString(stat_end);
         }
-        List<Integer> my_task_ids = Lists.newArrayList();
-        List<UserInHouseQmCheckTask> task_list = userInHouseQmCheckTaskService.searchByUserIdAndRoleType(uid, HouseQmCheckTaskRoleTypeEnum.Checker.getId());
-        for (UserInHouseQmCheckTask task : task_list) {
-            if (!my_task_ids.contains(task.getTaskId())) {
-                my_task_ids.add(task.getTaskId());
+        List<Integer> myTaskIds = Lists.newArrayList();
+        List<UserInHouseQmCheckTask> taskList = userInHouseQmCheckTaskService.searchByUserIdAndRoleType(uid, HouseQmCheckTaskRoleTypeEnum.Checker.getId());
+        for (UserInHouseQmCheckTask task : taskList) {
+            if (!myTaskIds.contains(task.getTaskId())) {
+                myTaskIds.add(task.getTaskId());
             }
         }
-        List<Integer> category_cls_list = getCategoryClsListByProjectList(source);
-        List<Integer> task_ids = Lists.newArrayList();
-        if (task_id > 0) {
-            task_ids.add(task_id);
+        List<Integer> categoryClsList = getCategoryClsListByProjectList(source);
+        List<Integer> taskIds = Lists.newArrayList();
+        if (taskId > 0) {
+            taskIds.add(taskId);
         } else {
-            List<Integer> temp_task_ids = Lists.newArrayList();
-            List<HouseQmCheckTask> taskList = houseQmCheckTaskService.searchByProjectIdAndCategoryClsIn(project_id, category_cls_list);
-            for (HouseQmCheckTask task : taskList) {
-                if (!temp_task_ids.contains(task.getTaskId())) {
-                    temp_task_ids.add(task.getTaskId());
+            List<Integer> tempTaskIds = Lists.newArrayList();
+            List<HouseQmCheckTask> newTaskList = houseQmCheckTaskService.searchByProjectIdAndCategoryClsIn(projectId, categoryClsList);
+            for (HouseQmCheckTask task : newTaskList) {
+                if (!tempTaskIds.contains(task.getTaskId())) {
+                    tempTaskIds.add(task.getTaskId());
                 }
             }
-            for (Integer id : temp_task_ids) {
-                if (my_task_ids.contains(id)) {
-                    task_ids.add(id);
+            for (Integer id : tempTaskIds) {
+                if (myTaskIds.contains(id)) {
+                    taskIds.add(id);
                 }
             }
         }
-        List<UserInHouseQmCheckTask> user_list = userInHouseQmCheckTaskService.searchByTaskIdInAndRoleType(task_ids, HouseQmCheckTaskRoleTypeEnum.Checker.getId());
-        List<Integer> user_ids = Lists.newArrayList();
+        List<UserInHouseQmCheckTask> user_list = userInHouseQmCheckTaskService.searchByTaskIdInAndRoleType(taskIds, HouseQmCheckTaskRoleTypeEnum.Checker.getId());
+        List<Integer> userIds = Lists.newArrayList();
         for (UserInHouseQmCheckTask user : user_list) {
-            if (!user_ids.contains(user.getUserId())) {
-                user_ids.add(user.getUserId());
+            if (!userIds.contains(user.getUserId())) {
+                userIds.add(user.getUserId());
             }
         }
-        Map<Integer, String> user_map = createUsersMap(user_ids);
-        Map<Integer, ApiHouseQmCheckerStatVo> stat_map = Maps.newHashMap();
-        for (Integer sender_id : user_ids) {
+        Map<Integer, String> user_map = createUsersMap(userIds);
+        Map<Integer, ApiHouseQmCheckerStatVo> statMap = Maps.newHashMap();
+        for (Integer sender_id : userIds) {
             ApiHouseQmCheckerStatVo stat = new ApiHouseQmCheckerStatVo();
             stat.setUser_id(sender_id);
             stat.setReal_name(user_map.getOrDefault(sender_id, ""));
-            stat_map.put(sender_id, stat);
+            statMap.put(sender_id, stat);
         }
         List<Integer> typs = Lists.newArrayList(HouseQmCheckTaskIssueTypeEnum.Record.getId(), HouseQmCheckTaskIssueTypeEnum.FindProblem.getId(), HouseQmCheckTaskIssueTypeEnum.Difficult.getId());
-        List<HouseQmCheckTaskIssue> issue_list = houseQmCheckTaskIssueService.searchByProjIdAndCategoryClsInAndSenderIdAndClientCreateAtAndTypAndTaskIdOrderByClientCreateAt(project_id, category_cls_list, statBegin, statEnd, typs, task_id, my_task_ids);
+        List<HouseQmCheckTaskIssue> issue_list = houseQmCheckTaskIssueService.searchByProjIdAndCategoryClsInAndSenderIdAndClientCreateAtAndTypAndTaskIdOrderByClientCreateAt(projectId, categoryClsList, statBegin, statEnd, typs, taskId, myTaskIds);
         for (HouseQmCheckTaskIssue item : issue_list) {
-            if (stat_map.containsKey(item.getSenderId())) {
+            if (statMap.containsKey(item.getSenderId())) {
                 List<Integer> status = Lists.newArrayList(HouseQmCheckTaskIssueStatusEnum.NoteNoAssign.getId(), HouseQmCheckTaskIssueStatusEnum.AssignNoReform.getId(), HouseQmCheckTaskIssueStatusEnum.ReformNoCheck.getId(), HouseQmCheckTaskIssueStatusEnum.CheckYes.getId());
                 if (item.getStatus().equals(HouseQmCheckTaskIssueStatusEnum.NoProblem.getId())) {
-                    stat_map.get(item.getSenderId()).setRecords_count(stat_map.get(item.getSenderId()).getRecords_count() + 1);
+                    statMap.get(item.getSenderId()).setRecords_count(statMap.get(item.getSenderId()).getRecords_count() + 1);
                 } else if (status.contains(item.getStatus())) {
-                    stat_map.get(item.getSenderId()).setIssue_count(stat_map.get(item.getSenderId()).getIssue_count() + 1);
+                    statMap.get(item.getSenderId()).setIssue_count(statMap.get(item.getSenderId()).getIssue_count() + 1);
                     if (item.getStatus().equals(HouseQmCheckTaskIssueStatusEnum.CheckYes.getId())) {
-                        stat_map.get(item.getSenderId()).setIssue_approveded_count(stat_map.get(item.getSenderId()).getIssue_approveded_count() + 1);
+                        statMap.get(item.getSenderId()).setIssue_approveded_count(statMap.get(item.getSenderId()).getIssue_approveded_count() + 1);
                     }
                 }
             }
         }
         ProjectCheckerStatRspVo result = new ProjectCheckerStatRspVo();
         List<ApiHouseQmCheckerStatVo> items = Lists.newArrayList();
-        for (Map.Entry<Integer, ApiHouseQmCheckerStatVo> stat : stat_map.entrySet()) {
+        for (Map.Entry<Integer, ApiHouseQmCheckerStatVo> stat : statMap.entrySet()) {
             items.add(stat.getValue());
         }
         result.setItems(items);
         return result;
     }
 
-    private Map<Integer, String> createUsersMap(List<Integer> user_ids) {
-        if (user_ids.isEmpty()) return Maps.newHashMap();
-        List<User> resUser = userService.searchByUserIdInAndNoDeleted(user_ids);
+    private Map<Integer, String> createUsersMap(List<Integer> userIds) {
+        if (userIds.isEmpty()) return Maps.newHashMap();
+        List<User> resUser = userService.searchByUserIdInAndNoDeleted(userIds);
         return resUser.stream().collect(Collectors.toMap(User::getUserId, User::getRealName));
     }
 
 
     @Override
-    public ProjectIssueStatRspVo projectIssueStat(int uid, Integer project_id, String source, Integer area_id, Integer timestamp) {
+    public ProjectIssueStatRspVo projectIssueStat(int uid, Integer projectId, String source, Integer areaId, Integer timestamp) {
         ProjectIssueStatRspVo result = new ProjectIssueStatRspVo();
         ApiHouseQmProjectStatVo item = new ApiHouseQmProjectStatVo();
         item.setTask_count(0);
@@ -255,44 +254,44 @@ public class HouseqmStatisticServiceImpl implements IHouseqmStatisticService {
         item.setIssue_repaired_count(0);
         item.setRecord_count(0);
         result.setItem(item);
-        List<UserInHouseQmCheckTask> user_task_list = userInHouseQmCheckTaskService.searchByUserIdAndRoleType(uid, HouseQmCheckTaskRoleTypeEnum.Checker.getId());
-        List<Integer> task_ids = Lists.newArrayList();
-        user_task_list.forEach(task -> {
-            if (!task_ids.contains(task.getTaskId())) {
-                task_ids.add(task.getTaskId());
+        List<UserInHouseQmCheckTask> user_taskList = userInHouseQmCheckTaskService.searchByUserIdAndRoleType(uid, HouseQmCheckTaskRoleTypeEnum.Checker.getId());
+        List<Integer> taskIds = Lists.newArrayList();
+        user_taskList.forEach(task -> {
+            if (!taskIds.contains(task.getTaskId())) {
+                taskIds.add(task.getTaskId());
             }
         });
-        if (task_ids.size() == 0) return result;
-        List<Integer> category_cls_list = getCategoryClsListByProjectList(source);
-        List<HouseQmCheckTask> task_list = Lists.newArrayList();
-        if (area_id.equals(0)) {
-            task_list = houseQmCheckTaskService.searchByProjectIdAndCategoryClsInAndTaskIdIn(project_id, category_cls_list, task_ids);
-            item.setTask_count(task_list.size());
+        if (taskIds.size() == 0) return result;
+        List<Integer> categoryClsList = getCategoryClsListByProjectList(source);
+        List<HouseQmCheckTask> taskList = Lists.newArrayList();
+        if (areaId.equals(0)) {
+            taskList = houseQmCheckTaskService.searchByProjectIdAndCategoryClsInAndTaskIdIn(projectId, categoryClsList, taskIds);
+            item.setTask_count(taskList.size());
         } else {
-            task_list = houseQmCheckTaskService.searchByProjectIdAndCategoryClsInAndTaskIdIn(project_id, category_cls_list, task_ids);
-            List<Integer> area_ids = Lists.newArrayList();
-            for (HouseQmCheckTask task : task_list) {
-                area_ids.addAll(StringUtil.strToInts(task.getAreaIds(), ","));
+            taskList = houseQmCheckTaskService.searchByProjectIdAndCategoryClsInAndTaskIdIn(projectId, categoryClsList, taskIds);
+            List<Integer> areaIds = Lists.newArrayList();
+            for (HouseQmCheckTask task : taskList) {
+                areaIds.addAll(StringUtil.strToInts(task.getAreaIds(), ","));
             }
-            List<Integer> areaIds = new HashSet<>(area_ids).stream().collect(Collectors.toList());
-            List<Area> area_list = areaService.selectByAreaIds(areaIds);
+            List<Integer> newAreaIds = new HashSet<>(areaIds).stream().collect(Collectors.toList());
+            List<Area> areaList = areaService.selectByAreaIds(newAreaIds);
             Map<Integer, String> area_map = Maps.newHashMap();
-            for (Area area : area_list) {
+            for (Area area : areaList) {
                 area_map.put(area.getId(), area.getPath() + area.getId() + "/");
             }
-            for (HouseQmCheckTask task : task_list) {
+            for (HouseQmCheckTask task : taskList) {
                 List<Integer> ids = StringUtil.strToInts(task.getAreaIds(), ",");
-                if (checkRootAreaIntersectAreas(area_map, area_id, ids)) {
+                if (checkRootAreaIntersectAreas(area_map, areaId, ids)) {
                     item.setTask_count(item.getIssue_count() + 1);
                 }
             }
         }
         String area_path = "";
-        if (area_id > 0) {
-            Area area = areaService.selectById(area_id);
+        if (areaId > 0) {
+            Area area = areaService.selectById(areaId);
             area_path = area.getPath() + area.getId() + "/";
         }
-        List<HouseQmCheckTaskIssue> issue_list = houseQmCheckTaskIssueService.searchByProjectIdAndCategoryClsInAndTaskIdInAndAreaPathAndIdLike(project_id, category_cls_list, task_ids, area_path);
+        List<HouseQmCheckTaskIssue> issue_list = houseQmCheckTaskIssueService.searchByProjectIdAndCategoryClsInAndTaskIdInAndAreaPathAndIdLike(projectId, categoryClsList, taskIds, area_path);
         for (HouseQmCheckTaskIssue issue : issue_list) {
             if (HouseQmCheckTaskIssueStatusEnum.NoProblem.getId().equals(issue.getStatus())) {
                 item.setRecord_count(item.getRecord_count() + 1);
@@ -332,29 +331,29 @@ public class HouseqmStatisticServiceImpl implements IHouseqmStatisticService {
     public ProjectListRspVo projectList(int uid, String source, Integer timestamp) {
         ProjectListRspVo result = new ProjectListRspVo();
         List<UserInProject> user_project_list = iUserInProjectService.searchByUserId(uid);
-        List<Integer> project_ids = Lists.newArrayList();
+        List<Integer> projectIds = Lists.newArrayList();
         for (UserInProject project : user_project_list) {
-            if (!project_ids.contains(project.getProjectId())) {
-                project_ids.add(project.getProjectId());
+            if (!projectIds.contains(project.getProjectId())) {
+                projectIds.add(project.getProjectId());
             }
         }
-        if (project_ids.size() == 0) return result;
-        List<UserInHouseQmCheckTask> user_task_list = userInHouseQmCheckTaskService.searchByUserIdAndRoleType(uid, HouseQmCheckTaskRoleTypeEnum.Checker.getId());
+        if (projectIds.size() == 0) return result;
+        List<UserInHouseQmCheckTask> user_taskList = userInHouseQmCheckTaskService.searchByUserIdAndRoleType(uid, HouseQmCheckTaskRoleTypeEnum.Checker.getId());
         List<Integer> checkers = Lists.newArrayList();
-        user_task_list.forEach(task -> {
+        user_taskList.forEach(task -> {
             if (!checkers.contains(task.getTaskId())) {
                 checkers.add(task.getTaskId());
             }
         });
-        List<HouseQmCheckTask> task_list = houseQmCheckTaskService.searchByProjectIdInAndCategoryClsIn(project_ids, getCategoryClsListByProjectList(source));
-        List<Integer> projectIds = Lists.newArrayList();
-        for (HouseQmCheckTask task : task_list) {
+        List<HouseQmCheckTask> taskList = houseQmCheckTaskService.searchByProjectIdInAndCategoryClsIn(projectIds, getCategoryClsListByProjectList(source));
+        List<Integer> newProjectIds = Lists.newArrayList();
+        for (HouseQmCheckTask task : taskList) {
             if (checkers.contains(task.getTaskId())) {
-                projectIds.add(task.getProjectId());
+                newProjectIds.add(task.getProjectId());
             }
         }
         if (projectIds.size() == 0) return result;
-        List<Project> project_list = projectService.searchByProjectIdIn(projectIds);
+        List<Project> project_list = projectService.searchByProjectIdIn(newProjectIds);
         List<Integer> team_ids = Lists.newArrayList();
         for (Project project : project_list) {
             if (!team_ids.contains(project.getTeamId())) {
@@ -380,20 +379,20 @@ public class HouseqmStatisticServiceImpl implements IHouseqmStatisticService {
         return resTeam.stream().collect(Collectors.toMap(Team::getTeamId, Team::getTeamName));
     }
 
-    //get_category_cls_list(source)
+    //get_categoryClsList(source)
     private List<Integer> getCategoryClsListByProjectList(String source) {
-        List<Integer> category_cls_list = Lists.newArrayList();
+        List<Integer> categoryClsList = Lists.newArrayList();
         if (source.equals("gcgl")) {
-            category_cls_list.add(CategoryClsTypeEnum.RCJC.getId());
-            category_cls_list.add(CategoryClsTypeEnum.YDJC.getId());
-            category_cls_list.add(CategoryClsTypeEnum.JDJC.getId());
-            category_cls_list.add(CategoryClsTypeEnum.YB.getId());
-            category_cls_list.add(CategoryClsTypeEnum.FBFX.getId());
+            categoryClsList.add(CategoryClsTypeEnum.RCJC.getId());
+            categoryClsList.add(CategoryClsTypeEnum.YDJC.getId());
+            categoryClsList.add(CategoryClsTypeEnum.JDJC.getId());
+            categoryClsList.add(CategoryClsTypeEnum.YB.getId());
+            categoryClsList.add(CategoryClsTypeEnum.FBFX.getId());
         } else {
-            category_cls_list.add(CategoryClsTypeEnum.FHYS.getId());
-            category_cls_list.add(CategoryClsTypeEnum.RHYF.getId());
+            categoryClsList.add(CategoryClsTypeEnum.FHYS.getId());
+            categoryClsList.add(CategoryClsTypeEnum.RHYF.getId());
         }
-        return category_cls_list;
+        return categoryClsList;
     }
 
     /**
@@ -870,15 +869,15 @@ public class HouseqmStatisticServiceImpl implements IHouseqmStatisticService {
      * @Author hy
      * @Description
      * @Date 20:47 2019/1/8
-     * @Param [project_id, taskIds, beginOn, endOn, page, page_size]
+     * @Param [projectId, taskIds, beginOn, endOn, page, page_size]
      * @return com.longfor.longjian.houseqm.app.vo.StatHouseqmCompleteDailyRspVo
      **/
     @Override
-    public StatHouseqmCompleteDailyRspVo searchRepossessionStatusCompleteDaily(Integer project_id, List<Integer> taskIds, int beginOn, int endOn, Integer page, Integer page_size) {
+    public StatHouseqmCompleteDailyRspVo searchRepossessionStatusCompleteDaily(Integer projectId, List<Integer> taskIds, int beginOn, int endOn, Integer page, Integer page_size) {
         // 计算总数量
         List<RepossessionStatusCompleteDailyCountDto> list = Lists.newArrayList();
         Map<String, Object> condi = Maps.newHashMap();
-        condi.put("task_id", taskIds);
+        condi.put("taskId", taskIds);
         condi.put("status", RepossessionStatusEnum.Accept.getId());
         Date begin_on, end_on = null;
         if (beginOn > 0) {

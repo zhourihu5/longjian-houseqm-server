@@ -31,15 +31,15 @@ import java.io.IOException;
 @Slf4j
 public class StatGroupController {
 
-    private final static String TEAMRANKSTAT_TIP = "teamRankStat";
+    private static final String TEAMRANKSTAT_TIP = "teamRankStat";
 
     /**
      * 项目进度统计
      */
-    private final static String PROGRESSSTAT_TIP = "progressStat";
-    private final static String PROJECTSTAT_TIP = "projectStat";
-    private final static String PROJECTRANKSTAT_TIP = "projectRankStat";
-    private final static String CATEGORYSTAT_TIP = "categoryStat";
+    private static final  String PROGRESSSTAT_TIP = "progressStat";
+    private static final String PROJECTSTAT_TIP = "projectStat";
+    private static final String PROJECTRANKSTAT_TIP = "projectRankStat";
+    private static final String CATEGORYSTAT_TIP = "categoryStat";
 
 
 

@@ -35,8 +35,6 @@ public class TaskListController {
     private ITaskListService taskListService;
     @Resource
     private CtrlTool ctrlTool;
-    @Resource
-    private SessionInfo sessionInfo;
 
     /**
      * 获取项目下任务列表任务信息
@@ -47,7 +45,6 @@ public class TaskListController {
     @RequestMapping(value = "list", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     public TaskResponse<TaskList2Vo> list(HttpServletRequest request, @Valid TaskListListReq req) {
         log.info("team_id=" + req.getTeam_id() + ", project_id=" + req.getProject_id() + ", category_cls=" + req.getCategory_cls() + ", status=" + req.getStatus());
-        Integer userId = (Integer) sessionInfo.getBaseInfo("userId");
         TaskResponse<TaskList2Vo> taskResponse = new TaskResponse<>();
         try {
             ctrlTool.projPerm(request, "项目.工程检查.任务管理.查看");
@@ -56,7 +53,7 @@ public class TaskListController {
             taskResponse.setMsg("success");
             taskResponse.setData(taskListVo);
         } catch (Exception e) {
-            log.error("error:",e.getMessage());
+            log.error("获取项目下任务列表任务信息error:",e.getMessage());
             taskResponse.setResult(1);
             taskResponse.setMessage(e.getMessage());
         }
@@ -73,13 +70,12 @@ public class TaskListController {
     public TaskResponse<TaskRoleListVo> taskRole(HttpServletRequest request, @Valid TaskRoleReq req) {
         TaskResponse<TaskRoleListVo> taskResponse = new TaskResponse<>();
         log.info("task_role, project_id=" + req.getProject_id() + ", task_id=" + req.getTask_id());
-        Integer userId = (Integer) sessionInfo.getBaseInfo("userId");
         try {
             ctrlTool.projPerm(request, "项目.工程检查.任务管理.查看");
             TaskRoleListVo roleListVos = taskListService.taskRole(req.getTask_id());
             taskResponse.setData(roleListVos);
         } catch (Exception e) {
-            log.error("error:",e.getMessage());
+            log.error("获取任务角色列表error:",e.getMessage());
             taskResponse.setResult(1);
             taskResponse.setMessage(e.getMessage());
         }

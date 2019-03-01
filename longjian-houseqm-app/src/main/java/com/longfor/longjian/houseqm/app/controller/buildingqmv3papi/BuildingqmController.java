@@ -59,6 +59,9 @@ public class BuildingqmController {
     @Resource
     private CtrlTool ctrlTool;
 
+    private static final  String PARAN="yyyy-MM-dd HH:mm:ss";
+    private static final  String UTF="UTF-8";
+
     /**
      * 项目下获取我的任务列表
      * http://192.168.37.159:3000/project/8/interface/api/626
@@ -93,11 +96,11 @@ public class BuildingqmController {
     @RequestMapping(value = "check_update/check", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     public LjBaseResponse<TaskIssueListVo> check(@Valid UpdateDeviceReq updateDeviceReq) {
 
-        Date taskUpdateTime = DateUtil.timeStampToDate(updateDeviceReq.getTask_update_time(), "yyyy-MM-dd HH:mm:ss");
-        Date issueUpdateTime = DateUtil.timeStampToDate(updateDeviceReq.getIssue_update_time(), "yyyy-MM-dd HH:mm:ss");
-        Date issueLogUpdateTime = DateUtil.timeStampToDate(updateDeviceReq.getIssue_log_update_time(), "yyyy-MM-dd HH:mm:ss");
-        Date taskMembersUpdateTime = DateUtil.timeStampToDate(updateDeviceReq.getTask_members_update_time(), "yyyy-MM-dd HH:mm:ss");
-        Date issueMembersUpdateTime = DateUtil.timeStampToDate(updateDeviceReq.getIssue_members_update_time(), "yyyy-MM-dd HH:mm:ss");
+        Date taskUpdateTime = DateUtil.timeStampToDate(updateDeviceReq.getTask_update_time(), PARAN);
+        Date issueUpdateTime = DateUtil.timeStampToDate(updateDeviceReq.getIssue_update_time(), PARAN);
+        Date issueLogUpdateTime = DateUtil.timeStampToDate(updateDeviceReq.getIssue_log_update_time(), PARAN);
+        Date taskMembersUpdateTime = DateUtil.timeStampToDate(updateDeviceReq.getTask_members_update_time(), PARAN);
+        Date issueMembersUpdateTime = DateUtil.timeStampToDate(updateDeviceReq.getIssue_members_update_time(), PARAN);
 
         TaskIssueListVo taskIssueListVo = new TaskIssueListVo();
         TaskIssueListVo.TaskIussueVo item = taskIssueListVo.new TaskIussueVo();
@@ -172,7 +175,7 @@ public class BuildingqmController {
             TaskMemberListVo vo = buildingqmService.taskSquadsMembers(taskIds);
             response.setData(vo);
         } catch (Exception e) {
-            log.error("error:", e.getMessage());
+            log.error("获取任务角色列表异常:", e.getMessage());
             response.setResult(1);
             response.setMessage(e.getMessage());
         }
@@ -197,7 +200,7 @@ public class BuildingqmController {
             MyIssuePatchListVo miplv = buildingqmService.myIssuePathList(userId, req.getTask_id(), req.getTimestamp());
             response.setData(miplv);
         } catch (Exception e) {
-            log.error("error:", e.getMessage());
+            log.error("补全与我相关问题信息异常:", e.getMessage());
             response.setResult(1);
             response.setMessage(e.getMessage());
         }
@@ -234,7 +237,7 @@ public class BuildingqmController {
             ctrlTool.projPerm(request, "项目.工程检查.任务管理.新增");
             buildingqmService.create(userId, taskReq);
         } catch (Exception e) {
-            log.error("error:", e.getMessage());
+            log.error("项目下创建任务异常:", e.getMessage());
             response.setResult(1);
             response.setMessage(e.getMessage());
         }
@@ -267,7 +270,7 @@ public class BuildingqmController {
             houseQmCheckTaskSquadListRspVoList.setSquad_list(squad_list);
             response.setData(houseQmCheckTaskSquadListRspVoList);
         } catch (Exception e) {
-            log.error("error:", e.getMessage());
+            log.error("项目下获取检查组信息异常:", e.getMessage());
             response.setResult(1);
             response.setMessage(e.getMessage());
         }
@@ -300,11 +303,10 @@ public class BuildingqmController {
         Integer userId = SessionUtil.getUid(sessionInfo);
         LjBaseResponse<Object> response = new LjBaseResponse<>();
         try {
-            //uncomment this line
             ctrlTool.projPerm(request, "项目.工程检查.任务管理.编辑");
             buildingqmService.edit(userId, taskEditReq);
         } catch (Exception e) {
-            log.error("error:", e.getMessage());
+            log.error("项目下任务内容修改异常:", e.getMessage());
             response.setResult(1);
             response.setMessage(e.getMessage());
         }
@@ -364,7 +366,7 @@ public class BuildingqmController {
             ljBaseResponse.setMessage(map.get("message").toString());
             return ljBaseResponse;
         }
-        response.setCharacterEncoding("UTF-8");
+        response.setCharacterEncoding(UTF);
         String fileNames = map.get("fileName").toString();
 
         response.addHeader("Content-Disposition",
@@ -382,22 +384,22 @@ public class BuildingqmController {
 
     @RequestMapping(value = "test", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     public void testFileNameEncode(HttpServletRequest request, HttpServletResponse response) throws IOException {
-        response.setCharacterEncoding("UTF-8");
+        response.setCharacterEncoding(UTF);
         String fileNames = "测试汉字文件名.txt";
         String codedfilename = URLEncoder.encode(fileNames, "utf-8");
         String agent = request.getHeader("USER-AGENT");
         if (null != agent && -1 != agent.indexOf("MSIE") || null != agent && -1 != agent.indexOf("Trident")) {// ie
-            System.out.println("ie");
-            String name = java.net.URLEncoder.encode(fileNames, "UTF-8");
+            log.debug("ie");
+            String name = java.net.URLEncoder.encode(fileNames, UTF);
             codedfilename = name;
         } else if (null != agent && -1 != agent.indexOf("Mozilla")) {// 火狐,chrome等
-            System.out.println("Mozilla");
+            log.debug("Mozilla");
             if (null != agent && -1 != agent.indexOf("Chrome")) {
-                System.out.println("Chrome");
+                log.debug("Chrome");
             } else if (null != agent && -1 != agent.indexOf("Firefox")) {
-                System.out.println("Firefox");
+                log.debug("Firefox");
             }
-            codedfilename = new String(fileNames.getBytes("UTF-8"), "iso-8859-1");
+            codedfilename = new String(fileNames.getBytes(UTF), "iso-8859-1");
         } else {
         }
 
