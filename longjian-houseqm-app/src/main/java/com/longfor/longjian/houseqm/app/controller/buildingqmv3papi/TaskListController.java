@@ -1,9 +1,7 @@
 package com.longfor.longjian.houseqm.app.controller.buildingqmv3papi;
 
-import com.longfor.longjian.common.req.feignClientReq.ProjectPermissionReq;
 import com.longfor.longjian.common.util.CtrlTool;
 import com.longfor.longjian.common.util.SessionInfo;
-import com.longfor.longjian.houseqm.app.feginClient.IPermissionFeignService;
 import com.longfor.longjian.houseqm.app.req.tasklist.TaskListListReq;
 import com.longfor.longjian.houseqm.app.req.tasklist.TaskRoleReq;
 import com.longfor.longjian.houseqm.app.service.ITaskListService;
@@ -12,9 +10,7 @@ import com.longfor.longjian.houseqm.app.vo.TaskResponse;
 import com.longfor.longjian.houseqm.app.vo.TaskRoleListVo;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.MediaType;
-import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.annotation.Resource;

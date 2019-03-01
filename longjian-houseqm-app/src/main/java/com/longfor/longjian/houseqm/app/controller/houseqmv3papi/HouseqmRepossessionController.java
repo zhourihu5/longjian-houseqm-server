@@ -1,13 +1,9 @@
 package com.longfor.longjian.houseqm.app.controller.houseqmv3papi;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
-import com.google.gson.JsonObject;
-import com.longfor.longjian.houseqm.app.vo.houseqmrepossessession.ApiRepossessionInfo;
-import com.longfor.longjian.houseqm.app.vo.houseqmrepossessession.ApiRepossessionMeterRecord;
 
 import com.longfor.longjian.common.base.LjBaseResponse;
-import com.longfor.longjian.houseqm.app.feginClient.IRepossessionFeignService;
-import com.longfor.longjian.houseqm.app.req.houseqmrepossession.RepossessionGetReq;
+import com.longfor.longjian.houseqm.app.feginclient.IRepossessionFeignService;
 import com.longfor.longjian.houseqm.app.req.houseqmrepossession.RepossessionReportReq;
 import com.longfor.longjian.houseqm.app.vo.TaskResponse;
 import com.longfor.longjian.houseqm.app.vo.houseqmrepossessession.RepossessionGetRspVo;

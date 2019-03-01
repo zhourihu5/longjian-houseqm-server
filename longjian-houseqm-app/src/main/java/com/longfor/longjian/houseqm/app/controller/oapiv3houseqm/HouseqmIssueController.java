@@ -1,21 +1,18 @@
 package com.longfor.longjian.houseqm.app.controller.oapiv3houseqm;
 
-import com.alibaba.fastjson.JSON;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.longfor.longjian.common.base.LjBaseResponse;
 import com.longfor.longjian.common.exception.LjBaseRuntimeException;
 import com.longfor.longjian.common.util.CtrlTool;
 import com.longfor.longjian.common.util.SessionInfo;
-import com.longfor.longjian.houseqm.app.feginClient.IHouseqmCheckTaskIssueFeignService;
+import com.longfor.longjian.houseqm.app.feginclient.IHouseqmCheckTaskIssueFeignService;
 import com.longfor.longjian.houseqm.app.req.issue.IssueBatchAppointReq;
 import com.longfor.longjian.houseqm.app.req.issue.IssueBatchApproveReq;
 import com.longfor.longjian.houseqm.app.req.issue.IssueBatchDeleteReq;
 import com.longfor.longjian.houseqm.app.req.issue.IssueExportPdfReq;
 import com.longfor.longjian.houseqm.app.service.IHouseqmIssueService;
 import com.longfor.longjian.houseqm.app.vo.IssueBatchAppointRspVo;
-import com.longfor.longjian.houseqm.app.vo.houseqmissue.HouseqmCheckTaskIssueIndexJsonReqMsg;
-import com.longfor.longjian.houseqm.app.vo.houseqmissue.HouseqmCheckTaskIssueIndexJsonRspMsg;
 import com.longfor.longjian.houseqm.app.vo.houseqmissue.IssueBatchApproveRspVo;
 import com.longfor.longjian.houseqm.app.vo.houseqmissue.IssueBatchDeleteRspVo;
 import com.longfor.longjian.houseqm.consts.ErrorEnum;
@@ -43,8 +40,6 @@ import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 import java.io.UnsupportedEncodingException;
-import java.net.URI;
-import java.net.URL;
 import java.net.URLEncoder;
 import java.util.*;
 
