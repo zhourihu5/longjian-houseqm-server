@@ -2,21 +2,18 @@ package com.longfor.longjian.houseqm.app.utils;
 
 import com.longfor.longjian.common.exception.LjBaseRuntimeException;
 import com.longfor.longjian.houseqm.app.vo.ExportReplyDetail;
-import com.longfor.longjian.houseqm.app.vo.export.NodeDataVo;
 import com.longfor.longjian.houseqm.app.vo.export.NodeVo;
 import com.longfor.longjian.houseqm.app.vo.houseqmstat.InspectionHouseStatusInfoVo;
 import com.longfor.longjian.houseqm.app.vo.issuelist.ExcelIssueData;
 import com.longfor.longjian.houseqm.util.DateUtil;
-import com.longfor.longjian.houseqm.utils.ExampleUtil;
 import freemarker.template.Configuration;
 import freemarker.template.Template;
-import freemarker.template.TemplateException;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections.CollectionUtils;
-import org.apache.poi.hssf.usermodel.HSSFWorkbook;
-import org.apache.poi.ooxml.POIXMLDocument;
-import org.apache.poi.openxml4j.opc.OPCPackage;
-import org.apache.poi.ss.usermodel.*;
+import org.apache.poi.ss.usermodel.BorderStyle;
+import org.apache.poi.ss.usermodel.CellStyle;
+import org.apache.poi.ss.usermodel.Font;
+import org.apache.poi.ss.usermodel.HorizontalAlignment;
 import org.apache.poi.ss.util.CellAddress;
 import org.apache.poi.ss.util.CellRangeAddress;
 import org.apache.poi.xssf.streaming.SXSSFCell;
@@ -35,17 +32,12 @@ import org.openxmlformats.schemas.drawingml.x2006.wordprocessingDrawing.CTInline
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
-import javax.annotation.Resource;
-import javax.security.auth.login.AppConfigurationEntry;
-import javax.servlet.ServletContext;
-import javax.servlet.ServletOutputStream;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.*;
 import java.util.*;
 
 import static org.apache.poi.ss.usermodel.VerticalAlignment.CENTER;
-import static org.apache.poi.ss.usermodel.VerticalAlignment.forInt;
 
 /**
  * @ProjectName: longjian-houseqm-server
@@ -60,25 +52,27 @@ import static org.apache.poi.ss.usermodel.VerticalAlignment.forInt;
 public class ExportUtils {
 
     @Value("${export_path}")
-    private static String EXPORT_PATH;
+    private static String exportPath;
 
-    private static List<String> COL_NAME_LIST = Arrays.asList(new String[]{"A", "B", "C", "D", "E", "F", "G", "H", "I", "J", "K", "L", "M", "N", "O", "P", "Q", "R", "S", "T", "U", "V", "W", "X", "Y", "Z",
+    private static List<String> colNameList = Arrays.asList("A", "B", "C", "D", "E", "F", "G", "H", "I", "J", "K", "L", "M", "N", "O", "P", "Q", "R", "S", "T", "U", "V", "W", "X", "Y", "Z",
             "AA", "AB", "AC", "AD", "AE", "AF", "AG", "AH", "AI", "AJ", "AK", "AL", "AM", "AN", "AO", "AP", "AQ", "AR", "AS", "AT", "AU", "AV", "AW", "AX", "AY", "AZ",
-            "BA", "BB", "BC", "BD", "BE", "BF", "BG", "BH", "BI", "BJ", "BK", "BL", "BM", "BN", "BO", "BP", "BQ", "BR", "BS", "BT", "BU", "BV", "BW", "BX", "BY", "BZ"});
+            "BA", "BB", "BC", "BD", "BE", "BF", "BG", "BH", "BI", "BJ", "BK", "BL", "BM", "BN", "BO", "BP", "BQ", "BR", "BS", "BT", "BU", "BV", "BW", "BX", "BY", "BZ"                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                      );
 
-    // 导出excel 不带图片 问题列表
-    public static SXSSFWorkbook exportExcel(List<ExcelIssueData> data, boolean condition_open) {
+    private ExportUtils(){
+        
+    }
 
+    private static Map<String,Object> initWorkbook(){
         SXSSFWorkbook workbook = new SXSSFWorkbook();
         SXSSFSheet sheet = workbook.createSheet();
 
         CellStyle cellStyle = workbook.createCellStyle();
-        Font base_font = workbook.createFont();
+        Font baseFont = workbook.createFont();
 
-        base_font.setFontName("宋体");//字体
-        base_font.setBold(true);//加粗
-        base_font.setFontHeightInPoints((short) 14);
-        cellStyle.setFont(base_font);
+        baseFont.setFontName("宋体");//字体
+        baseFont.setBold(true);//加粗
+        baseFont.setFontHeightInPoints((short) 14);
+        cellStyle.setFont(baseFont);
         cellStyle.setVerticalAlignment(CENTER);//垂直居中
         cellStyle.setWrapText(true);//文字换行
         cellStyle.setAlignment(HorizontalAlignment.CENTER);//水平居中
@@ -86,7 +80,19 @@ public class ExportUtils {
         cellStyle.setBorderRight(BorderStyle.THIN);
         cellStyle.setBorderTop(BorderStyle.THIN);
         cellStyle.setBorderBottom(BorderStyle.THIN);
+        Map<String,Object> result=new HashMap<>();
+        result.put("workbook",workbook);
+        result.put("sheet",sheet);
+        result.put("cellStyle",cellStyle);
+        return result;
+    }
+    // 导出excel 不带图片 问题列表
+    public static SXSSFWorkbook exportExcel(List<ExcelIssueData> data, boolean conditionOpen) {
 
+        Map<String,Object> initParam=initWorkbook();
+        SXSSFWorkbook workbook =(SXSSFWorkbook)initParam.get("workbook");
+        SXSSFSheet sheet = (SXSSFSheet)initParam.get("sheet");
+        CellStyle cellStyle =(CellStyle)initParam.get("cellStyle");
         sheet.setColumnWidth(getColumnIndexByName("B"), 25 * 256);
         sheet.setColumnWidth(getColumnIndexByName("D"), 30 * 256);
         sheet.setColumnWidth(getColumnIndexByName("I"), 40 * 256);
@@ -105,7 +111,7 @@ public class ExportUtils {
         List<String> title = new ArrayList<>();
         title.addAll(Arrays.asList(new String[]{"问题ID", "任务名称'", "问题状态", "位置", "楼栋", "楼层", "户",
                 "房间", "任务类型"}));
-        if (condition_open) {
+        if (conditionOpen) {
             title.add("严重程度");
         }
         title.addAll(Arrays.asList(new String[]{"是否超期", "检查人", "检查时间", "分配人", "分配时间", "整改人",
@@ -149,7 +155,7 @@ public class ExportUtils {
             cell = row.createCell(curColumn++);
             cell.setCellValue(issue.getCategory_name());
 
-            if (condition_open) {
+            if (conditionOpen) {
                 cell = row.createCell(curColumn++);
                 cell.setCellValue(issue.getCondition_name());
             }
@@ -196,7 +202,7 @@ public class ExportUtils {
 
         String dt = DateUtil.getNowTimeStr("MMddHHmmss");
         String r = new Random().ints(0, 65536).toString();
-        String pathname = String.format("%s/export_issue_excel_%s_%s.xls", EXPORT_PATH, dt, r);
+        String pathname = String.format("%s/export_issue_excel_%s_%s.xls", exportPath, dt, r);
 
         return workbook;
     }
@@ -206,7 +212,7 @@ public class ExportUtils {
         String template_notify = "/templates/reply_template.docx";
         String dt = DateUtil.getNowTimeStr("MMddHHmmss");
         String r = new Random().ints(0, 65536).toString();
-        String file_path = String.format("%s/buildingqm_report/reply_report_%s_%s", EXPORT_PATH, dt, r);
+        String file_path = String.format("%s/buildingqm_report/reply_report_%s_%s", exportPath, dt, r);
         ExportUtils exportUtils = new ExportUtils();
         InputStream fis = exportUtils.getClass().getResourceAsStream(template_notify);
         XWPFDocument doc = new XWPFDocument(fis);
@@ -300,23 +306,10 @@ public class ExportUtils {
     }
 
     public static SXSSFWorkbook exportInspectionSituationExcel(List<InspectionHouseStatusInfoVo> data) {
-        SXSSFWorkbook workbook = new SXSSFWorkbook();
-        SXSSFSheet sheet = workbook.createSheet();
-
-        CellStyle titilecellStyle = workbook.createCellStyle();
-        Font base_font = workbook.createFont();
-        base_font.setFontName("宋体");//字体
-        base_font.setBold(true);//加粗
-        base_font.setFontHeightInPoints((short) 12);
-
-        titilecellStyle.setFont(base_font);
-        titilecellStyle.setVerticalAlignment(CENTER);//垂直居中
-        titilecellStyle.setWrapText(true);//文字换行
-        titilecellStyle.setAlignment(HorizontalAlignment.CENTER);//水平居中
-        titilecellStyle.setBorderLeft(BorderStyle.THIN);
-        titilecellStyle.setBorderRight(BorderStyle.THIN);
-        titilecellStyle.setBorderTop(BorderStyle.THIN);
-        titilecellStyle.setBorderBottom(BorderStyle.THIN);
+        Map<String,Object> initParam=initWorkbook();
+        SXSSFWorkbook workbook =(SXSSFWorkbook)initParam.get("workbook");
+        SXSSFSheet sheet = (SXSSFSheet)initParam.get("sheet");
+        CellStyle titilecellStyle =(CellStyle)initParam.get("cellStyle");
 
         CellStyle cellStyle = workbook.createCellStyle();
         Font base_font1 = workbook.createFont();
@@ -343,7 +336,7 @@ public class ExportUtils {
 
         //表头
         List<String> title = new ArrayList<>();
-        title.addAll(Arrays.asList(new String[]{"楼栋", "楼层", "户名称", "户状态", "问题数", "整改数", "销项数"}));
+        title.addAll(Arrays.asList("楼栋", "楼层", "户名称", "户状态", "问题数", "整改数", "销项数"));
 
         SXSSFRow row0 = sheet.createRow(0);
         row0.setHeightInPoints((float) 31.2);
@@ -404,7 +397,7 @@ public class ExportUtils {
 
 
     private static int getColumnIndexByName(String name) {
-        return COL_NAME_LIST.indexOf(name);
+        return colNameList.indexOf(name);
     }
 
     private static XSSFCell getCell(String address, XSSFSheet sheet) {//需先创建单元格才能获取
@@ -533,21 +526,9 @@ public class ExportUtils {
 
 
     public static SXSSFWorkbook exportIssueStatisticExcel(List<NodeVo> nodeTree, int maxCol) {
-        SXSSFWorkbook workbook = new SXSSFWorkbook();
-        SXSSFSheet sheet = workbook.createSheet();
-        CellStyle cellStyle = workbook.createCellStyle();
-        Font base_font = workbook.createFont();
-        base_font.setFontName("宋体");//字体
-        base_font.setBold(true);//加粗
-        base_font.setFontHeightInPoints((short) 14);
-        cellStyle.setFont(base_font);
-        cellStyle.setVerticalAlignment(CENTER);//垂直居中
-        cellStyle.setWrapText(true);//文字换行
-        cellStyle.setAlignment(HorizontalAlignment.CENTER);//水平居中
-        cellStyle.setBorderLeft(BorderStyle.THIN);
-        cellStyle.setBorderRight(BorderStyle.THIN);
-        cellStyle.setBorderTop(BorderStyle.THIN);
-        cellStyle.setBorderBottom(BorderStyle.THIN);
+        Map<String,Object> initParam=initWorkbook();
+        SXSSFWorkbook workbook =(SXSSFWorkbook)initParam.get("workbook");
+        SXSSFSheet sheet = (SXSSFSheet)initParam.get("sheet");
         int cur_row = 0;
         int cur_column = 0;
         //创建行
@@ -572,7 +553,7 @@ public class ExportUtils {
 
         String dt = DateUtil.getNowTimeStr("MMddHHmmss");
         String r = new Random().ints(0, 65536).toString();
-        String pathname = String.format("%s/export_issue_excel_%s_%s.xlsx", EXPORT_PATH, dt, r);
+        String pathname = String.format("%s/export_issue_excel_%s_%s.xlsx", exportPath, dt, r);
 
         return workbook;
 
