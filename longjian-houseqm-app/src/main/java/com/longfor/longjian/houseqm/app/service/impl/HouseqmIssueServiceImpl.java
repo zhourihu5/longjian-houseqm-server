@@ -2,6 +2,7 @@ package com.longfor.longjian.houseqm.app.service.impl;
 
 import com.alibaba.fastjson.JSON;
 import com.google.common.collect.Lists;
+import com.longfor.longjian.common.exception.LjBaseRuntimeException;
 import com.longfor.longjian.houseqm.app.service.IHouseqmIssueService;
 import com.longfor.longjian.houseqm.app.vo.HouseQmCheckTaskIssueHelperVo;
 import com.longfor.longjian.houseqm.app.vo.houseqmissue.ApiHouseQmCheckTaskReportRsp;
@@ -164,36 +165,30 @@ public class HouseqmIssueServiceImpl implements IHouseqmIssueService {
                 resultFilePath, exportName, 0, "", executeAt);
     }
 
-    private void writeInput(String data, String exportName, String filepath) throws Exception {
-        try {
-            //File file = new File(String.format("%s", filepath));
+    private void writeInput(String data, String exportName, String filepath) {
             File file = new File(String.format("D:/%s", exportName));
 
             if (!file.getParentFile().exists()) {
                 file.getParentFile().mkdirs();
             }
-
             if (!file.exists()) {
-                file.createNewFile();
+                try {
+                    boolean newFile = file.createNewFile();
+                    if(!newFile){
+                        throw  new LjBaseRuntimeException(-1,"创建文件失败");
+                    }
+                } catch (IOException e) {
+                   log.error(e.getMessage());
+                }
             }
-             //out = new FileOutputStream(String.format("%s", filepath));
             try(FileOutputStream out= new FileOutputStream(String.format("D:/%s",exportName));
                 OutputStreamWriter op =new OutputStreamWriter(out, "utf-8")) {
-//            out = new FileOutputStream(String.format("D:/%s",exportName));
-//            //String data1 = new String(data,"utf-8");
-//            OutputStreamWriter op = new OutputStreamWriter(out, "utf-8");
                 op.append(data);
-                //out.write(data);
                 op.flush();
             }catch(Exception e){
                 log.error(e.getMessage());
             }
-            //op.close();
-        /*out.write(data);
-        out.close();*/
-        } catch (IOException e) {
-            log.error(e.getMessage());
-        }
+
     }
 
     @Override
