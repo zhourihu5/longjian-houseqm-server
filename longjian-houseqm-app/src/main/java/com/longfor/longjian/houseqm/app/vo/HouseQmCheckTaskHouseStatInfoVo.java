@@ -12,15 +12,15 @@ import java.io.Serializable;
 @NoArgsConstructor
 public class HouseQmCheckTaskHouseStatInfoVo  implements Serializable{
 
-   private int HouseCount;
-    private int CheckedCount;
-    private int HasIssueCount;
-    private int RepairedCount;
-    private int ApprovedCount ;
-    private int RepairConfirmCount;
-    private int AcceptHasIssueCount;
-    private int AcceptNoIssueCount;
-    private  int OnlyWatchCount ;
-    private int RejectCount;
-    private int AcceptApprovedCount;
+   private Integer HouseCount;
+    private Integer CheckedCount;
+    private Integer HasIssueCount;
+    private Integer RepairedCount;
+    private Integer ApprovedCount ;
+    private Integer RepairConfirmCount;
+    private Integer AcceptHasIssueCount;
+    private Integer AcceptNoIssueCount;
+    private  Integer OnlyWatchCount ;
+    private Integer RejectCount;
+    private Integer AcceptApprovedCount;
 }

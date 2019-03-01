@@ -21,7 +21,7 @@ public class BoardListVo implements Serializable {
   public class BoardVo implements Serializable {
 
     private String label;
-    private int value;
+    private Integer value;
     private String name;
     private int  key;
   }

@@ -20,7 +20,7 @@ public class AreaTaskListVo implements Serializable {
   @NoArgsConstructor
   public class AreaTaskVo implements Serializable {
 
-    private int  id;
+    private Integer  id;
     private String  name;
     private String  category_cls;
   }

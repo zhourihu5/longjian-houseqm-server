@@ -676,9 +676,14 @@ public class HouseqmStatServiceImpl implements IHouseqmStatService {
         else item.setTask_name("");
         Map<String, Boolean> areaMap = Maps.newHashMap();
         for (CheckerIssueStat l : list) {
-            String areapath = l.getAreaId() + "/";
+            /*String areapath = l.getAreaId() + "/";
 
-            String fatherPath = l.getAreaPathAndId().replace(areapath, "");
+            String fatherPath = l.getAreaPathAndId().replace(areapath, "");*/
+            String areapath =String.format("%d%s", l.getAreaId() , "/");
+            int end = l.getAreaPathAndId().lastIndexOf(areapath);String fatherPath =null;
+            if (end==l.getAreaPathAndId().length()-areapath.length()){//以 字符 结尾
+                fatherPath= l.getAreaPathAndId().replace(areapath, "");
+            }
             // 以下应使用枚举类，由于未改动包结构 先写死
             if (l.getTyp().equals(HouseQmCheckTaskIssueEnum.Record.getId())) {
                 item.setRecords_count(l.getCount() + item.getRecords_count());

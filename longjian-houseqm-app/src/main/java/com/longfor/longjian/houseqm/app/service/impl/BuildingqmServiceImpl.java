@@ -117,15 +117,15 @@ public class BuildingqmServiceImpl implements IBuildingqmService {
         Map<Integer, ApiBuildingQmCheckTaskConfig> taskMap = creatTaskMap(taskIds);
         List<HouseQmCheckTask> houseqmTasks = houseQmCheckTaskService.selectByTaskIdsEvenDeleted(taskIds);
         List<TaskVo> vos = Lists.newArrayList();
-        buildTaskVo(vos,houseqmTasks,taskMap);
+        buildTaskVo(vos, houseqmTasks, taskMap);
         TaskListVo taskListVo = new TaskListVo();
         taskListVo.setTask_list(vos);
 
         return taskListVo;
     }
 
-    public static void setTaskProperties(TaskVo tvo, ApiBuildingQmCheckTaskMsg abm,Map<Integer, ApiBuildingQmCheckTaskConfig> taskMap,HouseQmCheckTask checkTask  ){
-        ApiBuildingQmCheckTaskMsg task =new ApiBuildingQmCheckTaskMsg();
+    public static void setTaskProperties(TaskVo tvo, ApiBuildingQmCheckTaskMsg abm, Map<Integer, ApiBuildingQmCheckTaskConfig> taskMap, HouseQmCheckTask checkTask) {
+        ApiBuildingQmCheckTaskMsg task = new ApiBuildingQmCheckTaskMsg();
         task.setProject_id(checkTask.getProjectId());
         task.setTask_id(checkTask.getTaskId());
         task.setName(checkTask.getName());
@@ -156,18 +156,18 @@ public class BuildingqmServiceImpl implements IBuildingqmService {
         task.setCreate_at(DateUtil.datetimeToTimeStamp(checkTask.getCreateAt()));
         task.setUpdate_at(DateUtil.datetimeToTimeStamp(checkTask.getUpdateAt()));
         task.setDelete_at(DateUtil.datetimeToTimeStamp(checkTask.getDeleteAt()));
-        if(tvo!=null){
+        if (tvo != null) {
             try {
-                BeanUtils.copyProperties(tvo,task);
+                BeanUtils.copyProperties(tvo, task);
             } catch (IllegalAccessException e) {
                 e.printStackTrace();
             } catch (InvocationTargetException e) {
                 e.printStackTrace();
             }
         }
-        if(abm!=null){
+        if (abm != null) {
             try {
-                BeanUtils.copyProperties(abm,task);
+                BeanUtils.copyProperties(abm, task);
             } catch (IllegalAccessException e) {
                 e.printStackTrace();
             } catch (InvocationTargetException e) {
@@ -176,13 +176,14 @@ public class BuildingqmServiceImpl implements IBuildingqmService {
         }
     }
 
-    private void buildTaskVo(List<TaskVo> vos,List<HouseQmCheckTask> houseqmTasks,Map<Integer, ApiBuildingQmCheckTaskConfig> taskMap){
+    private void buildTaskVo(List<TaskVo> vos, List<HouseQmCheckTask> houseqmTasks, Map<Integer, ApiBuildingQmCheckTaskConfig> taskMap) {
         for (HouseQmCheckTask item : houseqmTasks) {
             TaskVo task = new TaskVo();
-            BuildingqmServiceImpl.setTaskProperties(task,null,taskMap,item);
+            BuildingqmServiceImpl.setTaskProperties(task, null, taskMap, item);
             vos.add(task);
         }
     }
+
     /**
      * @param taskIdsStr
      * @return
@@ -343,8 +344,8 @@ public class BuildingqmServiceImpl implements IBuildingqmService {
         return myIssuePatchListVo;
     }
 
-    private Map<String,Object> prepareForCreateOrEdit(TaskReq taskReq){
-        Map<String,Object> paramMap=new HashMap<>();
+    private Map<String, Object> prepareForCreateOrEdit(TaskReq taskReq) {
+        Map<String, Object> paramMap = new HashMap<>();
         List<Integer> areaIds = StringSplitToListUtil.splitToIdsComma(taskReq.getArea_ids(), ",");
         if (CollectionUtils.isEmpty(areaIds)) {
             throw new LjBaseRuntimeException(-99, "区域不能为空");
@@ -368,32 +369,33 @@ public class BuildingqmServiceImpl implements IBuildingqmService {
         String planBeginOn = taskReq.getPlan_begin_on() + " 00:00:00";
         String planEndOn = taskReq.getPlan_end_on() + " 23:59:59";
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-        Date begin =null;
-        Date endon =null;
+        Date begin = null;
+        Date endon = null;
         try {
-             begin = sdf.parse(planBeginOn);
+            begin = sdf.parse(planBeginOn);
             endon = sdf.parse(planEndOn);
             if (DateUtil.datetimeToTimeStamp(endon) < DateUtil.datetimeToTimeStamp(begin)) {
                 throw new LjBaseRuntimeException(-99, "计划结束时间有误");
             }
         } catch (ParseException e) {
-            log.error("error:",e.getMessage());
+            log.error("error:", e.getMessage());
         }
-        paramMap.put("areaIds",areaIds);
-        paramMap.put("areaTypes",areaTypes);
-        paramMap.put("planBeginOn",planBeginOn);
-        paramMap.put("planEndOn",planEndOn);
-        paramMap.put("checkerGroups",checkerGroups);
-        paramMap.put("repairerGroups",repairerGroups);
-        paramMap.put("config",config);
-        paramMap.put("begin",begin);
-        paramMap.put("endon",endon);
+        paramMap.put("areaIds", areaIds);
+        paramMap.put("areaTypes", areaTypes);
+        paramMap.put("planBeginOn", planBeginOn);
+        paramMap.put("planEndOn", planEndOn);
+        paramMap.put("checkerGroups", checkerGroups);
+        paramMap.put("repairerGroups", repairerGroups);
+        paramMap.put("config", config);
+        paramMap.put("begin", begin);
+        paramMap.put("endon", endon);
         return paramMap;
     }
+
     @Override
     public void create(Integer uid, TaskReq taskReq) {
-        Map<String,Object> paramMap=prepareForCreateOrEdit(taskReq);
-        Execute(uid, taskReq, (List<Integer>)paramMap.get("areaIds"), (List<Integer>) paramMap.get("areaTypes"), (String)paramMap.get("planBeginOn"), (String)paramMap.get("planEndOn"), (List<ApiBuildingQmTaskMemberGroupVo>)paramMap.get("checkerGroups"), (List<ApiBuildingQmTaskMemberGroupVo>)paramMap.get("repairerGroups"), (ConfigVo)paramMap.get("config"));
+        Map<String, Object> paramMap = prepareForCreateOrEdit(taskReq);
+        Execute(uid, taskReq, (List<Integer>) paramMap.get("areaIds"), (List<Integer>) paramMap.get("areaTypes"), (String) paramMap.get("planBeginOn"), (String) paramMap.get("planEndOn"), (List<ApiBuildingQmTaskMemberGroupVo>) paramMap.get("checkerGroups"), (List<ApiBuildingQmTaskMemberGroupVo>) paramMap.get("repairerGroups"), (ConfigVo) paramMap.get("config"));
     }
 
     @Override
@@ -403,16 +405,16 @@ public class BuildingqmServiceImpl implements IBuildingqmService {
 
     @Override
     public void edit(Integer uid, TaskEditReq taskEditReq) {
-        TaskReq taskReq=new TaskReq();
+        TaskReq taskReq = new TaskReq();
         try {
-          BeanUtils.copyProperties(taskReq,taskEditReq);
+            BeanUtils.copyProperties(taskReq, taskEditReq);
         } catch (IllegalAccessException e) {
-           log.error(e.getMessage());
+            log.error(e.getMessage());
         } catch (InvocationTargetException e) {
             log.error(e.getMessage());
         }
-        Map<String,Object> paramMap=this.prepareForCreateOrEdit(taskReq);
-        editExecute((Date)paramMap.get("begin"), (Date)paramMap.get("endon"), uid, taskEditReq, (List<Integer>)paramMap.get("areaIds"), (List<Integer>) paramMap.get("areaTypes"), (String)paramMap.get("planBeginOn"), (String)paramMap.get("planEndOn"), (List<ApiBuildingQmTaskMemberGroupVo>)paramMap.get("checkerGroups"), (List<ApiBuildingQmTaskMemberGroupVo>)paramMap.get("repairerGroups"), (ConfigVo)paramMap.get("config"));
+        Map<String, Object> paramMap = this.prepareForCreateOrEdit(taskReq);
+        editExecute((Date) paramMap.get("begin"), (Date) paramMap.get("endon"), uid, taskEditReq, (List<Integer>) paramMap.get("areaIds"), (List<Integer>) paramMap.get("areaTypes"), (String) paramMap.get("planBeginOn"), (String) paramMap.get("planEndOn"), (List<ApiBuildingQmTaskMemberGroupVo>) paramMap.get("checkerGroups"), (List<ApiBuildingQmTaskMemberGroupVo>) paramMap.get("repairerGroups"), (ConfigVo) paramMap.get("config"));
 
     }
 
@@ -940,9 +942,9 @@ public class BuildingqmServiceImpl implements IBuildingqmService {
                     List<ApiHouseQmCheckTaskIssueLogInfo.ApiHouseQmCheckTaskIssueLogDetailInfo> detail1 = item.getDetail();
                     for (int i = 0; i < detail1.size(); i++) {
                         if (isCheckItemChange(issue, item) || StringUtils.isEmpty(checkItemMD5) || StringUtils.isEmpty(detail1.get(i).getCheck_item_md5()) || detail1.get(i).getCheck_item_md5().equals(checkItemMD5)) {
-                            Map<String,Object> modifyIssueMap = modifyIssue(refundMap, issueRoleMap, issue, item, true);
+                            Map<String, Object> modifyIssueMap = modifyIssue(refundMap, issueRoleMap, issue, item, true);
                             HouseQmCheckTaskIssue issues = (HouseQmCheckTaskIssue) modifyIssueMap.get("issue");
-                            refundMap = (HashMap<HouseQmCheckTaskIssue, ApiRefundInfo>)modifyIssueMap.get("refundMap");
+                            refundMap = (HashMap<HouseQmCheckTaskIssue, ApiRefundInfo>) modifyIssueMap.get("refundMap");
                             issueInsertMap.put(item.getIssue_uuid(), issues);
                             logInsertList.add(createIssueLog(projectId, item));
 
@@ -974,9 +976,9 @@ public class BuildingqmServiceImpl implements IBuildingqmService {
                         List<ApiHouseQmCheckTaskIssueLogInfo.ApiHouseQmCheckTaskIssueLogDetailInfo> detail1 = item.getDetail();
                         for (int i = 0; i < detail1.size(); i++) {
                             if (isCheckItemChange(issue, item) || StringUtils.isEmpty(checkItemMD5) || StringUtils.isEmpty(detail1.get(i).getCheck_item_md5()) || detail1.get(i).getCheck_item_md5().equals(checkItemMD5)) {
-                                Map<String,Object> modifyIssueMap = modifyIssue(refundMap, issueRoleMap, issue, item, null);
+                                Map<String, Object> modifyIssueMap = modifyIssue(refundMap, issueRoleMap, issue, item, null);
                                 HouseQmCheckTaskIssue issues = (HouseQmCheckTaskIssue) modifyIssueMap.get("issue");
-                                refundMap = (HashMap<HouseQmCheckTaskIssue, ApiRefundInfo>)modifyIssueMap.get("refundMap");
+                                refundMap = (HashMap<HouseQmCheckTaskIssue, ApiRefundInfo>) modifyIssueMap.get("refundMap");
                                 issueUpdateMap.put(item.getIssue_uuid(), issues);
                                 logInsertList.add(createIssueLog(projectId, item));
 
@@ -1000,9 +1002,9 @@ public class BuildingqmServiceImpl implements IBuildingqmService {
         for (Map.Entry<String, HouseQmCheckTaskIssue> entry : issueInsertMap.entrySet()) {
             HouseQmCheckTaskIssue issue = (HouseQmCheckTaskIssue) entry.getValue();
             Integer res = houseQmCheckTaskIssueService.add(issue);
-            if (res==null) {
+            if (res == null) {
                 log.info("insert new issue failed, data=" + JSON.toJSONString(issue) + "");
-            }else {
+            } else {
                 issue.setId(res);
             }
             // # 写入推送记录
@@ -1529,8 +1531,8 @@ public class BuildingqmServiceImpl implements IBuildingqmService {
             issue.setDetail(JSON.toJSONString(map));
         });
         Map<String, Object> resmap = Maps.newHashMap();
-        resmap.put("issue",issue);
-        resmap.put("refundMap",refundMap);
+        resmap.put("issue", issue);
+        resmap.put("refundMap", refundMap);
         return resmap;
     }
 
@@ -1621,7 +1623,7 @@ public class BuildingqmServiceImpl implements IBuildingqmService {
             issue.setDetail(JSON.toJSONString(map));
         });
         Map<String, Object> resmap = Maps.newHashMap();
-        resmap.put("issue",issue);
+        resmap.put("issue", issue);
         resmap.put("refundMap", Maps.newHashMap());
         return resmap;
     }
@@ -1721,7 +1723,7 @@ public class BuildingqmServiceImpl implements IBuildingqmService {
             issue.setDetail(JSON.toJSONString(map));
         });
         Map<String, Object> resmap = Maps.newHashMap();
-        resmap.put("issue",issue);
+        resmap.put("issue", issue);
         resmap.put("refundMap", Maps.newHashMap());
         return resmap;
     }
@@ -2119,8 +2121,8 @@ public class BuildingqmServiceImpl implements IBuildingqmService {
             ApiHouseQmCheckTaskIssueLogInfo.ApiHouseQmCheckTaskIssueLogDetailInfo info = new ApiHouseQmCheckTaskIssueLogInfo().new ApiHouseQmCheckTaskIssueLogDetailInfo();
             Map detail = (Map) item.get("detail");
             if (detail != null) {
-                info.setArea_id(detail.get("area_id")!=null?((Integer) detail.get("area_id")):(-1));
-                info.setPos_x(detail.get("pos_x")!=null?((Integer) detail.get("pos_x")):(-1));
+                info.setArea_id(detail.get("area_id") != null ? ((Integer) detail.get("area_id")) : (-1));
+                info.setPos_x(detail.get("pos_x") != null ? ((Integer) detail.get("pos_x")) : (-1));
                 if ((Integer) detail.get("pos_y") != null) {
                     info.setPos_y((Integer) detail.get("pos_y"));
                 } else {
@@ -2182,28 +2184,28 @@ public class BuildingqmServiceImpl implements IBuildingqmService {
                 }
 
                 //if (StringUtils.isBlank((String) detail.get("check_item_key"))) {
-                    info.setCheck_item_key(detail.get("check_item_key")!=null?(String) detail.get("check_item_key"):"-1");
-               // } else {
-               //     info.setCheck_item_key((String) detail.get("check_item_key"));
-               // }
+                info.setCheck_item_key(detail.get("check_item_key") != null ? (String) detail.get("check_item_key") : "-1");
+                // } else {
+                //     info.setCheck_item_key((String) detail.get("check_item_key"));
+                // }
 
-               // if (StringUtils.isBlank((String) detail.get("remove_memo_audio_md5_list"))) {
-                    info.setRemove_memo_audio_md5_list(detail.get("remove_memo_audio_md5_list")!=null?(String) detail.get("remove_memo_audio_md5_list"):"-1");
+                // if (StringUtils.isBlank((String) detail.get("remove_memo_audio_md5_list"))) {
+                info.setRemove_memo_audio_md5_list(detail.get("remove_memo_audio_md5_list") != null ? (String) detail.get("remove_memo_audio_md5_list") : "-1");
                 //} else {
-               //     info.setRemove_memo_audio_md5_list((String) detail.get("remove_memo_audio_md5_list"));
+                //     info.setRemove_memo_audio_md5_list((String) detail.get("remove_memo_audio_md5_list"));
                 //}
 
                 //if (StringUtils.isBlank((String) detail.get("title"))) {
-                    info.setTitle(detail.get("title")!=null?(String) detail.get("title"):"");
-               // } else {
-              //      info.setTitle((String) detail.get("title"));
-               // }
+                info.setTitle(detail.get("title") != null ? (String) detail.get("title") : "");
+                // } else {
+                //      info.setTitle((String) detail.get("title"));
+                // }
 
                 //if (StringUtils.isBlank((String) detail.get("check_item_md5"))) {
-                    info.setCheck_item_md5(detail.get("check_item_md5")!=null?(String) detail.get("check_item_md5"):"");
-              //  } else {
-               //     info.setCheck_item_md5((String) detail.get("check_item_md5"));
-               // }
+                info.setCheck_item_md5(detail.get("check_item_md5") != null ? (String) detail.get("check_item_md5") : "");
+                //  } else {
+                //     info.setCheck_item_md5((String) detail.get("check_item_md5"));
+                // }
 
                 if ((Integer) detail.get("issue_reason") != null) {
                     info.setIssue_reason((Integer) detail.get("issue_reason"));
@@ -2848,7 +2850,7 @@ public class BuildingqmServiceImpl implements IBuildingqmService {
         try {
             return sdf.parse(time);
         } catch (ParseException e) {
-            log.error("error:",e.getMessage());
+            log.error("error:", e.getMessage());
         }
         return null;
     }
@@ -3106,11 +3108,11 @@ public class BuildingqmServiceImpl implements IBuildingqmService {
 //        ArrayList<String> path_key = Lists.newArrayList();
         for (NodeDataVo item : dataList) {
             String parentKey = item.getParent_key();
-            log.info("item={}",JSON.toJSONString(item));
+            log.info("item={}", JSON.toJSONString(item));
             while (parentKey.length() > 0) {
                 item.setPath_name(String.format("%s/%s", parentKey, item.getPath_name()));
                 item.getPath_keys().add(0, parentKey);
-                log.info("parentKey={}",parentKey);
+                log.info("parentKey={}", parentKey);
                 if (dataMap.containsKey(parentKey)) {
                     log.info("valid");
                     parentKey = dataMap.get(parentKey).getParent_key();
@@ -3155,7 +3157,7 @@ public class BuildingqmServiceImpl implements IBuildingqmService {
             dataMap.get(obj.getKey()).setChild_count(obj.getChild_count());
         }
         List<NodeVo> nodeTree = Lists.newArrayList();
-        log.info("dataList={},itemsList={}",JSON.toJSONString(dataList),JSON.toJSONString(itemsList));
+        log.info("dataList={},itemsList={}", JSON.toJSONString(dataList), JSON.toJSONString(itemsList));
         for (int i = 1; i < maxCol + 1; i++) {
             for (NodeDataVo item : dataList) {
 //                item.setValid_node(true);//todo just for debug
@@ -3184,30 +3186,14 @@ public class BuildingqmServiceImpl implements IBuildingqmService {
                 }
             }
         }
-        log.info("nodeTree={},maxCol={}",JSON.toJSONString(nodeTree),maxCol);
+        log.info("nodeTree={},maxCol={}", JSON.toJSONString(nodeTree), maxCol);
         SXSSFWorkbook wb = ExportUtils.exportIssueStatisticExcel(nodeTree, maxCol);
-        //path = ret.get('path', '')
-        //        dt = datetime.datetime.strftime(datetime.datetime.now(), '%Y%m%d%H%M%S')
-        //        category_name = CategoryClsType.get_title(category_cls, u'工程检查')
-        //        filename = u'%s_问题详情_%s.xlsx' % (category_name, dt)
-
 
         String dt = DateUtil.getNowTimeStr("yyyyMMddHHmmss");
         String category_name = CategoryClsTypeEnum.getName(category_cls);
         if (category_name == null) category_name = "工程检查";
         String fileName = String.format("%s_问题详情_%s.xlsx", category_name, dt);
 
-        try {
-        response.addHeader("Content-Disposition", String.format("attachment; filename=\"%s\"",fileName));
-    /*    SXSSFWorkbook workbook = (SXSSFWorkbook) map.get("workbook");*/
-
-            wb.write(response.getOutputStream());
-
-        response.getOutputStream().flush();
-       response.getOutputStream().close();
-        } catch (IOException e) {
-            log.error("error:",e.getMessage());
-        }
         Map<String, Object> map = Maps.newHashMap();
         map.put("fileName", fileName);
         map.put("workbook", wb);

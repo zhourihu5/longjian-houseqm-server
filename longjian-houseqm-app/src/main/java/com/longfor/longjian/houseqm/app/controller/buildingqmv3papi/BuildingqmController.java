@@ -26,6 +26,7 @@ import org.springframework.web.bind.annotation.*;
 import springfox.documentation.spring.web.json.Json;
 
 import javax.annotation.Resource;
+import javax.servlet.ServletOutputStream;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
@@ -75,7 +76,7 @@ public class BuildingqmController {
             TaskListVo vo = buildingqmService.myTaskList(userId);
             response.setData(vo);
         } catch (Exception e) {
-            log.error("error:",e.getMessage());
+            log.error("error:", e.getMessage());
             response.setResult(1);
             response.setMessage(e.getMessage());
         }
@@ -151,7 +152,7 @@ public class BuildingqmController {
             taskIssueListVo.setItem(item);
             respone.setData(taskIssueListVo);
         } catch (Exception e) {
-            log.error("error:",e.getMessage());
+            log.error("error:", e.getMessage());
             respone.setResult(1);
             respone.setMessage(e.getMessage());
         }
@@ -173,7 +174,7 @@ public class BuildingqmController {
             TaskMemberListVo vo = buildingqmService.taskSquadsMembers(taskIds);
             response.setData(vo);
         } catch (Exception e) {
-            log.error("error:",e.getMessage());
+            log.error("error:", e.getMessage());
             response.setResult(1);
             response.setMessage(e.getMessage());
         }
@@ -198,7 +199,7 @@ public class BuildingqmController {
             MyIssuePatchListVo miplv = buildingqmService.myIssuePathList(userId, req.getTask_id(), req.getTimestamp());
             response.setData(miplv);
         } catch (Exception e) {
-            log.error("error:",e.getMessage());
+            log.error("error:", e.getMessage());
             response.setResult(1);
             response.setMessage(e.getMessage());
         }
@@ -235,7 +236,7 @@ public class BuildingqmController {
             ctrlTool.projPerm(request, "项目.工程检查.任务管理.新增");
             buildingqmService.create(userId, taskReq);
         } catch (Exception e) {
-            log.error("error:",e.getMessage());
+            log.error("error:", e.getMessage());
             response.setResult(1);
             response.setMessage(e.getMessage());
         }
@@ -269,7 +270,7 @@ public class BuildingqmController {
             houseQmCheckTaskSquadListRspVoList.setSquad_list(squad_list);
             response.setData(houseQmCheckTaskSquadListRspVoList);
         } catch (Exception e) {
-            log.error("error:",e.getMessage());
+            log.error("error:", e.getMessage());
             response.setResult(1);
             response.setMessage(e.getMessage());
         }
@@ -306,7 +307,7 @@ public class BuildingqmController {
             ctrlTool.projPerm(request, "项目.工程检查.任务管理.编辑");
             buildingqmService.edit(userId, taskEditReq);
         } catch (Exception e) {
-            log.error("error:",e.getMessage());
+            log.error("error:", e.getMessage());
             response.setResult(1);
             response.setMessage(e.getMessage());
         }
@@ -339,7 +340,7 @@ public class BuildingqmController {
      */
     @RequestMapping(value = "buildingqm/report_issue", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     public LjBaseResponse<ReportIssueVo> reportIssue(@Validated ReportIssueReq req) {
-        log.info("report_issue, project_id=" + req.getData() + ", data=" + req.getData()+ "");
+        log.info("report_issue, project_id=" + req.getData() + ", data=" + req.getData() + "");
         Integer userId = (Integer) sessionInfo.getBaseInfo("userId");
         //userId=9;
         ReportIssueVo reportIssueVo = buildingqmService.reportIssue(userId, req.getProject_id(), req.getData());
@@ -348,96 +349,75 @@ public class BuildingqmController {
         return response;
     }
 
-        @RequestMapping(value = "stat/issue_statistic_export", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+    @RequestMapping(value = "stat/issue_statistic_export", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     public LjBaseResponse<ReportIssueVo> issueStatisticExport(@RequestParam(name = "category_cls", required = true) Integer category_cls,
-                                                              @RequestParam(name = "items", required = true) String items,HttpServletRequest request, HttpServletResponse response) throws IOException {
-/*@RequestParam(name = "category_cls", required = true) Integer category_cls,
-                                                              @RequestParam(name = "items", required = true) String items,*/
-       /* String category_cls = request.getParameter("category_cls");
-        String items = request.getParameter("items");*/
-        log.info(String.format("issue_statistic_export, category_cls=%s, items=%s",category_cls, items));
-        LjBaseResponse<ReportIssueVo> ljBaseResponse = new LjBaseResponse();
+                                                              @RequestParam(name = "items", required = true) String items, HttpServletRequest request, HttpServletResponse response) throws IOException {
+
+        log.info(String.format("issue_statistic_export, category_cls=%s, items=%s", category_cls, items));
+        LjBaseResponse<ReportIssueVo> ljBaseResponse = new LjBaseResponse<>();
         if (category_cls == null || StringUtils.isBlank(items)) {
             ljBaseResponse.setResult(Integer.parseInt(CommonGlobalEnum.RES_ERROR.getId().toString()));
             ljBaseResponse.setMessage("args error");
             return ljBaseResponse;
         }
-        Map<String, Object> map = buildingqmService.issuestatisticexport(category_cls, items,response);
+        Map<String, Object> map = buildingqmService.issuestatisticexport(category_cls, items, response);
 //        log.info("export issue statistic map={}", map);
-        log.info("export issue statistic, result={}, message={}, path={}",map.get("result"),map.get("message"),map.get("path"));
-        if(Integer.parseInt(map.get("result").toString()) !=0){
+        log.info("export issue statistic, result={}, message={}, path={}", map.get("result"), map.get("message"), map.get("path"));
+        if (Integer.parseInt(map.get("result").toString()) != 0) {
             ljBaseResponse.setResult(Integer.parseInt(map.get("result").toString()));
             ljBaseResponse.setMessage(map.get("message").toString());
             return ljBaseResponse;
 //            return;
         }
-            response.setCharacterEncoding("UTF-8");
-            //todo fix bug chinese charactor encoding in diferent browser
-            String fileNames= map.get("fileName").toString();
-            String codedfilename = URLEncoder.encode(fileNames, "utf-8");
-//            String agent = request.getHeader("USER-AGENT");
-//            System.out.println("browser agent==" + agent);
-//            if (null != agent && -1 != agent.indexOf("MSIE") || null != agent && -1 != agent.indexOf("Trident")) {// ie
-//                System.out.println("ie");
-//                String name = java.net.URLEncoder.encode(fileNames, "UTF-8");
-//                codedfilename = name;
-//            } else if (null != agent && -1 != agent.indexOf("Mozilla")) {// 火狐,chrome等
-//                System.out.println("chrome");
-//                codedfilename = new String(fileNames.getBytes("UTF-8"), "iso-8859-1");
-//            } else {
-//                System.out.println("other browser");
-//                //String fileName = String.format("%s_问题详情_%s.xlsx", category_name, dt);
-//                codedfilename = "issue_detail.xlsx";
-//            }
+        response.setCharacterEncoding("UTF-8");
+        //todo fix bug chinese charactor encoding in diferent browser
+        String fileNames = map.get("fileName").toString();
 
-            response.addHeader("Content-Disposition",
-                    "attachment;filename=" + codedfilename);
+        response.addHeader("Content-Disposition",
+                "attachment;filename=" + new String(fileNames.getBytes("utf-8"),"iso8859-1"));
 
-            response.addHeader("Content-Type", "application/vnd.ms-excel; charset=utf-8");
-            response.addHeader("Expires", "0");
+        response.addHeader("Content-Type", "application/vnd.ms-excel; charset=utf-8");
+        response.addHeader("Expires", "0");
         SXSSFWorkbook workbook = (SXSSFWorkbook) map.get("workbook");
-        workbook.write(response.getOutputStream());//todo uncomment this line
-        //todo just for debug
-//            File file=FileUtil.createFile("/Users/huzhou/workspace/longjian/longjian-houseqm-server/test.xlsx");//todo just for debug
-//            FileOutputStream fileOutputStream=new FileOutputStream(file);//todo just for debug
-//            workbook.write(fileOutputStream);//todo just for debug
-
-        //FileUtil.Load(map.get("path").toString(),response);
-//        return ljBaseResponse;
-            return null;
+        ServletOutputStream os = response.getOutputStream();
+        workbook.write(os);//todo uncomment this line
+        os.flush();
+        os.close();
+        return ljBaseResponse;
     }
+
     @RequestMapping(value = "test", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     public void testFileNameEncode(HttpServletRequest request, HttpServletResponse response) throws IOException {
         response.setCharacterEncoding("UTF-8");
         //todo fix bug chinese charactor encoding in diferent browser
-        String fileNames= "测试汉字文件名.txt";
+        String fileNames = "测试汉字文件名.txt";
         String codedfilename = URLEncoder.encode(fileNames, "utf-8");
-            String agent = request.getHeader("USER-AGENT");
-            System.out.println("browser agent==" + agent);
-            if (null != agent && -1 != agent.indexOf("MSIE") || null != agent && -1 != agent.indexOf("Trident")) {// ie
-                System.out.println("ie");
-                String name = java.net.URLEncoder.encode(fileNames, "UTF-8");
-                codedfilename = name;
-            } else if (null != agent && -1 != agent.indexOf("Mozilla")) {// 火狐,chrome等
-                System.out.println("Mozilla");
-                if(null != agent && -1 != agent.indexOf("Chrome")){
-                    System.out.println("Chrome");
-                }else if(null != agent && -1 != agent.indexOf("Firefox")){
-                    System.out.println("Firefox");
-                }
-                codedfilename = new String(fileNames.getBytes("UTF-8"), "iso-8859-1");
-            } else {
-                System.out.println("other browser");
-                //String fileName = String.format("%s_问题详情_%s.xlsx", category_name, dt);
-//                codedfilename = "test.txt";
+        String agent = request.getHeader("USER-AGENT");
+        System.out.println("browser agent==" + agent);
+        if (null != agent && -1 != agent.indexOf("MSIE") || null != agent && -1 != agent.indexOf("Trident")) {// ie
+            System.out.println("ie");
+            String name = java.net.URLEncoder.encode(fileNames, "UTF-8");
+            codedfilename = name;
+        } else if (null != agent && -1 != agent.indexOf("Mozilla")) {// 火狐,chrome等
+            System.out.println("Mozilla");
+            if (null != agent && -1 != agent.indexOf("Chrome")) {
+                System.out.println("Chrome");
+            } else if (null != agent && -1 != agent.indexOf("Firefox")) {
+                System.out.println("Firefox");
             }
+            codedfilename = new String(fileNames.getBytes("UTF-8"), "iso-8859-1");
+        } else {
+            System.out.println("other browser");
+            //String fileName = String.format("%s_问题详情_%s.xlsx", category_name, dt);
+//                codedfilename = "test.txt";
+        }
 
         response.addHeader("Content-Disposition",
                 "attachment;filename=" + codedfilename);
 
         response.addHeader("Content-Type", "application/vnd.ms-excel; charset=utf-8");
         response.addHeader("Expires", "0");
-        String content="你好，内容是汉字。Hello,this is english";
+        String content = "你好，内容是汉字。Hello,this is english";
         response.getOutputStream().write(content.getBytes());
     }
 }

@@ -86,7 +86,8 @@ public class HouseQmCheckTaskIssueServiceImpl implements HouseQmCheckTaskIssueSe
     @Override
     @LFAssignDataSource("zhijian2")
     public List<HouseQmCheckTaskIssue> searchByTaskIdInGroupByTaskIdAndStatus(List<Integer> taskIds) {
-        return houseQmCheckTaskIssueMapper.searchByTaskIdInGroupByTaskIdAndStatus(taskIds);
+        if (CollectionUtils.isEmpty(taskIds)) return Lists.newArrayList();
+        else return houseQmCheckTaskIssueMapper.searchByTaskIdInGroupByTaskIdAndStatus(taskIds);
     }
 
     @Override
@@ -181,7 +182,7 @@ public class HouseQmCheckTaskIssueServiceImpl implements HouseQmCheckTaskIssueSe
             }
             return taskIssues.size();
         } catch (Exception e) {
-            log.error("error:",e.getMessage());
+            log.error("error:", e.getMessage());
             return 0;
         }
     }
@@ -219,7 +220,7 @@ public class HouseQmCheckTaskIssueServiceImpl implements HouseQmCheckTaskIssueSe
         Example example = new Example(HouseQmCheckTaskIssue.class);
         Example.Criteria criteria = example.createCriteria();
         if (issueUuids.size() > 0) criteria.andIn("uuid", issueUuids);
-        criteria.andLessThan("clientCreateAt",com.longfor.longjian.common.util.DateUtil.timestampToString(timestamp,"yyyy-MM-dd"));
+        criteria.andLessThan("clientCreateAt", com.longfor.longjian.common.util.DateUtil.timestampToString(timestamp, "yyyy-MM-dd"));
         ExampleUtil.addDeleteAtJudge(example);
         List<HouseQmCheckTaskIssue> taskIssues = houseQmCheckTaskIssueMapper.selectByExample(example);
         return taskIssues;
@@ -698,6 +699,7 @@ public class HouseQmCheckTaskIssueServiceImpl implements HouseQmCheckTaskIssueSe
         criteria.andIsNull("deleteAt");
         return houseQmCheckTaskIssueMapper.selectOneByExample(example);
     }
+
     @Transactional
     @Override
     @LFAssignDataSource("zhijian2")
