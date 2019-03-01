@@ -333,7 +333,7 @@ public class HouseqmIssueController {
     }
 
     // url参数拼接
-    public String buildMap(Map<String, String> map) {
+    private String buildMap(Map<String, String> map) {
         StringBuffer sb = new StringBuffer();
         if (map.size() > 0) {
             for (String key : map.keySet()) {

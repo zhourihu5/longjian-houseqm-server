@@ -498,7 +498,6 @@ public class HouseqmStatisticServiceImpl implements IHouseqmStatisticService {
             return houseStatVo;
         } catch (Exception e) {
             log.error(ERROR,e.getMessage());
-            e.printStackTrace();
             return null;
         }
     }
