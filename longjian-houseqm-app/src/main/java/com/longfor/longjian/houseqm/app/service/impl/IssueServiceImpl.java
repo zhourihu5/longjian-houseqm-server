@@ -48,29 +48,56 @@ import java.util.stream.Collectors;
 @Service
 @Slf4j
 public class IssueServiceImpl implements IIssueService {
-    @Value("${push_config.enterprise_id}")
-    private static String ENTERPRISEID;
 
+   private final String ENTERPRISEID;
+
+    @Value("${push_config.enterprise_id}")
+    private String enterpriseId;
+    {
+        ENTERPRISEID=enterpriseId;
+    }
+    private final String APP_KEY_ANDROID;
     @Value("${push_config.gcgl.app_key_android}")
-    private static  String APP_KEY_ANDROID;
+    private  String appKeyAndroid;
+    {
+        APP_KEY_ANDROID=appKeyAndroid;
+    }
+    private final  String APP_MASTER_SECRET_ANDROID;
     @Value("${push_config.gcgl.app_master_secret_android}")
-    private static  String APP_MASTER_SECRET_ANDROID;
+    private  String appMasterSecretAndroid;
+    {
+        APP_MASTER_SECRET_ANDROID=appMasterSecretAndroid;
+    }
+    private final  String APP_KEY_IOS;
     @Value("${push_config.gcgl.app_key_ios}")
-    private static  String APP_KEY_IOS;
+    private String appKeyIOS;
+    {
+        APP_KEY_IOS=appKeyIOS;
+    }
+    private final  String APP_MASTER_SECRET_IOS;
     @Value("${push_config.gcgl.app_master_secret_ios}")
-    private static  String APP_MASTER_SECRET_IOS;
+    private  String appMasterSecretIOS;
+    {
+        APP_MASTER_SECRET_IOS=appMasterSecretIOS;
+    }
+    private final  String APP_SECRET_XIAO_MI;
     @Value("${push_config.gcgl.app_secret_xiao_mi}")
-    private static  String APP_SECRET_XIAO_MI;
+    private  String appSecretXiaoMi;
+    {
+        APP_SECRET_XIAO_MI=appSecretXiaoMi;
+    }
+    private final  String PACKAGE_NAME_XIAO_MI;
     @Value("${push_config.gcgl.package_name_xiao_mi}")
-    private static  String PACKAGE_NAME_XIAO_MI;
+    private  String packageNameXiaomi;
+    {
+        PACKAGE_NAME_XIAO_MI=packageNameXiaomi;
+    }
 
 
     @Resource
     private HouseQmCheckTaskIssueAttachmentService houseQmCheckTaskIssueAttachmentService;
     @Resource
     private HouseQmCheckTaskIssueUserService houseQmCheckTaskIssueUserService;
-    @Resource
-    private HouseQmCheckTaskNotifyRecordService houseQmCheckTaskNotifyRecordService;
     @Resource
     private HouseQmCheckTaskIssueService houseQmCheckTaskIssueService;
     @Resource
@@ -98,7 +125,7 @@ public class IssueServiceImpl implements IIssueService {
 
     @Value("${env_info.host_list}")
     private String envInfo;
-    private String ILLEGAL_CHARACTERS_RE = "[\\000-\\010]|[\\013-\\014]|[\\016-\\037]|\\xef|\\xbf";
+    private static final String ILLEGAL_CHARACTERS_RE = "[\\000-\\010]|[\\013-\\014]|[\\016-\\037]|\\xef|\\xbf";
 
 
     @Override
