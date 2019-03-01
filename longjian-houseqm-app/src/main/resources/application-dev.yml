@@ -1,20 +1,20 @@
 #start
-server.port: 8080
-management.port: 9981 #9982
+server.port: 8082
+management.port: 9982 #9982
 
 spring:
   application:
     name: longjian-houseqm-app
   cloud:
     consul:
-      enabled: true # true
+      enabled: false # true
       host: 127.0.0.1 # 127.0.0.1
       port: 8500
       discovery:
         register: true
         healthCheckInterval: 600s
         fail-fast: false
-        preferIpAddress: true
+        #preferIpAddress: true
     sleuth:
       enabled: true
 
