@@ -19,7 +19,6 @@ import com.longfor.longjian.houseqm.app.vo.issuelist.ExcelIssueData;
 import com.longfor.longjian.houseqm.app.vo.issuelist.IssueListRsp;
 import com.longfor.longjian.houseqm.consts.AppPlatformTypeEnum;
 import com.longfor.longjian.houseqm.consts.CommonGlobalEnum;
-import com.longfor.longjian.houseqm.consts.HouseQmCheckTaskIssueLogStatusEnum;
 import com.longfor.longjian.houseqm.consts.HouseQmUserInIssueRoleTypeEnum;
 import com.longfor.longjian.houseqm.domain.internalService.*;
 import com.longfor.longjian.houseqm.po.zhijian2_apisvr.User;
@@ -27,7 +26,6 @@ import com.longfor.longjian.houseqm.po.zj2db.*;
 import com.longfor.longjian.houseqm.util.*;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections.CollectionUtils;
-import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang.StringUtils;
 import org.apache.poi.xssf.streaming.SXSSFWorkbook;
 import org.apache.poi.xwpf.usermodel.XWPFDocument;
@@ -39,7 +37,6 @@ import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.File;
-import java.net.URL;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -52,20 +49,20 @@ import java.util.stream.Collectors;
 @Slf4j
 public class IssueServiceImpl implements IIssueService {
     @Value("${push_config.enterprise_id}")
-    private String ENTERPRISEID;
+    private static String ENTERPRISEID;
 
     @Value("${push_config.gcgl.app_key_android}")
-    private String APP_KEY_ANDROID;
+    private static  String APP_KEY_ANDROID;
     @Value("${push_config.gcgl.app_master_secret_android}")
-    private String APP_MASTER_SECRET_ANDROID;
+    private static  String APP_MASTER_SECRET_ANDROID;
     @Value("${push_config.gcgl.app_key_ios}")
-    private String APP_KEY_IOS;
+    private static  String APP_KEY_IOS;
     @Value("${push_config.gcgl.app_master_secret_ios}")
-    private String APP_MASTER_SECRET_IOS;
+    private static  String APP_MASTER_SECRET_IOS;
     @Value("${push_config.gcgl.app_secret_xiao_mi}")
-    private String APP_SECRET_XIAO_MI;
+    private static  String APP_SECRET_XIAO_MI;
     @Value("${push_config.gcgl.package_name_xiao_mi}")
-    private String PACKAGE_NAME_XIAO_MI;
+    private static  String PACKAGE_NAME_XIAO_MI;
 
 
     @Resource
