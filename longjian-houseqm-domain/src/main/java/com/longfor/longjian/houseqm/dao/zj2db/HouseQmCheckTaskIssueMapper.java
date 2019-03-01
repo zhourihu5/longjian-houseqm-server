@@ -87,7 +87,7 @@ public interface HouseQmCheckTaskIssueMapper extends LFMySQLMapper<HouseQmCheckT
      * @param deleted
      * @return
      */
-    List<HouseQmCheckTaskIssueAreaGroupModel> selectByTaskIdAndTyeInAndAreaPathAndIdLike(@Param("taskId") Integer taskId, @Param("types") List<Integer> types, @Param("areaPathLike") String areaPathLike, @Param("deleted") String deleted);
+    List<HouseQmCheckTaskIssueAreaGroupModel> selectByTaskIdAndTyeInAndAreaPathAndIdLike(@Param("onlyIssue") Boolean onlyIssue,@Param("taskId") Integer taskId, @Param("types") List<Integer> types, @Param("areaId") Integer areaId, @Param("deleted") String deleted);
 
     /**
      * @param taskId

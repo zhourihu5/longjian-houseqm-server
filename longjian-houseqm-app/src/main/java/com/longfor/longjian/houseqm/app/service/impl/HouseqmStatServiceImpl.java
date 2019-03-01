@@ -690,7 +690,7 @@ public class HouseqmStatServiceImpl implements IHouseqmStatService {
             } else if (l.getTyp().equals(HouseQmCheckTaskIssueEnum.FindProblem.getId()) || l.getTyp().equals(HouseQmCheckTaskIssueEnum.Difficult.getId())) {
                 item.setIssue_count(l.getCount() + item.getIssue_count());
             }
-            areaMap.put(fatherPath, true);
+            if (fatherPath!=null&&fatherPath.length()>1)areaMap.put(fatherPath, true);
         }
         item.setChecked_count(areaMap.size());
         return item;
