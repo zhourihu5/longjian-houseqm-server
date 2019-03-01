@@ -49,51 +49,25 @@ import java.util.stream.Collectors;
 @Slf4j
 public class IssueServiceImpl implements IIssueService {
 
-   private final String ENTERPRISEID;
-
     @Value("${push_config.enterprise_id}")
     private String enterpriseId;
-    {
-        ENTERPRISEID=enterpriseId;
-    }
-    private final String APP_KEY_ANDROID;
-    @Value("${push_config.gcgl.app_key_android}")
+     @Value("${push_config.gcgl.app_key_android}")
     private  String appKeyAndroid;
-    {
-        APP_KEY_ANDROID=appKeyAndroid;
-    }
-    private final  String APP_MASTER_SECRET_ANDROID;
+    
     @Value("${push_config.gcgl.app_master_secret_android}")
     private  String appMasterSecretAndroid;
-    {
-        APP_MASTER_SECRET_ANDROID=appMasterSecretAndroid;
-    }
-    private final  String APP_KEY_IOS;
     @Value("${push_config.gcgl.app_key_ios}")
     private String appKeyIOS;
-    {
-        APP_KEY_IOS=appKeyIOS;
-    }
-    private final  String APP_MASTER_SECRET_IOS;
+    
     @Value("${push_config.gcgl.app_master_secret_ios}")
     private  String appMasterSecretIOS;
-    {
-        APP_MASTER_SECRET_IOS=appMasterSecretIOS;
-    }
-    private final  String APP_SECRET_XIAO_MI;
+    
     @Value("${push_config.gcgl.app_secret_xiao_mi}")
     private  String appSecretXiaoMi;
-    {
-        APP_SECRET_XIAO_MI=appSecretXiaoMi;
-    }
-    private final  String PACKAGE_NAME_XIAO_MI;
+    
     @Value("${push_config.gcgl.package_name_xiao_mi}")
     private  String packageNameXiaomi;
-    {
-        PACKAGE_NAME_XIAO_MI=packageNameXiaomi;
-    }
-
-
+    
     @Resource
     private HouseQmCheckTaskIssueAttachmentService houseQmCheckTaskIssueAttachmentService;
     @Resource
@@ -1683,16 +1657,16 @@ public class IssueServiceImpl implements IIssueService {
     public void pushBaseMessage(Integer taskId, ArrayList<String> notifyUserIds, String title, String msg) {
         ArrayList<String> alias = Lists.newArrayList();
         for (int i = 0; i < notifyUserIds.size(); i++) {
-            alias.add("user_id_" + ENTERPRISEID + "_" + notifyUserIds.get(i) + "");
+            alias.add("user_id_" + enterpriseId + "_" + notifyUserIds.get(i) + "");
         }
 
         String alia = StringUtils.join(alias, ",");
-        UmPushUtil.sendAndroidCustomizedcast(APP_KEY_ANDROID, APP_MASTER_SECRET_ANDROID,
+        UmPushUtil.sendAndroidCustomizedcast(appKeyAndroid, appMasterSecretAndroid,
                 alia, AppPlatformTypeEnum.PUSH_PLATFORM_UMENG_ANDROID.getValue(),
                 "Android", title, msg, msg, String.valueOf(taskId));
-        UmPushUtil.sendIOSCustomizedcast(APP_KEY_IOS, APP_MASTER_SECRET_IOS, alia,
+        UmPushUtil.sendIOSCustomizedcast(appKeyIOS, appMasterSecretIOS, alia,
                 AppPlatformTypeEnum.PUSH_PLATFORM_UMENG_IOS.getValue(), msg, String.valueOf(taskId));
-        XmPushUtil.sendMessageToUserAccounts(APP_SECRET_XIAO_MI, PACKAGE_NAME_XIAO_MI, title, msg, alias);
+        XmPushUtil.sendMessageToUserAccounts(appSecretXiaoMi, packageNameXiaomi, title, msg, alias);
     }
 
 
