@@ -360,9 +360,10 @@ public class BuildingqmController {
             return ljBaseResponse;
         }
         Map<String, Object> map = buildingqmService.issuestatisticexport(category_cls, items, response);
-        log.info("export issue statistic, result={}, message={}, path={}", map.get("result"), map.get("message"), map.get("path"));
-        if (Integer.parseInt(map.get("result").toString()) != 0) {
-            ljBaseResponse.setResult(Integer.parseInt(map.get("result").toString()));
+        String result = (String) map.get("result");
+        log.info("export issue statistic, result={}, message={}, path={}", result, map.get("message"), map.get("path"));
+        if (Integer.parseInt(result) != 0) {
+            ljBaseResponse.setResult(Integer.parseInt(result));
             ljBaseResponse.setMessage(map.get("message").toString());
             return ljBaseResponse;
         }
