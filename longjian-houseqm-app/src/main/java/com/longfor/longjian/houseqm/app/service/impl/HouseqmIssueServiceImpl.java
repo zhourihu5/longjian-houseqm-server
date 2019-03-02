@@ -5,7 +5,7 @@ import com.google.common.collect.Lists;
 import com.longfor.longjian.common.consts.HouseQmCheckTaskIssueStatusEnum;
 import com.longfor.longjian.common.exception.LjBaseRuntimeException;
 import com.longfor.longjian.houseqm.app.service.IHouseqmIssueService;
-import com.longfor.longjian.houseqm.app.vo.HouseQmCheckTaskIssueHelperVo;
+import com.longfor.longjian.houseqm.app.utils.HouseQmCheckTaskIssueHelperVo;
 import com.longfor.longjian.houseqm.app.vo.houseqmissue.ApiHouseQmCheckTaskReportRsp;
 import com.longfor.longjian.houseqm.app.vo.url.ExportVo;
 import com.longfor.longjian.houseqm.consts.HouseQmCheckTaskIssueCheckStatusEnum;

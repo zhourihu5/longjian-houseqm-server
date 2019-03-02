@@ -15,6 +15,6 @@ public class CollectionUtil {
      * @return java.util.List
      */
     public static <T> List<T> removeDuplicate(List<T> list) {
-        return new ArrayList<T>(new HashSet<T>(list));
+        return new ArrayList<>(new HashSet<>(list));
     }
 }

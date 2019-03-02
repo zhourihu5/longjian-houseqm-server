@@ -1,4 +1,4 @@
-package com.longfor.longjian.houseqm.app.vo;
+package com.longfor.longjian.houseqm.app.utils;
 
 import com.alibaba.fastjson.JSON;
 import com.google.common.collect.Lists;
@@ -356,7 +356,7 @@ public class HouseQmCheckTaskIssueHelperVo {
             issue1.setAttachmentMd5List(issue.getAttachmentMd5List());
             issue1.setAudioMd5List(issue.getAudioMd5List());
             HouseQmCheckTaskIssueDetail detail = issue.getDetail();
-            issue1.setDetail(JsonUtil.GsonString(detail));
+            issue1.setDetail(JsonUtil.gsonString(detail));
             //插入
             int affect = houseQmCheckTaskIssueService.insertOneHouseQmCheckTaskIssue(issue1);
         }
@@ -399,7 +399,7 @@ public class HouseQmCheckTaskIssueHelperVo {
             issue1.setDeleteUser(issue.getDeleteUser());
             issue1.setDeleteTime(issue.getDeleteTime());
             HouseQmCheckTaskIssueDetail detail = issue.getDetail();
-            issue1.setDetail(JsonUtil.GsonString(detail));
+            issue1.setDetail(JsonUtil.gsonString(detail));
             houseQmCheckTaskIssueService.update(issue1);
         }
         //houseqmissue log 入库
@@ -422,7 +422,7 @@ public class HouseQmCheckTaskIssueHelperVo {
             hIssueLog.setAudioMd5List(issueLog.getAudioMd5List());
             hIssueLog.setMemoAudioMd5List(issueLog.getMemoAudioMd5List());
             HouseQmCheckTaskIssueLogDetailStruct detail = issueLog.getDetail();
-            String detailStr = JsonUtil.GsonString(detail);
+            String detailStr = JsonUtil.gsonString(detail);
             hIssueLog.setDetail(detailStr);
         }
         houseQmCheckTaskIssueLogService.addBatch(hIssueLogs);

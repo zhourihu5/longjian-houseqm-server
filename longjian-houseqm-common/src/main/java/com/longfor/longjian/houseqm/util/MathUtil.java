@@ -27,8 +27,6 @@ public class MathUtil {
         BigDecimal perc = new BigDecimal(100);
         perc=perc.setScale(2,BigDecimal.ROUND_HALF_UP);
         BigDecimal multiply = divide.multiply(perc);
-        /*DecimalFormat df = new DecimalFormat("0.00");
-        String result = df.format((float) a / (float) b * 100.0);*/
         return  formatToNumber(multiply);
     }
     /**
@@ -48,8 +46,6 @@ public class MathUtil {
         BigDecimal perc = new BigDecimal(100);
         perc =perc.setScale(2,BigDecimal.ROUND_HALF_UP);
         BigDecimal multiply = divide.multiply(perc);
-        /*DecimalFormat df = new DecimalFormat("0.00");
-        String result = df.format((float) a / (float) b * 100.0);*/
         return  formatToNumber(multiply);
     }
 
@@ -65,8 +61,7 @@ public class MathUtil {
             return "0";
         }
         DecimalFormat df = new DecimalFormat(pattern);
-        String result = df.format((float) a / (float) b * 100.0);
-        return result;
+        return df.format((float) a / (float) b * 100.0);
     }
 
     /**

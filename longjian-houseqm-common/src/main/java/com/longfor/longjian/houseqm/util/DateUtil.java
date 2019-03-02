@@ -21,10 +21,7 @@ public class DateUtil {
 
     public static final boolean datetimeZero(Date date) {
         //315532800000L=dateFormat.parse("1980-01-01 08:00:00").getTime()
-        if(date==null||date.getTime()<=315532800000L) {
-            return true;
-        }
-        return false;
+        return date == null || date.getTime() <= 315532800000L;
     }
 
     public static final String formatBySec(Date date) {
@@ -139,8 +136,7 @@ public class DateUtil {
      */
     public static String getNowTimeStr(String partten) {
         Date now = new Date();
-        String nowStr = new SimpleDateFormat(partten).format(now);
-        return nowStr;
+        return new SimpleDateFormat(partten).format(now);
     }
 
     // 时间戳转日期
@@ -166,8 +162,7 @@ public class DateUtil {
         Calendar c = Calendar.getInstance();
         c.setTime(date);
         c.add(Calendar.DAY_OF_MONTH,day);
-        Date time = c.getTime();
-        return time;
+        return c.getTime();
     }
 
 }

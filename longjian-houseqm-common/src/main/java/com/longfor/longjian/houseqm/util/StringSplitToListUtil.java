@@ -125,8 +125,7 @@ public class StringSplitToListUtil {
         }
         String s = StringUtils.removeStart(str, removeSep);
         String s1 = StringUtils.removeEnd(s, removeSep);
-        List<String> strings = splitToStringComma(s1, splitSep);
-        return strings;
+        return splitToStringComma(s1, splitSep);
     }
 
     public static List<Integer> strToInts(String str, String split) {
@@ -188,9 +187,7 @@ public class StringSplitToListUtil {
      */
     public static String  removeStartAndEndStr(String str, String removeSep, String splitSep) {
         String s = StringUtils.removeStart(str, removeSep);
-        String s1 = StringUtils.removeEnd(s, splitSep);
-
-        return s1;
+        return StringUtils.removeEnd(s, splitSep);
     }
 
 }
