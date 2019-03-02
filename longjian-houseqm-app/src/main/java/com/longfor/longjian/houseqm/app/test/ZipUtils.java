@@ -74,7 +74,7 @@ public class ZipUtils {
                 //zos = new ZipOutputStream(fos);
                 writeZip(new File(sourcePath), "", zos);
             } catch (FileNotFoundException e) {
-                log.error("ZipUtils createZip  Failed to create ZIP file", e);
+                log.error(e.getMessage());
             } catch (IOException e) {
                 log.error(e.getMessage());
             } finally {
@@ -205,8 +205,9 @@ public class ZipUtils {
         public static void deleteFile(File file) {
             if (file.exists()) {
                 if (file.isFile()) {
-                    if(!file.delete()){
-                        throw  new LjBaseRuntimeException(-1,"文件删除失败");
+                    boolean delete = file.delete();
+                    if( delete){
+                        log.info("删除成功");
                     }
                 } else if (file.isDirectory()) {
                     File files[] = file.listFiles();
@@ -214,8 +215,9 @@ public class ZipUtils {
                         deleteFile(files[i]);
                     }
                 }
-              if( !file.delete()){
-                  throw  new LjBaseRuntimeException(-1,"文件删除失败");
+                boolean delete = file.delete();
+             if( delete){
+                 log.info("删除成功");
               }
             }
         }

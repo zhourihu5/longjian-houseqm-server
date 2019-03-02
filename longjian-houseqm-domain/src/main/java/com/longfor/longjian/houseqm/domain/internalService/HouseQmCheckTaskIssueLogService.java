@@ -14,37 +14,21 @@ public interface HouseQmCheckTaskIssueLogService {
     int addBatch(List<HouseQmCheckTaskIssueLog> hIssueLogs);
 
     List<HouseQmCheckTaskIssueLog> searchByIssueUuid(Set<String> issueUuids);
-    /**
-     *
-     * @param userId
-     * @param task_id
-     * @param last_id
-     * @param timestamp
-     * @param limit
-     * @return
-     */
-    List<HouseQmCheckTaskIssueLog> searchHouseQmCheckTaskIssueLogByMyIdTaskIdLastIdUpdateAtGt(Integer userId, Integer task_id, Integer last_id, Integer timestamp, Integer limit,Integer start,Integer checker);
 
-    /**
-     *
-     * @author hy
-     * @date 2018/12/25 0025
-     * @param task_id
-     * @param uuids
-     * @param issueLogUpdateTime
-     * @return com.longfor.longjian.houseqm.po.zj2db.HouseQmCheckTaskIssueLog
-     */
-    HouseQmCheckTaskIssueLog selectIdByTaskIdAndIdAndUuidInAndUpdateAtGtAndNoDeletedOrderById(Integer task_id, List<String> uuids, Date issueLogUpdateTime);
+    List<HouseQmCheckTaskIssueLog> searchHouseQmCheckTaskIssueLogByMyIdTaskIdLastIdUpdateAtGt(Integer userId, Integer taskId, Integer lastId, Integer timestamp, Integer limit,Integer start,Integer checker);
+
+
+    HouseQmCheckTaskIssueLog selectIdByTaskIdAndIdAndUuidInAndUpdateAtGtAndNoDeletedOrderById(Integer taskId, List<String> uuids, Date issueLogUpdateTime);
 
     List<HouseQmCheckTaskIssueLog> selectByUuidAndNotDelete(String issueUuid);
 
-    void add(HouseQmCheckTaskIssueLog new_issue_log);
+    void add(HouseQmCheckTaskIssueLog newIssueLog);
 
     List<HouseQmCheckTaskIssueLog> selectByIssueUuIdAndStatusNotDel(String issueUuid, ArrayList<Integer> issueLogStatus);
 
     int selectByIssueUuIdAndStatusNotDelAndCount(String issueUuid, ArrayList<Integer> issueLogStatus);
 
-    List<HouseQmCheckTaskIssueLog> selectByUuidsAndNotDelete(List<String> log_uuids);
+    List<HouseQmCheckTaskIssueLog> selectByUuidsAndNotDelete(List<String> logUuids);
 
-    List<HouseQmCheckTaskIssueLog> selectByIssueUuIdInAndStatus(List<String> issue_uuids, Integer status);
+    List<HouseQmCheckTaskIssueLog> selectByIssueUuIdInAndStatus(List<String> issueUuids, Integer status);
 }

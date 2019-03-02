@@ -1,6 +1,5 @@
 package com.longfor.longjian.houseqm.app.test;
 
-import com.longfor.longjian.common.exception.LjBaseRuntimeException;
 import com.longfor.longjian.houseqm.util.DateUtil;
 import freemarker.template.Configuration;
 import freemarker.template.ObjectWrapper;
@@ -69,7 +68,7 @@ public class DocumentHandler {
             t.process(dataMap, out);
             status = true;
         }catch(Exception e1) {
-            log.error("error:",e1.getMessage());
+            log.error(e1.getMessage());
         }
 
         /*try{
@@ -122,7 +121,7 @@ public class DocumentHandler {
             t.process(dataMap, out);
             status = true;
         } catch (Exception e1) {
-            log.error("error:",e1.getMessage());
+            log.error(e1.getMessage());
         }
 
         /*try {
@@ -155,8 +154,9 @@ public class DocumentHandler {
             log.error(e.getMessage());
         }finally{
             if (outFile != null) {
-                if(outFile.delete()){
-                   log.info("文件删除成功");
+                boolean delete = outFile.delete();
+                if(!delete){
+                   log.info("文件删除失败");
                 }
             }
         }
@@ -276,16 +276,18 @@ public class DocumentHandler {
             try {
                 if (fin!=null) fin.close();
                 if (out!=null) out.close();
-                if (zipfile!=null)if(!zipfile.delete()){
-                    throw new LjBaseRuntimeException(-1,"zip文件删除失败");
+                if (zipfile!=null) {
+                    boolean b = zipfile.delete();
+                    if(b){
+                        log.info("删除成功");
+                    }
                 }
-
                 if (directory!=null) {
                     //递归删除目录及目录下文件
                     ZipUtils.deleteFile(directory);
                 }
             } catch (Exception e2) {
-                log.error("error:",e2.getMessage());
+                log.error(e2.getMessage());
             }
 
         }
@@ -306,7 +308,7 @@ public class DocumentHandler {
             //w = new OutputStreamWriter(new FileOutputStream(f), "utf-8");
             t.process(dataMap, w);
         } catch (Exception ex) {
-            log.error("error:",ex.getMessage());
+            log.error(ex.getMessage());
 
         }
         /*finally {

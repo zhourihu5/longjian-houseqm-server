@@ -10,7 +10,7 @@ public interface PushStrategyAssignTimeService {
 
     int add(PushStrategyAssignTime pushStrategyAssignTime);
 
-    PushStrategyAssignTime selectByIdAndNotDel(Integer task_id);
+    PushStrategyAssignTime selectByIdAndNotDel(Integer taskId);
 
     int update(PushStrategyAssignTime dbConfigAssignTime);
 

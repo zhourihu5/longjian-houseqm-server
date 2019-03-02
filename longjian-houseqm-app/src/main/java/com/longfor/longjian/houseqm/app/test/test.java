@@ -15,6 +15,7 @@ import sun.misc.BASE64Encoder;
 import tk.mybatis.mapper.entity.Example;
 
 import javax.annotation.Resource;
+import javax.imageio.stream.FileImageInputStream;
 import javax.servlet.ServletOutputStream;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;

@@ -36,7 +36,7 @@ public interface IIssueService {
 
     LjBaseResponse updeteIssueDescByUuid(Integer projectId, String issueUuid, Integer uid, String content);
 
-    LjBaseResponse updateIssuePlanEndOnByProjectAndUuid(Integer projectId, String issueUuid, Integer uid, Integer plan_end_on);
+    LjBaseResponse updateIssuePlanEndOnByProjectAndUuid(Integer projectId, String issueUuid, Integer uid, Integer planEndOn);
 
     LjBaseResponse updateIssueApproveStatusByUuid(Integer projectId, String issueUuid, Integer uid, Integer status, String content);
 
@@ -54,5 +54,5 @@ public interface IIssueService {
 
     Boolean repairNotifyExport(Integer userId, int parseInt, String issueUuid, HttpServletResponse response, HttpServletRequest request);
 
-    LjBaseResponse<Object> updateIssueDetailByProjectAndUuid(Integer userId, Integer project_id, String issue_uuid, Integer typ, String data);
+    LjBaseResponse<Object> updateIssueDetailByProjectAndUuid(Integer userId, Integer projectId, String issueUuid, Integer typ, String data);
 }

@@ -50,26 +50,25 @@ import java.util.stream.Collectors;
 @Service
 @Slf4j
 public class IssueServiceImpl implements IIssueService {
-
     @Value("${push_config.enterprise_id}")
     private String enterpriseId;
-     @Value("${push_config.gcgl.app_key_android}")
+    @Value("${push_config.gcgl.app_key_android}")
     private  String appKeyAndroid;
-    
+
     @Value("${push_config.gcgl.app_master_secret_android}")
     private  String appMasterSecretAndroid;
     @Value("${push_config.gcgl.app_key_ios}")
     private String appKeyIOS;
-    
+
     @Value("${push_config.gcgl.app_master_secret_ios}")
     private  String appMasterSecretIOS;
-    
+
     @Value("${push_config.gcgl.app_secret_xiao_mi}")
     private  String appSecretXiaoMi;
-    
+
     @Value("${push_config.gcgl.package_name_xiao_mi}")
     private  String packageNameXiaomi;
-    
+
     @Resource
     private HouseQmCheckTaskIssueAttachmentService houseQmCheckTaskIssueAttachmentService;
     @Resource
@@ -561,14 +560,14 @@ public class IssueServiceImpl implements IIssueService {
 
                 List<String> list = StringSplitToListUtil.removeStartAndEndStrAndSplit(replace, ",", ",");
                 for (String s : list) {
-                if(StringUtils.isNotBlank(s)){
-                    try{
-                        int b = Integer.valueOf(s).intValue();
-                        uids.add(b);
-                    }catch(NumberFormatException e){
-                        log.error(e.getMessage());
+                    if(StringUtils.isNotBlank(s)){
+                        try{
+                            int b = Integer.valueOf(s).intValue();
+                            uids.add(b);
+                        }catch(NumberFormatException e){
+                            log.error(e.getMessage());
+                        }
                     }
-                }
                 }
             }
             List uidlist = CollectionUtil.removeDuplicate(uids);
@@ -663,14 +662,14 @@ public class IssueServiceImpl implements IIssueService {
 
                     }
                 }
-                    HashMap<String, Object> log_data = Maps.newHashMap();
-                    log_data.put("plan_end_on", issue_log_detail.get("PlanEndOn"));
-                    log_data.put("followers", followers);
+                HashMap<String, Object> log_data = Maps.newHashMap();
+                log_data.put("plan_end_on", issue_log_detail.get("PlanEndOn"));
+                log_data.put("followers", followers);
                 log_item.setData(JSON.toJSONString(log_data));
-                    items.add(log_item);
-                    single_item.setItems(items);
+                items.add(log_item);
+                single_item.setItems(items);
 
-                }
+            }
 
             if (issue_log_info.get(i).getDesc().length() > 0) {
                 HouseQmCheckTaskIssueHistoryLogVo.HouseQmCheckTaskIssueHistoryLogItem log_items = new HouseQmCheckTaskIssueHistoryLogVo().new HouseQmCheckTaskIssueHistoryLogItem();
@@ -1118,12 +1117,12 @@ public class IssueServiceImpl implements IIssueService {
             return response;
         }
         Integer status = -1;
-            if (issueInfo.getStatus().equals(HouseQmCheckTaskIssueStatusEnum.NoteNoAssign.getId()) && repairerId > 0) {
+        if (issueInfo.getStatus().equals(HouseQmCheckTaskIssueStatusEnum.NoteNoAssign.getId()) && repairerId > 0) {
             status = HouseQmCheckTaskIssueStatusEnum.AssignNoReform.getId();
             issueInfo.setStatus(HouseQmCheckTaskIssueStatusEnum.AssignNoReform.getId());
         }
 
-                List<String> followers = StringSplitToListUtil.removeStartAndEndStrAndSplit(StringSplitToListUtil.removeStartAndEndStr(repairFollowerIds,"[","]"), ",", ",");
+        List<String> followers = StringSplitToListUtil.removeStartAndEndStrAndSplit(StringSplitToListUtil.removeStartAndEndStr(repairFollowerIds,"[","]"), ",", ",");
 
         if (!followers.contains(issueInfo.getRepairerId()) && repairerId > 0 && !repairerId.equals(issueInfo.getRepairerId())) {
             followers.add(String.valueOf(issueInfo.getRepairerId()));
@@ -1132,9 +1131,9 @@ public class IssueServiceImpl implements IIssueService {
         if (CollectionUtils.isNotEmpty(followers)) {
             String join = StringUtils.join(followers, ",");
             List<String> strings = StringSplitToListUtil.removeStartAndEndStrAndSplit(join, ",", ",");
-           if(strings.contains(",,")){
-               Collections.replaceAll(strings, ",,", ",");
-           }
+            if(strings.contains(",,")){
+                Collections.replaceAll(strings, ",,", ",");
+            }
             String s1 = strings.toString().replaceAll(" ","");
             String s = StringSplitToListUtil.removeStartAndEndStr(s1, "[", "]");
             repairFollowerIds = ","+s+",";
@@ -1563,8 +1562,9 @@ public class IssueServiceImpl implements IIssueService {
                     if (detailVo.getAttachment_path().size() >= 2) {
                         break;
                     }
-                    String attachmentPath = FileUtil.execDir()+File.separator + attachmentMap.get(attachment).getStoreKey();//todo verify
-                        storeKeyList.add(attachmentPath);
+                    String attachmentPath  ="/lhdata/" + attachmentMap.get(attachment).getStoreKey();
+
+                    storeKeyList.add(attachmentPath);
                 }
                 detailVo.setAttachment_path(storeKeyList);
             }
@@ -1772,6 +1772,7 @@ public class IssueServiceImpl implements IIssueService {
         });
         return pathNames;
     }
+
 
 }
 

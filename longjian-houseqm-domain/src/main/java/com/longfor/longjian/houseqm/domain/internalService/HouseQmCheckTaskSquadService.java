@@ -20,5 +20,5 @@ public interface HouseQmCheckTaskSquadService {
 
     int update(HouseQmCheckTaskSquad dbItem);
 
-    List<HouseQmCheckTaskSquad> selectByProjectIdAndTaskIdAndSquadType(Integer project_id, Integer task_id, Integer value);
+    List<HouseQmCheckTaskSquad> selectByProjectIdAndTaskIdAndSquadType(Integer projectId, Integer taskId, Integer value);
 }
