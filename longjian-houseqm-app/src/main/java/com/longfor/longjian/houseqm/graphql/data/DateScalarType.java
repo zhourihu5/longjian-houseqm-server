@@ -1,7 +1,6 @@
 package com.longfor.longjian.houseqm.graphql.data;
 
 
-
 import graphql.schema.Coercing;
 import graphql.schema.GraphQLScalarType;
 import org.slf4j.Logger;
@@ -22,15 +21,6 @@ import static java.lang.String.format;
 public class DateScalarType extends GraphQLScalarType {
 
     private final static Logger logger = LoggerFactory.getLogger(DateScalarType.class);
-
-    private static SimpleDateFormat createIsoDateFormat() {
-        return new SimpleDateFormat("yyyy-MM-dd");
-    }
-
-    @Override
-    public String getDescription() {
-        return "A Type representing a date (without time, only a day)";
-    }
 
     public DateScalarType() {
         super("DateField", "A Date type", new Coercing<Date, String>() {
@@ -63,5 +53,14 @@ public class DateScalarType extends GraphQLScalarType {
                 throw new UnsupportedOperationException("ParseLiteral in DateScalarType not implemented yet");
             }
         });
+    }
+
+    private static SimpleDateFormat createIsoDateFormat() {
+        return new SimpleDateFormat("yyyy-MM-dd");
+    }
+
+    @Override
+    public String getDescription() {
+        return "A Type representing a date (without time, only a day)";
     }
 }

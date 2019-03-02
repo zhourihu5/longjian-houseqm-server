@@ -15,7 +15,7 @@ import org.springframework.web.bind.annotation.RestController;
 @Slf4j
 public class ScanMsgPushController {
     @PostMapping(value = "scan_notice_center", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
-    public LjBaseResponse scanNoticeCenter(String categoryCls){
+    public LjBaseResponse scanNoticeCenter(String categoryCls) {
 
         log.info("scan_notice_center, categoryCls=" + categoryCls);
 

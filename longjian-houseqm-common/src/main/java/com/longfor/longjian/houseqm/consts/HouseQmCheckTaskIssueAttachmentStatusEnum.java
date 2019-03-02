@@ -11,21 +11,21 @@ package com.longfor.longjian.houseqm.consts;
 public enum HouseQmCheckTaskIssueAttachmentStatusEnum {
     //Enable  niuhe.IntConstItem `const:"1,可用"`
     //	Deleted niuhe.IntConstItem `const:"2,已删除"`
-    Enable(1,"可用"),
-    Deleted(2,"已删除"),
+    Enable(1, "可用"),
+    Deleted(2, "已删除"),
     ;
     private Integer id;
     private String value;
+
+HouseQmCheckTaskIssueAttachmentStatusEnum(Integer id, String value) {
+        this.id = id;
+        this.value = value;
+    }
 
     public Integer getId() {
         return id;
     }
 
-    public String getValue() {
+        public String getValue() {
         return value;
-    }
-
-    HouseQmCheckTaskIssueAttachmentStatusEnum(Integer id, String value) {
-        this.id = id;
-        this.value = value;
     }}

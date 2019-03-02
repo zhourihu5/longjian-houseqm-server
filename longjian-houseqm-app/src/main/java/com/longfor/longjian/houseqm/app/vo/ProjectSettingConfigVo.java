@@ -20,7 +20,7 @@ public class ProjectSettingConfigVo implements Serializable {
 
     @Data
     @NoArgsConstructor
-    public class HouseQmIssueReason implements Serializable{
+    public class HouseQmIssueReason implements Serializable {
         private Integer id;
         private String value;
     }

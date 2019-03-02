@@ -1,7 +1,9 @@
 package com.longfor.longjian.houseqm.po.zhijian2_setting;
 
+import javax.persistence.Column;
+import javax.persistence.Id;
+import javax.persistence.Table;
 import java.util.Date;
-import javax.persistence.*;
 
 @Table(name = "issue_field_setting")
 public class IssueFieldSetting {

@@ -20,8 +20,7 @@ import java.util.List;
 import java.util.Map;
 
 /**
- *
- *  Graphql的执行服务，每个微服务可以使用一个这个服务即可
+ * Graphql的执行服务，每个微服务可以使用一个这个服务即可
  *
  * @author lipeishuai
  * @date 2018/11/29 16:04
@@ -33,7 +32,6 @@ public class GraphqlExecuteService {
 
     @Resource
     private CachingPreparsedDocumentProvider cachingPreparsedDocumentProvider;
-
 
 
     public Object execute(Integer groupId, String serviceName, String query, VariableVo variableVo, GraphQLSchema graphQLSchema) {
@@ -62,8 +60,8 @@ public class GraphqlExecuteService {
 
 
         if (CollectionUtils.isNotEmpty(errors)) {
-                log.error("{}#graphql error {} details:{}", serviceName, errors.get(0).getErrorType(), errors.get(0).getMessage());
-                throw new LjBaseRuntimeException(410, errors.get(0).getMessage());
+            log.error("{}#graphql error {} details:{}", serviceName, errors.get(0).getErrorType(), errors.get(0).getMessage());
+            throw new LjBaseRuntimeException(410, errors.get(0).getMessage());
         }
 
         log.debug("{}#execute - data: {}", serviceName, data);

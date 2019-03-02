@@ -17,9 +17,9 @@ import java.io.Serializable;
 @NoArgsConstructor
 public class ApiHouseQmCheckerStatVo implements Serializable {
 
-    private Integer issue_approveded_count=0;//销项问题数
-    private Integer issue_count=0;//提交问题数
-    private String real_name="";//真名
-    private Integer records_count=0;//提交记录数
-    private Integer user_id=0;//用户id
+    private Integer issue_approveded_count = 0;//销项问题数
+    private Integer issue_count = 0;//提交问题数
+    private String real_name = "";//真名
+    private Integer records_count = 0;//提交记录数
+    private Integer user_id = 0;//用户id
 }

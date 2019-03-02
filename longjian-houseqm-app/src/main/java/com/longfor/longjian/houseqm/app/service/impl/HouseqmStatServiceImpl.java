@@ -3,20 +3,19 @@ package com.longfor.longjian.houseqm.app.service.impl;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
-import com.longfor.longjian.common.exception.LjBaseRuntimeException;
+import com.longfor.longjian.common.consts.HouseQmCheckTaskIssueStatusEnum;
 import com.longfor.longjian.common.util.StringUtil;
 import com.longfor.longjian.houseqm.app.service.HouseqmStaticService;
 import com.longfor.longjian.houseqm.app.service.IHouseqmStatService;
+import com.longfor.longjian.houseqm.app.vo.*;
 import com.longfor.longjian.houseqm.app.vo.houseqmstat.HouseQmStatCategorySituationRspVo;
 import com.longfor.longjian.houseqm.app.vo.houseqmstat.InspectionHouseStatusInfoVo;
 import com.longfor.longjian.houseqm.app.vo.houseqmstat.StatCategoryStatRspVo;
 import com.longfor.longjian.houseqm.consts.*;
-import com.longfor.longjian.houseqm.app.vo.*;
-import com.longfor.longjian.common.consts.HouseQmCheckTaskIssueStatusEnum;
-import com.longfor.longjian.houseqm.domain.internalService.*;
+import com.longfor.longjian.houseqm.domain.internalservice.*;
 import com.longfor.longjian.houseqm.dto.CheckerIssueStatusStatDto;
 import com.longfor.longjian.houseqm.dto.RepaireIssueStatusStatDto;
-import com.longfor.longjian.houseqm.po.*;
+import com.longfor.longjian.houseqm.po.CheckerIssueStat;
 import com.longfor.longjian.houseqm.po.zhijian2_apisvr.User;
 import com.longfor.longjian.houseqm.po.zj2db.Area;
 import com.longfor.longjian.houseqm.po.zj2db.HouseQmCheckTask;
@@ -119,7 +118,7 @@ public class HouseqmStatServiceImpl implements IHouseqmStatService {
         List<Area> areas = areaService.searchAreaListByRootIdAndTypes(projectId, aids, types);
         List<String> taskAreaPaths = Lists.newArrayList();
         for (Area area : areas) {
-            taskAreaPaths.add(String.format(PATH_AND_ID_REPEX, area.getPath(), area.getId()));
+            taskAreaPaths.add(String.format("%s%d/", area.getPath(), area.getId()));
         }
 
         //取出对应状态条件path
@@ -146,6 +145,7 @@ public class HouseqmStatServiceImpl implements IHouseqmStatService {
             List<String> checkedAreaPaths = houseqmStaticService.getHasIssueTaskCheckedAreaPathListByTaskId(taskId, true, null, areaId);
             // 取差集
             areaPaths.removeAll(checkedAreaPaths);
+            //areaPaths.retainAll(checkedAreaPaths);
         }
         //过滤掉不在任务中的path
         //出现此种情况的原因：在已上传验房报告的情况下，将已有数据的楼栋从任务中移除掉了
@@ -170,7 +170,7 @@ public class HouseqmStatServiceImpl implements IHouseqmStatService {
     public List<String> filterAreaPathListByRootAreaId(Integer rootAreaId, List<String> areaPaths) {
         Area area = areaService.selectById(rootAreaId);
         if (area == null) return Lists.newArrayList();
-        String apath = String.format(PATH_AND_ID_REPEX, area.getPath(), area.getId());
+        String apath = String.format("%s%d/", area.getPath(), area.getId());
         ArrayList<String> result = Lists.newArrayList();
         for (String path : areaPaths) {
             if (path.startsWith(apath)) {
@@ -430,9 +430,11 @@ public class HouseqmStatServiceImpl implements IHouseqmStatService {
                     default:
                         break;
                 }
+                e = null;
 
             }
         }
+
         return result;
     }
 
@@ -691,7 +693,7 @@ public class HouseqmStatServiceImpl implements IHouseqmStatService {
             } else if (l.getTyp().equals(HouseQmCheckTaskIssueEnum.FindProblem.getId()) || l.getTyp().equals(HouseQmCheckTaskIssueEnum.Difficult.getId())) {
                 item.setIssue_count(l.getCount() + item.getIssue_count());
             }
-            if (fatherPath!=null&&fatherPath.length()>1)areaMap.put(fatherPath, true);
+            if (fatherPath != null && fatherPath.length() > 1) areaMap.put(fatherPath, true);
         }
         item.setChecked_count(areaMap.size());
         return item;
@@ -797,8 +799,10 @@ public class HouseqmStatServiceImpl implements IHouseqmStatService {
             if (i.equals(id)) {
                 return true;
             }
-            if (areaMap.containsKey(i)&&areaMap.get(i).contains("/" + id + "/")) {
-                return true;
+            if (areaMap.containsKey(i)) {
+                if (areaMap.get(i).contains("/" + id + "/")) {
+                    return true;
+                }
             }
         }
         return false;

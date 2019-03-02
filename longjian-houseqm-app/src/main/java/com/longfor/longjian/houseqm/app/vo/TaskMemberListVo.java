@@ -12,7 +12,7 @@ import java.util.List;
  */
 @Data
 @NoArgsConstructor
-public class TaskMemberListVo implements Serializable{
+public class TaskMemberListVo implements Serializable {
 
     private List<SquadVo> squad_list;
     private List<MemberVo> member_list;
@@ -21,9 +21,9 @@ public class TaskMemberListVo implements Serializable{
     @NoArgsConstructor
     public class SquadVo implements Serializable {
 
-        private Integer  id;
+        private Integer id;
         private Integer project_id;
-        private Integer  task_id;
+        private Integer task_id;
         private Integer squad_type;
         private String name;
         private Integer update_at;
@@ -35,9 +35,9 @@ public class TaskMemberListVo implements Serializable{
     @NoArgsConstructor
     public class MemberVo implements Serializable {
 
-        private Integer  id;
+        private Integer id;
         private Integer squad_id;
-        private Integer  user_id;
+        private Integer user_id;
         private Integer role_type;
         private Integer can_approve;
         private Integer can_direct_approve;

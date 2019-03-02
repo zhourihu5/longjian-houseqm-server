@@ -13,23 +13,23 @@ import java.io.Serializable;
 @NoArgsConstructor
 public class TaskRepairStatVo implements Serializable {
 
-  private TaskRepairVo item;
+    private TaskRepairVo item;
 
-  @Data
-  @NoArgsConstructor
-  public class TaskRepairVo implements Serializable {
-    private Integer total_count;
-    private String initime_finish;
-    private Integer  initime_finish_count;
-    private String initime_unfinish;
-    private Integer  initime_unfinish_count;
-    private String no_plan_end_on;
-    private Integer no_plan_end_on_count;
-    private String overtime_finish;
-    private Integer  overtime_finish_count;
-    private String   overtime_unfinish;
-    private Integer overtime_unfinish_count;
-  }
+    @Data
+    @NoArgsConstructor
+    public class TaskRepairVo implements Serializable {
+        private Integer total_count;
+        private String initime_finish;
+        private Integer initime_finish_count;
+        private String initime_unfinish;
+        private Integer initime_unfinish_count;
+        private String no_plan_end_on;
+        private Integer no_plan_end_on_count;
+        private String overtime_finish;
+        private Integer overtime_finish_count;
+        private String overtime_unfinish;
+        private Integer overtime_unfinish_count;
+    }
 
 
 }

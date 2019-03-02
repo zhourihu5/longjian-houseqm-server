@@ -2,6 +2,7 @@ package com.longfor.longjian.houseqm.app.service.impl;
 
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
+import com.longfor.longjian.common.consts.HouseQmCheckTaskIssueStatusEnum;
 import com.longfor.longjian.common.push.UmPushUtil;
 import com.longfor.longjian.common.push.xiaomi.XmPushUtil;
 import com.longfor.longjian.houseqm.app.service.PushService;
@@ -9,7 +10,6 @@ import com.longfor.longjian.houseqm.app.vo.PushConfigVo;
 import com.longfor.longjian.houseqm.app.vo.houseqmissue.HouseQmCheckTaskIssueVo;
 import com.longfor.longjian.houseqm.consts.AppPlatformTypeEnum;
 import com.longfor.longjian.houseqm.consts.CategoryClsTypeEnum;
-import com.longfor.longjian.common.consts.HouseQmCheckTaskIssueStatusEnum;
 import com.longfor.longjian.houseqm.util.StringSplitToListUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang.StringUtils;
@@ -25,12 +25,11 @@ import java.util.Map;
 public class PushServiceImpl implements PushService {
 
 
-    @Resource
-    private PushConfigVo pushConfigVo;
-
     private final int PUSH_APP_GCGL = 1;
     private final int PUSH_APP_YDYF = 2;
     private final int PUSH_APP_GXGL = 3;
+    @Resource
+    private PushConfigVo pushConfigVo;
 
     @Override
     public void sendUPushByIssues(List<HouseQmCheckTaskIssueVo> issues) throws Exception {
@@ -78,7 +77,7 @@ public class PushServiceImpl implements PushService {
                         e = value;
                     }
                 }
-                if(e==null){
+                if (e == null) {
                     continue;
                 }
                 switch (e) {
@@ -122,7 +121,7 @@ public class PushServiceImpl implements PushService {
 
 
         //
-        PushConfigVo.AppInfo cfgPush=null;
+        PushConfigVo.AppInfo cfgPush = null;
         switch (appFlag) {
             case PUSH_APP_GCGL:
                 cfgPush = pushConfigVo.getGcgl();
@@ -137,29 +136,29 @@ public class PushServiceImpl implements PushService {
                 log.error("appFlag 错误");
                 break;
         }
-        if (cfgPush==null){
+        if (cfgPush == null) {
             throw new Exception("config of Push unfound, notice will not sended");
         }
         log.info("Sending_upush [taskId:%s] [userIds:%s] [appFlag:%s]", taskId, userIds, appFlag);
         ////接收者 信息
         ArrayList<String> alias = Lists.newArrayList();
-        for (int i = 0; i <userIds.size() ; i++) {
-            alias.add("user_id_"+userIds.get(i));
-            alias.add("user_id_"+pushConfigVo.getEnterprise_id()+"_"+userIds.get(i)+"");
+        for (int i = 0; i < userIds.size(); i++) {
+            alias.add("user_id_" + userIds.get(i));
+            alias.add("user_id_" + pushConfigVo.getEnterprise_id() + "_" + userIds.get(i) + "");
         }
         String alia = StringUtils.join(alias, ",");
 
         // 推送
         // 友盟推送Android
-        UmPushUtil.sendAndroidCustomizedcast(cfgPush.getApp_key_android(),cfgPush.getApp_master_secret_android(),alia, AppPlatformTypeEnum.PUSH_PLATFORM_UMENG_ANDROID.getValue(),
-                "Android",title,msg,msg,String.valueOf(taskId));
+        UmPushUtil.sendAndroidCustomizedcast(cfgPush.getApp_key_android(), cfgPush.getApp_master_secret_android(), alia, AppPlatformTypeEnum.PUSH_PLATFORM_UMENG_ANDROID.getValue(),
+                "Android", title, msg, msg, String.valueOf(taskId));
 
         //// 友盟推送Ios
-        UmPushUtil.sendIOSCustomizedcast(cfgPush.getApp_key_ios(),cfgPush.getApp_master_secret_ios(),alia,AppPlatformTypeEnum.PUSH_PLATFORM_UMENG_IOS.getValue(),
-                msg,String.valueOf(taskId));
+        UmPushUtil.sendIOSCustomizedcast(cfgPush.getApp_key_ios(), cfgPush.getApp_master_secret_ios(), alia, AppPlatformTypeEnum.PUSH_PLATFORM_UMENG_IOS.getValue(),
+                msg, String.valueOf(taskId));
 
         // xiaomi
-        XmPushUtil.sendMessageToUserAccounts(cfgPush.getApp_secret_xiao_mi(),cfgPush.getPackage_name_xiao_mi(),title,msg,alias);
+        XmPushUtil.sendMessageToUserAccounts(cfgPush.getApp_secret_xiao_mi(), cfgPush.getPackage_name_xiao_mi(), title, msg, alias);
 
     }
 

@@ -46,45 +46,45 @@
         house_qm_check_task_issue_attachment hqctia
         WHERE
         hqctia.task_id = #{task_id}
-            AND (
-                    (
-                    hqctia.issue_uuid IN (
-                                        SELECT
-                                        hqctiu.issue_uuid
-                                        FROM
-                                        house_qm_check_task_issue_user hqctiu
-                                        WHERE
-                                        hqctiu.user_id IN
-                                        <foreach collection="userIds" item="item" open="(" separator="," close=")" index="index">
-                                            #{item}
-                                        </foreach>
-                                        AND (`delete_at` IS NULL or `delete_at` = '0001-01-01 00:00:00')
-                                        )
-                    AND hqctia.user_id = #{userId}
-                    AND hqctia.public_type = #{privateInt}
-                    )
-            OR (
-                    hqctia.user_id IN (
-                                        SELECT DISTINCT
-                                        hqctiu.user_id
-                                        FROM
-                                        house_qm_check_task_issue_user hqctiu
-                                        WHERE
-                                            hqctiu.issue_uuid IN (
-                                                            SELECT
-                                                            issue_uuid
-                                                            FROM house_qm_check_task_issue_user
-                                                            WHERE
-                                                            user_id IN
-                                                            <foreach collection="userIds" item="item" open="(" separator="," close=")" index="index">
-                                                                #{item}
-                                                            </foreach>
-                                                            AND (`delete_at` IS NULL or `delete_at` = '0001-01-01 00:00:00')
-                                                            )
-                                            AND (`delete_at` IS NULL or `delete_at` = '0001-01-01 00:00:00')
-                                        )
-                    AND hqctia.public_type = #{publicInt}
-            )
+        AND (
+        (
+        hqctia.issue_uuid IN (
+        SELECT
+        hqctiu.issue_uuid
+        FROM
+        house_qm_check_task_issue_user hqctiu
+        WHERE
+        hqctiu.user_id IN
+        <foreach collection="userIds" item="item" open="(" separator="," close=")" index="index">
+            #{item}
+        </foreach>
+        AND (`delete_at` IS NULL or `delete_at` = '0001-01-01 00:00:00')
+        )
+        AND hqctia.user_id = #{userId}
+        AND hqctia.public_type = #{privateInt}
+        )
+        OR (
+        hqctia.user_id IN (
+        SELECT DISTINCT
+        hqctiu.user_id
+        FROM
+        house_qm_check_task_issue_user hqctiu
+        WHERE
+        hqctiu.issue_uuid IN (
+        SELECT
+        issue_uuid
+        FROM house_qm_check_task_issue_user
+        WHERE
+        user_id IN
+        <foreach collection="userIds" item="item" open="(" separator="," close=")" index="index">
+            #{item}
+        </foreach>
+        AND (`delete_at` IS NULL or `delete_at` = '0001-01-01 00:00:00')
+        )
+        AND (`delete_at` IS NULL or `delete_at` = '0001-01-01 00:00:00')
+        )
+        AND hqctia.public_type = #{publicInt}
+        )
         )
         ORDER BY
         id ASC

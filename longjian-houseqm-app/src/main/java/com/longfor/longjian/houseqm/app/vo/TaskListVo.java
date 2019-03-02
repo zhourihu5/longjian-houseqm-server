@@ -12,7 +12,7 @@ import java.util.List;
  */
 @Data
 @NoArgsConstructor
-public class TaskListVo implements Serializable{
+public class TaskListVo implements Serializable {
 
     private List<TaskVo> task_list;
 

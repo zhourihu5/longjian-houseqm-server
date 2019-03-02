@@ -11,6 +11,6 @@ import java.util.List;
  */
 @Data
 @NoArgsConstructor
-public class IssueTaskListRspMsgVo implements Serializable{
+public class IssueTaskListRspMsgVo implements Serializable {
     private List<HouseQmCheckTaskSimpleRspVo> taskList;
 }

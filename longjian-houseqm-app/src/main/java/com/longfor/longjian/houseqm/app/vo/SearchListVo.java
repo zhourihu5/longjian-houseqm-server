@@ -14,16 +14,16 @@ import java.util.List;
 @NoArgsConstructor
 public class SearchListVo implements Serializable {
 
-  private List<SearchVo> items;
+    private List<SearchVo> items;
 
-  @Data
-  @NoArgsConstructor
-  public class SearchVo implements Serializable {
+    @Data
+    @NoArgsConstructor
+    public class SearchVo implements Serializable {
 
-    private Integer id;
-    private String  name;
-    private Integer  team_id;
-    private Integer status;
-    private Integer update_at;
-  }
+        private Integer id;
+        private String name;
+        private Integer team_id;
+        private Integer status;
+        private Integer update_at;
+    }
 }

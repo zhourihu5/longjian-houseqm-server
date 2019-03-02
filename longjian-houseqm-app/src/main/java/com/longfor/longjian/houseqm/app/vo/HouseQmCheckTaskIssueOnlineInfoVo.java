@@ -13,17 +13,17 @@ import java.util.List;
 @Data
 @NoArgsConstructor
 public class HouseQmCheckTaskIssueOnlineInfoVo implements Serializable {
-   private  Integer Id ;
-    private  Integer ProjectId;
+    private Integer Id;
+    private Integer ProjectId;
     private Integer TaskId;
-    private String Uuid ;
+    private String Uuid;
     private String Title;
     private Integer Typ;
     private String Content;
     private Integer Condition;
-    private  Integer Status;
+    private Integer Status;
     private Date PlanEndOn;
-    private  String AttachmentMd5List;
+    private String AttachmentMd5List;
     private Date ClientCreateAt;
     private Date UpdateAt;
     private Integer AreaId;

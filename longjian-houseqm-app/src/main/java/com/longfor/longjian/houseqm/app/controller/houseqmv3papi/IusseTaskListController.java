@@ -43,6 +43,8 @@ import java.util.List;
 public class IusseTaskListController {
 
     @Resource
+    IssueListController issueListController;
+    @Resource
     private IusseTaskListService iusseTaskListService;
     @Resource
     private CtrlTool ctrlTool;
@@ -50,8 +52,6 @@ public class IusseTaskListController {
     private SessionInfo sessionInfo;
     @Resource
     private IIssueService iIssueService;
-    @Resource
-    IssueListController issueListController;
 
     /**
      * 获取可用于检索的任务列表
@@ -121,7 +121,7 @@ public class IusseTaskListController {
         try {
             ctrlTool.projPerm(request, "项目.移动验房.问题管理.查看");
         } catch (Exception e) {
-            log.error("我的问题 鉴权异常:",e.getMessage());
+            log.error("我的问题 鉴权异常:", e.getMessage());
             response.setResult(1);
             response.setCode(1);
             response.setMessage("PermissionDenied");
@@ -195,7 +195,7 @@ public class IusseTaskListController {
         try {
             ctrlTool.projPerm(request, "项目.工程检查.问题管理.查看");
         } catch (Exception e) {
-            log.error("我的问题-项目下问题详情鉴权:",e.getMessage());
+            log.error("我的问题-项目下问题详情鉴权:", e.getMessage());
         }
 
         return iIssueService.getHouseQmCheckTaskIssueDetailBaseByProjectAndUuid(userId, projectId, issueUuid);
@@ -210,7 +210,7 @@ public class IusseTaskListController {
         try {
             ctrlTool.projPerm(request, "项目.工程检查.问题管理.查看");
         } catch (Exception e) {
-            log.error("我的问题 -项目下问题详情追加描述 鉴权异常:",e.getMessage());
+            log.error("我的问题 -项目下问题详情追加描述 鉴权异常:", e.getMessage());
         }
         return iIssueService.updeteIssueDescByUuid(projectId, issueUuid, userId, content);
     }
@@ -255,7 +255,7 @@ public class IusseTaskListController {
         try {
             ctrlTool.projPerm(request, "项目.工程检查.问题管理.编辑");
         } catch (Exception e) {
-            log.error("【项目-过程检查-问题管理-问题详情】其他信息编辑 鉴权异常:",e.getMessage());
+            log.error("【项目-过程检查-问题管理-问题详情】其他信息编辑 鉴权异常:", e.getMessage());
             response.setResult(1);
             response.setMessage("PermissionDenied");
             return response;
@@ -273,7 +273,7 @@ public class IusseTaskListController {
             ctrlTool.projPerm(request, "项目.工程检查.问题管理.删除");
             iIssueService.deleteHouseqmCheckTaskIssueByProjectAndUuid(projectId, issueUuid);
         } catch (Exception e) {
-            log.error("【项目-过程检查-问题管理-问题详情】删除问题 鉴权异常:",e.getMessage());
+            log.error("【项目-过程检查-问题管理-问题详情】删除问题 鉴权异常:", e.getMessage());
             response.setResult(1);
             response.setMessage(e.getMessage());
         }

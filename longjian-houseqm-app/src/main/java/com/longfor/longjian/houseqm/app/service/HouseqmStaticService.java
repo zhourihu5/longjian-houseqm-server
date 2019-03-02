@@ -5,9 +5,12 @@ import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.longfor.longjian.common.consts.HouseQmCheckTaskIssueStatusEnum;
 import com.longfor.longjian.houseqm.app.vo.*;
-import com.longfor.longjian.houseqm.consts.*;
-import com.longfor.longjian.houseqm.domain.internalService.*;
-import com.longfor.longjian.houseqm.po.*;
+import com.longfor.longjian.houseqm.consts.HouseQmCheckTaskIssueEnum;
+import com.longfor.longjian.houseqm.consts.HouseQmCheckTaskIssueTypeEnum;
+import com.longfor.longjian.houseqm.consts.RepossessionRepairStatusEnum;
+import com.longfor.longjian.houseqm.consts.RepossessionStatusEnum;
+import com.longfor.longjian.houseqm.domain.internalservice.*;
+import com.longfor.longjian.houseqm.po.HouseQmCheckTaskIssueAreaGroupModel;
 import com.longfor.longjian.houseqm.po.zj2db.Area;
 import com.longfor.longjian.houseqm.po.zj2db.HouseQmCheckTask;
 import com.longfor.longjian.houseqm.po.zj2db.RepossessionStatus;
@@ -23,7 +26,6 @@ import org.springframework.stereotype.Repository;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
-
 import java.util.*;
 
 /**
@@ -168,7 +170,7 @@ public class HouseqmStaticService {
         List<HouseQmCheckTaskIssueAreaGroupModel> result = Lists.newArrayList();
 
         /*if (onlyIssue && areaId > 0) {*/
-        result = houseQmCheckTaskIssueService.selectByTaskIdAndTyeInAndAreaPathAndIdLike(onlyIssue,taskId, types,  areaId);
+        result = houseQmCheckTaskIssueService.selectByTaskIdAndTyeInAndAreaPathAndIdLike(onlyIssue, taskId, types, areaId);
       /*  } else if (onlyIssue && areaId <= 0) {
             result = houseQmCheckTaskIssueService.selectByTaskIdAndTyeIn(taskId, types);
         } else if (!onlyIssue && areaId > 0) {
@@ -193,7 +195,7 @@ public class HouseqmStaticService {
 
     private List<Integer> splitToIdsComma(String ids, String sep) {
         List<Integer> list = Lists.newArrayList();
-        ids=ids.trim();
+        ids = ids.trim();
         String[] str = ids.split(sep);
         List<String> areaList = Arrays.asList(str);
         for (String s : areaList) {
@@ -210,7 +212,7 @@ public class HouseqmStaticService {
 
         for (int i = 0; i < taskIds.size(); i++) {
             List<Area> areas = searchTargetAreaByTaskId(prodectId, taskIds.get(i));
-            if(areas==null){
+            if (areas == null) {
                 continue;
             }
             int total = areas.size();
@@ -342,7 +344,7 @@ public class HouseqmStaticService {
         if (CollectionUtils.isEmpty(areaIds) || CollectionUtils.isEmpty(areaTypes)) {
             return null;
         }
-        return  areaService.searchAreaListByRootIdAndTypes(prodectId, areaIds, areaTypes);
+        return areaService.searchAreaListByRootIdAndTypes(prodectId, areaIds, areaTypes);
 
     }
 

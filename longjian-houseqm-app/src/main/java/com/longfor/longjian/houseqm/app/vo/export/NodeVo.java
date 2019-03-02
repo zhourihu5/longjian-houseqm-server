@@ -1,7 +1,6 @@
 package com.longfor.longjian.houseqm.app.vo.export;
 
 import com.google.common.collect.Lists;
-import com.sun.corba.se.impl.orbutil.graph.NodeData;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
@@ -25,6 +24,6 @@ public class NodeVo implements Serializable {
 
     public NodeVo(NodeDataVo data) {
         this.data = data;
-        this.child_list= Lists.newArrayList();
+        this.child_list = Lists.newArrayList();
     }
 }

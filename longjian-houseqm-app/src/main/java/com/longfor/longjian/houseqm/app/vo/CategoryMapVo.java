@@ -22,13 +22,6 @@ public class CategoryMapVo implements Serializable {
 
     private Map<String, CategoryV3> categoryV3Map;
 
-    public List<String> getFullNamesByKey(String key) {
-        if (categoryV3Map.containsKey(key)) {
-            return getFullNames(categoryV3Map.get(key));
-        }
-        return Lists.newArrayList();
-    }
-
     public static CategoryMapVo NewCategoryMap(List<CategoryV3> c) {
         CategoryMapVo categoryV3MapVo = new CategoryMapVo();
         HashMap<String, CategoryV3> map = Maps.newHashMap();
@@ -37,6 +30,13 @@ public class CategoryMapVo implements Serializable {
         }
         categoryV3MapVo.setCategoryV3Map(map);
         return categoryV3MapVo;
+    }
+
+    public List<String> getFullNamesByKey(String key) {
+        if (categoryV3Map.containsKey(key)) {
+            return getFullNames(categoryV3Map.get(key));
+        }
+        return Lists.newArrayList();
     }
 
     public List<String> getFullNames(CategoryV3 categoryV3) {

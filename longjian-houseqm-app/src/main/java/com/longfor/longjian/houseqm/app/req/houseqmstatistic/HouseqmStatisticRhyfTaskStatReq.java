@@ -27,7 +27,7 @@ public class HouseqmStatisticRhyfTaskStatReq implements Serializable {
     @NotNull
     private Integer task_id;// 任务ID
 
-    private Integer area_id=0;// 区域ID，留空或为0则表示所有
+    private Integer area_id = 0;// 区域ID，留空或为0则表示所有
     @NotNull
     private Integer timestamp;// 上次更新时间
 

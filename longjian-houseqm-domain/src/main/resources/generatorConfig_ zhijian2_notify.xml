@@ -5,8 +5,8 @@
 
 <generatorConfiguration>
     <!--mysql 连接数据库jar 这里选择自己本地位置-->
-    <classPathEntry location="D:/software/mysql-connector-java-5.1.47" />
-    <context id="generateTables" targetRuntime="MyBatis3"  defaultModelType="flat">
+    <classPathEntry location="D:/software/mysql-connector-java-5.1.47"/>
+    <context id="generateTables" targetRuntime="MyBatis3" defaultModelType="flat">
 
         <plugin type="tk.mybatis.mapper.generator.MapperPlugin">
             <property name="mappers" value="com.longfor.gaia.gfs.data.mybatis.LFMySQLMapper"/>
@@ -26,16 +26,16 @@
         <!-- 默认false，把JDBC DECIMAL 和 NUMERIC 类型解析为 Integer，为 true时把JDBC DECIMAL 和
            NUMERIC 类型解析为java.math.BigDecimal -->
         <javaTypeResolver>
-            <property name="forceBigDecimals" value="false" />
+            <property name="forceBigDecimals" value="false"/>
         </javaTypeResolver>
 
         <!-- targetProject:生成PO类的位置 -->
         <javaModelGenerator targetPackage="com.longfor.longjian.houseqm.po.zhijian2_notify"
                             targetProject="src/main/java">
             <!-- enableSubPackages:是否让schema作为包的后缀 -->
-            <property name="enableSubPackages" value="false" />
+            <property name="enableSubPackages" value="false"/>
             <!-- 从数据库返回的值被清理前后的空格 -->
-            <property name="trimStrings" value="true" />
+            <property name="trimStrings" value="true"/>
         </javaModelGenerator>
         <!-- targetProject:mapper映射文件生成的位置
            如果maven工程只是单独的一个工程，targetProject="src/main/java"
@@ -44,18 +44,19 @@
         <sqlMapGenerator targetPackage="com.longfor.longjian.houseqm.dao.zhijian2_notify"
                          targetProject="src/main/resources">
             <!-- enableSubPackages:是否让schema作为包的后缀 -->
-            <property name="enableSubPackages" value="false" />
+            <property name="enableSubPackages" value="false"/>
         </sqlMapGenerator>
         <!-- targetPackage：mapper接口生成的位置 -->
         <javaClientGenerator type="XMLMAPPER"
                              targetPackage="com.longfor.longjian.houseqm.dao.zhijian2_notify"
                              targetProject="src/main/java">
             <!-- enableSubPackages:是否让schema作为包的后缀 -->
-            <property name="enableSubPackages" value="false" />
+            <property name="enableSubPackages" value="false"/>
         </javaClientGenerator>
 
         <!-- 指定数据库表 -->
-        <table tableName="gcgl_issue_stat_record" enableCountByExample="false" enableUpdateByExample="false" enableDeleteByExample="false" enableSelectByExample="false" selectByExampleQueryId="false"/>
+        <table tableName="gcgl_issue_stat_record" enableCountByExample="false" enableUpdateByExample="false"
+               enableDeleteByExample="false" enableSelectByExample="false" selectByExampleQueryId="false"/>
         <!--<table tableName="stat_scan_record" enableCountByExample="false" enableUpdateByExample="false" enableDeleteByExample="false" enableSelectByExample="false" selectByExampleQueryId="false"/>
         <table tableName="user_in_project" enableCountByExample="false" enableUpdateByExample="false" enableDeleteByExample="false" enableSelectByExample="false" selectByExampleQueryId="false"/>
         <table tableName="stat_house_qm_project_daily_stat" enableCountByExample="false" enableUpdateByExample="false" enableDeleteByExample="false" enableSelectByExample="false" selectByExampleQueryId="false"/>

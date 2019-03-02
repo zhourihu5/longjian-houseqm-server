@@ -2,11 +2,9 @@ package com.longfor.longjian.houseqm.app.vo.buildingqm;
 
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import org.omg.CORBA.INTERNAL;
 
 import javax.validation.constraints.NotNull;
 import java.io.Serializable;
-import java.util.List;
 
 /**
  * @ProjectName: longjian-houseqm-server

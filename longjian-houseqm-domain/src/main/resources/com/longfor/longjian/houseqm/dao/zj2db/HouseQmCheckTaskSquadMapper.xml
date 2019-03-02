@@ -5,14 +5,14 @@
         <!--
           WARNING - @mbg.generated
         -->
-        <id column="id" jdbcType="INTEGER" property="id" />
-        <result column="project_id" jdbcType="INTEGER" property="projectId" />
-        <result column="task_id" jdbcType="INTEGER" property="taskId" />
-        <result column="squad_type" jdbcType="INTEGER" property="squadType" />
-        <result column="name" jdbcType="VARCHAR" property="name" />
-        <result column="create_at" jdbcType="TIMESTAMP" property="createAt" />
-        <result column="update_at" jdbcType="TIMESTAMP" property="updateAt" />
-        <result column="delete_at" jdbcType="TIMESTAMP" property="deleteAt" />
+        <id column="id" jdbcType="INTEGER" property="id"/>
+        <result column="project_id" jdbcType="INTEGER" property="projectId"/>
+        <result column="task_id" jdbcType="INTEGER" property="taskId"/>
+        <result column="squad_type" jdbcType="INTEGER" property="squadType"/>
+        <result column="name" jdbcType="VARCHAR" property="name"/>
+        <result column="create_at" jdbcType="TIMESTAMP" property="createAt"/>
+        <result column="update_at" jdbcType="TIMESTAMP" property="updateAt"/>
+        <result column="delete_at" jdbcType="TIMESTAMP" property="deleteAt"/>
     </resultMap>
     <sql id="Base_Column_List">
         <!--
@@ -22,7 +22,7 @@
     </sql>
     <select id="selectByTaskIds" resultMap="BaseResultMap">
         select
-        <include refid="Base_Column_List" />
+        <include refid="Base_Column_List"/>
         from house_qm_check_task_squad
         where task_id in
         <foreach close=")" collection="idList" index="index" item="id" open="(" separator=",">

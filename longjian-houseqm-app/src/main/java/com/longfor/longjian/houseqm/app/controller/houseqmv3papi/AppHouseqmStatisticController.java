@@ -57,7 +57,7 @@ public class AppHouseqmStatisticController {
             ProjectListRspVo items = iHouseqmStatisticService.projectList(userId, req.getSource(), req.getTimestamp());
             response.setData(items);
         } catch (Exception e) {
-            log.error("获取项目列表error:",e.getMessage());
+            log.error("获取项目列表error:", e.getMessage());
             response.setResult(1);
             response.setMessage(e.getMessage());
         }
@@ -79,12 +79,12 @@ public class AppHouseqmStatisticController {
         log.info("project_issue_stat, project_id=" + req.getProject_id() + ", source=" + req.getSource() + ", area_id=" + req.getArea_id() + ", timestamp=" + req.getTimestamp());
         Integer userId = SessionUtil.getUid(sessionInfo);
         try {
-            if (req.getArea_id()==null)req.setArea_id(0);
-            if (req.getTimestamp()==null)req.setTimestamp(0);
+            if (req.getArea_id() == null) req.setArea_id(0);
+            if (req.getTimestamp() == null) req.setTimestamp(0);
             ProjectIssueStatRspVo item = iHouseqmStatisticService.projectIssueStat(userId, req.getProject_id(), req.getSource(), req.getArea_id(), req.getTimestamp());
             response.setData(item);
         } catch (Exception e) {
-            log.error("项目汇总状态error:",e.getMessage());
+            log.error("项目汇总状态error:", e.getMessage());
             response.setResult(1);
             response.setMessage(e.getMessage());
         }
@@ -105,14 +105,14 @@ public class AppHouseqmStatisticController {
         log.info("project_checker_stat, project_id=" + req.getProject_id() + ", task_id=" + req.getTask_id() + ", source=" + req.getSource() + ", stat_begin=" + req.getStat_begin() + ", stat_end=" + req.getStat_end() + ", timestamp=" + req.getTimestamp());
         Integer userId = SessionUtil.getUid(sessionInfo);
         try {
-            if (req.getTask_id()==null) req.setTask_id(0);
-            if (req.getStat_begin()==null) req.setStat_begin(0);
-            if (req.getStat_end()==null) req.setStat_end(0);
-            if (req.getTimestamp()==null) req.setTimestamp(0);
+            if (req.getTask_id() == null) req.setTask_id(0);
+            if (req.getStat_begin() == null) req.setStat_begin(0);
+            if (req.getStat_end() == null) req.setStat_end(0);
+            if (req.getTimestamp() == null) req.setTimestamp(0);
             ProjectCheckerStatRspVo item = iHouseqmStatisticService.projectCheckerStat(userId, req.getProject_id(), req.getTask_id(), req.getSource(), req.getStat_begin(), req.getStat_end(), req.getTimestamp());
             response.setData(item);
         } catch (Exception e) {
-            log.error("项目/任务检查人员统计error:",e.getMessage());
+            log.error("项目/任务检查人员统计error:", e.getMessage());
             response.setResult(1);
             response.setMessage(e.getMessage());
         }
@@ -133,14 +133,14 @@ public class AppHouseqmStatisticController {
         log.info("project_repairer_stat, project_id=" + req.getProject_id() + ", task_id=" + req.getTask_id() + ", source=" + req.getSource() + ", stat_begin=" + req.getStat_begin() + ", stat_end=" + req.getStat_end() + ", timestamp=" + req.getTimestamp());
         Integer userId = SessionUtil.getUid(sessionInfo);
         try {
-            if (req.getTask_id()==null) req.setTask_id(0);
-            if (req.getStat_begin()==null) req.setStat_begin(0);
-            if (req.getStat_end()==null) req.setStat_end(0);
-            if (req.getTimestamp()==null) req.setTimestamp(0);
+            if (req.getTask_id() == null) req.setTask_id(0);
+            if (req.getStat_begin() == null) req.setStat_begin(0);
+            if (req.getStat_end() == null) req.setStat_end(0);
+            if (req.getTimestamp() == null) req.setTimestamp(0);
             ProjectRepairerStatRspVo items = iHouseqmStatisticService.projectRepairerStat(userId, req.getProject_id(), req.getTask_id(), req.getSource(), req.getStat_begin(), req.getStat_end(), req.getTimestamp());
             response.setData(items);
         } catch (Exception e) {
-            log.error("项目/任务整改人员统计error:",e.getMessage());
+            log.error("项目/任务整改人员统计error:", e.getMessage());
             response.setResult(1);
             response.setMessage(e.getMessage());
         }

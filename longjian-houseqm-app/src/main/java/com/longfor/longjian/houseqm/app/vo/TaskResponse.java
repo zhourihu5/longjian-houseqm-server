@@ -1,7 +1,6 @@
 package com.longfor.longjian.houseqm.app.vo;
 
 import com.longfor.longjian.common.base.LjBaseResponse;
-import com.longfor.longjian.common.base.LjBaseResponse;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
@@ -16,7 +15,7 @@ import java.io.Serializable;
 @NoArgsConstructor
 public class TaskResponse<T> extends LjBaseResponse implements Serializable {
 
-    private String message="success";
-    private String msg="success";
+    private String message = "success";
+    private String msg = "success";
 
 }

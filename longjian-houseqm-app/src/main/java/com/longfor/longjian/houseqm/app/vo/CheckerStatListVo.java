@@ -14,16 +14,16 @@ import java.util.List;
 @NoArgsConstructor
 public class CheckerStatListVo implements Serializable {
 
-  private List<CheckerStatVo> items;
+    private List<CheckerStatVo> items;
 
-  @Data
-  @NoArgsConstructor
-  public class CheckerStatVo implements Serializable {
+    @Data
+    @NoArgsConstructor
+    public class CheckerStatVo implements Serializable {
 
-    private Integer  checked_count;
-    private Integer  issue_count;
-    private String real_name;
-    private Integer records_count;
-    private Integer user_id;
-  }
+        private Integer checked_count;
+        private Integer issue_count;
+        private String real_name;
+        private Integer records_count;
+        private Integer user_id;
+    }
 }

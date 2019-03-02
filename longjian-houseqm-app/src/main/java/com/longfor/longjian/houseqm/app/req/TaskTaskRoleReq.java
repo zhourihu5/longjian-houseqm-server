@@ -17,7 +17,7 @@ import java.io.Serializable;
 @Data
 @NoArgsConstructor
 public class TaskTaskRoleReq implements Serializable {
-//ProjectId int `json:"project_id" zpf_reqd:"true" zpf_name:"project_id"` // 项目ID
+    //ProjectId int `json:"project_id" zpf_reqd:"true" zpf_name:"project_id"` // 项目ID
 //	TaskId    int `json:"task_id" zpf_reqd:"true" zpf_name:"task_id"`       // 任务ID
     @NotNull
     private Integer project_id;

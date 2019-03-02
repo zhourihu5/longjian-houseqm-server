@@ -2,23 +2,24 @@ package com.longfor.longjian.houseqm.app.service.impl;
 
 import com.alibaba.fastjson.JSON;
 import com.google.common.collect.Lists;
+import com.longfor.longjian.common.consts.HouseQmCheckTaskIssueStatusEnum;
 import com.longfor.longjian.common.exception.LjBaseRuntimeException;
 import com.longfor.longjian.houseqm.app.service.IHouseqmIssueService;
-import com.longfor.longjian.houseqm.app.vo.HouseQmCheckTaskIssueHelperVo;
+import com.longfor.longjian.houseqm.app.utils.HouseQmCheckTaskIssueHelperVo;
 import com.longfor.longjian.houseqm.app.vo.houseqmissue.ApiHouseQmCheckTaskReportRsp;
 import com.longfor.longjian.houseqm.app.vo.url.ExportVo;
 import com.longfor.longjian.houseqm.consts.HouseQmCheckTaskIssueCheckStatusEnum;
-import com.longfor.longjian.common.consts.HouseQmCheckTaskIssueStatusEnum;
-import com.longfor.longjian.houseqm.domain.internalService.ExportFileRecordService;
-import com.longfor.longjian.houseqm.domain.internalService.HouseQmCheckTaskIssueService;
-import com.longfor.longjian.houseqm.domain.internalService.ProjectService;
-import com.longfor.longjian.houseqm.po.zj2db.HouseQmCheckTaskIssue;
+import com.longfor.longjian.houseqm.domain.internalservice.ExportFileRecordService;
+import com.longfor.longjian.houseqm.domain.internalservice.HouseQmCheckTaskIssueService;
+import com.longfor.longjian.houseqm.domain.internalservice.ProjectService;
 import com.longfor.longjian.houseqm.po.zj2db.ExportFileRecord;
+import com.longfor.longjian.houseqm.po.zj2db.HouseQmCheckTaskIssue;
 import com.longfor.longjian.houseqm.po.zj2db.Project;
 import com.longfor.longjian.houseqm.util.DateUtil;
 import com.longfor.longjian.houseqm.util.StringSplitToListUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
+
 import javax.annotation.Resource;
 import java.io.File;
 import java.io.FileOutputStream;
@@ -27,6 +28,7 @@ import java.io.OutputStreamWriter;
 import java.security.NoSuchAlgorithmException;
 import java.security.SecureRandom;
 import java.util.*;
+
 @Service
 @Slf4j
 public class HouseqmIssueServiceImpl implements IHouseqmIssueService {
@@ -44,7 +46,7 @@ public class HouseqmIssueServiceImpl implements IHouseqmIssueService {
     private Random rand;
 
     public HouseqmIssueServiceImpl() throws NoSuchAlgorithmException {
-        rand= SecureRandom.getInstanceStrong();
+        rand = SecureRandom.getInstanceStrong();
     }
 
     // 删除问题
@@ -52,7 +54,7 @@ public class HouseqmIssueServiceImpl implements IHouseqmIssueService {
     public void deleteHouseQmCheckTaskIssueByProjUuid(Integer project_id, String issueUuid) throws Exception {
         int affect = houseQmCheckTaskIssueService.deleteHouseQmCheckTaskIssueByProjUuid(project_id, issueUuid);
         if (affect <= 0) {
-            throw new LjBaseRuntimeException(-1,"删除问题失败");
+            throw new LjBaseRuntimeException(-1, "删除问题失败");
         }
     }
 
@@ -146,7 +148,7 @@ public class HouseqmIssueServiceImpl implements IHouseqmIssueService {
         String outputFilename = String.format("/export/%d%d.%s", randCount, ts, "output");
         String filepath = base_dir + inputFilename;
         String data = JSON.toJSONString(args);
-        this.writeInput(data,exportName,filepath);
+        this.writeInput(data, exportName, filepath);
         //记录导出的内容到数据库
         String resultFilePath = base_uri + "/" + outputFilename;
         return exportFileRecordService.insertFull(userId, teamId, project_id, exportType, inputFilename + " " + outputFilename,
@@ -157,7 +159,7 @@ public class HouseqmIssueServiceImpl implements IHouseqmIssueService {
         FileOutputStream out = null;
         OutputStreamWriter op = null;
         try {
-            log.info("erxportName :{}",exportName);
+            log.info("erxportName :{}", exportName);
             out = new FileOutputStream(String.format("%s", filepath));
             op = new OutputStreamWriter(out, "utf-8");
             File file = new File(String.format("%s", filepath));
@@ -168,12 +170,12 @@ public class HouseqmIssueServiceImpl implements IHouseqmIssueService {
 
             if (!file.exists()) {
                 boolean newFile = file.createNewFile();
-                log.info("createNewFile flag{}",newFile);
+                log.info("createNewFile flag{}", newFile);
             }
             op.append(data);
             op.flush();
         } catch (IOException e) {
-            log.error("error:",e);
+            log.error("error:", e);
         } finally {
             if (op != null) {
                 op.close();

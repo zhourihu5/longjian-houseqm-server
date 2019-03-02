@@ -13,6 +13,6 @@ import java.util.List;
 @NoArgsConstructor
 public class UnmarshReportIssueRequestBody implements Serializable {
     private List<String> log_uuids;
-    private List<String>issue_uuids;
-    private List<ApiHouseQmCheckTaskIssueLogInfo>issue_logs;
+    private List<String> issue_uuids;
+    private List<ApiHouseQmCheckTaskIssueLogInfo> issue_logs;
 }

@@ -3,7 +3,9 @@ package com.longfor.longjian.houseqm.app.service;
 import com.longfor.longjian.common.base.LjBaseResponse;
 import com.longfor.longjian.houseqm.app.req.IssueListDoActionReq;
 import com.longfor.longjian.houseqm.app.req.bgtask.ExportBuildingExcelReq;
-import com.longfor.longjian.houseqm.app.vo.*;
+import com.longfor.longjian.houseqm.app.vo.HouseQmCheckTaskIssueDetailRepairLogVo;
+import com.longfor.longjian.houseqm.app.vo.HouseQmCheckTaskIssueHistoryLogVo;
+import com.longfor.longjian.houseqm.app.vo.IssueInfoVo;
 import com.longfor.longjian.houseqm.app.vo.issuelist.IssueListRsp;
 import com.longfor.longjian.houseqm.po.zj2db.ProjectSettingV2;
 
@@ -23,10 +25,9 @@ public interface IIssueService {
     Map<String, Object> exportExcel(Integer uid, ExportBuildingExcelReq req);
 
     /**
-     *
+     * @return com.longfor.gaia.gfs.core.bean.PageInfo<com.longfor.longjian.houseqm.app.vo.IssueListVo>
      * @author hy
      * @date 2018/12/21 0021
-     * @return com.longfor.gaia.gfs.core.bean.PageInfo<com.longfor.longjian.houseqm.app.vo.IssueListVo>
      */
     IssueListRsp list(IssueListDoActionReq req);
 
@@ -48,7 +49,7 @@ public interface IIssueService {
 
     LjBaseResponse updateIssueRepairInfoByProjectAndUuid(Integer uid, Integer repairerId, String repairFollowerIds, Integer projectId, String issueUuid);
 
-    LjBaseResponse<List<HouseQmCheckTaskIssueDetailRepairLogVo>>  getDetailRepairLogByIssueUuid(String issueUuid);
+    LjBaseResponse<List<HouseQmCheckTaskIssueDetailRepairLogVo>> getDetailRepairLogByIssueUuid(String issueUuid);
 
     LjBaseResponse<IssueInfoVo> getHouseQmCheckTaskIssueDetailBaseByProjectAndUuid(Integer uid, Integer projectId, String issueUuid);
 

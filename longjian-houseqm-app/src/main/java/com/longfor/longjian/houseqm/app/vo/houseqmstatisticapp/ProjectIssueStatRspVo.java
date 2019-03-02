@@ -20,5 +20,4 @@ public class ProjectIssueStatRspVo implements Serializable {
     private ApiHouseQmProjectStatVo item;
 
 
-
 }

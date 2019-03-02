@@ -14,15 +14,15 @@ import java.util.List;
 @NoArgsConstructor
 public class ProjectOveralListVo implements Serializable {
 
-  private List<ProjectOveralVo> items;
+    private List<ProjectOveralVo> items;
 
-  @Data
-  @NoArgsConstructor
-  public class ProjectOveralVo implements Serializable {
+    @Data
+    @NoArgsConstructor
+    public class ProjectOveralVo implements Serializable {
 
-    private Integer  checked_count;
-    private Integer  issue_count;
-    private String task_name;
-    private Integer records_count;
-  }
+        private Integer checked_count;
+        private Integer issue_count;
+        private String task_name;
+        private Integer records_count;
+    }
 }

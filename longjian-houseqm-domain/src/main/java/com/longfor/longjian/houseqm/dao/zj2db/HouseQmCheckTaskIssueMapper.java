@@ -4,9 +4,9 @@ import com.longfor.gaia.gfs.data.mybatis.LFMySQLMapper;
 import com.longfor.longjian.houseqm.dto.CheckerIssueStatusStatDto;
 import com.longfor.longjian.houseqm.dto.RepaireIssueStatusStatDto;
 import com.longfor.longjian.houseqm.po.CheckerIssueStat;
-import com.longfor.longjian.houseqm.po.zj2db.HouseQmCheckTaskIssue;
 import com.longfor.longjian.houseqm.po.HouseQmCheckTaskIssueAreaGroupModel;
 import com.longfor.longjian.houseqm.po.IssueRepairCount;
+import com.longfor.longjian.houseqm.po.zj2db.HouseQmCheckTaskIssue;
 import org.apache.ibatis.annotations.Param;
 
 import java.util.*;
@@ -15,16 +15,6 @@ public interface HouseQmCheckTaskIssueMapper extends LFMySQLMapper<HouseQmCheckT
 
     List<HouseQmCheckTaskIssue> searchByProjIdAndTaskIdAndTypInGroupByCategoryPathAndKeyAndCheckItemKey(Map<String, Object> condi);
 
-
-    List<HouseQmCheckTaskIssue> searchByTaskIdInGroupByTaskIdAndStatus(@Param("taskIds") List<Integer> taskIds);
-
-    /**
-     * @param issueUuids
-     * @param timestamp
-     * @param deleted
-     * @return
-     */
-    List<HouseQmCheckTaskIssue> selectByIssueUuidsAndclientCreateAt(@Param("issueUuids") Set<String> issueUuids, @Param("timestamp") int timestamp, @Param("deleted") String deleted);
 
     /**
      * @param projectId
@@ -83,11 +73,11 @@ public interface HouseQmCheckTaskIssueMapper extends LFMySQLMapper<HouseQmCheckT
     /**
      * @param taskId
      * @param types
-     * @param areaPathLike
+     * @param areaId
      * @param deleted
      * @return
      */
-    List<HouseQmCheckTaskIssueAreaGroupModel> selectByTaskIdAndTyeInAndAreaPathAndIdLike(@Param("onlyIssue") Boolean onlyIssue,@Param("taskId") Integer taskId, @Param("types") List<Integer> types, @Param("areaId") Integer areaId, @Param("deleted") String deleted);
+    List<HouseQmCheckTaskIssueAreaGroupModel> selectByTaskIdAndTyeInAndAreaPathAndIdLike(@Param("onlyIssue") Boolean onlyIssue, @Param("taskId") Integer taskId, @Param("types") List<Integer> types, @Param("areaId") Integer areaId, @Param("deleted") String deleted);
 
     /**
      * @param taskId
@@ -123,7 +113,7 @@ public interface HouseQmCheckTaskIssueMapper extends LFMySQLMapper<HouseQmCheckT
      * @param uuids
      * @return
      */
-    List<HouseQmCheckTaskIssue> searchHouseQmCheckTaskIssueByTaskIdUuidIn(@Param("task_id") Integer task_id, @Param("uuids") List<String> uuids);
+    List<HouseQmCheckTaskIssue> searchHouseQmCheckTaskIssueByTaskIdUuidIn(@Param("task_id") Integer taskId, @Param("uuids") List<String> uuids);
 
     /**
      * @param task_id
@@ -133,7 +123,7 @@ public interface HouseQmCheckTaskIssueMapper extends LFMySQLMapper<HouseQmCheckT
      * @param userId
      * @return
      */
-    List<HouseQmCheckTaskIssue> searchByConditionOrderByPageUnscoped(@Param("task_id") Integer task_id, @Param("last_id") Integer last_id, @Param("timestamp") Integer timestamp, @Param("userIds") List<Integer> userIds, @Param("userId") Integer userId, @Param("start") Integer start, @Param("limit") Integer limit);
+    List<HouseQmCheckTaskIssue> searchByConditionOrderByPageUnscoped(@Param("task_id") Integer taskId, @Param("last_id") Integer lastId, @Param("timestamp") Integer timestamp, @Param("userIds") List<Integer> userIds, @Param("userId") Integer userId, @Param("start") Integer start, @Param("limit") Integer limit);
 
     /**
      * @param projectId
@@ -145,6 +135,7 @@ public interface HouseQmCheckTaskIssueMapper extends LFMySQLMapper<HouseQmCheckT
     List<HouseQmCheckTaskIssue> selectAreaIdByProjectIdAndTaskIdAndAreaIdInAndNoDeleted(@Param("projectId") Integer projectId, @Param("taskId") Integer taskId, @Param("areaIds") List<Integer> areaIds, @Param("deleted") String deleted);
 
     List<HouseQmCheckTaskIssue> selectHouseQmCheckTaskIssueByProjectIdAndCategoryClsAndNoDeletedAndDongTai(Map<String, Object> map);
+
     /**
      * @param map
      * @return java.lang.Integer
@@ -174,7 +165,7 @@ public interface HouseQmCheckTaskIssueMapper extends LFMySQLMapper<HouseQmCheckT
 
     /**
      * @param
-     * @param task_id
+     * @param taskId
      * @param issueUpdateTime
      * @param userIds
      * @param issueUuids
@@ -183,18 +174,8 @@ public interface HouseQmCheckTaskIssueMapper extends LFMySQLMapper<HouseQmCheckT
      * @author hy
      * @date 2018/12/25 0025
      */
-    List<HouseQmCheckTaskIssue> selectIdByTaskIdAndIdGtAndUpdateAtGtAndSenderIdInOrUuidInAndNoDeletedOrderById(@Param("taskId") Integer task_id, @Param("updateAtTime") Date issueUpdateTime, @Param("userIds") List<Integer> userIds, @Param("uuids") List<String> issueUuids, @Param("deleted") String aFalse);
+    List<HouseQmCheckTaskIssue> selectIdByTaskIdAndIdGtAndUpdateAtGtAndSenderIdInOrUuidInAndNoDeletedOrderById(@Param("taskId") Integer taskId, @Param("updateAtTime") Date issueUpdateTime, @Param("userIds") List<Integer> userIds, @Param("uuids") List<String> issueUuids, @Param("deleted") String aFalse);
 
-    /**
-     * @param userIds
-     * @param task_id
-     * @param issueUuids
-     * @param aFalse
-     * @return java.util.List<com.longfor.longjian.houseqm.po.zj2db.HouseQmCheckTaskIssue>
-     * @author hy
-     * @date 2018/12/25 0025
-     */
-    List<HouseQmCheckTaskIssue> selectUuidBySenderIdInOrTaskIdAndUuidIn(@Param("userIds") List<Integer> userIds, @Param("taskId") Integer task_id, @Param("uuids") List<String> issueUuids, @Param("deleted") String aFalse);
 
     /**
      * @param map
@@ -218,5 +199,5 @@ public interface HouseQmCheckTaskIssueMapper extends LFMySQLMapper<HouseQmCheckT
 
     List<RepaireIssueStatusStatDto> selectRepaireIssueStatusStatDtoByProjIdAndTaskIdAndClientCreateAtAndTypInGroupByUserId(Map<String, Object> condi);
 
-    List<HouseQmCheckTaskIssue> selectByProjIdAndCategoryClsAndAreaPathAndIdLikeGroupByStatus(@Param("project_id") Integer project_id, @Param("category_cls") Integer category_cls, @Param("area_path_and_id") String area_path_and_id);
+    List<HouseQmCheckTaskIssue> selectByProjIdAndCategoryClsAndAreaPathAndIdLikeGroupByStatus(@Param("project_id") Integer projectId, @Param("category_cls") Integer categoryCls, @Param("area_path_and_id") String areaPathAndId);
 }

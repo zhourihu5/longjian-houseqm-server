@@ -1,12 +1,10 @@
 package com.longfor.longjian.houseqm.app.service.impl;
 
-import com.longfor.longjian.common.util.SessionInfo;
-import com.longfor.longjian.houseqm.app.vo.ApiHouseQmCheckTaskIssueLogDetailRspVo;
-
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.TypeReference;
 import com.google.common.collect.Lists;
 import com.longfor.longjian.common.base.LjBaseResponse;
+import com.longfor.longjian.common.util.SessionInfo;
 import com.longfor.longjian.houseqm.app.req.DeviceReq;
 import com.longfor.longjian.houseqm.app.service.IHouseqmService;
 import com.longfor.longjian.houseqm.app.vo.*;
@@ -16,17 +14,20 @@ import com.longfor.longjian.houseqm.app.vo.houseqm.ApiHouseQmCheckTaskIssueRsp;
 import com.longfor.longjian.houseqm.app.vo.houseqm.HouseqmMyIssueLogListRspVo;
 import com.longfor.longjian.houseqm.consts.HouseQmCheckTaskIssueAttachmentPublicTypeEnum;
 import com.longfor.longjian.houseqm.consts.HouseQmUserInIssueRoleTypeEnum;
-import com.longfor.longjian.houseqm.domain.internalService.*;
+import com.longfor.longjian.houseqm.domain.internalservice.*;
 import com.longfor.longjian.houseqm.po.zj2db.*;
 import com.longfor.longjian.houseqm.util.DateUtil;
 import com.longfor.longjian.houseqm.util.StringSplitToListUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections.CollectionUtils;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 @Service
@@ -219,7 +220,8 @@ public class HouseqmServiceImpl implements IHouseqmService {
         Integer lastId = 0;
         try {
             List<HouseQmCheckTaskIssueUser> houseQmCheckTaskIssueUsers = houseQmCheckTaskIssueService.searchHouseQmCheckTaskIssueUserByTaskIdLastIdUpdateAtGt(deviceReq.getTask_id(), deviceReq.getLast_id(), deviceReq.getTimestamp(), start, limit);
-            if (CollectionUtils.isNotEmpty(houseQmCheckTaskIssueUsers))lastId = houseQmCheckTaskIssueUsers.get(houseQmCheckTaskIssueUsers.size() - 1).getId();
+            if (CollectionUtils.isNotEmpty(houseQmCheckTaskIssueUsers))
+                lastId = houseQmCheckTaskIssueUsers.get(houseQmCheckTaskIssueUsers.size() - 1).getId();
             houseQmCheckTaskIssueUsers.forEach(houseQmCheckTaskIssueUser -> {
                 ApiHouseQmCheckTaskIssueMemberRspVo apiHouseQmCheckTaskIssueMemberRspVo = new ApiHouseQmCheckTaskIssueMemberRspVo();
                 apiHouseQmCheckTaskIssueMemberRspVo.setId(houseQmCheckTaskIssueUser.getId());

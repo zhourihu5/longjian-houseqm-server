@@ -5,11 +5,16 @@ package com.longfor.longjian.houseqm.consts;
  */
 
 public enum RepossessionRepairStatusEnum {
-    NoRepair(0,"返修状态－不需返修"),
-    NeedRepair(1,"返修状态－需要返修未确认"),
-    Confirmed  (2,"返修状态－确认");
+    NoRepair(0, "返修状态－不需返修"),
+    NeedRepair(1, "返修状态－需要返修未确认"),
+    Confirmed(2, "返修状态－确认");
     private Integer id;
     private String value;
+
+    RepossessionRepairStatusEnum(Integer id, String value) {
+        this.id = id;
+        this.value = value;
+    }
 
     public Integer getId() {
         return id;
@@ -17,10 +22,5 @@ public enum RepossessionRepairStatusEnum {
 
     public String getValue() {
         return value;
-    }
-
-    RepossessionRepairStatusEnum(Integer id, String value) {
-        this.id = id;
-        this.value = value;
     }
 }

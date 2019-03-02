@@ -26,21 +26,23 @@
         id,project_id,area_id,root_category_key,category_key,check_item_key,user_ids,days,typ,create_at,update_at,delete_at,minutes
     </sql>
     <select id="selectByProAndIdAndUIdsAndminutes" resultMap="BaseResultMap">
-        SELECT<include refid="Base_Column_List"/>
+        SELECT
+        <include refid="Base_Column_List"/>
         FROM fixing_preset
         <where>project_id =#{projectId}
             and id>#{lastId} and minutes!=-1
-        <if test="deleted=='false'">
-            AND delete_at IS NULL
-        </if>
+            <if test="deleted=='false'">
+                AND delete_at IS NULL
+            </if>
             order by id limit 0,#{limit}
         </where>
     </select>
     <select id="selectByProAndIdAndUpdate" resultMap="BaseResultMap">
-        SELECT<include refid="Base_Column_List"/>
+        SELECT
+        <include refid="Base_Column_List"/>
         FROM fixing_preset
         <where>project_id =#{projectId}
-            and id>#{lastId}  and update_at>#{time}
+            and id>#{lastId} and update_at>#{time}
             <if test="deleted=='false'">
                 AND delete_at IS NULL
             </if>

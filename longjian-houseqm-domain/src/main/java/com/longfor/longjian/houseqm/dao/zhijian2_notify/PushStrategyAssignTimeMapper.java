@@ -9,11 +9,7 @@ import java.util.Set;
 
 public interface PushStrategyAssignTimeMapper extends LFMySQLMapper<PushStrategyAssignTime> {
 
-    /**
-     *
-     * @param taskIds
-     * @return
-     */
-    public List<PushStrategyAssignTime> selectByTaskIds(@Param("taskIds") Set<Integer> taskIds,@Param("deleted") String deleted);
+
+    List<PushStrategyAssignTime> selectByTaskIds(@Param("taskIds") Set<Integer> taskIds, @Param("deleted") String deleted);
 
 }

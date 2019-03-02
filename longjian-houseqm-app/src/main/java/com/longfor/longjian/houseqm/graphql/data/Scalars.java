@@ -18,7 +18,7 @@ public class Scalars {
         @Override
         public String serialize(Object input) {
             // serialize the ZonedDateTime into string on the way out
-            return ((Date)input).toString();
+            return ((Date) input).toString();
         }
 
         @Override
@@ -32,7 +32,7 @@ public class Scalars {
             if (input instanceof Timestamp) {
                 return new Date(((Timestamp) input).getTime());
             } else if (input instanceof Date) {
-                return ((Date)input);
+                return ((Date) input);
             } else {
                 return null;
             }
@@ -43,6 +43,7 @@ public class Scalars {
     static final GraphQLScalarType GraphQLDateField = new GraphQLScalarType("DateField", "Built-in GraphQLDateField", new Coercing<String, String>() {
 
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+
         private String convertImpl(Object input) {
 
             return sdf.format(input);
@@ -63,7 +64,6 @@ public class Scalars {
             return convertImpl(input);
         }
     });
-
 
 
 }

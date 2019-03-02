@@ -11,20 +11,20 @@ package com.longfor.longjian.houseqm.consts;
 public enum HouseQmCheckTaskIssueAttachmentAttachmentTypeEnum {
 
     //Audio niuhe.IntConstItem `const:"10,音频"`
-    Audio(10,"音频"),
+    Audio(10, "音频"),
     ;
     private Integer id;
     private String value;
+
+HouseQmCheckTaskIssueAttachmentAttachmentTypeEnum(Integer id, String value) {
+        this.id = id;
+        this.value = value;
+    }
 
     public Integer getId() {
         return id;
     }
 
-    public String getValue() {
+        public String getValue() {
         return value;
-    }
-
-    HouseQmCheckTaskIssueAttachmentAttachmentTypeEnum(Integer id, String value) {
-        this.id = id;
-        this.value = value;
     }}

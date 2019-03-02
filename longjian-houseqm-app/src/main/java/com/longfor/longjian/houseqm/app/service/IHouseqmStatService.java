@@ -15,7 +15,7 @@ public interface IHouseqmStatService {
 
     ProjectOveralListVo.ProjectOveralVo getInspectTaskStatByProjTaskId(Integer projectId, Integer taskId);
 
-    TaskAreaListVo searchAreasByProjTaskIdTyp(Integer projectId, Integer taskId,int typ);
+    TaskAreaListVo searchAreasByProjTaskIdTyp(Integer projectId, Integer taskId, int typ);
 
     AreaTaskListVo searchHouseQmCheckTaskByProjIdAreaIdCategoryClsIn(Integer projectId, Integer areaId, List<Integer> categoryCls);
 

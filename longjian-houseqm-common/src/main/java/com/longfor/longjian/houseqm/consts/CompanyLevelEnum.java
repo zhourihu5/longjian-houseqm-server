@@ -5,10 +5,15 @@ package com.longfor.longjian.houseqm.consts;
  */
 public enum CompanyLevelEnum {
 
-    Group(1, "集团"),Team(2, "公司"),SubTeam(3, "子公司");
+    Group(1, "集团"), Team(2, "公司"), SubTeam(3, "子公司");
 
     private Integer id;
     private String value;
+
+    CompanyLevelEnum(Integer id, String value) {
+        this.id = id;
+        this.value = value;
+    }
 
     public Integer getId() {
         return id;
@@ -16,11 +21,6 @@ public enum CompanyLevelEnum {
 
     public String getValue() {
         return value;
-    }
-
-    CompanyLevelEnum(Integer id, String value) {
-        this.id = id;
-        this.value = value;
     }
 
 
