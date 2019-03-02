@@ -110,7 +110,7 @@ public class BuildingqmServiceImpl implements IBuildingqmService {
         task.setCategory_cls(checkTask.getCategoryCls());
         task.setRoot_category_key(checkTask.getRootCategoryKey());
         task.setArea_ids(checkTask.getAreaIds());
-        task.setArea_types(checkTask.getAreaTypes());
+        task.setArea_type(checkTask.getAreaTypes());
 
         if (taskMap.containsKey(task.getTask_id())) {
             ApiBuildingQmCheckTaskConfig cfg = taskMap.get(task.getTask_id());

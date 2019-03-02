@@ -46,7 +46,7 @@ public class ApiBuildingQmCheckTaskMsg implements Serializable {
     /**
      * desc='区域类型ID(楼层,户等)(多个ID用半角逗号分隔)'
      */
-    private String area_types = "";
+    private String area_type = "";
     /**
      * desc='整改负责人退单权限：10=能退单 20=不能退单'
      */
