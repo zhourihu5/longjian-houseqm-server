@@ -1,8 +1,5 @@
 package com.longfor.longjian.houseqm.domain.internalservice.impl;
 
-import java.util.ArrayList;
-import java.util.Date;
-
 import com.longfor.gaia.gfs.data.mybatis.datasource.LFAssignDataSource;
 import com.longfor.longjian.houseqm.dao.zj2db.HouseQmCheckTaskNotifyRecordMapper;
 import com.longfor.longjian.houseqm.domain.internalservice.HouseQmCheckTaskNotifyRecordService;
@@ -12,6 +9,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.Resource;
+import java.util.ArrayList;
+import java.util.Date;
 
 /**
  * Created by Dongshun on 2019/1/11.

@@ -1,7 +1,9 @@
 package com.longfor.longjian.houseqm.po.stat;
 
+import javax.persistence.Column;
+import javax.persistence.Id;
+import javax.persistence.Table;
 import java.util.Date;
-import javax.persistence.*;
 
 @Table(name = "stat_house_qm_partner_daily_stat")
 public class StatHouseQmPartnerDailyStat {

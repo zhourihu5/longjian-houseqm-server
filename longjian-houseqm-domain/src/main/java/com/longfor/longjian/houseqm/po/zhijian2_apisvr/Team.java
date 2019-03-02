@@ -1,7 +1,9 @@
 package com.longfor.longjian.houseqm.po.zhijian2_apisvr;
 
+import javax.persistence.Column;
+import javax.persistence.Id;
+import javax.persistence.Table;
 import java.util.Date;
-import javax.persistence.*;
 @Table(name = "team")
 public class Team {
     @Id

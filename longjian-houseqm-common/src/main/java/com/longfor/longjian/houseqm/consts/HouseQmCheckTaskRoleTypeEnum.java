@@ -1,7 +1,5 @@
 package com.longfor.longjian.houseqm.consts;
 
-import org.aspectj.weaver.Checker;
-
 /**
  * Created by Dongshun on 2019/1/17.
  */

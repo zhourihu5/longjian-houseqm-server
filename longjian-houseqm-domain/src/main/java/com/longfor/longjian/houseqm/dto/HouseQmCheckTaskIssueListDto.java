@@ -4,7 +4,6 @@ import com.longfor.longjian.houseqm.po.zj2db.HouseQmCheckTaskIssue;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.io.Serializable;
 import java.util.List;
 
 /**

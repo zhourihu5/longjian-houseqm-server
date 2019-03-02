@@ -2,9 +2,11 @@ package com.longfor.longjian.houseqm.po.zj2db;
 
 import com.longfor.longjian.houseqm.util.StringSplitToListUtil;
 
+import javax.persistence.Column;
+import javax.persistence.Id;
+import javax.persistence.Table;
 import java.util.Date;
 import java.util.List;
-import javax.persistence.*;
 
 @Table(name = "category_v3")
 public class CategoryV3 {

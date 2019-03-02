@@ -8,7 +8,6 @@ import com.longfor.longjian.houseqm.po.zhijian2_setting.IssueFieldSetting;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
-
 import javax.annotation.Resource;
 import java.util.List;
 

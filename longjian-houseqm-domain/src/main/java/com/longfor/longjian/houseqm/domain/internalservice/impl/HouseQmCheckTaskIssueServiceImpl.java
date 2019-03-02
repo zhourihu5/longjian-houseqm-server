@@ -1,7 +1,7 @@
 package com.longfor.longjian.houseqm.domain.internalservice.impl;
 
-import com.google.common.collect.Lists;
 import com.github.pagehelper.PageHelper;
+import com.google.common.collect.Lists;
 import com.longfor.gaia.gfs.data.mybatis.datasource.LFAssignDataSource;
 import com.longfor.longjian.common.consts.HouseQmCheckTaskIssueStatusEnum;
 import com.longfor.longjian.houseqm.consts.HouseQmCheckTaskIssueEnum;
@@ -12,7 +12,9 @@ import com.longfor.longjian.houseqm.dto.CheckerIssueStatusStatDto;
 import com.longfor.longjian.houseqm.dto.HouseQmCheckTaskIssueDto;
 import com.longfor.longjian.houseqm.dto.HouseQmCheckTaskIssueListDto;
 import com.longfor.longjian.houseqm.dto.RepaireIssueStatusStatDto;
-import com.longfor.longjian.houseqm.po.*;
+import com.longfor.longjian.houseqm.po.CheckerIssueStat;
+import com.longfor.longjian.houseqm.po.HouseQmCheckTaskIssueAreaGroupModel;
+import com.longfor.longjian.houseqm.po.IssueRepairCount;
 import com.longfor.longjian.houseqm.po.zj2db.*;
 import com.longfor.longjian.houseqm.util.DateUtil;
 import com.longfor.longjian.houseqm.utils.ExampleUtil;
@@ -25,7 +27,6 @@ import tk.mybatis.mapper.entity.Example;
 
 import javax.annotation.Resource;
 import java.util.*;
-import java.util.ArrayList;
 
 /**
  * @author Houyan

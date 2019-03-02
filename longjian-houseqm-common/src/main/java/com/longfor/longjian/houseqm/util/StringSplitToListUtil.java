@@ -1,10 +1,8 @@
 package com.longfor.longjian.houseqm.util;
 
 import com.google.common.collect.Lists;
-import jdk.nashorn.internal.runtime.regexp.joni.Regex;
 import org.apache.commons.lang.StringUtils;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;

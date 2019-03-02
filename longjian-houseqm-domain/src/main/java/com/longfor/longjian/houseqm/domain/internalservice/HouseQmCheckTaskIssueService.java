@@ -1,10 +1,12 @@
 package com.longfor.longjian.houseqm.domain.internalservice;
 
 import com.longfor.longjian.houseqm.dto.CheckerIssueStatusStatDto;
-import com.longfor.longjian.houseqm.dto.HouseQmCheckTaskIssueListDto;
 import com.longfor.longjian.houseqm.dto.HouseQmCheckTaskIssueDto;
+import com.longfor.longjian.houseqm.dto.HouseQmCheckTaskIssueListDto;
 import com.longfor.longjian.houseqm.dto.RepaireIssueStatusStatDto;
-import com.longfor.longjian.houseqm.po.*;
+import com.longfor.longjian.houseqm.po.CheckerIssueStat;
+import com.longfor.longjian.houseqm.po.HouseQmCheckTaskIssueAreaGroupModel;
+import com.longfor.longjian.houseqm.po.IssueRepairCount;
 import com.longfor.longjian.houseqm.po.zj2db.HouseQmCheckTaskIssue;
 import com.longfor.longjian.houseqm.po.zj2db.HouseQmCheckTaskIssueAttachment;
 import com.longfor.longjian.houseqm.po.zj2db.HouseQmCheckTaskIssueUser;
