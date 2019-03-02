@@ -16,14 +16,14 @@ import java.util.stream.Stream;
  */
 public class StringSplitToListUtil {
 
-    private static final String IS_NUM="^[-\\+]?[\\d]*$";
+    private static final String IS_NUM = "^[-\\+]?[\\d]*$";
 
     /**
+     * @return int
      * @Author hy
      * @Description 统计sep在str中出现的次数 非重叠次数 对应go源码中的strings.count(str,sep)
      * @Date 10:51 2019/1/30
      * @Param [str, sep]
-     * @return int
      **/
     public static int count(String str, String sep) {
         int fromIndex = 0;
@@ -50,7 +50,7 @@ public class StringSplitToListUtil {
      */
     public static List<Integer> splitToIdsComma(String ids, String sep) {
         List<Integer> list = Lists.newArrayList();
-        ids=ids.trim();
+        ids = ids.trim();
         String[] str = ids.split(sep);
         List<String> areaList = Arrays.asList(str);
         for (String s : areaList) {
@@ -72,7 +72,7 @@ public class StringSplitToListUtil {
      * @date 2018/12/21 0021
      */
     public static List<String> splitToStringComma(String ids, String sep) {
-        if (ids==null)return Lists.newArrayList();
+        if (ids == null) return Lists.newArrayList();
         String[] str = ids.split(sep);
         List<String> list = Lists.newArrayList();
         Collections.addAll(list, str);
@@ -112,6 +112,7 @@ public class StringSplitToListUtil {
 
     /**
      * 移除首尾指定字符 并以指定字符分割。
+     *
      * @param str
      * @param removeSep
      * @param splitSep
@@ -120,8 +121,8 @@ public class StringSplitToListUtil {
      * @date 2018/12/22 0022
      */
     public static List<String> removeStartAndEndStrAndSplit(String str, String removeSep, String splitSep) {
-        if(StringUtils.isEmpty(str)){
-             return Lists.newArrayList();
+        if (StringUtils.isEmpty(str)) {
+            return Lists.newArrayList();
         }
         String s = StringUtils.removeStart(str, removeSep);
         String s1 = StringUtils.removeEnd(s, removeSep);
@@ -180,12 +181,13 @@ public class StringSplitToListUtil {
 
     /**
      * 移除收尾指定字符串
+     *
      * @param str
      * @param removeSep
      * @param splitSep
      * @return
      */
-    public static String  removeStartAndEndStr(String str, String removeSep, String splitSep) {
+    public static String removeStartAndEndStr(String str, String removeSep, String splitSep) {
         String s = StringUtils.removeStart(str, removeSep);
         return StringUtils.removeEnd(s, splitSep);
     }

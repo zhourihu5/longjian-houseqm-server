@@ -77,7 +77,7 @@ public interface HouseQmCheckTaskIssueMapper extends LFMySQLMapper<HouseQmCheckT
      * @param deleted
      * @return
      */
-    List<HouseQmCheckTaskIssueAreaGroupModel> selectByTaskIdAndTyeInAndAreaPathAndIdLike(@Param("onlyIssue") Boolean onlyIssue,@Param("taskId") Integer taskId, @Param("types") List<Integer> types, @Param("areaId") Integer areaId, @Param("deleted") String deleted);
+    List<HouseQmCheckTaskIssueAreaGroupModel> selectByTaskIdAndTyeInAndAreaPathAndIdLike(@Param("onlyIssue") Boolean onlyIssue, @Param("taskId") Integer taskId, @Param("types") List<Integer> types, @Param("areaId") Integer areaId, @Param("deleted") String deleted);
 
     /**
      * @param taskId
@@ -135,6 +135,7 @@ public interface HouseQmCheckTaskIssueMapper extends LFMySQLMapper<HouseQmCheckT
     List<HouseQmCheckTaskIssue> selectAreaIdByProjectIdAndTaskIdAndAreaIdInAndNoDeleted(@Param("projectId") Integer projectId, @Param("taskId") Integer taskId, @Param("areaIds") List<Integer> areaIds, @Param("deleted") String deleted);
 
     List<HouseQmCheckTaskIssue> selectHouseQmCheckTaskIssueByProjectIdAndCategoryClsAndNoDeletedAndDongTai(Map<String, Object> map);
+
     /**
      * @param map
      * @return java.lang.Integer

@@ -1,4 +1,5 @@
 package com.longfor.longjian.houseqm.domain.internalservice.impl;
+
 import com.longfor.gaia.gfs.data.mybatis.datasource.LFAssignDataSource;
 import com.longfor.longjian.houseqm.dao.zj2db.FixingPresetMapper;
 import com.longfor.longjian.houseqm.domain.internalservice.FixingPresetService;
@@ -18,15 +19,16 @@ import java.util.List;
 public class FixingPresetServiceImpl implements FixingPresetService {
     @Resource
     FixingPresetMapper fixingPresetMapper;
+
     @Override
     @LFAssignDataSource("zhijian2")
     public List<FixingPreset> selectByProAndIdAndUIdsAndminutes(Integer projectId, Integer lastId, Integer limit) {
-        return fixingPresetMapper.selectByProAndIdAndUIdsAndminutes(projectId,lastId,limit,"false");
+        return fixingPresetMapper.selectByProAndIdAndUIdsAndminutes(projectId, lastId, limit, "false");
     }
 
     @Override
     @LFAssignDataSource("zhijian2")
     public List<FixingPreset> selectByProAndIdAndUpdate(Integer projectId, Integer lastId, Integer limit, Date time) {
-        return fixingPresetMapper.selectByProAndIdAndUpdate( projectId,lastId, limit,time,"false");
+        return fixingPresetMapper.selectByProAndIdAndUpdate(projectId, lastId, limit, time, "false");
     }
 }

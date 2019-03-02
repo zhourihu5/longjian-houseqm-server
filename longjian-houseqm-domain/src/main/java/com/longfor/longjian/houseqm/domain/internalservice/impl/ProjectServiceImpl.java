@@ -26,7 +26,7 @@ public class ProjectServiceImpl implements ProjectService {
     public List<Project> searchByProjectIdIn(List<Integer> projectIds) {
         Example example = new Example(Project.class);
         Example.Criteria criteria = example.createCriteria();
-        criteria.andIn("id",projectIds);
+        criteria.andIn("id", projectIds);
         ExampleUtil.addDeleteAtJudge(example);
         return projectMapper.selectByExample(example);
     }
@@ -36,7 +36,7 @@ public class ProjectServiceImpl implements ProjectService {
     public Project getOneByProjId(int projId) {
         Example example = new Example(Project.class);
         Example.Criteria criteria = example.createCriteria();
-        criteria.andEqualTo("id",projId);
+        criteria.andEqualTo("id", projId);
         ExampleUtil.addDeleteAtJudge(example);
         return projectMapper.selectOneByExample(example);
     }
@@ -45,7 +45,7 @@ public class ProjectServiceImpl implements ProjectService {
     @LFAssignDataSource("zhijian2")
     public List<Project> selectByIdNotDel(ArrayList<Integer> projectIdsList) {
         Example example = new Example(Project.class);
-        example.createCriteria().andIn("id",projectIdsList).andIsNull("deleteAt");
+        example.createCriteria().andIn("id", projectIdsList).andIsNull("deleteAt");
         return projectMapper.selectByExample(example);
     }
 
@@ -53,7 +53,7 @@ public class ProjectServiceImpl implements ProjectService {
     @LFAssignDataSource("zhijian2")
     public List<Project> selectByTeamIdsNotDel(List<Integer> teamIdsList) {
         Example example = new Example(Project.class);
-        example.createCriteria().andIn("teamId",teamIdsList).andIsNull("deleteAt");
+        example.createCriteria().andIn("teamId", teamIdsList).andIsNull("deleteAt");
         return projectMapper.selectByExample(example);
     }
 }

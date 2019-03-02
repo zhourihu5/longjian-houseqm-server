@@ -9,7 +9,7 @@ import java.util.List;
 public interface HouseQmCheckTaskIssueUserMapper extends LFMySQLMapper<HouseQmCheckTaskIssueUser> {
 
 
-    List<HouseQmCheckTaskIssueUser> searchByConditionOrderByPageUnscoped(@Param("task_id") Integer taskId,@Param("last_id") Integer lastId, @Param("timestamp")Integer timestamp, @Param("start") Integer start, @Param("limit") Integer limit);
+    List<HouseQmCheckTaskIssueUser> searchByConditionOrderByPageUnscoped(@Param("task_id") Integer taskId, @Param("last_id") Integer lastId, @Param("timestamp") Integer timestamp, @Param("start") Integer start, @Param("limit") Integer limit);
 
     List<HouseQmCheckTaskIssueUser> selectIssueUUIDByUserIdAndTaskIdAndNoDeleted(@Param("uid") Integer uid, @Param("taskId") Integer taskId, @Param("deleted") String aFalse);
 

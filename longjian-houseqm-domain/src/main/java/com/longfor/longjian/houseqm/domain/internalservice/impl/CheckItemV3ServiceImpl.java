@@ -25,27 +25,27 @@ public class CheckItemV3ServiceImpl implements CheckItemV3Service {
     CheckItemV3Mapper checkItemV3Mapper;
 
     /**
-     *
+     * @return java.util.List<com.longfor.longjian.houseqm.po.zj2db.CheckItemV3>
      * @author hy
      * @date 2018/12/21 0021
-     *  * @param checkItems
-     * @return java.util.List<com.longfor.longjian.houseqm.po.zj2db.CheckItemV3>
+     * * @param checkItems
      */
     @LFAssignDataSource("zhijian2")
     @Override
     public List<CheckItemV3> searchCheckItemyV3ByKeyInAndNoDeleted(List<String> checkItems) {
-        if (CollectionUtils.isEmpty(checkItems))return Lists.newArrayList();
+        if (CollectionUtils.isEmpty(checkItems)) return Lists.newArrayList();
         Example example = new Example(CheckItemV3.class);
         Example.Criteria criteria = example.createCriteria();
-        criteria.andIn("key",checkItems).andIsNull("deleteAt");
+        criteria.andIn("key", checkItems).andIsNull("deleteAt");
         return checkItemV3Mapper.selectByExample(example);
     }
+
     @LFAssignDataSource("zhijian2")
     @Override
     public CheckItemV3 selectByKeyNotDel(String checkItemKey) {
         Example example = new Example(CheckItemV3.class);
         Example.Criteria criteria = example.createCriteria();
-        criteria.andEqualTo("key",checkItemKey).andIsNull("deleteAt");
+        criteria.andEqualTo("key", checkItemKey).andIsNull("deleteAt");
         return checkItemV3Mapper.selectOneByExample(example);
     }
 }

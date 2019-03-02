@@ -39,8 +39,8 @@ public class BgTaskController {
      * @Date 11:36 2019/1/15
      * @Param [req]
      **/
-    @RequestMapping(value = "buildingqm/export_pic_excel",produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
-    public LjBaseResponse<ExportRsp> exportPicExcel(@Validated @RequestBody ExportBuildingExcelReq req){
+    @RequestMapping(value = "buildingqm/export_pic_excel", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+    public LjBaseResponse<ExportRsp> exportPicExcel(@Validated @RequestBody ExportBuildingExcelReq req) {
         return iBuildingqmExportFeignService.exportPicExcel(req);
     }
 
@@ -52,8 +52,8 @@ public class BgTaskController {
      * @Date 11:36 2019/1/15
      * @Param [req]
      **/
-    @RequestMapping(value = "buildingqm/export_ppt",produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
-    public LjBaseResponse<ExportRsp> exportPpt(@Validated @RequestBody ExportBuildingExcelReq req){
+    @RequestMapping(value = "buildingqm/export_ppt", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+    public LjBaseResponse<ExportRsp> exportPpt(@Validated @RequestBody ExportBuildingExcelReq req) {
         return iBuildingqmExportFeignService.exportPpt(req);
     }
 

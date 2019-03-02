@@ -25,19 +25,18 @@ public class CategoryV3ServiceImpl implements CategoryV3Service {
     CategoryV3Mapper categoryV3Mapper;
 
     /**
-     *
+     * @return java.util.List<com.longfor.longjian.houseqm.po.zj2db.CategoryV3>
      * @author hy
      * @date 2018/12/21 0021
-     *  * @param categoryKeys
-     * @return java.util.List<com.longfor.longjian.houseqm.po.zj2db.CategoryV3>
+     * * @param categoryKeys
      */
     @LFAssignDataSource("zhijian2")
     @Override
     public List<CategoryV3> searchCategoryV3ByKeyInAndNoDeleted(List<String> categoryKeys) {
-        if (CollectionUtils.isEmpty(categoryKeys))return Lists.newArrayList();
+        if (CollectionUtils.isEmpty(categoryKeys)) return Lists.newArrayList();
         Example example = new Example(CategoryV3.class);
         Example.Criteria criteria = example.createCriteria();
-        criteria.andIn("key",categoryKeys).andIsNull("deleteAt");
+        criteria.andIn("key", categoryKeys).andIsNull("deleteAt");
         return categoryV3Mapper.selectByExample(example);
     }
 
@@ -45,7 +44,7 @@ public class CategoryV3ServiceImpl implements CategoryV3Service {
     public CategoryV3 selectByKeyNotDel(String categoryKey) {
         Example example = new Example(CategoryV3.class);
         Example.Criteria criteria = example.createCriteria();
-        criteria.andEqualTo("key",categoryKey).andIsNull("deleteAt");
+        criteria.andEqualTo("key", categoryKey).andIsNull("deleteAt");
         return categoryV3Mapper.selectOneByExample(example);
     }
 }

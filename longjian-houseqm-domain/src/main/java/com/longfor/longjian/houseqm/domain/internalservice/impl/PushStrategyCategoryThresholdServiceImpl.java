@@ -26,14 +26,16 @@ public class PushStrategyCategoryThresholdServiceImpl implements PushStrategyCat
 
     @Resource
     PushStrategyCategoryThresholdMapper pushStrategyCategoryThresholdMapper;
+
     /**
      * 取未删除的数据
+     *
      * @param taskIds
      * @return
      */
     @LFAssignDataSource("zhijian2_notify")
-    public List<PushStrategyCategoryThreshold> searchByTaskIds(Set<Integer> taskIds){
-       return pushStrategyCategoryThresholdMapper.selectByTaskIds(taskIds,"false");
+    public List<PushStrategyCategoryThreshold> searchByTaskIds(Set<Integer> taskIds) {
+        return pushStrategyCategoryThresholdMapper.selectByTaskIds(taskIds, "false");
     }
 
     @Override
@@ -48,7 +50,7 @@ public class PushStrategyCategoryThresholdServiceImpl implements PushStrategyCat
     @LFAssignDataSource("zhijian2_notify")
     public PushStrategyCategoryThreshold selectTaskIdAndNotDel(Integer task_id) {
         Example example = new Example(PushStrategyCategoryThreshold.class);
-        example.createCriteria().andEqualTo("taskId",task_id).andIsNull("deleteAt");
+        example.createCriteria().andEqualTo("taskId", task_id).andIsNull("deleteAt");
         return pushStrategyCategoryThresholdMapper.selectOneByExample(example);
     }
 

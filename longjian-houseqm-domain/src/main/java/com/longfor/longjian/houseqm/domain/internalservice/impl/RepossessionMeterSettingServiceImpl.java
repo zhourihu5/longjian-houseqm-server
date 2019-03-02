@@ -22,11 +22,12 @@ import java.util.List;
 public class RepossessionMeterSettingServiceImpl implements RepossessionMeterSettingService {
     @Resource
     RepossessionMeterSettingMapper repossessionMeterSettingMapper;
+
     @Override
     @LFAssignDataSource("zhijian2")
     public List<RepossessionMeterSetting> selectByProjectId(Integer integer) {
         Example example = new Example(RepossessionMeterSetting.class);
-        example.createCriteria().andEqualTo("projectId",integer);
+        example.createCriteria().andEqualTo("projectId", integer);
         return repossessionMeterSettingMapper.selectByExample(example);
     }
 

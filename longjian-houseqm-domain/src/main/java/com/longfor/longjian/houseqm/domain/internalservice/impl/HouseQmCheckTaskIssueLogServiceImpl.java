@@ -71,7 +71,7 @@ public class HouseQmCheckTaskIssueLogServiceImpl implements HouseQmCheckTaskIssu
      */
     @LFAssignDataSource("zhijian2")
     public List<HouseQmCheckTaskIssueLog> searchByIssueUuid(Set<String> issueUuids) {
-        if (CollectionUtils.isEmpty(issueUuids))return Lists.newArrayList();
+        if (CollectionUtils.isEmpty(issueUuids)) return Lists.newArrayList();
         List<HouseQmCheckTaskIssueLog> houseQmCheckTaskIssueLogs = houseQmCheckTaskIssueLogMapper.selectByIssueUuid(issueUuids, "false");
         return houseQmCheckTaskIssueLogs;
     }
@@ -87,8 +87,9 @@ public class HouseQmCheckTaskIssueLogServiceImpl implements HouseQmCheckTaskIssu
             userInHouseQmCheckTasks.forEach(userInHouseQmCheckTask -> {
                 squadIds.add(userInHouseQmCheckTask.getSquadId());
             });
-            List<UserInHouseQmCheckTask> userInHouseQmCheckTaskSearchSquadIdsList= Lists.newArrayList();
-            if (!squadIds.isEmpty()) userInHouseQmCheckTaskSearchSquadIdsList = userInHouseQmCheckTaskMapper.searchBySquadIdIn(squadIds);
+            List<UserInHouseQmCheckTask> userInHouseQmCheckTaskSearchSquadIdsList = Lists.newArrayList();
+            if (!squadIds.isEmpty())
+                userInHouseQmCheckTaskSearchSquadIdsList = userInHouseQmCheckTaskMapper.searchBySquadIdIn(squadIds);
             userInHouseQmCheckTaskSearchSquadIdsList.forEach(userInHouseQmCheckTask -> {
                 userIds.add(userInHouseQmCheckTask.getUserId());
             });
@@ -100,7 +101,7 @@ public class HouseQmCheckTaskIssueLogServiceImpl implements HouseQmCheckTaskIssu
                 System.out.println(houseQmCheckTaskIssueLog.getId());
             });*/
         } catch (Exception e) {
-            log.error( e.getMessage());
+            log.error(e.getMessage());
         }
 
         return houseQmCheckTaskIssueLogs;
@@ -127,7 +128,7 @@ public class HouseQmCheckTaskIssueLogServiceImpl implements HouseQmCheckTaskIssu
         example.orderBy("id").desc();
         //List<HouseQmCheckTaskIssueLog> result = houseQmCheckTaskIssueLogMapper.selectByExample(example);
         //限制 返回值数据条数
-        RowBounds rowBounds = new RowBounds(0,2);
+        RowBounds rowBounds = new RowBounds(0, 2);
         List<HouseQmCheckTaskIssueLog> result = houseQmCheckTaskIssueLogMapper.selectByExampleAndRowBounds(example, rowBounds);
         if (CollectionUtils.isEmpty(result)) return null;
         else return result.get(0);
@@ -141,6 +142,7 @@ public class HouseQmCheckTaskIssueLogServiceImpl implements HouseQmCheckTaskIssu
         criteria.andEqualTo("issueUuid", issueUuid).andIsNull("deleteAt");
         return houseQmCheckTaskIssueLogMapper.selectByExample(example);
     }
+
     @Transactional
     @Override
     @LFAssignDataSource("zhijian2")
@@ -189,7 +191,7 @@ public class HouseQmCheckTaskIssueLogServiceImpl implements HouseQmCheckTaskIssu
         Example example = new Example(HouseQmCheckTaskIssueLog.class);
         Example.Criteria criteria = example.createCriteria();
         criteria.andIn("issueUuid", issue_uuids);
-        criteria.andEqualTo("status",status);
+        criteria.andEqualTo("status", status);
         ExampleUtil.addDeleteAtJudge(example);
         example.orderBy("clientCreateAt").asc();
         return houseQmCheckTaskIssueLogMapper.selectByExample(example);

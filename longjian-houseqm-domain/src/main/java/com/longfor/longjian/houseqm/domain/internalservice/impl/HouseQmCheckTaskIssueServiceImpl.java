@@ -36,33 +36,32 @@ import java.util.*;
 @Service
 @Slf4j
 public class HouseQmCheckTaskIssueServiceImpl implements HouseQmCheckTaskIssueService {
+    private static final String TASK_ID = "taskId";
+    private static final String PROJECT_ID = "projectId";
+    private static final String AREA_PATH_AND_ID = "areaPathAndId";
+    private static final String TYPE = "typ";
+    private static final String CLIENT_CREATE_AT = "clientCreateAt";
+    private static final String CATEGORY_CLS = "categoryCls";
+    private static final String REPAIRER_ID = "repairerId";
+    private static final String STATUS = "status";
+    private static final String CATEGORY_PATH_AND_KEY = "categoryPathAndKey";
+    private static final String UPDATE_AT = "updateAt";
+    private static final String ID = "id";
+    private static final String DELETE_AT = "deleteAt";
+    private static final String UUID = "uuid";
+    private static final String SENDER_ID = "senderId";
+    private static final String FALSE = "false";
     @Resource
     private HouseQmCheckTaskIssueMapper houseQmCheckTaskIssueMapper;
     @Resource
     private UserInHouseQmCheckTaskMapper userInHouseQmCheckTaskMapper;
     @Resource
     private HouseQmCheckTaskIssueUserMapper houseQmCheckTaskIssueUserMapper;
-
     @Resource
     private HouseQmCheckTaskSquadMapper houseQmCheckTaskSquadMapper;
     @Resource
     private HouseQmCheckTaskIssueAttachmentMapper houseQmCheckTaskIssueAttachmentMapper;
 
-    private static final String TASK_ID="taskId";
-    private static final String PROJECT_ID="projectId";
-    private static final String AREA_PATH_AND_ID="areaPathAndId";
-    private static final String TYPE="typ";
-    private static final String CLIENT_CREATE_AT="clientCreateAt";
-    private static final String CATEGORY_CLS="categoryCls";
-    private static final String REPAIRER_ID="repairerId";
-    private static final String STATUS="status";
-    private static final String CATEGORY_PATH_AND_KEY="categoryPathAndKey";
-    private static final String UPDATE_AT="updateAt";
-    private static final String ID="id";
-    private static final String DELETE_AT="deleteAt";
-    private static final String UUID="uuid";
-    private static final String SENDER_ID="senderId";
-    private static final String FALSE="false";
     @Override
     @LFAssignDataSource("zhijian2")
     public List<HouseQmCheckTaskIssue> searchByTaskIdAndAreaPathAndIdRegexp(int taskId, String regexp) {
@@ -326,8 +325,8 @@ public class HouseQmCheckTaskIssueServiceImpl implements HouseQmCheckTaskIssueSe
      * @return
      */
     @LFAssignDataSource("zhijian2")
-    public List<HouseQmCheckTaskIssueAreaGroupModel> selectByTaskIdAndTyeInAndAreaPathAndIdLike(Boolean onlyIssue,Integer taskId, List<Integer> types, Integer areaId) {
-        return houseQmCheckTaskIssueMapper.selectByTaskIdAndTyeInAndAreaPathAndIdLike(onlyIssue,taskId, types, areaId, FALSE);
+    public List<HouseQmCheckTaskIssueAreaGroupModel> selectByTaskIdAndTyeInAndAreaPathAndIdLike(Boolean onlyIssue, Integer taskId, List<Integer> types, Integer areaId) {
+        return houseQmCheckTaskIssueMapper.selectByTaskIdAndTyeInAndAreaPathAndIdLike(onlyIssue, taskId, types, areaId, FALSE);
     }
 
     /**

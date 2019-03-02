@@ -10,5 +10,5 @@ import java.util.List;
 public interface IssueFieldSettingService {
     int add(IssueFieldSetting settings6);
 
-    List<IssueFieldSetting> findProjectIdsAndModuleId(List<Integer> projectIdList,Integer moduleId);
+    List<IssueFieldSetting> findProjectIdsAndModuleId(List<Integer> projectIdList, Integer moduleId);
 }

@@ -12,5 +12,5 @@ import java.util.List;
 @Data
 @NoArgsConstructor
 public class HouseqmStatisticTaskListRspMsgVo implements Serializable {
-    List<ApiTaskInfo>items;
+    List<ApiTaskInfo> items;
 }

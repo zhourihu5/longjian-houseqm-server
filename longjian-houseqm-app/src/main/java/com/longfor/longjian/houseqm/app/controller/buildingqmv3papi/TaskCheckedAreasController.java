@@ -48,7 +48,7 @@ public class TaskCheckedAreasController {
         // Integer userId = (Integer) sessionInfo.getBaseInfo("userId");
         TaskResponse<CheckedAreasRsp> taskResponse = new TaskResponse<>();
         try {
-            ctrlTool.projPerm(request,"项目.工程检查.任务管理.查看");
+            ctrlTool.projPerm(request, "项目.工程检查.任务管理.查看");
             List<Integer> areaIds = taskService.getHouseqmCheckTaskCheckedAreas(req.getProject_id(), req.getTask_id());
             String checkAreaIds = null;
             if (areaIds.isEmpty()) {

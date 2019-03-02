@@ -27,7 +27,7 @@ public class RepossessionStatusServiceImpl implements RepossessionStatusService 
     @Override
     @LFAssignDataSource("zhijian2")
     public List<RepossessionStatus> searchByTaskIdAreaIdLike(Integer taskId, Integer areaId) {
-        return repossessionStatusMapper.searchByTaskIdAreaIdLike(taskId,areaId);
+        return repossessionStatusMapper.searchByTaskIdAreaIdLike(taskId, areaId);
     }
 
     @Override
@@ -35,7 +35,7 @@ public class RepossessionStatusServiceImpl implements RepossessionStatusService 
     public List<RepossessionStatus> searchRepossessionStatusByTaskIdAreaIdLike(Integer taskId, Integer areaId) {
         Example example = new Example(RepossessionStatus.class);
         Example.Criteria criteria = example.createCriteria();
-        criteria.andEqualTo("taskId",taskId).andLike("areaPathAndId","%/"+areaId+"/%");
+        criteria.andEqualTo("taskId", taskId).andLike("areaPathAndId", "%/" + areaId + "/%");
         ExampleUtil.addDeleteAtJudge(example);
         return repossessionStatusMapper.selectByExample(example);
     }
@@ -57,12 +57,12 @@ public class RepossessionStatusServiceImpl implements RepossessionStatusService 
     public List<RepossessionStatus> searchByTaskIdAndStatusInAndStatusClientUpdateAt(int taskId, List<Integer> repossStatuses, Date startTime, Date endTime) {
         Example example = new Example(RepossessionStatus.class);
         Example.Criteria criteria = example.createCriteria();
-        criteria.andEqualTo("taskId",taskId);
-        if (repossStatuses.size()>0)criteria.andIn("status",repossStatuses);
-        if (!(startTime.getSeconds()==0&&startTime.getTime()==0)){
+        criteria.andEqualTo("taskId", taskId);
+        if (repossStatuses.size() > 0) criteria.andIn("status", repossStatuses);
+        if (!(startTime.getSeconds() == 0 && startTime.getTime() == 0)) {
             criteria.andGreaterThanOrEqualTo("statusClientUpdateAt", startTime);
         }
-        if (!(endTime.getSeconds()==0&&endTime.getTime()==0)){
+        if (!(endTime.getSeconds() == 0 && endTime.getTime() == 0)) {
             criteria.andLessThanOrEqualTo("statusClientUpdateAt", endTime);
         }
         ExampleUtil.addDeleteAtJudge(example);

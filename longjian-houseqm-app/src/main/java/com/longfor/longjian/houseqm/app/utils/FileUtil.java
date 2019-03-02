@@ -104,9 +104,9 @@ public class FileUtil {
                 return f;
             }
             f.getParentFile().mkdirs();
-          if(  !f.createNewFile()){
-              throw  new LjBaseRuntimeException(-1,"创建文件失败");
-          }
+            if (!f.createNewFile()) {
+                throw new LjBaseRuntimeException(-1, "创建文件失败");
+            }
             if (f.isDirectory()) {
                 throw new RuntimeException("filePath is dir:" + filePath);
             }
@@ -133,7 +133,7 @@ public class FileUtil {
     }
 
     public static boolean addLine(File file, String msg) {
-        try (FileOutputStream os =  new FileOutputStream(file, true)){
+        try (FileOutputStream os = new FileOutputStream(file, true)) {
             os.write(msg.getBytes());
             os.write("\r\n".getBytes());
             os.flush();
@@ -163,17 +163,17 @@ public class FileUtil {
             }
             if (!dstFile.exists()) {
                 dstFile.getParentFile().mkdirs();
-            if(!dstFile.createNewFile()){
-               throw  new LjBaseRuntimeException(-1,"创建文件失败");
+                if (!dstFile.createNewFile()) {
+                    throw new LjBaseRuntimeException(-1, "创建文件失败");
+                }
             }
-            }
-            try(FileOutputStream out = new FileOutputStream(dstFile);FileInputStream in = new FileInputStream(srcFile)){
+            try (FileOutputStream out = new FileOutputStream(dstFile); FileInputStream in = new FileInputStream(srcFile)) {
                 byte[] buffer = new byte[1024];
-                int l ;
+                int l;
                 while ((l = in.read(buffer)) != -1) {
                     out.write(buffer, 0, l);
                 }
-            }catch (Exception e){
+            } catch (Exception e) {
                 log.error(e.getMessage());
             }
             return true;
@@ -188,29 +188,29 @@ public class FileUtil {
             return;
         }
         if (!rootFile.isDirectory()) {
-           if( !rootFile.delete()){
-                throw  new LjBaseRuntimeException(-1,"删除文件失败");
-           }
+            if (!rootFile.delete()) {
+                throw new LjBaseRuntimeException(-1, "删除文件失败");
+            }
             return;
         }
         File[] subFiles = rootFile.listFiles();
         for (File subFile : subFiles) {
             deleteFile(subFile);
         }
-        if( !rootFile.delete()){
-            throw  new LjBaseRuntimeException(-1,"删除文件失败");
+        if (!rootFile.delete()) {
+            throw new LjBaseRuntimeException(-1, "删除文件失败");
         }
 
     }
 
     private static void zip(File inputFileName, String zipFileName) throws Exception {
         //ZipOutputStream out = new ZipOutputStream(new FileOutputStream(zipFileName));
-        try(ZipOutputStream out = new ZipOutputStream(new FileOutputStream(zipFileName))){
+        try (ZipOutputStream out = new ZipOutputStream(new FileOutputStream(zipFileName))) {
             zip(out, inputFileName, "");
-        }catch (Exception e){
+        } catch (Exception e) {
             log.error(e.getMessage());
         }
-       // zip(out, inputFileName, "");
+        // zip(out, inputFileName, "");
         //out.close();
     }
 
@@ -224,12 +224,12 @@ public class FileUtil {
         } else {
             out.putNextEntry(new ZipEntry(base));
             //BufferedInputStream in = new BufferedInputStream(new FileInputStream(f));
-            try(BufferedInputStream in = new BufferedInputStream(new FileInputStream(f))){
+            try (BufferedInputStream in = new BufferedInputStream(new FileInputStream(f))) {
                 int c;
                 while ((c = in.read()) != -1) {
                     out.write(c);
                 }
-            }catch (Exception e){
+            } catch (Exception e) {
                 log.error(e.getMessage());
             }
            /* int c;

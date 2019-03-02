@@ -25,7 +25,7 @@ public class HouseOwnerInfoServiceImpl implements HouseOwnerInfoService {
     public List<HouseOwnerInfo> searchHouseOwnerInfoByProjInAreaIdIn(List<Integer> projIds, List<Integer> houseIds) {
         Example example = new Example(HouseOwnerInfo.class);
         Example.Criteria criteria = example.createCriteria();
-        criteria.andIn("projectId",projIds).andIn("areaId",houseIds);
+        criteria.andIn("projectId", projIds).andIn("areaId", houseIds);
         ExampleUtil.addDeleteAtJudge(example);
         return houseOwnerInfoMapper.selectByExample(example);
     }

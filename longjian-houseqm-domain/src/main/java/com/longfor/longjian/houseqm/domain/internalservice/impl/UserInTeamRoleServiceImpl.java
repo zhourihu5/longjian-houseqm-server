@@ -21,12 +21,13 @@ import java.util.List;
 public class UserInTeamRoleServiceImpl implements UserInTeamRoleService {
     @Resource
     UserInTeamRoleMapper userInTeamRoleMapper;
+
     @Override
     @LFAssignDataSource("zhijian2_apisvr")
     public List<UserInTeamRole> selectByUserIdNotDel(Integer uid) {
         Example example = new Example(UserInTeamRole.class);
         Example.Criteria criteria = example.createCriteria();
-        criteria.andEqualTo("userId",uid).andIsNull("deleteAt");
+        criteria.andEqualTo("userId", uid).andIsNull("deleteAt");
         return userInTeamRoleMapper.selectByExample(example);
     }
 }

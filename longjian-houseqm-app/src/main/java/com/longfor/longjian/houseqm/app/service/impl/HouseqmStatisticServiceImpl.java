@@ -44,9 +44,14 @@ import java.util.stream.Collectors;
 @Slf4j
 public class HouseqmStatisticServiceImpl implements IHouseqmStatisticService {
 
+    private static final String TASK_ID = "taskId";
+    private static final String PROJECT_ID = "projectId";
+    private static final String AREA_ID = "areaId";
+    private static final String STATUS = "status";
+    private static final String ERROR = "error:";
+    private static final String YYYY_MM_DD = "yyyy-MM-dd";
     @Resource
     HouseQmCheckTaskIssueService houseQmCheckTaskIssueService;
-
     @Resource
     HouseQmCheckTaskService houseQmCheckTaskService;
     @Resource
@@ -63,10 +68,8 @@ public class HouseqmStatisticServiceImpl implements IHouseqmStatisticService {
     FileResourceService fileService;
     @Resource
     FileResourceService fileResourceService;
-
     @Resource
     CategoryV3Service categoryV3Service;
-
     @Resource
     CheckItemV3Service checkItemV3Service;
     @Resource
@@ -82,12 +85,31 @@ public class HouseqmStatisticServiceImpl implements IHouseqmStatisticService {
     @Resource
     private UserService userService;
 
-    private static final String TASK_ID="taskId";
-    private static final String PROJECT_ID="projectId";
-    private static final String AREA_ID="areaId";
-    private static final String STATUS="status";
-    private static final String ERROR="error:";
-    private static final String YYYY_MM_DD="yyyy-MM-dd";
+    /**
+     * 判断某个字符串出现的次数
+     *
+     * @param srcText
+     * @param findText
+     * @return
+     */
+    public static int appearNumber(String srcText, String findText) {
+        int count = 0;
+        Pattern p = Pattern.compile(findText);
+        Matcher m = p.matcher(srcText);
+        while (m.find()) {
+            count++;
+        }
+        return count;
+    }
+
+    //去重
+    public static List removeDuplicate(List list) {
+        HashSet h = new HashSet(list);
+        list.clear();
+        list.addAll(h);
+        return list;
+    }
+
     @Override
     public ProjectRepairerStatRspVo projectRepairerStat(int uid, Integer projectId, Integer taskId, String source, Integer statBegin, Integer statEnd, Integer timestamp) {
         String statBeginStr = "2000-01-01 00:00:00";
@@ -106,7 +128,7 @@ public class HouseqmStatisticServiceImpl implements IHouseqmStatisticService {
                 myTaskIds.add(task.getTaskId());
             }
         }
-        List<Integer> taskIds = buildTaskIds(taskId,projectId,categoryClsList,myTaskIds);
+        List<Integer> taskIds = buildTaskIds(taskId, projectId, categoryClsList, myTaskIds);
         List<UserInHouseQmCheckTask> userList = userInHouseQmCheckTaskService.searchByTaskIdInAndRoleType(taskIds, HouseQmCheckTaskRoleTypeEnum.Repairer.getId());
         List<Integer> allUserIds = Lists.newArrayList();
         for (UserInHouseQmCheckTask user : userList) {
@@ -165,7 +187,7 @@ public class HouseqmStatisticServiceImpl implements IHouseqmStatisticService {
             }
         }
         List<Integer> categoryClsList = getCategoryClsListByProjectList(source);
-        List<Integer> taskIds = buildTaskIds(taskId,projectId,categoryClsList,myTaskIds);
+        List<Integer> taskIds = buildTaskIds(taskId, projectId, categoryClsList, myTaskIds);
         List<UserInHouseQmCheckTask> userList = userInHouseQmCheckTaskService.searchByTaskIdInAndRoleType(taskIds, HouseQmCheckTaskRoleTypeEnum.Checker.getId());
         List<Integer> userIds = Lists.newArrayList();
         for (UserInHouseQmCheckTask user : userList) {
@@ -205,7 +227,7 @@ public class HouseqmStatisticServiceImpl implements IHouseqmStatisticService {
         return result;
     }
 
-    private List<Integer> buildTaskIds(Integer taskId,Integer projectId,List<Integer> categoryClsList,List<Integer> myTaskIds){
+    private List<Integer> buildTaskIds(Integer taskId, Integer projectId, List<Integer> categoryClsList, List<Integer> myTaskIds) {
         List<Integer> taskIds = Lists.newArrayList();
         if (taskId > 0) {
             taskIds.add(taskId);
@@ -231,7 +253,6 @@ public class HouseqmStatisticServiceImpl implements IHouseqmStatisticService {
         List<User> resUser = userService.searchByUserIdInAndNoDeleted(userIds);
         return resUser.stream().collect(Collectors.toMap(User::getUserId, User::getRealName));
     }
-
 
     @Override
     public ProjectIssueStatRspVo projectIssueStat(int uid, Integer projectId, String source, Integer areaId, Integer timestamp) {
@@ -417,16 +438,16 @@ public class HouseqmStatisticServiceImpl implements IHouseqmStatisticService {
             if (e != null) {
                 switch (e) {
                     case NoteNoAssign://已记录未分配
-                        result.setIssue_recorded_count(result.getIssue_recorded_count()+issue.getPosX());
+                        result.setIssue_recorded_count(result.getIssue_recorded_count() + issue.getPosX());
                         break;
                     case AssignNoReform://已分配未整改
-                        result.setIssue_assigned_count(result.getIssue_assigned_count()+issue.getPosX());
+                        result.setIssue_assigned_count(result.getIssue_assigned_count() + issue.getPosX());
                         break;
                     case ReformNoCheck://已整改未验收
-                        result.setIssue_repaired_count(result.getIssue_repaired_count()+issue.getPosX());
+                        result.setIssue_repaired_count(result.getIssue_repaired_count() + issue.getPosX());
                         break;
                     case CheckYes://已验收
-                        result.setIssue_approveded_count(result.getIssue_approveded_count()+issue.getPosX());
+                        result.setIssue_approveded_count(result.getIssue_approveded_count() + issue.getPosX());
                         break;
                     default:
                         break;
@@ -445,12 +466,11 @@ public class HouseqmStatisticServiceImpl implements IHouseqmStatisticService {
                     default:
                         break;
                 }
-                e=null;
+                e = null;
             }
         }
         return result;
     }
-
 
     public TaskStatVo.HouseStatVo getHouseQmCheckTaskHouseStatByTaskId(Integer projectId, Integer taskId, Integer areaId) {
         try {
@@ -496,11 +516,10 @@ public class HouseqmStatisticServiceImpl implements IHouseqmStatisticService {
             }
             return houseStatVo;
         } catch (Exception e) {
-            log.error(ERROR,e.getMessage());
+            log.error(ERROR, e.getMessage());
             return null;
         }
     }
-
 
     public TaskRepairStatVo searchIssueRepairStatisticByProjTaskIdAreaIdBeginOnEndOn(Integer projectId, Integer taskId, Integer areaId, Date beginOn, Date endOn) {
         List<IssueRepairCount> issueCounts = null;
@@ -556,7 +575,6 @@ public class HouseqmStatisticServiceImpl implements IHouseqmStatisticService {
         taskRepairStatVo.setItem(item);
         return taskRepairStatVo;
     }
-
 
     @Override
     public HouseqmStatisticCategoryIssueListRspMsgVo taskIssueRepairList(Integer projectId, Integer taskId, Integer areaId, Integer beginOn, Integer endOn, Integer timestamp, Integer planStatus, String source, Integer page, Integer pageSize) {
@@ -657,7 +675,6 @@ public class HouseqmStatisticServiceImpl implements IHouseqmStatisticService {
         issueListRspMsgVo.setTotal(issueListVo.getTotal());
         return issueListRspMsgVo;
     }
-
 
     @Override
     public IssueRepairStatisticVo projectIssueRepair(Integer projectId, String source, Integer areaId, Integer beginOn, Integer endOn, Integer timestamp) {
@@ -796,22 +813,22 @@ public class HouseqmStatisticServiceImpl implements IHouseqmStatisticService {
                         }
 
 
-                    break;
+                        break;
                     case RejectAccept:
                         checkedCount += 1;
                         info.setRejectCount(info.getRejectCount() + 1);
                         info.setUnacceptCount(info.getUnacceptCount() + 1);
 
-                    break;
+                        break;
                     case OnlyCheck:
                         checkedCount += 1;
                         info.setOnlyWatch(info.getOnlyWatch() + 1);
                         info.setUnacceptCount(info.getUnacceptCount() + 1);
 
-                    break;
+                        break;
                     case None:
                         break;
-                        default:
+                    default:
                 }
 
             }
@@ -866,8 +883,6 @@ public class HouseqmStatisticServiceImpl implements IHouseqmStatisticService {
         return result;
     }
 
-
-
     private IssueRepairStatisticVo searchIssueRepairStatisticByProjCategoryClsInAreaIdBeginOnEndOn(Integer projectId, List<Integer> categoryClsList, Integer areaId, Date beginOn1, Date endOn1) {
         String nowStr = DateUtil.getNowTimeStr("yyyy-MM-dd HH:mm:ss");
         HashMap<String, Object> condiMap = new HashMap<>();
@@ -910,7 +925,6 @@ public class HouseqmStatisticServiceImpl implements IHouseqmStatisticService {
         item.setInitime_finish_count(ic.getInitimeFinish());
         return item;
     }
-
 
     private HouseQmCheckTaskIssueListVo searchHouseQmCheckTaskIssueByProjTaskIdClsInAreaIdPlanStatusBeginOnEndOnPage(Integer projectId, Integer taskId, List<Integer> categoryClsList, Integer areaId, Integer planStatus, Date beginOn, Date endOn, Integer page, Integer pageSize) {
         HashMap<String, Object> condiMap = Maps.newHashMap();
@@ -1045,7 +1059,7 @@ public class HouseqmStatisticServiceImpl implements IHouseqmStatisticService {
             houseQmCheckTaskIssueVo.setTotal(dto.getTotal());
             houseQmCheckTaskIssueVo.setItems(vos);
         } catch (Exception e) {
-            log.error(ERROR,e.getMessage());
+            log.error(ERROR, e.getMessage());
         }
         return houseQmCheckTaskIssueVo;
     }
@@ -1188,14 +1202,13 @@ public class HouseqmStatisticServiceImpl implements IHouseqmStatisticService {
         List<Integer> result = Lists.newArrayList();
         String[] ids = idstr.split(sep);
         for (String id : ids) {
-            id=id.trim();
+            id = id.trim();
             if (id.equals("")) continue;
             int i = Integer.parseInt(id);
             result.add(i);
         }
         return result;
     }
-
 
     private List<HouseQmCheckTaskIssueOnlineInfoVo> convertHouseQmCheckTaskIssueToOnlineInfo(List<HouseQmCheckTaskIssue> issueList) {
         ArrayList<HouseQmCheckTaskIssueOnlineInfoVo> infos = Lists.newArrayList();
@@ -1296,25 +1309,6 @@ public class HouseqmStatisticServiceImpl implements IHouseqmStatisticService {
         return r;
     }
 
-
-    /**
-     * 判断某个字符串出现的次数
-     *
-     * @param srcText
-     * @param findText
-     * @return
-     */
-    public static int appearNumber(String srcText, String findText) {
-        int count = 0;
-        Pattern p = Pattern.compile(findText);
-        Matcher m = p.matcher(srcText);
-        while (m.find()) {
-            count++;
-        }
-        return count;
-    }
-
-
     private Map<String, CheckItem> getCheckItemMapByCheckItemKeys(List<String> keys) {
         Map<String, CheckItem> map = new HashMap<>();
         if (keys.isEmpty()) return map;
@@ -1383,15 +1377,6 @@ public class HouseqmStatisticServiceImpl implements IHouseqmStatisticService {
         map.put("categoryStatMap", categoryStatMap);
         map.put("checkItemStatMap", checkItemStatMap);
         return map;
-    }
-
-
-    //去重
-    public static List removeDuplicate(List list) {
-        HashSet h = new HashSet(list);
-        list.clear();
-        list.addAll(h);
-        return list;
     }
 
     // 判断检查项的统计级别。部分检查项的顶级
@@ -1477,8 +1462,8 @@ public class HouseqmStatisticServiceImpl implements IHouseqmStatisticService {
         types.add(HouseQmCheckTaskIssueEnum.Difficult.getId());
         List<HouseQmCheckTaskIssueAreaGroupModel> result = Lists.newArrayList();
 
-       /* if (onlyIssue && areaId > 0) {*/
-            result = houseQmCheckTaskIssueService.selectByTaskIdAndTyeInAndAreaPathAndIdLike(onlyIssue,taskId, types, areaId);
+        /* if (onlyIssue && areaId > 0) {*/
+        result = houseQmCheckTaskIssueService.selectByTaskIdAndTyeInAndAreaPathAndIdLike(onlyIssue, taskId, types, areaId);
        /* } else if (onlyIssue && areaId <= 0) {
             result = houseQmCheckTaskIssueService.selectByTaskIdAndTyeIn(taskId, types);
         } else if (!onlyIssue && areaId > 0) {

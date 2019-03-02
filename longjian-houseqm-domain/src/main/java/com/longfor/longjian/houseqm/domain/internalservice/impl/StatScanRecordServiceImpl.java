@@ -25,8 +25,8 @@ public class StatScanRecordServiceImpl implements StatScanRecordService {
     public List<StatScanRecord> findByExample(Integer moduleId) {
         Example example = new Example(StatScanRecord.class);
         example.createCriteria()
-                .andEqualTo("moduleId",moduleId)
-                .andEqualTo("selectd",1);
+                .andEqualTo("moduleId", moduleId)
+                .andEqualTo("selectd", 1);
         return statScanRecordMapper.selectByExample(example);
     }
 }

@@ -14,16 +14,16 @@ import java.util.List;
 @NoArgsConstructor
 public class TaskAreaListVo implements Serializable {
 
-  private List<TaskAreaVo> areas;
+    private List<TaskAreaVo> areas;
 
-  @Data
-  @NoArgsConstructor
-  public class TaskAreaVo implements Serializable {
+    @Data
+    @NoArgsConstructor
+    public class TaskAreaVo implements Serializable {
 
-    private Integer  id;
-    private Integer  father_id;
-    private String name;
-    private Integer typ;
-    private String path;
-  }
+        private Integer id;
+        private Integer father_id;
+        private String name;
+        private Integer typ;
+        private String path;
+    }
 }

@@ -23,6 +23,6 @@ public class ProjectIssueStatReq implements Serializable {
     @NotNull
     private String source;//app名称，如：ydyf、gcgl
 
-    private Integer area_id=0;//区域ID，留空或为0则表示所有
-    private Integer timestamp=0;//上次更新时间
+    private Integer area_id = 0;//区域ID，留空或为0则表示所有
+    private Integer timestamp = 0;//上次更新时间
 }

@@ -28,7 +28,6 @@ public class HouseQmCheckTaskSquadServiceImpl implements HouseQmCheckTaskSquadSe
     HouseQmCheckTaskSquadMapper houseQmCheckTaskSquadMapper;
 
 
-
     @LFAssignDataSource("zhijian2")
     public List<HouseQmCheckTaskSquad> selectByTaskIds(Set<Integer> taskIdList) {
 
@@ -40,14 +39,15 @@ public class HouseQmCheckTaskSquadServiceImpl implements HouseQmCheckTaskSquadSe
     public List<HouseQmCheckTaskSquad> selectByTaskIdsEvenDeleted(Set<Integer> taskIdList) {
         Example example = new Example(HouseQmCheckTaskSquad.class);
         Example.Criteria criteria = example.createCriteria();
-        criteria.andIn("taskId",taskIdList);
+        criteria.andIn("taskId", taskIdList);
         return houseQmCheckTaskSquadMapper.selectByExample(example);
     }
+
     @Transactional
     @Override
     @LFAssignDataSource("zhijian2")
     public int add(HouseQmCheckTaskSquad squad) {
-         houseQmCheckTaskSquadMapper.insert(squad);
+        houseQmCheckTaskSquadMapper.insert(squad);
         return squad.getId();
     }
 
@@ -56,7 +56,7 @@ public class HouseQmCheckTaskSquadServiceImpl implements HouseQmCheckTaskSquadSe
     public HouseQmCheckTaskSquad selectById(int squadInfo) {
         Example example = new Example(HouseQmCheckTaskSquad.class);
         Example.Criteria criteria = example.createCriteria();
-        criteria.andEqualTo("id",squadInfo).andIsNull("deleteAt");
+        criteria.andEqualTo("id", squadInfo).andIsNull("deleteAt");
         return houseQmCheckTaskSquadMapper.selectOneByExample(example);
     }
 
@@ -73,8 +73,8 @@ public class HouseQmCheckTaskSquadServiceImpl implements HouseQmCheckTaskSquadSe
     @LFAssignDataSource("zhijian2")
     public int delete(HouseQmCheckTaskSquad dbItem) {
         HouseQmCheckTaskSquad squad = houseQmCheckTaskSquadMapper.selectOne(dbItem);
-            squad.setDeleteAt(new Date());
-        return  houseQmCheckTaskSquadMapper.updateByPrimaryKeySelective(squad);
+        squad.setDeleteAt(new Date());
+        return houseQmCheckTaskSquadMapper.updateByPrimaryKeySelective(squad);
     }
 
     @Override
@@ -89,7 +89,7 @@ public class HouseQmCheckTaskSquadServiceImpl implements HouseQmCheckTaskSquadSe
     public List<HouseQmCheckTaskSquad> selectByProjectIdAndTaskIdAndSquadType(Integer project_id, Integer task_id, Integer value) {
         Example example = new Example(HouseQmCheckTaskSquad.class);
         Example.Criteria criteria = example.createCriteria();
-        criteria.andEqualTo("projectId",project_id).andEqualTo("taskId",task_id).andEqualTo("squadType",value).andIsNull("deleteAt");
+        criteria.andEqualTo("projectId", project_id).andEqualTo("taskId", task_id).andEqualTo("squadType", value).andIsNull("deleteAt");
         return houseQmCheckTaskSquadMapper.selectByExample(example);
     }
 

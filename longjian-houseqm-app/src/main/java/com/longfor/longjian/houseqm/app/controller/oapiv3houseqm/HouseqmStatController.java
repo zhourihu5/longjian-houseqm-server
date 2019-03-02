@@ -71,13 +71,13 @@ public class HouseqmStatController {
     public LjBaseResponse<StatCategoryStatRspVo> categoryStat(HttpServletRequest request, @Validated StatCategoryStatReq req) throws Exception {
         LjBaseResponse<StatCategoryStatRspVo> response = new LjBaseResponse<>();
         ctrlTool.projPermMulti(request, new String[]{"项目.移动验房.统计.查看", "项目.工程检查.统计.查看"});
-        if (req.getArea_id()==null)req.setArea_id(0);
+        if (req.getArea_id() == null) req.setArea_id(0);
         Date beginOn = DateUtil.timeStampToDate(0, "yyyy-MM-dd");
         Date endOn = DateUtil.timeStampToDate(0, "yyyy-MM-dd");
-        if (req.getBegin_on()!=null&&!req.getBegin_on().equals("")) {
+        if (req.getBegin_on() != null && !req.getBegin_on().equals("")) {
             beginOn = DateUtil.strToDate(req.getBegin_on(), "yyyy-MM-dd");
         }
-        if (req.getEnd_on()!=null&&!req.getEnd_on().equals("")) {
+        if (req.getEnd_on() != null && !req.getEnd_on().equals("")) {
             Date t = DateUtil.strToDate(req.getEnd_on(), "yyyy-MM-dd");
             endOn = DateUtil.dateAddDay(t, 1);
         }
@@ -97,9 +97,9 @@ public class HouseqmStatController {
     public LjBaseResponse<StatInspectionSituationSearchRspVo> inspectionSituationSearch(HttpServletRequest request, @Validated StatInspectionSituationSearchReq req) throws Exception {
         LjBaseResponse<StatInspectionSituationSearchRspVo> response = new LjBaseResponse<>();
         ctrlTool.projPermMulti(request, new String[]{"项目.移动验房.统计.查看", "项目.工程检查.统计.查看"});
-        if (req.getArea_id()==null)req.setArea_id(0);
-        if (req.getIssue_status()==null)req.setIssue_status(0);
-        if (req.getStatus()==null)req.setStatus(0);
+        if (req.getArea_id() == null) req.setArea_id(0);
+        if (req.getIssue_status() == null) req.setIssue_status(0);
+        if (req.getStatus() == null) req.setStatus(0);
 
         if (!req.getStatus().equals(RepossessionStatusEnum.Accept.getId())) {
             req.setStart_time("");
@@ -115,7 +115,7 @@ public class HouseqmStatController {
         List<Integer> areaIds = houseqmStatService.searchRepossessInspectionAreaIdsByConditions(req.getProject_id(), req.getTask_id(), req.getArea_id(), req.getStatus(), req.getIssue_status(), startTime, endTime);
         StatInspectionSituationSearchRspVo data = new StatInspectionSituationSearchRspVo();
         data.setTotal(areaIds.size());
-        List<Integer> ids = splitSliceByPaged(areaIds,req.getPage(),req.getPage_size());
+        List<Integer> ids = splitSliceByPaged(areaIds, req.getPage(), req.getPage_size());
         List<InspectionHouseStatusInfoVo> details = houseqmStatService.formatFenhuHouseInspectionStatusInfoByAreaIds(req.getTask_id(), ids);
         List<HouseQmStatInspectionSituationRspVo> items = new ArrayList<>();
         for (InspectionHouseStatusInfoVo detail : details) {
@@ -131,7 +131,7 @@ public class HouseqmStatController {
             item.setTask_id(detail.getTaskId());
             items.add(item);
         }
-        if (!items.isEmpty())data.setItems(items);// go 源码 返回为null 所以需要进行判断
+        if (!items.isEmpty()) data.setItems(items);// go 源码 返回为null 所以需要进行判断
         response.setData(data);
         return response;
     }
@@ -144,11 +144,11 @@ public class HouseqmStatController {
         start = (page - 1) * pageSize;
         if (start >= areaIds.size()) return areaIds;
         int end = start + pageSize;
-        if (end>areaIds.size()){
-            end=areaIds.size();
+        if (end > areaIds.size()) {
+            end = areaIds.size();
         }
         List<Integer> ids = Lists.newArrayList();
-        for (int i=start;i<end;i++){
+        for (int i = start; i < end; i++) {
             ids.add(areaIds.get(i));
         }
         return ids;
@@ -240,9 +240,9 @@ public class HouseqmStatController {
         for (Integer taskId : taskIdList) {
             try {
                 ProjectOveralListVo.ProjectOveralVo item = houseqmStatService.getInspectTaskStatByProjTaskId(req.getProject_id(), taskId);
-               if(item==null){
-                   continue;
-               }
+                if (item == null) {
+                    continue;
+                }
 
                 totalStat.setChecked_count(totalStat.getChecked_count() + item.getChecked_count());
                 totalStat.setIssue_count(totalStat.getIssue_count() + item.getIssue_count());
@@ -278,7 +278,7 @@ public class HouseqmStatController {
             return response;
         }
         try {
-            if (req.getTyp()==null)req.setTyp(0);
+            if (req.getTyp() == null) req.setTyp(0);
             TaskAreaListVo talv = houseqmStatService.searchAreasByProjTaskIdTyp(req.getProject_id(), req.getTask_id(), req.getTyp());
             response.setData(talv);
         } catch (Exception e) {
@@ -336,7 +336,7 @@ public class HouseqmStatController {
             return response;
         }
         try {
-            if (req.getArea_id()==null) req.setArea_id(0);
+            if (req.getArea_id() == null) req.setArea_id(0);
             TaskStatVo.IssueStatVo issue = houseqmStatisticService.getCheckTaskIssueTypeStatByTaskIdAreaId(req.getTask_id(), req.getArea_id());
             TaskStatVo.HouseStatVo house = houseqmStatisticService.getHouseQmCheckTaskHouseStatByTaskId(req.getProject_id(), req.getTask_id(), req.getArea_id());
             house.setHouse_checked_percent(MathUtil.getPercentage(house.getChecked_count(), house.getHouse_count()));

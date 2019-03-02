@@ -10,8 +10,8 @@ import java.io.Serializable;
  */
 @Data
 @NoArgsConstructor
-public class ApiTaskInfo  implements Serializable {
-   private Integer id;                  // 任务ID
-   private String name;       // 任务名称
-   private Integer category_cls; // 任务类型
+public class ApiTaskInfo implements Serializable {
+    private Integer id;                  // 任务ID
+    private String name;       // 任务名称
+    private Integer category_cls; // 任务类型
 }

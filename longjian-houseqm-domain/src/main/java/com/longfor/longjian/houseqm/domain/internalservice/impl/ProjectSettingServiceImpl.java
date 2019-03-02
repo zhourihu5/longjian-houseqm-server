@@ -24,7 +24,7 @@ public class ProjectSettingServiceImpl implements ProjectSettingService {
     @LFAssignDataSource("zhijian2")
     public ProjectSetting getSettingByProjectIdSKey(int projId, String sKey) {
         Example example = new Example(ProjectSetting.class);
-        example.createCriteria().andEqualTo("projectId",projId).andEqualTo("sKey",sKey);
+        example.createCriteria().andEqualTo("projectId", projId).andEqualTo("sKey", sKey);
         ExampleUtil.addDeleteAtJudge(example);
         return projectSettingMapper.selectOneByExample(example);
     }

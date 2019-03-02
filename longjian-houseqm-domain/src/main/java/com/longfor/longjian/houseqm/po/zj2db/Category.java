@@ -12,7 +12,7 @@ import java.util.Date;
  * Created by Dongshun on 2018/12/20.
  */
 @Data
-@Table(name="category_v3")
+@Table(name = "category_v3")
 public class Category implements Serializable {
     @Id
     private Integer id;

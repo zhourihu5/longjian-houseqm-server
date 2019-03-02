@@ -220,7 +220,8 @@ public class HouseqmServiceImpl implements IHouseqmService {
         Integer lastId = 0;
         try {
             List<HouseQmCheckTaskIssueUser> houseQmCheckTaskIssueUsers = houseQmCheckTaskIssueService.searchHouseQmCheckTaskIssueUserByTaskIdLastIdUpdateAtGt(deviceReq.getTask_id(), deviceReq.getLast_id(), deviceReq.getTimestamp(), start, limit);
-            if (CollectionUtils.isNotEmpty(houseQmCheckTaskIssueUsers))lastId = houseQmCheckTaskIssueUsers.get(houseQmCheckTaskIssueUsers.size() - 1).getId();
+            if (CollectionUtils.isNotEmpty(houseQmCheckTaskIssueUsers))
+                lastId = houseQmCheckTaskIssueUsers.get(houseQmCheckTaskIssueUsers.size() - 1).getId();
             houseQmCheckTaskIssueUsers.forEach(houseQmCheckTaskIssueUser -> {
                 ApiHouseQmCheckTaskIssueMemberRspVo apiHouseQmCheckTaskIssueMemberRspVo = new ApiHouseQmCheckTaskIssueMemberRspVo();
                 apiHouseQmCheckTaskIssueMemberRspVo.setId(houseQmCheckTaskIssueUser.getId());

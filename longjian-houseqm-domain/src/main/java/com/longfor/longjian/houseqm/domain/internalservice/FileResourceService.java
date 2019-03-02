@@ -12,11 +12,10 @@ import java.util.List;
 public interface FileResourceService {
 
     /**
-     *
-     * @author hy
-     * @date 2018/12/21 0021
      * @param attachments
      * @return java.util.List<com.longfor.longjian.houseqm.po.zj2db.FileResource>
+     * @author hy
+     * @date 2018/12/21 0021
      */
     List<FileResource> searchFileResourceByFileMd5InAndNoDeleted(List<String> attachments);
 

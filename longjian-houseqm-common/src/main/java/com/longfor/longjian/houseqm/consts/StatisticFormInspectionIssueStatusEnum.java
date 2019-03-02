@@ -12,31 +12,31 @@ public enum StatisticFormInspectionIssueStatusEnum {
     //All       niuhe.IntConstItem `const:"0,全部"`
     //	NoProblem niuhe.IntConstItem `const:"1,没有问题"`
     //	HasIssue  niuhe.IntConstItem `const:"2,存在问题"`
-    All(0,"全部"),
-    NoProblem(1,"没有问题"),
-    HasIssue(2,"存在问题"),
+    All(0, "全部"),
+    NoProblem(1, "没有问题"),
+    HasIssue(2, "存在问题"),
     ;
 
     private Integer id;
     private String value;
 
-    public Integer getId() {
-        return id;
+StatisticFormInspectionIssueStatusEnum(Integer id, String value) {
+        this.id = id;
+        this.value = value;
     }
 
-    public String getValue() {
-        return value;
-    }
-
-    public static String getName(Integer id){
+    public static String getName(Integer id) {
         StatisticFormInspectionIssueStatusEnum[] values = StatisticFormInspectionIssueStatusEnum.values();
         for (StatisticFormInspectionIssueStatusEnum value : values) {
-            if (value.getId().equals(id))return value.getValue();
+            if (value.getId().equals(id)) return value.getValue();
         }
         return null;
     }
 
-    StatisticFormInspectionIssueStatusEnum(Integer id, String value) {
-        this.id = id;
-        this.value = value;
+    public Integer getId() {
+        return id;
+    }
+
+        public String getValue() {
+        return value;
     }}

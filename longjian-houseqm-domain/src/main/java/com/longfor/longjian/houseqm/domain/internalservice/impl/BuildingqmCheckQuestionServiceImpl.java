@@ -18,7 +18,8 @@ import java.util.List;
 @Slf4j
 public class BuildingqmCheckQuestionServiceImpl implements BuildingqmCheckQuestionService {
     @Resource
-    private  BuildingqmSettingMapper buildingqmSettingMapper;
+    private BuildingqmSettingMapper buildingqmSettingMapper;
+
     @LFAssignDataSource("zhijian2_setting")
     public List<IssueFieldSetting> selectByProjectId(Integer projectId) {
 
@@ -30,6 +31,6 @@ public class BuildingqmCheckQuestionServiceImpl implements BuildingqmCheckQuesti
 
     @LFAssignDataSource("zhijian2_setting")
     public List<IssueFieldSetting> findProjectIdsAndModuleId(List<Integer> projectIdList) {
-                return buildingqmSettingMapper.findProjectIdsAndModuleId(projectIdList);
+        return buildingqmSettingMapper.findProjectIdsAndModuleId(projectIdList);
     }
 }

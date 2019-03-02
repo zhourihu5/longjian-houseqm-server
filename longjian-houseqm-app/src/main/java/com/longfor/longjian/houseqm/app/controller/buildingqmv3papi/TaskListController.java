@@ -52,7 +52,7 @@ public class TaskListController {
             taskResponse.setMsg("success");
             taskResponse.setData(taskListVo);
         } catch (Exception e) {
-            log.error("获取项目下任务列表任务信息error:",e.getMessage());
+            log.error("获取项目下任务列表任务信息error:", e.getMessage());
             taskResponse.setResult(1);
             taskResponse.setMessage(e.getMessage());
         }
@@ -74,7 +74,7 @@ public class TaskListController {
             TaskRoleListVo roleListVos = taskListService.taskRole(req.getTask_id());
             taskResponse.setData(roleListVos);
         } catch (Exception e) {
-            log.error("获取任务角色列表error:",e.getMessage());
+            log.error("获取任务角色列表error:", e.getMessage());
             taskResponse.setResult(1);
             taskResponse.setMessage(e.getMessage());
         }

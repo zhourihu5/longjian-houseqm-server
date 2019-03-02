@@ -24,11 +24,11 @@ public class StatHouseQmProjectDailyStatService {
     StatHouseQmProjectDailyStatMapper statHouseQmProjectDailyStatMapper;
 
     /**
-     // stat_house_qm_project_daily_stat_20181116
-     // stat_house_qm_project_weekly_stat_201846
-     // stat_house_qm_project_monthly_stat_201811
-     // stat_house_qm_project_yearly_stat_2018
-     // stat_house_qm_project_quarterly_stat_20191
+     * // stat_house_qm_project_daily_stat_20181116
+     * // stat_house_qm_project_weekly_stat_201846
+     * // stat_house_qm_project_monthly_stat_201811
+     * // stat_house_qm_project_yearly_stat_2018
+     * // stat_house_qm_project_quarterly_stat_20191
      *
      * @param timeFrame
      * @param categoryKey
@@ -36,23 +36,23 @@ public class StatHouseQmProjectDailyStatService {
      * @return
      */
     @LFAssignDataSource("zhijian2_stat")
-    public StatHouseQmProjectDailyStat query(TimeFrame timeFrame,String categoryKey, List<Integer> projectIds){
+    public StatHouseQmProjectDailyStat query(TimeFrame timeFrame, String categoryKey, List<Integer> projectIds) {
 
         /**
          * 防止天表没生成
          */
-        if(timeFrame.getBeginOn().after(DateUtil.yesterdayZeroDate())){
+        if (timeFrame.getBeginOn().after(DateUtil.yesterdayZeroDate())) {
             return null;
         }
 
-        String postFixDate  = timeFrame.getTableIdx();
+        String postFixDate = timeFrame.getTableIdx();
         Integer areaId = null;
 
 
-        StatHouseQmProjectDailyStat stat =  statHouseQmProjectDailyStatMapper.selectSum(postFixDate, areaId,
+        StatHouseQmProjectDailyStat stat = statHouseQmProjectDailyStatMapper.selectSum(postFixDate, areaId,
                 projectIds, categoryKey);
 
-        log.debug("StatHouseQmProjectDailyStat query:{}, result is null :{}", postFixDate, stat==null);
+        log.debug("StatHouseQmProjectDailyStat query:{}, result is null :{}", postFixDate, stat == null);
 
         return stat;
     }

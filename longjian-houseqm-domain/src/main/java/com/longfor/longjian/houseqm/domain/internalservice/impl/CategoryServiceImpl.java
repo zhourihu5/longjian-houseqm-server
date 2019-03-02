@@ -27,7 +27,7 @@ public class CategoryServiceImpl implements CategoryService {
     public List<CategoryV3> searchCategoryByKeyIn(List<String> keys) {
         Example example = new Example(CategoryV3.class);
         Example.Criteria criteria = example.createCriteria();
-        if (keys.size()>0)criteria.andIn("key", keys);
+        if (keys.size() > 0) criteria.andIn("key", keys);
         ExampleUtil.addDeleteAtJudge(example);
         return categoryMapper.selectByExample(example);
     }

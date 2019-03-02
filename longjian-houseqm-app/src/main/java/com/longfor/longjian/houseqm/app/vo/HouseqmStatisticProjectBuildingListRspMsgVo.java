@@ -11,6 +11,6 @@ import java.util.List;
  */
 @Data
 @NoArgsConstructor
-public class HouseqmStatisticProjectBuildingListRspMsgVo implements Serializable{
-   List<ApiBuildingInfo>items;
+public class HouseqmStatisticProjectBuildingListRspMsgVo implements Serializable {
+    List<ApiBuildingInfo> items;
 }

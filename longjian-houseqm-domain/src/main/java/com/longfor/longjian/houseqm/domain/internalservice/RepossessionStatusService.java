@@ -13,6 +13,7 @@ import java.util.Map;
 
 public interface RepossessionStatusService {
     List<RepossessionStatus> searchByTaskIdAreaIdLike(Integer taskId, Integer areaId);
+
     List<RepossessionStatus> searchRepossessionStatusByTaskIdAreaIdLike(Integer taskId, Integer areaId);
 
     RepossessionStatusCompleteDailyCountDto searchByTaskIdInAndStatusAndNoDeletedOrStatusClientUpdateAt(Map<String, Object> condi);

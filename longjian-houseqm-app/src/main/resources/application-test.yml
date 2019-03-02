@@ -75,11 +75,11 @@ longfor:
             cas:
               connectTimeout: 5000
               readTimeout: 5000
-    #logging:
-    #  kafka:
-     #   enabled: true
-     #   broker: kafka01.paas.longhu.net:9092,kafka02.paas.longhu.net:9092,kafka03.paas.longhu.net:9092
-     #   env: test
+      #logging:
+      #  kafka:
+      #   enabled: true
+      #   broker: kafka01.paas.longhu.net:9092,kafka02.paas.longhu.net:9092,kafka03.paas.longhu.net:9092
+      #   env: test
 
   data:
     pagehelper:
@@ -218,13 +218,13 @@ env_info:
 spe:
   # 清水
   team_group_100194:
-      # 导出Excel
+    # 导出Excel
     export_issue: /v3stat/spec/qingshui/export_issue/
   team_group_100044: #dev
-      # 导出Excel
+    # 导出Excel
     export_issue: /v3stat/spec/qingshui/export_issue/
   team_group_100137: #test
-      # 导出Excel
+    # 导出Excel
     export_issue: /v3stat/spec/qingshui/export_issue/
 #导出
 export_path: /Users/xijunguo/Work/tmp
@@ -268,10 +268,10 @@ push_config:
 display_logo_url: assets/favicon.png
 display_company_name: 默认
 display_system_name: 智检
-# #######
+  # #######
   #dev环境
   # app_key_ios: "5ba9d3bab465f5a845000335"
   # app_master_secret_ios: "s8258p7gu0lza6rcv4wvup0tbibbmfsj"
-  # test
+# test
 
 #########

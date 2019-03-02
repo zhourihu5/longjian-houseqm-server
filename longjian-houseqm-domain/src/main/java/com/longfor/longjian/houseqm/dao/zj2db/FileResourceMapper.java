@@ -12,5 +12,5 @@ public interface FileResourceMapper extends LFMySQLMapper<FileResource> {
 
     List<FileResource> selectFileResourceByFileMd5InAndNoDeleted(@Param("attachments") List<String> attachments, @Param("deleted") String deleted);
 
-    List<FileResource> searchByMd5In(@Param("attachmentsList")ArrayList<String> attachmentMd5List);
+    List<FileResource> searchByMd5In(@Param("attachmentsList") ArrayList<String> attachmentMd5List);
 }

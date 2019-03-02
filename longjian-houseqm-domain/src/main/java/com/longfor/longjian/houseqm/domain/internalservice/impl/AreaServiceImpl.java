@@ -233,9 +233,6 @@ public class AreaServiceImpl implements AreaService {
     }
 
 
-
-
-
     private List<String> getUnionPaths(List<String> paths) {
         Collections.sort(paths);
         String lastPath = "Nothing";

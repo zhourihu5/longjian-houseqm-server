@@ -55,7 +55,7 @@ public class CategoryV3 {
     @Column(name = "node_status")
     private Integer nodeStatus;
 
-    public List<String> getPathSlice(){
+    public List<String> getPathSlice() {
         List<String> keys = StringSplitToListUtil.removeStartAndEndStrAndSplit(this.path, "/", "/");
         keys.add(this.key);
         return keys;

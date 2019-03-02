@@ -28,18 +28,16 @@ import javax.annotation.Resource;
 public class BuildingqmSettingController {
 
 
-
     @Resource
     private BuildingqmSettingService buildingqmSettingService;
 
     /**
-     *
      * @param projectIds
      * @param timestamp
      * @return
      */
     @RequestMapping(value = "get_issuefiled_setting", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
-    public LjBaseResponse<ApiIssueFiledSettingMsg.IssueFileds> getIssuefiledSetting(@RequestParam(value = "project_ids")   String  projectIds, @RequestParam(value = "timestamp" ,required = false,defaultValue = "0") Integer timestamp) {
+    public LjBaseResponse<ApiIssueFiledSettingMsg.IssueFileds> getIssuefiledSetting(@RequestParam(value = "project_ids") String projectIds, @RequestParam(value = "timestamp", required = false, defaultValue = "0") Integer timestamp) {
 
         return buildingqmSettingService.getIssuefiledSetting(projectIds, timestamp);
     }

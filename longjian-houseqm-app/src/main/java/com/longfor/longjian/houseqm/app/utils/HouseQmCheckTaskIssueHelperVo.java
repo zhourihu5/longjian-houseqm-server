@@ -72,7 +72,7 @@ public class HouseQmCheckTaskIssueHelperVo {
     private Map<String, HouseQmCheckTaskIssueVo> needInsertIssueMap;
     private Map<String, HouseQmCheckTaskIssueVo> needUpdateIssueMap;
     private List<HouseQmCheckTaskIssueLogVo> issueLogs;
-    private Map<String, Boolean> needDeleteAtIssueLogMap=new HashMap<>();//需要在入库后就打上delete_at标签的issue_log
+    private Map<String, Boolean> needDeleteAtIssueLogMap = new HashMap<>();//需要在入库后就打上delete_at标签的issue_log
     private List<HouseQmCheckTaskIssueAttachment> needInsertAttachement;
     private List<RemoveAttachement> needRemoveAttachement;
     private HouseQmCheckTaskIssueLogVo currentLog;
@@ -182,7 +182,7 @@ public class HouseQmCheckTaskIssueHelperVo {
             this.taskMap.put(this.currentLog.getTaskId(), task);
         }
         HouseQmCheckTask task = this.taskMap.get(this.currentLog.getTaskId());
-        if (task!=null){
+        if (task != null) {
             if (task.getDeleteAt() != null) {
                 log.debug("HouseQm Task Has Delete ");
                 String name = ApiDropDataReasonEnum.HouseQmTaskRemoved.getName();
@@ -443,7 +443,7 @@ public class HouseQmCheckTaskIssueHelperVo {
         }
         Map<String, Boolean> needPushIds = Maps.newHashMap();
         for (HouseQmCheckTaskIssueLogVo issue : this.issueLogs) {
-            if ((needDeleteIssueLogSet.get(issue.getIssueUuid())!=null&&!needDeleteIssueLogSet.get(issue.getIssueUuid()).equals(true))
+            if ((needDeleteIssueLogSet.get(issue.getIssueUuid()) != null && !needDeleteIssueLogSet.get(issue.getIssueUuid()).equals(true))
                     && (HouseQmCheckTaskIssueStatusEnum.AssignNoReform.getId().equals(issue.getStatus()) ||
                     HouseQmCheckTaskIssueStatusEnum.ReformNoCheck.getId().equals(issue.getStatus()) || issue.getDetail().getRepairerId() > 0)) {
                 needPushIds.put(issue.getIssueUuid(), true);//排除删除，得到需要推送的uuid集合
@@ -601,9 +601,10 @@ public class HouseQmCheckTaskIssueHelperVo {
             }
         }
 
-        outer:for (HouseQmCheckTaskIssueLogVo log : this.issueLogs) {
-            if(log!=null) {
-                if (log.getUuid()!=null&&this.needDeleteAtIssueLogMap.get(log.getUuid())!=null&&this.needDeleteAtIssueLogMap.get(log.getUuid())) {
+        outer:
+        for (HouseQmCheckTaskIssueLogVo log : this.issueLogs) {
+            if (log != null) {
+                if (log.getUuid() != null && this.needDeleteAtIssueLogMap.get(log.getUuid()) != null && this.needDeleteAtIssueLogMap.get(log.getUuid())) {
                     continue;
                 }
                 HouseQmCheckTaskIssueVo issue = this.needUpdateIssueMap.get(log.getIssueUuid());
@@ -619,7 +620,7 @@ public class HouseQmCheckTaskIssueHelperVo {
                             e = value;
                         }
                     }
-                    if(e==null){
+                    if (e == null) {
                         continue outer;
                     }
                     switch (e) {
@@ -652,7 +653,7 @@ public class HouseQmCheckTaskIssueHelperVo {
         }
         //utils.KafkaProducer.Produce(consts.EventQueue.PKG_HOUSEQM_ISSUE_REPORTED.Value, msgPkg)
         KafkaProducer producer = new KafkaProducer();
-        producer.produce(EventQueueEnum.PKG_HOUSEQM_ISSUE_REPORTED.getValue(),msgPkg);
+        producer.produce(EventQueueEnum.PKG_HOUSEQM_ISSUE_REPORTED.getValue(), msgPkg);
 
     }
 
@@ -662,7 +663,8 @@ public class HouseQmCheckTaskIssueHelperVo {
         HouseqmSquadUserCache cache = new HouseqmSquadUserCache();
         cache.setCache(Maps.newHashMap());
 
-        outer:for (HouseQmCheckTaskIssueVo issue : issueList) {
+        outer:
+        for (HouseQmCheckTaskIssueVo issue : issueList) {
             if (CategoryClsTypeEnum.RCJC.getId().equals(issue.getCategoryCls())) {
                 continue;
             }
@@ -672,7 +674,7 @@ public class HouseQmCheckTaskIssueHelperVo {
                     e = value;
                 }
             }
-            if(e==null){
+            if (e == null) {
                 continue outer;
             }
             switch (e) {
@@ -996,7 +998,7 @@ public class HouseQmCheckTaskIssueHelperVo {
         for (HouseQmCheckTaskIssueLogStatusEnum value : HouseQmCheckTaskIssueLogStatusEnum.values()) {
             if (logStatus == value.getId()) e = value;
         }
-        if(e==null){
+        if (e == null) {
             return -1;
         }
         switch (e) {

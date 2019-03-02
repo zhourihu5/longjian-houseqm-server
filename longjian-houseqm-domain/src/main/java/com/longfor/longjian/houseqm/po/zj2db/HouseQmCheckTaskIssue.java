@@ -50,6 +50,162 @@ public class HouseQmCheckTaskIssue {
     @Column(name = "end_on")
     private Date endOn;
     private int count;
+    /**
+     * 区域ID
+     */
+    @Column(name = "area_id")
+    private Integer areaId;
+    /**
+     * 区域路径和id
+     */
+    @Column(name = "area_path_and_id")
+    private String areaPathAndId;
+    /**
+     * 模块类型（23=日常检查, 24=月度检查, 25=季度检查, 26=入伙验房, 27=专项检查, 28=分户验收, 29=安全检查, 30=承接查验, 31=工地开放）
+     */
+    @Column(name = "category_cls")
+    private Integer categoryCls;
+    /**
+     * 任务类型key
+     */
+    @Column(name = "category_key")
+    private String categoryKey;
+    /**
+     * 任务类型路径和Key
+     */
+    @Column(name = "category_path_and_key")
+    private String categoryPathAndKey;
+    /**
+     * 检查项key
+     */
+    @Column(name = "check_item_key")
+    private String checkItemKey;
+    /**
+     * 检查项路径和key
+     */
+    @Column(name = "check_item_path_and_key")
+    private String checkItemPathAndKey;
+    /**
+     * 图纸文件MD5
+     */
+    @Column(name = "drawing_m_d5")
+    private String drawingMD5;
+    /**
+     * 在图纸上的位置X
+     */
+    @Column(name = "pos_x")
+    private Integer posX;
+    /**
+     * 在图纸上的位置Y
+     */
+    @Column(name = "pos_y")
+    private Integer posY;
+    /**
+     * 问题标题
+     */
+    private String title;
+    /**
+     * 99 普通记录；1 问题记录
+     */
+    private Integer typ;
+    /**
+     * 问题描述
+     */
+    private String content;
+    /**
+     * 问题严重程度  1 严重 2 较差 3 轻微
+     */
+    @Column(name = "`condition`")
+    private Integer condition;
+    /**
+     * 整改状态：当前issue状态 10 没有问题 20 已记录未分配 30 已分配未整改 50 已整改未审核 60 已审核（消项） 70已取消 6=整改中（介乎于2和3之间）
+     */
+    @Column(name = "`status`")
+    private Integer status;
+    /**
+     * 整改负责人
+     */
+    @Column(name = "repairer_id")
+    private Integer repairerId;
+    /**
+     * 整改参与人多个用半角逗号“,”分隔
+     */
+    @Column(name = "repairer_follower_ids")
+    private String repairerFollowerIds;
+    /**
+     * 客户端记录时间
+     */
+    @Column(name = "client_create_at")
+    private Date clientCreateAt;
+    /**
+     * 最后指派人
+     */
+    @Column(name = "last_assigner")
+    private Integer lastAssigner;
+    /**
+     * 最后指派时间
+     */
+    @Column(name = "last_assign_at")
+    private Date lastAssignAt;
+    /**
+     * 最后整改人
+     */
+    @Column(name = "last_repairer")
+    private Integer lastRepairer;
+    /**
+     * 最后整改时间
+     */
+    @Column(name = "last_repairer_at")
+    private Date lastRepairerAt;
+    /**
+     * 最后消项人
+     */
+    @Column(name = "destroy_user")
+    private Integer destroyUser;
+    /**
+     * 最后消项时间
+     */
+    @Column(name = "destroy_at")
+    private Date destroyAt;
+    /**
+     * 删除人
+     */
+    @Column(name = "delete_user")
+    private Integer deleteUser;
+    /**
+     * 删除时间
+     */
+    @Column(name = "delete_time")
+    private Date deleteTime;
+    /**
+     * 创建时间
+     */
+    @Column(name = "create_at")
+    private Date createAt;
+    /**
+     * 更新时间
+     */
+    @Column(name = "update_at")
+    private Date updateAt;
+    /**
+     * 删除时间
+     */
+    @Column(name = "delete_at")
+    private Date deleteAt;
+    /**
+     * 产生Issue时的现场照片，多个用半角逗号“,”分隔
+     */
+    @Column(name = "attachment_md5_list")
+    private String attachmentMd5List;
+    /**
+     * 产生Issue时的现场录音，多个用半角逗号“,”分隔
+     */
+    @Column(name = "audio_md5_list")
+    private String audioMd5List;
+    /**
+     * 其它数据
+     */
+    private String detail;
 
     public int getCount() {
         return count;
@@ -58,194 +214,6 @@ public class HouseQmCheckTaskIssue {
     public void setCount(int count) {
         this.count = count;
     }
-
-    /**
-     * 区域ID
-     */
-    @Column(name = "area_id")
-    private Integer areaId;
-
-    /**
-     * 区域路径和id
-     */
-    @Column(name = "area_path_and_id")
-    private String areaPathAndId;
-
-    /**
-     * 模块类型（23=日常检查, 24=月度检查, 25=季度检查, 26=入伙验房, 27=专项检查, 28=分户验收, 29=安全检查, 30=承接查验, 31=工地开放）
-     */
-    @Column(name = "category_cls")
-    private Integer categoryCls;
-
-    /**
-     * 任务类型key
-     */
-    @Column(name = "category_key")
-    private String categoryKey;
-
-    /**
-     * 任务类型路径和Key
-     */
-    @Column(name = "category_path_and_key")
-    private String categoryPathAndKey;
-
-    /**
-     * 检查项key
-     */
-    @Column(name = "check_item_key")
-    private String checkItemKey;
-
-    /**
-     * 检查项路径和key
-     */
-    @Column(name = "check_item_path_and_key")
-    private String checkItemPathAndKey;
-
-    /**
-     * 图纸文件MD5
-     */
-    @Column(name = "drawing_m_d5")
-    private String drawingMD5;
-
-    /**
-     * 在图纸上的位置X
-     */
-    @Column(name = "pos_x")
-    private Integer posX;
-
-    /**
-     * 在图纸上的位置Y
-     */
-    @Column(name = "pos_y")
-    private Integer posY;
-
-    /**
-     * 问题标题
-     */
-    private String title;
-
-    /**
-     * 99 普通记录；1 问题记录
-     */
-    private Integer typ;
-
-    /**
-     * 问题描述
-     */
-    private String content;
-
-    /**
-     * 问题严重程度  1 严重 2 较差 3 轻微
-     */
-    @Column(name = "`condition`")
-    private Integer condition;
-
-    /**
-     * 整改状态：当前issue状态 10 没有问题 20 已记录未分配 30 已分配未整改 50 已整改未审核 60 已审核（消项） 70已取消 6=整改中（介乎于2和3之间）
-     */
-    @Column(name = "`status`")
-    private Integer status;
-
-    /**
-     * 整改负责人
-     */
-    @Column(name = "repairer_id")
-    private Integer repairerId;
-
-    /**
-     * 整改参与人多个用半角逗号“,”分隔
-     */
-    @Column(name = "repairer_follower_ids")
-    private String repairerFollowerIds;
-
-    /**
-     * 客户端记录时间
-     */
-    @Column(name = "client_create_at")
-    private Date clientCreateAt;
-
-    /**
-     * 最后指派人
-     */
-    @Column(name = "last_assigner")
-    private Integer lastAssigner;
-
-    /**
-     * 最后指派时间
-     */
-    @Column(name = "last_assign_at")
-    private Date lastAssignAt;
-
-    /**
-     * 最后整改人
-     */
-    @Column(name = "last_repairer")
-    private Integer lastRepairer;
-
-    /**
-     * 最后整改时间
-     */
-    @Column(name = "last_repairer_at")
-    private Date lastRepairerAt;
-
-    /**
-     * 最后消项人
-     */
-    @Column(name = "destroy_user")
-    private Integer destroyUser;
-
-    /**
-     * 最后消项时间
-     */
-    @Column(name = "destroy_at")
-    private Date destroyAt;
-
-    /**
-     * 删除人
-     */
-    @Column(name = "delete_user")
-    private Integer deleteUser;
-
-    /**
-     * 删除时间
-     */
-    @Column(name = "delete_time")
-    private Date deleteTime;
-
-    /**
-     * 创建时间
-     */
-    @Column(name = "create_at")
-    private Date createAt;
-
-    /**
-     * 更新时间
-     */
-    @Column(name = "update_at")
-    private Date updateAt;
-
-    /**
-     * 删除时间
-     */
-    @Column(name = "delete_at")
-    private Date deleteAt;
-
-    /**
-     * 产生Issue时的现场照片，多个用半角逗号“,”分隔
-     */
-    @Column(name = "attachment_md5_list")
-    private String attachmentMd5List;
-
-    /**
-     * 产生Issue时的现场录音，多个用半角逗号“,”分隔
-     */
-    @Column(name = "audio_md5_list")
-    private String audioMd5List;
-
-    /**
-     * 其它数据
-     */
-    private String detail;
 
     /**
      * 获取记录ID（也用作问题ID）

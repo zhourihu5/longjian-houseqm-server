@@ -13,7 +13,7 @@ import java.util.List;
  */
 @Data
 @NoArgsConstructor
-public class MyIssueListVo implements Serializable{
+public class MyIssueListVo implements Serializable {
 
     private List<ApiHouseQmCheckTaskIssueRsp> issue_list;
     private Integer last_id;

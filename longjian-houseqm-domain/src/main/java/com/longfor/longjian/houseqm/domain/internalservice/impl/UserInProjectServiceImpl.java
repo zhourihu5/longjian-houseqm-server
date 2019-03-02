@@ -39,7 +39,7 @@ public class UserInProjectServiceImpl implements UserInProjectService {
     public List<UserInProject> searchByUserId(int uid) {
         Example example = new Example(UserInProject.class);
         Example.Criteria criteria = example.createCriteria();
-        criteria.andEqualTo("userId",uid);
+        criteria.andEqualTo("userId", uid);
         ExampleUtil.addDeleteAtJudge(example);
 
         return userInProjectMapper.selectByExample(example);

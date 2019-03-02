@@ -29,8 +29,8 @@ public class ProjectCheckerStatReq implements Serializable {
     @NotNull
     private String source;//app名称，如：ydyf、gcgl
 
-    private Integer task_id=0;//任务ID(如果只统计项目数据，则不传或者传0)
-    private Integer stat_begin=0;//统计起始时间戳(单位秒)
-    private Integer stat_end=0;//统计结束时间戳(单位秒)
-    private Integer timestamp=0;//上次更新时间
+    private Integer task_id = 0;//任务ID(如果只统计项目数据，则不传或者传0)
+    private Integer stat_begin = 0;//统计起始时间戳(单位秒)
+    private Integer stat_end = 0;//统计结束时间戳(单位秒)
+    private Integer timestamp = 0;//上次更新时间
 }

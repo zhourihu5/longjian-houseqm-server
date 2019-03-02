@@ -28,12 +28,12 @@ public class UserServiceImpl implements UserService {
 
 
     @LFAssignDataSource("zhijian2_apisvr")
-    public Map<Integer, User> selectByIds(List<Integer> users){
-        if (users==null||users.size()<=0)return Maps.newHashMap();
+    public Map<Integer, User> selectByIds(List<Integer> users) {
+        if (users == null || users.size() <= 0) return Maps.newHashMap();
         Example example = new Example(User.class);
         Example.Criteria criteria = example.createCriteria();
-        criteria.andIn("userId",users);
-        List<User> userList= userMapper.selectByExample(example);
+        criteria.andIn("userId", users);
+        List<User> userList = userMapper.selectByExample(example);
         Map<Integer, User> map = userList.stream().collect(Collectors.toMap(User::getUserId, u -> u));
         return map;
     }
@@ -43,7 +43,7 @@ public class UserServiceImpl implements UserService {
     public List<User> searchByUserIdInAndNoDeleted(List<Integer> userIds) {
         Example example = new Example(User.class);
         Example.Criteria criteria = example.createCriteria();
-        criteria.andIn("userId",userIds);
+        criteria.andIn("userId", userIds);
         ExampleUtil.addDeleteAtJudge(example);
         return userMapper.selectByExample(example);
     }
@@ -53,7 +53,7 @@ public class UserServiceImpl implements UserService {
     public User selectByUserIdAndNotDelete(Integer senderId) {
         Example example = new Example(User.class);
         Example.Criteria criteria = example.createCriteria();
-        criteria.andEqualTo("userId",senderId);
+        criteria.andEqualTo("userId", senderId);
         criteria.andIsNull("deleteAt");
         return userMapper.selectOneByExample(example);
     }

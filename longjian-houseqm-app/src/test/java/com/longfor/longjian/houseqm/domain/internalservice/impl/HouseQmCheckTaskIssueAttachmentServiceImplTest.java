@@ -16,7 +16,7 @@ import java.util.HashSet;
 import java.util.Set;
 
 // 获取启动类，加载配置，确定装载 Spring 程序的装载方法，它回去寻找 主配置启动类（被 @SpringBootApplication 注解的）
-@SpringBootTest(classes = {com.longfor.longjian.houseqm.Application.class},webEnvironment = SpringBootTest.WebEnvironment.DEFINED_PORT)
+@SpringBootTest(classes = {com.longfor.longjian.houseqm.Application.class}, webEnvironment = SpringBootTest.WebEnvironment.DEFINED_PORT)
 // 让 JUnit 运行 Spring 的测试环境， 获得 Spring 环境的上下文的支持
 @RunWith(SpringRunner.class)
 @Transactional//这个非常关键，如果不加入这个注解配置，事务控制就会完全失效！
@@ -43,53 +43,53 @@ public class HouseQmCheckTaskIssueAttachmentServiceImplTest {
             ca.setTaskId(1);
             ca.setMd5("1");
             houseQmCheckTaskIssueAttachmentServiceImpl.inseretBatch(Arrays.asList(ca));
-        }catch(Exception e){
+        } catch (Exception e) {
             Assert.fail(e.getMessage());
         }
     }
 
     @Test
     public void deleteByIssueUuidMd5() {
-        try{
-            houseQmCheckTaskIssueAttachmentServiceImpl.deleteByIssueUuidMd5("1","1");
-        }catch(Exception e){
+        try {
+            houseQmCheckTaskIssueAttachmentServiceImpl.deleteByIssueUuidMd5("1", "1");
+        } catch (Exception e) {
             Assert.fail(e.getMessage());
         }
     }
 
     @Test
     public void searchByIssueUuid() {
-        try{
-            Set<String> params=new HashSet<>();
+        try {
+            Set<String> params = new HashSet<>();
             params.add("1");
             params.add("2");
             houseQmCheckTaskIssueAttachmentServiceImpl.searchByIssueUuid(params);
-        }catch(Exception e){
+        } catch (Exception e) {
             Assert.fail(e.getMessage());
         }
     }
 
     @Test
     public void selectByissueUuidAnduserIdAndpublicTypeAndattachmentTypeAndNotDel() {
-        try{
-            houseQmCheckTaskIssueAttachmentServiceImpl.selectByissueUuidAnduserIdAndpublicTypeAndattachmentTypeAndNotDel("1",1,1,1);
-        }catch (Exception e){
+        try {
+            houseQmCheckTaskIssueAttachmentServiceImpl.selectByissueUuidAnduserIdAndpublicTypeAndattachmentTypeAndNotDel("1", 1, 1, 1);
+        } catch (Exception e) {
             Assert.fail(e.getMessage());
         }
     }
 
     @Test
     public void selectByIssueUuidAndpublicTypeAndattachmentTypeAndNotDel() {
-        try{
-            houseQmCheckTaskIssueAttachmentServiceImpl.selectByIssueUuidAndpublicTypeAndattachmentTypeAndNotDel("1",1,1);
-        }catch (Exception e){
+        try {
+            houseQmCheckTaskIssueAttachmentServiceImpl.selectByIssueUuidAndpublicTypeAndattachmentTypeAndNotDel("1", 1, 1);
+        } catch (Exception e) {
             Assert.fail(e.getMessage());
         }
     }
 
     @Test
     public void add() {
-        try{
+        try {
             HouseQmCheckTaskIssueAttachment ca = new HouseQmCheckTaskIssueAttachment();
             ca.setIssueUuid("1");
             ca.setAttachmentType(1);
@@ -103,16 +103,16 @@ public class HouseQmCheckTaskIssueAttachmentServiceImplTest {
             ca.setTaskId(1);
             ca.setMd5("1");
             houseQmCheckTaskIssueAttachmentServiceImpl.add(ca);
-        }catch (Exception e){
+        } catch (Exception e) {
             Assert.fail(e.getMessage());
         }
     }
 
     @Test
     public void selectByMd5AndNotDel() {
-        try{
+        try {
             houseQmCheckTaskIssueAttachmentServiceImpl.selectByMd5AndNotDel("1");
-        }catch (Exception e){
+        } catch (Exception e) {
             Assert.fail(e.getMessage());
         }
     }

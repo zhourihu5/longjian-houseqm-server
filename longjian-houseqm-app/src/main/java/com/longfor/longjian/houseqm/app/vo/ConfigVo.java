@@ -10,30 +10,30 @@ import java.io.Serializable;
  */
 @Data
 @NoArgsConstructor
-public class ConfigVo  implements Serializable {
+public class ConfigVo implements Serializable {
     private ApiPushStrategyAssignTime config_assign_time;
     private ApiPushStrategyCategoryOverdue config_category_overdue;
-    private  ApiPushStrategyCategoryThreshold config_category_threshold;
+    private ApiPushStrategyCategoryThreshold config_category_threshold;
 
     @Data
     @NoArgsConstructor
-    public class ApiPushStrategyAssignTime implements Serializable{
-        private String push_time="";
-        private  String user_ids="";
+    public class ApiPushStrategyAssignTime implements Serializable {
+        private String push_time = "";
+        private String user_ids = "";
     }
 
     @Data
     @NoArgsConstructor
-    public class ApiPushStrategyCategoryOverdue implements Serializable{
-        private String category_keys="";
-        private  String user_ids="";
+    public class ApiPushStrategyCategoryOverdue implements Serializable {
+        private String category_keys = "";
+        private String user_ids = "";
     }
 
     @Data
     @NoArgsConstructor
-    public class ApiPushStrategyCategoryThreshold implements Serializable{
-        private String category_keys="";
-        private  String user_ids="";
-        private Integer threshold=0;
+    public class ApiPushStrategyCategoryThreshold implements Serializable {
+        private String category_keys = "";
+        private String user_ids = "";
+        private Integer threshold = 0;
     }
 }

@@ -20,21 +20,21 @@ public class CategoryV3MapVo implements Serializable {
 
     private Map<String, CategoryV3> categoryV3Map;
 
-    public List<String> getFullNamesByKey(String key){
-        if (categoryV3Map.containsKey(key)){
+    public List<String> getFullNamesByKey(String key) {
+        if (categoryV3Map.containsKey(key)) {
             return getFullNames(categoryV3Map.get(key));
         }
         return Lists.newArrayList();
     }
 
-    public List<String> getFullNames(CategoryV3 categoryV3){
+    public List<String> getFullNames(CategoryV3 categoryV3) {
         List<String> r = Lists.newArrayList();
         List<String> list = StringSplitToListUtil.removeStartAndEndStrAndSplit(categoryV3.getPath(), "/", "/");
         list.add(categoryV3.getKey());
         list.forEach(key -> {
-           if (categoryV3Map.containsKey(key)){
-               r.add(categoryV3Map.get(key).getName());
-           }
+            if (categoryV3Map.containsKey(key)) {
+                r.add(categoryV3Map.get(key).getName());
+            }
         });
         return r;
     }

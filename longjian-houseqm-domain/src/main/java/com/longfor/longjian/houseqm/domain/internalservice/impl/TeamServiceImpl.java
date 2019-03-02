@@ -30,20 +30,19 @@ public class TeamServiceImpl implements TeamService {
     public List<Team> searchByTeamIdIn(List<Integer> team_ids) {
         Example example = new Example(Team.class);
         Example.Criteria criteria = example.createCriteria();
-        criteria.andIn("teamId",team_ids);
+        criteria.andIn("teamId", team_ids);
         ExampleUtil.addDeleteAtJudge(example);
         return teamMapper.selectByExample(example);
     }
 
     /**
-     *
      * @param teamId
      * @return
      */
     @Override
     @LFAssignDataSource("zhijian2_apisvr")
-    public Team selectByTeamId(int teamId){
-        return teamMapper.selectByTeamId(teamId,"false");
+    public Team selectByTeamId(int teamId) {
+        return teamMapper.selectByTeamId(teamId, "false");
     }
 
     @Override
@@ -51,8 +50,8 @@ public class TeamServiceImpl implements TeamService {
     public List<Team> selectByTeamIdsNotDel(ArrayList<Integer> teamIds) {
         Example example = new Example(Team.class);
         Example.Criteria criteria = example.createCriteria();
-        criteria.andIn("teamId",teamIds).andIsNull("deleteAt");
-        return   teamMapper.selectByExample(example);
+        criteria.andIn("teamId", teamIds).andIsNull("deleteAt");
+        return teamMapper.selectByExample(example);
     }
 
     @Override
@@ -60,7 +59,7 @@ public class TeamServiceImpl implements TeamService {
     public List<Team> selectGroupIdNotDel(Integer groupId) {
         Example example = new Example(Team.class);
         Example.Criteria criteria = example.createCriteria();
-        criteria.andEqualTo("parentTeamId",groupId).andIsNull("deleteAt");
-        return   teamMapper.selectByExample(example);
+        criteria.andEqualTo("parentTeamId", groupId).andIsNull("deleteAt");
+        return teamMapper.selectByExample(example);
     }
 }

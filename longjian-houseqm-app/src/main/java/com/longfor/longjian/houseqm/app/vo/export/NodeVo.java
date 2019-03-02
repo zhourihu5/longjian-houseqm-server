@@ -24,6 +24,6 @@ public class NodeVo implements Serializable {
 
     public NodeVo(NodeDataVo data) {
         this.data = data;
-        this.child_list= Lists.newArrayList();
+        this.child_list = Lists.newArrayList();
     }
 }

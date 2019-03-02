@@ -7,7 +7,7 @@ import java.util.Date;
 
 public class Task {
     @Id
-    @GeneratedValue(generator="JDBC")
+    @GeneratedValue(generator = "JDBC")
     private Integer id;
 
     /**

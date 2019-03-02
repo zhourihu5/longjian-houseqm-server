@@ -25,6 +25,6 @@ public interface IHouseqmService {
 
     LjBaseResponse<MyIssueAttachListVo> myIssueAttachementList(DeviceReq deviceReq, HttpServletRequest request);
 
-    List<Area> searchTargetAreaByTaskId(Integer projectId,Integer taskId);
+    List<Area> searchTargetAreaByTaskId(Integer projectId, Integer taskId);
 
 }

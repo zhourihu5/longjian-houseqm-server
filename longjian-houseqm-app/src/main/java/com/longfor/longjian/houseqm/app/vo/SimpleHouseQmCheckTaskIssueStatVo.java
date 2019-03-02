@@ -11,7 +11,7 @@ import java.io.Serializable;
 @Data
 @NoArgsConstructor
 public class SimpleHouseQmCheckTaskIssueStatVo implements Serializable {
-  private  String CategoryKey;
+    private String CategoryKey;
     private String CategoryPathAndKey;
     private String CheckItemKey;
     private String CheckItemPathAndKey;

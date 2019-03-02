@@ -28,8 +28,8 @@ public class PushStrategyCategoryOverdueServiceImpl implements PushStrategyCateg
     PushStrategyCategoryOverdueMapper pushStrategyCategoryOverdueMapper;
 
     @LFAssignDataSource("zhijian2_notify")
-    public List<PushStrategyCategoryOverdue> searchByTaskIds(Set<Integer> taskIds){
-        return pushStrategyCategoryOverdueMapper.selectByTaskIds(taskIds,"false");
+    public List<PushStrategyCategoryOverdue> searchByTaskIds(Set<Integer> taskIds) {
+        return pushStrategyCategoryOverdueMapper.selectByTaskIds(taskIds, "false");
     }
 
     @Override
@@ -44,7 +44,7 @@ public class PushStrategyCategoryOverdueServiceImpl implements PushStrategyCateg
     @LFAssignDataSource("zhijian2_notify")
     public PushStrategyCategoryOverdue selectByTaskIdAndNotDel(Integer task_id) {
         Example example = new Example(PushStrategyCategoryOverdue.class);
-        example.createCriteria().andEqualTo("taskId",task_id).andIsNull("deleteAt");
+        example.createCriteria().andEqualTo("taskId", task_id).andIsNull("deleteAt");
         return pushStrategyCategoryOverdueMapper.selectOneByExample(example);
     }
 

@@ -35,6 +35,24 @@ public class BuildingqmSettingService {
     @Resource
     private IssueFieldSettingService issueFieldSettingService;
 
+    // 时间戳转日期
+    public static Date transForDate(Integer ms) {
+        if (ms == null) {
+            ms = 0;
+        }
+        long msl = (long) ms * 1000;
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        Date temp = null;
+        if (ms != null) {
+            try {
+                String str = sdf.format(msl);
+                temp = sdf.parse(str);
+            } catch (ParseException e) {
+                log.error(e.getMessage());
+            }
+        }
+        return temp;
+    }
 
     public LjBaseResponse<ApiIssueFiledSettingMsg.IssueFileds> getIssuefiledSetting(String projectIds, Integer timestamp) {
         List<Integer> projectIdList = StringSplitToListUtil.splitToIdsComma(projectIds, ",");
@@ -66,7 +84,7 @@ public class BuildingqmSettingService {
             } else {
                 List<IssueFieldSetting> issueFieldSettings = initDefaultSetting(projectIdList.get(i));
                 for (int j = 0; j < issueFieldSettings.size(); j++) {
-                    IssueFieldSetting issueFieldSetting=issueFieldSettings.get(j);
+                    IssueFieldSetting issueFieldSetting = issueFieldSettings.get(j);
                     ApiIssueFiledSettingMsg msg = new ApiIssueFiledSettingMsg();
                     msg.setProject_id(issueFieldSetting.getProjectId());
                     msg.setField_id(issueFieldSetting.getFieldId());
@@ -86,7 +104,6 @@ public class BuildingqmSettingService {
         response.setData(fileds);
         return response;
     }
-
 
     private List<IssueFieldSetting> initDefaultSetting(Integer projectId) {
         Integer uid = 0;
@@ -273,25 +290,6 @@ public class BuildingqmSettingService {
         }
         settingList.add(settings10);
         return settingList;
-    }
-
-    // 时间戳转日期
-    public static Date transForDate(Integer ms) {
-        if (ms == null) {
-            ms = 0;
-        }
-        long msl = (long) ms * 1000;
-        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-        Date temp = null;
-        if (ms != null) {
-            try {
-                String str = sdf.format(msl);
-                temp = sdf.parse(str);
-            } catch (ParseException e) {
-                log.error(e.getMessage());
-            }
-        }
-        return temp;
     }
 
 }

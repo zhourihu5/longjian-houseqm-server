@@ -31,9 +31,11 @@ public interface UserInHouseQmCheckTaskService {
     int add(UserInHouseQmCheckTask qmCheckTask);
 
     UserInHouseQmCheckTask selectByTaskIdAndUserIdAndNotDel(Integer taskId, Integer uid);
+
     int removeByTaskId(Integer taskId);
 
     List<UserInHouseQmCheckTask> searchBySquadIdIn(List<Integer> squadIds);
+
     UserInHouseQmCheckTask selectBysquadIdAnduserIdAndtaskIdAndNotDel(Integer squadId, Integer userId, Integer taskId);
 
     int update(UserInHouseQmCheckTask dbItem);

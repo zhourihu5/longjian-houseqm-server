@@ -36,11 +36,10 @@ public class StatGroupController {
     /**
      * 项目进度统计
      */
-    private static final  String PROGRESSSTAT_TIP = "progressStat";
+    private static final String PROGRESSSTAT_TIP = "progressStat";
     private static final String PROJECTSTAT_TIP = "projectStat";
     private static final String PROJECTRANKSTAT_TIP = "projectRankStat";
     private static final String CATEGORYSTAT_TIP = "categoryStat";
-
 
 
     @Resource
@@ -57,7 +56,7 @@ public class StatGroupController {
      * @return
      */
     @PostMapping(value = "group", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
-    public LjBaseResponse<Object> group(@RequestParam(value = "token", required =false) String token,
+    public LjBaseResponse<Object> group(@RequestParam(value = "token", required = false) String token,
                                         @RequestParam(value = "group_id") Integer groupId,
                                         @RequestParam(value = "page_level") String pageLevel,
                                         @RequestParam(value = "tip") String tip,
@@ -67,7 +66,7 @@ public class StatGroupController {
         try {
 
             Object statListVo = null;
-            switch(tip){
+            switch (tip) {
                 case TEAMRANKSTAT_TIP:
                     break;
                 case PROGRESSSTAT_TIP:
@@ -86,10 +85,9 @@ public class StatGroupController {
 
             response.setData(statListVo);
 
-        }catch (IOException e){
+        } catch (IOException e) {
             log.error("StatGroupController#group IOException,{}", e);
-        }
-        catch (LjBaseRuntimeException ex) {
+        } catch (LjBaseRuntimeException ex) {
 
             response.setResult(ex.getErrorCode());
             response.setMessage(ex.getErrorMsg());

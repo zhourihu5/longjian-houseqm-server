@@ -21,6 +21,7 @@ import java.util.Date;
 public class HouseQmCheckTaskNotifyRecordServiceImpl implements HouseQmCheckTaskNotifyRecordService {
     @Resource
     HouseQmCheckTaskNotifyRecordMapper houseQmCheckTaskNotifyRecordMapper;
+
     @Transactional
     @Override
     @LFAssignDataSource("zhijian2")
@@ -29,6 +30,7 @@ public class HouseQmCheckTaskNotifyRecordServiceImpl implements HouseQmCheckTask
         record.setUpdateAt(new Date());
         return houseQmCheckTaskNotifyRecordMapper.insert(record);
     }
+
     @Transactional
     @Override
     @LFAssignDataSource("zhijian2")

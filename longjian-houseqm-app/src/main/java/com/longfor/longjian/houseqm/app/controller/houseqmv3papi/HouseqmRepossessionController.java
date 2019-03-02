@@ -61,7 +61,7 @@ public class HouseqmRepossessionController {
         Object data = result.getData();
         String jsonString = JSON.toJSONString(data);
         JSONObject jsonObject = JSONObject.parseObject(jsonString);
-        RepossessionGetRspVo repossessionGetRspVo = JSONObject.toJavaObject(jsonObject,RepossessionGetRspVo.class);
+        RepossessionGetRspVo repossessionGetRspVo = JSONObject.toJavaObject(jsonObject, RepossessionGetRspVo.class);
         TaskResponse<RepossessionGetRspVo> response = new TaskResponse<>();
         response.setData(repossessionGetRspVo);
         return response;

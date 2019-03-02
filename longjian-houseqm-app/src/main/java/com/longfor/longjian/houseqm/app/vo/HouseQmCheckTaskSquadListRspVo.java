@@ -12,12 +12,13 @@ import java.util.List;
 @Data
 @NoArgsConstructor
 public class HouseQmCheckTaskSquadListRspVo implements Serializable {
-   private Integer id;
-    private Integer  squad_type;
-    private String   name;
+    private Integer id;
+    private Integer squad_type;
+    private String name;
+
     @Data
     @NoArgsConstructor
-    public  class HouseQmCheckTaskSquadListRspVoList implements  Serializable{
-        List<HouseQmCheckTaskSquadListRspVo>squad_list;
+    public class HouseQmCheckTaskSquadListRspVoList implements Serializable {
+        List<HouseQmCheckTaskSquadListRspVo> squad_list;
     }
 }

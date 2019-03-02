@@ -18,7 +18,7 @@ import java.io.Serializable;
 public class RepossessionGetReq implements Serializable {
 
     @NotBlank
-    @Length(max = 1024,min = 1)
+    @Length(max = 1024, min = 1)
     private String task_ids;
 
     private Integer timestamp;

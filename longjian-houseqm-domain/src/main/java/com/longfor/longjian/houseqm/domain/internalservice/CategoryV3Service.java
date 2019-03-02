@@ -10,7 +10,7 @@ import java.util.List;
  */
 public interface CategoryV3Service {
 
-    List<CategoryV3>  searchCategoryV3ByKeyInAndNoDeleted(List<String> categoryKeys);
+    List<CategoryV3> searchCategoryV3ByKeyInAndNoDeleted(List<String> categoryKeys);
 
     CategoryV3 selectByKeyNotDel(String categoryKey);
 }

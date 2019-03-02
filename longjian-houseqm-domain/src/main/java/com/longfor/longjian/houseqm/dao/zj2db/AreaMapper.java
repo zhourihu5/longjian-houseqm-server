@@ -12,6 +12,6 @@ import java.util.List;
 public interface AreaMapper extends LFMySQLMapper<Area> {
 
 
-    List<Area> selectAreaByIdInAndNoDeleted(@Param("areaPaths") List<Integer> areaPaths,@Param("deleted") String deleted);
+    List<Area> selectAreaByIdInAndNoDeleted(@Param("areaPaths") List<Integer> areaPaths, @Param("deleted") String deleted);
 
 }

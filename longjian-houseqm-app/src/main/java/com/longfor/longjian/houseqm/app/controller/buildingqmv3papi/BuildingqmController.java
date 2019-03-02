@@ -51,6 +51,8 @@ import java.util.Map;
 public class BuildingqmController {
 
 
+    private static final String PARAN = "yyyy-MM-dd HH:mm:ss";
+    private static final String UTF = "UTF-8";
     @Resource
     private IBuildingqmService buildingqmService;
     @Resource
@@ -59,9 +61,6 @@ public class BuildingqmController {
     private SessionInfo sessionInfo;
     @Resource
     private CtrlTool ctrlTool;
-
-    private static final  String PARAN="yyyy-MM-dd HH:mm:ss";
-    private static final  String UTF="UTF-8";
 
     /**
      * 项目下获取我的任务列表
@@ -372,7 +371,7 @@ public class BuildingqmController {
         String fileNames = map.get("fileName").toString();
 
         response.addHeader("Content-Disposition",
-                "attachment;filename=" + new String(fileNames.getBytes("utf-8"),"iso8859-1"));
+                "attachment;filename=" + new String(fileNames.getBytes("utf-8"), "iso8859-1"));
 
         response.addHeader("Content-Type", "application/vnd.ms-excel; charset=utf-8");
         response.addHeader("Expires", "0");

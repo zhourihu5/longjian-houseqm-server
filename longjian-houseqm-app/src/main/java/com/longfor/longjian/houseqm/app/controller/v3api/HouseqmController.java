@@ -36,13 +36,14 @@ import javax.servlet.http.HttpServletRequest;
 public class HouseqmController {
     @Autowired
     private IHouseqmService houseqmService;
+
     /**
      * @param deviceReq
      * @return
      */
     @RequestMapping(value = "my_issue_log_list", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     public LjBaseResponse<HouseqmMyIssueLogListRspVo> myIssueLogList(@Validated DeviceReq deviceReq, HttpServletRequest request) {
-        return houseqmService.myIssueLogList(deviceReq,request);
+        return houseqmService.myIssueLogList(deviceReq, request);
     }
 
 
@@ -51,8 +52,8 @@ public class HouseqmController {
      * @return
      */
     @RequestMapping(value = "my_issue_list", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
-    public LjBaseResponse<MyIssueListVo> myIssueList(@Validated DeviceReq deviceReq,HttpServletRequest request) {
-        return houseqmService.myIssueList(deviceReq,request);
+    public LjBaseResponse<MyIssueListVo> myIssueList(@Validated DeviceReq deviceReq, HttpServletRequest request) {
+        return houseqmService.myIssueList(deviceReq, request);
     }
 
 
@@ -71,7 +72,7 @@ public class HouseqmController {
      * @return
      */
     @RequestMapping(value = "my_issue_attachment_list", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
-    public LjBaseResponse<MyIssueAttachListVo> myIssueAttachmentList(@Validated DeviceReq deviceReq,HttpServletRequest request) {
-        return houseqmService.myIssueAttachementList(deviceReq,request);
+    public LjBaseResponse<MyIssueAttachListVo> myIssueAttachmentList(@Validated DeviceReq deviceReq, HttpServletRequest request) {
+        return houseqmService.myIssueAttachementList(deviceReq, request);
     }
 }

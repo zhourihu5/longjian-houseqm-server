@@ -19,12 +19,13 @@ import java.util.List;
 public class ProjectSettingV2ServiceImpl implements ProjectSettingV2Service {
     @Resource
     ProjectSettingV2Mapper projectSettingV2Mapper;
+
     @Override
     @LFAssignDataSource("zhijian2")
     public List<ProjectSettingV2> getProjectSettingId(Integer projectId) {
         Example example = new Example(ProjectSettingV2.class);
-        example.createCriteria().andEqualTo("projectId",projectId);
-        return   projectSettingV2Mapper.selectByExample(example);
+        example.createCriteria().andEqualTo("projectId", projectId);
+        return projectSettingV2Mapper.selectByExample(example);
 
     }
 }

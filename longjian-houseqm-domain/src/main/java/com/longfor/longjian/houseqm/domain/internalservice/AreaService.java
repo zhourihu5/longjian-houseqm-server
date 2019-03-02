@@ -23,10 +23,10 @@ public interface AreaService {
     List<Area> selectByFatherId(Integer prodectId, Integer i);
 
     /**
+     * @param areaPaths
      * @return java.util.List<com.longfor.longjian.houseqm.po.zj2db.Area>
      * @author hy
      * @date 2018/12/21 0021
-     * @param areaPaths
      */
     List<Area> searchAreaByIdInAndNoDeleted(List<Integer> areaPaths);
 }

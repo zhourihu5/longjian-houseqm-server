@@ -13,6 +13,7 @@ import java.util.List;
 @NoArgsConstructor
 public class ReportIssueVo implements Serializable {
     List<ApiHouseQmCheckTaskReportMsg> dropped;
+
     @Data
     @NoArgsConstructor
     public class ApiHouseQmCheckTaskReportMsg {

@@ -15,7 +15,7 @@ public interface HouseQmCheckTaskIssueLogService {
 
     List<HouseQmCheckTaskIssueLog> searchByIssueUuid(Set<String> issueUuids);
 
-    List<HouseQmCheckTaskIssueLog> searchHouseQmCheckTaskIssueLogByMyIdTaskIdLastIdUpdateAtGt(Integer userId, Integer taskId, Integer lastId, Integer timestamp, Integer limit,Integer start,Integer checker);
+    List<HouseQmCheckTaskIssueLog> searchHouseQmCheckTaskIssueLogByMyIdTaskIdLastIdUpdateAtGt(Integer userId, Integer taskId, Integer lastId, Integer timestamp, Integer limit, Integer start, Integer checker);
 
 
     HouseQmCheckTaskIssueLog selectIdByTaskIdAndIdAndUuidInAndUpdateAtGtAndNoDeletedOrderById(Integer taskId, List<String> uuids, Date issueLogUpdateTime);

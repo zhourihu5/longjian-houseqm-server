@@ -16,7 +16,7 @@ import java.util.List;
  */
 @Data
 @NoArgsConstructor
-public class HouseQmCheckTaskIssueListDto  {
+public class HouseQmCheckTaskIssueListDto {
     private List<HouseQmCheckTaskIssue> houseQmCheckTaskIssues;
     private Integer total;
 }

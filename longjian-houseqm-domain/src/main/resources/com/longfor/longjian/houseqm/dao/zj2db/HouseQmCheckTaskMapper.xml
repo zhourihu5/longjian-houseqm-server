@@ -25,7 +25,8 @@
         <result column="delivery_begin_on" property="deliveryBeginOn" jdbcType="TIMESTAMP"/>
         <result column="delivery_end_on" property="deliveryEndOn" jdbcType="TIMESTAMP"/>
     </resultMap>
-    <resultMap id="ResultMapWithBLOBs" type="com.longfor.longjian.houseqm.po.zj2db.HouseQmCheckTask" extends="BaseResultMap">
+    <resultMap id="ResultMapWithBLOBs" type="com.longfor.longjian.houseqm.po.zj2db.HouseQmCheckTask"
+               extends="BaseResultMap">
         <!--
           WARNING - @mbg.generated
         -->

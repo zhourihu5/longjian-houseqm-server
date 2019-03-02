@@ -30,17 +30,13 @@ import java.util.List;
 @Slf4j
 public class StatHouseQmProjectStatService {
 
+    private static final String TIME_FORMAT = "yyyy-MM-dd";
     @Resource
     StatHouseQmProjectDailyStatService statHouseQmProjectDailyStatService;
-
     @Resource
     TeamService teamService;
-
     @Resource
     ProjectService projectService;
-
-    private static final String TIME_FORMAT = "yyyy-MM-dd";
-
 
     public List<StatDataVo> searchStat(Integer groupId, String categoryKey, String timeFrameType, List<Integer> teamIds, Date timeFrameBegin,
                                        Date timeFrameEnd, Integer timeFrameMax) {
@@ -83,28 +79,28 @@ public class StatHouseQmProjectStatService {
             projectIdList.add(project.getId());
         }
 
-        List<StatDataVo>  statDataVos = Lists.newArrayList();
+        List<StatDataVo> statDataVos = Lists.newArrayList();
 
         for (TimeFrame timeFrame : frames) {
             StatHouseQmProjectDailyStat stat = statHouseQmProjectDailyStatService.query(timeFrame, categoryKey,
                     projectIdList);
-            tranferDataVo(stat,timeFrame,statDataVos);
+            tranferDataVo(stat, timeFrame, statDataVos);
         }
-        return  statDataVos;
+        return statDataVos;
     }
 
 
-    private void tranferDataVo(StatHouseQmProjectDailyStat stat, TimeFrame timeFrame, List<StatDataVo>  statDataVos){
+    private void tranferDataVo(StatHouseQmProjectDailyStat stat, TimeFrame timeFrame, List<StatDataVo> statDataVos) {
 
-        if(stat == null){
+        if (stat == null) {
             return;
         }
         StatDataVo vo = new StatDataVo();
         BeanUtils.copyProperties(stat, vo);
 
         vo.setTimeFrameType(timeFrame.getType());
-        vo.setBeginOn(DateUtil.dateToString(timeFrame.getBeginOn(),TIME_FORMAT));
-        vo.setEndOn(DateUtil.dateToString(timeFrame.getEndOn(),TIME_FORMAT));
+        vo.setBeginOn(DateUtil.dateToString(timeFrame.getBeginOn(), TIME_FORMAT));
+        vo.setEndOn(DateUtil.dateToString(timeFrame.getEndOn(), TIME_FORMAT));
         vo.setYear(timeFrame.getYear());
         vo.setTimeFrameIdx(timeFrame.getIdx());
 

@@ -42,17 +42,18 @@ public class HouseQmCheckTaskIssueUserServiceImpl implements HouseQmCheckTaskIss
 
     /**
      * 根据userId taskId createAt时间 查 取未删除的
+     *
      * @param userId
      * @param taskId
      * @param timestamp
      * @return
      */
     @LFAssignDataSource(value = "zhijian2")
-    public List<HouseQmCheckTaskIssueUser> searchByUserIdAndTaskIdAndCreateAt(int userId, int taskId,int timestamp){
+    public List<HouseQmCheckTaskIssueUser> searchByUserIdAndTaskIdAndCreateAt(int userId, int taskId, int timestamp) {
         Example example = new Example(HouseQmCheckTaskIssueUser.class);
         Example.Criteria criteria = example.createCriteria();
-        criteria.andEqualTo("userId",userId).andEqualTo("taskId",taskId);
-        criteria.andGreaterThan("createAt", DateUtil.timestampToString(timestamp,"yyyy-MM-dd"));
+        criteria.andEqualTo("userId", userId).andEqualTo("taskId", taskId);
+        criteria.andGreaterThan("createAt", DateUtil.timestampToString(timestamp, "yyyy-MM-dd"));
         ExampleUtil.addDeleteAtJudge(example);
         //List<HouseQmCheckTaskIssueUser> houseQmCheckTaskIssueUsers = houseQmCheckTaskIssueUserMapper.selectByUserIdAndTaskIdAndCreateAt(userId, taskId, timestamp,"false");
         List<HouseQmCheckTaskIssueUser> houseQmCheckTaskIssueUsers = houseQmCheckTaskIssueUserMapper.selectByExample(example);
@@ -60,17 +61,16 @@ public class HouseQmCheckTaskIssueUserServiceImpl implements HouseQmCheckTaskIss
     }
 
     /**
-     *
-     * @author hy
-     * @date 2018/12/25 0025
      * @param uid
      * @param task_id
      * @return java.util.List<com.longfor.longjian.houseqm.po.zj2db.HouseQmCheckTaskIssueUser>
+     * @author hy
+     * @date 2018/12/25 0025
      */
     @Override
     @LFAssignDataSource(value = "zhijian2")
     public List<HouseQmCheckTaskIssueUser> selectIssueUUIDByUserIdAndTaskIdAndNoDeleted(Integer uid, Integer task_id) {
-        return houseQmCheckTaskIssueUserMapper.selectIssueUUIDByUserIdAndTaskIdAndNoDeleted(uid,task_id,"false");
+        return houseQmCheckTaskIssueUserMapper.selectIssueUUIDByUserIdAndTaskIdAndNoDeleted(uid, task_id, "false");
     }
 
     @Override
@@ -78,11 +78,11 @@ public class HouseQmCheckTaskIssueUserServiceImpl implements HouseQmCheckTaskIss
     public HouseQmCheckTaskIssueUser selectUpdateAtByTaskIdAndNoDeletedOrderByUpdateAt(Integer task_id) {
         Example example = new Example(HouseQmCheckTaskIssueUser.class);
         Example.Criteria criteria = example.createCriteria();
-        criteria.andEqualTo("taskId",task_id);
+        criteria.andEqualTo("taskId", task_id);
         ExampleUtil.addDeleteAtJudge(example);
         example.orderBy("updateAt").desc();
         List<HouseQmCheckTaskIssueUser> result = houseQmCheckTaskIssueUserMapper.selectByExample(example);
-        if (CollectionUtils.isEmpty(result))return null;
+        if (CollectionUtils.isEmpty(result)) return null;
         else return result.get(0);
     }
 
@@ -91,11 +91,12 @@ public class HouseQmCheckTaskIssueUserServiceImpl implements HouseQmCheckTaskIss
     public HouseQmCheckTaskIssueUser selectByIssueUUidAndUserIdAndRoleTypeAndNotDel(String uuid, Integer repairerId, Integer value) {
         Example example = new Example(HouseQmCheckTaskIssueUser.class);
         Example.Criteria criteria = example.createCriteria();
-        criteria.andEqualTo("issueUuid",uuid);
-        criteria.andEqualTo("userId",repairerId);
-        criteria.andEqualTo("roleType",value).andIsNull("deleteAt");
+        criteria.andEqualTo("issueUuid", uuid);
+        criteria.andEqualTo("userId", repairerId);
+        criteria.andEqualTo("roleType", value).andIsNull("deleteAt");
         return houseQmCheckTaskIssueUserMapper.selectOneByExample(example);
     }
+
     @Transactional
     @Override
     @LFAssignDataSource(value = "zhijian2")
@@ -105,6 +106,7 @@ public class HouseQmCheckTaskIssueUserServiceImpl implements HouseQmCheckTaskIss
         houseQmCheckTaskIssueUserMapper.insert(repairerUserInfos);
 
     }
+
     @Transactional
     @Override
     @LFAssignDataSource(value = "zhijian2")
@@ -118,11 +120,12 @@ public class HouseQmCheckTaskIssueUserServiceImpl implements HouseQmCheckTaskIss
     public List<HouseQmCheckTaskIssueUser> selectByRoleTypeAndUserIdAndIssueUuid(Integer value, ArrayList<Integer> intFollowers, String uuid) {
         Example example = new Example(HouseQmCheckTaskIssueUser.class);
         Example.Criteria criteria = example.createCriteria();
-        criteria.andEqualTo("roleType",value);
-        criteria.andIn("userId",intFollowers);
-        criteria.andEqualTo("issueUuid",uuid).andIsNull("deleteAt");
+        criteria.andEqualTo("roleType", value);
+        criteria.andIn("userId", intFollowers);
+        criteria.andEqualTo("issueUuid", uuid).andIsNull("deleteAt");
         return houseQmCheckTaskIssueUserMapper.selectByExample(example);
     }
+
     @Transactional
     @Override
     @LFAssignDataSource(value = "zhijian2")

@@ -23,16 +23,15 @@ public class FileResourceServiceImpl implements FileResourceService {
     FileResourceMapper fileResourceMapper;
 
     /**
-     *
-     * @author hy
-     * @date 2018/12/21 0021
      * @param attachments
      * @return java.util.List<com.longfor.longjian.houseqm.po.zj2db.FileResource>
+     * @author hy
+     * @date 2018/12/21 0021
      */
     @Override
     @LFAssignDataSource("zhijian2")
     public List<FileResource> searchFileResourceByFileMd5InAndNoDeleted(List<String> attachments) {
-        return fileResourceMapper.selectFileResourceByFileMd5InAndNoDeleted(attachments,"false");
+        return fileResourceMapper.selectFileResourceByFileMd5InAndNoDeleted(attachments, "false");
     }
 
     @Override

@@ -6,6 +6,7 @@ public class ExampleUtil {
 
     /**
      * 添加非空判断条件deleteAt != null and deleteAt != '0001-01-01 00:00:00'
+     *
      * @param example
      * @return
      */

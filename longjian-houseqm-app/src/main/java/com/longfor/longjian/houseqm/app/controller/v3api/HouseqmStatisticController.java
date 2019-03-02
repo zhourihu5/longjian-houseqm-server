@@ -59,6 +59,7 @@ import java.util.*;
 @RequestMapping("v3/api/houseqm_statistic/")
 @Slf4j
 public class HouseqmStatisticController {
+    private static final String _SOURCE_NAME_GCJC = "gcjc";
     @Resource
     private HouseqmStaticService houseqmStaticService;
     @Resource
@@ -73,7 +74,6 @@ public class HouseqmStatisticController {
     private SessionInfo sessionInfo;
     @Resource
     private AreaService areaService;
-    private static final String _SOURCE_NAME_GCJC = "gcjc";
 
     /**
      * @return com.longfor.longjian.common.base.LjBaseResponse<com.longfor.longjian.houseqm.app.vo.houseqmstatistic.HouseqmStatisticRhyfTaskStatRspVo>
@@ -88,7 +88,7 @@ public class HouseqmStatisticController {
         LjBaseResponse<HouseqmStatisticRhyfTaskStatRspVo> response = new LjBaseResponse<>();
         HouseQmCheckTaskHouseStatInfoVo house = null;
         try {
-            if (req.getArea_id()==null)req.setArea_id(0);
+            if (req.getArea_id() == null) req.setArea_id(0);
             house = iHouseqmStatisticService.getHouseQmHouseQmCheckTaskHouseStatByTaskId(req.getProject_id(), req.getTask_id(), req.getArea_id());
             HouseqmStatisticRhyfTaskStatRspVo item = new HouseqmStatisticRhyfTaskStatRspVo();
             ApiHouseQmRhyfTaskHouseStatVo result = new ApiHouseQmRhyfTaskHouseStatVo();
@@ -179,12 +179,12 @@ public class HouseqmStatisticController {
     public LjBaseResponse<HouseqmStatisticTaskListRspMsgVo> taskList(@RequestParam(value = "project_id") Integer projectId,
                                                                      @RequestParam(value = "source") String source,
                                                                      @RequestParam(value = "timestamp") Integer timestamp,
-                                                                     @RequestParam(value = "area_id",required =false) Integer areaId) {
+                                                                     @RequestParam(value = "area_id", required = false) Integer areaId) {
         Integer userId = (Integer) sessionInfo.getBaseInfo("userId");
         List<UserInHouseQmCheckTask> checkers = houseqmStaticService.searchUserInHouseQmCheckTaskByUserIdRoleType(userId, HouseQmCheckTaskRoleTypeEnum.Checker.getId());
-            if(CollectionUtils.isEmpty(checkers)){
-                return  null;
-            }
+        if (CollectionUtils.isEmpty(checkers)) {
+            return null;
+        }
         HashMap<Integer, Boolean> checkMap = Maps.newHashMap();
         for (int i = 0; i < checkers.size(); i++) {
             checkMap.put(checkers.get(i).getTaskId(), true);
@@ -192,7 +192,7 @@ public class HouseqmStatisticController {
         List<HouseQmCheckTask> resTask = Lists.newArrayList();
 
 
-        if (areaId !=null) {
+        if (areaId != null) {
             List<HouseQmCheckTask> res = houseqmStaticService.searchHouseQmCheckTaskByProjIdAreaIdCategoryClsIn(projectId, areaId, getCategoryClsList(source));
             resTask.addAll(res);
         } else {
@@ -202,11 +202,11 @@ public class HouseqmStatisticController {
         List<ApiTaskInfo> items = Lists.newArrayList();
         for (int i = 0; i < resTask.size(); i++) {
             if (checkMap.containsKey(resTask.get(i).getTaskId())) {
-            ApiTaskInfo info = new ApiTaskInfo();
-            info.setId(resTask.get(i).getTaskId());
-            info.setName(resTask.get(i).getName());
-            info.setCategory_cls(resTask.get(i).getCategoryCls());
-            items.add(info);
+                ApiTaskInfo info = new ApiTaskInfo();
+                info.setId(resTask.get(i).getTaskId());
+                info.setName(resTask.get(i).getName());
+                info.setCategory_cls(resTask.get(i).getCategoryCls());
+                items.add(info);
             }
         }
         HouseqmStatisticTaskListRspMsgVo vo1 = new HouseqmStatisticTaskListRspMsgVo();
@@ -251,9 +251,9 @@ public class HouseqmStatisticController {
      */
     @RequestMapping(value = "project_issue_repair", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     public LjBaseResponse<HouseqmStatisticProjectIssueRepairRsp> projectIssueRepair(@Valid HouseqmStatisticProjectIssueRepairReq req) {
-        if (req.getArea_id()==null)req.setArea_id(0);
-        if (req.getBegin_on()==null)req.setBegin_on(0);
-        if (req.getEnd_on()==null)req.setEnd_on(0);
+        if (req.getArea_id() == null) req.setArea_id(0);
+        if (req.getBegin_on() == null) req.setBegin_on(0);
+        if (req.getEnd_on() == null) req.setEnd_on(0);
 
         IssueRepairStatisticVo result = iHouseqmStatisticService.projectIssueRepair(req.getProject_id(), req.getSource(), req.getArea_id(), req.getBegin_on(), req.getEnd_on(), req.getTimestamp());
         LjBaseResponse<HouseqmStatisticProjectIssueRepairRsp> response = new LjBaseResponse<>();
@@ -302,8 +302,8 @@ public class HouseqmStatisticController {
         }
         StatCategoryStatRspVo result = iHouseqmStatService.searchHouseQmIssueCategoryStatByProjTaskIdAreaIdBeginOnEndOn(projectId, taskId, areaId, begin, endOns);
         List<HouseQmStatCategorySituationRspVo> items = result.getItems();
-        List<HouseQmIssueCategoryStatVo> categoryStatlist= Lists.newArrayList();
-        items.forEach(e->{
+        List<HouseQmIssueCategoryStatVo> categoryStatlist = Lists.newArrayList();
+        items.forEach(e -> {
             HouseQmIssueCategoryStatVo item = new HouseQmIssueCategoryStatVo();
             item.setKey(e.getKey());
             item.setParentKey(e.getParent_key());
@@ -388,9 +388,9 @@ public class HouseqmStatisticController {
      */
     @RequestMapping(value = "task_issue_repair_list", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     public LjBaseResponse<HouseqmStatisticTaskIssueRepairListRsp> taskIssueRepairList(@Validated HouseqmStatisticTaskIssueRepairListReq req) {
-        if (req.getArea_id()==null)req.setArea_id(0);
-        if (req.getBegin_on()==null)req.setBegin_on(0);
-        if (req.getEnd_on()==null)req.setEnd_on(0);
+        if (req.getArea_id() == null) req.setArea_id(0);
+        if (req.getBegin_on() == null) req.setBegin_on(0);
+        if (req.getEnd_on() == null) req.setEnd_on(0);
 
         HouseqmStatisticCategoryIssueListRspMsgVo result = iHouseqmStatisticService.taskIssueRepairList(req.getProject_id(), req.getTask_id(), req.getArea_id(), req.getBegin_on(), req.getEnd_on(), req.getTimestamp(), req.getPlan_status(), req.getSource(), req.getPage(), req.getPage_size());
         LjBaseResponse<HouseqmStatisticTaskIssueRepairListRsp> response = new LjBaseResponse<>();

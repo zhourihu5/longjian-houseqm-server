@@ -8,8 +8,8 @@ import lombok.Data;
  */
 @Data
 public class ApiHouseQmCheckTaskIssueRspVo {
-    private  Integer id;
-    private  Integer projectId;
+    private Integer id;
+    private Integer projectId;
     private Integer taskId;
     private String uuid;
     private Integer senderId;
@@ -43,7 +43,7 @@ public class ApiHouseQmCheckTaskIssueRspVo {
     private Integer destroyAt;
     private Integer deleteUser;
     private Integer deleteTime;
-    private String  detail;
+    private String detail;
     private Integer updateAt;
     private Integer deleteAt;
 }

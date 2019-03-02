@@ -88,7 +88,7 @@ public class HouseqmIssueController {
             response.setResult(1);
             response.setMessage(e.getMessage());
         }
-        if (req.getTask_id()==null)req.setTask_id(0);
+        if (req.getTask_id() == null) req.setTask_id(0);
         Project proj = iHouseqmIssueService.getProjectByProjId(req.getProject_id());
         if (proj == null) {
             throw new LjBaseRuntimeException(ErrorEnum.DB_ITEM_UNFOUND.getCode(), ErrorEnum.DB_ITEM_UNFOUND.getMessage());
@@ -156,9 +156,9 @@ public class HouseqmIssueController {
         if (CollectionUtils.isNotEmpty(req.getStatus_in())) {
             StringBuffer sb = new StringBuffer();
             for (int i = 0; i < req.getStatus_in().size(); i++) {
-                if (i==0){
+                if (i == 0) {
                     sb.append(req.getStatus_in().get(i));
-                }else {
+                } else {
                     sb.append("status_in=").append(req.getStatus_in().get(i));
                 }
                 if (i < req.getStatus_in().size() - 1) {
@@ -173,9 +173,9 @@ public class HouseqmIssueController {
         if (CollectionUtils.isNotEmpty(req.getArea_ids())) {
             StringBuffer sb = new StringBuffer();
             for (int i = 0; i < req.getArea_ids().size(); i++) {
-                if (i==0){
+                if (i == 0) {
                     sb.append(req.getArea_ids().get(i));
-                }else {
+                } else {
                     sb.append("area_ids=").append(req.getArea_ids().get(i));
                 }
                 if (i < req.getArea_ids().size() - 1) {
@@ -190,9 +190,9 @@ public class HouseqmIssueController {
         if (CollectionUtils.isNotEmpty(uuidList)) {
             StringBuffer sb = new StringBuffer();
             for (int i = 0; i < uuidList.size(); i++) {
-                if (i==0){
+                if (i == 0) {
                     sb.append(uuidList.get(i));
-                }else {
+                } else {
                     sb.append("uuids=").append(uuidList.get(i));
                 }
                 if (i < uuidList.size() - 1) {
@@ -229,7 +229,7 @@ public class HouseqmIssueController {
     public LjBaseResponse<IssueBatchAppointRspVo> batchAppoint(HttpServletRequest request, @Valid IssueBatchAppointReq req) throws Exception {
         LjBaseResponse<IssueBatchAppointRspVo> response = new LjBaseResponse<>();
         try {
-           ctrlTool.projPermMulti(request, new String[]{"项目.移动验房.问题管理.编辑", "项目.工程检查.问题管理.编辑"});
+            ctrlTool.projPermMulti(request, new String[]{"项目.移动验房.问题管理.编辑", "项目.工程检查.问题管理.编辑"});
             if (req.getRepairer_id() == null) req.setRepairer_id(0);
             if (req.getPlan_end_on() == null) req.setPlan_end_on(0);
             // 过滤掉不同task下的问题，感觉有点多余，不过还是处理下

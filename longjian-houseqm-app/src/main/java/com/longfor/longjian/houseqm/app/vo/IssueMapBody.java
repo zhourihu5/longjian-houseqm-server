@@ -14,6 +14,6 @@ import java.util.Map;
 @NoArgsConstructor
 public class IssueMapBody implements Serializable {
     private Map exist_issue_map;
-    private Map  notify_stat_map;
+    private Map notify_stat_map;
     private List delete_issue_uuids;
 }

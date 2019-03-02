@@ -19,9 +19,10 @@ import java.util.List;
 @Transactional
 @Slf4j
 @Service
-public class IssueFieldSettingServiceImpl  implements IssueFieldSettingService {
+public class IssueFieldSettingServiceImpl implements IssueFieldSettingService {
     @Resource
     IssueFieldSettingMapper issueFieldSettingMapper;
+
     @Override
     @LFAssignDataSource("zhijian2_setting")
     public int add(IssueFieldSetting settings6) {
@@ -32,10 +33,10 @@ public class IssueFieldSettingServiceImpl  implements IssueFieldSettingService {
 
     @Override
     @LFAssignDataSource("zhijian2_setting")
-    public List<IssueFieldSetting> findProjectIdsAndModuleId(List<Integer> projectIdList,Integer moduleId) {
+    public List<IssueFieldSetting> findProjectIdsAndModuleId(List<Integer> projectIdList, Integer moduleId) {
         Example example = new Example(IssueFieldSetting.class);
         Example.Criteria criteria = example.createCriteria();
-        criteria.andEqualTo("moduleId",moduleId).andIn("projectId",projectIdList);
+        criteria.andEqualTo("moduleId", moduleId).andIn("projectId", projectIdList);
 
         return issueFieldSettingMapper.selectByExample(example);
     }

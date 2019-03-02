@@ -10,6 +10,6 @@ import java.io.Serializable;
  */
 @Data
 @NoArgsConstructor
-public class HouseqmStatisticTaskIssueStatRspMsgVo implements Serializable{
+public class HouseqmStatisticTaskIssueStatRspMsgVo implements Serializable {
     private ApiHouseQmTaskStatVo item;
 }

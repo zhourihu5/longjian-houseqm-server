@@ -26,14 +26,14 @@ public class PushStrategyAssignTimeServiceImpl implements PushStrategyAssignTime
     PushStrategyAssignTimeMapper pushStrategyAssignTimeMapper;
 
     /**
-     *
      * @param taskIds
      * @return
      */
     @LFAssignDataSource("zhijian2_notify")
-    public List<PushStrategyAssignTime> searchByTaskIds(Set<Integer> taskIds){
-        return pushStrategyAssignTimeMapper.selectByTaskIds(taskIds,"false");
+    public List<PushStrategyAssignTime> searchByTaskIds(Set<Integer> taskIds) {
+        return pushStrategyAssignTimeMapper.selectByTaskIds(taskIds, "false");
     }
+
     @LFAssignDataSource("zhijian2_notify")
     @Override
     public int add(PushStrategyAssignTime pushStrategyAssignTime) {
@@ -47,7 +47,7 @@ public class PushStrategyAssignTimeServiceImpl implements PushStrategyAssignTime
     public PushStrategyAssignTime selectByIdAndNotDel(Integer task_id) {
         Example example = new Example(PushStrategyAssignTime.class);
         Example.Criteria criteria = example.createCriteria();
-        criteria.andEqualTo("taskId",task_id).andIsNull("deleteAt");
+        criteria.andEqualTo("taskId", task_id).andIsNull("deleteAt");
         return pushStrategyAssignTimeMapper.selectOneByExample(example);
     }
 

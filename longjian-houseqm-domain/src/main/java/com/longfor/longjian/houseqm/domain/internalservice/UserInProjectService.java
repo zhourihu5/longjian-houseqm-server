@@ -9,5 +9,6 @@ import java.util.List;
  */
 public interface UserInProjectService {
     List<UserInProject> selectByUserIdNotDel(Integer uid);
+
     List<UserInProject> searchByUserId(int uid);
 }

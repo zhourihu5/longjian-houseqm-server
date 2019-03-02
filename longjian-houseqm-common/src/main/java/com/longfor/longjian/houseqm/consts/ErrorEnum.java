@@ -11,11 +11,11 @@ package com.longfor.longjian.houseqm.consts;
 public enum ErrorEnum {
 
 
-    DB_ITEM_UNFOUND(100000,"数据不存在"),
-    DB_ITEM_NOT_UPDATE(100001,"未更新任何数据"),
+    DB_ITEM_UNFOUND(100000, "数据不存在"),
+    DB_ITEM_NOT_UPDATE(100001, "未更新任何数据"),
 
     // Team
-    TEAM_PARENT_RECIRCLE ( 200001,",团队层级循环"),
+    TEAM_PARENT_RECIRCLE(200001, ",团队层级循环"),
     ;
     private Integer code;
     private String message;

@@ -20,17 +20,18 @@ import java.util.List;
 public class FixingPresetAppServiceImpl implements FixingPresetAppService {
     @Resource
     FixingPresetService fixingPresetService;
+
     @Override
     public List<FixingPreset> appGetFixingPreset(Integer projectId, Integer lastId, Integer timestamp, Integer limit) {
         if (limit == null) {
             limit = 2000;
         }
         if (timestamp == null) {
-         return   fixingPresetService.selectByProAndIdAndUIdsAndminutes(projectId,lastId,limit);
-        }else{
+            return fixingPresetService.selectByProAndIdAndUIdsAndminutes(projectId, lastId, limit);
+        } else {
             //int 转成date
             Date time = DateUtil.transForDate(timestamp);
-            return fixingPresetService.selectByProAndIdAndUpdate(projectId,lastId,limit,time);
+            return fixingPresetService.selectByProAndIdAndUpdate(projectId, lastId, limit, time);
         }
     }
 }
