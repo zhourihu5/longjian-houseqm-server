@@ -216,7 +216,7 @@ public class ExportUtils {
         String templateNotify = "/templates/reply_template.docx";
         String dt = DateUtil.getNowTimeStr(MMDDHHMMSS);
         String r = new Random().ints(0, 65536).toString();
-        String filePath = String.format("%s/buildingqm_report/reply_report_%s_%s", exportPath, dt, r);
+        // String filePath = String.format("%s/buildingqm_report/reply_report_%s_%s", exportPath, dt, r);
         ExportUtils exportUtils = new ExportUtils();
         InputStream fis = exportUtils.getClass().getResourceAsStream(templateNotify);
         XWPFDocument doc = new XWPFDocument(fis);
@@ -296,7 +296,7 @@ public class ExportUtils {
         // 关闭文件流
         writer.close();
         // 导出文件
-        FileUtil.Load(file.getAbsolutePath(), response);
+        FileUtil.load(file.getAbsolutePath(), response);
         Files.delete(Paths.get(file.toURI()));
     }
 

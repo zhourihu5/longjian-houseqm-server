@@ -1,30 +1,19 @@
-package com.longfor.longjian.houseqm.app.test;
+package com.longfor.longjian.houseqm.app.utils;
 
 import com.longfor.longjian.common.exception.LjBaseRuntimeException;
 import com.longfor.longjian.houseqm.util.DateUtil;
 import freemarker.template.Configuration;
-import freemarker.template.ObjectWrapper;
 import freemarker.template.Template;
-import freemarker.template.TemplateException;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.compress.archivers.zip.ZipUtil;
-import org.apache.http.util.EntityUtils;
-import org.springframework.web.util.WebUtils;
 import sun.misc.BASE64Encoder;
 
-import javax.imageio.ImageIO;
 import javax.servlet.ServletOutputStream;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import java.awt.image.BufferedImage;
 import java.io.*;
-import java.net.URL;
-import java.net.URLConnection;
 import java.net.URLEncoder;
-import java.util.Date;
 import java.util.List;
 import java.util.Map;
-import java.util.Properties;
 
 /**
  * Created by Dongshun on 2019/2/15.
