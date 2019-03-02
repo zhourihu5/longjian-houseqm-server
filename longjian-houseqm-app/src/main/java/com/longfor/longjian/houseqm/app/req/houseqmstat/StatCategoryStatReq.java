@@ -3,7 +3,6 @@ package com.longfor.longjian.houseqm.app.req.houseqmstat;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import javax.naming.ldap.PagedResultsControl;
 import javax.validation.constraints.NotNull;
 import java.io.Serializable;
 

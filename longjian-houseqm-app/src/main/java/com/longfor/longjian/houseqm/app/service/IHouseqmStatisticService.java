@@ -1,9 +1,6 @@
 package com.longfor.longjian.houseqm.app.service;
 
 import com.longfor.longjian.houseqm.app.vo.*;
-import com.longfor.longjian.houseqm.app.vo.HouseQmIssueCategoryStatVo;
-import com.longfor.longjian.houseqm.app.vo.TaskRepairStatVo;
-import com.longfor.longjian.houseqm.app.vo.TaskStatVo;
 import com.longfor.longjian.houseqm.app.vo.houseqmstatisticapp.ProjectCheckerStatRspVo;
 import com.longfor.longjian.houseqm.app.vo.houseqmstatisticapp.ProjectIssueStatRspVo;
 import com.longfor.longjian.houseqm.app.vo.houseqmstatisticapp.ProjectListRspVo;

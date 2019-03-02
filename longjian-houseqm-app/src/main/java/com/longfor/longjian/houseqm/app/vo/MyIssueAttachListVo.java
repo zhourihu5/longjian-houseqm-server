@@ -1,6 +1,5 @@
 package com.longfor.longjian.houseqm.app.vo;
 
-import com.alibaba.fastjson.JSONObject;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 

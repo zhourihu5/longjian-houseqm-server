@@ -2,7 +2,6 @@ package com.longfor.longjian.houseqm.app.req.houseqmstat;
 
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import org.springframework.stereotype.Service;
 
 import javax.validation.constraints.NotNull;
 import java.io.Serializable;

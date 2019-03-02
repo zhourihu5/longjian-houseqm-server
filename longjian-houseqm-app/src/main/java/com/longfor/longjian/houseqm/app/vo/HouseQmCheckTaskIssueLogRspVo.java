@@ -2,9 +2,6 @@ package com.longfor.longjian.houseqm.app.vo;
 
 import lombok.Data;
 
-import javax.persistence.Column;
-import java.util.Date;
-
 /**
  * Jiazm
  * 2018/12/20 15:10

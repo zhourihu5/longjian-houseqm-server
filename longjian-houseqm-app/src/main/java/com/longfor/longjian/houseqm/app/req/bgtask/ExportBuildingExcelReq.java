@@ -2,7 +2,6 @@ package com.longfor.longjian.houseqm.app.req.bgtask;
 
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import org.hibernate.validator.constraints.NotBlank;
 
 import javax.validation.constraints.NotNull;
 import java.io.Serializable;

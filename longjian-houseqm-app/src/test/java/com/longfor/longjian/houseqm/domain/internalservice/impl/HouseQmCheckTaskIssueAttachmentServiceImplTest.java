@@ -10,7 +10,6 @@ import org.springframework.test.context.transaction.TransactionConfiguration;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.Resource;
-
 import java.util.Arrays;
 import java.util.Date;
 import java.util.HashSet;

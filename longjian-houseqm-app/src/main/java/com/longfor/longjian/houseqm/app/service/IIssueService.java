@@ -3,7 +3,9 @@ package com.longfor.longjian.houseqm.app.service;
 import com.longfor.longjian.common.base.LjBaseResponse;
 import com.longfor.longjian.houseqm.app.req.IssueListDoActionReq;
 import com.longfor.longjian.houseqm.app.req.bgtask.ExportBuildingExcelReq;
-import com.longfor.longjian.houseqm.app.vo.*;
+import com.longfor.longjian.houseqm.app.vo.HouseQmCheckTaskIssueDetailRepairLogVo;
+import com.longfor.longjian.houseqm.app.vo.HouseQmCheckTaskIssueHistoryLogVo;
+import com.longfor.longjian.houseqm.app.vo.IssueInfoVo;
 import com.longfor.longjian.houseqm.app.vo.issuelist.IssueListRsp;
 import com.longfor.longjian.houseqm.po.zj2db.ProjectSettingV2;
 

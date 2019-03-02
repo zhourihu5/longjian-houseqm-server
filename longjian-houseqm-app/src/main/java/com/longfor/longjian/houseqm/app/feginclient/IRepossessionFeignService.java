@@ -1,4 +1,4 @@
-package com.longfor.longjian.houseqm.app.feginclient1;
+package com.longfor.longjian.houseqm.app.feginclient;
 
 import com.longfor.gaia.gfs.web.feign.LFFeignClient;
 import com.longfor.gaia.gfs.web.feign.config.LFFeignConfiguration;
@@ -7,7 +7,9 @@ import com.longfor.longjian.houseqm.app.req.houseqmrepossession.RepossessionRepo
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Service;
 import org.springframework.validation.annotation.Validated;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 
 /**
  * @ProjectName: longjian-houseqm-server

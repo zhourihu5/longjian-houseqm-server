@@ -5,9 +5,12 @@ import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.longfor.longjian.common.consts.HouseQmCheckTaskIssueStatusEnum;
 import com.longfor.longjian.houseqm.app.vo.*;
-import com.longfor.longjian.houseqm.consts.*;
+import com.longfor.longjian.houseqm.consts.HouseQmCheckTaskIssueEnum;
+import com.longfor.longjian.houseqm.consts.HouseQmCheckTaskIssueTypeEnum;
+import com.longfor.longjian.houseqm.consts.RepossessionRepairStatusEnum;
+import com.longfor.longjian.houseqm.consts.RepossessionStatusEnum;
 import com.longfor.longjian.houseqm.domain.internalservice.*;
-import com.longfor.longjian.houseqm.po.*;
+import com.longfor.longjian.houseqm.po.HouseQmCheckTaskIssueAreaGroupModel;
 import com.longfor.longjian.houseqm.po.zj2db.Area;
 import com.longfor.longjian.houseqm.po.zj2db.HouseQmCheckTask;
 import com.longfor.longjian.houseqm.po.zj2db.RepossessionStatus;
@@ -23,7 +26,6 @@ import org.springframework.stereotype.Repository;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
-
 import java.util.*;
 
 /**

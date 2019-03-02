@@ -2,6 +2,7 @@ package com.longfor.longjian.houseqm.app.service.impl;
 
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
+import com.longfor.longjian.common.consts.HouseQmCheckTaskIssueStatusEnum;
 import com.longfor.longjian.common.push.UmPushUtil;
 import com.longfor.longjian.common.push.xiaomi.XmPushUtil;
 import com.longfor.longjian.houseqm.app.service.PushService;
@@ -9,7 +10,6 @@ import com.longfor.longjian.houseqm.app.vo.PushConfigVo;
 import com.longfor.longjian.houseqm.app.vo.houseqmissue.HouseQmCheckTaskIssueVo;
 import com.longfor.longjian.houseqm.consts.AppPlatformTypeEnum;
 import com.longfor.longjian.houseqm.consts.CategoryClsTypeEnum;
-import com.longfor.longjian.common.consts.HouseQmCheckTaskIssueStatusEnum;
 import com.longfor.longjian.houseqm.util.StringSplitToListUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang.StringUtils;

@@ -1,4 +1,4 @@
-package com.longfor.longjian.houseqm.app.feginclient1;
+package com.longfor.longjian.houseqm.app.feginclient;
 
 import com.longfor.gaia.gfs.web.feign.LFFeignClient;
 import com.longfor.gaia.gfs.web.feign.config.LFFeignConfiguration;

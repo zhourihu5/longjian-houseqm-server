@@ -1,12 +1,8 @@
 package com.longfor.longjian.houseqm.app.req;
 
-import io.swagger.annotations.ApiParam;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import org.springframework.web.bind.annotation.RequestParam;
 
-import javax.validation.Valid;
-import javax.validation.constraints.Min;
 import javax.validation.constraints.NotNull;
 import java.io.Serializable;
 

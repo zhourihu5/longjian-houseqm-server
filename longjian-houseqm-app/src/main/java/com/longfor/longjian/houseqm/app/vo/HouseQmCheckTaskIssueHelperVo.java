@@ -1,15 +1,13 @@
 package com.longfor.longjian.houseqm.app.vo;
 
 import com.alibaba.fastjson.JSON;
+import com.google.common.collect.Lists;
+import com.google.common.collect.Maps;
 import com.longfor.longjian.common.consts.EventQueueEnum;
 import com.longfor.longjian.common.consts.HouseQmCheckTaskIssueLogStatus;
 import com.longfor.longjian.common.consts.HouseQmCheckTaskIssueStatusEnum;
 import com.longfor.longjian.common.kafka.KafkaProducer;
 import com.longfor.longjian.houseqm.app.service.PushService;
-import com.longfor.longjian.houseqm.app.vo.houseqmissue.HouseQmCheckTaskIssueDetail;
-
-import com.google.common.collect.Lists;
-import com.google.common.collect.Maps;
 import com.longfor.longjian.houseqm.app.vo.houseqmissue.*;
 import com.longfor.longjian.houseqm.consts.*;
 import com.longfor.longjian.houseqm.domain.internalservice.*;

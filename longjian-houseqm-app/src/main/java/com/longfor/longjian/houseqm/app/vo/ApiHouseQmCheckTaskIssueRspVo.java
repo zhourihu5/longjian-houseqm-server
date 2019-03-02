@@ -1,6 +1,5 @@
 package com.longfor.longjian.houseqm.app.vo;
 
-import io.swagger.models.auth.In;
 import lombok.Data;
 
 /**

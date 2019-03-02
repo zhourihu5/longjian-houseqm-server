@@ -1,12 +1,10 @@
 package com.longfor.longjian.houseqm.app.service.impl;
 
-import com.longfor.longjian.common.util.SessionInfo;
-import com.longfor.longjian.houseqm.app.vo.ApiHouseQmCheckTaskIssueLogDetailRspVo;
-
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.TypeReference;
 import com.google.common.collect.Lists;
 import com.longfor.longjian.common.base.LjBaseResponse;
+import com.longfor.longjian.common.util.SessionInfo;
 import com.longfor.longjian.houseqm.app.req.DeviceReq;
 import com.longfor.longjian.houseqm.app.service.IHouseqmService;
 import com.longfor.longjian.houseqm.app.vo.*;
@@ -23,9 +21,13 @@ import com.longfor.longjian.houseqm.util.StringSplitToListUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections.CollectionUtils;
 import org.springframework.stereotype.Service;
+
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 @Service
