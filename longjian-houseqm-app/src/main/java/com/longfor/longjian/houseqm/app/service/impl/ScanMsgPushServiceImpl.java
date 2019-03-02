@@ -3,7 +3,7 @@ package com.longfor.longjian.houseqm.app.service.impl;
 import com.longfor.longjian.common.base.LjBaseResponse;
 import com.longfor.longjian.common.consts.ModuleInfoEnum;
 import com.longfor.longjian.houseqm.app.service.ScanMsgPushService;
-import com.longfor.longjian.houseqm.domain.internalService.StatScanRecordService;
+import com.longfor.longjian.houseqm.domain.internalservice.StatScanRecordService;
 import com.longfor.longjian.houseqm.po.zhijian2_notify.StatScanRecord;
 import com.longfor.longjian.houseqm.util.DateUtil;
 import lombok.extern.slf4j.Slf4j;

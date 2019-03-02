@@ -9,7 +9,7 @@ import com.longfor.longjian.houseqm.consts.IssueFieldAliasStatusEnum;
 import com.longfor.longjian.houseqm.consts.IssueFieldDefaultListEnum;
 import com.longfor.longjian.houseqm.consts.IssueFieldDisplayStatusEnum;
 import com.longfor.longjian.houseqm.consts.IssueFieldRequiredStatusEnum;
-import com.longfor.longjian.houseqm.domain.internalService.IssueFieldSettingService;
+import com.longfor.longjian.houseqm.domain.internalservice.IssueFieldSettingService;
 import com.longfor.longjian.houseqm.po.zhijian2_setting.IssueFieldSetting;
 import com.longfor.longjian.houseqm.util.DateUtil;
 import com.longfor.longjian.houseqm.util.StringSplitToListUtil;

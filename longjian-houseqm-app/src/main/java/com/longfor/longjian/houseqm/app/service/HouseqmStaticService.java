@@ -6,7 +6,7 @@ import com.google.common.collect.Maps;
 import com.longfor.longjian.common.consts.HouseQmCheckTaskIssueStatusEnum;
 import com.longfor.longjian.houseqm.app.vo.*;
 import com.longfor.longjian.houseqm.consts.*;
-import com.longfor.longjian.houseqm.domain.internalService.*;
+import com.longfor.longjian.houseqm.domain.internalservice.*;
 import com.longfor.longjian.houseqm.po.*;
 import com.longfor.longjian.houseqm.po.zj2db.Area;
 import com.longfor.longjian.houseqm.po.zj2db.HouseQmCheckTask;

@@ -14,7 +14,7 @@ import com.longfor.longjian.houseqm.app.vo.TaskPushStrategyVo;
 import com.longfor.longjian.houseqm.app.vo.TaskRoleListVo;
 import com.longfor.longjian.houseqm.app.vo.task.CheckTaskIssueTypeStatInfo;
 import com.longfor.longjian.houseqm.consts.ErrorEnum;
-import com.longfor.longjian.houseqm.domain.internalService.*;
+import com.longfor.longjian.houseqm.domain.internalservice.*;
 import com.longfor.longjian.houseqm.innervo.ApiBuildingQmCheckTaskConfig;
 import com.longfor.longjian.houseqm.innervo.ApiBuildingQmCheckTaskMsg;
 import com.longfor.longjian.houseqm.po.zhijian2_apisvr.Team;

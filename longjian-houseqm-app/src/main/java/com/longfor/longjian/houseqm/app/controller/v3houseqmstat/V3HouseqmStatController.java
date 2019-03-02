@@ -10,8 +10,8 @@ import com.longfor.longjian.houseqm.app.vo.houseqmstat.InspectionHouseStatusInfo
 import com.longfor.longjian.houseqm.consts.RepossessionStatusEnum;
 import com.longfor.longjian.houseqm.consts.StatisticFormInspectionIssueStatusEnum;
 import com.longfor.longjian.houseqm.consts.StatisticFormInspectionStatusEnum;
-import com.longfor.longjian.houseqm.domain.internalService.AreaService;
-import com.longfor.longjian.houseqm.domain.internalService.HouseQmCheckTaskService;
+import com.longfor.longjian.houseqm.domain.internalservice.AreaService;
+import com.longfor.longjian.houseqm.domain.internalservice.HouseQmCheckTaskService;
 import com.longfor.longjian.houseqm.po.zj2db.Area;
 import com.longfor.longjian.houseqm.po.zj2db.HouseQmCheckTask;
 import com.longfor.longjian.houseqm.util.StringUtil;

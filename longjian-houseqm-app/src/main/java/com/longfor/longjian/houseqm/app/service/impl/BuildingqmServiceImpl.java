@@ -18,7 +18,7 @@ import com.longfor.longjian.houseqm.app.vo.*;
 import com.longfor.longjian.houseqm.app.vo.export.NodeDataVo;
 import com.longfor.longjian.houseqm.app.vo.export.NodeVo;
 import com.longfor.longjian.houseqm.consts.DropDataReasonEnum;
-import com.longfor.longjian.houseqm.domain.internalService.*;
+import com.longfor.longjian.houseqm.domain.internalservice.*;
 import com.longfor.longjian.houseqm.innervo.ApiBuildingQmCheckTaskConfig;
 import com.longfor.longjian.houseqm.innervo.ApiBuildingQmCheckTaskMsg;
 import com.longfor.longjian.houseqm.po.zhijian2_apisvr.User;

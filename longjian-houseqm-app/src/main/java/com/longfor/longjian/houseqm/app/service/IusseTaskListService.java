@@ -4,7 +4,7 @@ import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.longfor.longjian.common.exception.LjBaseRuntimeException;
 import com.longfor.longjian.houseqm.app.vo.*;
-import com.longfor.longjian.houseqm.domain.internalService.*;
+import com.longfor.longjian.houseqm.domain.internalservice.*;
 import com.longfor.longjian.houseqm.po.zj2db.HouseQmCheckTask;
 import com.longfor.longjian.houseqm.po.zj2db.RepossessionMeterSetting;
 import com.longfor.longjian.houseqm.po.zhijian2_apisvr.Team;

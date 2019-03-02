@@ -1,4 +1,4 @@
-package com.longfor.longjian.houseqm.domain.internalService.impl;
+package com.longfor.longjian.houseqm.domain.internalservice.impl;
 
 import com.longfor.longjian.houseqm.po.zj2db.HouseQmCheckTaskIssueAttachment;
 import org.junit.Assert;
@@ -16,7 +16,6 @@ import java.util.Date;
 import java.util.HashSet;
 import java.util.Set;
 
-import static org.junit.Assert.*;
 // 获取启动类，加载配置，确定装载 Spring 程序的装载方法，它回去寻找 主配置启动类（被 @SpringBootApplication 注解的）
 @SpringBootTest(classes = {com.longfor.longjian.houseqm.Application.class},webEnvironment = SpringBootTest.WebEnvironment.DEFINED_PORT)
 // 让 JUnit 运行 Spring 的测试环境， 获得 Spring 环境的上下文的支持

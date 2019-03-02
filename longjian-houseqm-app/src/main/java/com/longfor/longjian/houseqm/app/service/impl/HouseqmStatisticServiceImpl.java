@@ -13,7 +13,7 @@ import com.longfor.longjian.houseqm.app.vo.*;
 import com.longfor.longjian.houseqm.app.vo.houseqmstatisticapp.*;
 import com.longfor.longjian.houseqm.consts.HouseQmCheckTaskIssueEnum;
 import com.longfor.longjian.common.consts.HouseQmCheckTaskIssueStatusEnum;
-import com.longfor.longjian.houseqm.domain.internalService.*;
+import com.longfor.longjian.houseqm.domain.internalservice.*;
 import com.longfor.longjian.houseqm.consts.*;
 import com.longfor.longjian.houseqm.dto.HouseQmCheckTaskIssueListDto;
 import com.longfor.longjian.houseqm.dto.HouseQmCheckTaskIssueDto;

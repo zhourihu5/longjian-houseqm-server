@@ -1,4 +1,4 @@
-package com.longfor.longjian.houseqm.domain.internalService;
+package com.longfor.longjian.houseqm.domain.internalservice;
 
 import com.longfor.longjian.houseqm.po.zj2db.ExportFileRecord;
 
@@ -6,7 +6,7 @@ import java.util.Date;
 
 /**
  * @ProjectName: longjian-houseqm-server
- * @Package: com.longfor.longjian.houseqm.domain.internalService
+ * @Package: com.longfor.longjian.houseqm.domain.internalservice
  * @ClassName: ExportFileRecordService
  * @Description: java类作用描述
  * @Author: hy
