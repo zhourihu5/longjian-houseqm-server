@@ -23,9 +23,7 @@ public class BuildingqmCheckQuestionServiceImpl implements BuildingqmCheckQuesti
     @LFAssignDataSource("zhijian2_setting")
     public List<IssueFieldSetting> selectByProjectId(Integer projectId) {
 
-        List<IssueFieldSetting> list = buildingqmSettingMapper.selectByIds(String.valueOf(projectId));
-
-        return list;
+        return buildingqmSettingMapper.selectByIds(String.valueOf(projectId));
     }
 
 

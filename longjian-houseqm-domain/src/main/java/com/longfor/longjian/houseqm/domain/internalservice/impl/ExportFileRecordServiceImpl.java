@@ -22,11 +22,11 @@ public class ExportFileRecordServiceImpl implements ExportFileRecordService {
     @Override
     @LFAssignDataSource("zhijian2")
     @Transactional
-    public ExportFileRecord insertFull(int userId, Integer teamId, Integer project_id, int exportType, String params, String resultFilePath, String resultName, int status, String errorMsg, Date executeAt) {
+    public ExportFileRecord insertFull(int userId, Integer teamId, Integer projectId, int exportType, String params, String resultFilePath, String resultName, int status, String errorMsg, Date executeAt) {
         ExportFileRecord item = new ExportFileRecord();
         item.setUserId(userId);
         item.setTeamId(teamId);
-        item.setProjectId(project_id);
+        item.setProjectId(projectId);
         item.setExportType(exportType);
         item.setParams(params);
         item.setResultFilePath(resultFilePath);

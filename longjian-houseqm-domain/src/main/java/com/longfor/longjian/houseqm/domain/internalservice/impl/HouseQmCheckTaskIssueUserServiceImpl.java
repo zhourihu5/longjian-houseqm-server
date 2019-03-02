@@ -42,11 +42,6 @@ public class HouseQmCheckTaskIssueUserServiceImpl implements HouseQmCheckTaskIss
 
     /**
      * 根据userId taskId createAt时间 查 取未删除的
-     *
-     * @param userId
-     * @param taskId
-     * @param timestamp
-     * @return
      */
     @LFAssignDataSource(value = "zhijian2")
     public List<HouseQmCheckTaskIssueUser> searchByUserIdAndTaskIdAndCreateAt(int userId, int taskId, int timestamp) {
@@ -56,29 +51,21 @@ public class HouseQmCheckTaskIssueUserServiceImpl implements HouseQmCheckTaskIss
         criteria.andGreaterThan("createAt", DateUtil.timestampToString(timestamp, "yyyy-MM-dd"));
         ExampleUtil.addDeleteAtJudge(example);
         //List<HouseQmCheckTaskIssueUser> houseQmCheckTaskIssueUsers = houseQmCheckTaskIssueUserMapper.selectByUserIdAndTaskIdAndCreateAt(userId, taskId, timestamp,"false");
-        List<HouseQmCheckTaskIssueUser> houseQmCheckTaskIssueUsers = houseQmCheckTaskIssueUserMapper.selectByExample(example);
-        return houseQmCheckTaskIssueUsers;
-    }
-
-    /**
-     * @param uid
-     * @param task_id
-     * @return java.util.List<com.longfor.longjian.houseqm.po.zj2db.HouseQmCheckTaskIssueUser>
-     * @author hy
-     * @date 2018/12/25 0025
-     */
-    @Override
-    @LFAssignDataSource(value = "zhijian2")
-    public List<HouseQmCheckTaskIssueUser> selectIssueUUIDByUserIdAndTaskIdAndNoDeleted(Integer uid, Integer task_id) {
-        return houseQmCheckTaskIssueUserMapper.selectIssueUUIDByUserIdAndTaskIdAndNoDeleted(uid, task_id, "false");
+        return houseQmCheckTaskIssueUserMapper.selectByExample(example);
     }
 
     @Override
     @LFAssignDataSource(value = "zhijian2")
-    public HouseQmCheckTaskIssueUser selectUpdateAtByTaskIdAndNoDeletedOrderByUpdateAt(Integer task_id) {
+    public List<HouseQmCheckTaskIssueUser> selectIssueUUIDByUserIdAndTaskIdAndNoDeleted(Integer uid, Integer taskId) {
+        return houseQmCheckTaskIssueUserMapper.selectIssueUUIDByUserIdAndTaskIdAndNoDeleted(uid, taskId, "false");
+    }
+
+    @Override
+    @LFAssignDataSource(value = "zhijian2")
+    public HouseQmCheckTaskIssueUser selectUpdateAtByTaskIdAndNoDeletedOrderByUpdateAt(Integer taskId) {
         Example example = new Example(HouseQmCheckTaskIssueUser.class);
         Example.Criteria criteria = example.createCriteria();
-        criteria.andEqualTo("taskId", task_id);
+        criteria.andEqualTo("taskId", taskId);
         ExampleUtil.addDeleteAtJudge(example);
         example.orderBy("updateAt").desc();
         List<HouseQmCheckTaskIssueUser> result = houseQmCheckTaskIssueUserMapper.selectByExample(example);

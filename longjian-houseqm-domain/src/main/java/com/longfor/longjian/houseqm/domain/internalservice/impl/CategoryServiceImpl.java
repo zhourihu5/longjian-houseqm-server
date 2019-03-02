@@ -7,6 +7,7 @@ import com.longfor.longjian.houseqm.domain.internalservice.CategoryService;
 import com.longfor.longjian.houseqm.po.zj2db.CategoryV3;
 import com.longfor.longjian.houseqm.utils.ExampleUtil;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.collections.CollectionUtils;
 import org.springframework.stereotype.Service;
 import tk.mybatis.mapper.entity.Example;
 
@@ -27,7 +28,7 @@ public class CategoryServiceImpl implements CategoryService {
     public List<CategoryV3> searchCategoryByKeyIn(List<String> keys) {
         Example example = new Example(CategoryV3.class);
         Example.Criteria criteria = example.createCriteria();
-        if (keys.size() > 0) criteria.andIn("key", keys);
+        if (CollectionUtils.isNotEmpty(keys)) criteria.andIn("key", keys);
         ExampleUtil.addDeleteAtJudge(example);
         return categoryMapper.selectByExample(example);
     }

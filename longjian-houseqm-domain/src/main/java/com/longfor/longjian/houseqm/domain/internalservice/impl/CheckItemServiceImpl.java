@@ -6,6 +6,7 @@ import com.longfor.longjian.houseqm.domain.internalservice.CheckItemService;
 import com.longfor.longjian.houseqm.po.zj2db.CheckItem;
 import com.longfor.longjian.houseqm.utils.ExampleUtil;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.collections.CollectionUtils;
 import org.springframework.stereotype.Service;
 import tk.mybatis.mapper.entity.Example;
 
@@ -26,7 +27,7 @@ public class CheckItemServiceImpl implements CheckItemService {
     public List<CheckItem> searchCheckItemByKeyIn(List<String> keys) {
         Example example = new Example(CheckItem.class);
         Example.Criteria criteria = example.createCriteria();
-        if (keys.size() > 0) {
+        if (CollectionUtils.isNotEmpty(keys)) {
             criteria.andIn("key", keys);
         }
         ExampleUtil.addDeleteAtJudge(example);

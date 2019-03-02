@@ -86,10 +86,10 @@ public class HouseQmCheckTaskSquadServiceImpl implements HouseQmCheckTaskSquadSe
 
     @Override
     @LFAssignDataSource("zhijian2")
-    public List<HouseQmCheckTaskSquad> selectByProjectIdAndTaskIdAndSquadType(Integer project_id, Integer task_id, Integer value) {
+    public List<HouseQmCheckTaskSquad> selectByProjectIdAndTaskIdAndSquadType(Integer projectId, Integer taskId, Integer value) {
         Example example = new Example(HouseQmCheckTaskSquad.class);
         Example.Criteria criteria = example.createCriteria();
-        criteria.andEqualTo("projectId", project_id).andEqualTo("taskId", task_id).andEqualTo("squadType", value).andIsNull("deleteAt");
+        criteria.andEqualTo("projectId", projectId).andEqualTo("taskId", taskId).andEqualTo("squadType", value).andIsNull("deleteAt");
         return houseQmCheckTaskSquadMapper.selectByExample(example);
     }
 

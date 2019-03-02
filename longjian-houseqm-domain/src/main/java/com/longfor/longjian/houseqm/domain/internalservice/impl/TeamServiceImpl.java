@@ -1,11 +1,13 @@
 package com.longfor.longjian.houseqm.domain.internalservice.impl;
 
+import com.google.common.collect.Lists;
 import com.longfor.gaia.gfs.data.mybatis.datasource.LFAssignDataSource;
 import com.longfor.longjian.houseqm.dao.zhijian2_apisvr.TeamMapper;
 import com.longfor.longjian.houseqm.domain.internalservice.TeamService;
 import com.longfor.longjian.houseqm.po.zhijian2_apisvr.Team;
 import com.longfor.longjian.houseqm.utils.ExampleUtil;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.collections.CollectionUtils;
 import org.springframework.stereotype.Service;
 import tk.mybatis.mapper.entity.Example;
 
@@ -27,10 +29,11 @@ public class TeamServiceImpl implements TeamService {
 
     @Override
     @LFAssignDataSource("zhijian2_apisvr")
-    public List<Team> searchByTeamIdIn(List<Integer> team_ids) {
+    public List<Team> searchByTeamIdIn(List<Integer> teamIds) {
+        if (CollectionUtils.isEmpty(teamIds))return Lists.newArrayList();
         Example example = new Example(Team.class);
         Example.Criteria criteria = example.createCriteria();
-        criteria.andIn("teamId", team_ids);
+        criteria.andIn("teamId", teamIds);
         ExampleUtil.addDeleteAtJudge(example);
         return teamMapper.selectByExample(example);
     }

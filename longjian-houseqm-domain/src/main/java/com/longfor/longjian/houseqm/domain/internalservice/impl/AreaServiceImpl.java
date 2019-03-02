@@ -15,11 +15,7 @@ import org.springframework.stereotype.Service;
 import tk.mybatis.mapper.entity.Example;
 
 import javax.annotation.Resource;
-import java.util.Collections;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.stream.Collectors;
+import java.util.*;
 
 /**
  * @author Houyan
@@ -52,21 +48,20 @@ public class AreaServiceImpl implements AreaService {
             areaPaths.remove(i);
             areaPaths.add(i, String.format("(%s[^,]*)*", path));
         }
-        String pathsRegexp = "^" + StringSplitToListUtil.dataToString(areaPaths, ",{0,1}") + "$";
-        String idsRegexp = StringSplitToListUtil.dataToString(idsStr, "|");
-        return idsRegexp;
+       // String pathsRegexp = "^" + StringSplitToListUtil.dataToString(areaPaths, ",{0,1}") + "$";
+        return StringSplitToListUtil.dataToString(idsStr, "|");
     }
 
     @Override
     @LFAssignDataSource("zhijian2")
-    public List<Area> searchRelatedAreaByAreaIdIn(Integer project_id, List<Integer> areaIds) {
+    public List<Area> searchRelatedAreaByAreaIdIn(Integer projectId, List<Integer> areaIds) {
         Example example = new Example(Area.class);
         Example.Criteria criteria = example.createCriteria();
-        criteria.andEqualTo("projectId", project_id).andIn("id", areaIds);
+        criteria.andEqualTo("projectId", projectId).andIn("id", areaIds);
         ExampleUtil.addDeleteAtJudge(example);
         List<Area> fAreas = areaMapper.selectByExample(example);
 
-        List<Integer> area_ids = Lists.newArrayList();
+        List<Integer> areaIds2 = Lists.newArrayList();
         for (Area item : fAreas) {
             if (item.getPath().startsWith("/")) {
                 List<String> paths = StringSplitToListUtil.splitToStringComma(item.getPath(), "/");
@@ -75,16 +70,16 @@ public class AreaServiceImpl implements AreaService {
                         continue;
                     }
                     Integer id = Integer.valueOf(path);
-                    area_ids.add(id);
+                    areaIds2.add(id);
                 }
             }
         }
-        area_ids.addAll(areaIds);
-        HashSet<Integer> set = new HashSet<>(area_ids);
+        areaIds2.addAll(areaIds);
+        HashSet<Integer> set = new HashSet<>(areaIds2);
 
         Example example1 = new Example(Area.class);
         Example.Criteria criteria1 = example1.createCriteria();
-        criteria1.andEqualTo("projectId", project_id).andIn("id", set);
+        criteria1.andEqualTo("projectId", projectId).andIn("id", set);
         for (Area item : fAreas) {
             criteria1.orLike("path", item.getPath() + item.getId() + "/%%");
         }
@@ -132,7 +127,7 @@ public class AreaServiceImpl implements AreaService {
         // 两边去重，取最大范围
         Example example = new Example(Area.class);
         Example.Criteria criteria = example.createCriteria();
-        if (areaIds.size() > 0) criteria.andIn("id", areaIds);
+        if (CollectionUtils.isNotEmpty(areaIds)) criteria.andIn("id", areaIds);
         else return result;
         ExampleUtil.addDeleteAtJudge(example);
         List<Area> areaA = areaMapper.selectByExample(example);
@@ -143,7 +138,7 @@ public class AreaServiceImpl implements AreaService {
 
         Example example1 = new Example(Area.class);
         Example.Criteria criteria1 = example1.createCriteria();
-        if (areaList.size() > 0) criteria1.andIn("id", areaList);
+        if (CollectionUtils.isNotEmpty(areaList)) criteria1.andIn("id", areaList);
         else return result;
         ExampleUtil.addDeleteAtJudge(example1);
         List<Area> areaB = areaMapper.selectByExample(example1);
@@ -157,17 +152,16 @@ public class AreaServiceImpl implements AreaService {
             for (String pB : pathB) {
                 if (pA.startsWith(pB)) {
                     List<Integer> ids = StringUtil.strToInts(pA, "/");
-                    if (ids.size() > 0) result.add(ids.get(ids.size() - 1));
+                    if (CollectionUtils.isNotEmpty(ids)) result.add(ids.get(ids.size() - 1));
                     continue;
                 }
                 if (pB.startsWith(pA)) {
                     List<Integer> ids = StringUtil.strToInts(pB, "/");
-                    if (ids.size() > 0) result.add(ids.get(ids.size() - 1));
-                    continue;
+                    if (CollectionUtils.isNotEmpty(ids)) result.add(ids.get(ids.size() - 1));
                 }
             }
         }
-        return result.stream().collect(Collectors.toSet()).stream().collect(Collectors.toList());
+        return new ArrayList<>(new HashSet<>(result));
     }
 
     @LFAssignDataSource("zhijian2")
@@ -175,7 +169,7 @@ public class AreaServiceImpl implements AreaService {
         Example example = new Example(Area.class);
         Example.Criteria criteria = example.createCriteria();
         criteria.andEqualTo("projectId", projectId);
-        if (rootIds.size() > 0) criteria.andIn("id", rootIds);
+        if (CollectionUtils.isNotEmpty(rootIds)) criteria.andIn("id", rootIds);
         ExampleUtil.addDeleteAtJudge(example);
         List<Area> areas = areaMapper.selectByExample(example);
 
@@ -191,7 +185,7 @@ public class AreaServiceImpl implements AreaService {
             criteria2.andLike("path", likePath).orEqualTo("id", area.getId());
 
             example1.and(criteria2);
-            if (types.size() > 0) {
+            if (CollectionUtils.isNotEmpty(types)) {
                 criteria1.andIn("type", types);
             }
             ExampleUtil.addDeleteAtJudge(example1);

@@ -59,8 +59,7 @@ public class HouseQmCheckTaskIssueAttachmentServiceImpl implements HouseQmCheckT
     @LFAssignDataSource("zhijian2")
     public List<HouseQmCheckTaskIssueAttachment> searchByIssueUuid(Set<String> issueUuids) {
         if (CollectionUtils.isEmpty(issueUuids)) return Lists.newArrayList();
-        List<HouseQmCheckTaskIssueAttachment> houseQmCheckTaskIssueAttachments = houseQmCheckTaskIssueAttachmentMapper.selectByIssueUuid(issueUuids, "false");
-        return houseQmCheckTaskIssueAttachments;
+        return houseQmCheckTaskIssueAttachmentMapper.selectByIssueUuid(issueUuids, "false");
     }
 
 

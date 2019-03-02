@@ -42,9 +42,9 @@ public class PushStrategyCategoryOverdueServiceImpl implements PushStrategyCateg
 
     @Override
     @LFAssignDataSource("zhijian2_notify")
-    public PushStrategyCategoryOverdue selectByTaskIdAndNotDel(Integer task_id) {
+    public PushStrategyCategoryOverdue selectByTaskIdAndNotDel(Integer taskId) {
         Example example = new Example(PushStrategyCategoryOverdue.class);
-        example.createCriteria().andEqualTo("taskId", task_id).andIsNull("deleteAt");
+        example.createCriteria().andEqualTo("taskId", taskId).andIsNull("deleteAt");
         return pushStrategyCategoryOverdueMapper.selectOneByExample(example);
     }
 

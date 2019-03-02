@@ -48,9 +48,9 @@ public class PushStrategyCategoryThresholdServiceImpl implements PushStrategyCat
 
     @Override
     @LFAssignDataSource("zhijian2_notify")
-    public PushStrategyCategoryThreshold selectTaskIdAndNotDel(Integer task_id) {
+    public PushStrategyCategoryThreshold selectTaskIdAndNotDel(Integer taskId) {
         Example example = new Example(PushStrategyCategoryThreshold.class);
-        example.createCriteria().andEqualTo("taskId", task_id).andIsNull("deleteAt");
+        example.createCriteria().andEqualTo("taskId", taskId).andIsNull("deleteAt");
         return pushStrategyCategoryThresholdMapper.selectOneByExample(example);
     }
 

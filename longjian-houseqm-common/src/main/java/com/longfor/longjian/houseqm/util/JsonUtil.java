@@ -15,8 +15,6 @@ import java.util.Map;
  * @author Jiazm
  * @date 2018年12月15日
  */
-
-
 public class JsonUtil {
 
 
@@ -91,7 +89,7 @@ public class JsonUtil {
      */
     public static <T> List<T> jsonToList(String json, Class<T> cls) {
         Gson gson = new Gson();
-        List<T> list = new ArrayList<T>();
+        List<T> list = new ArrayList<>();
         JsonArray array = new JsonParser().parse(json).getAsJsonArray();
         for (final JsonElement elem : array) {
             list.add(gson.fromJson(elem, cls));

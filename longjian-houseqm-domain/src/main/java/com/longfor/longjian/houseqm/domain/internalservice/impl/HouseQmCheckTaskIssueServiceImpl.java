@@ -75,12 +75,12 @@ public class HouseQmCheckTaskIssueServiceImpl implements HouseQmCheckTaskIssueSe
 
     @Override
     @LFAssignDataSource("zhijian2")
-    public Integer countByProjIdAndTaskIdAndTypInGroupByCategoryPathAndKeyAndCheckItemKey(Integer projectId, Integer task_id, List<Integer> typs, Integer area_id, Date beginOn, Date endOn) {
+    public Integer countByProjIdAndTaskIdAndTypInGroupByCategoryPathAndKeyAndCheckItemKey(Integer projectId, Integer taskId, List<Integer> typs, Integer areaId, Date beginOn, Date endOn) {
         Example example = new Example(HouseQmCheckTaskIssue.class);
         Example.Criteria criteria = example.createCriteria();
-        criteria.andEqualTo(PROJECT_ID, projectId).andEqualTo(TASK_ID, task_id).andIn(TYPE, typs);
-        if (area_id > 0) {
-            criteria.andLike(AREA_PATH_AND_ID, "%/" + area_id + "/%");
+        criteria.andEqualTo(PROJECT_ID, projectId).andEqualTo(TASK_ID, taskId).andIn(TYPE, typs);
+        if (areaId > 0) {
+            criteria.andLike(AREA_PATH_AND_ID, "%/" + areaId + "/%");
         }
         if (DateUtil.datetimeToTimeStamp(beginOn) > 0) {
             criteria.andGreaterThanOrEqualTo(CLIENT_CREATE_AT, beginOn);
@@ -111,20 +111,20 @@ public class HouseQmCheckTaskIssueServiceImpl implements HouseQmCheckTaskIssueSe
 
     @Override
     @LFAssignDataSource("zhijian2")
-    public List<HouseQmCheckTaskIssue> searchByProjIdAndCategoryClsInAndRepairerIdAndClientCreateAtAndTypInAndStatusInAndTaskIdOrderByClientCreateAt(Integer project_id, List<Integer> category_cls_list, String statBegin, String statEnd, List<Integer> typs, List<Integer> status, Integer task_id, List<Integer> my_task_ids) {
+    public List<HouseQmCheckTaskIssue> searchByProjIdAndCategoryClsInAndRepairerIdAndClientCreateAtAndTypInAndStatusInAndTaskIdOrderByClientCreateAt(Integer projectId, List<Integer> categoryClsList, String statBegin, String statEnd, List<Integer> typs, List<Integer> status, Integer taskId, List<Integer> myTaskIds) {
         Example example = new Example(HouseQmCheckTaskIssue.class);
         Example.Criteria criteria = example.createCriteria();
-        criteria.andEqualTo(PROJECT_ID, project_id);
-        if (category_cls_list.size() > 0) criteria.andIn(CATEGORY_CLS, category_cls_list);
+        criteria.andEqualTo(PROJECT_ID, projectId);
+        if (CollectionUtils.isNotEmpty(categoryClsList)) criteria.andIn(CATEGORY_CLS, categoryClsList);
         criteria.andNotEqualTo(REPAIRER_ID, 0);
         criteria.andGreaterThanOrEqualTo(CLIENT_CREATE_AT, statBegin);
         criteria.andLessThanOrEqualTo(CLIENT_CREATE_AT, statEnd);
-        if (typs.size() > 0) criteria.andIn(TYPE, typs);
-        if (status.size() > 0) criteria.andIn(STATUS, status);
-        if (task_id > 0) {
-            criteria.andEqualTo(TASK_ID, task_id);
+        if (CollectionUtils.isNotEmpty(typs)) criteria.andIn(TYPE, typs);
+        if (CollectionUtils.isNotEmpty(status)) criteria.andIn(STATUS, status);
+        if (taskId > 0) {
+            criteria.andEqualTo(TASK_ID, taskId);
         } else {
-            if (my_task_ids.size() > 0) criteria.andIn(TASK_ID, my_task_ids);
+            if (CollectionUtils.isNotEmpty(myTaskIds)) criteria.andIn(TASK_ID, myTaskIds);
         }
         example.orderBy(CLIENT_CREATE_AT).desc();
         ExampleUtil.addDeleteAtJudge(example);
@@ -133,19 +133,19 @@ public class HouseQmCheckTaskIssueServiceImpl implements HouseQmCheckTaskIssueSe
 
     @Override
     @LFAssignDataSource("zhijian2")
-    public List<HouseQmCheckTaskIssue> searchByProjIdAndCategoryClsInAndSenderIdAndClientCreateAtAndTypAndTaskIdOrderByClientCreateAt(Integer project_id, List<Integer> category_cls_list, String statBegin, String statEnd, List<Integer> typs, Integer task_id, List<Integer> my_task_ids) {
+    public List<HouseQmCheckTaskIssue> searchByProjIdAndCategoryClsInAndSenderIdAndClientCreateAtAndTypAndTaskIdOrderByClientCreateAt(Integer projectId, List<Integer> categoryClsList, String statBegin, String statEnd, List<Integer> typs, Integer taskId, List<Integer> myTaskIds) {
         Example example = new Example(HouseQmCheckTaskIssue.class);
         Example.Criteria criteria = example.createCriteria();
-        criteria.andEqualTo(PROJECT_ID, project_id);
-        if (category_cls_list.size() > 0) criteria.andIn(CATEGORY_CLS, category_cls_list);
+        criteria.andEqualTo(PROJECT_ID, projectId);
+        if (CollectionUtils.isNotEmpty(categoryClsList)) criteria.andIn(CATEGORY_CLS, categoryClsList);
         criteria.andNotEqualTo(SENDER_ID, 0);
         criteria.andGreaterThanOrEqualTo(CLIENT_CREATE_AT, statBegin);
         criteria.andLessThanOrEqualTo(CLIENT_CREATE_AT, statEnd);
-        if (typs.size() > 0) criteria.andIn(TYPE, typs);
-        if (task_id > 0) {
-            criteria.andEqualTo(TASK_ID, task_id);
+        if (CollectionUtils.isNotEmpty(typs)) criteria.andIn(TYPE, typs);
+        if (taskId > 0) {
+            criteria.andEqualTo(TASK_ID, taskId);
         } else {
-            if (my_task_ids.size() > 0) criteria.andIn(TASK_ID, my_task_ids);
+            if (CollectionUtils.isNotEmpty(myTaskIds)) criteria.andIn(TASK_ID, myTaskIds);
         }
         example.orderBy(CLIENT_CREATE_AT).desc();
         ExampleUtil.addDeleteAtJudge(example);
@@ -154,12 +154,12 @@ public class HouseQmCheckTaskIssueServiceImpl implements HouseQmCheckTaskIssueSe
 
     @Override
     @LFAssignDataSource("zhijian2")
-    public List<HouseQmCheckTaskIssue> searchByProjectIdAndCategoryClsInAndTaskIdInAndAreaPathAndIdLike(Integer project_id, List<Integer> category_cls_list, List<Integer> task_ids, String area_path) {
+    public List<HouseQmCheckTaskIssue> searchByProjectIdAndCategoryClsInAndTaskIdInAndAreaPathAndIdLike(Integer projectId, List<Integer> categoryClsList, List<Integer> taskIds, String areaPath) {
         Example example = new Example(HouseQmCheckTaskIssue.class);
         Example.Criteria criteria = example.createCriteria();
-        criteria.andEqualTo(PROJECT_ID, project_id);
-        if (category_cls_list.size() > 0) criteria.andIn(CATEGORY_CLS, category_cls_list);
-        if (area_path.length() > 0) criteria.andLike(AREA_PATH_AND_ID, "%" + area_path + "%");
+        criteria.andEqualTo(PROJECT_ID, projectId);
+        if (CollectionUtils.isNotEmpty(categoryClsList)) criteria.andIn(CATEGORY_CLS, categoryClsList);
+        if (areaPath.length() > 0) criteria.andLike(AREA_PATH_AND_ID, "%" + areaPath + "%");
         ExampleUtil.addDeleteAtJudge(example);
         example.orderBy(CLIENT_CREATE_AT).desc();
         return houseQmCheckTaskIssueMapper.selectByExample(example);
@@ -167,18 +167,18 @@ public class HouseQmCheckTaskIssueServiceImpl implements HouseQmCheckTaskIssueSe
 
     @Override
     @LFAssignDataSource("zhijian2")
-    public List<HouseQmCheckTaskIssue> searchByProjIdAndTaskIdAndAreaIdInAndRepairedIdAndClientCreateAt(Integer project_id, Integer task_id, List<Integer> subAreaIds, Integer repairer_id, Date begin_on, Date end_on) {
+    public List<HouseQmCheckTaskIssue> searchByProjIdAndTaskIdAndAreaIdInAndRepairedIdAndClientCreateAt(Integer projectId, Integer taskId, List<Integer> subAreaIds, Integer repairerId, Date beginOn, Date endOn) {
         Example example = new Example(HouseQmCheckTaskIssue.class);
         Example.Criteria criteria = example.createCriteria();
-        criteria.andEqualTo(PROJECT_ID, project_id).andEqualTo(TASK_ID, task_id).andIn("areaId", subAreaIds);
-        if (repairer_id > 0) {
-            criteria.andEqualTo(REPAIRER_ID, repairer_id);
+        criteria.andEqualTo(PROJECT_ID, projectId).andEqualTo(TASK_ID, taskId).andIn("areaId", subAreaIds);
+        if (repairerId > 0) {
+            criteria.andEqualTo(REPAIRER_ID, repairerId);
         }
-        if (begin_on.getTime() > 0) {
-            criteria.andLessThanOrEqualTo(CLIENT_CREATE_AT, begin_on);
+        if (beginOn.getTime() > 0) {
+            criteria.andLessThanOrEqualTo(CLIENT_CREATE_AT, beginOn);
         }
-        if (end_on.getTime() > 0) {
-            criteria.andLessThanOrEqualTo(CLIENT_CREATE_AT, end_on);
+        if (endOn.getTime() > 0) {
+            criteria.andLessThanOrEqualTo(CLIENT_CREATE_AT, endOn);
         }
         ExampleUtil.addDeleteAtJudge(example);
         return houseQmCheckTaskIssueMapper.selectByExample(example);
@@ -187,11 +187,11 @@ public class HouseQmCheckTaskIssueServiceImpl implements HouseQmCheckTaskIssueSe
     @Override
     @LFAssignDataSource("zhijian2")
     @Transactional
-    public int deleteHouseQmCheckTaskIssueByProjUuid(Integer project_id, String issueUuid) {
+    public int deleteHouseQmCheckTaskIssueByProjUuid(Integer projectId, String issueUuid) {
         try {
             Example example = new Example(HouseQmCheckTaskIssue.class);
             Example.Criteria criteria = example.createCriteria();
-            criteria.andEqualTo(PROJECT_ID, project_id).andEqualTo("uuid", issueUuid);
+            criteria.andEqualTo(PROJECT_ID, projectId).andEqualTo("uuid", issueUuid);
             ExampleUtil.addDeleteAtJudge(example);
             List<HouseQmCheckTaskIssue> taskIssues = houseQmCheckTaskIssueMapper.selectByExample(example);
             for (HouseQmCheckTaskIssue issue : taskIssues) {
@@ -218,52 +218,38 @@ public class HouseQmCheckTaskIssueServiceImpl implements HouseQmCheckTaskIssueSe
 
     @Override
     @LFAssignDataSource("zhijian2")
-    public List<HouseQmCheckTaskIssue> searchByProjIdAndUuidIn(Integer project_id, List<String> uuids) {
+    public List<HouseQmCheckTaskIssue> searchByProjIdAndUuidIn(Integer projectId, List<String> uuids) {
         Example example = new Example(HouseQmCheckTaskIssue.class);
         Example.Criteria criteria = example.createCriteria();
-        criteria.andEqualTo(PROJECT_ID, project_id);
-        if (uuids.size() > 0) criteria.andIn(UUID, uuids);
+        criteria.andEqualTo(PROJECT_ID, projectId);
+        if (CollectionUtils.isNotEmpty(uuids)) criteria.andIn(UUID, uuids);
         ExampleUtil.addDeleteAtJudge(example);
         return houseQmCheckTaskIssueMapper.selectByExample(example);
     }
 
     /**
      * 根据问题uuid 客户端创建时间 查 取 未删除的数据
-     *
-     * @param issueUuids
-     * @param timestamp
-     * @return
      */
     @LFAssignDataSource("zhijian2")
     public List<HouseQmCheckTaskIssue> searchByIssueUuidsAndclientCreateAt(Set<String> issueUuids, int timestamp) {
         Example example = new Example(HouseQmCheckTaskIssue.class);
         Example.Criteria criteria = example.createCriteria();
-        if (issueUuids.size() > 0) criteria.andIn(UUID, issueUuids);
+        if (CollectionUtils.isNotEmpty(issueUuids)) criteria.andIn(UUID, issueUuids);
         criteria.andLessThan(CLIENT_CREATE_AT, com.longfor.longjian.common.util.DateUtil.timestampToString(timestamp, "yyyy-MM-dd"));
         ExampleUtil.addDeleteAtJudge(example);
-        List<HouseQmCheckTaskIssue> taskIssues = houseQmCheckTaskIssueMapper.selectByExample(example);
-        return taskIssues;
+        return houseQmCheckTaskIssueMapper.selectByExample(example);
     }
 
     /**
      * 查询未删除 根据项目id 任务id 数据
-     *
-     * @param projectId
-     * @param taskIds
-     * @return
      */
     @LFAssignDataSource("zhijian2")
     public List<CheckerIssueStat> searchCheckerIssueStatisticByProjIdAndTaskId(Integer projectId, List<Integer> taskIds) {
-        List<CheckerIssueStat> checkerIssueStats = houseQmCheckTaskIssueMapper.selectByProjectIdAndTaskIdIn(projectId, taskIds, FALSE);
-        return checkerIssueStats;
+        return houseQmCheckTaskIssueMapper.selectByProjectIdAndTaskIdIn(projectId, taskIds, FALSE);
     }
 
     /**
      * 获取创建时间 以yyyy-MM-dd 格式
-     *
-     * @param projectId
-     * @param taskIds
-     * @return
      */
     @LFAssignDataSource("zhijian2")
     public List<CheckerIssueStat> searchHouseQmCheckTaskIssueActiveDateByProjTaskIdIn(Integer projectId, List<Integer> taskIds) {
@@ -272,58 +258,30 @@ public class HouseQmCheckTaskIssueServiceImpl implements HouseQmCheckTaskIssueSe
 
     /**
      * 根据项目id 任务id 客户端创建时间>=date 小于=date+1 查询项目任务信息
-     *
-     * @param projectId
-     * @param taskIds
-     * @param date
-     * @return
      */
     @LFAssignDataSource("zhijian2")
     public List<CheckerIssueStat> getIssueSituationDailyByProjTaskIdInDate(Integer projectId, List<Integer> taskIds, String date) {
-        List<CheckerIssueStat> checkerIssueStat = houseQmCheckTaskIssueMapper.selectByProjectIdAndTaskIdAndClientCreateAt(projectId, taskIds, date, FALSE);
-        return checkerIssueStat;
+        return houseQmCheckTaskIssueMapper.selectByProjectIdAndTaskIdAndClientCreateAt(projectId, taskIds, date, FALSE);
     }
 
     /**
      * 根据客户端创建时间 lte endOn=(date+1)
-     *
-     * @param projectId
-     * @param taskIds
-     * @param date
-     * @return
      */
     @LFAssignDataSource("zhijian2")
     public List<CheckerIssueStat> searchByProjectIdAndTaskIdsAndClientCreateAt(Integer projectId, List<Integer> taskIds, String date) {
         return houseQmCheckTaskIssueMapper.selectByProjectIdAndTaskIdsAndClientCreateAt(projectId, taskIds, date, FALSE);
     }
 
-    /**
-     * @param projectId
-     * @param taskId
-     * @return
-     */
     @LFAssignDataSource("zhijian2")
     public List<CheckerIssueStat> searchByProjectIdAndTaskId(Integer projectId, Integer taskId) {
-        List<CheckerIssueStat> checkerIssueStats = houseQmCheckTaskIssueMapper.selectByProjectIdAndTaskId(projectId, taskId, FALSE);
-        return checkerIssueStats;
+        return houseQmCheckTaskIssueMapper.selectByProjectIdAndTaskId(projectId, taskId, FALSE);
     }
 
-    /**
-     * @param taskId
-     * @param areaPath
-     * @return
-     */
     @LFAssignDataSource("zhijian2")
     public List<HouseQmCheckTaskIssue> searchByTaskIdAndAreaPathAndIdLike(Integer taskId, String areaPath) {
         return houseQmCheckTaskIssueMapper.selectByTaskIdAndAreaPathAndIdLike(taskId, areaPath, FALSE);
     }
 
-    /**
-     * @param taskId
-     * @param types
-     * @param areaPathLike
-     * @return
-     */
     @LFAssignDataSource("zhijian2")
     public List<HouseQmCheckTaskIssueAreaGroupModel> selectByTaskIdAndTyeInAndAreaPathAndIdLike(Boolean onlyIssue, Integer taskId, List<Integer> types, Integer areaId) {
         return houseQmCheckTaskIssueMapper.selectByTaskIdAndTyeInAndAreaPathAndIdLike(onlyIssue, taskId, types, areaId, FALSE);
@@ -360,33 +318,29 @@ public class HouseQmCheckTaskIssueServiceImpl implements HouseQmCheckTaskIssueSe
 
     @Override
     @LFAssignDataSource("zhijian2")
-    public List<HouseQmCheckTaskIssue> searchHouseQmCheckTaskIssueByTaskIdUuidIn(Integer task_id, List<String> uuids) {
-        return houseQmCheckTaskIssueMapper.searchHouseQmCheckTaskIssueByTaskIdUuidIn(task_id, uuids);
+    public List<HouseQmCheckTaskIssue> searchHouseQmCheckTaskIssueByTaskIdUuidIn(Integer taskId, List<String> uuids) {
+        return houseQmCheckTaskIssueMapper.searchHouseQmCheckTaskIssueByTaskIdUuidIn(taskId, uuids);
     }
 
     @Override
     @LFAssignDataSource("zhijian2")
-    public List<HouseQmCheckTaskIssue> searchHouseQmCheckTaskIssueByMyIdTaskIdLastIdUpdateAtGt(Integer userId, Integer task_id, Integer last_id, Integer timestamp, Integer start, Integer limit, Integer checker) {
+    public List<HouseQmCheckTaskIssue> searchHouseQmCheckTaskIssueByMyIdTaskIdLastIdUpdateAtGt(Integer userId, Integer taskId, Integer lastId, Integer timestamp, Integer start, Integer limit, Integer checker) {
         List<HouseQmCheckTaskIssue> houseQmCheckTaskIssues = new ArrayList<>();
         try {
-            List<UserInHouseQmCheckTask> userInHouseQmCheckTasks = userInHouseQmCheckTaskMapper.searchByTaskIdUserIdRoleType(userId, task_id, checker);
+            List<UserInHouseQmCheckTask> userInHouseQmCheckTasks = userInHouseQmCheckTaskMapper.searchByTaskIdUserIdRoleType(userId, taskId, checker);
             List<Integer> squadIds = new ArrayList<>();
             List<Integer> userIds = new ArrayList<>();
-            userInHouseQmCheckTasks.forEach(userInHouseQmCheckTask -> {
-                squadIds.add(userInHouseQmCheckTask.getSquadId());
-            });
+            userInHouseQmCheckTasks.forEach(userInHouseQmCheckTask -> squadIds.add(userInHouseQmCheckTask.getSquadId()));
             List<UserInHouseQmCheckTask> userInHouseQmCheckTaskSearchSquadIdsList = Lists.newArrayList();
             if (!squadIds.isEmpty())
                 userInHouseQmCheckTaskSearchSquadIdsList = userInHouseQmCheckTaskMapper.searchBySquadIdIn(squadIds);
-            userInHouseQmCheckTaskSearchSquadIdsList.forEach(userInHouseQmCheckTask -> {
-                userIds.add(userInHouseQmCheckTask.getUserId());
-            });
-            if (userIds.size() == 0) {
+            userInHouseQmCheckTaskSearchSquadIdsList.forEach(userInHouseQmCheckTask -> userIds.add(userInHouseQmCheckTask.getUserId()));
+            if (CollectionUtils.isEmpty(userIds)) {
                 userIds.add(userId);
             }
             userIds.add(userId);
 
-            houseQmCheckTaskIssues = houseQmCheckTaskIssueMapper.searchByConditionOrderByPageUnscoped(task_id, last_id, timestamp, userIds, userId, start, limit);
+            houseQmCheckTaskIssues = houseQmCheckTaskIssueMapper.searchByConditionOrderByPageUnscoped(taskId, lastId, timestamp, userIds, userId, start, limit);
         } catch (Exception e) {
             log.error("error" + e);
         }
@@ -396,10 +350,9 @@ public class HouseQmCheckTaskIssueServiceImpl implements HouseQmCheckTaskIssueSe
 
     @Override
     @LFAssignDataSource("zhijian2")
-    public List<HouseQmCheckTaskIssueUser> searchHouseQmCheckTaskIssueUserByTaskIdLastIdUpdateAtGt(Integer task_id, Integer last_id, Integer timestamp, Integer start, Integer limit) {
+    public List<HouseQmCheckTaskIssueUser> searchHouseQmCheckTaskIssueUserByTaskIdLastIdUpdateAtGt(Integer taskId, Integer lastId, Integer timestamp, Integer start, Integer limit) {
         try {
-            List<HouseQmCheckTaskIssueUser> houseQmCheckTaskIssueUsers = houseQmCheckTaskIssueUserMapper.searchByConditionOrderByPageUnscoped(task_id, last_id, timestamp, start, limit);
-            return houseQmCheckTaskIssueUsers;
+            return houseQmCheckTaskIssueUserMapper.searchByConditionOrderByPageUnscoped(taskId, lastId, timestamp, start, limit);
         } catch (Exception e) {
             log.error("error:" + e);
         }
@@ -408,36 +361,31 @@ public class HouseQmCheckTaskIssueServiceImpl implements HouseQmCheckTaskIssueSe
 
     @Override
     @LFAssignDataSource("zhijian2")
-    public List<HouseQmCheckTaskIssueAttachment> searchHouseQmCheckTaskIssueAttachmentByMyIdTaskIdLastIdUpdateAtGt(Integer userId, Integer task_id, Integer last_id, Integer timestamp, Integer start, Integer limit, Integer privateInt, Integer publicInt) {
+    public List<HouseQmCheckTaskIssueAttachment> searchHouseQmCheckTaskIssueAttachmentByMyIdTaskIdLastIdUpdateAtGt(Integer userId, Integer taskId, Integer lastId, Integer timestamp, Integer start, Integer limit, Integer privateInt, Integer publicInt) {
         try {
             //A找出与自己同组的人
             ////找到任务中，用户所在的所有组
-            List<UserInHouseQmCheckTask> userInHouseQmCheckTasks = userInHouseQmCheckTaskMapper.searchByCondition(task_id, userId);
+            List<UserInHouseQmCheckTask> userInHouseQmCheckTasks = userInHouseQmCheckTaskMapper.searchByCondition(taskId, userId);
             List<Integer> squadIds = new ArrayList<>();
             userInHouseQmCheckTasks.forEach(userInHouseQmCheckTask -> {
                 if (userInHouseQmCheckTask.getSquadId() != null) {
                     squadIds.add(userInHouseQmCheckTask.getSquadId());
                 }
             });
-            List<HouseQmCheckTaskSquad> houseQmCheckTaskSquads = null;
+            List<HouseQmCheckTaskSquad> houseQmCheckTaskSquads;
             List<Integer> existsSquadIds = new ArrayList<>();
-            if (squadIds.size() > 0) {
+            if (CollectionUtils.isNotEmpty(squadIds)) {
                 ////找出所有组的，确保其有效
                 houseQmCheckTaskSquads = houseQmCheckTaskSquadMapper.searchByInId(squadIds);
-                houseQmCheckTaskSquads.forEach(houseQmCheckTaskSquad -> {
-                    existsSquadIds.add(houseQmCheckTaskSquad.getId());
-                });
+                houseQmCheckTaskSquads.forEach(houseQmCheckTaskSquad -> existsSquadIds.add(houseQmCheckTaskSquad.getId()));
             }
             ////再根据组ID获取相关的组用户信息
-            List<UserInHouseQmCheckTask> rs = userInHouseQmCheckTaskMapper.searchByTaskIdSquadIdIn(task_id, existsSquadIds);
+            List<UserInHouseQmCheckTask> rs = userInHouseQmCheckTaskMapper.searchByTaskIdSquadIdIn(taskId, existsSquadIds);
             //B找出相关的附件
             List<Integer> userIds = new ArrayList<>();
-            rs.forEach(userInHouseQmCheckTask -> {
-                userIds.add(userInHouseQmCheckTask.getUserId());
-            });
+            rs.forEach(userInHouseQmCheckTask -> userIds.add(userInHouseQmCheckTask.getUserId()));
             //
-            List<HouseQmCheckTaskIssueAttachment> houseQmCheckTaskIssueAttachments = houseQmCheckTaskIssueAttachmentMapper.searchByTaskIdAndSelfJoinOrderByIdASCPageUnscoped(task_id, userId, timestamp, userIds, privateInt, publicInt, start, limit);
-            return houseQmCheckTaskIssueAttachments;
+            return houseQmCheckTaskIssueAttachmentMapper.searchByTaskIdAndSelfJoinOrderByIdASCPageUnscoped(taskId, userId, timestamp, userIds, privateInt, publicInt, start, limit);
         } catch (Exception e) {
             log.error("error:" + e);
         }
@@ -577,7 +525,7 @@ public class HouseQmCheckTaskIssueServiceImpl implements HouseQmCheckTaskIssueSe
         Example.Criteria criteria = example.createCriteria();
         criteria.andEqualTo(PROJECT_ID, condiMap.get(PROJECT_ID)).andIn(TYPE, (List<Integer>) condiMap.get("types")).andLike(CATEGORY_PATH_AND_KEY, "%" + (String) condiMap.get("categoryKey") + "%");
         if (condiMap.get("areaId") != null) {
-            criteria.andLike(AREA_PATH_AND_ID, "%" + String.valueOf((Integer) condiMap.get("areaId")) + "%");
+            criteria.andLike(AREA_PATH_AND_ID, "%" + condiMap.get("areaId") + "%");
         }
         HouseQmCheckTaskIssueDto dto = new HouseQmCheckTaskIssueDto();
         int i = houseQmCheckTaskIssueMapper.selectCountByExample(example);
@@ -598,15 +546,15 @@ public class HouseQmCheckTaskIssueServiceImpl implements HouseQmCheckTaskIssueSe
 
     @Override
     @LFAssignDataSource("zhijian2")
-    public HouseQmCheckTaskIssue selectIdByTaskIdAndIdGtAndUpdateAtGtAndSenderIdInOrUuidInAndNoDeletedOrderById(Integer task_id, Date issueUpdateTime, List<Integer> userIds, List<String> issueUuids) {
+    public HouseQmCheckTaskIssue selectIdByTaskIdAndIdGtAndUpdateAtGtAndSenderIdInOrUuidInAndNoDeletedOrderById(Integer taskId, Date issueUpdateTime, List<Integer> userIds, List<String> issueUuids) {
         Example example = new Example(HouseQmCheckTaskIssue.class);
         Example.Criteria criteria = example.createCriteria();
-        criteria.andEqualTo(TASK_ID, task_id).andGreaterThan(ID, 0).andGreaterThan(UPDATE_AT, issueUpdateTime);
+        criteria.andEqualTo(TASK_ID, taskId).andGreaterThan(ID, 0).andGreaterThan(UPDATE_AT, issueUpdateTime);
         Example.Criteria criteria1 = example.createCriteria();
-        if (userIds.size() > 0) {
+        if (CollectionUtils.isNotEmpty(userIds)) {
             criteria1.andIn(SENDER_ID, userIds);
         }
-        if (issueUuids.size() > 0) {
+        if (CollectionUtils.isNotEmpty(issueUuids)) {
             criteria1.orIn(UUID, issueUuids);
         }
         //example.and(criteria);
@@ -621,13 +569,13 @@ public class HouseQmCheckTaskIssueServiceImpl implements HouseQmCheckTaskIssueSe
 
     @Override
     @LFAssignDataSource("zhijian2")
-    public List<HouseQmCheckTaskIssue> selectUuidBySenderIdInOrTaskIdAndUuidIn(List<Integer> userIds, Integer task_id, List<String> issueUuids) {
+    public List<HouseQmCheckTaskIssue> selectUuidBySenderIdInOrTaskIdAndUuidIn(List<Integer> userIds, Integer taskId, List<String> issueUuids) {
         Example example = new Example(HouseQmCheckTaskIssue.class);
         Example.Criteria criteria = example.createCriteria();
-        if (userIds.size() > 0) criteria.andIn(SENDER_ID, userIds);
+        if (CollectionUtils.isNotEmpty(userIds)) criteria.andIn(SENDER_ID, userIds);
         Example.Criteria criteria1 = example.createCriteria();
         //criteria1.andEqualTo(TASK_ID, task_id);
-        if (issueUuids.size() > 0) criteria1.andEqualTo(TASK_ID, task_id).andIn(UUID, issueUuids);
+        if (CollectionUtils.isNotEmpty(issueUuids)) criteria1.andEqualTo(TASK_ID, taskId).andIn(UUID, issueUuids);
         //example.and(criteria);
         example.or(criteria1);
         return houseQmCheckTaskIssueMapper.selectByExample(example);
@@ -642,10 +590,10 @@ public class HouseQmCheckTaskIssueServiceImpl implements HouseQmCheckTaskIssueSe
     @Override
     @LFAssignDataSource("zhijian2")
     @Transactional
-    public int removeHouseQmCheckTaskIssueByProjectIdAndTaskId(Integer project_id, Integer task_id) {
+    public int removeHouseQmCheckTaskIssueByProjectIdAndTaskId(Integer projectId, Integer taskId) {
         Example example = new Example(HouseQmCheckTaskIssue.class);
         Example.Criteria criteria = example.createCriteria();
-        criteria.andEqualTo(PROJECT_ID, project_id).andEqualTo(TASK_ID, task_id);
+        criteria.andEqualTo(PROJECT_ID, projectId).andEqualTo(TASK_ID, taskId);
         ExampleUtil.addDeleteAtJudge(example);
         List<HouseQmCheckTaskIssue> houseQmCheckTaskIssues = houseQmCheckTaskIssueMapper.selectByExample(example);
         for (HouseQmCheckTaskIssue issue : houseQmCheckTaskIssues) {
@@ -669,8 +617,8 @@ public class HouseQmCheckTaskIssueServiceImpl implements HouseQmCheckTaskIssueSe
 
     @Override
     @LFAssignDataSource("zhijian2")
-    public List<HouseQmCheckTaskIssue> searchByProjIdAndCategoryClsAndAreaPathAndIdLikeGroupByStatus(Integer project_id, Integer category_cls, String areaPath) {
-        return houseQmCheckTaskIssueMapper.selectByProjIdAndCategoryClsAndAreaPathAndIdLikeGroupByStatus(project_id, category_cls, areaPath);
+    public List<HouseQmCheckTaskIssue> searchByProjIdAndCategoryClsAndAreaPathAndIdLikeGroupByStatus(Integer projectId, Integer categoryCls, String areaPath) {
+        return houseQmCheckTaskIssueMapper.selectByProjIdAndCategoryClsAndAreaPathAndIdLikeGroupByStatus(projectId, categoryCls, areaPath);
     }
 
     @Override
@@ -707,9 +655,9 @@ public class HouseQmCheckTaskIssueServiceImpl implements HouseQmCheckTaskIssueSe
     @Transactional
     @Override
     @LFAssignDataSource("zhijian2")
-    public void update(HouseQmCheckTaskIssue issue_info) {
-        issue_info.setUpdateAt(new Date());
-        houseQmCheckTaskIssueMapper.updateByPrimaryKeySelective(issue_info);
+    public void update(HouseQmCheckTaskIssue issueInfo) {
+        issueInfo.setUpdateAt(new Date());
+        houseQmCheckTaskIssueMapper.updateByPrimaryKeySelective(issueInfo);
 
     }
 

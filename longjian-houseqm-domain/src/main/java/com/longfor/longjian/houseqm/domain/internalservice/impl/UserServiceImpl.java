@@ -7,6 +7,7 @@ import com.longfor.longjian.houseqm.domain.internalservice.UserService;
 import com.longfor.longjian.houseqm.po.zhijian2_apisvr.User;
 import com.longfor.longjian.houseqm.utils.ExampleUtil;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.collections.CollectionUtils;
 import org.springframework.stereotype.Service;
 import tk.mybatis.mapper.entity.Example;
 
@@ -29,13 +30,12 @@ public class UserServiceImpl implements UserService {
 
     @LFAssignDataSource("zhijian2_apisvr")
     public Map<Integer, User> selectByIds(List<Integer> users) {
-        if (users == null || users.size() <= 0) return Maps.newHashMap();
+        if (CollectionUtils.isEmpty(users)) return Maps.newHashMap();
         Example example = new Example(User.class);
         Example.Criteria criteria = example.createCriteria();
         criteria.andIn("userId", users);
         List<User> userList = userMapper.selectByExample(example);
-        Map<Integer, User> map = userList.stream().collect(Collectors.toMap(User::getUserId, u -> u));
-        return map;
+        return userList.stream().collect(Collectors.toMap(User::getUserId, u -> u));
     }
 
     @Override

@@ -44,10 +44,10 @@ public class PushStrategyAssignTimeServiceImpl implements PushStrategyAssignTime
 
     @Override
     @LFAssignDataSource("zhijian2_notify")
-    public PushStrategyAssignTime selectByIdAndNotDel(Integer task_id) {
+    public PushStrategyAssignTime selectByIdAndNotDel(Integer taskId) {
         Example example = new Example(PushStrategyAssignTime.class);
         Example.Criteria criteria = example.createCriteria();
-        criteria.andEqualTo("taskId", task_id).andIsNull("deleteAt");
+        criteria.andEqualTo("taskId", taskId).andIsNull("deleteAt");
         return pushStrategyAssignTimeMapper.selectOneByExample(example);
     }
 

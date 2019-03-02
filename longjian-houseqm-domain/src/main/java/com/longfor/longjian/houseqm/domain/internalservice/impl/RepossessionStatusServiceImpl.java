@@ -7,6 +7,7 @@ import com.longfor.longjian.houseqm.dto.RepossessionStatusCompleteDailyCountDto;
 import com.longfor.longjian.houseqm.po.zj2db.RepossessionStatus;
 import com.longfor.longjian.houseqm.utils.ExampleUtil;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.collections.CollectionUtils;
 import org.springframework.stereotype.Service;
 import tk.mybatis.mapper.entity.Example;
 
@@ -58,7 +59,7 @@ public class RepossessionStatusServiceImpl implements RepossessionStatusService 
         Example example = new Example(RepossessionStatus.class);
         Example.Criteria criteria = example.createCriteria();
         criteria.andEqualTo("taskId", taskId);
-        if (repossStatuses.size() > 0) criteria.andIn("status", repossStatuses);
+        if (CollectionUtils.isNotEmpty(repossStatuses)) criteria.andIn("status", repossStatuses);
         if (!(startTime.getSeconds() == 0 && startTime.getTime() == 0)) {
             criteria.andGreaterThanOrEqualTo("statusClientUpdateAt", startTime);
         }

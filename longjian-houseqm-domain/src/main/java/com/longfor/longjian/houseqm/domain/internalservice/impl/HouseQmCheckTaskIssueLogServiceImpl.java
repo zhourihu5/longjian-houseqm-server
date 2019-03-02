@@ -72,31 +72,24 @@ public class HouseQmCheckTaskIssueLogServiceImpl implements HouseQmCheckTaskIssu
     @LFAssignDataSource("zhijian2")
     public List<HouseQmCheckTaskIssueLog> searchByIssueUuid(Set<String> issueUuids) {
         if (CollectionUtils.isEmpty(issueUuids)) return Lists.newArrayList();
-        List<HouseQmCheckTaskIssueLog> houseQmCheckTaskIssueLogs = houseQmCheckTaskIssueLogMapper.selectByIssueUuid(issueUuids, "false");
-        return houseQmCheckTaskIssueLogs;
+        return houseQmCheckTaskIssueLogMapper.selectByIssueUuid(issueUuids, "false");
     }
 
     @Override
     @LFAssignDataSource("zhijian2")
-    public List<HouseQmCheckTaskIssueLog> searchHouseQmCheckTaskIssueLogByMyIdTaskIdLastIdUpdateAtGt(Integer userId, Integer task_id, Integer last_id, Integer timestamp, Integer limit, Integer start, Integer checker) {
+    public List<HouseQmCheckTaskIssueLog> searchHouseQmCheckTaskIssueLogByMyIdTaskIdLastIdUpdateAtGt(Integer userId, Integer taskId, Integer lastId, Integer timestamp, Integer limit, Integer start, Integer checker) {
         List<Integer> squadIds = new ArrayList<>();
         List<Integer> userIds = new ArrayList<>();
         List<HouseQmCheckTaskIssueLog> houseQmCheckTaskIssueLogs = new ArrayList<>();
         try {
-            List<UserInHouseQmCheckTask> userInHouseQmCheckTasks = userInHouseQmCheckTaskMapper.searchByTaskIdUserIdRoleType(userId, task_id, checker);
-            userInHouseQmCheckTasks.forEach(userInHouseQmCheckTask -> {
-                squadIds.add(userInHouseQmCheckTask.getSquadId());
-            });
+            List<UserInHouseQmCheckTask> userInHouseQmCheckTasks = userInHouseQmCheckTaskMapper.searchByTaskIdUserIdRoleType(userId, taskId, checker);
+            userInHouseQmCheckTasks.forEach(userInHouseQmCheckTask -> squadIds.add(userInHouseQmCheckTask.getSquadId()));
             List<UserInHouseQmCheckTask> userInHouseQmCheckTaskSearchSquadIdsList = Lists.newArrayList();
             if (!squadIds.isEmpty())
                 userInHouseQmCheckTaskSearchSquadIdsList = userInHouseQmCheckTaskMapper.searchBySquadIdIn(squadIds);
-            userInHouseQmCheckTaskSearchSquadIdsList.forEach(userInHouseQmCheckTask -> {
-                userIds.add(userInHouseQmCheckTask.getUserId());
-            });
-            if (userIds.size() == 0) {
-                userIds.add(userId);
-            }
-            houseQmCheckTaskIssueLogs = houseQmCheckTaskIssueLogMapper.searchHouseQmCheckTaskIssueLogByMyIdTaskIdLastIdUpdateAtGt(userId, userIds, task_id, last_id, timestamp, start, limit);
+            userInHouseQmCheckTaskSearchSquadIdsList.forEach(userInHouseQmCheckTask -> userIds.add(userInHouseQmCheckTask.getUserId()));
+            if (CollectionUtils.isEmpty(userIds)) userIds.add(userId);
+            houseQmCheckTaskIssueLogs = houseQmCheckTaskIssueLogMapper.searchHouseQmCheckTaskIssueLogByMyIdTaskIdLastIdUpdateAtGt(userId, userIds, taskId, lastId, timestamp, start, limit);
            /* houseQmCheckTaskIssueLogs.forEach(houseQmCheckTaskIssueLog -> {
                 System.out.println(houseQmCheckTaskIssueLog.getId());
             });*/
@@ -109,14 +102,14 @@ public class HouseQmCheckTaskIssueLogServiceImpl implements HouseQmCheckTaskIssu
 
     @Override
     @LFAssignDataSource("zhijian2")
-    public HouseQmCheckTaskIssueLog selectIdByTaskIdAndIdAndUuidInAndUpdateAtGtAndNoDeletedOrderById(Integer task_id, List<String> uuids, Date issueLogUpdateTime) {
+    public HouseQmCheckTaskIssueLog selectIdByTaskIdAndIdAndUuidInAndUpdateAtGtAndNoDeletedOrderById(Integer taskId, List<String> uuids, Date issueLogUpdateTime) {
         Example example = new Example(HouseQmCheckTaskIssueLog.class);
 
         Example.Criteria criteria = example.createCriteria();
-        criteria.andEqualTo("taskId", task_id).andGreaterThan("id", 0);
+        criteria.andEqualTo("taskId", taskId).andGreaterThan("id", 0);
 
         Example.Criteria criteria1 = example.createCriteria();
-        if (uuids.size() > 0) criteria1.andIn("issueUuid", uuids);
+        if (CollectionUtils.isNotEmpty(uuids)) criteria1.andIn("issueUuid", uuids);
 
         Example.Criteria criteria2 = example.createCriteria();
         criteria2.andGreaterThan("updateAt", issueLogUpdateTime);
@@ -146,11 +139,11 @@ public class HouseQmCheckTaskIssueLogServiceImpl implements HouseQmCheckTaskIssu
     @Transactional
     @Override
     @LFAssignDataSource("zhijian2")
-    public void add(HouseQmCheckTaskIssueLog new_issue_log) {
-        new_issue_log.setClientCreateAt(new Date());
-        new_issue_log.setUpdateAt(new Date());
-        new_issue_log.setCreateAt(new Date());
-        houseQmCheckTaskIssueLogMapper.insert(new_issue_log);
+    public void add(HouseQmCheckTaskIssueLog newIssueLog) {
+        newIssueLog.setClientCreateAt(new Date());
+        newIssueLog.setUpdateAt(new Date());
+        newIssueLog.setCreateAt(new Date());
+        houseQmCheckTaskIssueLogMapper.insert(newIssueLog);
     }
 
     @Override
@@ -177,20 +170,20 @@ public class HouseQmCheckTaskIssueLogServiceImpl implements HouseQmCheckTaskIssu
 
     @Override
     @LFAssignDataSource("zhijian2")
-    public List<HouseQmCheckTaskIssueLog> selectByUuidsAndNotDelete(List<String> log_uuids) {
+    public List<HouseQmCheckTaskIssueLog> selectByUuidsAndNotDelete(List<String> logUuids) {
         Example example = new Example(HouseQmCheckTaskIssueLog.class);
         Example.Criteria criteria = example.createCriteria();
-        criteria.andIn("uuid", log_uuids);
+        criteria.andIn("uuid", logUuids);
         criteria.andIsNull("deleteAt");
         return houseQmCheckTaskIssueLogMapper.selectByExample(example);
     }
 
     @Override
     @LFAssignDataSource("zhijian2")
-    public List<HouseQmCheckTaskIssueLog> selectByIssueUuIdInAndStatus(List<String> issue_uuids, Integer status) {
+    public List<HouseQmCheckTaskIssueLog> selectByIssueUuIdInAndStatus(List<String> issueUuids, Integer status) {
         Example example = new Example(HouseQmCheckTaskIssueLog.class);
         Example.Criteria criteria = example.createCriteria();
-        criteria.andIn("issueUuid", issue_uuids);
+        criteria.andIn("issueUuid", issueUuids);
         criteria.andEqualTo("status", status);
         ExampleUtil.addDeleteAtJudge(example);
         example.orderBy("clientCreateAt").asc();
