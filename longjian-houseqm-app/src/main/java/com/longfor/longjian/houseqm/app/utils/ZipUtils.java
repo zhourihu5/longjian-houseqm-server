@@ -1,5 +1,4 @@
 package com.longfor.longjian.houseqm.app.utils;
-import com.longfor.longjian.common.exception.LjBaseRuntimeException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import java.io.*;
@@ -95,20 +94,9 @@ public class ZipUtils {
                             zos.write(content, 0, len);
                             zos.flush();
                         }
-                    } catch (FileNotFoundException e) {
-                        log.error("ZipUtils createZip  Failed to create ZIP file",e);
-                    } catch (IOException e) {
+                    } catch (Exception e) {
                         log.error("ZipUtils createZip  Failed to create ZIP file",e);
                     }
-                    /*finally {
-                        try {
-                            if (fis != null) {
-                                fis.close();
-                            }
-                        } catch (IOException e) {
-                            log.error("ZipUtils createZip  Failed to create ZIP file",e);
-                        }
-                    }*/
                 }
             }
         }

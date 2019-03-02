@@ -169,9 +169,9 @@ public class FileUtil {
             }
             try(FileOutputStream out = new FileOutputStream(dstFile);FileInputStream in = new FileInputStream(srcFile)){
                 byte[] buffer = new byte[1024];
-                int L ;
-                while ((L = in.read(buffer)) != -1) {
-                    out.write(buffer, 0, L);
+                int l ;
+                while ((l = in.read(buffer)) != -1) {
+                    out.write(buffer, 0, l);
                 }
             }catch (Exception e){
                 log.error(e.getMessage());

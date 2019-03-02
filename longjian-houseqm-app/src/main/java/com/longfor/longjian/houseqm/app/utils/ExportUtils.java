@@ -214,8 +214,8 @@ public class ExportUtils {
     //导出 整改回复单
     public static XWPFDocument exportRepairReply(ExportReplyDetail data) throws IOException, InvalidFormatException {
         String templateNotify = "/templates/reply_template.docx";
-        String dt = DateUtil.getNowTimeStr(MMDDHHMMSS);
-        String r = new Random().ints(0, 65536).toString();
+        //String dt = DateUtil.getNowTimeStr(MMDDHHMMSS);
+        //String r = new Random().ints(0, 65536).toString();
         // String filePath = String.format("%s/buildingqm_report/reply_report_%s_%s", exportPath, dt, r);
         ExportUtils exportUtils = new ExportUtils();
         InputStream fis = exportUtils.getClass().getResourceAsStream(templateNotify);

@@ -1,6 +1,5 @@
 package com.longfor.longjian.houseqm.app.utils;
 
-import com.longfor.longjian.common.exception.LjBaseRuntimeException;
 import com.longfor.longjian.houseqm.util.DateUtil;
 import freemarker.template.Configuration;
 import freemarker.template.Template;
