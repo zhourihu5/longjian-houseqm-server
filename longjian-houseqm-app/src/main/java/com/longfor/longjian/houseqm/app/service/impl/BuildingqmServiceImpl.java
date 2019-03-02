@@ -516,7 +516,7 @@ public class BuildingqmServiceImpl implements IBuildingqmService {
                     Integer canReassign = CheckTaskRoleCanReassignType.No.getValue();
                     ApiBuildingQmTaskMemberInsertVo vo = new ApiBuildingQmTaskMemberInsertVo();
                     vo.setSquad_id(squadId);
-                    vo.setGroup_role(CheckTaskRoleType.Checker.getValue());
+                    vo.setGroup_role(CheckTaskRoleType.Repairer.getValue());
                     vo.setUser_id(repairerGroups.get(i).getUser_ids().get(j));
                     vo.setCan_approve(canApprove);
                     vo.setCan_direct_approve(canDirectApprove);
