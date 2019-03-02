@@ -5,13 +5,18 @@ package com.longfor.longjian.houseqm.consts;
  */
 
 public enum RepossessionStatusEnum {
-    None(0,"未检查"),
-    OnlyCheck (1,"业主只看房／已查验"),
-    Accept(2,"业主收楼"),
-    RejectAccept(3,"业主拒绝收楼");
+    None(0, "未检查"),
+    OnlyCheck(1, "业主只看房／已查验"),
+    Accept(2, "业主收楼"),
+    RejectAccept(3, "业主拒绝收楼");
 
     private Integer id;
     private String value;
+
+    RepossessionStatusEnum(Integer id, String value) {
+        this.id = id;
+        this.value = value;
+    }
 
     public Integer getId() {
         return id;
@@ -19,10 +24,5 @@ public enum RepossessionStatusEnum {
 
     public String getValue() {
         return value;
-    }
-
-    RepossessionStatusEnum(Integer id, String value) {
-        this.id = id;
-        this.value = value;
     }
 }

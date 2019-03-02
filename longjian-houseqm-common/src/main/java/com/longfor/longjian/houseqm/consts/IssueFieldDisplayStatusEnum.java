@@ -5,9 +5,14 @@ package com.longfor.longjian.houseqm.consts;
  */
 public enum IssueFieldDisplayStatusEnum {
     Yes(1, "显示"),
-    No (0, "不显示");
+    No(0, "不显示");
     private Integer id;
     private String value;
+
+    IssueFieldDisplayStatusEnum(Integer id, String value) {
+        this.id = id;
+        this.value = value;
+    }
 
     public Integer getId() {
         return id;
@@ -15,11 +20,6 @@ public enum IssueFieldDisplayStatusEnum {
 
     public String getValue() {
         return value;
-    }
-
-    IssueFieldDisplayStatusEnum(Integer id, String value) {
-        this.id = id;
-        this.value = value;
     }
 
 }

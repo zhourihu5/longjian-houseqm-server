@@ -11,15 +11,16 @@ import java.util.List;
  */
 @Data
 @NoArgsConstructor
-public class ApiStatHouseqmMeterSettingMsgVo  implements Serializable {
-   private Integer project_id=0;
-    private Integer item_id =0;
-    private String  item_name="";
-    private Integer input_type=0;
-    private String sub_setting="";
+public class ApiStatHouseqmMeterSettingMsgVo implements Serializable {
+    private Integer project_id = 0;
+    private Integer item_id = 0;
+    private String item_name = "";
+    private Integer input_type = 0;
+    private String sub_setting = "";
+
     @Data
     @NoArgsConstructor
-    public class HouseqmMeterSetting implements Serializable{
-        List<ApiStatHouseqmMeterSettingMsgVo>acceptance_items;
+    public class HouseqmMeterSetting implements Serializable {
+        List<ApiStatHouseqmMeterSettingMsgVo> acceptance_items;
     }
 }

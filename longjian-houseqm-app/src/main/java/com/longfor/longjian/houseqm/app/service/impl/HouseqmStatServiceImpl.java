@@ -3,19 +3,19 @@ package com.longfor.longjian.houseqm.app.service.impl;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
+import com.longfor.longjian.common.consts.HouseQmCheckTaskIssueStatusEnum;
 import com.longfor.longjian.common.util.StringUtil;
 import com.longfor.longjian.houseqm.app.service.HouseqmStaticService;
 import com.longfor.longjian.houseqm.app.service.IHouseqmStatService;
+import com.longfor.longjian.houseqm.app.vo.*;
 import com.longfor.longjian.houseqm.app.vo.houseqmstat.HouseQmStatCategorySituationRspVo;
 import com.longfor.longjian.houseqm.app.vo.houseqmstat.InspectionHouseStatusInfoVo;
 import com.longfor.longjian.houseqm.app.vo.houseqmstat.StatCategoryStatRspVo;
 import com.longfor.longjian.houseqm.consts.*;
-import com.longfor.longjian.houseqm.app.vo.*;
-import com.longfor.longjian.common.consts.HouseQmCheckTaskIssueStatusEnum;
-import com.longfor.longjian.houseqm.domain.internalService.*;
+import com.longfor.longjian.houseqm.domain.internalservice.*;
 import com.longfor.longjian.houseqm.dto.CheckerIssueStatusStatDto;
 import com.longfor.longjian.houseqm.dto.RepaireIssueStatusStatDto;
-import com.longfor.longjian.houseqm.po.*;
+import com.longfor.longjian.houseqm.po.CheckerIssueStat;
 import com.longfor.longjian.houseqm.po.zhijian2_apisvr.User;
 import com.longfor.longjian.houseqm.po.zj2db.Area;
 import com.longfor.longjian.houseqm.po.zj2db.HouseQmCheckTask;
@@ -398,16 +398,16 @@ public class HouseqmStatServiceImpl implements IHouseqmStatService {
             if (e != null) {
                 switch (e) {
                     case NoteNoAssign:  //已记录未分配
-                        result.setIssue_recorded_count(result.getIssue_recorded_count()+res.getPosX());
+                        result.setIssue_recorded_count(result.getIssue_recorded_count() + res.getPosX());
                         break;
                     case AssignNoReform://已分配未整改
-                        result.setIssue_assigned_count(result.getIssue_assigned_count()+res.getPosX());
+                        result.setIssue_assigned_count(result.getIssue_assigned_count() + res.getPosX());
                         break;
                     case ReformNoCheck://已整改未验收
-                        result.setIssue_repaired_count(result.getIssue_repaired_count()+res.getPosX());
+                        result.setIssue_repaired_count(result.getIssue_repaired_count() + res.getPosX());
                         break;
                     case CheckYes://已验收
-                        result.setIssue_approveded_count(result.getIssue_approveded_count()+res.getPosX());
+                        result.setIssue_approveded_count(result.getIssue_approveded_count() + res.getPosX());
                         break;
                     default:
                         break;
@@ -427,7 +427,7 @@ public class HouseqmStatServiceImpl implements IHouseqmStatService {
                     default:
                         break;
                 }
-                e=null;
+                e = null;
             }
         }
 
@@ -679,10 +679,11 @@ public class HouseqmStatServiceImpl implements IHouseqmStatService {
             /*String areapath = l.getAreaId() + "/";
 
             String fatherPath = l.getAreaPathAndId().replace(areapath, "");*/
-            String areapath =String.format("%d%s", l.getAreaId() , "/");
-            int end = l.getAreaPathAndId().lastIndexOf(areapath);String fatherPath =null;
-            if (end==l.getAreaPathAndId().length()-areapath.length()){//以 字符 结尾
-                fatherPath= l.getAreaPathAndId().replace(areapath, "");
+            String areapath = String.format("%d%s", l.getAreaId(), "/");
+            int end = l.getAreaPathAndId().lastIndexOf(areapath);
+            String fatherPath = null;
+            if (end == l.getAreaPathAndId().length() - areapath.length()) {//以 字符 结尾
+                fatherPath = l.getAreaPathAndId().replace(areapath, "");
             }
             // 以下应使用枚举类，由于未改动包结构 先写死
             if (l.getTyp().equals(HouseQmCheckTaskIssueEnum.Record.getId())) {
@@ -690,7 +691,7 @@ public class HouseqmStatServiceImpl implements IHouseqmStatService {
             } else if (l.getTyp().equals(HouseQmCheckTaskIssueEnum.FindProblem.getId()) || l.getTyp().equals(HouseQmCheckTaskIssueEnum.Difficult.getId())) {
                 item.setIssue_count(l.getCount() + item.getIssue_count());
             }
-            if (fatherPath!=null&&fatherPath.length()>1)areaMap.put(fatherPath, true);
+            if (fatherPath != null && fatherPath.length() > 1) areaMap.put(fatherPath, true);
         }
         item.setChecked_count(areaMap.size());
         return item;

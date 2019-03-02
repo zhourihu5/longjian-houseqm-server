@@ -22,67 +22,63 @@ public class MathUtil {
             return "0.00";
         }
         BigDecimal decimala = new BigDecimal(a);
-        BigDecimal decimalb= new BigDecimal(b);
-        BigDecimal divide = decimala.divide(decimalb,4,BigDecimal.ROUND_HALF_UP);
+        BigDecimal decimalb = new BigDecimal(b);
+        BigDecimal divide = decimala.divide(decimalb, 4, BigDecimal.ROUND_HALF_UP);
         BigDecimal perc = new BigDecimal(100);
-        perc=perc.setScale(2,BigDecimal.ROUND_HALF_UP);
+        perc = perc.setScale(2, BigDecimal.ROUND_HALF_UP);
         BigDecimal multiply = divide.multiply(perc);
-        /*DecimalFormat df = new DecimalFormat("0.00");
-        String result = df.format((float) a / (float) b * 100.0);*/
-        return  formatToNumber(multiply);
+        return formatToNumber(multiply);
     }
+
     /**
+     * @return java.lang.String
      * @Author hy
      * @Description 格式
      * @Date 15:38 2019/1/28
      * @Param [a, b]
-     * @return java.lang.String
      **/
     public static String getPercentage2(int a, int b) {
         if (a == 0 || b == 0) {
             return "0";
         }
         BigDecimal decimala = new BigDecimal(a);
-        BigDecimal decimalb= new BigDecimal(b);
-        BigDecimal divide = decimala.divide(decimalb,4,BigDecimal.ROUND_HALF_UP);
+        BigDecimal decimalb = new BigDecimal(b);
+        BigDecimal divide = decimala.divide(decimalb, 4, BigDecimal.ROUND_HALF_UP);
         BigDecimal perc = new BigDecimal(100);
-        perc =perc.setScale(2,BigDecimal.ROUND_HALF_UP);
+        perc = perc.setScale(2, BigDecimal.ROUND_HALF_UP);
         BigDecimal multiply = divide.multiply(perc);
-        /*DecimalFormat df = new DecimalFormat("0.00");
-        String result = df.format((float) a / (float) b * 100.0);*/
-        return  formatToNumber(multiply);
+        return formatToNumber(multiply);
     }
 
     /**
+     * @return java.lang.String
      * @Author hy
      * @Description 格式化
      * @Date 14:48 2019/1/22
      * @Param [a, b, pattern]
-     * @return java.lang.String
      **/
     public static String getPercentageByPattern(int a, int b, String pattern) {
         if (a == 0 || b == 0) {
             return "0";
         }
         DecimalFormat df = new DecimalFormat(pattern);
-        String result = df.format((float) a / (float) b * 100.0);
-        return result;
+        return df.format((float) a / (float) b * 100.0);
     }
 
     /**
+     * @return java.lang.String
      * @Author hy
      * @Description 格式化数字 0.00
      * @Date 16:04 2019/1/15
      * @Param [obj]
-     * @return java.lang.String
      **/
     public static String formatToNumber(BigDecimal obj) {
         DecimalFormat df = new DecimalFormat("#.00");
-        if(obj.compareTo(BigDecimal.ZERO)==0) {
+        if (obj.compareTo(BigDecimal.ZERO) == 0) {
             return "0.00";
-        }else if(obj.compareTo(BigDecimal.ZERO)>0&&obj.compareTo(new BigDecimal(1))<0){
-            return "0"+df.format(obj);
-        }else {
+        } else if (obj.compareTo(BigDecimal.ZERO) > 0 && obj.compareTo(new BigDecimal(1)) < 0) {
+            return "0" + df.format(obj);
+        } else {
             return df.format(obj);
         }
     }

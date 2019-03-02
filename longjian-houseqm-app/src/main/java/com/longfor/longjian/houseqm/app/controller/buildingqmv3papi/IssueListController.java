@@ -22,7 +22,10 @@ import org.apache.poi.xssf.streaming.SXSSFWorkbook;
 import org.apache.poi.xwpf.usermodel.XWPFDocument;
 import org.springframework.http.MediaType;
 import org.springframework.validation.annotation.Validated;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
+
 import javax.annotation.Resource;
 import javax.servlet.ServletOutputStream;
 import javax.servlet.http.HttpServletRequest;
@@ -44,15 +47,14 @@ import java.util.Map;
 @Slf4j
 public class IssueListController {
 
+    private static final String PROJECT_ID = "project_id";
+    private static final String ISSUE_IDS = "issue_ids";
     @Resource
     private IIssueService iIssueService;
     @Resource
     private CtrlTool ctrlTool;
     @Resource
     private SessionInfo sessionInfo;
-
-    private static  final String PROJECT_ID="project_id";
-    private static  final String ISSUE_IDS="issue_ids";
 
     /**
      * @return com.longfor.longjian.common.base.LjBaseResponse<java.lang.Object>
@@ -62,16 +64,18 @@ public class IssueListController {
      * @Param [request, req]
      **/
     @RequestMapping(value = "export_excel", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
-    public LjBaseResponse<Object> exportExcel(HttpServletRequest request, HttpServletResponse response, @Validated ExportBuildingExcelReq req) throws Exception {
-        // 对参数进行非空判断
-        log.info("export_excel," + JSON.toJSONString(req));
-        Integer uid = SessionUtil.getUid(sessionInfo);
-        ctrlTool.projPerm(request, "项目.工程检查.问题管理.查看");
+    public LjBaseResponse<Object> exportExcel(HttpServletRequest request, HttpServletResponse response, @Validated ExportBuildingExcelReq req) {
         LjBaseResponse<Object> ljBaseResponse = new LjBaseResponse<>();
-        // 导出execel
-        ServletOutputStream os = response.getOutputStream();
+        ServletOutputStream os = null;
         try {
-            Map<String, Object> map = iIssueService.exportExcel(uid,req);
+            // 对参数进行非空判断
+            log.info("export_excel," + JSON.toJSONString(req));
+            Integer uid = SessionUtil.getUid(sessionInfo);
+            ctrlTool.projPerm(request, "项目.工程检查.问题管理.查看");
+            // 导出execel
+            os = response.getOutputStream();
+
+            Map<String, Object> map = iIssueService.exportExcel(uid, req);
             String fileName = (String) map.get("fileName");
             SXSSFWorkbook wb = (SXSSFWorkbook) map.get("workbook");
             response.setContentType("application/vnd.ms-excel");
@@ -79,12 +83,18 @@ public class IssueListController {
             response.setHeader("Content-Disposition", "attachment;filename=" + new String(fileName.getBytes("utf-8"), "iso8859-1") + ".xls");
             wb.write(os);
             os.flush();
-        } catch (IOException e) {
+        } catch (Exception e) {
             log.error("excel 导出异常");
             ljBaseResponse.setResult(1);
             ljBaseResponse.setMessage(e.getMessage());
         } finally {
-            os.close();
+            try {
+                if (os != null) {
+                    os.close();
+                }
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
         }
         return ljBaseResponse;
     }
@@ -109,7 +119,7 @@ public class IssueListController {
 
             response.setData(result);
         } catch (Exception e) {
-            log.error("问题检索异常:",e.getMessage());
+            log.error("问题检索异常:", e.getMessage());
             response.setResult(1);
             response.setMessage(e.getMessage());
             response.setMsg(e.getMessage());
@@ -126,14 +136,20 @@ public class IssueListController {
      */
     @RequestMapping(value = "detail_log", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     public LjBaseResponse<DetailLogRspVo> detailLog(@RequestParam(value = "project_id", required = true) Integer projectId,
-                                                    @RequestParam(value = "issue_uuid", required = true) String issueUuid) throws Exception {
+                                                    @RequestParam(value = "issue_uuid", required = true) String issueUuid) {
         LjBaseResponse<DetailLogRspVo> response = new LjBaseResponse<>();
-        ctrlTool.projPerm(RequestContextHolderUtil.getRequest(), "项目.工程检查.问题管理.查看");
-        List<HouseQmCheckTaskIssueHistoryLogVo> result = iIssueService.getHouseQmCheckTaskIssueActionLogByIssueUuid(issueUuid);
-        DetailLogRspVo data = new DetailLogRspVo();
-        data.setItems(result);
-        response.setData(data);
-
+        try {
+            ctrlTool.projPerm(RequestContextHolderUtil.getRequest(), "项目.工程检查.问题管理.查看");
+            List<HouseQmCheckTaskIssueHistoryLogVo> result = iIssueService.getHouseQmCheckTaskIssueActionLogByIssueUuid(issueUuid);
+            DetailLogRspVo data = new DetailLogRspVo();
+            data.setItems(result);
+            response.setData(data);
+        } catch (Exception e) {
+            log.error(e.getMessage());
+            response.setMessage(e.getMessage());
+            response.setResult(1);
+            response.setCode(1);
+        }
         return response;
     }
 
@@ -159,10 +175,11 @@ public class IssueListController {
 
         return null;
     }
+
     @RequestMapping(value = "repair_notify_export", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     public LjBaseResponse<Object> repairNotifyExport(HttpServletRequest request, HttpServletResponse response) {
         String projectId = request.getParameter(PROJECT_ID);
-        String issueUuid=  request.getParameter(ISSUE_IDS);
+        String issueUuid = request.getParameter(ISSUE_IDS);
         log.info("repair_notify_export, project_id=" + projectId + ", ISSUE_IDS=" + issueUuid + "");
         Integer userId = SessionUtil.getUid(sessionInfo);
         if (projectId == null || issueUuid == null) {
@@ -172,8 +189,8 @@ public class IssueListController {
             return objectTaskResponse;
 
         }
-        Boolean b = iIssueService.repairNotifyExport(userId, Integer.parseInt(projectId), issueUuid,response,request);
-        if(b){
+        Boolean b = iIssueService.repairNotifyExport(userId, Integer.parseInt(projectId), issueUuid, response, request);
+        if (b) {
             LjBaseResponse<Object> objectTaskResponse = new LjBaseResponse<>();
             objectTaskResponse.setData(b);
             return objectTaskResponse;
@@ -181,11 +198,12 @@ public class IssueListController {
 
         return null;
     }
+
     //导出整改回复单
     @RequestMapping(value = "repair_reply_export", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     public LjBaseResponse<Object> repairReplyExport(HttpServletRequest request, HttpServletResponse response) throws IOException {
         String projectId = request.getParameter("project_id");
-        String issueIds=  request.getParameter("issue_ids");
+        String issueIds = request.getParameter("issue_ids");
         log.info("repair_reply_export, project_id=" + projectId + ", issue_ids=" + issueIds);
         if (projectId == null || issueIds == null) {
             LjBaseResponse<Object> objectTaskResponse = new LjBaseResponse<>();
@@ -203,7 +221,7 @@ public class IssueListController {
             doc.write(os);
             os.flush();
         } catch (IOException e) {
-            log.error("导出整改回复单:",e.getMessage());
+            log.error("导出整改回复单:", e.getMessage());
         } finally {
             if (os != null) {
                 os.close();
@@ -226,7 +244,7 @@ public class IssueListController {
         try {
             ctrlTool.projPerm(request, "项目.工程检查.问题管理.查看");
         } catch (Exception e) {
-            log.error("问题鉴权异常:",e.getMessage());
+            log.error("问题鉴权异常:", e.getMessage());
             response.setResult(1);
             response.setMessage(e.getMessage());
         }
@@ -289,7 +307,7 @@ public class IssueListController {
             ctrlTool.projPerm(request, "项目.工程检查.问题管理.删除");
             iIssueService.deleteHouseqmCheckTaskIssueByProjectAndUuid(projectId, issueUuid);
         } catch (Exception e) {
-            log.error("删除问题:",e.getMessage());
+            log.error("删除问题:", e.getMessage());
             response.setResult(1);
             response.setMessage(e.getMessage());
         }
@@ -314,7 +332,7 @@ public class IssueListController {
         try {
             ctrlTool.projPerm(request, "项目.移动验房.问题管理.编辑");
         } catch (Exception e) {
-            log.error("修改整改责任人异常:",e.getMessage());
+            log.error("修改整改责任人异常:", e.getMessage());
         }
         return iIssueService.updateIssueRepairInfoByProjectAndUuid(userId, repairerId, repairFollowerIds, projectId, issueUuid);
     }
@@ -336,7 +354,7 @@ public class IssueListController {
         try {
             ctrlTool.projPerm(request, "项目.工程检查.问题管理.查看");
         } catch (Exception e) {
-            log.error("追加描述异常:",e.getMessage());
+            log.error("追加描述异常:", e.getMessage());
         }
         return iIssueService.updeteIssueDescByUuid(projectId, issueUuid, userId, content);
     }
@@ -357,7 +375,7 @@ public class IssueListController {
         try {
             ctrlTool.projPerm(request, "项目.工程检查.问题管理.查看");
         } catch (Exception e) {
-            log.error("更新完成时间异常:",e.getMessage());
+            log.error("更新完成时间异常:", e.getMessage());
         }
         return iIssueService.updateIssuePlanEndOnByProjectAndUuid(projectId, issueUuid, userId, planEndOn);
     }
@@ -380,7 +398,7 @@ public class IssueListController {
         try {
             ctrlTool.projPerm(request, "项目.移动验房.问题管理.编辑");
         } catch (Exception e) {
-            log.error("销项问题异常:",e.getMessage());
+            log.error("销项问题异常:", e.getMessage());
         }
         return iIssueService.updateIssueApproveStatusByUuid(projectId, issueUuid, userId, status, content);
     }
@@ -398,7 +416,7 @@ public class IssueListController {
         try {
             ctrlTool.projPerm(request, "项目.工程检查.问题管理.查看");
         } catch (Exception e) {
-            log.error("鉴权异常:",e.getMessage());
+            log.error("鉴权异常:", e.getMessage());
         }
         LjBaseResponse<List<HouseQmCheckTaskIssueDetailRepairLogVo>> result = iIssueService.getDetailRepairLogByIssueUuid(issueUuid);
 
@@ -423,21 +441,21 @@ public class IssueListController {
         try {
             ctrlTool.projPerm(request, "项目.工程检查.问题管理.查看");
         } catch (Exception e) {
-            log.error("问题详情鉴权异常:",e.getMessage());
+            log.error("问题详情鉴权异常:", e.getMessage());
         }
 
         return iIssueService.getHouseQmCheckTaskIssueDetailBaseByProjectAndUuid(userId, projectId, issueUuid);
     }
 
     //【项目-过程检查-问题管理-问题详情】其他信息编辑
-    @RequestMapping(value = "edit_detail",produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
-    public LjBaseResponse<Object> editDetail(HttpServletRequest request,@Validated EditDetailReq req){
+    @RequestMapping(value = "edit_detail", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+    public LjBaseResponse<Object> editDetail(HttpServletRequest request, @Validated EditDetailReq req) {
         LjBaseResponse<Object> response = new LjBaseResponse<>();
         Integer userId = SessionUtil.getUid(sessionInfo);
         try {
-            ctrlTool.projPerm(request,"项目.工程检查.问题管理.编辑");
+            ctrlTool.projPerm(request, "项目.工程检查.问题管理.编辑");
         } catch (Exception e) {
-            log.error("信息编辑异常:",e.getMessage());
+            log.error("信息编辑异常:", e.getMessage());
             response.setResult(1);
             response.setMessage("PermissionDenied");
             return response;

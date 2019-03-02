@@ -1,7 +1,9 @@
 package com.longfor.longjian.houseqm.po.zhijian2_notify;
 
+import javax.persistence.Column;
+import javax.persistence.Id;
+import javax.persistence.Table;
 import java.util.Date;
-import javax.persistence.*;
 
 @Table(name = "push_strategy_assign_time")
 public class PushStrategyAssignTime {

@@ -53,7 +53,7 @@ public class FixingPresetAppController {
         }
         List<AppFixingPresetProtoVo> items = Lists.newArrayList();
         LjBaseResponse<AppListFixingPresetVo> response = new LjBaseResponse<>();
-        if(fixingPresetData!=null) {
+        if (fixingPresetData != null) {
             for (int i = 0; i < fixingPresetData.size(); i++) {
                 AppFixingPresetProtoVo vo = new AppFixingPresetProtoVo();
                 vo.setId(String.valueOf(fixingPresetData.get(i).getId()));

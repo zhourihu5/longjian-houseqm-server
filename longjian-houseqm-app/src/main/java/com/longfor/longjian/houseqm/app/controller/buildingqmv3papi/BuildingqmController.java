@@ -21,14 +21,16 @@ import org.apache.commons.lang.StringUtils;
 import org.apache.poi.xssf.streaming.SXSSFWorkbook;
 import org.springframework.http.MediaType;
 import org.springframework.validation.annotation.Validated;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
 
 import javax.annotation.Resource;
 import javax.servlet.ServletOutputStream;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
-import java.io.*;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -49,6 +51,8 @@ import java.util.Map;
 public class BuildingqmController {
 
 
+    private static final String PARAN = "yyyy-MM-dd HH:mm:ss";
+    private static final String UTF = "UTF-8";
     @Resource
     private IBuildingqmService buildingqmService;
     @Resource
@@ -57,9 +61,6 @@ public class BuildingqmController {
     private SessionInfo sessionInfo;
     @Resource
     private CtrlTool ctrlTool;
-
-    private static final  String PARAN="yyyy-MM-dd HH:mm:ss";
-    private static final  String UTF="UTF-8";
 
     /**
      * 项目下获取我的任务列表
@@ -340,7 +341,6 @@ public class BuildingqmController {
     public LjBaseResponse<ReportIssueVo> reportIssue(@Validated ReportIssueReq req) {
         log.info("report_issue, project_id=" + req.getData() + ", data=" + req.getData() + "");
         Integer userId = SessionUtil.getUid(sessionInfo);
-        //userId=9;
         ReportIssueVo reportIssueVo = buildingqmService.reportIssue(userId, req.getProject_id(), req.getData());
         LjBaseResponse<ReportIssueVo> response = new LjBaseResponse<>();
         response.setData(reportIssueVo);
@@ -370,7 +370,7 @@ public class BuildingqmController {
         String fileNames = map.get("fileName").toString();
 
         response.addHeader("Content-Disposition",
-                "attachment;filename=" + new String(fileNames.getBytes("utf-8"),"iso8859-1"));
+                "attachment;filename=" + new String(fileNames.getBytes("utf-8"), "iso8859-1"));
 
         response.addHeader("Content-Type", "application/vnd.ms-excel; charset=utf-8");
         response.addHeader("Expires", "0");

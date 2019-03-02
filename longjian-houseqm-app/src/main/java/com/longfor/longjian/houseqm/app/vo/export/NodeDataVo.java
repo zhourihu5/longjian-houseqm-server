@@ -13,7 +13,7 @@ import java.util.List;
  */
 @Data
 @NoArgsConstructor
-public class NodeDataVo  implements Serializable {
+public class NodeDataVo implements Serializable {
     private String key = "";
     private String parent_key = "";
     private Integer issue_count = 0;

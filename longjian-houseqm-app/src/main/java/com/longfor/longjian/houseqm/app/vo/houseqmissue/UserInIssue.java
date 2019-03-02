@@ -20,7 +20,7 @@ public class UserInIssue implements Serializable {
     //UserRole map[int]int
     //	Modified bool
     //	TaskId   int
-    private Map<Integer,Integer> userRole;
+    private Map<Integer, Integer> userRole;
     private Boolean modified;
     private Integer taskId;
 }

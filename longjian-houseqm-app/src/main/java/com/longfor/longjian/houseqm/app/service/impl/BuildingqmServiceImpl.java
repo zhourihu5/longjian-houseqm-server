@@ -18,7 +18,7 @@ import com.longfor.longjian.houseqm.app.vo.*;
 import com.longfor.longjian.houseqm.app.vo.export.NodeDataVo;
 import com.longfor.longjian.houseqm.app.vo.export.NodeVo;
 import com.longfor.longjian.houseqm.consts.DropDataReasonEnum;
-import com.longfor.longjian.houseqm.domain.internalService.*;
+import com.longfor.longjian.houseqm.domain.internalservice.*;
 import com.longfor.longjian.houseqm.innervo.ApiBuildingQmCheckTaskConfig;
 import com.longfor.longjian.houseqm.innervo.ApiBuildingQmCheckTaskMsg;
 import com.longfor.longjian.houseqm.po.zhijian2_apisvr.User;
@@ -26,14 +26,15 @@ import com.longfor.longjian.houseqm.po.zhijian2_notify.PushStrategyAssignTime;
 import com.longfor.longjian.houseqm.po.zhijian2_notify.PushStrategyCategoryOverdue;
 import com.longfor.longjian.houseqm.po.zhijian2_notify.PushStrategyCategoryThreshold;
 import com.longfor.longjian.houseqm.po.zj2db.*;
-import com.longfor.longjian.houseqm.util.*;
+import com.longfor.longjian.houseqm.util.CollectionUtil;
+import com.longfor.longjian.houseqm.util.DateUtil;
+import com.longfor.longjian.houseqm.util.StringSplitToListUtil;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.beanutils.BeanUtils;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
-
 import org.apache.poi.xssf.streaming.SXSSFWorkbook;
 import org.springframework.stereotype.Repository;
 import org.springframework.stereotype.Service;
@@ -100,26 +101,6 @@ public class BuildingqmServiceImpl implements IBuildingqmService {
     @Resource
     private IssueServiceImpl issueService;
 
-    @Override
-    public TaskListVo myTaskList(Integer userId) {
-
-        List<UserInHouseQmCheckTask> userTasks = userInHouseQmCheckTaskService.searchByUserId(userId);
-        Set<Integer> taskIds = Sets.newHashSet();
-
-        for (UserInHouseQmCheckTask task : userTasks) {
-            taskIds.add(task.getTaskId());
-        }
-
-        Map<Integer, ApiBuildingQmCheckTaskConfig> taskMap = creatTaskMap(taskIds);
-        List<HouseQmCheckTask> houseqmTasks = houseQmCheckTaskService.selectByTaskIdsEvenDeleted(taskIds);
-        List<TaskVo> vos = Lists.newArrayList();
-        buildTaskVo(vos, houseqmTasks, taskMap);
-        TaskListVo taskListVo = new TaskListVo();
-        taskListVo.setTask_list(vos);
-
-        return taskListVo;
-    }
-
     public static void setTaskProperties(TaskVo tvo, ApiBuildingQmCheckTaskMsg abm, Map<Integer, ApiBuildingQmCheckTaskConfig> taskMap, HouseQmCheckTask checkTask) {
         ApiBuildingQmCheckTaskMsg task = new ApiBuildingQmCheckTaskMsg();
         task.setProject_id(checkTask.getProjectId());
@@ -129,7 +110,7 @@ public class BuildingqmServiceImpl implements IBuildingqmService {
         task.setCategory_cls(checkTask.getCategoryCls());
         task.setRoot_category_key(checkTask.getRootCategoryKey());
         task.setArea_ids(checkTask.getAreaIds());
-        task.setArea_types(checkTask.getAreaTypes());
+        task.setArea_type(checkTask.getAreaTypes());
 
         if (taskMap.containsKey(task.getTask_id())) {
             ApiBuildingQmCheckTaskConfig cfg = taskMap.get(task.getTask_id());
@@ -160,7 +141,7 @@ public class BuildingqmServiceImpl implements IBuildingqmService {
                     log.error(e.getMessage());
                 }
             } catch (IllegalAccessException e) {
-              log.error(e.getMessage());
+                log.error(e.getMessage());
             }
         }
         if (abm != null) {
@@ -174,6 +155,26 @@ public class BuildingqmServiceImpl implements IBuildingqmService {
                 log.error(e.getMessage());
             }
         }
+    }
+
+    @Override
+    public TaskListVo myTaskList(Integer userId) {
+
+        List<UserInHouseQmCheckTask> userTasks = userInHouseQmCheckTaskService.searchByUserId(userId);
+        Set<Integer> taskIds = Sets.newHashSet();
+
+        for (UserInHouseQmCheckTask task : userTasks) {
+            taskIds.add(task.getTaskId());
+        }
+
+        Map<Integer, ApiBuildingQmCheckTaskConfig> taskMap = creatTaskMap(taskIds);
+        List<HouseQmCheckTask> houseqmTasks = houseQmCheckTaskService.selectByTaskIdsEvenDeleted(taskIds);
+        List<TaskVo> vos = Lists.newArrayList();
+        buildTaskVo(vos, houseqmTasks, taskMap);
+        TaskListVo taskListVo = new TaskListVo();
+        taskListVo.setTask_list(vos);
+
+        return taskListVo;
     }
 
     private void buildTaskVo(List<TaskVo> vos, List<HouseQmCheckTask> houseqmTasks, Map<Integer, ApiBuildingQmCheckTaskConfig> taskMap) {
@@ -627,12 +628,12 @@ public class BuildingqmServiceImpl implements IBuildingqmService {
         List<User> userIdRealNameInfo = userService.searchByUserIdInAndNoDeleted(usersIds);
         HashMap<Integer, String> userIdRealNameMap = Maps.newHashMap();
         userIdRealNameInfo.forEach(item ->
-            userIdRealNameMap.put(item.getUserId(), item.getRealName())
+                userIdRealNameMap.put(item.getUserId(), item.getRealName())
         );
         List<FileResource> fileMd5StoreKeyInfo = fileResourceService.searchFileResourceByFileMd5InAndNoDeleted(fileMd5s);
         HashMap<String, String> fileMd5StoreKeyMap = Maps.newHashMap();
         fileMd5StoreKeyInfo.forEach(item ->
-            fileMd5StoreKeyMap.put(item.getFileMd5(), item.getStoreKey())
+                fileMd5StoreKeyMap.put(item.getFileMd5(), item.getStoreKey())
         );
         List<String> areaIds = StringSplitToListUtil.removeStartAndEndStrAndSplit(issueInfo.getAreaPathAndId().replace("//", "/"), "/", "/");
         ArrayList<Integer> areaIdsList = Lists.newArrayList();
@@ -1331,31 +1332,6 @@ public class BuildingqmServiceImpl implements IBuildingqmService {
         return vo;
     }
 
-    @Data
-    @NoArgsConstructor
-    public class ApiHouseQmIssueReport {
-        private List<ApiHouseQmIssue> created_issues;
-        private List<ApiHouseQmIssue> assigned_issues;
-        private List<ApiHouseQmIssue> reformed_issues;
-        private List<ApiHouseQmIssue> checked_issues;
-    }
-
-    @Data
-    @NoArgsConstructor
-    public class ApiHouseQmIssue {
-        private String uuid;
-        private Integer proj_id;
-        private Integer task_id;
-        private Integer checker_id;
-        private Integer repairer_id;
-        private Integer area_id;
-        private String area_path_and_id;
-        private String category_key;
-        private String category_path_and_key;
-        private Integer sender_id;
-        private Integer timestamp;
-    }
-
     private ArrayList<Integer> getIssueCheckerList(Map<Integer, Map<Integer, Map<Integer, Integer>>> checkerMap, HouseQmCheckTaskIssue issue, Boolean b) {
         ArrayList<Integer> desUserIds = Lists.newArrayList();
         if (!checkerMap.containsKey(issue.getTaskId())) {
@@ -1395,13 +1371,6 @@ public class BuildingqmServiceImpl implements IBuildingqmService {
     private Map createUsersMap(List<Integer> ids) {
         Map<Integer, User> map = userService.selectByIds(ids);
         return map;
-    }
-
-    @Data
-    @NoArgsConstructor
-    public class ApiRefundInfo {
-        private Integer repairer;
-        private Integer checker;
     }
 
     private Map<String, Object> modifyIssue(Map<HouseQmCheckTaskIssue, ApiRefundInfo> refundMap, HashMap<String, ApiUserRoleInIssue> issueRoleMap, HouseQmCheckTaskIssue issue, ApiHouseQmCheckTaskIssueLogInfo item, Boolean b) {
@@ -2185,7 +2154,6 @@ public class BuildingqmServiceImpl implements IBuildingqmService {
                 info.setRemove_memo_audio_md5_list(detail.get("remove_memo_audio_md5_list") != null ? (String) detail.get("remove_memo_audio_md5_list") : "-1");
 
 
-
                 info.setTitle(detail.get("title") != null ? (String) detail.get("title") : "");
 
 
@@ -2587,7 +2555,6 @@ public class BuildingqmServiceImpl implements IBuildingqmService {
 
     }
 
-
     private List<ApiBuildingQmTaskMemberGroupVo> createCheckerGroups(List<ApiBuildingQmCheckTaskSquadObjVo> groupsInfo) {
         ArrayList<ApiBuildingQmTaskMemberGroupVo> objects = Lists.newArrayList();
         for (int i = 0; i < groupsInfo.size(); i++) {
@@ -2821,7 +2788,6 @@ public class BuildingqmServiceImpl implements IBuildingqmService {
         return null;
     }
 
-
     /**
      * string 转date
      *
@@ -2859,7 +2825,7 @@ public class BuildingqmServiceImpl implements IBuildingqmService {
             if (categoryOverdue != null) {
                 String categoryKeys = (String) categoryOverdue.get("category_keys");
                 String uIds = (String) categoryOverdue.get("user_ids");
-                if (StringUtils.isNotBlank(categoryKeys) &&StringUtils.isNotBlank(uIds) ) {
+                if (StringUtils.isNotBlank(categoryKeys) && StringUtils.isNotBlank(uIds)) {
                     ConfigVo.ApiPushStrategyCategoryOverdue configCategoryOverdue = new ConfigVo().new ApiPushStrategyCategoryOverdue();
                     configCategoryOverdue.setCategory_keys(categoryKeys);
                     configCategoryOverdue.setUser_ids(userIds);
@@ -2935,58 +2901,6 @@ public class BuildingqmServiceImpl implements IBuildingqmService {
 
     }
 
-
-    /**
-     * @param maps
-     * @param houseQmCheckTasks
-     */
-    /*private void fullAllTaskConfigVO(Map<Integer, ApiBuildingQmCheckTaskConfig> maps,
-                                     List<HouseQmCheckTask> houseQmCheckTasks, List<TaskVo> vos) {
-
-        if (CollectionUtils.isEmpty(houseQmCheckTasks)) {
-            return;
-        }
-
-        for (HouseQmCheckTask item : houseQmCheckTasks) {
-
-            TaskVo task = new TaskVo();
-            task.setTask_id(item.getTaskId());
-            task.setProject_id(item.getProjectId());
-            task.setName(item.getName());
-            task.setStatus(item.getStatus());
-            task.setCategory_cls(item.getCategoryCls());
-            task.setRoot_category_key(item.getRootCategoryKey());
-            task.setArea_ids(item.getAreaIds());
-            task.setArea_type(item.getAreaTypes());
-            task.setPlan_begin_on((int) (item.getPlanBeginOn().getTime() / 1000));
-            task.setPlan_end_on((int) (item.getPlanEndOn().getTime() / 1000));
-            task.setCreate_at((int) (item.getCreateAt().getTime() / 1000));
-            task.setUpdate_at((int) (item.getUpdateAt().getTime() / 1000));
-            task.setDelete_at(DateUtil.datetimeToTimeStamp(item.getDeleteAt()));
-
-            if (maps.containsKey(task.getTask_id())) {
-
-                ApiBuildingQmCheckTaskConfig cfg = maps.get(task.getTask_id());
-                task.setRepairer_refund_permission(cfg.getRepairer_refund_permission());
-                task.setRepairer_follower_permission(cfg.getRepairer_follower_permission());
-                task.setChecker_approve_permission(cfg.getChecker_approve_permission());
-                task.setRepaired_picture_status(cfg.getRepaired_picture_status());
-                task.setIssue_desc_status(cfg.getIssue_desc_status());
-                task.setIssue_default_desc(cfg.getIssue_default_desc());
-            } else {
-
-                task.setRepairer_refund_permission(CheckTaskRepairerRefundPermission.No.getValue());
-                task.setRepairer_follower_permission(CheckTaskRepairerFollowerPermission.CompleteRepair.getValue());
-                task.setChecker_approve_permission(CheckerApprovePermission.No.getValue());
-                task.setRepaired_picture_status(CheckTaskRepairedPictureEnum.UnForcePicture.getValue());
-                task.setIssue_desc_status(CheckTaskIssueDescEnum.Arbitrary.getValue());
-                task.setIssue_default_desc("该问题无文字描述");
-            }
-            vos.add(task);
-        }
-    }*/
-
-
     /**
      * @param maps
      * @param houseQmCheckTasks
@@ -3059,6 +2973,57 @@ public class BuildingqmServiceImpl implements IBuildingqmService {
             return obj;
         }
     }
+
+
+    /**
+     * @param maps
+     * @param houseQmCheckTasks
+     */
+    /*private void fullAllTaskConfigVO(Map<Integer, ApiBuildingQmCheckTaskConfig> maps,
+                                     List<HouseQmCheckTask> houseQmCheckTasks, List<TaskVo> vos) {
+
+        if (CollectionUtils.isEmpty(houseQmCheckTasks)) {
+            return;
+        }
+
+        for (HouseQmCheckTask item : houseQmCheckTasks) {
+
+            TaskVo task = new TaskVo();
+            task.setTask_id(item.getTaskId());
+            task.setProject_id(item.getProjectId());
+            task.setName(item.getName());
+            task.setStatus(item.getStatus());
+            task.setCategory_cls(item.getCategoryCls());
+            task.setRoot_category_key(item.getRootCategoryKey());
+            task.setArea_ids(item.getAreaIds());
+            task.setArea_type(item.getAreaTypes());
+            task.setPlan_begin_on((int) (item.getPlanBeginOn().getTime() / 1000));
+            task.setPlan_end_on((int) (item.getPlanEndOn().getTime() / 1000));
+            task.setCreate_at((int) (item.getCreateAt().getTime() / 1000));
+            task.setUpdate_at((int) (item.getUpdateAt().getTime() / 1000));
+            task.setDelete_at(DateUtil.datetimeToTimeStamp(item.getDeleteAt()));
+
+            if (maps.containsKey(task.getTask_id())) {
+
+                ApiBuildingQmCheckTaskConfig cfg = maps.get(task.getTask_id());
+                task.setRepairer_refund_permission(cfg.getRepairer_refund_permission());
+                task.setRepairer_follower_permission(cfg.getRepairer_follower_permission());
+                task.setChecker_approve_permission(cfg.getChecker_approve_permission());
+                task.setRepaired_picture_status(cfg.getRepaired_picture_status());
+                task.setIssue_desc_status(cfg.getIssue_desc_status());
+                task.setIssue_default_desc(cfg.getIssue_default_desc());
+            } else {
+
+                task.setRepairer_refund_permission(CheckTaskRepairerRefundPermission.No.getValue());
+                task.setRepairer_follower_permission(CheckTaskRepairerFollowerPermission.CompleteRepair.getValue());
+                task.setChecker_approve_permission(CheckerApprovePermission.No.getValue());
+                task.setRepaired_picture_status(CheckTaskRepairedPictureEnum.UnForcePicture.getValue());
+                task.setIssue_desc_status(CheckTaskIssueDescEnum.Arbitrary.getValue());
+                task.setIssue_default_desc("该问题无文字描述");
+            }
+            vos.add(task);
+        }
+    }*/
 
     @Override
     public Map<String, Object> issuestatisticexport(Integer category_cls, String items, HttpServletResponse response) {
@@ -3183,7 +3148,6 @@ public class BuildingqmServiceImpl implements IBuildingqmService {
         return map;
     }
 
-
     private Map<Integer, ApiBuildingQmCheckTaskConfig> creatTaskMap(Set<Integer> taskIds) {
         HashMap<Integer, ApiBuildingQmCheckTaskConfig> taskMap = Maps.newHashMap();
         List<HouseQmCheckTask> taskList = houseQmCheckTaskService.selectByTaskIds(taskIds);
@@ -3209,6 +3173,38 @@ public class BuildingqmServiceImpl implements IBuildingqmService {
 
         }
         return taskMap;
+    }
+
+    @Data
+    @NoArgsConstructor
+    public class ApiHouseQmIssueReport {
+        private List<ApiHouseQmIssue> created_issues;
+        private List<ApiHouseQmIssue> assigned_issues;
+        private List<ApiHouseQmIssue> reformed_issues;
+        private List<ApiHouseQmIssue> checked_issues;
+    }
+
+    @Data
+    @NoArgsConstructor
+    public class ApiHouseQmIssue {
+        private String uuid;
+        private Integer proj_id;
+        private Integer task_id;
+        private Integer checker_id;
+        private Integer repairer_id;
+        private Integer area_id;
+        private String area_path_and_id;
+        private String category_key;
+        private String category_path_and_key;
+        private Integer sender_id;
+        private Integer timestamp;
+    }
+
+    @Data
+    @NoArgsConstructor
+    public class ApiRefundInfo {
+        private Integer repairer;
+        private Integer checker;
     }
 
 }

@@ -10,17 +10,17 @@ import java.io.Serializable;
  */
 @Data
 @NoArgsConstructor
-public class HouseQmCheckTaskHouseStatInfoVo  implements Serializable{
+public class HouseQmCheckTaskHouseStatInfoVo implements Serializable {
 
-   private Integer HouseCount;
+    private Integer HouseCount;
     private Integer CheckedCount;
     private Integer HasIssueCount;
     private Integer RepairedCount;
-    private Integer ApprovedCount ;
+    private Integer ApprovedCount;
     private Integer RepairConfirmCount;
     private Integer AcceptHasIssueCount;
     private Integer AcceptNoIssueCount;
-    private  Integer OnlyWatchCount ;
+    private Integer OnlyWatchCount;
     private Integer RejectCount;
     private Integer AcceptApprovedCount;
 }

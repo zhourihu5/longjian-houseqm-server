@@ -1,11 +1,13 @@
 package com.longfor.longjian.houseqm.po.zj2db;
 
+import javax.persistence.Column;
+import javax.persistence.GeneratedValue;
+import javax.persistence.Id;
 import java.util.Date;
-import javax.persistence.*;
 
 public class Task {
     @Id
-    @GeneratedValue(generator="JDBC")
+    @GeneratedValue(generator = "JDBC")
     private Integer id;
 
     /**

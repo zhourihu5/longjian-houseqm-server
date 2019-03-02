@@ -17,6 +17,4 @@ public interface PushService {
     void sendUPushByIssues(List<HouseQmCheckTaskIssueVo> issues) throws Exception;
 
 
-
-
 }

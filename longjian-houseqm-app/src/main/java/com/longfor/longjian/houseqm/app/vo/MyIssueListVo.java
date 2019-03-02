@@ -1,6 +1,5 @@
 package com.longfor.longjian.houseqm.app.vo;
 
-import com.longfor.longjian.houseqm.app.vo.houseqm.ApiHouseQmCheckTaskIssueLogRsp;
 import com.longfor.longjian.houseqm.app.vo.houseqm.ApiHouseQmCheckTaskIssueRsp;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -14,7 +13,7 @@ import java.util.List;
  */
 @Data
 @NoArgsConstructor
-public class MyIssueListVo implements Serializable{
+public class MyIssueListVo implements Serializable {
 
     private List<ApiHouseQmCheckTaskIssueRsp> issue_list;
     private Integer last_id;

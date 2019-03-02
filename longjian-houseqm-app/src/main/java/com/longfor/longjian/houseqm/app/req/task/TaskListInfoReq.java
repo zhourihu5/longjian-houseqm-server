@@ -29,7 +29,7 @@ public class TaskListInfoReq implements Serializable {
     private Integer category_cls;// 模块类型
     @NotNull
     private Integer status;// 任务状态
-    private Integer page=0;// 页码
+    private Integer page = 0;// 页码
     private Integer page_size; // 一页多少条
 
 }

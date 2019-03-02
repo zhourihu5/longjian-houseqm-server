@@ -30,11 +30,11 @@ public class InspectionSituationExportReq implements Serializable {
     private Integer project_id;
     @NotNull
     private Integer task_id;
-    private Integer area_id=0;
-    private Integer issue_status=0;
-    private Integer status=0;
-    private String start_time="";
-    private String end_time="";
-    private String area_ids="";
+    private Integer area_id = 0;
+    private Integer issue_status = 0;
+    private Integer status = 0;
+    private String start_time = "";
+    private String end_time = "";
+    private String area_ids = "";
 
 }

@@ -13,10 +13,10 @@ import java.util.List;
 @NoArgsConstructor
 @Data
 public class ExportNotifyDetailVo implements Serializable {
-    private Integer issue_id=0;
-    private String task_name="";
-    private String area_name="";
-    private String check_item_name="";
-    private String content="";
-    private List<String> attachment_path= Lists.newArrayList();
+    private Integer issue_id = 0;
+    private String task_name = "";
+    private String area_name = "";
+    private String check_item_name = "";
+    private String content = "";
+    private List<String> attachment_path = Lists.newArrayList();
 }

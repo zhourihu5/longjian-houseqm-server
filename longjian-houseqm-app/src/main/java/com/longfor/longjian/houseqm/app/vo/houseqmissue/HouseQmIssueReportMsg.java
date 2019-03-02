@@ -40,14 +40,14 @@ public class HouseQmIssueReportMsg implements Serializable {
     public void appendReformed(String uuid, int projId, int taskId, int checkerId, int repairerId, int areaId,
                                String areaPathAndId, String categoryKey, String categoryPathAndKey, int senderId,
                                Date timeAt) {
-        HouseQmIssue qmIssue = new HouseQmIssue(uuid,projId,taskId,checkerId,repairerId,areaId,areaPathAndId,categoryKey,categoryPathAndKey,senderId,timeAt.getTime());
+        HouseQmIssue qmIssue = new HouseQmIssue(uuid, projId, taskId, checkerId, repairerId, areaId, areaPathAndId, categoryKey, categoryPathAndKey, senderId, timeAt.getTime());
         this.reformed_issues.add(qmIssue);
     }
 
     public void appendChecked(String uuid, int projId, int taskId, int checkerId, int repairerId, int areaId,
                               String areaPathAndId, String categoryKey, String categoryPathAndKey, int senderId,
                               Date timeAt) {
-        HouseQmIssue qmIssue = new HouseQmIssue(uuid,projId,taskId,checkerId,repairerId,areaId,areaPathAndId,categoryKey,categoryPathAndKey,senderId,timeAt.getTime());
+        HouseQmIssue qmIssue = new HouseQmIssue(uuid, projId, taskId, checkerId, repairerId, areaId, areaPathAndId, categoryKey, categoryPathAndKey, senderId, timeAt.getTime());
         this.checked_issues.add(qmIssue);
     }
 

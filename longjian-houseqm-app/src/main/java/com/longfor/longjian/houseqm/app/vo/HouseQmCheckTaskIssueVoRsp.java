@@ -13,5 +13,5 @@ import java.util.List;
 @NoArgsConstructor
 public class HouseQmCheckTaskIssueVoRsp implements Serializable {
     private Integer total;
-    private List<HouseQmCheckTaskIssueOnlineInfoVo>items;
+    private List<HouseQmCheckTaskIssueOnlineInfoVo> items;
 }

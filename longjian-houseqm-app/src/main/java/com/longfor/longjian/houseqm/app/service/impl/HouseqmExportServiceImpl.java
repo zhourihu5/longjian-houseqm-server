@@ -13,7 +13,7 @@ import com.longfor.longjian.houseqm.app.vo.export.AreaNode;
 import com.longfor.longjian.houseqm.app.vo.export.ProjectIssueInfo;
 import com.longfor.longjian.houseqm.app.vo.export.ProjectOrdersVo;
 import com.longfor.longjian.houseqm.consts.CategoryClsTypeEnum;
-import com.longfor.longjian.houseqm.domain.internalService.*;
+import com.longfor.longjian.houseqm.domain.internalservice.*;
 import com.longfor.longjian.houseqm.po.zhijian2_apisvr.User;
 import com.longfor.longjian.houseqm.po.zj2db.*;
 import com.longfor.longjian.houseqm.util.CollectionUtil;
@@ -21,6 +21,7 @@ import com.longfor.longjian.houseqm.util.StringSplitToListUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Service;
+
 import javax.annotation.Resource;
 import java.util.*;
 import java.util.stream.Collectors;
@@ -76,41 +77,41 @@ public class HouseqmExportServiceImpl implements IHouseqmExportService {
         ProjectSetting projSetting = projectSettingService.getSettingByProjectIdSKey(project_id, "PROJ_YDYF_PROJ_ORDER_NAME");
         String projSettingName = "";
         boolean isShowHouseOwnerInfo = false;
-        if (projSetting!=null&&projSetting.getValue().length()>0){
-            projSettingName=projSetting.getValue();
-        }else {
+        if (projSetting != null && projSetting.getValue().length() > 0) {
+            projSettingName = projSetting.getValue();
+        } else {
             projSettingName = "工程维修处理单";
         }
 
         //获取是否显示业主信息
         Map<Integer, String> projectOrderHouseOwnerInfoMap = Maps.newHashMap();
-        projectOrderHouseOwnerInfoMap.put(CategoryClsTypeEnum.RHYF.getId(),"PROJ_YDYF_PROJ_ORDER_RHYF_HOUSE_OWNER");
-        projectOrderHouseOwnerInfoMap.put(CategoryClsTypeEnum.FHYS.getId(),"PROJ_YDYF_PROJ_ORDER_FHYS_HOUSE_OWNER");
+        projectOrderHouseOwnerInfoMap.put(CategoryClsTypeEnum.RHYF.getId(), "PROJ_YDYF_PROJ_ORDER_RHYF_HOUSE_OWNER");
+        projectOrderHouseOwnerInfoMap.put(CategoryClsTypeEnum.FHYS.getId(), "PROJ_YDYF_PROJ_ORDER_FHYS_HOUSE_OWNER");
 
-        if (projectOrderHouseOwnerInfoMap.containsKey(category_cls)){
+        if (projectOrderHouseOwnerInfoMap.containsKey(category_cls)) {
             ProjectSetting projectSetting = projectSettingService.getSettingByProjectIdSKey(project_id, projectOrderHouseOwnerInfoMap.get(category_cls));
-            if (projectSetting!=null){
-                if ("是".equals(projectSetting.getValue())){
-                    isShowHouseOwnerInfo=true;
+            if (projectSetting != null) {
+                if ("是".equals(projectSetting.getValue())) {
+                    isShowHouseOwnerInfo = true;
                 }
             }
         }
 
-        List<String> checkItemKeys= Lists.newArrayList();
-        List<String> categoryKeys= Lists.newArrayList();
-        List<Integer> senderIds= Lists.newArrayList();
-        List<Integer> repairedIds= Lists.newArrayList();
-        List<Integer> userIds= Lists.newArrayList();
+        List<String> checkItemKeys = Lists.newArrayList();
+        List<String> categoryKeys = Lists.newArrayList();
+        List<Integer> senderIds = Lists.newArrayList();
+        List<Integer> repairedIds = Lists.newArrayList();
+        List<Integer> userIds = Lists.newArrayList();
 
         Map<Integer, List<HouseQmCheckTaskIssue>> issueMap = Maps.newHashMap();
         for (HouseQmCheckTaskIssue item : resIssue) {
             checkItemKeys.add(item.getCheckItemKey());
             senderIds.add(item.getSenderId());
             repairedIds.add(item.getRepairerId());
-            if (issueMap.containsKey(item.getAreaId())){
+            if (issueMap.containsKey(item.getAreaId())) {
                 issueMap.get(item.getAreaId()).add(item);
-            }else {
-                issueMap.put(item.getAreaId(),Arrays.asList(item));
+            } else {
+                issueMap.put(item.getAreaId(), Arrays.asList(item));
             }
             categoryKeys.addAll(StringSplitToListUtil.removeStartAndEndStrAndSplit(item.getCategoryPathAndKey(), "/", "/"));
         }
@@ -133,13 +134,13 @@ public class HouseqmExportServiceImpl implements IHouseqmExportService {
         //获取项目名称
         Project project = projectService.getOneByProjId(project_id);
         //获取业主信息
-        List<Integer> projIds= Lists.newArrayList();
+        List<Integer> projIds = Lists.newArrayList();
         projIds.add(project_id);
         List<HouseOwnerInfo> houseOwners = houseOwnerInfoService.searchHouseOwnerInfoByProjInAreaIdIn(projIds, houseIds);
 
         Map<Integer, HouseOwnerInfo> houseOwnerMap = houseOwners.stream().collect(Collectors.toMap(HouseOwnerInfo::getAreaId, h -> h));
         //构造工程处理单 数据
-        List<ProjectOrdersVo> r= Lists.newArrayList();
+        List<ProjectOrdersVo> r = Lists.newArrayList();
         for (Integer areaId : houseIds) {
             ProjectOrdersVo item = new ProjectOrdersVo();
             item.setTitle(projSettingName);
@@ -150,15 +151,15 @@ public class HouseqmExportServiceImpl implements IHouseqmExportService {
             item.setIssueItems(Lists.newArrayList());
 
             Map<String, String> allNames = areaMap.getAllNames(areaId);
-            item.setAreaNames(allNames.get("building")+"-"+allNames.get("floor")+"-"+allNames.get("house"));
-            if (houseOwnerMap.containsKey(areaId)){
+            item.setAreaNames(allNames.get("building") + "-" + allNames.get("floor") + "-" + allNames.get("house"));
+            if (houseOwnerMap.containsKey(areaId)) {
                 item.setHouseOwnerName(houseOwnerMap.get(areaId).getOwnerName());
                 item.setHouseOwnerPhone(houseOwnerMap.get(areaId).getPhone());
             }
-            if (roomSubAreaIdsMap.containsKey(areaId)){
+            if (roomSubAreaIdsMap.containsKey(areaId)) {
                 List<Integer> subIds = roomSubAreaIdsMap.get(areaId);
                 for (Integer subId : subIds) {
-                    if (issueMap.containsKey(subId)){
+                    if (issueMap.containsKey(subId)) {
                         continue;
                     }
                     List<HouseQmCheckTaskIssue> issues = issueMap.get(subId);
@@ -166,18 +167,18 @@ public class HouseqmExportServiceImpl implements IHouseqmExportService {
                         ProjectIssueInfo issueItem = new ProjectIssueInfo();
                         issueItem.setName(areaMap.getName(subId));
                         issueItem.setIssueDesc(issue.getContent());
-                        issueItem.setCheckItemName(StringUtils.join(categoryMap.getFullNamesByKey(issue.getCategoryKey()),"/"));
+                        issueItem.setCheckItemName(StringUtils.join(categoryMap.getFullNamesByKey(issue.getCategoryKey()), "/"));
                         issueItem.setRecords("");
                         issueItem.setRepaired("");
                         issueItem.setStatus("");
-                        if (userMap.containsKey(issue.getSenderId())){
-                            issueItem.setRecords(userMap.get(issue.getSenderId()).getRealName()+" "+ DateUtil.dateToString(issue.getClientCreateAt()));
+                        if (userMap.containsKey(issue.getSenderId())) {
+                            issueItem.setRecords(userMap.get(issue.getSenderId()).getRealName() + " " + DateUtil.dateToString(issue.getClientCreateAt()));
                         }
-                        if (userMap.containsKey(issue.getRepairerId())){
+                        if (userMap.containsKey(issue.getRepairerId())) {
                             issueItem.setRepaired(userMap.get(issue.getRepairerId()).getRealName());
                         }
                         for (HouseQmCheckTaskIssueStatusEnum value : HouseQmCheckTaskIssueStatusEnum.values()) {
-                            if (value.getId().equals(issue.getStatus())){
+                            if (value.getId().equals(issue.getStatus())) {
                                 issueItem.setStatus(value.getValue());
                             }
                         }
@@ -199,4 +200,5 @@ public class HouseqmExportServiceImpl implements IHouseqmExportService {
         }
 
         return null;
-    }}
+    }
+}

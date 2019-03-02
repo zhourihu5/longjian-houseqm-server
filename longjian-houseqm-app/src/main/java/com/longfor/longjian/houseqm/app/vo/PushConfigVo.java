@@ -23,8 +23,9 @@ public class PushConfigVo implements Serializable {
     private AppInfo ydyf;
     private AppInfo gcgl;
     private AppInfo gxgl;
+
     @Data
-    public static class AppInfo{
+    public static class AppInfo {
         private String app_key_android;
         private String app_master_secret_android;
         private String app_key_ios;

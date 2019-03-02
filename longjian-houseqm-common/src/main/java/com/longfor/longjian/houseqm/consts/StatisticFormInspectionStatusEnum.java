@@ -19,23 +19,24 @@ public enum StatisticFormInspectionStatusEnum {
     private Integer id;
     private String value;
 
+    StatisticFormInspectionStatusEnum(Integer id, String value) {
+        this.id = id;
+        this.value = value;
+    }
+
+    public static String getName(Integer id) {
+        StatisticFormInspectionStatusEnum[] values = StatisticFormInspectionStatusEnum.values();
+        for (StatisticFormInspectionStatusEnum value : values) {
+            if (value.getId().equals(id)) return value.getValue();
+        }
+        return null;
+    }
+
     public Integer getId() {
         return id;
     }
 
     public String getValue() {
         return value;
-    }
-
-    public static String getName(Integer id){
-        StatisticFormInspectionStatusEnum[] values = StatisticFormInspectionStatusEnum.values();
-        for (StatisticFormInspectionStatusEnum value : values) {
-            if (value.getId().equals(id))return value.getValue();
-        }
-        return null;
-    }
-    StatisticFormInspectionStatusEnum(Integer id, String value) {
-        this.id = id;
-        this.value = value;
     }
 }

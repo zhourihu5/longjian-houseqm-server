@@ -2,7 +2,6 @@ package com.longfor.longjian.houseqm.app.vo.houseqmstat;
 
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import org.omg.CORBA.INTERNAL;
 
 import java.io.Serializable;
 import java.util.List;

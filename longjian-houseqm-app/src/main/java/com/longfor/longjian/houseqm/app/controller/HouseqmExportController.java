@@ -36,26 +36,27 @@ public class HouseqmExportController {
 
 
     /**
+     * @return com.longfor.longjian.common.base.LjBaseResponse
+     * ////该接口不用了，废弃
      * @Author hy
      * @Description 工程处理单导出
      * @Date 10:08 2019/1/14
      * @Param [req]
-     * @return com.longfor.longjian.common.base.LjBaseResponse
-     * ////该接口不用了，废弃
      **/
-    @GetMapping(value = "project_orders",produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
-    public LjBaseResponse projectOrders(ProjectOrdersReq req, HttpServletResponse resp){
+    @Deprecated
+    @GetMapping(value = "project_orders", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+    public LjBaseResponse projectOrders(ProjectOrdersReq req, HttpServletResponse resp) {
 
-        Date beginOn=null;
-        Date endOn=null;
-        if (!req.getBegin_on().equals("")){
-            beginOn=DateUtil.strToDate(req.getBegin_on(),"yyyy-MM-dd");
+        Date beginOn = null;
+        Date endOn = null;
+        if (!req.getBegin_on().equals("")) {
+            beginOn = DateUtil.strToDate(req.getBegin_on(), "yyyy-MM-dd");
         }
-        if (!req.getEnd_on().equals("")){
-            endOn=DateUtil.strToDate(req.getEnd_on(),"yyyy-MM-dd");
+        if (!req.getEnd_on().equals("")) {
+            endOn = DateUtil.strToDate(req.getEnd_on(), "yyyy-MM-dd");
         }
         List<Integer> areaIds = StringSplitToListUtil.strToInts(req.getArea_ids(), ",");
-        iHouseqmExportService.exportProjectOrdersByProjIdTaskIdAreaIdsRepairedIdBeginOnEndOn(req.getProject_id(),req.getTask_id(),areaIds,req.getRepairer_id(),beginOn,endOn,req.getCategory_cls(),false);
+        iHouseqmExportService.exportProjectOrdersByProjIdTaskIdAreaIdsRepairedIdBeginOnEndOn(req.getProject_id(), req.getTask_id(), areaIds, req.getRepairer_id(), beginOn, endOn, req.getCategory_cls(), false);
 
         resp.setHeader("Content-Type", "application/octet-stream; charset=utf-8");
         resp.setHeader("Content-Disposition", " attachment; filename=\" 工程处理单.zip\"");

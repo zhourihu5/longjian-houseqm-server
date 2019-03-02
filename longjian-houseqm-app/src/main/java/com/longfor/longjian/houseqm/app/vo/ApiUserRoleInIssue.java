@@ -12,14 +12,15 @@ import java.util.Map;
  */
 @Data
 @NoArgsConstructor
-public class ApiUserRoleInIssue  implements Serializable {
-    private Map<RoleUser,Boolean> user_role= Maps.newHashMap();
-    private Integer task_id=0;
+public class ApiUserRoleInIssue implements Serializable {
+    private Map<RoleUser, Boolean> user_role = Maps.newHashMap();
+    private Integer task_id = 0;
+
     @Data
     @NoArgsConstructor
     public class RoleUser implements Serializable {
-        private  Integer user_id ;
-        private  Integer role_type;
+        private Integer user_id;
+        private Integer role_type;
     }
 
 }

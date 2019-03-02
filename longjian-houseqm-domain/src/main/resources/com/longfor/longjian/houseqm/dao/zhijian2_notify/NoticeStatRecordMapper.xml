@@ -1,54 +1,55 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
 <mapper namespace="com.longfor.longjian.houseqm.dao.zhijian2_notify.NoticeStatRecordMapper">
-  <resultMap id="BaseResultMap" type="com.longfor.longjian.houseqm.po.zhijian2_notify.NoticeStatRecord">
-    <!--
-      WARNING - @mbg.generated
-    -->
-    <id column="id" property="id" jdbcType="INTEGER"/>
-    <result column="title" property="title" jdbcType="VARCHAR"/>
-    <result column="description" property="description" jdbcType="VARCHAR"/>
-    <result column="notice_type" property="noticeType" jdbcType="INTEGER"/>
-    <result column="team_id" property="teamId" jdbcType="INTEGER"/>
-    <result column="team_name" property="teamName" jdbcType="VARCHAR"/>
-    <result column="project_id" property="projectId" jdbcType="INTEGER"/>
-    <result column="project_name" property="projectName" jdbcType="VARCHAR"/>
-    <result column="src_user_id" property="srcUserId" jdbcType="INTEGER"/>
-    <result column="src_user_name" property="srcUserName" jdbcType="VARCHAR"/>
-    <result column="des_user_id" property="desUserId" jdbcType="INTEGER"/>
-    <result column="des_user_name" property="desUserName" jdbcType="VARCHAR"/>
-    <result column="module_id" property="moduleId" jdbcType="INTEGER"/>
-    <result column="module_name" property="moduleName" jdbcType="VARCHAR"/>
-    <result column="content" property="content" jdbcType="VARCHAR"/>
-    <result column="behavior_type" property="behaviorType" jdbcType="INTEGER"/>
-    <result column="behavior_name" property="behaviorName" jdbcType="VARCHAR"/>
-    <result column="extra_info" property="extraInfo" jdbcType="VARCHAR"/>
-    <result column="read_status" property="readStatus" jdbcType="INTEGER"/>
-    <result column="read_at" property="readAt" jdbcType="TIMESTAMP"/>
-    <result column="create_at" property="createAt" jdbcType="TIMESTAMP"/>
-    <result column="update_at" property="updateAt" jdbcType="TIMESTAMP"/>
-    <result column="delete_at" property="deleteAt" jdbcType="TIMESTAMP"/>
-  </resultMap>
-  <resultMap id="ResultMapWithBLOBs" type="com.longfor.longjian.houseqm.po.zhijian2_notify.NoticeStatRecord" extends="BaseResultMap">
-    <!--
-      WARNING - @mbg.generated
-    -->
-    <result column="des_user_ids" property="desUserIds" jdbcType="LONGVARCHAR"/>
-    <result column="des_user_names" property="desUserNames" jdbcType="LONGVARCHAR"/>
-  </resultMap>
-  <sql id="Base_Column_List">
-    <!--
-      WARNING - @mbg.generated
-    -->
-    id, title, description, notice_type, team_id, team_name, project_id, project_name,
-    src_user_id, src_user_name, des_user_id, des_user_name, module_id, module_name, content,
-    behavior_type, behavior_name, extra_info, read_status, read_at, create_at, update_at,
-    delete_at
-  </sql>
-  <sql id="Blob_Column_List">
-    <!--
-      WARNING - @mbg.generated
-    -->
-    des_user_ids, des_user_names
-  </sql>
+    <resultMap id="BaseResultMap" type="com.longfor.longjian.houseqm.po.zhijian2_notify.NoticeStatRecord">
+        <!--
+          WARNING - @mbg.generated
+        -->
+        <id column="id" property="id" jdbcType="INTEGER"/>
+        <result column="title" property="title" jdbcType="VARCHAR"/>
+        <result column="description" property="description" jdbcType="VARCHAR"/>
+        <result column="notice_type" property="noticeType" jdbcType="INTEGER"/>
+        <result column="team_id" property="teamId" jdbcType="INTEGER"/>
+        <result column="team_name" property="teamName" jdbcType="VARCHAR"/>
+        <result column="project_id" property="projectId" jdbcType="INTEGER"/>
+        <result column="project_name" property="projectName" jdbcType="VARCHAR"/>
+        <result column="src_user_id" property="srcUserId" jdbcType="INTEGER"/>
+        <result column="src_user_name" property="srcUserName" jdbcType="VARCHAR"/>
+        <result column="des_user_id" property="desUserId" jdbcType="INTEGER"/>
+        <result column="des_user_name" property="desUserName" jdbcType="VARCHAR"/>
+        <result column="module_id" property="moduleId" jdbcType="INTEGER"/>
+        <result column="module_name" property="moduleName" jdbcType="VARCHAR"/>
+        <result column="content" property="content" jdbcType="VARCHAR"/>
+        <result column="behavior_type" property="behaviorType" jdbcType="INTEGER"/>
+        <result column="behavior_name" property="behaviorName" jdbcType="VARCHAR"/>
+        <result column="extra_info" property="extraInfo" jdbcType="VARCHAR"/>
+        <result column="read_status" property="readStatus" jdbcType="INTEGER"/>
+        <result column="read_at" property="readAt" jdbcType="TIMESTAMP"/>
+        <result column="create_at" property="createAt" jdbcType="TIMESTAMP"/>
+        <result column="update_at" property="updateAt" jdbcType="TIMESTAMP"/>
+        <result column="delete_at" property="deleteAt" jdbcType="TIMESTAMP"/>
+    </resultMap>
+    <resultMap id="ResultMapWithBLOBs" type="com.longfor.longjian.houseqm.po.zhijian2_notify.NoticeStatRecord"
+               extends="BaseResultMap">
+        <!--
+          WARNING - @mbg.generated
+        -->
+        <result column="des_user_ids" property="desUserIds" jdbcType="LONGVARCHAR"/>
+        <result column="des_user_names" property="desUserNames" jdbcType="LONGVARCHAR"/>
+    </resultMap>
+    <sql id="Base_Column_List">
+        <!--
+          WARNING - @mbg.generated
+        -->
+        id, title, description, notice_type, team_id, team_name, project_id, project_name,
+        src_user_id, src_user_name, des_user_id, des_user_name, module_id, module_name, content,
+        behavior_type, behavior_name, extra_info, read_status, read_at, create_at, update_at,
+        delete_at
+    </sql>
+    <sql id="Blob_Column_List">
+        <!--
+          WARNING - @mbg.generated
+        -->
+        des_user_ids, des_user_names
+    </sql>
 </mapper>

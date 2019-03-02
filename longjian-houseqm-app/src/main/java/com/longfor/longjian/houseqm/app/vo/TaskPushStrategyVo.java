@@ -17,7 +17,7 @@ import java.util.Map;
 @NoArgsConstructor
 public class TaskPushStrategyVo implements Serializable {
 
-    private Map<Integer,PushStrategyAssignTime> assignTimeMap;
-    private Map<Integer,PushStrategyCategoryOverdue> categoryOverdueMap;
-    private Map<Integer,PushStrategyCategoryThreshold> categoryThresholdMap;
+    private Map<Integer, PushStrategyAssignTime> assignTimeMap;
+    private Map<Integer, PushStrategyCategoryOverdue> categoryOverdueMap;
+    private Map<Integer, PushStrategyCategoryThreshold> categoryThresholdMap;
 }

@@ -8,6 +8,6 @@ import java.util.List;
 
 public interface UserMapper extends LFMySQLMapper<User> {
 
-    List<User> selectByUserIdInAndNoDeleted(@Param("userIds") List<Integer> userIds,@Param("deleted") String deleted);
+    List<User> selectByUserIdInAndNoDeleted(@Param("userIds") List<Integer> userIds, @Param("deleted") String deleted);
 
 }

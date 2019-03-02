@@ -16,8 +16,7 @@ import java.util.Date;
 import java.util.List;
 
 /**
- *
- *  DataFetcher类是获取数据的服务
+ * DataFetcher类是获取数据的服务
  *
  * @author lipeishuai
  * @date 2018/11/29 14:48
@@ -27,17 +26,12 @@ import java.util.List;
 @Service
 public class GroupProgressStatDataFetcher {
 
-    @Resource
-    StatHouseQmProjectStatService statHouseQmProjectStatService;
-
     public static EnumValuesProvider timeFrameTypeResolver = TimeFrameTypeEnum::valueOf;
-
-
     /**
-     *  将schema的progressStat方法中参数值缓存到environment的source中
+     * 将schema的progressStat方法中参数值缓存到environment的source中
      * itemsFetcher
      */
-    public  DataFetcher<StatItemsVo> progressStatDataFetcher = environment -> {
+    public DataFetcher<StatItemsVo> progressStatDataFetcher = environment -> {
 
         /*
         envionment中的参数只能是progressStat中的， 在statGroupItemDataFetcher中就没有了
@@ -51,11 +45,11 @@ public class GroupProgressStatDataFetcher {
 
         log.debug("StatGroupDataFetcher - progressStatDataFetcher - categoryKey:{}，timeFrameType:{}，" +
                         "timeFrameBegin:{}, timeFrameEnd:{},timeFrameMax:{} ",
-                categoryKey,timeFrameType,timeFrameBegin,timeFrameEnd,timeFrameMax);
+                categoryKey, timeFrameType, timeFrameBegin, timeFrameEnd, timeFrameMax);
 
-        StatItemsVo statItemsVo =new StatItemsVo();
+        StatItemsVo statItemsVo = new StatItemsVo();
 
-        PassedVariableVo vo=new PassedVariableVo();
+        PassedVariableVo vo = new PassedVariableVo();
         vo.setCategoryKey(categoryKey);
         vo.setTimeFrameType(timeFrameType);
         vo.setTeamIds(teamIds);
@@ -65,49 +59,50 @@ public class GroupProgressStatDataFetcher {
         statItemsVo.setVariableVo(vo);
         return statItemsVo;
     };
-
+    @Resource
+    StatHouseQmProjectStatService statHouseQmProjectStatService;
     /**
-     *  对应zhijian_server_stat_houseqm\app\graphqls\ats\group_stat\stat_group_progress_ast.py的方法resolve_progress_stat()
-     *
+     * 对应zhijian_server_stat_houseqm\app\graphqls\ats\group_stat\stat_group_progress_ast.py的方法resolve_progress_stat()
+     * <p>
      * itemsFetcher
      */
-    public  DataFetcher<List<StatDataVo>> statGroupItemDataFetcher = environment -> {
+    public DataFetcher<List<StatDataVo>> statGroupItemDataFetcher = environment -> {
 
         // T getSource()是父Field的对象
         StatItemsVo statItemsVo = environment.getSource();
 
-        String categoryKey =  statItemsVo.getVariableVo().getCategoryKey();
+        String categoryKey = statItemsVo.getVariableVo().getCategoryKey();
         String timeFrameType = statItemsVo.getVariableVo().getTimeFrameType();
         List<Integer> teamIds = statItemsVo.getVariableVo().getTeamIds();
         Date timeFrameBegin = statItemsVo.getVariableVo().getBeginDate();
         Date timeFrameEnd = statItemsVo.getVariableVo().getEndDate();
-        Integer timeFrameMaxCount =  statItemsVo.getVariableVo().getTimeFrameMax();
+        Integer timeFrameMaxCount = statItemsVo.getVariableVo().getTimeFrameMax();
         Integer groupId = environment.getContext();
 
         log.debug("StatGroupDataFetcher - statGroupItemDataFetcher - groupId:{}", groupId);
 
-        if(TimeType.WEEK.toString().equalsIgnoreCase(timeFrameType)){
+        if (TimeType.WEEK.toString().equalsIgnoreCase(timeFrameType)) {
 
-            return statHouseQmProjectStatService.searchStat(groupId,categoryKey,TimeType.WEEK.getValue(),teamIds,
+            return statHouseQmProjectStatService.searchStat(groupId, categoryKey, TimeType.WEEK.getValue(), teamIds,
                     timeFrameBegin, timeFrameEnd, timeFrameMaxCount);
 
-        }else if(TimeType.QUARTER.toString().equalsIgnoreCase(timeFrameType)){
+        } else if (TimeType.QUARTER.toString().equalsIgnoreCase(timeFrameType)) {
 
-            return statHouseQmProjectStatService.searchStat(groupId,categoryKey,TimeType.QUARTER.getValue(),teamIds,
+            return statHouseQmProjectStatService.searchStat(groupId, categoryKey, TimeType.QUARTER.getValue(), teamIds,
                     timeFrameBegin, timeFrameEnd, timeFrameMaxCount);
 
-        }else if(TimeType.MONTH.toString().equalsIgnoreCase(timeFrameType)){
+        } else if (TimeType.MONTH.toString().equalsIgnoreCase(timeFrameType)) {
 
-            return statHouseQmProjectStatService.searchStat(groupId,categoryKey,TimeType.MONTH.getValue(),teamIds,
+            return statHouseQmProjectStatService.searchStat(groupId, categoryKey, TimeType.MONTH.getValue(), teamIds,
                     timeFrameBegin, timeFrameEnd, timeFrameMaxCount);
 
-        }else if(TimeType.YEAR.toString().equalsIgnoreCase(timeFrameType)){
+        } else if (TimeType.YEAR.toString().equalsIgnoreCase(timeFrameType)) {
 
-            return statHouseQmProjectStatService.searchStat(groupId,categoryKey,TimeType.YEAR.getValue(),teamIds,
+            return statHouseQmProjectStatService.searchStat(groupId, categoryKey, TimeType.YEAR.getValue(), teamIds,
                     timeFrameBegin, timeFrameEnd, timeFrameMaxCount);
-        }else{
+        } else {
             //day
-            return statHouseQmProjectStatService.searchStat(groupId,categoryKey,TimeType.DAY.getValue(),teamIds,
+            return statHouseQmProjectStatService.searchStat(groupId, categoryKey, TimeType.DAY.getValue(), teamIds,
                     timeFrameBegin, timeFrameEnd, timeFrameMaxCount);
         }
 

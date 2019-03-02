@@ -128,8 +128,8 @@
         <if test="AreaPathAndId!=null">
             AND area_path_and_id LIKE concat('',#{AreaPathAndId})
         </if>
-        <if test="ClientCreateAtGte!=null" >AND client_create_at &gt;= #{ClientCreateAtGte}</if>
-        <if test="ClientCreateAtLte!=null" >AND client_create_at &lt;= #{ClientCreateAtLte}</if>
+        <if test="ClientCreateAtGte!=null">AND client_create_at &gt;= #{ClientCreateAtGte}</if>
+        <if test="ClientCreateAtLte!=null">AND client_create_at &lt;= #{ClientCreateAtLte}</if>
         and (`delete_at` IS NULL OR `delete_at` = '0001-01-01 00:00:00')
         GROUP BY category_path_and_key,check_item_key
     </select>
@@ -323,13 +323,15 @@
         area_id,MIN(status) AS status,COUNT(*) AS extend_col
         FROM house_qm_check_task_issue
         WHERE task_id=#{taskId}
-        <if test="onlyIssue==true" >
-        AND typ IN
-        <foreach collection="types" item="type" index="index" open="(" separator="," close=")">
-            #{type}
-        </foreach></if>
-        <if test="areaId>0" >
-        AND area_path_and_id LIKE concat('','%/',#{areaId},'%/')</if>
+        <if test="onlyIssue==true">
+            AND typ IN
+            <foreach collection="types" item="type" index="index" open="(" separator="," close=")">
+                #{type}
+            </foreach>
+        </if>
+        <if test="areaId>0">
+            AND area_path_and_id LIKE concat('','%/',#{areaId},'%/')
+        </if>
         <if test="deleted=='false'">
             AND delete_at IS NULL
         </if>
@@ -418,10 +420,11 @@
         house_qm_check_task_issue
         where task_id= #{task_id}
         <if test="uuids.size()>0">and
-        uuid in
-        <foreach collection="uuids" item="item" index="index" open="(" separator="," close=")">
-            #{item}
-        </foreach></if>
+            uuid in
+            <foreach collection="uuids" item="item" index="index" open="(" separator="," close=")">
+                #{item}
+            </foreach>
+        </if>
         and delete_at is null
     </select>
 
@@ -437,23 +440,26 @@
         <if test="timestamp > 0">
             AND hqcti.update_at > FROM_UNIXTIME(#{timestamp},'%Y-%m-%d %H:%i:%s')
         </if>)
-        AND ( <if test="userIds.size()>0">
-        hqcti.sender_id IN
-        <foreach collection="userIds" item="item" open="(" separator="," close=")" index="index">
-            #{item}
-        </foreach>
-        OR </if>  (
-            hqcti.task_id = #{task_id}
-            AND hqcti.uuid IN (
-            SELECT
-            hqmctiu.issue_uuid
-            FROM
-            house_qm_check_task_issue_user hqmctiu
-            WHERE
-            hqmctiu.task_id = #{task_id}
-            AND hqmctiu.user_id = #{userId} AND (`delete_at` IS NULL or `delete_at` = '0001-01-01 00:00:00')
-            )
-            )
+        AND (
+        <if test="userIds.size()>0">
+            hqcti.sender_id IN
+            <foreach collection="userIds" item="item" open="(" separator="," close=")" index="index">
+                #{item}
+            </foreach>
+            OR
+        </if>
+        (
+        hqcti.task_id = #{task_id}
+        AND hqcti.uuid IN (
+        SELECT
+        hqmctiu.issue_uuid
+        FROM
+        house_qm_check_task_issue_user hqmctiu
+        WHERE
+        hqmctiu.task_id = #{task_id}
+        AND hqmctiu.user_id = #{userId} AND (`delete_at` IS NULL or `delete_at` = '0001-01-01 00:00:00')
+        )
+        )
         )
         ORDER BY
         id ASC
