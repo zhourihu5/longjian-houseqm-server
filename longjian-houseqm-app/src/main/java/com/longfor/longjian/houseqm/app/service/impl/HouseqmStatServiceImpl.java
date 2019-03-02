@@ -4,6 +4,7 @@ import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
 import com.longfor.longjian.common.consts.HouseQmCheckTaskIssueStatusEnum;
+import com.longfor.longjian.common.exception.LjBaseRuntimeException;
 import com.longfor.longjian.common.util.StringUtil;
 import com.longfor.longjian.houseqm.app.service.HouseqmStaticService;
 import com.longfor.longjian.houseqm.app.service.IHouseqmStatService;
@@ -12,7 +13,6 @@ import com.longfor.longjian.houseqm.app.vo.houseqmstat.HouseQmStatCategorySituat
 import com.longfor.longjian.houseqm.app.vo.houseqmstat.InspectionHouseStatusInfoVo;
 import com.longfor.longjian.houseqm.app.vo.houseqmstat.StatCategoryStatRspVo;
 import com.longfor.longjian.houseqm.consts.*;
-import com.longfor.longjian.houseqm.domain.internalservice.*;
 import com.longfor.longjian.houseqm.dto.CheckerIssueStatusStatDto;
 import com.longfor.longjian.houseqm.dto.RepaireIssueStatusStatDto;
 import com.longfor.longjian.houseqm.po.CheckerIssueStat;
@@ -44,17 +44,17 @@ public class HouseqmStatServiceImpl implements IHouseqmStatService {
 
 
     @Resource
-    private HouseQmCheckTaskIssueService houseQmCheckTaskIssueService;
+    private com.longfor.longjian.houseqm.domain.internalservice.HouseQmCheckTaskIssueService houseQmCheckTaskIssueService;
     @Resource
-    private UserService userService;
+    private com.longfor.longjian.houseqm.domain.internalservice.UserService userService;
     @Resource
-    private HouseQmCheckTaskService houseQmCheckTaskService;
+    private com.longfor.longjian.houseqm.domain.internalservice.HouseQmCheckTaskService houseQmCheckTaskService;
     @Resource
-    private AreaService areaService;
+    private com.longfor.longjian.houseqm.domain.internalservice.AreaService areaService;
     @Resource
     private HouseqmStatisticServiceImpl houseqmStatisticService;
     @Resource
-    private RepossessionStatusService repossessionStatusService;
+    private com.longfor.longjian.houseqm.domain.internalservice.RepossessionStatusService repossessionStatusService;
     @Resource
     private HouseqmStaticService houseqmStaticService;
 
@@ -383,9 +383,6 @@ public class HouseqmStatServiceImpl implements IHouseqmStatService {
         List<HouseQmCheckTaskIssue> issues = houseQmCheckTaskIssueService.searchByProjIdAndCategoryClsAndAreaPathAndIdLikeGroupByStatus(projectId, category_cls, areaPath);
 
         HouseQmStatAreaSituationIssueRspVo result = new HouseQmStatAreaSituationIssueRspVo();
-        result.setIssue_approveded_count(0);
-        result.setIssue_assigned_count(0);
-        result.setIssue_count(0);
         result.setIssue_recorded_count(0);
         result.setIssue_repaired_count(0);
         result.setRecord_count(0);
