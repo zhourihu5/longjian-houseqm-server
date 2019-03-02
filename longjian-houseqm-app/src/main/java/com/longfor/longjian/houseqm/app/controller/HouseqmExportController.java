@@ -43,6 +43,7 @@ public class HouseqmExportController {
      * @Date 10:08 2019/1/14
      * @Param [req]
      **/
+    @Deprecated
     @GetMapping(value = "project_orders", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     public LjBaseResponse projectOrders(ProjectOrdersReq req, HttpServletResponse resp) {
 

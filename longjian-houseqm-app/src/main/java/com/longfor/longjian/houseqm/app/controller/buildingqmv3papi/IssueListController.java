@@ -64,15 +64,17 @@ public class IssueListController {
      * @Param [request, req]
      **/
     @RequestMapping(value = "export_excel", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
-    public LjBaseResponse<Object> exportExcel(HttpServletRequest request, HttpServletResponse response, @Validated ExportBuildingExcelReq req) throws Exception {
-        // 对参数进行非空判断
-        log.info("export_excel," + JSON.toJSONString(req));
-        Integer uid = SessionUtil.getUid(sessionInfo);
-        ctrlTool.projPerm(request, "项目.工程检查.问题管理.查看");
+    public LjBaseResponse<Object> exportExcel(HttpServletRequest request, HttpServletResponse response, @Validated ExportBuildingExcelReq req) {
         LjBaseResponse<Object> ljBaseResponse = new LjBaseResponse<>();
-        // 导出execel
-        ServletOutputStream os = response.getOutputStream();
+        ServletOutputStream os = null;
         try {
+            // 对参数进行非空判断
+            log.info("export_excel," + JSON.toJSONString(req));
+            Integer uid = SessionUtil.getUid(sessionInfo);
+            ctrlTool.projPerm(request, "项目.工程检查.问题管理.查看");
+            // 导出execel
+            os = response.getOutputStream();
+
             Map<String, Object> map = iIssueService.exportExcel(uid, req);
             String fileName = (String) map.get("fileName");
             SXSSFWorkbook wb = (SXSSFWorkbook) map.get("workbook");
@@ -81,12 +83,18 @@ public class IssueListController {
             response.setHeader("Content-Disposition", "attachment;filename=" + new String(fileName.getBytes("utf-8"), "iso8859-1") + ".xls");
             wb.write(os);
             os.flush();
-        } catch (IOException e) {
+        } catch (Exception e) {
             log.error("excel 导出异常");
             ljBaseResponse.setResult(1);
             ljBaseResponse.setMessage(e.getMessage());
         } finally {
-            os.close();
+            try {
+                if (os != null) {
+                    os.close();
+                }
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
         }
         return ljBaseResponse;
     }
@@ -128,14 +136,20 @@ public class IssueListController {
      */
     @RequestMapping(value = "detail_log", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     public LjBaseResponse<DetailLogRspVo> detailLog(@RequestParam(value = "project_id", required = true) Integer projectId,
-                                                    @RequestParam(value = "issue_uuid", required = true) String issueUuid) throws Exception {
+                                                    @RequestParam(value = "issue_uuid", required = true) String issueUuid) {
         LjBaseResponse<DetailLogRspVo> response = new LjBaseResponse<>();
-        ctrlTool.projPerm(RequestContextHolderUtil.getRequest(), "项目.工程检查.问题管理.查看");
-        List<HouseQmCheckTaskIssueHistoryLogVo> result = iIssueService.getHouseQmCheckTaskIssueActionLogByIssueUuid(issueUuid);
-        DetailLogRspVo data = new DetailLogRspVo();
-        data.setItems(result);
-        response.setData(data);
-
+        try {
+            ctrlTool.projPerm(RequestContextHolderUtil.getRequest(), "项目.工程检查.问题管理.查看");
+            List<HouseQmCheckTaskIssueHistoryLogVo> result = iIssueService.getHouseQmCheckTaskIssueActionLogByIssueUuid(issueUuid);
+            DetailLogRspVo data = new DetailLogRspVo();
+            data.setItems(result);
+            response.setData(data);
+        } catch (Exception e) {
+            log.error(e.getMessage());
+            response.setMessage(e.getMessage());
+            response.setResult(1);
+            response.setCode(1);
+        }
         return response;
     }
 
