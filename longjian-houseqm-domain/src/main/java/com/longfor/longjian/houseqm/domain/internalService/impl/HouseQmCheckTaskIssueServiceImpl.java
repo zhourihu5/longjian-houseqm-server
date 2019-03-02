@@ -325,8 +325,8 @@ public class HouseQmCheckTaskIssueServiceImpl implements HouseQmCheckTaskIssueSe
      * @return
      */
     @LFAssignDataSource("zhijian2")
-    public List<HouseQmCheckTaskIssueAreaGroupModel> selectByTaskIdAndTyeInAndAreaPathAndIdLike(Integer taskId, List<Integer> types, String areaPathLike) {
-        return houseQmCheckTaskIssueMapper.selectByTaskIdAndTyeInAndAreaPathAndIdLike(taskId, types, areaPathLike, FALSE);
+    public List<HouseQmCheckTaskIssueAreaGroupModel> selectByTaskIdAndTyeInAndAreaPathAndIdLike(Boolean onlyIssue,Integer taskId, List<Integer> types, Integer areaId) {
+        return houseQmCheckTaskIssueMapper.selectByTaskIdAndTyeInAndAreaPathAndIdLike(onlyIssue,taskId, types, areaId, FALSE);
     }
 
     /**

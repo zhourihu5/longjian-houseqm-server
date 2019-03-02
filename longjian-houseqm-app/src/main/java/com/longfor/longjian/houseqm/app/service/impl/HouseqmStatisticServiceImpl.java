@@ -1469,6 +1469,7 @@ public class HouseqmStatisticServiceImpl implements IHouseqmStatisticService {
      * @param onlyIssue
      * @return
      */
+    // 通过任务id和区域RootId获取相关的问题最小状态map
     private Map<Integer, IssueMinStatusVo> getIssueMinStatusMapByTaskIdAndAreaId(Integer taskId, Integer
             areaId, Boolean onlyIssue) {
         List<Integer> types = Lists.newArrayList();
@@ -1477,17 +1478,17 @@ public class HouseqmStatisticServiceImpl implements IHouseqmStatisticService {
         types.add(HouseQmCheckTaskIssueEnum.Difficult.getId());
         List<HouseQmCheckTaskIssueAreaGroupModel> result = Lists.newArrayList();
 
-        if (onlyIssue && areaId > 0) {
-            result = houseQmCheckTaskIssueService.selectByTaskIdAndTyeInAndAreaPathAndIdLike(taskId, types, "%%/" + areaId + "/%%");
-        } else if (onlyIssue && areaId <= 0) {
+       /* if (onlyIssue && areaId > 0) {*/
+            result = houseQmCheckTaskIssueService.selectByTaskIdAndTyeInAndAreaPathAndIdLike(onlyIssue,taskId, types, areaId);
+       /* } else if (onlyIssue && areaId <= 0) {
             result = houseQmCheckTaskIssueService.selectByTaskIdAndTyeIn(taskId, types);
         } else if (!onlyIssue && areaId > 0) {
-            result = houseQmCheckTaskIssueService.selectHouseQmCheckTaskIssueAreaGroupModelByTaskIdAndAreaPathAndIdLike(taskId, "%%/" + areaId + "/%%");
+            result = houseQmCheckTaskIssueService.selectHouseQmCheckTaskIssueAreaGroupModelByTaskIdAndAreaPathAndIdLike(taskId, "%/" + areaId + "/%");
         } else {
             result = houseQmCheckTaskIssueService.selectByTaskId(taskId);
-        }
+        }*/
 
-        HashMap<Integer, IssueMinStatusVo> maps = Maps.newHashMap();
+        Map<Integer, IssueMinStatusVo> maps = Maps.newHashMap();
         for (HouseQmCheckTaskIssueAreaGroupModel area : result) {
             List<Integer> aIds = StringSplitToListUtil.splitToIdsComma(area.getAreaPath(), "/");
             if (aIds.size() > 0) {

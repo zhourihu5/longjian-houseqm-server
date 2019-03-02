@@ -511,8 +511,7 @@ public class HouseqmStatisticController {
             return "0";
         }
         DecimalFormat df = new DecimalFormat("0.00");
-        String result = df.format((float) a / (float) b * 100);
-        return result;
+        return df.format((float) a / (float) b * 100);
     }
 
 }

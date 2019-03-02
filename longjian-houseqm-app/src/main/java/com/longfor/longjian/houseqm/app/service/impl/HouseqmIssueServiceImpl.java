@@ -153,29 +153,35 @@ public class HouseqmIssueServiceImpl implements IHouseqmIssueService {
                 resultFilePath, exportName, 0, "", executeAt);
     }
 
-    private void writeInput(String data, String exportName, String filepath) {
-            File file = new File(String.format("D:/%s", exportName));
+    private void writeInput(String data, String exportName, String filepath) throws IOException {
+        FileOutputStream out = null;
+        OutputStreamWriter op = null;
+        try {
+            log.info("erxportName :{}",exportName);
+            out = new FileOutputStream(String.format("%s", filepath));
+            op = new OutputStreamWriter(out, "utf-8");
+            File file = new File(String.format("%s", filepath));
 
             if (!file.getParentFile().exists()) {
-                file.getParentFile().mkdirs();
+                boolean mkdirs = file.getParentFile().mkdirs();
             }
+
             if (!file.exists()) {
-                try {
-                    boolean newFile = file.createNewFile();
-                    if(!newFile){
-                        throw  new LjBaseRuntimeException(-1,"创建文件失败");
-                    }
-                } catch (IOException e) {
-                   log.error(e.getMessage());
-                }
+                boolean newFile = file.createNewFile();
+                log.info("createNewFile flag{}",newFile);
             }
-            try(FileOutputStream out= new FileOutputStream(String.format("D:/%s",exportName));
-                OutputStreamWriter op =new OutputStreamWriter(out, "utf-8")) {
-                op.append(data);
-                op.flush();
-            }catch(Exception e){
-                log.error(e.getMessage());
+            op.append(data);
+            op.flush();
+        } catch (IOException e) {
+            log.error("error:",e);
+        } finally {
+            if (op != null) {
+                op.close();
             }
+            if (out != null) {
+                out.close();
+            }
+        }
 
     }
 

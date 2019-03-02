@@ -322,11 +322,14 @@
         SELECT LEFT(area_path_and_id,LENGTH(area_path_and_id)-LENGTH(area_id)-1) AS area_path,
         area_id,MIN(status) AS status,COUNT(*) AS extend_col
         FROM house_qm_check_task_issue
-        WHERE task_id=#{taskId} AND typ IN
+        WHERE task_id=#{taskId}
+        <if test="onlyIssue==true" >
+        AND typ IN
         <foreach collection="types" item="type" index="index" open="(" separator="," close=")">
             #{type}
-        </foreach>
-        AND area_path_and_id LIKE concat('',#{areaPathLike})
+        </foreach></if>
+        <if test="areaId>0" >
+        AND area_path_and_id LIKE concat('','%/',#{areaId},'%/')</if>
         <if test="deleted=='false'">
             AND delete_at IS NULL
         </if>

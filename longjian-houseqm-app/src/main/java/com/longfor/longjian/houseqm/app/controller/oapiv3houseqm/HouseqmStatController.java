@@ -1,10 +1,8 @@
 package com.longfor.longjian.houseqm.app.controller.oapiv3houseqm;
 import com.longfor.longjian.houseqm.app.vo.HouseQmStatAreaSituationIssueRspVo;
 
-import com.ctrip.framework.apollo.core.utils.StringUtils;
 import com.google.common.collect.Lists;
 import com.longfor.longjian.common.base.LjBaseResponse;
-import com.longfor.longjian.common.exception.LjBaseRuntimeException;
 import com.longfor.longjian.common.util.CtrlTool;
 import com.longfor.longjian.common.util.SessionInfo;
 import com.longfor.longjian.common.util.StringUtil;
@@ -136,13 +134,13 @@ public class HouseqmStatController {
     }
 
     public List<Integer> splitSliceByPaged(List<Integer> areaIds, int page, int pageSize) {
-        int start, end;
+        int start;
         if (page <= 0) {
             page = 1;
         }
         start = (page - 1) * pageSize;
         if (start >= areaIds.size()) return areaIds;
-        end=start+pageSize;
+        int end = start + pageSize;
         if (end>areaIds.size()){
             end=areaIds.size();
         }

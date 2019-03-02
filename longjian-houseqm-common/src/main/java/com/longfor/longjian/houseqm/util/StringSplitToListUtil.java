@@ -1,6 +1,7 @@
 package com.longfor.longjian.houseqm.util;
 
 import com.google.common.collect.Lists;
+import jdk.nashorn.internal.runtime.regexp.joni.Regex;
 import org.apache.commons.lang.StringUtils;
 
 import java.util.ArrayList;
@@ -16,6 +17,8 @@ import java.util.stream.Stream;
  * @date 2018/12/19 0019 16:56
  */
 public class StringSplitToListUtil {
+
+    private static final String IS_NUM="^[-\\+]?[\\d]*$";
 
     /**
      * @Author hy
@@ -104,7 +107,7 @@ public class StringSplitToListUtil {
      * @date 2018/12/21 0021
      */
     public static boolean isInteger(String str) {
-        Pattern pattern = Pattern.compile("^[-\\+]?[\\d]*$");
+        Pattern pattern = Pattern.compile(IS_NUM);
         return pattern.matcher(str).matches();
     }
 

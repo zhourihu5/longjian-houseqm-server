@@ -29,7 +29,6 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
 import java.io.*;
-import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -258,16 +257,16 @@ public class BuildingqmController {
         try {
             ctrlTool.projPerm(request, "项目.工程检查.任务管理.查看");
             List<HouseQmCheckTaskSquad> info = buildingqmService.searchHouseqmCheckTaskSquad(projectId, taskId);
-            ArrayList<HouseQmCheckTaskSquadListRspVo> squad_list = Lists.newArrayList();
+            ArrayList<HouseQmCheckTaskSquadListRspVo> squadList = Lists.newArrayList();
             for (int i = 0; i < info.size(); i++) {
                 HouseQmCheckTaskSquadListRspVo rspVo = new HouseQmCheckTaskSquadListRspVo();
                 rspVo.setId(info.get(i).getId());
                 rspVo.setName(info.get(i).getName());
                 rspVo.setSquad_type(info.get(i).getSquadType());
-                squad_list.add(rspVo);
+                squadList.add(rspVo);
             }
             HouseQmCheckTaskSquadListRspVo.HouseQmCheckTaskSquadListRspVoList houseQmCheckTaskSquadListRspVoList = new HouseQmCheckTaskSquadListRspVo().new HouseQmCheckTaskSquadListRspVoList();
-            houseQmCheckTaskSquadListRspVoList.setSquad_list(squad_list);
+            houseQmCheckTaskSquadListRspVoList.setSquad_list(squadList);
             response.setData(houseQmCheckTaskSquadListRspVoList);
         } catch (Exception e) {
             log.error("项目下获取检查组信息异常:", e.getMessage());
@@ -349,20 +348,21 @@ public class BuildingqmController {
     }
 
     @RequestMapping(value = "stat/issue_statistic_export", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
-    public LjBaseResponse<ReportIssueVo> issueStatisticExport(@RequestParam(name = "category_cls", required = true) Integer category_cls,
+    public LjBaseResponse<ReportIssueVo> issueStatisticExport(@RequestParam(name = "category_cls", required = true) Integer categoryCls,
                                                               @RequestParam(name = "items", required = true) String items, HttpServletRequest request, HttpServletResponse response) throws IOException {
 
-        log.info(String.format("issue_statistic_export, category_cls=%s, items=%s", category_cls, items));
+        log.info(String.format("issue_statistic_export, category_cls=%s, items=%s", categoryCls, items));
         LjBaseResponse<ReportIssueVo> ljBaseResponse = new LjBaseResponse<>();
-        if (category_cls == null || StringUtils.isBlank(items)) {
+        if (categoryCls == null || StringUtils.isBlank(items)) {
             ljBaseResponse.setResult(Integer.parseInt(CommonGlobalEnum.RES_ERROR.getId().toString()));
             ljBaseResponse.setMessage("args error");
             return ljBaseResponse;
         }
-        Map<String, Object> map = buildingqmService.issuestatisticexport(category_cls, items, response);
-        log.info("export issue statistic, result={}, message={}, path={}", map.get("result"), map.get("message"), map.get("path"));
-        if (Integer.parseInt(map.get("result").toString()) != 0) {
-            ljBaseResponse.setResult(Integer.parseInt(map.get("result").toString()));
+        Map<String, Object> map = buildingqmService.issuestatisticexport(categoryCls, items, response);
+        String result = (String) map.get("result");
+        log.info("export issue statistic, result={}, message={}, path={}", result, map.get("message"), map.get("path"));
+        if (Integer.parseInt(result) != 0) {
+            ljBaseResponse.setResult(Integer.parseInt(result));
             ljBaseResponse.setMessage(map.get("message").toString());
             return ljBaseResponse;
         }

@@ -38,7 +38,7 @@ public interface IRepossessionFeignService {
      * @return
      */
     @RequestMapping(value = "get", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
-    LjBaseResponse<Object> get(@RequestParam(required = true, name = "task_ids") String task_ids,
+    LjBaseResponse<Object> get(@RequestParam(required = true, name = "task_ids") String taskIds,
                                @RequestParam(required = true, name = "timestamp") Integer timestamp);
 
 }

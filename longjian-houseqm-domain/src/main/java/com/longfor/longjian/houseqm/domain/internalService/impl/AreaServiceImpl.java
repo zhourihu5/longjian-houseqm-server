@@ -40,16 +40,16 @@ public class AreaServiceImpl implements AreaService {
         List<String> idsStr = Lists.newArrayList();
         List<String> areaPaths = Lists.newArrayList();
         for (Area area : areas) {
-            areaPaths.add(String.format("%s%d/",area.getPath(),area.getId()));
-            idsStr.add(String.format("/%d/",area.getId()));
+            areaPaths.add(String.format("%s%d/", area.getPath(), area.getId()));
+            idsStr.add(String.format("/%d/", area.getId()));
         }
         Collections.sort(areaPaths);
-        for (int i=0; i<areaPaths.size();i++) {//areaPaths[i] = fmt.Sprintf("(%s[^,]*)*", path)
+        for (int i = 0; i < areaPaths.size(); i++) {//areaPaths[i] = fmt.Sprintf("(%s[^,]*)*", path)
             String path = areaPaths.get(i);
             areaPaths.remove(i);
-            areaPaths.add(i,String.format("(%s[^,]*)*",path));
+            areaPaths.add(i, String.format("(%s[^,]*)*", path));
         }
-        String pathsRegexp="^"+  StringSplitToListUtil.dataToString(areaPaths,",{0,1}") +"$";
+        String pathsRegexp = "^" + StringSplitToListUtil.dataToString(areaPaths, ",{0,1}") + "$";
         String idsRegexp = StringSplitToListUtil.dataToString(idsStr, "|");
         return idsRegexp;
     }
@@ -180,13 +180,17 @@ public class AreaServiceImpl implements AreaService {
 
         List<Area> items = Lists.newArrayList();
         for (Area area : areaList) {
-            String likePath = String.format("%s%d/%%",area.getPath(),area.getId());
+            String likePath = String.format("%s%d/%%", area.getPath(), area.getId());
             Example example1 = new Example(Area.class);
             Example.Criteria criteria1 = example1.createCriteria();
             Example.Criteria criteria2 = example1.createCriteria();
-            criteria2.andEqualTo("projectId", projectId).andLike("path", likePath).orEqualTo("id", area.getId());
+            criteria1.andEqualTo("projectId", projectId);
+            criteria2.andLike("path", likePath).orEqualTo("id", area.getId());
+
             example1.and(criteria2);
-            if (types.size()>0)criteria1.andIn("type", types);
+            if (types.size() > 0) {
+                criteria1.andIn("type", types);
+            }
             ExampleUtil.addDeleteAtJudge(example1);
             List<Area> subAreas = areaMapper.selectByExample(example1);
             items.addAll(subAreas);
@@ -197,10 +201,10 @@ public class AreaServiceImpl implements AreaService {
 
     @LFAssignDataSource("zhijian2")
     public List<Area> selectByAreaIds(List<Integer> ids) {
-        if (CollectionUtils.isEmpty(ids))return Lists.newArrayList();
+        if (CollectionUtils.isEmpty(ids)) return Lists.newArrayList();
         Example example = new Example(Area.class);
         Example.Criteria criteria = example.createCriteria();
-        criteria.andIn("id",ids).andIsNull("deleteAt");
+        criteria.andIn("id", ids).andIsNull("deleteAt");
         return areaMapper.selectByExample(example);
     }
 
@@ -209,7 +213,7 @@ public class AreaServiceImpl implements AreaService {
     public List<Area> selectByFatherId(Integer prodectId, Integer i) {
         Example example = new Example(Area.class);
         Example.Criteria criteria = example.createCriteria();
-        criteria.andEqualTo("projectId",prodectId).andEqualTo("fatherId",i).andIsNull("deleteAt");
+        criteria.andEqualTo("projectId", prodectId).andEqualTo("fatherId", i).andIsNull("deleteAt");
         return areaMapper.selectByExample(example);
     }
 
@@ -257,8 +261,7 @@ public class AreaServiceImpl implements AreaService {
 
         for (int i = 1; i < paths.size(); i++) {
             if (paths.get(i).startsWith(lastPath)) {
-            }
-            else {
+            } else {
                 remainPath.add(lastPath);
                 lastPath = paths.get(i);
             }
