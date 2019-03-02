@@ -11,25 +11,9 @@ public interface HouseQmCheckTaskIssueUserService {
 
     List<HouseQmCheckTaskIssueUser> searchByUserIdAndTaskIdAndCreateAt(int userId, int taskId, int timestamp);
 
-    /**
-     *
-     * @author hy
-     * @date 2018/12/25 0025
-     * @param
-     * @param uid
-     * @param task_id
-     * @return java.util.List<com.longfor.longjian.houseqm.po.zj2db.HouseQmCheckTaskIssueUser>
-     */
-    List<HouseQmCheckTaskIssueUser> selectIssueUUIDByUserIdAndTaskIdAndNoDeleted(Integer uid, Integer task_id);
+    List<HouseQmCheckTaskIssueUser> selectIssueUUIDByUserIdAndTaskIdAndNoDeleted(Integer uid, Integer taskId);
 
-    /**
-     *
-     * @author hy
-     * @date 2018/12/25 0025
-     * @param task_id
-     * @return com.longfor.longjian.houseqm.po.zj2db.HouseQmCheckTaskIssueUser
-     */
-    HouseQmCheckTaskIssueUser selectUpdateAtByTaskIdAndNoDeletedOrderByUpdateAt(Integer task_id);
+    HouseQmCheckTaskIssueUser selectUpdateAtByTaskIdAndNoDeletedOrderByUpdateAt(Integer taskId);
 
     HouseQmCheckTaskIssueUser selectByIssueUUidAndUserIdAndRoleTypeAndNotDel(String uuid, Integer repairerId, Integer value);
 

@@ -20,5 +20,5 @@ public interface FileResourceService {
      */
     List<FileResource> searchFileResourceByFileMd5InAndNoDeleted(List<String> attachments);
 
-    List<FileResource> SearchByMd5In(ArrayList<String> attachmentMd5List);
+    List<FileResource> searchByMd5In(ArrayList<String> attachmentMd5List);
 }

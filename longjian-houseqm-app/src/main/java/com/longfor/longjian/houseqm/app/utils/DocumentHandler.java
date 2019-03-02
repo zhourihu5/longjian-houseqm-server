@@ -1,4 +1,4 @@
-package com.longfor.longjian.houseqm.app.test;
+package com.longfor.longjian.houseqm.app.utils;
 
 import com.longfor.longjian.common.exception.LjBaseRuntimeException;
 import com.longfor.longjian.houseqm.util.DateUtil;

@@ -8,13 +8,13 @@ import java.util.Set;
 
 public interface HouseQmCheckTaskService {
 
-    Integer searchTotalByProjIdAndCategoryClsAndStatus(Integer projId, Integer category_cls, Integer status);
+    Integer searchTotalByProjIdAndCategoryClsAndStatus(Integer projId, Integer categoryCls, Integer status);
 
-    List<HouseQmCheckTask> searchByProjIdAndCategoryClsAndStatusByPage(Integer projId, Integer category_cls, Integer status, int limit, int start);
+    List<HouseQmCheckTask> searchByProjIdAndCategoryClsAndStatusByPage(Integer projId, Integer categoryCls, Integer status, int limit, int start);
 
-    List<HouseQmCheckTask> searchByProjectIdAndCategoryClsInAndTaskIdIn(Integer project_id, List<Integer> category_cls_list, List<Integer> task_ids);
+    List<HouseQmCheckTask> searchByProjectIdAndCategoryClsInAndTaskIdIn(Integer projectId, List<Integer> categoryClsList, List<Integer> taskIds);
 
-    List<HouseQmCheckTask> searchByProjectIdInAndCategoryClsIn(List<Integer> project_ids, List<Integer> categoryClsList);
+    List<HouseQmCheckTask> searchByProjectIdInAndCategoryClsIn(List<Integer> projectIds, List<Integer> categoryClsList);
 
     List<HouseQmCheckTask> searchHouseQmCheckTaskByTaskIdIn(List<Integer> taskIds);
 
@@ -49,7 +49,7 @@ public interface HouseQmCheckTaskService {
 
     HouseQmCheckTask selectById(int one);
 
-    int removeHouseQmCheckTaskByProjectIdAndTaskId(Integer project_id, Integer task_id);
+    int removeHouseQmCheckTaskByProjectIdAndTaskId(Integer projectId, Integer taskId);
 
     HouseQmCheckTask selectByTaskId(Integer integer);
 

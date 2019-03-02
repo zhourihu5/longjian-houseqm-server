@@ -7,5 +7,5 @@ import com.longfor.longjian.common.base.LjBaseResponse;
  */
 public interface ScanMsgPushService {
 
-    LjBaseResponse scanNoticeCenter(String category_cls);
+    LjBaseResponse scanNoticeCenter(String categoryCls);
 }

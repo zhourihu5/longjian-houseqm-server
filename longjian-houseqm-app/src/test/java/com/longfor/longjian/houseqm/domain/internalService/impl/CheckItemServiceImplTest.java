@@ -22,7 +22,7 @@ public class CheckItemServiceImplTest {
     @Test
     public void searchCheckItemByKeyIn() {
         try{
-            checkItemServiceImpl.SearchCheckItemByKeyIn(Arrays.asList("1","2","3","4","5","6","7","8","9","10"));
+            checkItemServiceImpl.searchCheckItemByKeyIn(Arrays.asList("1","2","3","4","5","6","7","8","9","10"));
         }catch (Exception e){
             Assert.fail(e.getMessage());
         }

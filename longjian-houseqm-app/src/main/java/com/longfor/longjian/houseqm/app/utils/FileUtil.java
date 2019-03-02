@@ -133,13 +133,10 @@ public class FileUtil {
     }
 
     public static boolean addLine(File file, String msg) {
-       // FileOutputStream os = null;
         try (FileOutputStream os =  new FileOutputStream(file, true)){
-           // os = new FileOutputStream(file, true);
             os.write(msg.getBytes());
             os.write("\r\n".getBytes());
             os.flush();
-            os.close();
             return true;
         } catch (Exception e) {
             log.error("write file error", e);
@@ -172,27 +169,13 @@ public class FileUtil {
             }
             try(FileOutputStream out = new FileOutputStream(dstFile);FileInputStream in = new FileInputStream(srcFile)){
                 byte[] buffer = new byte[1024];
-                int L = 0;
+                int L ;
                 while ((L = in.read(buffer)) != -1) {
                     out.write(buffer, 0, L);
                 }
             }catch (Exception e){
                 log.error(e.getMessage());
             }
-           // FileOutputStream out = new FileOutputStream(dstFile);
-            //FileInputStream in = new FileInputStream(srcFile);
-            /*byte[] buffer = new byte[1024];
-            int L = 0;
-            while ((L = in.read(buffer)) != -1) {
-                out.write(buffer, 0, L);
-            }
-            if (out != null) {
-                out.flush();
-                out.close();
-            }
-            if (in != null) {
-                in.close();
-            }*/
             return true;
         } catch (Exception e) {
             log.error("cpoy file error", e);
@@ -346,7 +329,7 @@ public class FileUtil {
      * @param filePath
      * @param response
      */
-    public static void Load(String filePath, HttpServletResponse response) {
+    public static void load(String filePath, HttpServletResponse response) {
         byte[] buff = new byte[1024];
         BufferedInputStream bis = null;
         OutputStream os = null;

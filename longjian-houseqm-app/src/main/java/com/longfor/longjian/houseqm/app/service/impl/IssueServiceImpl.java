@@ -10,7 +10,7 @@ import com.longfor.longjian.common.push.xiaomi.XmPushUtil;
 import com.longfor.longjian.houseqm.app.req.IssueListDoActionReq;
 import com.longfor.longjian.houseqm.app.req.bgtask.ExportBuildingExcelReq;
 import com.longfor.longjian.houseqm.app.utils.ExportUtils;
-import com.longfor.longjian.houseqm.app.test.DocumentHandler;
+import com.longfor.longjian.houseqm.app.utils.DocumentHandler;
 import com.longfor.longjian.houseqm.app.utils.FileUtil;
 import com.longfor.longjian.houseqm.app.vo.*;
 
@@ -50,26 +50,25 @@ import java.util.stream.Collectors;
 @Service
 @Slf4j
 public class IssueServiceImpl implements IIssueService {
-
     @Value("${push_config.enterprise_id}")
     private String enterpriseId;
-     @Value("${push_config.gcgl.app_key_android}")
+    @Value("${push_config.gcgl.app_key_android}")
     private  String appKeyAndroid;
-    
+
     @Value("${push_config.gcgl.app_master_secret_android}")
     private  String appMasterSecretAndroid;
     @Value("${push_config.gcgl.app_key_ios}")
     private String appKeyIOS;
-    
+
     @Value("${push_config.gcgl.app_master_secret_ios}")
     private  String appMasterSecretIOS;
-    
+
     @Value("${push_config.gcgl.app_secret_xiao_mi}")
     private  String appSecretXiaoMi;
-    
+
     @Value("${push_config.gcgl.package_name_xiao_mi}")
     private  String packageNameXiaomi;
-    
+
     @Resource
     private HouseQmCheckTaskIssueAttachmentService houseQmCheckTaskIssueAttachmentService;
     @Resource
@@ -549,7 +548,7 @@ public class IssueServiceImpl implements IIssueService {
             } else {
                 item.setLast_repairer_name("");
             }
-           
+
             DetailVo detail = JSON.parseObject(issue.getDetail(), DetailVo.class);
             item.setDetail(detail);
             issueList.add(item);
@@ -674,7 +673,7 @@ public class IssueServiceImpl implements IIssueService {
                     items.add(logItem);
                     singleItem.setItems(items);
 
-                }
+            }
 
                 if (issueLogInfo.get(i).getDesc().length() > 0) {
                     HouseQmCheckTaskIssueHistoryLogVo.HouseQmCheckTaskIssueHistoryLogItem log_items = new HouseQmCheckTaskIssueHistoryLogVo().new HouseQmCheckTaskIssueHistoryLogItem();
@@ -753,7 +752,7 @@ public class IssueServiceImpl implements IIssueService {
         String replace = issueInfo.getContent().replace(";;", ";");
         List<String> strings = StringSplitToListUtil.removeStartAndEndStrAndSplit(replace,";",";");
         strings.add(content);
-      
+
         String contentNew = StringUtils.join(strings, ";");
         issueInfo.setUpdateAt(new Date());
         issueInfo.setContent(contentNew);
@@ -1071,12 +1070,12 @@ public class IssueServiceImpl implements IIssueService {
             return response;
         }
         Integer status = -1;
-            if (issueInfo.getStatus().equals(HouseQmCheckTaskIssueStatusEnum.NoteNoAssign.getId()) && repairerId > 0) {
+        if (issueInfo.getStatus().equals(HouseQmCheckTaskIssueStatusEnum.NoteNoAssign.getId()) && repairerId > 0) {
             status = HouseQmCheckTaskIssueStatusEnum.AssignNoReform.getId();
             issueInfo.setStatus(HouseQmCheckTaskIssueStatusEnum.AssignNoReform.getId());
         }
 
-                List<String> followers = StringSplitToListUtil.removeStartAndEndStrAndSplit(StringSplitToListUtil.removeStartAndEndStr(repairFollowerIds,"[","]"), ",", ",");
+        List<String> followers = StringSplitToListUtil.removeStartAndEndStrAndSplit(StringSplitToListUtil.removeStartAndEndStr(repairFollowerIds,"[","]"), ",", ",");
 
         if (!followers.contains(issueInfo.getRepairerId()) && repairerId > 0 && !repairerId.equals(issueInfo.getRepairerId())) {
             followers.add(String.valueOf(issueInfo.getRepairerId()));
@@ -1085,9 +1084,9 @@ public class IssueServiceImpl implements IIssueService {
         if (CollectionUtils.isNotEmpty(followers)) {
             String join = StringUtils.join(followers, ",");
             List<String> strings = StringSplitToListUtil.removeStartAndEndStrAndSplit(join, ",", ",");
-           if(strings.contains(",,")){
-               Collections.replaceAll(strings, ",,", ",");
-           }
+            if(strings.contains(",,")){
+                Collections.replaceAll(strings, ",,", ",");
+            }
             String s1 = strings.toString().replaceAll(" ","");
             String s = StringSplitToListUtil.removeStartAndEndStr(s1, "[", "]");
             repairFollowerIds = ","+s+",";
@@ -1695,6 +1694,7 @@ public class IssueServiceImpl implements IIssueService {
         });
         return pathNames;
     }
+
 
 }
 

@@ -18,16 +18,16 @@ import java.util.Map;
  */
 public interface IHouseqmIssueService {
 
-    Project getProjectByProjId(Integer project_id);
+    Project getProjectByProjId(Integer projectId);
 
-    List<HouseQmCheckTaskIssue> searchHouseQmIssueListByProjUuidIn(Integer project_id, List<String> uuids) throws Exception;
+    List<HouseQmCheckTaskIssue> searchHouseQmIssueListByProjUuidIn(Integer projectId, List<String> uuids) throws Exception;
 
-    ExportFileRecord create(int userId, Integer teamId, Integer project_id, int exportType, Map<String, String> args, String exportName, Date executeAt) throws Exception;
+    ExportFileRecord create(int userId, Integer teamId, Integer projectId, int exportType, Map<String, String> args, String exportName, Date executeAt) throws Exception;
 
-    List<String> updateBatchIssueRepairInfoByUuids(List<String> uuids, Integer project_id, int uid, Integer repairer_id, String repair_follower_ids, Integer plan_end_on) throws Exception;
+    List<String> updateBatchIssueRepairInfoByUuids(List<String> uuids, Integer projectId, int uid, Integer repairerId, String repairFollowerIds, Integer planEndOn) throws Exception;
 
     List<String> updateBatchIssueApproveStatusByUuids(List<String> uuids, int projectId, int senderId, int status, String desc, String attachmentMd5List) throws Exception;
 
-    void deleteHouseQmCheckTaskIssueByProjUuid(Integer project_id, String issueUuid) throws Exception;
+    void deleteHouseQmCheckTaskIssueByProjUuid(Integer projectId, String issueUuid) throws Exception;
 
 }

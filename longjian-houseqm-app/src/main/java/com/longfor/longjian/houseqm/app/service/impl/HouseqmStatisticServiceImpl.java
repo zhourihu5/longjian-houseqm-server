@@ -1072,7 +1072,7 @@ public class HouseqmStatisticServiceImpl implements IHouseqmStatisticService {
             }
 
         }
-        List<FileResource> fileList = fileService.SearchByMd5In(attachmentMd5List);
+        List<FileResource> fileList = fileService.searchByMd5In(attachmentMd5List);
         HashMap<String, String> map = Maps.newHashMap();
         for (int i = 0; i < fileList.size(); i++) {
             map.put(fileList.get(i).getFileMd5(), fileList.get(i).getStoreKey());
@@ -1111,7 +1111,7 @@ public class HouseqmStatisticServiceImpl implements IHouseqmStatisticService {
         List<CategoryV3> categoryList = categoryService.searchCategoryByKeyIn(categoryKeys);
         CategoryMapVo categoryMap = new CategoryMapVo().NewCategoryMap(categoryList);
 
-        List<CheckItem> checkItemList = checkItemService.SearchCheckItemByKeyIn(checkItemKeys);
+        List<CheckItem> checkItemList = checkItemService.searchCheckItemByKeyIn(checkItemKeys);
         CheckItemMapVo checkItemMap = new CheckItemMapVo().NewCategoryMap(checkItemList);
         for (int i = 0; i < infos.size(); i++) {
 
@@ -1319,7 +1319,7 @@ public class HouseqmStatisticServiceImpl implements IHouseqmStatisticService {
     private Map<String, CheckItem> getCheckItemMapByCheckItemKeys(List<String> keys) {
         Map<String, CheckItem> map = new HashMap<>();
         if (keys.isEmpty()) return map;
-        List<CheckItem> resCheckItems = checkItemService.SearchCheckItemByKeyIn(keys);
+        List<CheckItem> resCheckItems = checkItemService.searchCheckItemByKeyIn(keys);
         for (CheckItem citem : resCheckItems) {
             map.put(citem.getKey(), citem);
         }

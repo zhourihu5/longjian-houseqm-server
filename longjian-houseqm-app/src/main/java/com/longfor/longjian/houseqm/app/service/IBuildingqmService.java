@@ -10,6 +10,7 @@ import java.util.List;
 import java.util.Map;
 
 public interface IBuildingqmService {
+
     TaskListVo myTaskList(Integer userId);
 
     TaskMemberListVo taskSquadsMembers(String taskIdsStr);
@@ -27,11 +28,6 @@ public interface IBuildingqmService {
 
     ReportIssueVo reportIssue(Integer uid, Integer projectId, String data);
 
-    /**
-     *
-     * @param category_cls
-     * @param items
-     * @return
-     */
-    Map<String, Object> issuestatisticexport(Integer category_cls, String items, HttpServletResponse response);
+
+    Map<String, Object> issuestatisticexport(Integer categoryCls, String items, HttpServletResponse response);
 }

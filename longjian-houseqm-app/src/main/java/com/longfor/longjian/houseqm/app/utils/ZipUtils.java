@@ -1,4 +1,4 @@
-package com.longfor.longjian.houseqm.app.test;
+package com.longfor.longjian.houseqm.app.utils;
 import com.longfor.longjian.common.exception.LjBaseRuntimeException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -51,13 +51,6 @@ public class ZipUtils {
                 }catch (Exception e){
                     log.error(e.getMessage());
                 }
-               /* FileInputStream in = new FileInputStream(f);
-                int b;
-                //System.out.println(base);
-                while ((b = in.read()) != -1) {
-                    out.write(b);
-                }
-                in.close();*/
             }
         }
 
@@ -73,23 +66,11 @@ public class ZipUtils {
                //fos = new FileOutputStream(zipPath);
                 //zos = new ZipOutputStream(fos);
                 writeZip(new File(sourcePath), "", zos);
-            } catch (FileNotFoundException e) {
+            } catch (Exception e) {
                 log.error("ZipUtils createZip  Failed to create ZIP file", e);
-            } catch (IOException e) {
-                log.error(e.getMessage());
-            } finally {
+            }  finally {
                 //压缩成功后，删除打包前的文件
                 deleteFile( new File(sourcePath) );
-                /*try {
-                    if (zos != null) {
-                        log.debug("ZipUtils createZip Create a ZIP file successfully! the path in:{}",zipPath);
-                        zos.close();
-                        //压缩成功后，删除打包前的文件
-                        deleteFile( new File(sourcePath) );
-                    }
-                } catch (IOException e) {
-                    log.error("ZipUtils createZip  Failed to create ZIP file", e);
-                }*/
             }
         }
 
@@ -140,7 +121,7 @@ public class ZipUtils {
                     File a = new File(oldResPath.get(m));
                     // 如果已经是具体文件，读取
                     if (a.isFile()) {
-                        try (FileInputStream input = new FileInputStream(a); FileOutputStream output = new FileOutputStream(newResPath + "/" + (a.getName()).toString())) {
+                        try (FileInputStream input = new FileInputStream(a); FileOutputStream output = new FileOutputStream(newResPath + "/" + (a.getName()))) {
                             // FileInputStream input = new FileInputStream(a);
                             //FileOutputStream output = new FileOutputStream(newResPath + "/" + (a.getName()).toString());
                             byte[] b = new byte[1024 * 4];
@@ -164,7 +145,7 @@ public class ZipUtils {
                             }
 
                             if (temp.isFile()) {
-                                try( FileInputStream input = new FileInputStream(temp);FileOutputStream output = new FileOutputStream(newResPath + "/" + (temp.getName()).toString())){
+                                try( FileInputStream input = new FileInputStream(temp);FileOutputStream output = new FileOutputStream(newResPath + "/" + (temp.getName()))){
                                     byte[] b = new byte[1024 * 4];
                                     int len;
                                     while ((len = input.read(b)) != -1) {
@@ -185,9 +166,10 @@ public class ZipUtils {
                                 input.close();*/
                             }
                             if (temp.isDirectory()) {
-                                List<String> oldChildPath = new ArrayList<String>();
+                                List<String> oldChildPath = new ArrayList<>();
                                 oldChildPath.add(oldResPath.get(m) + "/" + file[i]);
-                                newResPath = newResPath + "/" + file[i];
+                               // newResPath = newResPath + "/" + file[i];
+                                newResPath = String.format("%s%s%s",newResPath,"/",file[i]);
                                 // 如果是子文件夹 递归循环
                                 copyResource(oldChildPath, newResPath);
                             }
@@ -205,17 +187,19 @@ public class ZipUtils {
         public static void deleteFile(File file) {
             if (file.exists()) {
                 if (file.isFile()) {
-                    if(!file.delete()){
-                        throw  new LjBaseRuntimeException(-1,"文件删除失败");
+                    boolean delete = file.delete();
+                    if( delete){
+                        log.info("删除成功");
                     }
                 } else if (file.isDirectory()) {
-                    File files[] = file.listFiles();
+                    File[] files = file.listFiles();
                     for (int i = 0; i < files.length; i++) {
                         deleteFile(files[i]);
                     }
                 }
-              if( !file.delete()){
-                  throw  new LjBaseRuntimeException(-1,"文件删除失败");
+                boolean delete = file.delete();
+             if( delete){
+                 log.info("删除成功");
               }
             }
         }
@@ -228,14 +212,13 @@ public class ZipUtils {
         public static String dateToString() {
             Date d = new Date();
             SimpleDateFormat formatter = new SimpleDateFormat("yyyyMMddHHmmss");
-            String time = formatter.format(d);
-            return time;
+            return formatter.format(d);
         }
 
 
         //main方法测试
         public static void main(String[] args) {
-            List<String> oldResPath = new ArrayList<String>();
+            List<String> oldResPath = new ArrayList<>();
             // excel文件路径
             oldResPath.add("d:\\a.xlsx");
             oldResPath.add("d:\\b.xlsx");

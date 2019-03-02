@@ -37,7 +37,7 @@ public class FileResourceServiceImpl implements FileResourceService {
 
     @Override
     @LFAssignDataSource("zhijian2")
-    public List<FileResource> SearchByMd5In(ArrayList<String> attachmentMd5List) {
+    public List<FileResource> searchByMd5In(ArrayList<String> attachmentMd5List) {
         return fileResourceMapper.searchByMd5In(attachmentMd5List);
     }
 }

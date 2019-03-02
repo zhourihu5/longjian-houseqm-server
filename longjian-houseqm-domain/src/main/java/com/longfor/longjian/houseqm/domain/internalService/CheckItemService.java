@@ -9,5 +9,5 @@ import java.util.List;
  */
 
 public interface CheckItemService {
-    List<CheckItem> SearchCheckItemByKeyIn(List<String> keys);
+    List<CheckItem> searchCheckItemByKeyIn(List<String> keys);
 }
