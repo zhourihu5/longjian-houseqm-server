@@ -15,25 +15,25 @@ public interface HouseQmCheckTaskIssueService {
 
     List<HouseQmCheckTaskIssue> searchByTaskIdAndAreaPathAndIdRegexp(int taskId, String regexp);
 
-    Integer countByProjIdAndTaskIdAndTypInGroupByCategoryPathAndKeyAndCheckItemKey(Integer project_id, Integer task_id, List<Integer> typs, Integer area_id, Date beginOn, Date endOn);
+    Integer countByProjIdAndTaskIdAndTypInGroupByCategoryPathAndKeyAndCheckItemKey(Integer projectId, Integer taskId, List<Integer> typs, Integer areaId, Date beginOn, Date endOn);
 
     List<HouseQmCheckTaskIssue> searchByProjIdAndTaskIdAndTypInGroupByCategoryPathAndKeyAndCheckItemKey(Map<String, Object> condi);
 
     List<HouseQmCheckTaskIssue> searchByTaskIdInGroupByTaskIdAndStatus(List<Integer> taskIds);
 
-    List<HouseQmCheckTaskIssue> searchByProjIdAndCategoryClsInAndRepairerIdAndClientCreateAtAndTypInAndStatusInAndTaskIdOrderByClientCreateAt(Integer project_id, List<Integer> category_cls_list, String statBegin, String statEnd, List<Integer> typs, List<Integer> status, Integer task_id, List<Integer> my_task_ids);
+    List<HouseQmCheckTaskIssue> searchByProjIdAndCategoryClsInAndRepairerIdAndClientCreateAtAndTypInAndStatusInAndTaskIdOrderByClientCreateAt(Integer projectId, List<Integer> categoryClsList, String statBegin, String statEnd, List<Integer> typs, List<Integer> status, Integer taskId, List<Integer> myTaskIds);
 
-    List<HouseQmCheckTaskIssue> searchByProjIdAndCategoryClsInAndSenderIdAndClientCreateAtAndTypAndTaskIdOrderByClientCreateAt(Integer project_id, List<Integer> category_cls_list, String statBegin, String statEnd, List<Integer> typs, Integer task_id, List<Integer> my_task_ids);
+    List<HouseQmCheckTaskIssue> searchByProjIdAndCategoryClsInAndSenderIdAndClientCreateAtAndTypAndTaskIdOrderByClientCreateAt(Integer projectId, List<Integer> categoryClsList, String statBegin, String statEnd, List<Integer> typs, Integer taskId, List<Integer> myTaskIds);
 
-    List<HouseQmCheckTaskIssue> searchByProjectIdAndCategoryClsInAndTaskIdInAndAreaPathAndIdLike(Integer project_id, List<Integer> category_cls_list, List<Integer> task_ids, String area_path);
+    List<HouseQmCheckTaskIssue> searchByProjectIdAndCategoryClsInAndTaskIdInAndAreaPathAndIdLike(Integer projectId, List<Integer> categoryClsList, List<Integer> taskIds, String areaPath);
 
-    List<HouseQmCheckTaskIssue> searchByProjIdAndTaskIdAndAreaIdInAndRepairedIdAndClientCreateAt(Integer project_id, Integer task_id, List<Integer> subAreaIds, Integer repairer_id, Date begin_on, Date end_on);
+    List<HouseQmCheckTaskIssue> searchByProjIdAndTaskIdAndAreaIdInAndRepairedIdAndClientCreateAt(Integer projectId, Integer taskId, List<Integer> subAreaIds, Integer repairerId, Date beginOn, Date endOn);
 
-    int deleteHouseQmCheckTaskIssueByProjUuid(Integer project_id, String issueUuid);
+    int deleteHouseQmCheckTaskIssueByProjUuid(Integer projectId, String issueUuid);
 
     int insertOneHouseQmCheckTaskIssue(HouseQmCheckTaskIssue issue);
 
-    List<HouseQmCheckTaskIssue> searchByProjIdAndUuidIn(Integer project_id, List<String> uuids);
+    List<HouseQmCheckTaskIssue> searchByProjIdAndUuidIn(Integer projectId, List<String> uuids);
 
     List<HouseQmCheckTaskIssue> searchByIssueUuidsAndclientCreateAt(Set<String> issueUuids, int timestamp);
 
@@ -59,46 +59,18 @@ public interface HouseQmCheckTaskIssueService {
 
     List<HouseQmCheckTaskIssue> selectAreaIdByProjectIdAndTaskIdAndAreaIdInAndNoDeleted(Integer projectId, Integer taskId, List<Integer> areaIds);
 
-    /**
-     * @param task_id
-     * @param uuids
-     * @return
-     */
-    List<HouseQmCheckTaskIssue> searchHouseQmCheckTaskIssueByTaskIdUuidIn(Integer task_id, List<String> uuids);
 
-    /**
-     * @param userId
-     * @param task_id
-     * @param last_id
-     * @param timestamp
-     * @param start
-     * @param limit
-     * @return
-     */
-    List<HouseQmCheckTaskIssue> searchHouseQmCheckTaskIssueByMyIdTaskIdLastIdUpdateAtGt(Integer userId, Integer task_id, Integer last_id, Integer timestamp, Integer start, Integer limit, Integer checker);
+    List<HouseQmCheckTaskIssue> searchHouseQmCheckTaskIssueByTaskIdUuidIn(Integer taskId, List<String> uuids);
+
+
+    List<HouseQmCheckTaskIssue> searchHouseQmCheckTaskIssueByMyIdTaskIdLastIdUpdateAtGt(Integer userId, Integer taskId, Integer lastId, Integer timestamp, Integer start, Integer limit, Integer checker);
 
     List<IssueRepairCount> selectByProjectIdAndTaskIdAndTyeInAndDongTai(Map<String, Object> map);
 
-    /**
-     * @param task_id
-     * @param last_id
-     * @param timestamp
-     * @param start
-     * @param limit
-     * @return
-     */
-    List<HouseQmCheckTaskIssueUser> searchHouseQmCheckTaskIssueUserByTaskIdLastIdUpdateAtGt(Integer task_id, Integer last_id, Integer timestamp, Integer start, Integer limit);
 
-    /**
-     * @param userId
-     * @param task_id
-     * @param last_id
-     * @param timestamp
-     * @param start
-     * @param limit
-     * @return
-     */
-    List<HouseQmCheckTaskIssueAttachment> searchHouseQmCheckTaskIssueAttachmentByMyIdTaskIdLastIdUpdateAtGt(Integer userId, Integer task_id, Integer last_id, Integer timestamp, Integer start, Integer limit, Integer privateInt, Integer publicInt);
+    List<HouseQmCheckTaskIssueUser> searchHouseQmCheckTaskIssueUserByTaskIdLastIdUpdateAtGt(Integer taskId, Integer lastId, Integer timestamp, Integer start, Integer limit);
+
+    List<HouseQmCheckTaskIssueAttachment> searchHouseQmCheckTaskIssueAttachmentByMyIdTaskIdLastIdUpdateAtGt(Integer userId, Integer taskId, Integer lastId, Integer timestamp, Integer start, Integer limit, Integer privateInt, Integer publicInt);
 
     List<HouseQmCheckTaskIssue> searchByProjectIdAndCategoryClsAndNoDeletedAndDongTai(Map<String, Object> map);
 
@@ -106,66 +78,31 @@ public interface HouseQmCheckTaskIssueService {
 
     List<HouseQmCheckTaskIssue> searchByPageAndProjectIdAndCategoryClsAndNoDeletedAndDongTai(Map<String, Object> map);
 
-    /**
-     * @param map
-     * @return java.lang.Integer
-     * @author hy
-     * @date 2018/12/22 0022
-     */
     Integer selectCountByProjectIdAndCategoryClsAndTypeAndStatusInAndDongTai(Map<String, Object> map);
     HouseQmCheckTaskIssueListDto selectCountByProjectIdAndCategoryClsAndTypeAndStatusInAndDongTai2(Integer projectId, Integer taskId, List<Integer> categoryClsList, Integer areaId, Integer planStatus, Date beginOn, Date endOn, Integer page, Integer pageSize);
-    /**
-     * @param map
-     * @return java.util.List<com.longfor.longjian.houseqm.po.zj2db.HouseQmCheckTaskIssue>
-     * @author hy
-     * @date 2018/12/22 0022
-     */
+
     List<HouseQmCheckTaskIssue> selectHouseQmCheckTaskIssueByProjectIdAndCategoryClsAndTypeAndStatusInAndOrderByDescAndPageDongTai(Map<String, Object> map);
 
     List<HouseQmCheckTaskIssue> houseQmCheckTaskIssueByProTaskIdAreaidBegin(Integer projectId, Integer taskId, Integer areaId, Date begin, Date endOns, List<Integer> types);
 
     HouseQmCheckTaskIssueDto searchHouseQmCheckTaskIssueByProjCategoryKeyAreaId(HashMap<String, Object> condiMap);
 
-    /**
-     * @param condiMap
-     * @return java.util.List<com.longfor.longjian.houseqm.po.IssueRepairCount>
-     * @author hy
-     * @date 2018/12/24 0024
-     */
     List<IssueRepairCount> selectIssueRepairCountByProjectIdAndCategoryClsAndTypInAndStatusInAndNoDeletedAndDongTai(HashMap<String, Object> condiMap);
 
-    /**
-     * @param
-     * @param task_id
-     * @param issueUpdateTime
-     * @param userIds
-     * @param issueUuids
-     * @return java.util.List<com.longfor.longjian.houseqm.po.zj2db.HouseQmCheckTaskIssue>
-     * @author hy
-     * @date 2018/12/25 0025
-     */
-    HouseQmCheckTaskIssue selectIdByTaskIdAndIdGtAndUpdateAtGtAndSenderIdInOrUuidInAndNoDeletedOrderById(Integer task_id, Date issueUpdateTime, List<Integer> userIds, List<String> issueUuids);
+    HouseQmCheckTaskIssue selectIdByTaskIdAndIdGtAndUpdateAtGtAndSenderIdInOrUuidInAndNoDeletedOrderById(Integer taskId, Date issueUpdateTime, List<Integer> userIds, List<String> issueUuids);
 
-    /**
-     * @param userIds
-     * @param task_id
-     * @param issueUuids
-     * @return java.util.List<com.longfor.longjian.houseqm.po.zj2db.HouseQmCheckTaskIssue>
-     * @author hy
-     * @date 2018/12/25 0025
-     */
-    List<HouseQmCheckTaskIssue> selectUuidBySenderIdInOrTaskIdAndUuidIn(List<Integer> userIds, Integer task_id, List<String> issueUuids);
+    List<HouseQmCheckTaskIssue> selectUuidBySenderIdInOrTaskIdAndUuidIn(List<Integer> userIds, Integer taskId, List<String> issueUuids);
 
     List<HouseQmCheckTaskIssueAreaGroupModel> selectByTaskIdAreaPathAndIdAndStatusIn(HashMap<String, Object> map);
 
-    int removeHouseQmCheckTaskIssueByProjectIdAndTaskId(Integer project_id, Integer task_id);
+    int removeHouseQmCheckTaskIssueByProjectIdAndTaskId(Integer projectId, Integer taskId);
 
     List<CheckerIssueStatusStatDto> searchCheckerIssueStatusStatDtoByProjIdAndTaskIdAndClientCreateAtAndTypInGroupByUserId(Map<String, Object> condi);
 
 
     List<RepaireIssueStatusStatDto> searchRepaireIssueStatusStatDtoByProjIdAndTaskIdAndClientCreateAtAndTypInGroupByUserId(Map<String, Object> condi);
 
-    List<HouseQmCheckTaskIssue> searchByProjIdAndCategoryClsAndAreaPathAndIdLikeGroupByStatus(Integer project_id, Integer category_cls, String areaPath);
+    List<HouseQmCheckTaskIssue> searchByProjIdAndCategoryClsAndAreaPathAndIdLikeGroupByStatus(Integer projectId, Integer categoryCls, String areaPath);
 
     HouseQmCheckTaskIssue selectByUuidAndNotDelete(String issueUuid);
 
@@ -173,7 +110,7 @@ public interface HouseQmCheckTaskIssueService {
 
     HouseQmCheckTaskIssue getIssueByProjectIdAndUuid(Integer projectId, String issueUuid);
 
-    void update(HouseQmCheckTaskIssue issue_info);
+    void update(HouseQmCheckTaskIssue issueInfo);
 
     List<HouseQmCheckTaskIssue> selectHouseQmCheckTaskIssueByProIdAndIdAndStatus(Integer projectId, List<Integer> issueIds, ArrayList<Integer> statusList);
 

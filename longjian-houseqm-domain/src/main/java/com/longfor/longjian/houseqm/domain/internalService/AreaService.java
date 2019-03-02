@@ -8,7 +8,7 @@ public interface AreaService {
 
     String getRootRegexpConditionByAreaIds(List<Integer> areaIds);
 
-    List<Area> searchRelatedAreaByAreaIdIn(Integer project_id, List<Integer> areaIds);
+    List<Area> searchRelatedAreaByAreaIdIn(Integer projectId, List<Integer> areaIds);
 
     List<Area> selectAreasByIdInAreaIds(List<Integer> areaIds);
 
@@ -29,8 +29,4 @@ public interface AreaService {
      * @param areaPaths
      */
     List<Area> searchAreaByIdInAndNoDeleted(List<Integer> areaPaths);
-
-/*
-    List<Area> selectAreaByIds(List<Integer> areaIds);
-*/
 }

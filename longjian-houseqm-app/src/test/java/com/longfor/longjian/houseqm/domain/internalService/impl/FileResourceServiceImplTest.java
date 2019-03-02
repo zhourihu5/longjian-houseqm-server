@@ -34,7 +34,7 @@ public class FileResourceServiceImplTest {
         ArrayList<String> al=new ArrayList<>();
         al.addAll(Arrays.asList("1","2","3","4","5","6","7","8","9","10"));
         try{
-            fileResourceServiceImpl.SearchByMd5In(al);
+            fileResourceServiceImpl.searchByMd5In(al);
         }catch (Exception e){
             Assert.fail(e.getMessage());
         }

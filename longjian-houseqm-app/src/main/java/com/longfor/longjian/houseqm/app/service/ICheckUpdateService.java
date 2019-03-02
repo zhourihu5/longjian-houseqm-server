@@ -10,12 +10,12 @@ import java.util.Date;
 public interface ICheckUpdateService {
     Date getHouseqmCheckTaskLastUpdateAtByTaskId(Integer taskId);
 
-    Integer getHouseqmCheckTaskIssueLastId(Integer uid, Integer task_id, Date issueUpdateTime);
+    Integer getHouseqmCheckTaskIssueLastId(Integer uid, Integer taskId, Date issueUpdateTime);
 
-    Integer getHouseQmCheckTaskIssueLogLastId(Integer uid, Integer task_id, Date issueLogUpdateTime);
+    Integer getHouseQmCheckTaskIssueLogLastId(Integer uid, Integer taskId, Date issueLogUpdateTime);
 
-    Date getHouseQmCheckTaskIssueUserLastUpdateTime(Integer task_id);
+    Date getHouseQmCheckTaskIssueUserLastUpdateTime(Integer taskId);
 
-    Date getHouseQmCheckTaskLastUpdateTime(Integer task_id);
+    Date getHouseQmCheckTaskLastUpdateTime(Integer taskId);
 
 }

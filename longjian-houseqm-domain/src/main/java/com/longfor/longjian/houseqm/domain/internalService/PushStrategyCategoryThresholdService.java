@@ -10,7 +10,7 @@ public interface PushStrategyCategoryThresholdService {
 
     int add(PushStrategyCategoryThreshold pushStrategyCategoryThreshold);
 
-    PushStrategyCategoryThreshold selectTaskIdAndNotDel(Integer task_id);
+    PushStrategyCategoryThreshold selectTaskIdAndNotDel(Integer taskId);
 
     int update(PushStrategyCategoryThreshold dbConfigCategoryThreshold);
 

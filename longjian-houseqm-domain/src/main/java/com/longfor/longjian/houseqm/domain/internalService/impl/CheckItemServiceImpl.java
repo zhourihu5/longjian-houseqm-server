@@ -23,10 +23,10 @@ public class CheckItemServiceImpl implements CheckItemService {
 
     @Override
     @LFAssignDataSource("zhijian2")
-    public List<CheckItem> SearchCheckItemByKeyIn(List<String> keys) {
+    public List<CheckItem> searchCheckItemByKeyIn(List<String> keys) {
         Example example = new Example(CheckItem.class);
         Example.Criteria criteria = example.createCriteria();
-        if (keys.size() > 0) criteria.andIn("key", keys);
+        if (keys.size() > 0){ criteria.andIn("key", keys);}
         ExampleUtil.addDeleteAtJudge(example);
         return checkItemMapper.selectByExample(example);
     }

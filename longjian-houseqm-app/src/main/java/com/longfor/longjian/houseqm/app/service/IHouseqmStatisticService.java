@@ -15,11 +15,11 @@ import java.util.List;
 
 public interface IHouseqmStatisticService {
 
-    ProjectRepairerStatRspVo projectRepairerStat(int uid, Integer project_id, Integer task_id, String source, Integer stat_begin, Integer stat_end, Integer timestamp);
+    ProjectRepairerStatRspVo projectRepairerStat(int uid, Integer projectId, Integer taskId, String source, Integer statBegin, Integer statEnd, Integer timestamp);
 
-    ProjectCheckerStatRspVo projectCheckerStat(int uid, Integer project_id, Integer task_id, String source, Integer stat_begin, Integer stat_end, Integer timestamp);
+    ProjectCheckerStatRspVo projectCheckerStat(int uid, Integer projectId, Integer taskId, String source, Integer statBegin, Integer statEnd, Integer timestamp);
 
-    ProjectIssueStatRspVo projectIssueStat(int uid, Integer project_id, String source, Integer area_id, Integer timestamp);
+    ProjectIssueStatRspVo projectIssueStat(int uid, Integer projectId, String source, Integer areaId, Integer timestamp);
 
     ProjectListRspVo projectList(int uid, String source, Integer timestamp);
 
@@ -42,7 +42,7 @@ public interface IHouseqmStatisticService {
 
     RepossessionTasksStatusInfoVo getRepossessionTasksStatusInfo(Integer projectId,List<Integer> taskIds,Integer areaId);
 
-    StatHouseqmCompleteDailyRspVo searchRepossessionStatusCompleteDaily(Integer project_id, List<Integer> taskIds, int beginOn, int endOn, Integer page, Integer page_size);
+    StatHouseqmCompleteDailyRspVo searchRepossessionStatusCompleteDaily(Integer projectId, List<Integer> taskIds, int beginOn, int endOn, Integer page, Integer pageSize);
 
     AreaMapVo CreateAreasMapByAreaList(List<Area> areaList);
 

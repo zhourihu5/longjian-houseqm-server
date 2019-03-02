@@ -12,7 +12,7 @@ import java.util.ArrayList;
  */
 public interface TeamService {
 
-    List<Team> searchByTeamIdIn(List<Integer> team_ids);
+    List<Team> searchByTeamIdIn(List<Integer> teamIds);
 
     Team selectByTeamId(int teamId);
 

@@ -10,7 +10,7 @@ public interface PushStrategyCategoryOverdueService {
 
     int add(PushStrategyCategoryOverdue pushStrategyCategoryOverdue);
 
-    PushStrategyCategoryOverdue selectByTaskIdAndNotDel(Integer task_id);
+    PushStrategyCategoryOverdue selectByTaskIdAndNotDel(Integer taskId);
 
     int update(PushStrategyCategoryOverdue dbConfigCategoryOverdue);
 

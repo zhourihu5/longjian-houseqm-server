@@ -14,5 +14,5 @@ import java.util.Date;
  */
 public interface ExportFileRecordService {
 
-    ExportFileRecord insertFull(int userId, Integer teamId, Integer project_id, int exportType, String params, String resultFilePath, String resultName, int status, String errorMsg, Date executeAt);
+    ExportFileRecord insertFull(int userId, Integer teamId, Integer projectId, int exportType, String params, String resultFilePath, String resultName, int status, String errorMsg, Date executeAt);
 }

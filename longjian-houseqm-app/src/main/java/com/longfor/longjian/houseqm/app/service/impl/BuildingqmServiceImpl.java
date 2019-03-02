@@ -100,7 +100,7 @@ public class BuildingqmServiceImpl implements IBuildingqmService {
     @Resource
     private IssueServiceImpl issueService;
 
-
+    @Override
     public TaskListVo myTaskList(Integer userId) {
 
         List<UserInHouseQmCheckTask> userTasks = userInHouseQmCheckTaskService.searchByUserId(userId);
