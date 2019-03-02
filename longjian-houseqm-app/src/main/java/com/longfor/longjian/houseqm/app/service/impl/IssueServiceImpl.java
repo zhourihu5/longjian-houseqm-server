@@ -169,21 +169,8 @@ public class IssueServiceImpl implements IIssueService {
         houseQmCheckTaskIssueService.update(issueInfo);
 
         Map<String, Object> logDetail = Maps.newHashMap();
-        logDetail.put(PLAN_END_ON, -1);
-        logDetail.put(END_ON, -1);
-        logDetail.put(REPAIRER_ID, -1);
-        logDetail.put(REPAIRER_FOLLOWER_IDS, "");
-        logDetail.put(CONDITION, -1);
-        logDetail.put(AREA_ID, -1);
-        logDetail.put("PosX", -1);
-        logDetail.put("PosY", -1);
-        logDetail.put("Typ", -1);
-        logDetail.put(TITLE, "");
-        logDetail.put(CHECK_ITEM_KEY, "");
-        logDetail.put(CATEGORY_CLS, -1);
-        logDetail.put(CATEGORY_KEY, "");
-        logDetail.put(DRAWING_MD5, "");
-        logDetail.put(REMOVE_MEMO_AUDIO_MD5_LIST, "");
+        initLogDetail(logDetail);
+
         logDetail.put(ISSUE_REASON, reason);
         logDetail.put(ISSUE_REASON_DETAIL, issueReasonDetail);
         logDetail.put(ISSUE_SUGGEST, issueSuggest);
@@ -211,6 +198,24 @@ public class IssueServiceImpl implements IIssueService {
         result.setMessage("success");
         result.setResult(0);
         return result;
+    }
+
+    private void initLogDetail(Map<String,Object> logDetail){
+        logDetail.put(PLAN_END_ON, -1);
+        logDetail.put(END_ON, -1);
+        logDetail.put(REPAIRER_ID, -1);
+        logDetail.put(REPAIRER_FOLLOWER_IDS, "");
+        logDetail.put(CONDITION, -1);
+        logDetail.put(AREA_ID, -1);
+        logDetail.put("PosX", -1);
+        logDetail.put("PosY", -1);
+        logDetail.put("Typ", -1);
+        logDetail.put(TITLE, "");
+        logDetail.put(CHECK_ITEM_KEY, "");
+        logDetail.put(CATEGORY_CLS, -1);
+        logDetail.put(CATEGORY_KEY, "");
+        logDetail.put(DRAWING_MD5, "");
+        logDetail.put(REMOVE_MEMO_AUDIO_MD5_LIST, "");
     }
 
     @Override
@@ -757,21 +762,7 @@ public class IssueServiceImpl implements IIssueService {
 
 
         HashMap<String, Object> logDetail = Maps.newHashMap();
-        logDetail.put(PLAN_END_ON, -1);
-        logDetail.put(END_ON, -1);
-        logDetail.put(REPAIRER_ID, -1);
-        logDetail.put(REPAIRER_FOLLOWER_IDS, "");
-        logDetail.put(CONDITION, -1);
-        logDetail.put(AREA_ID, -1);
-        logDetail.put("PosX", -1);
-        logDetail.put("PosY", -1);
-        logDetail.put("Typ", -1);
-        logDetail.put(TITLE, "");
-        logDetail.put(CHECK_ITEM_KEY, "");
-        logDetail.put(CATEGORY_CLS, -1);
-        logDetail.put(CATEGORY_KEY, "");
-        logDetail.put(DRAWING_MD5, "");
-        logDetail.put(REMOVE_MEMO_AUDIO_MD5_LIST, "");
+        initLogDetail(logDetail);
         logDetail.put(ISSUE_REASON, -1);
         logDetail.put(ISSUE_REASON_DETAIL, "");
         logDetail.put(ISSUE_SUGGEST, "");
@@ -821,21 +812,8 @@ public class IssueServiceImpl implements IIssueService {
             status = HouseQmCheckTaskIssueStatusEnum.AssignNoReform.getId();
         }
         HashMap<String, Object> detail = Maps.newHashMap();
-        detail.put(PLAN_END_ON, -1);
-        detail.put(END_ON, -1);
-        detail.put(REPAIRER_ID, -1);
-        detail.put(REPAIRER_FOLLOWER_IDS, "");
-        detail.put(CONDITION, -1);
-        detail.put(AREA_ID, -1);
-        detail.put("PosX", -1);
-        detail.put("PosY", -1);
-        detail.put("Typ", -1);
-        detail.put(TITLE, "");
-        detail.put(CHECK_ITEM_KEY, "");
-        detail.put(CATEGORY_CLS, -1);
-        detail.put(CATEGORY_KEY, "");
-        detail.put(DRAWING_MD5, "");
-        detail.put(REMOVE_MEMO_AUDIO_MD5_LIST, "");
+
+        initLogDetail(detail);
         detail.put(ISSUE_REASON, -1);
         detail.put(ISSUE_REASON_DETAIL, "");
         detail.put(ISSUE_SUGGEST, "");
@@ -897,21 +875,7 @@ public class IssueServiceImpl implements IIssueService {
         issueInfo.setDestroyUser(uid);
         houseQmCheckTaskIssueService.update(issueInfo);
         HashMap<String, Object> logDetail = Maps.newHashMap();
-        logDetail.put(PLAN_END_ON, -1);
-        logDetail.put(END_ON, -1);
-        logDetail.put(REPAIRER_ID, -1);
-        logDetail.put(REPAIRER_FOLLOWER_IDS, "");
-        logDetail.put(CONDITION, -1);
-        logDetail.put(AREA_ID, -1);
-        logDetail.put("PosX", -1);
-        logDetail.put("PosY", -1);
-        logDetail.put("Typ", -1);
-        logDetail.put(TITLE, "");
-        logDetail.put(CHECK_ITEM_KEY, "");
-        logDetail.put(CATEGORY_CLS, -1);
-        logDetail.put(CATEGORY_KEY, "");
-        logDetail.put(DRAWING_MD5, "");
-        logDetail.put(REMOVE_MEMO_AUDIO_MD5_LIST, "");
+        initLogDetail(logDetail);
         logDetail.put(ISSUE_REASON, -1);
         logDetail.put(ISSUE_REASON_DETAIL, "");
         logDetail.put(ISSUE_SUGGEST, "");
@@ -1128,21 +1092,7 @@ public class IssueServiceImpl implements IIssueService {
             repairFollowerIds = ","+s+",";
         }
         HashMap<String, Object> logDetail = Maps.newHashMap();
-        logDetail.put(PLAN_END_ON, -1);
-        logDetail.put(END_ON, -1);
-        logDetail.put(REPAIRER_ID, -1);
-        logDetail.put(REPAIRER_FOLLOWER_IDS, "");
-        logDetail.put(CONDITION, -1);
-        logDetail.put(AREA_ID, -1);
-        logDetail.put("PosX", -1);
-        logDetail.put("PosY", -1);
-        logDetail.put("Typ", -1);
-        logDetail.put(TITLE, "");
-        logDetail.put(CHECK_ITEM_KEY, "-1");
-        logDetail.put(CATEGORY_CLS, -1);
-        logDetail.put(CATEGORY_KEY, "-1");
-        logDetail.put(DRAWING_MD5, "-1");
-        logDetail.put(REMOVE_MEMO_AUDIO_MD5_LIST, "-1");
+        initLogDetail(logDetail);
         logDetail.put(ISSUE_REASON, -1);
         logDetail.put(ISSUE_REASON_DETAIL, "-1");
         logDetail.put(ISSUE_SUGGEST, "-1");
