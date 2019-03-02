@@ -28,5 +28,5 @@ public interface HouseQmCheckTaskIssueAttachmentMapper extends LFMySQLMapper<Hou
      * @param limit
      * @return
      */
-    List<HouseQmCheckTaskIssueAttachment> searchByTaskIdAndSelfJoinOrderByIdASCPageUnscoped(@Param("task_id") Integer task_id, @Param("userId") Integer userId,@Param("timestamp")Integer timestamp, @Param("userIds") List<Integer> userIds, @Param("privateInt") Integer privateInt, @Param("publicInt") Integer publicInt, @Param("start") Integer start, @Param("limit") Integer limit);
+    List<HouseQmCheckTaskIssueAttachment> searchByTaskIdAndSelfJoinOrderByIdASCPageUnscoped(@Param("task_id") Integer taskId, @Param("userId") Integer userId,@Param("timestamp")Integer timestamp, @Param("userIds") List<Integer> userIds, @Param("privateInt") Integer privateInt, @Param("publicInt") Integer publicInt, @Param("start") Integer start, @Param("limit") Integer limit);
 }

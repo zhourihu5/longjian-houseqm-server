@@ -8,5 +8,4 @@ import java.util.List;
 
 public interface CategoryV3Mapper extends LFMySQLMapper<CategoryV3> {
 
-    List<CategoryV3> selectCategoryV3ByKeyInAndNoDeleted(@Param("categoryKeys") List<String> categoryKeys, @Param("deleted") String deleted);
 }

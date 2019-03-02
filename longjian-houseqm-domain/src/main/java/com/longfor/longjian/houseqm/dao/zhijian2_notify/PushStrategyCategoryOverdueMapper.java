@@ -9,11 +9,6 @@ import java.util.Set;
 
 public interface PushStrategyCategoryOverdueMapper extends LFMySQLMapper<PushStrategyCategoryOverdue> {
 
-    /**
-     *
-     * @param taskIds
-     * @param deleted
-     * @return
-     */
-    public List<PushStrategyCategoryOverdue> selectByTaskIds(@Param("taskIds") Set<Integer> taskIds, @Param("deleted") String deleted);
+
+     List<PushStrategyCategoryOverdue> selectByTaskIds(@Param("taskIds") Set<Integer> taskIds, @Param("deleted") String deleted);
 }

@@ -8,6 +8,4 @@ import java.util.List;
 
 public interface CheckItemV3Mapper extends LFMySQLMapper<CheckItemV3> {
 
-    List<CheckItemV3> selectCheckItemyV3ByKeyInAndNoDeleted(@Param("checkItems") List<String> checkItems, @Param("deleted") String deleted);
-
 }
