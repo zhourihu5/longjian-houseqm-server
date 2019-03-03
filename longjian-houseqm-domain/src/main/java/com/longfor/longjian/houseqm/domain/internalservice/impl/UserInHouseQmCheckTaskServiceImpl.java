@@ -13,7 +13,6 @@ import org.springframework.transaction.annotation.Transactional;
 import tk.mybatis.mapper.entity.Example;
 
 import javax.annotation.Resource;
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Set;
@@ -225,7 +224,7 @@ public class UserInHouseQmCheckTaskServiceImpl implements UserInHouseQmCheckTask
 
     @Override
     @LFAssignDataSource("zhijian2")
-    public List<UserInHouseQmCheckTask> selectByTaskIdInAndRoleTypeNotDel(ArrayList<Integer> taskIds, Integer value) {
+    public List<UserInHouseQmCheckTask> selectByTaskIdInAndRoleTypeNotDel(List<Integer> taskIds, Integer value) {
         Example example = new Example(UserInHouseQmCheckTask.class);
         Example.Criteria criteria = example.createCriteria();
         criteria.andIn("taskId", taskIds).andEqualTo("roleType", value).andIsNull("deleteAt");

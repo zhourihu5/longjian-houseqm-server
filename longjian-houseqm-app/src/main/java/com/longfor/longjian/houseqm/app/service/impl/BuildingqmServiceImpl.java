@@ -968,7 +968,7 @@ public class BuildingqmServiceImpl implements IBuildingqmService {
                         List<ApiHouseQmCheckTaskIssueLogInfo.ApiHouseQmCheckTaskIssueLogDetailInfo> detail1 = item.getDetail();
                         for (int i = 0; i < detail1.size(); i++) {
                             if (isCheckItemChange(issue, item) || StringUtils.isEmpty(checkItemMD5) || StringUtils.isEmpty(detail1.get(i).getCheck_item_md5()) || detail1.get(i).getCheck_item_md5().equals(checkItemMD5)) {
-                                Map<String, Object> modifyIssueMap = modifyIssue(refundMap, issueRoleMap, issue, item, null);
+                                Map<String, Object> modifyIssueMap = modifyIssue(refundMap, issueRoleMap, issue, item, false);
                                 HouseQmCheckTaskIssue issues = (HouseQmCheckTaskIssue) modifyIssueMap.get("issue");
                                 refundMap = (HashMap<HouseQmCheckTaskIssue, ApiRefundInfo>) modifyIssueMap.get("refundMap");
                                 issueUpdateMap.put(item.getIssue_uuid(), issues);
@@ -1000,8 +1000,8 @@ public class BuildingqmServiceImpl implements IBuildingqmService {
                 issue.setId(res);
             }
             // # 写入推送记录
-            if (CheckTaskIssueStatus.NoteNoAssign.getValue().equals(issue.getStatus())) {
-                List<Integer> desUserIds = getIssueCheckerList(checkerMap, issue, null);
+            if (CheckTaskIssueStatus.NoteNoAssign.getValue().equals(issue.getStatus())) {//当新建的问题为待分配时需要记录
+                List<Integer> desUserIds = getIssueCheckerList(checkerMap, issue, false);
                 desUserIds.forEach(userId -> {
                     pushList.add(userId);
                 });
@@ -1064,26 +1064,27 @@ public class BuildingqmServiceImpl implements IBuildingqmService {
                 }
                 List<Integer> idsComma = StringSplitToListUtil.splitToIdsComma(issue.getRepairerFollowerIds(), ",");
                 idsComma.forEach(user -> {
-                    List splitToIdsComma = (List) notifyStatMap.get(issue.getUuid()).get("splitToIdsComma");
-                    if (user > 0 && (splitToIdsComma.contains(user) || CheckTaskIssueStatus.ReformNoCheck.getValue().equals(notifyStatMap.get(issue.getUuid()).get("status")))) {
+                    List splitToIdsComma = (List) notifyStatMap.get(issue.getUuid()).get("repairerFollowerIds");
+                    if (user > 0 && (!splitToIdsComma.contains(user) || CheckTaskIssueStatus.ReformNoCheck.getValue().equals(notifyStatMap.get(issue.getUuid()).get("status")))) {
                         desUserIds.add(user);
                         pushList.add(user);
                     }
                 });
-                if (CollectionUtils.isNotEmpty(desUserIds)) {
+                List<Integer> list = CollectionUtil.removeDuplicate(desUserIds);
+                if (CollectionUtils.isNotEmpty(list)) {
                     HouseQmCheckTaskNotifyRecord itemNotify = new HouseQmCheckTaskNotifyRecord();
                     itemNotify.setProjectId(issue.getProjectId());
                     itemNotify.setTaskId(issue.getTaskId());
                     itemNotify.setSrcUserId(0);
-                    itemNotify.setDesUserIds(StringUtils.join(desUserIds, ","));
+                    itemNotify.setDesUserIds(StringUtils.join(list, ","));
                     itemNotify.setModuleId(ModuleInfoEnum.GCGL.getValue());
                     itemNotify.setIssueId(issue.getId());
-                    itemNotify.setIssueStatus(CheckTaskIssueStatus.NoteNoAssign.getValue());
+                    itemNotify.setIssueStatus(CheckTaskIssueStatus.AssignNoReform.getValue());
                     itemNotify.setExtraInfo("");
                     notifyList.add(itemNotify);
                 }
             } else if (CheckTaskIssueStatus.ReformNoCheck.getValue().equals(issue.getStatus()) &&
-                    CheckTaskIssueStatus.ReformNoCheck.getValue().equals(notifyStatMap.get(issue.getUuid()).get("status"))) {
+                   !CheckTaskIssueStatus.ReformNoCheck.getValue().equals(notifyStatMap.get(issue.getUuid()).get("status"))) {
                 ArrayList<Integer> desUserIds = getIssueCheckerList(checkerMap, issue, true);
                 desUserIds.forEach(userId -> {
                     pushList.add(userId);
@@ -1129,8 +1130,11 @@ public class BuildingqmServiceImpl implements IBuildingqmService {
         // # 处理移除附件
         attachmentRemoveList.forEach(attachment -> {
             HouseQmCheckTaskIssueAttachment issueAttachment = houseQmCheckTaskIssueAttachmentService.selectByMd5AndNotDel(attachment);
-            if (issueAttachment == null) {
-                log.info("remove attachment failed, md5=" + attachment + "");
+            if (issueAttachment!=null){
+                int delete = houseQmCheckTaskIssueAttachmentService.delete(issueAttachment);
+                if (delete <=0) {
+                    log.info("remove attachment failed, md5=" + attachment + "");
+                }
             }
         });
         //# 处理新增问题日志
@@ -1342,18 +1346,19 @@ public class BuildingqmServiceImpl implements IBuildingqmService {
                 squadIds.add(entry.getValue());
             }
         }
-        if (CollectionUtils.isEmpty(squadIds)) {
+        if (CollectionUtils.isEmpty(squadIds)) {//如果创建者属于检查人组
             return desUserIds;
         }
         Map<Integer, Map<Integer, Integer>> roleUsers = checkerMap.get(issue.getTaskId());
         for (Map.Entry<Integer, Map<Integer, Integer>> entry : roleUsers.entrySet()) {
-            Map<Integer, Integer> value = entry.getValue();
-            for (Map.Entry<Integer, Integer> entrys : value.entrySet()) {
-                if (squadIds.contains(entrys.getKey())) {
-                    if (b && !roleUsers.get(entry.getKey()).get(entrys.getKey()).equals(CheckTaskRoleCanApproveType.Yes.getValue())) {
+            Integer user = entry.getKey();
+            for (Map.Entry<Integer, Integer> sentry : roleUsers.get(user).entrySet()) {
+                Integer squad_id = sentry.getKey();
+                if (squadIds.contains(squad_id)) {
+                    if (b && !roleUsers.get(user).get(squad_id).equals(CheckTaskRoleCanApproveType.Yes.getValue())) {
                         continue;
                     }
-                    if (entry.getKey() > 0 && !desUserIds.contains(entry.getKey())) {
+                    if (user > 0 && !desUserIds.contains(user)) {
                         desUserIds.add(entry.getKey());
                     }
                 }
@@ -1375,7 +1380,7 @@ public class BuildingqmServiceImpl implements IBuildingqmService {
             return reassignIssue(issueRoleMap, issue, item);
         }
         //  # 如果是退单情况
-        if (b == null && convertLogStatus(item.getStatus()).equals(CheckTaskIssueStatus.NoteNoAssign.getValue()) && issue.getStatus().equals(CheckTaskIssueStatus.AssignNoReform)) {
+        if (b == null && convertLogStatus(item.getStatus()).equals(CheckTaskIssueStatus.NoteNoAssign.getValue()) && issue.getStatus().equals(CheckTaskIssueStatus.AssignNoReform.getValue())) {
             log.info("refund issue");
             if (issue.getRepairerId() > 0 && issue.getSenderId() > 0) {
                 ApiRefundInfo info = new ApiRefundInfo();
@@ -1393,7 +1398,7 @@ public class BuildingqmServiceImpl implements IBuildingqmService {
             Integer oldStatus = issue.getStatus();
             if (item.getStatus() != -1) {
                 //  # 操作状态是否为需要修改issue状态的操作
-                if (!item.getStatus().equals(CheckTaskIssueLogStatus.Repairing.getValue()) || !item.getStatus().equals(CheckTaskIssueLogStatus.EditBaseInfo.getValue())) {
+                if (!item.getStatus().equals(CheckTaskIssueLogStatus.Repairing.getValue()) && !item.getStatus().equals(CheckTaskIssueLogStatus.EditBaseInfo.getValue())) {
                     Integer newStatus = convertLogStatus(item.getStatus());
                     if (newStatus > 0) {
                         issue.setStatus(newStatus);
@@ -1411,8 +1416,8 @@ public class BuildingqmServiceImpl implements IBuildingqmService {
                     issue.setLastAssigner(item.getSender_id());
                     issue.setLastAssignAt(DateUtil.transForDate(item.getClient_create_at()));
                 } else if (item.getStatus().equals(CheckTaskIssueLogStatus.UpdateIssueInfo.getValue())) {
-                    if (CollectionUtils.isNotEmpty(item.getDetail())) {
-                        issue.setContent(issue.getContent() + item.getDesc());
+                    if (StringUtils.isNotEmpty(item.getDesc())) {
+                        issue.setContent(String.format("%s; %s",issue.getContent() , item.getDesc()));
                     }
                 }
             }
@@ -1426,17 +1431,25 @@ public class BuildingqmServiceImpl implements IBuildingqmService {
             if (detailInfo.getPlan_end_on() > 0) {
                 issue.setPlanEndOn(DateUtil.transForDate(detailInfo.getPlan_end_on()));
             }
+            //    结束时间
+            if (detailInfo.getEnd_on() > 0) {
+                issue.setEndOn(DateUtil.transForDate(detailInfo.getEnd_on()));
+            }
+
             // # 严重程度
             if (detailInfo.getCondition() != -1) {
                 issue.setCondition(detailInfo.getCondition());
             }
             // # 问题类型
             CheckTaskIssueType[] values = CheckTaskIssueType.values();
-            List<CheckTaskIssueType> checkTaskIssueTypes = Arrays.asList(values);
+            List<Integer> checkTaskIssueTypes = Lists.newArrayList();
+            for (CheckTaskIssueType value : values) {
+                checkTaskIssueTypes.add(value.getValue());
+            }
             if (detailInfo.getTyp() != 1 && checkTaskIssueTypes.contains(detailInfo.getTyp())) {
                 issue.setTyp(detailInfo.getTyp());
             }
-            ApiUserRoleInIssue roleItem = null;
+            ApiUserRoleInIssue roleItem;
             if (issueRoleMap.containsKey(issue.getUuid())) {
                 roleItem = issueRoleMap.get(issue.getUuid());
             } else {
@@ -1449,20 +1462,18 @@ public class BuildingqmServiceImpl implements IBuildingqmService {
                 map.put(roleUser(issue.getSenderId(), UserInIssueRoleType.Checker.getValue()), true);
                 roleItem.setUser_role(map);
                 //     # 整改负责人
-                HashMap<ApiUserRoleInIssue.RoleUser, Boolean> hashMap = Maps.newHashMap();
                 map.put(roleUser(detailInfo.getRepairer_id(), UserInIssueRoleType.Repairer.getValue()), true);
-                roleItem.setUser_role(hashMap);
+                roleItem.setUser_role(map);
                 // # 整改参与人
                 List<Integer> followerIds = StringSplitToListUtil.splitToIdsComma(detailInfo.getRepairer_follower_ids(), ",");
                 for (Integer followerId : followerIds) {
-                    HashMap<ApiUserRoleInIssue.RoleUser, Boolean> newHashMap = Maps.newHashMap();
-                    newHashMap.put(roleUser(followerId, UserInIssueRoleType.RepairerFollower.getValue()), true);
-                    roleItem.setUser_role(newHashMap);
+                    map.put(roleUser(followerId, UserInIssueRoleType.RepairerFollower.getValue()), true);
+                    roleItem.setUser_role(map);
                 }
                 issueRoleMap.put(issue.getUuid(), roleItem);
                 //   # 写入issue中的冗余字段
                 issue.setRepairerId(detailInfo.getRepairer_id());
-                if (detailInfo.getRepairer_follower_ids().length() > 0) {
+                if (StringUtils.isNotEmpty(detailInfo.getRepairer_follower_ids())) {
                     issue.setRepairerFollowerIds(detailInfo.getRepairer_follower_ids());
                 } else {
                     issue.setRepairerFollowerIds("");
@@ -1470,9 +1481,9 @@ public class BuildingqmServiceImpl implements IBuildingqmService {
             }
             Map<String, Object> map = JSON.parseObject(issue.getDetail(), Map.class);
             // # 编辑问题的detail字段
-            if (!detailInfo.getCheck_item_md5().equals("") || !detailInfo.getCheck_item_md5().equals("-1")) {
+          /*  if (!detailInfo.getCheck_item_md5().equals("") || !detailInfo.getCheck_item_md5().equals("-1")) {
                 map.put("CheckItemMD5", detailInfo.getCheck_item_md5());
-            }
+            }*/
             if (detailInfo.getIssue_reason() != -1 || detailInfo.getIssue_reason() != 0) {
                 map.put("IssueReason", detailInfo.getIssue_reason());
             }
@@ -1501,7 +1512,7 @@ public class BuildingqmServiceImpl implements IBuildingqmService {
         issue.setRepairerFollowerIds("");
         issue.setLastRepairer(0);
         issue.setLastRepairerAt(DateUtil.strToDate("0001-01-01 00:00:00", "yyyy-MM-dd-HH-mm-ss"));
-        issue.setPlanEndOn(new Date(0));*/
+        issue.setPlanEndOn(new Date());//1970-01-01 08:00:00 */
         Integer newStatus = convertLogStatus(item.getStatus());
         if (newStatus > 0) {
             issue.setStatus(newStatus);
@@ -1524,11 +1535,14 @@ public class BuildingqmServiceImpl implements IBuildingqmService {
             }
             // # 问题类型
             CheckTaskIssueType[] values = CheckTaskIssueType.values();
-            List<CheckTaskIssueType> checkTaskIssueTypes = Arrays.asList(values);
+            List<Integer> checkTaskIssueTypes = Lists.newArrayList();
+            for (CheckTaskIssueType value : values) {
+                checkTaskIssueTypes.add(value.getValue());
+            }
             if (detailInfo.getTyp() != 1 && checkTaskIssueTypes.contains(detailInfo.getTyp())) {
                 issue.setTyp(detailInfo.getTyp());
             }
-            ApiUserRoleInIssue roleItem = null;
+            ApiUserRoleInIssue roleItem ;
             if (issueRoleMap.containsKey(issue.getUuid())) {
                 roleItem = issueRoleMap.get(issue.getUuid());
             } else {
@@ -1541,30 +1555,28 @@ public class BuildingqmServiceImpl implements IBuildingqmService {
                 map.put(roleUser(issue.getSenderId(), UserInIssueRoleType.Checker.getValue()), true);
                 roleItem.setUser_role(map);
                 //     # 整改负责人
-                HashMap<ApiUserRoleInIssue.RoleUser, Boolean> hashMap = Maps.newHashMap();
                 map.put(roleUser(detailInfo.getRepairer_id(), UserInIssueRoleType.Repairer.getValue()), true);
-                roleItem.setUser_role(hashMap);
+                roleItem.setUser_role(map);
                 // # 整改参与人
                 List<Integer> followerIds = StringSplitToListUtil.splitToIdsComma(detailInfo.getRepairer_follower_ids(), ",");
                 for (Integer followerId : followerIds) {
-                    HashMap<ApiUserRoleInIssue.RoleUser, Boolean> newHashMap = Maps.newHashMap();
-                    newHashMap.put(roleUser(followerId, UserInIssueRoleType.RepairerFollower.getValue()), true);
-                    roleItem.setUser_role(newHashMap);
+                    map.put(roleUser(followerId, UserInIssueRoleType.RepairerFollower.getValue()), true);
+                    roleItem.setUser_role(map);
                 }
                 issueRoleMap.put(issue.getUuid(), roleItem);
                 //   # 写入issue中的冗余字段
                 issue.setRepairerId(detailInfo.getRepairer_id());
-                if (detailInfo.getRepairer_follower_ids().length() > 0) {
+                if (StringUtils.isNotEmpty(detailInfo.getRepairer_follower_ids())) {
                     issue.setRepairerFollowerIds(detailInfo.getRepairer_follower_ids());
                 } else {
                     issue.setRepairerFollowerIds("");
                 }
             }
-            Map map = JSON.parseObject(issue.getDetail(), Map.class);
+            Map<String,Object> map = JSON.parseObject(issue.getDetail(), Map.class);
             // # 编辑问题的detail字段
-            if (!detailInfo.getCheck_item_md5().equals("") || !detailInfo.getCheck_item_md5().equals("-1")) {
+            /*if (!detailInfo.getCheck_item_md5().equals("") || !detailInfo.getCheck_item_md5().equals("-1")) {
                 map.put("CheckItemMD5", detailInfo.getCheck_item_md5());
-            }
+            }*/
             if (detailInfo.getIssue_reason() != -1 || detailInfo.getIssue_reason() != 0) {
                 map.put("IssueReason", detailInfo.getIssue_reason());
             }
@@ -1593,7 +1605,7 @@ public class BuildingqmServiceImpl implements IBuildingqmService {
         issue.setRepairerFollowerIds("");
         issue.setLastRepairer(0);
         issue.setLastRepairerAt(DateUtil.strToDate("0001-01-01 00:00:00", "yyyy-MM-dd-HH-mm-ss"));
-        issue.setPlanEndOn(new Date(0));*/
+        issue.setPlanEndOn(new Date()); // 1970-01-01 08:00:00 */
         List<ApiHouseQmCheckTaskIssueLogInfo.ApiHouseQmCheckTaskIssueLogDetailInfo> detail = item.getDetail();
         detail.forEach(detailInfo -> {
             if (!detailInfo.getCategory_key().equals("-1")) {
@@ -1624,7 +1636,10 @@ public class BuildingqmServiceImpl implements IBuildingqmService {
             }
             // # 问题类型
             CheckTaskIssueType[] values = CheckTaskIssueType.values();
-            List<CheckTaskIssueType> checkTaskIssueTypes = Arrays.asList(values);
+            List<Integer> checkTaskIssueTypes = Lists.newArrayList();
+            for (CheckTaskIssueType value : values) {
+                checkTaskIssueTypes.add(value.getValue());
+            }
             if (detailInfo.getTyp() != 1 && checkTaskIssueTypes.contains(detailInfo.getTyp())) {
                 issue.setTyp(detailInfo.getTyp());
             }
@@ -1641,20 +1656,18 @@ public class BuildingqmServiceImpl implements IBuildingqmService {
                 map.put(roleUser(issue.getSenderId(), UserInIssueRoleType.Checker.getValue()), true);
                 roleItem.setUser_role(map);
                 //     # 整改负责人
-                HashMap<ApiUserRoleInIssue.RoleUser, Boolean> hashMap = Maps.newHashMap();
                 map.put(roleUser(detailInfo.getRepairer_id(), UserInIssueRoleType.Repairer.getValue()), true);
-                roleItem.setUser_role(hashMap);
+                roleItem.setUser_role(map);
                 // # 整改参与人
                 List<Integer> followerIds = StringSplitToListUtil.splitToIdsComma(detailInfo.getRepairer_follower_ids(), ",");
                 for (Integer followerId : followerIds) {
-                    HashMap<ApiUserRoleInIssue.RoleUser, Boolean> newHashMap = Maps.newHashMap();
-                    newHashMap.put(roleUser(followerId, UserInIssueRoleType.RepairerFollower.getValue()), true);
-                    roleItem.setUser_role(newHashMap);
+                    map.put(roleUser(followerId, UserInIssueRoleType.RepairerFollower.getValue()), true);
+                    roleItem.setUser_role(map);
                 }
                 issueRoleMap.put(issue.getUuid(), roleItem);
                 //   # 写入issue中的冗余字段
                 issue.setRepairerId(detailInfo.getRepairer_id());
-                if (detailInfo.getRepairer_follower_ids().length() > 0) {
+                if (StringUtils.isNotEmpty(detailInfo.getRepairer_follower_ids())) {
                     issue.setRepairerFollowerIds(detailInfo.getRepairer_follower_ids());
                 } else {
                     issue.setRepairerFollowerIds("");
@@ -1695,17 +1708,17 @@ public class BuildingqmServiceImpl implements IBuildingqmService {
         List<ApiHouseQmCheckTaskIssueLogInfo.ApiHouseQmCheckTaskIssueLogDetailInfo> detail = item.getDetail();
         if (objects.contains(issue.getStatus())) {
             for (int i = 0; i < detail.size(); i++) {
-                if (!detail.get(i).getCategory_key().equals("") || detail.get(i).getCategory_key().equals("-1") || detail.get(i).getCheck_item_key().equals("") || detail.get(i).getCheck_item_key().equals("-1")) {
+                if (!detail.get(i).getCategory_key().equals("") || !detail.get(i).getCategory_key().equals("-1") ||! detail.get(i).getCheck_item_key().equals("") || !detail.get(i).getCheck_item_key().equals("-1")) {
                     if (!issue.getCategoryKey().equals(detail.get(i).getCategory_key()) || !issue.getCheckItemKey().equals(detail.get(i).getCheck_item_key())) {
-                        return false;
+                        return true;
                     }
                 }
             }
         }
-        return true;
+        return false;
     }
 
-    private Map<Integer, Map<Integer, Map<Integer, Integer>>> createCheckerMap(ArrayList<Integer> taskIds) {
+    private Map<Integer, Map<Integer, Map<Integer, Integer>>> createCheckerMap(List<Integer> taskIds) {
         if (CollectionUtils.isEmpty(taskIds)) {
             return Maps.newHashMap();
         }
@@ -1772,7 +1785,7 @@ public class BuildingqmServiceImpl implements IBuildingqmService {
             } else {
                 issue.setPosY(-1);
             }
-            if (StringUtils.isNotBlank(detail.getTitle()) && !detail.getTitle().equals("-1")) {
+            if (detail.getTitle()!=null && !detail.getTitle().equals("-1")) {
                 issue.setTitle(detail.getTitle());
             } else {
                 issue.setTitle("");
@@ -1788,23 +1801,23 @@ public class BuildingqmServiceImpl implements IBuildingqmService {
                 issue.setLastAssigner(log.getSender_id());
                 issue.setLastAssignAt(DateUtil.transForDate(log.getClient_create_at()));
             }
-            if (!detail.getRepairer_id().equals("-1")) {
+            if (!detail.getRepairer_id().equals(-1)) {
                 issue.setRepairerId(detail.getRepairer_id());
                 issue.setLastRepairer(detail.getRepairer_id());
                 issue.setLastRepairerAt(DateUtil.transForDate(log.getClient_create_at()));
             }
             if (!detail.getRepairer_follower_ids().equals("-1")) {
                 issue.setRepairerFollowerIds(detail.getRepairer_follower_ids());
-            }
-            issue.setRepairerFollowerIds("");
+            }else issue.setRepairerFollowerIds("");
+
             issue.setDestroyUser(0);
             issue.setDeleteUser(0);
-            HashMap<Object, Object> details = Maps.newHashMap();
+            HashMap<String, Object> details = Maps.newHashMap();
             details.put("CheckItemMD5", "");
             if (detail.getIssue_reason() != null && detail.getIssue_reason() != -1) {
                 details.put("IssueReason", detail.getIssue_reason());
             } else {
-                details.put("IssueReason", "");
+                details.put("IssueReason", 0);
             }
             if (detail.getIssue_reason_detail() != null && !detail.getIssue_reason_detail().equals("-1")) {
                 details.put("IssueReasonDetail", detail.getIssue_reason_detail());
@@ -1835,20 +1848,18 @@ public class BuildingqmServiceImpl implements IBuildingqmService {
                 map.put(roleUser(issue.getSenderId(), UserInIssueRoleType.Checker.getValue()), true);
                 roleItem.setUser_role(map);
                 //     # 整改负责人
-                HashMap<ApiUserRoleInIssue.RoleUser, Boolean> hashMap = Maps.newHashMap();
                 map.put(roleUser(issue.getRepairerId(), UserInIssueRoleType.Repairer.getValue()), true);
-                roleItem.setUser_role(hashMap);
+                roleItem.setUser_role(map);
                 // # 整改参与人
                 List<Integer> followerIds = StringSplitToListUtil.splitToIdsComma(detail.getRepairer_follower_ids(), ",");
                 followerIds.forEach(followerId -> {
-                    HashMap<ApiUserRoleInIssue.RoleUser, Boolean> newHashMap = Maps.newHashMap();
-                    newHashMap.put(roleUser(followerId, UserInIssueRoleType.RepairerFollower.getValue()), true);
-                    roleItem.setUser_role(newHashMap);
+                    map.put(roleUser(followerId, UserInIssueRoleType.RepairerFollower.getValue()), true);
+                    roleItem.setUser_role(map);
                 });
                 issueRoleMap.put(issue.getUuid(), roleItem);
                 //   # 写入issue中的冗余字段
                 issue.setRepairerId(detail.getRepairer_id());
-                if (detail.getRepairer_follower_ids().length() > 0) {
+                if (StringUtils.isNotEmpty(detail.getRepairer_follower_ids())) {
                     issue.setRepairerFollowerIds(detail.getRepairer_follower_ids());
                 } else {
                     issue.setRepairerFollowerIds("");
@@ -1881,7 +1892,7 @@ public class BuildingqmServiceImpl implements IBuildingqmService {
         String areaPathAndId = "";
         Area area = areaService.selectById(areaId);
         if (area != null) {
-            return area.getPath() + areaId;
+            areaPathAndId= area.getPath() + areaId+"/";
         }
         return areaPathAndId;
     }
@@ -1890,7 +1901,7 @@ public class BuildingqmServiceImpl implements IBuildingqmService {
         String checkItemPathAndKey = "";
         CheckItemV3 checkItem = checkItemV3Service.selectByKeyNotDel(checkItemKey);
         if (checkItem != null) {
-            return checkItem.getPath() + checkItemKey;
+            checkItemPathAndKey= checkItem.getPath() + checkItemKey+"/";
         }
         return checkItemPathAndKey;
 
@@ -1900,7 +1911,7 @@ public class BuildingqmServiceImpl implements IBuildingqmService {
         String categoryPathAndKey = "";
         CategoryV3 category = categoryV3Service.selectByKeyNotDel(categoryKey);
         if (category != null) {
-            return category.getPath() + categoryKey;
+            categoryPathAndKey= category.getPath() + categoryKey+"/";
         }
         return categoryPathAndKey;
     }

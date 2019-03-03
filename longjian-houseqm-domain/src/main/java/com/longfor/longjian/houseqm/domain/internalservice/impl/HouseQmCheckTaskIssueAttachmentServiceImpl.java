@@ -108,4 +108,11 @@ public class HouseQmCheckTaskIssueAttachmentServiceImpl implements HouseQmCheckT
         return houseQmCheckTaskIssueAttachmentMapper.selectOneByExample(example);
     }
 
+    @Override
+    @LFAssignDataSource("zhijian2")
+    public int delete(HouseQmCheckTaskIssueAttachment issueAttachment) {
+        issueAttachment.setDeleteAt(new Date());
+        issueAttachment.setUpdateAt(new Date());
+        return houseQmCheckTaskIssueAttachmentMapper.updateByPrimaryKeySelective(issueAttachment);
+    }
 }
