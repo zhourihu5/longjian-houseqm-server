@@ -8,6 +8,9 @@ import com.longfor.longjian.common.util.SessionInfo;
  */
 public class SessionUtil {
 
+    private SessionUtil(){
+
+    }
     public static Integer getUid(SessionInfo sessionInfo) {
 
         return (Integer) sessionInfo.getBaseInfo("userId");
