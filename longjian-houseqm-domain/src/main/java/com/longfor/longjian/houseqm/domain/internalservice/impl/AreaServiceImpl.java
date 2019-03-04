@@ -182,7 +182,7 @@ public class AreaServiceImpl implements AreaService {
             Example.Criteria criteria1 = example1.createCriteria();
             Example.Criteria criteria2 = example1.createCriteria();
             criteria1.andEqualTo("projectId", projectId);
-            criteria2.andLike("path", likePath).orEqualTo("id", area.getId());
+            criteria2.andLike("path", likePath).orEqualTo("id", area.getId());// regex
 
             example1.and(criteria2);
             if (CollectionUtils.isNotEmpty(types)) {

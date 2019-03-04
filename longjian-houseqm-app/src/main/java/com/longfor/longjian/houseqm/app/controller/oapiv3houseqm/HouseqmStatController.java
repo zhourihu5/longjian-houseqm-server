@@ -298,7 +298,7 @@ public class HouseqmStatController {
     public LjBaseResponse<TaskStatVo> taskDetail(HttpServletRequest request, @Valid StatTaskDetailReq req) {
         LjBaseResponse<TaskStatVo> response = new LjBaseResponse<>();
         try {
-            ctrlTool.projPermMulti(request, new String[]{SEE, SEE});
+            //ctrlTool.projPermMulti(request, new String[]{SEE, SEE});
         } catch (Exception e) {
             log.error(e.getMessage());
             response.setResult(1);
