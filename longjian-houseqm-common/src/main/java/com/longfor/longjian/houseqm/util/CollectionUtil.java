@@ -9,6 +9,8 @@ import java.util.List;
  */
 public class CollectionUtil {
 
+    private CollectionUtil(){}
+
     /**
      * 集合去重
      *

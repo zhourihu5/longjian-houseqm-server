@@ -245,10 +245,8 @@ public class IusseTaskListService {
         }
 
         String dateStr = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss").format(deleteAt);
-        if (deleteAt == null || dateStr.equals("0001-01-01 00:00:00") || dateStr.equals("")) {
-            return true;
-        }
-        return false;
+        return dateStr.equals("0001-01-01 00:00:00") || dateStr.equals("")?true:false;
+
     }
 
     private Map createTeamsMap(ArrayList<Integer> parentIds) {
