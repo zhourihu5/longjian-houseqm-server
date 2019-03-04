@@ -8,6 +8,8 @@ import org.apache.commons.lang.StringUtils;
 import javax.servlet.http.HttpServletResponse;
 import java.io.*;
 import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
 
@@ -114,11 +116,19 @@ public class FileUtil {
             log.error("write file error", e);
             return false;
         }
-        /*finally {
-            if (os != null) {
-                os = null;
+
+    }
+
+    private static void transFiles(File srcFile,File dstFile){
+        try (FileOutputStream out = new FileOutputStream(dstFile); FileInputStream in = new FileInputStream(srcFile)) {
+            byte[] buffer = new byte[1024];
+            int l;
+            while ((l = in.read(buffer)) != -1) {
+                out.write(buffer, 0, l);
             }
-        }*/
+        } catch (Exception e) {
+            log.error(e.getMessage());
+        }
     }
 
     public static boolean copyFile(String src, String dst) {
@@ -139,15 +149,7 @@ public class FileUtil {
                     throw new LjBaseRuntimeException(-1, "创建文件失败");
                 }
             }
-            try (FileOutputStream out = new FileOutputStream(dstFile); FileInputStream in = new FileInputStream(srcFile)) {
-                byte[] buffer = new byte[1024];
-                int l;
-                while ((l = in.read(buffer)) != -1) {
-                    out.write(buffer, 0, l);
-                }
-            } catch (Exception e) {
-                log.error(e.getMessage());
-            }
+            transFiles(srcFile,dstFile);
             return true;
         } catch (Exception e) {
             log.error("cpoy file error", e);
@@ -160,7 +162,10 @@ public class FileUtil {
             return;
         }
         if (!rootFile.isDirectory()) {
-            if (!rootFile.delete()) {
+            try {
+                Files.delete(Paths.get(rootFile.toURI()));
+            } catch (IOException e) {
+                e.printStackTrace();
                 throw new LjBaseRuntimeException(-1, "删除文件失败");
             }
             return;
@@ -169,7 +174,10 @@ public class FileUtil {
         for (File subFile : subFiles) {
             deleteFile(subFile);
         }
-        if (!rootFile.delete()) {
+        try {
+            Files.delete(Paths.get(rootFile.toURI()));
+        } catch (IOException e) {
+            e.printStackTrace();
             throw new LjBaseRuntimeException(-1, "删除文件失败");
         }
 
@@ -225,7 +233,7 @@ public class FileUtil {
      */
     public static String completedFilePath(String relativePath) {
         String[] dirs = relativePath.split("/");
-        StringBuffer path = new StringBuffer();
+        StringBuilder path = new StringBuilder();
         try {
             path.append(new File("").getCanonicalPath()).append(File.separator);
             for (String dir : dirs) {
@@ -247,7 +255,6 @@ public class FileUtil {
      * @return current execute directory
      */
     public static String execDir() {
-        //todo
         return System.getProperty("user.dir");
     }
 
