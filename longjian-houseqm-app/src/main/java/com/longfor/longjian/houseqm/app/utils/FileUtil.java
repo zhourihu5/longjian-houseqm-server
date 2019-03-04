@@ -8,6 +8,8 @@ import org.apache.commons.lang.StringUtils;
 import javax.servlet.http.HttpServletResponse;
 import java.io.*;
 import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
 
@@ -20,6 +22,9 @@ import java.util.zip.ZipOutputStream;
 @Slf4j
 public class FileUtil {
 
+    private FileUtil(){
+
+    }
     /**
      * 读取文件并返回文件内容
      *
@@ -28,13 +33,9 @@ public class FileUtil {
      */
     public static String readFile(String filePath) {
         StringBuilder buffer = new StringBuilder();
-        InputStream is = null;
-        BufferedReader reader = null;
-        try {
-            is = new FileInputStream(filePath);
-            // 每行的数据
+        try (InputStream is =new FileInputStream(filePath); BufferedReader reader =new BufferedReader(new InputStreamReader(is))){
+             // 每行的数据
             String line;
-            reader = new BufferedReader(new InputStreamReader(is));
             line = reader.readLine();
             while (line != null) {
                 buffer.append(line).append("\n");
@@ -46,21 +47,6 @@ public class FileUtil {
         } catch (IOException e) {
             log.info("读取文件失败", e);
             throw new CommonRuntimeException("读取文件失败");
-        } finally {
-            if (reader != null) {
-                try {
-                    reader.close();
-                } catch (IOException e) {
-                    log.info("reader关闭失败", e);
-                }
-            }
-            if (is != null) {
-                try {
-                    is.close();
-                } catch (IOException e) {
-                    log.info("is关闭失败", e);
-                }
-            }
         }
         return buffer.toString();
     }
@@ -73,26 +59,14 @@ public class FileUtil {
      */
     public static String readFile(InputStream inputStream) {
         StringBuilder builder = new StringBuilder();
-        InputStreamReader reader;
-        BufferedReader bfReader = null;
-        try {
-            reader = new InputStreamReader(inputStream, StandardCharsets.UTF_8);
-            bfReader = new BufferedReader(reader);
-            String tmpContent;
+        try (InputStreamReader reader= new InputStreamReader(inputStream, StandardCharsets.UTF_8);BufferedReader bfReader = new BufferedReader(reader)){
+           String tmpContent;
             while ((tmpContent = bfReader.readLine()) != null) {
                 builder.append(tmpContent);
             }
         } catch (Exception e) {
             log.info("读取文件失败", e);
             throw new CommonRuntimeException("读取文件失败");
-        } finally {
-            try {
-                if (bfReader != null) {
-                    bfReader.close();
-                }
-            } catch (IOException e) {
-                log.info("bfReader关闭失败", e);
-            }
         }
         return builder.toString();
     }
@@ -108,7 +82,7 @@ public class FileUtil {
                 throw new LjBaseRuntimeException(-1, "创建文件失败");
             }
             if (f.isDirectory()) {
-                throw new RuntimeException("filePath is dir:" + filePath);
+                throw new LjBaseRuntimeException(-1,"filePath is dir:" + filePath);
             }
             return f;
         } catch (Exception e) {
@@ -123,7 +97,7 @@ public class FileUtil {
             f.getParentFile().mkdirs();
             f.mkdir();
             if (!f.isDirectory()) {
-                throw new RuntimeException("path is not dir:" + path);
+                throw new LjBaseRuntimeException(-1,"path is not dir:" + path);
             }
             return f;
         } catch (Exception e) {
@@ -142,11 +116,19 @@ public class FileUtil {
             log.error("write file error", e);
             return false;
         }
-        /*finally {
-            if (os != null) {
-                os = null;
+
+    }
+
+    private static void transFiles(File srcFile,File dstFile){
+        try (FileOutputStream out = new FileOutputStream(dstFile); FileInputStream in = new FileInputStream(srcFile)) {
+            byte[] buffer = new byte[1024];
+            int l;
+            while ((l = in.read(buffer)) != -1) {
+                out.write(buffer, 0, l);
             }
-        }*/
+        } catch (Exception e) {
+            log.error(e.getMessage());
+        }
     }
 
     public static boolean copyFile(String src, String dst) {
@@ -167,15 +149,7 @@ public class FileUtil {
                     throw new LjBaseRuntimeException(-1, "创建文件失败");
                 }
             }
-            try (FileOutputStream out = new FileOutputStream(dstFile); FileInputStream in = new FileInputStream(srcFile)) {
-                byte[] buffer = new byte[1024];
-                int l;
-                while ((l = in.read(buffer)) != -1) {
-                    out.write(buffer, 0, l);
-                }
-            } catch (Exception e) {
-                log.error(e.getMessage());
-            }
+            transFiles(srcFile,dstFile);
             return true;
         } catch (Exception e) {
             log.error("cpoy file error", e);
@@ -188,7 +162,10 @@ public class FileUtil {
             return;
         }
         if (!rootFile.isDirectory()) {
-            if (!rootFile.delete()) {
+            try {
+                Files.delete(Paths.get(rootFile.toURI()));
+            } catch (IOException e) {
+                e.printStackTrace();
                 throw new LjBaseRuntimeException(-1, "删除文件失败");
             }
             return;
@@ -197,21 +174,22 @@ public class FileUtil {
         for (File subFile : subFiles) {
             deleteFile(subFile);
         }
-        if (!rootFile.delete()) {
+        try {
+            Files.delete(Paths.get(rootFile.toURI()));
+        } catch (IOException e) {
+            e.printStackTrace();
             throw new LjBaseRuntimeException(-1, "删除文件失败");
         }
 
     }
 
     private static void zip(File inputFileName, String zipFileName) throws Exception {
-        //ZipOutputStream out = new ZipOutputStream(new FileOutputStream(zipFileName));
         try (ZipOutputStream out = new ZipOutputStream(new FileOutputStream(zipFileName))) {
             zip(out, inputFileName, "");
         } catch (Exception e) {
             log.error(e.getMessage());
         }
-        // zip(out, inputFileName, "");
-        //out.close();
+
     }
 
     private static void zip(ZipOutputStream out, File f, String base) throws Exception {
@@ -223,8 +201,7 @@ public class FileUtil {
             }
         } else {
             out.putNextEntry(new ZipEntry(base));
-            //BufferedInputStream in = new BufferedInputStream(new FileInputStream(f));
-            try (BufferedInputStream in = new BufferedInputStream(new FileInputStream(f))) {
+           try (BufferedInputStream in = new BufferedInputStream(new FileInputStream(f))) {
                 int c;
                 while ((c = in.read()) != -1) {
                     out.write(c);
@@ -232,11 +209,7 @@ public class FileUtil {
             } catch (Exception e) {
                 log.error(e.getMessage());
             }
-           /* int c;
-            while ((c = in.read()) != -1) {
-                out.write(c);
-            }
-            in.close();*/
+
         }
     }
 
@@ -250,12 +223,7 @@ public class FileUtil {
         zip(new File(inputFileName), zipFileName);
     }
 
-  /*  public static void main(String[] args) throws Exception {
-        zip("c://222", "c://666/1.zip");
-        //deleteFile(new File("c://222"));
-        //copyFile("C://flower.jpg", "c://222/222/222/1.jpg");
-        //createDir("c://222/222/222/1");
-    }*/
+
 
     /**
      * 根据相对路径获取文件在项目下的绝对路径
@@ -265,7 +233,7 @@ public class FileUtil {
      */
     public static String completedFilePath(String relativePath) {
         String[] dirs = relativePath.split("/");
-        StringBuffer path = new StringBuffer();
+        StringBuilder path = new StringBuilder();
         try {
             path.append(new File("").getCanonicalPath()).append(File.separator);
             for (String dir : dirs) {
@@ -287,7 +255,6 @@ public class FileUtil {
      * @return current execute directory
      */
     public static String execDir() {
-        //todo
         return System.getProperty("user.dir");
     }
 
@@ -299,28 +266,24 @@ public class FileUtil {
      * @throws Exception
      */
     public static byte[] readStream(InputStream inputStream) {
-        ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
-        byte[] buffer = new byte[1024];
+         byte[] buffer = new byte[1024];
+         byte[] result=null;
         int len;
-        try {
+        try (ByteArrayOutputStream outputStream = new ByteArrayOutputStream()){
             while ((len = inputStream.read(buffer)) != -1) {
                 outputStream.write(buffer, 0, len);
             }
+            result=outputStream.toByteArray();
         } catch (IOException e) {
             log.info("读取inputStream异常", e);
         } finally {
-            try {
-                outputStream.close();
-            } catch (IOException e) {
-                log.info("关闭输出流异常", e);
-            }
             try {
                 inputStream.close();
             } catch (IOException e) {
                 log.info("关闭输入流异常", e);
             }
         }
-        return outputStream.toByteArray();
+        return result;
     }
 
     /**
@@ -331,11 +294,7 @@ public class FileUtil {
      */
     public static void load(String filePath, HttpServletResponse response) {
         byte[] buff = new byte[1024];
-        BufferedInputStream bis = null;
-        OutputStream os = null;
-        try {
-            os = response.getOutputStream();
-            bis = new BufferedInputStream(new FileInputStream(filePath));
+        try (BufferedInputStream bis =new BufferedInputStream(new FileInputStream(filePath));OutputStream os =response.getOutputStream()){
             int i = 0;
             while ((i = bis.read(buff)) != -1) {
                 os.write(buff, 0, i);
@@ -343,12 +302,6 @@ public class FileUtil {
             }
         } catch (IOException e) {
             log.error(e.getMessage());
-        } finally {
-            try {
-                if (bis != null) bis.close();
-            } catch (IOException e) {
-                log.error(e.getMessage());
-            }
         }
     }
 }

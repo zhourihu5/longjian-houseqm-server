@@ -39,6 +39,7 @@ import org.springframework.web.bind.annotation.RestController;
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
+import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
 import java.util.*;
@@ -47,7 +48,6 @@ import java.util.*;
 @RequestMapping("oapi/v3/houseqm/issue/")
 @Slf4j
 public class HouseqmIssueController {
-    private static final String DESC_EDIT ="项目.移动验房.问题管理.编辑";
 
     @Resource
     private IHouseqmIssueService iHouseqmIssueService;
@@ -64,10 +64,19 @@ public class HouseqmIssueController {
     @Value("${stat_export_server_addr}")
     private String statExportServerAddr;
 
-
-
+    private static final String USER_ID="userId";
+    private static final String AUTH_PROJECT_QUESTION_MANAGE_EDIT="项目.移动验房.问题管理.编辑";
+    private static final String AUTH_PROJECT_ENGINEERING_QUESTION_MANAGE_EDIT_="项目.工程检查.问题管理.编辑";
+    /**
+     * @return com.longfor.longjian.common.base.LjBaseResponse
+     * @Author hy
+     * @Description 项目下问题导出PDF到任务
+     * http://192.168.37.159:3000/project/8/interface/api/3356
+     * @Date 17:13 2019/1/10
+     * @Param [req]
+     **/
     @RequestMapping(value = "export_pdf", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
-    public LjBaseResponse exportPdf(HttpServletRequest request, @Validated IssueExportPdfReq req) throws Exception {
+    public LjBaseResponse exportPdf(HttpServletRequest request, @Validated IssueExportPdfReq req) throws IOException {
         LjBaseResponse<Object> response = new LjBaseResponse<>();
         try {
             ctrlTool.projPermMulti(request, new String[]{"项目.移动验房.问题管理.查看", "项目.工程检查.问题管理.查看"});
@@ -194,7 +203,7 @@ public class HouseqmIssueController {
 
         String urlargsStr = buildMap(urlargs);
         url += urlargsStr;
-        Integer userId =  SessionUtil.getUid(sessionInfo);
+        Integer userId = (Integer) sessionInfo.getBaseInfo(USER_ID);
 
         Map<String, String> args = Maps.newHashMap();
         args.put("url", url);
@@ -207,10 +216,10 @@ public class HouseqmIssueController {
 
 
     @RequestMapping(value = "batch_appoint", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
-    public LjBaseResponse<IssueBatchAppointRspVo> batchAppoint(HttpServletRequest request, @Valid IssueBatchAppointReq req) throws Exception {
+    public LjBaseResponse<IssueBatchAppointRspVo> batchAppoint(HttpServletRequest request, @Valid IssueBatchAppointReq req) {
         LjBaseResponse<IssueBatchAppointRspVo> response = new LjBaseResponse<>();
         try {
-            ctrlTool.projPermMulti(request, new String[]{DESC_EDIT, DESC_EDIT});
+            ctrlTool.projPermMulti(request, new String[]{AUTH_PROJECT_QUESTION_MANAGE_EDIT, AUTH_PROJECT_ENGINEERING_QUESTION_MANAGE_EDIT_});
             if (req.getRepairer_id() == null) req.setRepairer_id(0);
             if (req.getPlan_end_on() == null) req.setPlan_end_on(0);
             // 过滤掉不同task下的问题，感觉有点多余，不过还是处理下
@@ -225,7 +234,7 @@ public class HouseqmIssueController {
                     uuids.add(issue.getUuid());
                 }
             }
-            Integer userId = (Integer) sessionInfo.getBaseInfo("userId");
+            Integer userId = (Integer) sessionInfo.getBaseInfo(USER_ID);
             List<String> fails = iHouseqmIssueService.updateBatchIssueRepairInfoByUuids(uuids, req.getProject_id(), userId, req.getRepairer_id(), req.getRepair_follower_ids(), req.getPlan_end_on());
             IssueBatchAppointRspVo data = new IssueBatchAppointRspVo();
             data.setFails(fails);
@@ -242,10 +251,10 @@ public class HouseqmIssueController {
     public LjBaseResponse<IssueBatchApproveRspVo> batchApprove(HttpServletRequest request, @Validated IssueBatchApproveReq req) throws Exception {
         LjBaseResponse<IssueBatchApproveRspVo> response = new LjBaseResponse<>();
         try {
-            ctrlTool.projPermMulti(request, new String[]{DESC_EDIT, DESC_EDIT});
+            ctrlTool.projPermMulti(request, new String[]{AUTH_PROJECT_QUESTION_MANAGE_EDIT, AUTH_PROJECT_ENGINEERING_QUESTION_MANAGE_EDIT_});
             // 过滤掉不同task下的问题，感觉有点多余，不过还是处理下
             List<String> uuids = filterIssueUuidByProjIdTaskIdUuids(req.getProject_id(), req.getTask_id(), req.getIssue_uuids());
-            Integer userId = (Integer) sessionInfo.getBaseInfo("userId");
+            Integer userId = (Integer) sessionInfo.getBaseInfo(USER_ID);
             List<String> fails = iHouseqmIssueService.updateBatchIssueApproveStatusByUuids(uuids, req.getProject_id(), userId, HouseQmCheckTaskIssueCheckStatusEnum.CheckYes.getId(), "", "");
             IssueBatchApproveRspVo data = new IssueBatchApproveRspVo();
             data.setFails(fails);
@@ -262,7 +271,7 @@ public class HouseqmIssueController {
     public LjBaseResponse<IssueBatchDeleteRspVo> batchDelete(HttpServletRequest request, @Validated IssueBatchDeleteReq req) {
         LjBaseResponse<IssueBatchDeleteRspVo> response = new LjBaseResponse<>();
         try {
-            ctrlTool.projPermMulti(request, new String[]{DESC_EDIT, DESC_EDIT});
+            ctrlTool.projPermMulti(request, new String[]{AUTH_PROJECT_QUESTION_MANAGE_EDIT, AUTH_PROJECT_ENGINEERING_QUESTION_MANAGE_EDIT_});
             List<String> issueUuids = StringSplitToListUtil.splitToStringComma(req.getIssue_uuids(), ",");
             IssueBatchDeleteRspVo data = new IssueBatchDeleteRspVo();
             List<String> fails = Lists.newArrayList();

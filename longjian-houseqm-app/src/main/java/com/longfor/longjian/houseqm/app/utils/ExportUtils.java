@@ -6,6 +6,7 @@ import com.longfor.longjian.houseqm.app.vo.houseqmstat.InspectionHouseStatusInfo
 import com.longfor.longjian.houseqm.app.vo.issuelist.ExcelIssueData;
 import freemarker.template.Configuration;
 import freemarker.template.Template;
+import freemarker.template.TemplateException;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.poi.openxml4j.exceptions.InvalidFormatException;
@@ -55,7 +56,6 @@ public class ExportUtils {
     private static final String WORKBOOK = "workbook";
     private static final String SHEET = "sheet";
     private static final String CELL_STYLE = "cellStyle";
-    private static final String MMDDHHMMSS = "MMddHHmmss";
     private static final String UTF_8 = "utf-8";
     @Value("${export_path}")
     private static String exportPath;
@@ -213,11 +213,7 @@ public class ExportUtils {
     //导出 整改回复单
     public static XWPFDocument exportRepairReply(ExportReplyDetail data) throws IOException, InvalidFormatException {
         String templateNotify = "/templates/reply_template.docx";
-        //String dt = DateUtil.getNowTimeStr(MMDDHHMMSS);
-        //String r = new Random().ints(0, 65536).toString();
-        // String filePath = String.format("%s/buildingqm_report/reply_report_%s_%s", exportPath, dt, r);
-        ExportUtils exportUtils = new ExportUtils();
-        InputStream fis = exportUtils.getClass().getResourceAsStream(templateNotify);
+        InputStream fis = ExportUtils.class.getResourceAsStream(templateNotify);
         XWPFDocument doc = new XWPFDocument(fis);
         List<XWPFTable> tables = doc.getTables();
         XWPFTable table = tables.get(0);
@@ -282,7 +278,7 @@ public class ExportUtils {
     }
 
     // 导出 统计报告 -任务概况 -验房详情 导出excel 使用freemaker
-    public static void exportStatExcel(String templateName, Map<String, Object> data, HttpServletResponse response, HttpServletRequest request) throws Exception {
+    public static void exportStatExcel(String templateName, Map<String, Object> data, HttpServletResponse response, HttpServletRequest request) throws IOException, TemplateException {
         // 加载模板
         File file = new File("temp.xlsx");// 临时名称
         Configuration configuration = new Configuration();

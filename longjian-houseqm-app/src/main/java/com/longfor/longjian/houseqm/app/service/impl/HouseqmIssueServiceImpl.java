@@ -136,7 +136,7 @@ public class HouseqmIssueServiceImpl implements IHouseqmIssueService {
     }
 
     @Override
-    public ExportFileRecord create(int userId, Integer teamId, Integer projectId, int exportType, Map<String, String> args, String exportName, Date executeAt) throws Exception {
+    public ExportFileRecord create(int userId, Integer teamId, Integer projectId, int exportType, Map<String, String> args, String exportName, Date executeAt) throws IOException {
         //生成随机数
         Random random = new Random(Long.MAX_VALUE);
 

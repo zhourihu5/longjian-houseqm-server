@@ -47,6 +47,7 @@ public class HouseqmServiceImpl implements IHouseqmService {
     @Resource
     private SessionInfo sessionInfo;
 
+    private static final String USER_ID="userId";
     @Override
     public List<Integer> searchHouseQmApproveUserIdInMyCheckSquad(int userId, int taskId) {
         List<UserInHouseQmCheckTask> rs = userInHouseQmCheckTaskService.searchByTaskIdUserIdRoleType(taskId, userId, HouseQmUserInIssueRoleTypeEnum.Checker.getId());
@@ -70,7 +71,7 @@ public class HouseqmServiceImpl implements IHouseqmService {
         LjBaseResponse<HouseqmMyIssueLogListRspVo> taskResponse = new LjBaseResponse<>();
         HouseqmMyIssueLogListRspVo myIssueListVo = new HouseqmMyIssueLogListRspVo();
         List<ApiHouseQmCheckTaskIssueLogRsp> result = new ArrayList<>();
-        Integer userId = (Integer) sessionInfo.getBaseInfo("userId");
+        Integer userId = (Integer) sessionInfo.getBaseInfo(USER_ID);
         Integer start = 0;
         Integer lastId = 0;
         //可能会导致接口出现504 请求超时
@@ -140,7 +141,7 @@ public class HouseqmServiceImpl implements IHouseqmService {
         LjBaseResponse<MyIssueListVo> taskResponse = new LjBaseResponse<>();
         MyIssueListVo myIssueListVo = new MyIssueListVo();
         List<ApiHouseQmCheckTaskIssueRsp> items = new ArrayList<>();
-        Integer userId = (Integer) sessionInfo.getBaseInfo("userId");
+        Integer userId = (Integer) sessionInfo.getBaseInfo(USER_ID);
         Integer start = 0;
         Integer limit = HOUSEQM_API_GET_PER_TIME;
         Integer lastId = 0;
@@ -248,7 +249,7 @@ public class HouseqmServiceImpl implements IHouseqmService {
         MyIssueAttachListVo myIssueAttachListVo = new MyIssueAttachListVo();
         List<ApiHouseQmCheckTaskIssueAttachmentRspVo> houseQmCheckTaskIssueJsons = new ArrayList<>();
 
-        Integer userId = (Integer) sessionInfo.getBaseInfo("userId");
+        Integer userId = (Integer) sessionInfo.getBaseInfo(USER_ID);
         Integer start = 0;
         Integer limit = HOUSEQM_API_GET_PER_TIME;
         Integer lastId = 0;
@@ -265,7 +266,7 @@ public class HouseqmServiceImpl implements IHouseqmService {
         try {
             List<HouseQmCheckTaskIssueAttachment> attachments = houseQmCheckTaskIssueService.searchHouseQmCheckTaskIssueAttachmentByMyIdTaskIdLastIdUpdateAtGt(userId, deviceReq.getTask_id(), deviceReq.getLast_id(), deviceReq.getTimestamp(), start, limit, HouseQmCheckTaskIssueAttachmentPublicTypeEnum.Private.getId(), HouseQmCheckTaskIssueAttachmentPublicTypeEnum.Public.getId());
             // go源码中未对lastid进行处理
-            // if (attachments != null && attachments.size() > 0) lastId = attachments.get(attachments.size() - 1).getId();
+
             attachments.forEach(houseQmCheckTaskIssueAttachment -> {
                 ApiHouseQmCheckTaskIssueAttachmentRspVo apiHouseQmCheckTaskIssueAttachmentRspVo = new ApiHouseQmCheckTaskIssueAttachmentRspVo();
                 apiHouseQmCheckTaskIssueAttachmentRspVo.setId(houseQmCheckTaskIssueAttachment.getId());
@@ -279,7 +280,7 @@ public class HouseqmServiceImpl implements IHouseqmService {
                 apiHouseQmCheckTaskIssueAttachmentRspVo.setStatus(houseQmCheckTaskIssueAttachment.getStatus());
                 apiHouseQmCheckTaskIssueAttachmentRspVo.setUpdate_at(DateUtil.datetimeToTimeStamp(houseQmCheckTaskIssueAttachment.getUpdateAt()));
                 apiHouseQmCheckTaskIssueAttachmentRspVo.setDelete_at(houseQmCheckTaskIssueAttachment.getDeleteAt() == null ? 0 : DateUtil.datetimeToTimeStamp(houseQmCheckTaskIssueAttachment.getDeleteAt()));
-                //JSONObject jsonObject = JSON.parseObject(JSON.toJSONString(apiHouseQmCheckTaskIssueAttachmentRspVo));
+
                 houseQmCheckTaskIssueJsons.add(apiHouseQmCheckTaskIssueAttachmentRspVo);
             });
             myIssueAttachListVo.setAttachment_list(houseQmCheckTaskIssueJsons);
