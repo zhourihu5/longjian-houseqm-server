@@ -80,7 +80,7 @@ public class FileUtil {
                 throw new LjBaseRuntimeException(-1, "创建文件失败");
             }
             if (f.isDirectory()) {
-                throw new RuntimeException("filePath is dir:" + filePath);
+                throw new LjBaseRuntimeException(-1,"filePath is dir:" + filePath);
             }
             return f;
         } catch (Exception e) {
@@ -95,7 +95,7 @@ public class FileUtil {
             f.getParentFile().mkdirs();
             f.mkdir();
             if (!f.isDirectory()) {
-                throw new RuntimeException("path is not dir:" + path);
+                throw new LjBaseRuntimeException(-1,"path is not dir:" + path);
             }
             return f;
         } catch (Exception e) {
