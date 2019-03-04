@@ -13,6 +13,7 @@ import com.longfor.longjian.houseqm.app.req.issue.IssueBatchApproveReq;
 import com.longfor.longjian.houseqm.app.req.issue.IssueBatchDeleteReq;
 import com.longfor.longjian.houseqm.app.req.issue.IssueExportPdfReq;
 import com.longfor.longjian.houseqm.app.service.IHouseqmIssueService;
+import com.longfor.longjian.houseqm.app.utils.SessionUtil;
 import com.longfor.longjian.houseqm.app.vo.IssueBatchAppointRspVo;
 import com.longfor.longjian.houseqm.app.vo.houseqmissue.IssueBatchApproveRspVo;
 import com.longfor.longjian.houseqm.app.vo.houseqmissue.IssueBatchDeleteRspVo;
@@ -42,18 +43,11 @@ import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
 import java.util.*;
 
-/**
- * @ProjectName: longjian-houseqm-server
- * @Package: com.longfor.longjian.houseqm.app.controller
- * @ClassName: HouseqmIssueController
- * @Description: java类作用描述
- * @Author: hy
- * @CreateDate: 2019/1/10 17:02
- */
 @RestController
 @RequestMapping("oapi/v3/houseqm/issue/")
 @Slf4j
 public class HouseqmIssueController {
+    private static final String DESC_EDIT ="项目.移动验房.问题管理.编辑";
 
     @Resource
     private IHouseqmIssueService iHouseqmIssueService;
@@ -70,14 +64,8 @@ public class HouseqmIssueController {
     @Value("${stat_export_server_addr}")
     private String statExportServerAddr;
 
-    /**
-     * @return com.longfor.longjian.common.base.LjBaseResponse
-     * @Author hy
-     * @Description 项目下问题导出PDF到任务
-     * http://192.168.37.159:3000/project/8/interface/api/3356
-     * @Date 17:13 2019/1/10
-     * @Param [req]
-     **/
+
+
     @RequestMapping(value = "export_pdf", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     public LjBaseResponse exportPdf(HttpServletRequest request, @Validated IssueExportPdfReq req) throws Exception {
         LjBaseResponse<Object> response = new LjBaseResponse<>();
@@ -154,7 +142,7 @@ public class HouseqmIssueController {
         urlargs.put("category_cls", String.valueOf(req.getCategory_cls()));
 
         if (CollectionUtils.isNotEmpty(req.getStatus_in())) {
-            StringBuffer sb = new StringBuffer();
+            StringBuilder sb = new StringBuilder();
             for (int i = 0; i < req.getStatus_in().size(); i++) {
                 if (i == 0) {
                     sb.append(req.getStatus_in().get(i));
@@ -171,7 +159,7 @@ public class HouseqmIssueController {
         }
 
         if (CollectionUtils.isNotEmpty(req.getArea_ids())) {
-            StringBuffer sb = new StringBuffer();
+            StringBuilder sb = new StringBuilder();
             for (int i = 0; i < req.getArea_ids().size(); i++) {
                 if (i == 0) {
                     sb.append(req.getArea_ids().get(i));
@@ -188,7 +176,7 @@ public class HouseqmIssueController {
         }
         List<String> uuidList = StringUtil.strToStrs(req.getUuids(), ",");
         if (CollectionUtils.isNotEmpty(uuidList)) {
-            StringBuffer sb = new StringBuffer();
+            StringBuilder sb = new StringBuilder();
             for (int i = 0; i < uuidList.size(); i++) {
                 if (i == 0) {
                     sb.append(uuidList.get(i));
@@ -206,7 +194,7 @@ public class HouseqmIssueController {
 
         String urlargsStr = buildMap(urlargs);
         url += urlargsStr;
-        Integer userId = (Integer) sessionInfo.getBaseInfo("userId");
+        Integer userId =  SessionUtil.getUid(sessionInfo);
 
         Map<String, String> args = Maps.newHashMap();
         args.put("url", url);
@@ -217,19 +205,12 @@ public class HouseqmIssueController {
         return response;
     }
 
-    /**
-     * @return com.longfor.longjian.common.base.LjBaseResponse<com.longfor.longjian.houseqm.app.vo.IssueBatchAppointRspVo>
-     * @Author hy
-     * @Description 批量指派issue
-     * http://192.168.37.159:3000/project/8/interface/api/3320
-     * @Date 14:03 2019/1/11
-     * @Param [req]
-     **/
+
     @RequestMapping(value = "batch_appoint", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     public LjBaseResponse<IssueBatchAppointRspVo> batchAppoint(HttpServletRequest request, @Valid IssueBatchAppointReq req) throws Exception {
         LjBaseResponse<IssueBatchAppointRspVo> response = new LjBaseResponse<>();
         try {
-            ctrlTool.projPermMulti(request, new String[]{"项目.移动验房.问题管理.编辑", "项目.工程检查.问题管理.编辑"});
+            ctrlTool.projPermMulti(request, new String[]{DESC_EDIT, DESC_EDIT});
             if (req.getRepairer_id() == null) req.setRepairer_id(0);
             if (req.getPlan_end_on() == null) req.setPlan_end_on(0);
             // 过滤掉不同task下的问题，感觉有点多余，不过还是处理下
@@ -238,7 +219,7 @@ public class HouseqmIssueController {
             List<String> uuids = Lists.newArrayList();
             for (HouseQmCheckTaskIssue issue : issues) {
                 if (issue.getStatus().equals(HouseQmCheckTaskIssueStatusEnum.CheckYes.getId())) {
-                    throw new Exception("有问题已销项，不能被指派");
+                    throw new LjBaseRuntimeException(-1,"有问题已销项，不能被指派");
                 }
                 if (req.getProject_id().equals(issue.getProjectId())) {
                     uuids.add(issue.getUuid());
@@ -257,19 +238,11 @@ public class HouseqmIssueController {
         return response;
     }
 
-    /**
-     * @return com.longfor.longjian.common.base.LjBaseResponse<com.longfor.longjian.houseqm.app.vo.houseqmissue.IssueBatchApproveRspVo>
-     * @Author hy
-     * @Description 项目下我的问题批量销项
-     * http://192.168.37.159:3000/project/8/interface/api/3376
-     * @Date 18:45 2019/1/12
-     * @Param [req]
-     **/
     @RequestMapping(value = "batch_approve", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     public LjBaseResponse<IssueBatchApproveRspVo> batchApprove(HttpServletRequest request, @Validated IssueBatchApproveReq req) throws Exception {
         LjBaseResponse<IssueBatchApproveRspVo> response = new LjBaseResponse<>();
         try {
-            ctrlTool.projPermMulti(request, new String[]{"项目.移动验房.问题管理.编辑", "项目.工程检查.问题管理.编辑"});
+            ctrlTool.projPermMulti(request, new String[]{DESC_EDIT, DESC_EDIT});
             // 过滤掉不同task下的问题，感觉有点多余，不过还是处理下
             List<String> uuids = filterIssueUuidByProjIdTaskIdUuids(req.getProject_id(), req.getTask_id(), req.getIssue_uuids());
             Integer userId = (Integer) sessionInfo.getBaseInfo("userId");
@@ -285,19 +258,11 @@ public class HouseqmIssueController {
         return response;
     }
 
-    /**
-     * @return com.longfor.longjian.common.base.LjBaseResponse<com.longfor.longjian.houseqm.app.vo.houseqmissue.IssueBatchDeleteRspVo>
-     * @Author hy
-     * @Description 项目下问题管理批量删除
-     * http://192.168.37.159:3000/project/8/interface/api/3348
-     * @Date 18:49 2019/1/12
-     * @Param [req]
-     **/
     @RequestMapping(value = "batch_delete", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     public LjBaseResponse<IssueBatchDeleteRspVo> batchDelete(HttpServletRequest request, @Validated IssueBatchDeleteReq req) {
         LjBaseResponse<IssueBatchDeleteRspVo> response = new LjBaseResponse<>();
         try {
-            ctrlTool.projPermMulti(request, new String[]{"项目.移动验房.问题管理.编辑", "项目.工程检查.问题管理.编辑"});
+            ctrlTool.projPermMulti(request, new String[]{DESC_EDIT, DESC_EDIT});
             List<String> issueUuids = StringSplitToListUtil.splitToStringComma(req.getIssue_uuids(), ",");
             IssueBatchDeleteRspVo data = new IssueBatchDeleteRspVo();
             List<String> fails = Lists.newArrayList();
@@ -321,7 +286,7 @@ public class HouseqmIssueController {
 
     private List<String> filterIssueUuidByProjIdTaskIdUuids(int projId, int taskId, String uuidStr) {
         List<String> issueUuids = StringSplitToListUtil.splitToStringComma(uuidStr, ",");
-        if (issueUuids.isEmpty()) return null;
+        if (issueUuids.isEmpty()) return Lists.newArrayList();
         List<HouseQmCheckTaskIssue> issues = houseQmCheckTaskIssueService.searchHouseQmCheckTaskIssueByTaskIdUuidIn(taskId, issueUuids);
         List<String> uuids = Lists.newArrayList();
         for (HouseQmCheckTaskIssue issue : issues) {
@@ -334,9 +299,10 @@ public class HouseqmIssueController {
 
     // url参数拼接
     private String buildMap(Map<String, String> map) {
-        StringBuffer sb = new StringBuffer();
+        StringBuilder sb = new StringBuilder();
         if (map.size() > 0) {
-            for (String key : map.keySet()) {
+            for (Iterator<String> iterator = map.keySet().iterator(); iterator.hasNext(); ) {
+                String key = iterator.next();
                 sb.append(key).append("=");
                 if (StringUtils.isEmpty(map.get(key))) {
                     sb.append("&");

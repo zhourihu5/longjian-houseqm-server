@@ -126,14 +126,14 @@ public class HouseqmStaticService {
         }
         String[] split = taskByProjTask.getAreaIds().split(",");
         //转成int数组
-        int[] order_int = new int[split.length];
+        int[] orderInt = new int[split.length];
         for (int i = 0; i < split.length; i++) {
-            order_int[i] = Integer.parseInt(split[i]);
+            orderInt[i] = Integer.parseInt(split[i]);
         }
         //转成list
         ArrayList<Integer> objects = new ArrayList<>();
-        for (int i = 0; i < order_int.length; i++) {
-            objects.add(order_int[i]);
+        for (int i = 0; i < orderInt.length; i++) {
+            objects.add(orderInt[i]);
         }
         List<Area> areas = areaService.selectByAreaIds(objects);
         ArrayList<ApiBuildingInfo> buildingInfoArrayList = Lists.newArrayList();

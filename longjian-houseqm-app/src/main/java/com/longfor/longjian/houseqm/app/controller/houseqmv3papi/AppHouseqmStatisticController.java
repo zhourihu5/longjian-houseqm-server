@@ -22,14 +22,7 @@ import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 
-/**
- * @ProjectName: longjian-houseqm-server
- * @Package: com.longfor.longjian.houseqm.app.controller.houseqmstatisticapp
- * @ClassName: AppHouseqmStatisticController
- * @Description: java类作用描述
- * @Author: hy
- * @CreateDate: 2019/1/21 17:48
- */
+
 @RestController
 @RequestMapping("/houseqm/v3/papi/houseqm_statistic/")
 @Slf4j
@@ -40,18 +33,10 @@ public class AppHouseqmStatisticController {
     @Resource
     private SessionInfo sessionInfo;
 
-    /**
-     * @return com.longfor.longjian.common.base.LjBaseResponse
-     * @Author hy
-     * @Description 获取项目列表
-     * http://192.168.37.159:3000/project/8/interface/api/3264
-     * @Date 17:53 2019/1/21
-     * @Param [request, req]
-     **/
     @RequestMapping(value = "project_list", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     public TaskResponse<ProjectListRspVo> projectList(HttpServletRequest request, @Valid ProjectListReq req) {
         TaskResponse<ProjectListRspVo> response = new TaskResponse<>();
-        log.info("project_list, source=" + req.getSource() + ", timestamp=" + req.getTimestamp());
+        log.info(String.format("project_list, source=%s, timestamp=%d",req.getSource(), req.getTimestamp())) ;
         Integer userId = SessionUtil.getUid(sessionInfo);
         try {
             ProjectListRspVo items = iHouseqmStatisticService.projectList(userId, req.getSource(), req.getTimestamp());
@@ -64,19 +49,10 @@ public class AppHouseqmStatisticController {
         return response;
     }
 
-
-    /**
-     * @return com.longfor.longjian.common.base.LjBaseResponse<com.longfor.longjian.houseqm.app.vo.houseqmstatisticapp.ProjectIssueStatRspVo>
-     * @Author hy
-     * @Description 项目汇总状态
-     * http://192.168.37.159:3000/project/8/interface/api/3280
-     * @Date 20:28 2019/1/21
-     * @Param [request, req]
-     **/
     @RequestMapping(value = "project_issue_stat", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     public LjBaseResponse<ProjectIssueStatRspVo> projectIssueStat(HttpServletRequest request, @Valid ProjectIssueStatReq req) {
         LjBaseResponse<ProjectIssueStatRspVo> response = new LjBaseResponse<>();
-        log.info("project_issue_stat, project_id=" + req.getProject_id() + ", source=" + req.getSource() + ", area_id=" + req.getArea_id() + ", timestamp=" + req.getTimestamp());
+        log.info(String.format("project_issue_stat, project_id=%d, source=%s, area_id=%d, timestamp=%d", req.getProject_id(),req.getSource(),req.getArea_id(), req.getTimestamp()));
         Integer userId = SessionUtil.getUid(sessionInfo);
         try {
             if (req.getArea_id() == null) req.setArea_id(0);
@@ -91,14 +67,6 @@ public class AppHouseqmStatisticController {
         return response;
     }
 
-    /**
-     * @return com.longfor.longjian.common.base.LjBaseResponse<com.longfor.longjian.houseqm.app.vo.houseqmstatisticapp.ProjectCheckerStatRspVo>
-     * @Author hy
-     * @Description 项目/任务检查人员统计
-     * http://192.168.37.159:3000/project/8/interface/api/3268
-     * @Date 10:27 2019/1/22
-     * @Param [request, req]
-     **/
     @RequestMapping(value = "project_checker_stat", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     public TaskResponse<ProjectCheckerStatRspVo> projectCheckerStat(HttpServletRequest request, @Valid ProjectCheckerStatReq req) {
         TaskResponse<ProjectCheckerStatRspVo> response = new TaskResponse<>();
@@ -119,14 +87,6 @@ public class AppHouseqmStatisticController {
         return response;
     }
 
-    /**
-     * @return com.longfor.longjian.common.base.LjBaseResponse<com.longfor.longjian.houseqm.app.vo.houseqmstatisticapp.ProjectRepairerStatRspVo>
-     * @Author hy
-     * @Description 项目/任务整改人员统计
-     * http://192.168.37.159:3000/project/8/interface/api/3272
-     * @Date 12:16 2019/1/22
-     * @Param [request, req]
-     **/
     @RequestMapping(value = "project_repairer_stat", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     public TaskResponse<ProjectRepairerStatRspVo> projectRepairerStat(HttpServletRequest request, @Valid ProjectRepairerStatReq req) {
         TaskResponse<ProjectRepairerStatRspVo> response = new TaskResponse<>();
