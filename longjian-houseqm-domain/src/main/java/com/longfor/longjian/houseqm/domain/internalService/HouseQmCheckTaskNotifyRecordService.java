@@ -12,6 +12,8 @@ package com.longfor.longjian.houseqm.domain.internalService;
 import com.longfor.longjian.houseqm.po.zj2db.HouseQmCheckTaskNotifyRecord;
 
 import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
 
 /**
  * Created by Dongshun on 2019/1/11.
@@ -22,4 +24,8 @@ public interface HouseQmCheckTaskNotifyRecordService {
     int add(HouseQmCheckTaskNotifyRecord record);
 
     void addMany(ArrayList<HouseQmCheckTaskNotifyRecord> dataSource);
+
+    List<HouseQmCheckTaskNotifyRecord> findExample(Map<String,Object>map,List<Integer>statusList);
+
+
 }

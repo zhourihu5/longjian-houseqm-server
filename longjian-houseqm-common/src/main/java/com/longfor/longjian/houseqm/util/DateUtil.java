@@ -130,6 +130,27 @@ public class DateUtil {
     }
 
     /**
+     * long -> Date
+     *
+     * @param
+     * @return java.util.Date
+     * @author hy
+     * @date 2018/12/22 0022
+     */
+    public static Date timeStampTwoToDate(long timestamp, String partten) {
+        //long timeLong = timestamp / 1000l;
+        SimpleDateFormat  ymdhmsFormat = new SimpleDateFormat (partten);
+        String nowTimeStr = ymdhmsFormat.format(timestamp);
+        Date timeDate = null;
+        try {
+            timeDate = ymdhmsFormat.parse(nowTimeStr);
+        } catch (ParseException e) {
+            logger.error("error:",e.getMessage());
+        }
+        return timeDate;
+    }
+
+    /**
      * 获得当前时间以 partten 格式
      *
      * @param partten

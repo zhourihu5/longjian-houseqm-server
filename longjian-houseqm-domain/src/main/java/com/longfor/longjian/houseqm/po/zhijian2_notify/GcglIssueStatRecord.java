@@ -323,4 +323,5 @@ public class GcglIssueStatRecord {
     public void setDeleteAt(Date deleteAt) {
         this.deleteAt = deleteAt;
     }
+
 }

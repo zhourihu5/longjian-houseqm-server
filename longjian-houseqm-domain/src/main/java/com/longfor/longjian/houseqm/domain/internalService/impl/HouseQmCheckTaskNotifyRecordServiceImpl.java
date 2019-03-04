@@ -1,15 +1,16 @@
 package com.longfor.longjian.houseqm.domain.internalService.impl;
 
-import java.util.ArrayList;
-import java.util.Date;
+import java.util.*;
 
 import com.longfor.gaia.gfs.data.mybatis.datasource.LFAssignDataSource;
 import com.longfor.longjian.houseqm.dao.zj2db.HouseQmCheckTaskNotifyRecordMapper;
 import com.longfor.longjian.houseqm.domain.internalService.HouseQmCheckTaskNotifyRecordService;
+import com.longfor.longjian.houseqm.po.zhijian2_notify.StatScanRecord;
 import com.longfor.longjian.houseqm.po.zj2db.HouseQmCheckTaskNotifyRecord;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import tk.mybatis.mapper.entity.Example;
 
 import javax.annotation.Resource;
 
@@ -39,6 +40,21 @@ public class HouseQmCheckTaskNotifyRecordServiceImpl implements HouseQmCheckTask
             record.setUpdateAt(new Date());
         }
         houseQmCheckTaskNotifyRecordMapper.insertList(dataSource);
+    }
+
+    @Override
+    @LFAssignDataSource("zhijian2")
+    public List<HouseQmCheckTaskNotifyRecord> findExample(Map<String,Object> map,List<Integer>statusList) {
+
+        Example example = new Example(HouseQmCheckTaskNotifyRecord.class);
+        example.createCriteria()
+                .andEqualTo("moduleId",map.get("moduleId"))
+                .andIn("issueStatus", statusList)
+                .andGreaterThan("createAt",map.get("statBeg"))
+                .andLessThanOrEqualTo("createAt",map.get("statEnd"))
+                .andIsNull("deleteAt");
+
+        return houseQmCheckTaskNotifyRecordMapper.selectByExample(example);
     }
 
     @Override
