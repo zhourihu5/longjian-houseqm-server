@@ -94,6 +94,10 @@ public class HouseqmStatServiceImpl implements IHouseqmStatService {
             areaPaths.removeAll(noIssueAreaPaths);
         }
         //用areaId来过滤掉那些不属范围内的path
+        return returnAreaIdsResult(areaId,areaPaths);
+    }
+
+    private List<Integer> returnAreaIdsResult(Integer areaId,List<String> areaPaths ){
         if (areaId > 0) {
             areaPaths = filterAreaPathListByRootAreaId(areaId, areaPaths);
         }
@@ -107,7 +111,6 @@ public class HouseqmStatServiceImpl implements IHouseqmStatService {
         }
         return result;
     }
-
     @Override
     public List<Integer> searchRepossessInspectionAreaIdsByConditions(Integer projectId, Integer taskId, Integer areaId, Integer status, Integer issueStatus, Date startTime, Date endTime) {
         //取出该任务下的所有户path
@@ -118,7 +121,7 @@ public class HouseqmStatServiceImpl implements IHouseqmStatService {
         List<Area> areas = areaService.searchAreaListByRootIdAndTypes(projectId, aids, types);
         List<String> taskAreaPaths = Lists.newArrayList();
         for (Area area : areas) {
-            taskAreaPaths.add(String.format("%s%d/", area.getPath(), area.getId()));
+            taskAreaPaths.add(String.format(PATH_AND_ID_REPEX, area.getPath(), area.getId()));
         }
 
         //取出对应状态条件path
@@ -145,25 +148,13 @@ public class HouseqmStatServiceImpl implements IHouseqmStatService {
             List<String> checkedAreaPaths = houseqmStaticService.getHasIssueTaskCheckedAreaPathListByTaskId(taskId, true, null, areaId);
             // 取差集
             areaPaths.removeAll(checkedAreaPaths);
-            //areaPaths.retainAll(checkedAreaPaths);
+
         }
         //过滤掉不在任务中的path
         //出现此种情况的原因：在已上传验房报告的情况下，将已有数据的楼栋从任务中移除掉了
-        // areaPaths = utils.StringSliceIntersection(taskAreaPaths, areaPaths)
 
         //用areaId来过滤掉那些不属范围内的path
-        if (areaId > 0) {
-            areaPaths = filterAreaPathListByRootAreaId(areaId, areaPaths);
-        }
-        //排序后返回areaIds
-        Collections.sort(areaPaths);
-        ArrayList<Integer> result = Lists.newArrayList();
-        for (String p : areaPaths) {
-            List<Integer> ids = StringUtil.strToInts(p, "/");
-            if (ids.isEmpty()) continue;
-            result.add(ids.get(ids.size() - 1));
-        }
-        return result;
+        return returnAreaIdsResult(areaId,areaPaths);
     }
 
     //依据根节点来过滤掉非子项的areapath
@@ -372,7 +363,7 @@ public class HouseqmStatServiceImpl implements IHouseqmStatService {
 
 
     @Override
-    public HouseQmStatAreaSituationIssueRspVo getAreaIssueTypeStatByProjectIdAreaIdCategoryCls(Integer projectId, Integer areaId, Integer category_cls) {
+    public HouseQmStatAreaSituationIssueRspVo getAreaIssueTypeStatByProjectIdAreaIdCategoryCls(Integer projectId, Integer areaId, Integer categoryCls) {
         String areaPath = "";
         if (areaId > 0) {
             Area areaInfo = areaService.selectById(areaId);
@@ -380,7 +371,7 @@ public class HouseqmStatServiceImpl implements IHouseqmStatService {
             areaPath = areaInfo.getPath() + areaInfo.getId() + "/%";
         } else return null;
         // 添加delete_at is null
-        List<HouseQmCheckTaskIssue> issues = houseQmCheckTaskIssueService.searchByProjIdAndCategoryClsAndAreaPathAndIdLikeGroupByStatus(projectId, category_cls, areaPath);
+        List<HouseQmCheckTaskIssue> issues = houseQmCheckTaskIssueService.searchByProjIdAndCategoryClsAndAreaPathAndIdLikeGroupByStatus(projectId, categoryCls, areaPath);
 
         HouseQmStatAreaSituationIssueRspVo result = new HouseQmStatAreaSituationIssueRspVo();
         result.setIssue_recorded_count(0);
@@ -427,7 +418,7 @@ public class HouseqmStatServiceImpl implements IHouseqmStatService {
                     default:
                         break;
                 }
-                e = null;
+
 
             }
         }
@@ -796,10 +787,8 @@ public class HouseqmStatServiceImpl implements IHouseqmStatService {
             if (i.equals(id)) {
                 return true;
             }
-            if (areaMap.containsKey(i)) {
-                if (areaMap.get(i).contains("/" + id + "/")) {
-                    return true;
-                }
+            if (areaMap.containsKey(i)&&areaMap.get(i).contains("/" + id + "/")) {
+                return true;
             }
         }
         return false;
