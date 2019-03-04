@@ -138,8 +138,6 @@ public class HouseqmIssueServiceImpl implements IHouseqmIssueService {
     @Override
     public ExportFileRecord create(int userId, Integer teamId, Integer projectId, int exportType, Map<String, String> args, String exportName, Date executeAt) throws IOException {
         //生成随机数
-        Random random = new Random(Long.MAX_VALUE);
-
         long randCount = (long) (rand.nextDouble() * Long.MAX_VALUE);
         String baseDir = exportVo.getBase_dir();
         Integer ts = DateUtil.datetimeToTimeStamp(new Date());

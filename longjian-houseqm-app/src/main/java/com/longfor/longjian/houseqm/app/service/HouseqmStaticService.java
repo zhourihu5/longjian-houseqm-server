@@ -207,7 +207,7 @@ public class HouseqmStaticService {
         return list;
     }
 
-    public RepossessionTasksStatusInfoVo getRepossessionTasksStatusInfo(Integer prodectId, ArrayList<Integer> taskIds, Integer areaId) {
+    public RepossessionTasksStatusInfoVo getRepossessionTasksStatusInfo(Integer prodectId, List<Integer> taskIds, Integer areaId) {
         RepossessionTasksStatusInfoVo info = new RepossessionTasksStatusInfoVo();
 
         for (int i = 0; i < taskIds.size(); i++) {

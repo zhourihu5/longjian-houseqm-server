@@ -991,9 +991,8 @@ public class BuildingqmServiceImpl implements IBuildingqmService {
             // # 写入推送记录
             if (CheckTaskIssueStatus.NoteNoAssign.getValue().equals(issue.getStatus())) {
                 List<Integer> desUserIds = getIssueCheckerList(checkerMap, issue, null);
-                desUserIds.forEach(userId ->
-                    pushList.add(userId)
-                );
+
+                pushList.addAll(desUserIds);
                 if (CollectionUtils.isNotEmpty(desUserIds)) {
                     HouseQmCheckTaskNotifyRecord itemNotify = new HouseQmCheckTaskNotifyRecord();
                     itemNotify.setProjectId(issue.getProjectId());
@@ -1075,9 +1074,7 @@ public class BuildingqmServiceImpl implements IBuildingqmService {
             } else if (CheckTaskIssueStatus.ReformNoCheck.getValue().equals(issue.getStatus()) &&
                    !CheckTaskIssueStatus.ReformNoCheck.getValue().equals(notifyStatMap.get(issue.getUuid()).get("status"))) {
                 ArrayList<Integer> desUserIds = getIssueCheckerList(checkerMap, issue, true);
-                desUserIds.forEach(userId ->
-                    pushList.add(userId)
-                );
+                pushList.addAll(desUserIds);
                 if (CollectionUtils.isNotEmpty(desUserIds)) {
                     HouseQmCheckTaskNotifyRecord itemNotify = new HouseQmCheckTaskNotifyRecord();
                     itemNotify.setProjectId(issue.getProjectId());
@@ -1254,7 +1251,8 @@ public class BuildingqmServiceImpl implements IBuildingqmService {
                 kafkaAssigned.add(apiHouseQm);
             }
         }
-        for (ApiHouseQmCheckTaskIssueLogInfo log : issueLogs) {
+        for (int i = 0; i < issueLogs.size(); i++) {
+            ApiHouseQmCheckTaskIssueLogInfo log = issueLogs.get(i);
             if (!issueUpdateMap.containsKey(log.getIssue_uuid())) {
                 continue;
             }
@@ -1342,9 +1340,9 @@ public class BuildingqmServiceImpl implements IBuildingqmService {
         for (Map.Entry<Integer, Map<Integer, Integer>> entry : roleUsers.entrySet()) {
             Integer user = entry.getKey();
             for (Map.Entry<Integer, Integer> sentry : roleUsers.get(user).entrySet()) {
-                Integer squad_id = sentry.getKey();
-                if (squadIds.contains(squad_id)) {
-                    if (b && !roleUsers.get(user).get(squad_id).equals(CheckTaskRoleCanApproveType.Yes.getValue())) {
+                Integer squadId = sentry.getKey();
+                if (squadIds.contains(squadId)) {
+                    if (b && !roleUsers.get(user).get(squadId).equals(CheckTaskRoleCanApproveType.Yes.getValue())) {
                         continue;
                     }
                     if (user > 0 && !desUserIds.contains(user)) {
@@ -1985,7 +1983,7 @@ public class BuildingqmServiceImpl implements IBuildingqmService {
         return issueMapBody;
     }
 
-    private Map<String, Object> apiNotifyStat(Integer status, Integer repairerId, List<Integer> repairer_follower_ids) {
+    private Map<String, Object> apiNotifyStat(Integer status, Integer repairerId, List<Integer> repairerFollowerId) {
         Integer nstatus = 0;
         Integer nrepairerId = 0;
         List<Integer> repairerFollowerIds = Lists.newArrayList();

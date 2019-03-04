@@ -372,7 +372,7 @@ public class HouseqmStatServiceImpl implements IHouseqmStatService {
 
 
     @Override
-    public HouseQmStatAreaSituationIssueRspVo getAreaIssueTypeStatByProjectIdAreaIdCategoryCls(Integer projectId, Integer areaId, Integer category_cls) {
+    public HouseQmStatAreaSituationIssueRspVo getAreaIssueTypeStatByProjectIdAreaIdCategoryCls(Integer projectId, Integer areaId, Integer categoryCls) {
         String areaPath = "";
         if (areaId > 0) {
             Area areaInfo = areaService.selectById(areaId);
@@ -380,7 +380,7 @@ public class HouseqmStatServiceImpl implements IHouseqmStatService {
             areaPath = areaInfo.getPath() + areaInfo.getId() + "/%";
         } else return null;
         // 添加delete_at is null
-        List<HouseQmCheckTaskIssue> issues = houseQmCheckTaskIssueService.searchByProjIdAndCategoryClsAndAreaPathAndIdLikeGroupByStatus(projectId, category_cls, areaPath);
+        List<HouseQmCheckTaskIssue> issues = houseQmCheckTaskIssueService.searchByProjIdAndCategoryClsAndAreaPathAndIdLikeGroupByStatus(projectId, categoryCls, areaPath);
 
         HouseQmStatAreaSituationIssueRspVo result = new HouseQmStatAreaSituationIssueRspVo();
         result.setIssue_recorded_count(0);
@@ -511,12 +511,6 @@ public class HouseqmStatServiceImpl implements IHouseqmStatService {
         return result;
     }
 
-
-    /**
-     * @param projectId
-     * @param taskIds
-     * @return
-     */
     public CheckerStatListVo searchCheckerIssueStatisticByProjIdAndTaskId(Integer projectId, List<Integer> taskIds) {
         CheckerStatListVo statListVo = new CheckerStatListVo();
         List<CheckerStatListVo.CheckerStatVo> checkerStatList = Lists.newArrayList();
@@ -572,13 +566,6 @@ public class HouseqmStatServiceImpl implements IHouseqmStatService {
         return statListVo;
     }
 
-    /**
-     * @param projectId
-     * @param taskIdList
-     * @param pageNum
-     * @param pageSize
-     * @return
-     */
     public ProjectDailyListVo searchTaskSituationDailyByProjTaskIdInOnPage(Integer projectId, List<Integer> taskIdList, Integer pageNum, Integer pageSize) {
         ProjectDailyListVo projectDailyListVo = new ProjectDailyListVo();
         //读取出所有日期
@@ -660,11 +647,6 @@ public class HouseqmStatServiceImpl implements IHouseqmStatService {
     }
 
 
-    /**
-     * @param projectId
-     * @param taskId
-     * @return
-     */
     public ProjectOveralListVo.ProjectOveralVo getInspectTaskStatByProjTaskId(Integer projectId, Integer taskId) {
         List<CheckerIssueStat> list = houseQmCheckTaskIssueService.searchByProjectIdAndTaskId(projectId, taskId);
         //计算下检查户数据
@@ -696,11 +678,6 @@ public class HouseqmStatServiceImpl implements IHouseqmStatService {
         return item;
     }
 
-    /**
-     * @param projectId
-     * @param taskId
-     * @return
-     */
     public TaskAreaListVo searchAreasByProjTaskIdTyp(Integer projectId, Integer taskId, int typ) {
         TaskAreaListVo taskAreaListVo = new TaskAreaListVo();
         try {
@@ -746,12 +723,6 @@ public class HouseqmStatServiceImpl implements IHouseqmStatService {
         return taskAreaListVo;
     }
 
-    /**
-     * @param projectId
-     * @param areaId
-     * @param categoryCls
-     * @return
-     */
     public AreaTaskListVo searchHouseQmCheckTaskByProjIdAreaIdCategoryClsIn(Integer projectId, Integer areaId, List<Integer> categoryCls) {
         List<HouseQmCheckTask> tasks = houseQmCheckTaskService.searchByProjectIdAndCategoryClsIn(projectId, categoryCls);
         List<Integer> areaIds = Lists.newArrayList();
@@ -785,12 +756,6 @@ public class HouseqmStatServiceImpl implements IHouseqmStatService {
         return areaTaskListVo;
     }
 
-    /**
-     * @param areaMap
-     * @param id
-     * @param ids
-     * @return
-     */
     private Boolean checkRootAreaIntersectAreas(Map<Integer, String> areaMap, Integer id, List<Integer> ids) {
         for (Integer i : ids) {
             if (i.equals(id)) {

@@ -165,7 +165,6 @@ public class FileUtil {
             try {
                 Files.delete(Paths.get(rootFile.toURI()));
             } catch (IOException e) {
-                e.printStackTrace();
                 throw new LjBaseRuntimeException(-1, "删除文件失败");
             }
             return;
@@ -177,7 +176,6 @@ public class FileUtil {
         try {
             Files.delete(Paths.get(rootFile.toURI()));
         } catch (IOException e) {
-            e.printStackTrace();
             throw new LjBaseRuntimeException(-1, "删除文件失败");
         }
 
