@@ -51,14 +51,7 @@ public class IusseTaskListController {
     private IIssueService iIssueService;
 
 
-    /**
-     * 获取可用于检索的任务列表
-     *
-     * @param projectId
-     * @param categoryCls
-     * @param
-     * @return
-     */
+
     @RequestMapping(value = "issue/task_list", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     public TaskResponse<HouseQmCheckTaskSimpleRspVo.TaskList> doAction(HttpServletRequest request, @RequestParam(value = "project_id") Integer projectId,
                                                                        @RequestParam(value = "category_cls") Integer categoryCls
@@ -83,7 +76,7 @@ public class IusseTaskListController {
      */
 
     @RequestMapping(value = "stat_houseqm/get_acceptanceitems_setting", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
-    public LjBaseResponse<ApiStatHouseqmMeterSettingMsgVo.HouseqmMeterSetting> getAcceptanceitemsSetting(@RequestParam(name = "project_ids", required = true) String projectIds,
+    public LjBaseResponse<ApiStatHouseqmMeterSettingMsgVo.HouseqmMeterSetting> getAcceptanceitemsSetting(@RequestParam(name = "project_ids") String projectIds,
                                                                                                          @RequestParam(name = "timestamp", required = false, defaultValue = "0") Integer timestamp) {
         log.info("get_acceptanceitems_setting, project_ids=" + projectIds + ", timestamp=" + timestamp + "");
         List<ApiStatHouseqmMeterSettingMsgVo> acceptanceItems = iusseTaskListService.getAcceptanceitemsSetting(projectIds, timestamp);
@@ -94,12 +87,6 @@ public class IusseTaskListController {
         return response;
     }
 
-    /**
-     * http://192.168.37.159:3000/project/8/interface/api/3308 获取“我”的公司与项目列表
-     *
-     * @param categorys
-     * @return
-     */
     @RequestMapping(value = "mine/teams_and_projects", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     public LjBaseResponse<ApiMineMsg> teamsAndProjects(@RequestParam(name = "categorys", required = false, defaultValue = "26,28") String categorys) {
         log.info("teams_and_projects, categorys=" + categorys + "");
@@ -110,7 +97,6 @@ public class IusseTaskListController {
         return response;
     }
 
-    // 工程检查- 我的问题
     @RequestMapping(value = "issue/list", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     public LjBaseResponse<IssueListRsp> list(HttpServletRequest request, @Validated IssueListDoActionReq req) {
         LjBaseResponse<IssueListRsp> response = new LjBaseResponse<>();
@@ -131,54 +117,47 @@ public class IusseTaskListController {
         return response;
     }
 
-    // 工程检查- 我的问题 -问题详情
     @RequestMapping(value = "issue/configs", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
-    public LjBaseResponse<ProjectSettingConfigVo> configs(HttpServletRequest request, @RequestParam(value = "project_id", required = true) Integer projectId) {
+    public LjBaseResponse<ProjectSettingConfigVo> configs(HttpServletRequest request, @RequestParam(value = "project_id") Integer projectId) {
         return issueListController.configs(request,projectId);
     }
 
-    //工程检查- 我的问题 项目下问题详情
     @RequestMapping(value = "issue/detail_base", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
-    public LjBaseResponse<IssueInfoVo> detailBase(HttpServletRequest request, @RequestParam(value = "project_id", required = true) Integer projectId,
-                                                  @RequestParam(value = "issue_uuid", required = true) String issueUuid) {
+    public LjBaseResponse<IssueInfoVo> detailBase(HttpServletRequest request, @RequestParam(value = "project_id") Integer projectId,
+                                                  @RequestParam(value = "issue_uuid") String issueUuid) {
         return issueListController.detailBase(request,projectId,issueUuid);
     }
 
-    //工程检查- 我的问题 -项目下问题详情追加描述
     @RequestMapping(value = "issue/add_desc", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
-    public LjBaseResponse addDesc(HttpServletRequest request, @RequestParam(value = "project_id", required = true) Integer projectId,
-                                  @RequestParam(value = "issue_uuid", required = true) String issueUuid,
-                                  @RequestParam(value = "content", required = true) String content) {
+    public LjBaseResponse addDesc(HttpServletRequest request, @RequestParam(value = "project_id") Integer projectId,
+                                  @RequestParam(value = "issue_uuid") String issueUuid,
+                                  @RequestParam(value = "content") String content) {
 
         return issueListController.addDesc(request,projectId, issueUuid, content);
     }
 
-    //工程检查- 我的问题 问题详情
     @RequestMapping(value = "issue/detail_log", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
-    public LjBaseResponse<DetailLogRspVo> detailLog(@RequestParam(value = "project_id", required = true) Integer projectId,
-                                                    @RequestParam(value = "issue_uuid", required = true) String issueUuid) throws Exception {
+    public LjBaseResponse<DetailLogRspVo> detailLog(@RequestParam(value = "project_id") Integer projectId,
+                                                    @RequestParam(value = "issue_uuid") String issueUuid)  {
 
         return issueListController.detailLog(projectId,issueUuid);
     }
 
-    //工程检查- 我的问题 项目下问题修复记录
     @RequestMapping(value = "issue/detail_repair_log", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
-    public LjBaseResponse<DetailRepairLogRspVo> detailRepairLog(HttpServletRequest request, @RequestParam(value = "project_id", required = true) Integer projectId,
-                                                                @RequestParam(value = "issue_uuid", required = true) String issueUuid) {
+    public LjBaseResponse<DetailRepairLogRspVo> detailRepairLog(HttpServletRequest request, @RequestParam(value = "project_id") Integer projectId,
+                                                                @RequestParam(value = "issue_uuid") String issueUuid) {
 
         return issueListController.detailRepairLog(request,projectId,issueUuid);
     }
 
-    //【项目-过程检查-问题管理-问题详情】其他信息编辑
     @RequestMapping(value = "issue/edit_detail", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     public LjBaseResponse<Object> editDetail(HttpServletRequest request, @Validated EditDetailReq req) {
         return issueListController.editDetail(request,req);
     }
 
-    //【项目-过程检查-问题管理-问题详情】删除问题
     @RequestMapping(value = "issue/delete", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
-    public LjBaseResponse delete(HttpServletRequest request, @RequestParam(value = "project_id", required = true) Integer projectId,
-                                 @RequestParam(value = "issue_uuid", required = true) String issueUuid) {
+    public LjBaseResponse delete(HttpServletRequest request, @RequestParam(value = "project_id") Integer projectId,
+                                 @RequestParam(value = "issue_uuid") String issueUuid) {
         LjBaseResponse response = new LjBaseResponse();
         try {
             ctrlTool.projPerm(request, "项目.工程检查.问题管理.删除");

@@ -13,6 +13,7 @@ import com.longfor.longjian.houseqm.app.req.issue.IssueBatchApproveReq;
 import com.longfor.longjian.houseqm.app.req.issue.IssueBatchDeleteReq;
 import com.longfor.longjian.houseqm.app.req.issue.IssueExportPdfReq;
 import com.longfor.longjian.houseqm.app.service.IHouseqmIssueService;
+import com.longfor.longjian.houseqm.app.utils.SessionUtil;
 import com.longfor.longjian.houseqm.app.vo.IssueBatchAppointRspVo;
 import com.longfor.longjian.houseqm.app.vo.houseqmissue.IssueBatchApproveRspVo;
 import com.longfor.longjian.houseqm.app.vo.houseqmissue.IssueBatchDeleteRspVo;
@@ -43,14 +44,6 @@ import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
 import java.util.*;
 
-/**
- * @ProjectName: longjian-houseqm-server
- * @Package: com.longfor.longjian.houseqm.app.controller
- * @ClassName: HouseqmIssueController
- * @Description: java类作用描述
- * @Author: hy
- * @CreateDate: 2019/1/10 17:02
- */
 @RestController
 @RequestMapping("oapi/v3/houseqm/issue/")
 @Slf4j
@@ -221,14 +214,7 @@ public class HouseqmIssueController {
         return response;
     }
 
-    /**
-     * @return com.longfor.longjian.common.base.LjBaseResponse<com.longfor.longjian.houseqm.app.vo.IssueBatchAppointRspVo>
-     * @Author hy
-     * @Description 批量指派issue
-     * http://192.168.37.159:3000/project/8/interface/api/3320
-     * @Date 14:03 2019/1/11
-     * @Param [req]
-     **/
+
     @RequestMapping(value = "batch_appoint", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     public LjBaseResponse<IssueBatchAppointRspVo> batchAppoint(HttpServletRequest request, @Valid IssueBatchAppointReq req) {
         LjBaseResponse<IssueBatchAppointRspVo> response = new LjBaseResponse<>();
@@ -261,14 +247,6 @@ public class HouseqmIssueController {
         return response;
     }
 
-    /**
-     * @return com.longfor.longjian.common.base.LjBaseResponse<com.longfor.longjian.houseqm.app.vo.houseqmissue.IssueBatchApproveRspVo>
-     * @Author hy
-     * @Description 项目下我的问题批量销项
-     * http://192.168.37.159:3000/project/8/interface/api/3376
-     * @Date 18:45 2019/1/12
-     * @Param [req]
-     **/
     @RequestMapping(value = "batch_approve", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     public LjBaseResponse<IssueBatchApproveRspVo> batchApprove(HttpServletRequest request, @Validated IssueBatchApproveReq req) throws Exception {
         LjBaseResponse<IssueBatchApproveRspVo> response = new LjBaseResponse<>();
@@ -289,14 +267,6 @@ public class HouseqmIssueController {
         return response;
     }
 
-    /**
-     * @return com.longfor.longjian.common.base.LjBaseResponse<com.longfor.longjian.houseqm.app.vo.houseqmissue.IssueBatchDeleteRspVo>
-     * @Author hy
-     * @Description 项目下问题管理批量删除
-     * http://192.168.37.159:3000/project/8/interface/api/3348
-     * @Date 18:49 2019/1/12
-     * @Param [req]
-     **/
     @RequestMapping(value = "batch_delete", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     public LjBaseResponse<IssueBatchDeleteRspVo> batchDelete(HttpServletRequest request, @Validated IssueBatchDeleteReq req) {
         LjBaseResponse<IssueBatchDeleteRspVo> response = new LjBaseResponse<>();
@@ -325,7 +295,7 @@ public class HouseqmIssueController {
 
     private List<String> filterIssueUuidByProjIdTaskIdUuids(int projId, int taskId, String uuidStr) {
         List<String> issueUuids = StringSplitToListUtil.splitToStringComma(uuidStr, ",");
-        if (issueUuids.isEmpty()) return issueUuids;
+        if (issueUuids.isEmpty()) return Lists.newArrayList();
         List<HouseQmCheckTaskIssue> issues = houseQmCheckTaskIssueService.searchHouseQmCheckTaskIssueByTaskIdUuidIn(taskId, issueUuids);
         List<String> uuids = Lists.newArrayList();
         for (HouseQmCheckTaskIssue issue : issues) {
@@ -340,7 +310,8 @@ public class HouseqmIssueController {
     private String buildMap(Map<String, String> map) {
         StringBuilder sb = new StringBuilder();
         if (map.size() > 0) {
-            for (String key : map.keySet()) {
+            for (Iterator<String> iterator = map.keySet().iterator(); iterator.hasNext(); ) {
+                String key = iterator.next();
                 sb.append(key).append("=");
                 if (StringUtils.isEmpty(map.get(key))) {
                     sb.append("&");

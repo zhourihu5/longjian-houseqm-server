@@ -50,6 +50,9 @@ import java.util.List;
 @RequestMapping("oapi/v3/houseqm/")
 @Slf4j
 public class HouseqmStatController {
+    private static final String SEE ="项目.移动验房.统计.查看";
+    private static final String YMDHMS= "yyyy-MM-dd hh:mm:ss";
+    private static final String  YMD="yyyy-MM-dd";
 
     @Resource
     private IHouseqmStatService houseqmStatService;
@@ -60,25 +63,19 @@ public class HouseqmStatController {
     @Resource
     private SessionInfo sessionInfo;
 
-    /**
-     * @return com.longfor.longjian.common.base.LjBaseResponse<com.longfor.longjian.houseqm.app.vo.houseqmstat.StatCategoryStatRspVo>
-     * @Author hy
-     * @Description 统计-问题详情-获取问题统计信息
-     * @Date 11:23 2019/1/29
-     * @Param [request, req]
-     **/
+
     @RequestMapping(value = "stat/category_stat", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
-    public LjBaseResponse<StatCategoryStatRspVo> categoryStat(HttpServletRequest request, @Validated StatCategoryStatReq req) throws Exception {
+    public LjBaseResponse<StatCategoryStatRspVo> categoryStat(HttpServletRequest request, @Validated StatCategoryStatReq req) {
         LjBaseResponse<StatCategoryStatRspVo> response = new LjBaseResponse<>();
-        ctrlTool.projPermMulti(request, new String[]{"项目.移动验房.统计.查看", "项目.工程检查.统计.查看"});
+        ctrlTool.projPermMulti(request, new String[]{SEE, SEE});
         if (req.getArea_id() == null) req.setArea_id(0);
-        Date beginOn = DateUtil.timeStampToDate(0, "yyyy-MM-dd");
-        Date endOn = DateUtil.timeStampToDate(0, "yyyy-MM-dd");
-        if (req.getBegin_on() != null && !req.getBegin_on().equals("")) {
-            beginOn = DateUtil.strToDate(req.getBegin_on(), "yyyy-MM-dd");
+        Date beginOn = DateUtil.timeStampToDate(0, YMD);
+        Date endOn = DateUtil.timeStampToDate(0, YMD);
+        if (req.getBegin_on() != null && !"".equals(req.getBegin_on())) {
+            beginOn = DateUtil.strToDate(req.getBegin_on(), YMD);
         }
-        if (req.getEnd_on() != null && !req.getEnd_on().equals("")) {
-            Date t = DateUtil.strToDate(req.getEnd_on(), "yyyy-MM-dd");
+        if (req.getEnd_on() != null && !"".equals(req.getEnd_on())) {
+            Date t = DateUtil.strToDate(req.getEnd_on(), YMD);
             endOn = DateUtil.dateAddDay(t, 1);
         }
         StatCategoryStatRspVo result = houseqmStatService.searchHouseQmIssueCategoryStatByProjTaskIdAreaIdBeginOnEndOn(req.getProject_id(), req.getTask_id(), req.getArea_id(), beginOn, endOn);
@@ -86,17 +83,10 @@ public class HouseqmStatController {
         return response;
     }
 
-    /**
-     * @return com.longfor.longjian.common.base.LjBaseResponse<com.longfor.longjian.houseqm.app.vo.houseqmstat.StatInspectionSituationSearchRspVo>
-     * @Author hy
-     * @Description 统计-验房详情-检索验房详情
-     * @Date 10:50 2019/1/29
-     * @Param [request, req]
-     **/
     @RequestMapping(value = "stat/inspection_situation_search", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
-    public LjBaseResponse<StatInspectionSituationSearchRspVo> inspectionSituationSearch(HttpServletRequest request, @Validated StatInspectionSituationSearchReq req) throws Exception {
+    public LjBaseResponse<StatInspectionSituationSearchRspVo> inspectionSituationSearch(HttpServletRequest request, @Validated StatInspectionSituationSearchReq req) {
         LjBaseResponse<StatInspectionSituationSearchRspVo> response = new LjBaseResponse<>();
-        ctrlTool.projPermMulti(request, new String[]{"项目.移动验房.统计.查看", "项目.工程检查.统计.查看"});
+        ctrlTool.projPermMulti(request, new String[]{SEE, SEE});
         if (req.getArea_id() == null) req.setArea_id(0);
         if (req.getIssue_status() == null) req.setIssue_status(0);
         if (req.getStatus() == null) req.setStatus(0);
@@ -106,11 +96,11 @@ public class HouseqmStatController {
             req.setEnd_time("");
         }
         // 时间设置问题 可能造成数据结果不一致，修改
-        Date startTime = DateUtil.timeStampToDate(0, "yyyy-MM-dd");
-        Date endTime = DateUtil.timeStampToDate(0, "yyyy-MM-dd");
+        Date startTime = DateUtil.timeStampToDate(0, YMD);
+        Date endTime = DateUtil.timeStampToDate(0, YMD);
         if (req.getStart_time().length() > 0) {
-            startTime = DateUtil.strToDate(req.getStart_time() + " 00:00:00", "yyyy-MM-dd hh:mm:ss");
-            endTime = DateUtil.strToDate(req.getEnd_time() + " 23:59:59", "yyyy-MM-dd hh:mm:ss");
+            startTime = DateUtil.strToDate(req.getStart_time() + " 00:00:00", YMDHMS);
+            endTime = DateUtil.strToDate(req.getEnd_time() + " 23:59:59", YMDHMS);
         }
         List<Integer> areaIds = houseqmStatService.searchRepossessInspectionAreaIdsByConditions(req.getProject_id(), req.getTask_id(), req.getArea_id(), req.getStatus(), req.getIssue_status(), startTime, endTime);
         StatInspectionSituationSearchRspVo data = new StatInspectionSituationSearchRspVo();
@@ -136,7 +126,7 @@ public class HouseqmStatController {
         return response;
     }
 
-    public List<Integer> splitSliceByPaged(List<Integer> areaIds, int page, int pageSize) {
+    private List<Integer> splitSliceByPaged(List<Integer> areaIds, int page, int pageSize) {
         int start;
         if (page <= 0) {
             page = 1;
@@ -154,17 +144,12 @@ public class HouseqmStatController {
         return ids;
     }
 
-    /**
-     * 项目/任务检查人员统计
-     *
-     * @param req
-     * @return
-     */
+
     @RequestMapping(value = "stat_houseqm/checker_stat", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     public LjBaseResponse<CheckerStatListVo> checkerStat(HttpServletRequest request, @Valid StatHouseqmCheckerStatReq req) {
         LjBaseResponse<CheckerStatListVo> response = new LjBaseResponse<>();
         try {
-            ctrlTool.projPermMulti(request, new String[]{"项目.移动验房.统计.查看", "项目.工程检查.统计.查看"});
+            ctrlTool.projPermMulti(request, new String[]{SEE, SEE});
         } catch (Exception e) {
             log.error(e.getMessage());
             response.setResult(1);
@@ -183,17 +168,11 @@ public class HouseqmStatController {
         return response;
     }
 
-    /**
-     * 项目任务进度统计信息
-     *
-     * @param req
-     * @return
-     */
     @RequestMapping(value = "stat/task_situation_daily", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     public LjBaseResponse<ProjectDailyListVo> taskSituationDaily(HttpServletRequest request, @Valid StatTaskSituationDailyReq req) {
         LjBaseResponse<ProjectDailyListVo> response = new LjBaseResponse<>();
         try {
-            ctrlTool.projPermMulti(request, new String[]{"项目.移动验房.统计.查看", "项目.工程检查.统计.查看"});
+            ctrlTool.projPermMulti(request, new String[]{SEE, SEE});
         } catch (Exception e) {
             log.error(e.getMessage());
             response.setMessage(e.getMessage());
@@ -212,17 +191,11 @@ public class HouseqmStatController {
         return response;
     }
 
-    /**
-     * 项目任务信息汇总 统计-任务汇总-汇总
-     *
-     * @param req
-     * @return
-     */
     @RequestMapping(value = "stat/task_situation_overall", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     public LjBaseResponse<ProjectOveralListVo> taskSituationOverall(HttpServletRequest request, @Valid StatTaskSituationOverallReq req) {
         LjBaseResponse<ProjectOveralListVo> response = new LjBaseResponse<>();
         try {
-            ctrlTool.projPermMulti(request, new String[]{"项目.移动验房.统计.查看", "项目.工程检查.统计.查看"});
+            ctrlTool.projPermMulti(request, new String[]{SEE, SEE});
         } catch (Exception e) {
             log.error(e.getMessage());
             response.setMessage(e.getMessage());
@@ -260,17 +233,11 @@ public class HouseqmStatController {
         return response;
     }
 
-    /**
-     * 获取区域列表
-     *
-     * @param req
-     * @return
-     */
     @RequestMapping(value = "stat/task_area_list", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     public LjBaseResponse<TaskAreaListVo> taskAreaList(HttpServletRequest request, @Valid StatTaskAreaListReq req) {
         LjBaseResponse<TaskAreaListVo> response = new LjBaseResponse<>();
         try {
-            ctrlTool.projPermMulti(request, new String[]{"项目.移动验房.统计.查看", "项目.工程检查.统计.查看"});
+            ctrlTool.projPermMulti(request, new String[]{SEE, SEE});
         } catch (Exception e) {
             log.error(e.getMessage());
             response.setMessage(e.getMessage());
@@ -289,17 +256,12 @@ public class HouseqmStatController {
         return response;
     }
 
-    /**
-     * 获取区域下任务信息
-     *
-     * @param req
-     * @return
-     */
+
     @RequestMapping(value = "stat/area_situation_task_list", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     public LjBaseResponse<AreaTaskListVo> areaSituationTaskList(HttpServletRequest request, @Valid StatAreaSituationTaskListReq req) {
         LjBaseResponse<AreaTaskListVo> response = new LjBaseResponse<>();
         try {
-            ctrlTool.projPermMulti(request, new String[]{"项目.移动验房.统计.查看", "项目.工程检查.统计.查看"});
+            ctrlTool.projPermMulti(request, new String[]{SEE, SEE});
         } catch (Exception e) {
             log.error(e.getMessage());
             response.setMessage(e.getMessage());
@@ -318,17 +280,11 @@ public class HouseqmStatController {
     }
 
 
-    /**
-     * 获取任务详情-总体情况
-     *
-     * @param req
-     * @return
-     */
     @RequestMapping(value = "stat/task_detail", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     public LjBaseResponse<TaskStatVo> taskDetail(HttpServletRequest request, @Valid StatTaskDetailReq req) {
         LjBaseResponse<TaskStatVo> response = new LjBaseResponse<>();
         try {
-            ctrlTool.projPermMulti(request, new String[]{"项目.移动验房.统计.查看", "项目.工程检查.统计.查看"});
+            ctrlTool.projPermMulti(request, new String[]{SEE, SEE});
         } catch (Exception e) {
             log.error(e.getMessage());
             response.setResult(1);
@@ -355,17 +311,11 @@ public class HouseqmStatController {
     }
 
 
-    /**
-     * 获取整改追踪信息
-     *
-     * @param req
-     * @return
-     */
     @RequestMapping(value = "stat/task_situation_repair_stat", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     public LjBaseResponse<StatTaskSituationRepairStatRsp> taskSituationRepairStat(HttpServletRequest request, @Valid StatTaskSituationRepairStatReq req) {
         LjBaseResponse<StatTaskSituationRepairStatRsp> response = new LjBaseResponse<>();
         try {
-            ctrlTool.projPermMulti(request, new String[]{"项目.移动验房.统计.查看", "项目.工程检查.统计.查看"});
+            ctrlTool.projPermMulti(request, new String[]{SEE, SEE});
         } catch (Exception e) {
             log.error(e.getMessage());
             response.setMessage(e.getMessage());
@@ -374,7 +324,7 @@ public class HouseqmStatController {
         }
         Date t = null;
         try {
-            t = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").parse("0001-01-01 00:00:00");
+            t = new SimpleDateFormat(YMDHMS).parse("0001-01-01 00:00:00");
         } catch (ParseException e) {
             log.error(e.getMessage());
         }
@@ -405,19 +355,15 @@ public class HouseqmStatController {
     }
 
     /**
-     * @return com.longfor.longjian.common.base.LjBaseResponse<com.longfor.longjian.houseqm.app.vo.StatHouseqmTaskSituationOverallRspVo>
-     * @Author hy
-     * @Description 统计-验房统计-任务总进度及交付情况
-     * @Date 20:12 2019/1/8
-     * @Param [req]
-     * ////该接口不用了，废弃
-     **/
+     *
+     * @deprecated 接口废弃
+     */
     @Deprecated
     @GetMapping(value = "stat_houseqm/task_situation_overall", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     public LjBaseResponse<StatHouseqmTaskSituationOverallRspVo> taskSituationOverall(HttpServletRequest request, @RequestBody @Valid StatHouseqmTaskSituationOverallReq req) {
         LjBaseResponse<StatHouseqmTaskSituationOverallRspVo> response = new LjBaseResponse<>();
         try {
-            ctrlTool.projPermMulti(request, new String[]{"项目.移动验房.统计.查看", "项目.工程检查.统计.查看"});
+            ctrlTool.projPermMulti(request, new String[]{SEE, SEE});
             List<Integer> taskIds = StringSplitToListUtil.strToInts(req.getTask_ids(), ",");
             RepossessionTasksStatusInfoVo info = houseqmStatisticService.getRepossessionTasksStatusInfo(req.getProject_id(), taskIds, 0);
             response.setResult(0);
@@ -446,26 +392,23 @@ public class HouseqmStatController {
     }
 
     /**
-     * @return
-     * @Author hy
-     * @Description 统计-验房统计-每天的交付数
-     * @Date 20:16 2019/1/8
-     * @Param //// 该接口不用了，废弃
-     **/
+     *
+     * @deprecated 接口废弃
+     */
     @Deprecated
     @GetMapping(value = "stat_houseqm/complete_daily", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     public LjBaseResponse<StatHouseqmCompleteDailyRspVo> completeDaily(HttpServletRequest request, @Valid StatHouseqmCompleteDailyReq req) {
         LjBaseResponse<StatHouseqmCompleteDailyRspVo> response = new LjBaseResponse<>();
         try {
-            ctrlTool.projPermMulti(request, new String[]{"项目.移动验房.统计.查看", "项目.工程检查.统计.查看"});
+            ctrlTool.projPermMulti(request, new String[]{SEE, SEE});
             List<Integer> taskIds = StringSplitToListUtil.strToInts(req.getTask_ids(), ",");
             int beginOn = 0;
             int endOn = 0;
             if (req.getBegin_on().length() > 0) {
-                beginOn = DateUtil.datetimeToTimeStamp(DateUtil.strToDate(req.getBegin_on(), "yyyy-MM-dd hh:mm:ss"));
+                beginOn = DateUtil.datetimeToTimeStamp(DateUtil.strToDate(req.getBegin_on(), YMDHMS));
             }
             if (req.getEnd_on().length() > 0) {
-                endOn = DateUtil.datetimeToTimeStamp(DateUtil.strToDate(req.getEnd_on(), "yyyy-MM-dd hh:mm:ss"));
+                endOn = DateUtil.datetimeToTimeStamp(DateUtil.strToDate(req.getEnd_on(), YMDHMS));
             }
             StatHouseqmCompleteDailyRspVo data = houseqmStatisticService.searchRepossessionStatusCompleteDaily(req.getProject_id(), taskIds, beginOn, endOn, req.getPage(), req.getPage_size());
             response.setData(data);
@@ -477,28 +420,20 @@ public class HouseqmStatController {
         return response;
     }
 
-
-    /**
-     * @return com.longfor.longjian.common.base.LjBaseResponse<com.longfor.longjian.houseqm.app.vo.StatTaskSituationMembersCheckerRspVo>
-     * @Author hy
-     * @Description 统计-任务详情-人员情况-检查人
-     * @Date 14:50 2019/1/9
-     * @Param [req]
-     **/
     @RequestMapping(value = "stat/task_situation_members_checker", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     public LjBaseResponse<StatTaskSituationMembersCheckerRspVo> taskSituationMembersChecker(HttpServletRequest request, @Valid StatTaskSituationMembersCheckerReq req) {
         LjBaseResponse<StatTaskSituationMembersCheckerRspVo> response = new LjBaseResponse<>();
         try {
-            ctrlTool.projPermMulti(request, new String[]{"项目.移动验房.统计.查看", "项目.工程检查.统计.查看"});
+            ctrlTool.projPermMulti(request, new String[]{SEE, SEE});
             if ("".equals(req.getBegin_on())) {
                 req.setBegin_on("1970-01-01");
             }
-            Date start = DateUtil.strToDate(req.getBegin_on(), "yyyy-MM-dd");
+            Date start = DateUtil.strToDate(req.getBegin_on(), YMD);
             Date end = null;
             if ("".equals(req.getEnd_on())) {
                 end = new Date();
             } else {
-                end = DateUtil.strToDate(req.getEnd_on(), "yyyy-MM-dd");
+                end = DateUtil.strToDate(req.getEnd_on(), YMD);
             }
             List<HouseQmStatTaskDetailMemberCheckerRspVo> result = houseqmStatService.searchCheckerIssueStatusStatByProjTaskIdBetweenTime(req.getProject_id(), req.getTask_id(), start, DateUtil.dateAddDay(end, 1));
             StatTaskSituationMembersCheckerRspVo data = new StatTaskSituationMembersCheckerRspVo();
@@ -513,28 +448,21 @@ public class HouseqmStatController {
         return response;
     }
 
-    /**
-     * @return com.longfor.longjian.common.base.LjBaseResponse<com.longfor.longjian.houseqm.app.vo.StatTaskSituationMembersRepairerRspVo>
-     * @Author hy
-     * @Description 项目下任务整改人员情况查询
-     * http://192.168.37.159:3000/project/8/interface/api/3416
-     * @Date 14:59 2019/1/10
-     * @Param [req]
-     **/
+
     @RequestMapping(value = "stat/task_situation_members_repairer", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     public LjBaseResponse<StatTaskSituationMembersRepairerRspVo> taskSituationMembersRepairer(HttpServletRequest request, @Valid StatTaskSituationMembersRepairerReq req) {
         LjBaseResponse<StatTaskSituationMembersRepairerRspVo> response = new LjBaseResponse<>();
         try {
-            ctrlTool.projPermMulti(request, new String[]{"项目.移动验房.统计.查看", "项目.工程检查.统计.查看"});
+            ctrlTool.projPermMulti(request, new String[]{SEE, SEE});
             if ("".equals(req.getBegin_on())) {
                 req.setBegin_on("1970-01-01");
             }
-            Date start = DateUtil.strToDate(req.getBegin_on(), "yyyy-MM-dd");
+            Date start = DateUtil.strToDate(req.getBegin_on(), YMD);
             Date end = null;
             if ("".equals(req.getEnd_on())) {
                 end = new Date();
             } else {
-                end = DateUtil.strToDate(req.getEnd_on(), "yyyy-MM-dd");
+                end = DateUtil.strToDate(req.getEnd_on(), YMD);
             }
             List<HouseQmStatTaskDetailMemberRepairerRspVo> res = houseqmStatService.searchRepaireIssueStatusStatByProjTaskIdBetweenTime(req.getProject_id(), req.getTask_id(), start, DateUtil.dateAddDay(end, 1));
             StatTaskSituationMembersRepairerRspVo data = new StatTaskSituationMembersRepairerRspVo();
@@ -549,19 +477,11 @@ public class HouseqmStatController {
         return response;
     }
 
-    /**
-     * @return com.longfor.longjian.common.base.LjBaseResponse<com.longfor.longjian.houseqm.app.vo.HouseQmStatAreaSituationIssueRspVo>
-     * @Author hy
-     * @Description 项目下日常检查区域概况
-     * http://192.168.37.159:3000/project/8/interface/api/3424
-     * @Date 16:55 2019/1/10
-     * @Param [req]
-     **/
     @RequestMapping(value = "stat/area_situation", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     public LjBaseResponse<StatAreaSituationRspVo> areaSituation(HttpServletRequest request, @Valid StatAreaSituationReq req) {
         LjBaseResponse<StatAreaSituationRspVo> response = new LjBaseResponse<>();
         try {
-            ctrlTool.projPermMulti(request, new String[]{"项目.移动验房.统计.查看", "项目.工程检查.统计.查看"});
+            ctrlTool.projPermMulti(request, new String[]{SEE, SEE});
         } catch (Exception e) {
             log.error(e.getMessage());
             response.setMessage(e.getMessage());

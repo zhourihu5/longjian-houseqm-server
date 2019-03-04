@@ -59,7 +59,7 @@ import java.util.*;
 @RequestMapping("v3/api/houseqm_statistic/")
 @Slf4j
 public class HouseqmStatisticController {
-    private static final String _SOURCE_NAME_GCJC = "gcjc";
+    private static final String SOURCE_NAME_GCJC = "gcjc";
     @Resource
     private HouseqmStaticService houseqmStaticService;
     @Resource
@@ -74,15 +74,8 @@ public class HouseqmStatisticController {
     private SessionInfo sessionInfo;
     @Resource
     private AreaService areaService;
+    private static final String YMD="yyyy-MM-dd";
 
-    /**
-     * @return com.longfor.longjian.common.base.LjBaseResponse<com.longfor.longjian.houseqm.app.vo.houseqmstatistic.HouseqmStatisticRhyfTaskStatRspVo>
-     * @Author hy
-     * @Description 任务概况页统计（入伙验房单独接口）
-     * http://192.168.37.159:3000/project/8/interface/api/3284
-     * @Date 14:42 2019/1/22
-     * @Param [req]
-     **/
     @RequestMapping(value = "rhyf_task_stat", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     public LjBaseResponse<HouseqmStatisticRhyfTaskStatRspVo> rhyfTaskStat(@Valid HouseqmStatisticRhyfTaskStatReq req) {
         LjBaseResponse<HouseqmStatisticRhyfTaskStatRspVo> response = new LjBaseResponse<>();
@@ -144,10 +137,6 @@ public class HouseqmStatisticController {
         return response;
     }
 
-
-    /**
-     * @param projectReq
-     */
     @RequestMapping(value = "get_daterange_options", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     public LjBaseResponse<HouseqmStatisticGetDaterangeOptionsRspMsgVo> getDaterangeOptions(ProjectReq projectReq) {
         HouseqmStatisticGetDaterangeOptionsRspMsgVo vo = new HouseqmStatisticGetDaterangeOptionsRspMsgVo();
@@ -219,7 +208,7 @@ public class HouseqmStatisticController {
 
     private List<Integer> getCategoryClsList(String source) {
         if (source.equals("gcgl")) {
-            source = _SOURCE_NAME_GCJC;
+            source = SOURCE_NAME_GCJC;
         }
 
         if (source.equals("ydyf")) {
@@ -241,14 +230,6 @@ public class HouseqmStatisticController {
     }
 
 
-    /**
-     * http://192.168.37.159:3000/project/8/interface/api/380
-     *
-     * @param
-     * @return com.longfor.longjian.common.base.LjBaseResponse<com.longfor.longjian.houseqm.app.vo.ProjectDailyListVo>
-     * @author hy
-     * @date 2018/12/24 0024
-     */
     @RequestMapping(value = "project_issue_repair", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     public LjBaseResponse<HouseqmStatisticProjectIssueRepairRsp> projectIssueRepair(@Valid HouseqmStatisticProjectIssueRepairReq req) {
         if (req.getArea_id() == null) req.setArea_id(0);
@@ -275,10 +256,6 @@ public class HouseqmStatisticController {
         return response;
     }
 
-    /**
-     * @param
-     * @return http://192.168.37.159:3000/project/8/interface/api/384
-     */
     @RequestMapping(value = "task_checkitem_stat", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     public LjBaseResponse<HouseqmStatisticTaskCheckitemStatRspMsgVo> taskCheckitemStat(@RequestParam(value = "project_id") Integer projectId,
                                                                                        @RequestParam(value = "task_id") Integer taskId,
@@ -289,11 +266,11 @@ public class HouseqmStatisticController {
 
         Date begin = null;
         if (beginOn > 0) {
-            begin = DateUtil.timeStampToDate(beginOn, "yyyy-MM-dd");
+            begin = DateUtil.timeStampToDate(beginOn, YMD);
         }
         Date endOns = null;
         if (endOn > 0) {
-            endOns = DateUtil.timeStampToDate(endOn, "yyyy-MM-dd");
+            endOns = DateUtil.timeStampToDate(endOn, YMD);
             //endon加一天
             Calendar c = Calendar.getInstance();
             c.setTime(endOns);
@@ -334,7 +311,7 @@ public class HouseqmStatisticController {
     }
 
     /**
-     * @param
+     *
      * @return http://192.168.37.159:3000/project/8/interface/api/388
      */
     @RequestMapping(value = "task_issue_repair", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
@@ -346,11 +323,11 @@ public class HouseqmStatisticController {
                                                                               @RequestParam(value = "timestamp") Integer timestamp) {
         Date begin = null;
         if (beginOn > 0) {
-            begin = DateUtil.timeStampToDate(beginOn, "yyyy-MM-dd");
+            begin = DateUtil.timeStampToDate(beginOn, YMD);
         }
         Date endOns = null;
         if (endOn > 0) {
-            endOns = DateUtil.timeStampToDate(endOn, "yyyy-MM-dd");
+            endOns = DateUtil.timeStampToDate(endOn, YMD);
             //endon加一天
             Calendar c = Calendar.getInstance();
             c.setTime(endOns);
@@ -381,7 +358,7 @@ public class HouseqmStatisticController {
     /**
      * http://192.168.37.159:3000/project/8/interface/api/392
      *
-     * @param
+     *
      * @return com.longfor.longjian.common.base.LjBaseResponse<com.longfor.longjian.houseqm.app.vo.HouseqmStatisticCategoryIssueListRspMsgVo>
      * @author hy
      * @date 2018/12/22 0022
@@ -411,10 +388,6 @@ public class HouseqmStatisticController {
         return response;
     }
 
-    /**
-     * @param
-     * @return
-     */
 
     @RequestMapping(value = "category_issue_list", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     public LjBaseResponse<HouseqmStatisticCategoryIssueListRspMsgVo> categoryIssueList(@RequestParam(value = "project_id") Integer projectId,
@@ -459,11 +432,6 @@ public class HouseqmStatisticController {
     }
 
 
-    /**
-     * @param prodectId
-     * @param timestamp
-     * @return
-     */
     @RequestMapping(value = "project_building_list", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     public LjBaseResponse<HouseqmStatisticProjectBuildingListRspMsgVo> projectBuildingList(@RequestParam(value = "project_id") Integer prodectId,
                                                                                            @RequestParam(value = "timestamp") Integer timestamp) {
@@ -476,10 +444,6 @@ public class HouseqmStatisticController {
         return response;
     }
 
-    /**
-     * @param
-     * @return
-     */
     @RequestMapping(value = "task_building_list", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     public LjBaseResponse<HouseqmStatisticTaskBuildingListRspMsgVo> taskBuildingList(@RequestParam(value = "project_id") Integer prodectId,
                                                                                      @RequestParam(value = "task_id") Integer taskId,
