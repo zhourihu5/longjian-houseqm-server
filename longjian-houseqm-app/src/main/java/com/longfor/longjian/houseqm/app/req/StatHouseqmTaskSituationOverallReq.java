@@ -3,8 +3,6 @@ package com.longfor.longjian.houseqm.app.req;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.hibernate.validator.constraints.NotBlank;
-import org.hibernate.validator.constraints.NotEmpty;
-import org.omg.CORBA.INTERNAL;
 
 import javax.validation.constraints.NotNull;
 import java.io.Serializable;

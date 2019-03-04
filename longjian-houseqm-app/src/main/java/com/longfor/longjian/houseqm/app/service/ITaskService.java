@@ -13,11 +13,11 @@ public interface ITaskService {
 
     List<Integer> getHouseqmCheckTaskCheckedAreas(Integer projectId, Integer taskId);
 
-    void deleteHouseQmCheckTaskByProjTaskId(Integer project_id, Integer task_id) throws Exception;
+    void deleteHouseQmCheckTaskByProjTaskId(Integer projectId, Integer taskId);
 
-    List<UserInHouseQmCheckTask> searchUserInKeyHouseQmCheckTaskByTaskId(Integer task_id);
+    List<UserInHouseQmCheckTask> searchUserInKeyHouseQmCheckTaskByTaskId(Integer taskId);
 
     Map<Integer, User> getUsersByIds(List<Integer> uids);
 
-    HouseQmCheckTaskListAndTotalVo searchHouseQmCheckTaskByProjCategoryClsStatusPage(Integer projId, Integer category_cls, Integer status, Integer page, Integer page_size);
+    HouseQmCheckTaskListAndTotalVo searchHouseQmCheckTaskByProjCategoryClsStatusPage(Integer projId, Integer categoryCls, Integer status, Integer page, Integer pageSize);
 }

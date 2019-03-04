@@ -17,13 +17,13 @@ import javax.annotation.PostConstruct;
 @Service
 @Slf4j
 @Data
-public class CachingPreparsedDocumentProvider{
+public class CachingPreparsedDocumentProvider {
 
     private Cache<String, PreparsedDocumentEntry> cache;
 
     @PostConstruct
     public void setUp() {
-       cache =  Caffeine.newBuilder().maximumSize(10_000).build();
+        cache = Caffeine.newBuilder().maximumSize(10_000).build();
     }
 
 }

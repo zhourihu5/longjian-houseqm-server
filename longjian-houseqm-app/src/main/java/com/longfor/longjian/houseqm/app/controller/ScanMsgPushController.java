@@ -22,8 +22,8 @@ public class ScanMsgPushController {
     private ScanMsgPushService scanMsgPushService;
 
 
-    @RequestMapping(value = "scan_notice_center", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
-    public LjBaseResponse scanNoticeCenter(String categoryCls){
+    @PostMapping(value = "scan_notice_center", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+    public LjBaseResponse scanNoticeCenter(String categoryCls) {
 
         log.info("scan_notice_center, categoryCls=" + categoryCls);
 

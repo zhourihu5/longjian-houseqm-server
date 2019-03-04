@@ -3,7 +3,6 @@ package com.longfor.longjian.houseqm.app.req.houseqmstat;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import javax.naming.ldap.PagedResultsControl;
 import javax.validation.constraints.NotNull;
 import java.io.Serializable;
 
@@ -28,7 +27,7 @@ public class StatCategoryStatReq implements Serializable {
     private Integer project_id;
     @NotNull
     private Integer task_id;
-    private Integer area_id=0;
-    private String begin_on="";
-    private String end_on="";
+    private Integer area_id = 0;
+    private String begin_on = "";
+    private String end_on = "";
 }

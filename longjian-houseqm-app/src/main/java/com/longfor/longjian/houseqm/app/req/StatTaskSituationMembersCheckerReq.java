@@ -2,7 +2,6 @@ package com.longfor.longjian.houseqm.app.req;
 
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import org.omg.CORBA.INTERNAL;
 
 import javax.validation.constraints.NotNull;
 import java.io.Serializable;
@@ -28,7 +27,7 @@ public class StatTaskSituationMembersCheckerReq implements Serializable {
     private Integer project_id;
     @NotNull
     private Integer task_id;
-    private String begin_on="";
-    private String end_on="";
+    private String begin_on = "";
+    private String end_on = "";
 
 }

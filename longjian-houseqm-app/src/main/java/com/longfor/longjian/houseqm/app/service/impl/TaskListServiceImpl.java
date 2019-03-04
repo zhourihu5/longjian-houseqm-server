@@ -14,7 +14,7 @@ import com.longfor.longjian.houseqm.app.vo.TaskPushStrategyVo;
 import com.longfor.longjian.houseqm.app.vo.TaskRoleListVo;
 import com.longfor.longjian.houseqm.app.vo.task.CheckTaskIssueTypeStatInfo;
 import com.longfor.longjian.houseqm.consts.ErrorEnum;
-import com.longfor.longjian.houseqm.domain.internalService.*;
+import com.longfor.longjian.houseqm.domain.internalservice.*;
 import com.longfor.longjian.houseqm.innervo.ApiBuildingQmCheckTaskConfig;
 import com.longfor.longjian.houseqm.innervo.ApiBuildingQmCheckTaskMsg;
 import com.longfor.longjian.houseqm.po.zhijian2_apisvr.Team;
@@ -30,8 +30,12 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Repository;
 import org.springframework.stereotype.Service;
+
 import javax.annotation.Resource;
-import java.util.*;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 /**
  * @author Houyan
@@ -58,6 +62,10 @@ public class TaskListServiceImpl implements ITaskListService {
     private UserService userService;
     @Resource
     private HouseQmCheckTaskIssueService houseQmCheckTaskIssueService;
+    @Value("${spe.team_group_100194.export_issue}")
+    private String svrCfg;
+    @Value("team_group_100194")
+    private String teamGrop;
 
     // 通过taskIds获取以任务为索引的问题累计统计的map
     @Override
@@ -162,12 +170,12 @@ public class TaskListServiceImpl implements ITaskListService {
         for (HouseQmCheckTask checkTask : checkTaskList) {
             ApiBuildingQmCheckTaskMsg task = new ApiBuildingQmCheckTaskMsg();
             //TaskVo task = new TaskVo();
-            BuildingqmServiceImpl.setTaskProperties(null,task,taskMap,checkTask);
+            BuildingqmServiceImpl.setTaskProperties(null, task, taskMap, checkTask);
 
             HashMap<String, Map> pushStrategy = Maps.newHashMap();
             if (assignTimeMap.containsKey(task.getTask_id())) {
                 HashMap<String, Object> assignTime = Maps.newHashMap();
-                String pushTime = DateUtil.dateToString(assignTimeMap.get(task.getTask_id()).getPushTime(),"yyyy-MM-dd HH:mm:ss");
+                String pushTime = DateUtil.dateToString(assignTimeMap.get(task.getTask_id()).getPushTime(), "yyyy-MM-dd HH:mm:ss");
                 assignTime.put("push_time", pushTime);
                 assignTime.put("user_ids", assignTimeMap.get(task.getTask_id()).getUserIds());
                 pushStrategy.put("assign_time", assignTime);
@@ -230,7 +238,6 @@ public class TaskListServiceImpl implements ITaskListService {
         return taskRoleListVo;
     }
 
-
     private Map<Integer, User> creatUsersMap(List<Integer> userIds) {
         List<User> userList = userService.searchByUserIdInAndNoDeleted(userIds);
         HashMap<Integer, User> userDict = Maps.newHashMap();
@@ -283,20 +290,14 @@ public class TaskListServiceImpl implements ITaskListService {
         return team;
     }
 
-    @Value("${spe.team_group_100194.export_issue}")
-    private String svrCfg;
-
-    @Value("team_group_100194")
-    private String teamGrop;
-
-
     private String getExportIssueConfig(int teamId) {
-        String export_issue = null;
+        String exportIssue = null;
         if (teamGrop.equals("team_group_" + teamId)) {
-            export_issue = svrCfg;
+            exportIssue = svrCfg;
         }
-        return export_issue;
+        return exportIssue;
     }
+
     private TaskPushStrategyVo creatTaskPushStrategyMap(Set<Integer> taskIds) {
         TaskPushStrategyVo taskPushStrategyVo = new TaskPushStrategyVo();
         HashMap<Integer, PushStrategyAssignTime> assignTimeMap = Maps.newHashMap();

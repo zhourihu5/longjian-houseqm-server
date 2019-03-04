@@ -30,9 +30,9 @@ public class IssueExportPdfReq implements Serializable {
     private Integer category_cls;
     @NotNull
     private Integer project_id;
-    private Integer task_id=0;
-    private String category_key="";
-    private String  check_item_key="";
+    private Integer task_id = 0;
+    private String category_key = "";
+    private String check_item_key = "";
     private List<Integer> area_ids;
     private List<Integer> status_in;
 
@@ -44,14 +44,14 @@ public class IssueExportPdfReq implements Serializable {
     //	CreateOnEnd   string `json:"create_on_end" zpf_name:"create_on_end"`               // 结束时间范围
     //	IsOverdue     bool   `json:"is_overdue" zpf_name:"is_overdue"`                     // 是否超期
     //	Uuids         string `json:"uuids" zpf_name:"uuids"`                               // 问题uuid记录列表
-    private Integer checker_id=0;
-    private Integer repairer_id=0;
-    private Integer type=0;
-    private Integer condition=0;
-    private String create_on_begin="";
-    private String create_on_end="";
+    private Integer checker_id = 0;
+    private Integer repairer_id = 0;
+    private Integer type = 0;
+    private Integer condition = 0;
+    private String create_on_begin = "";
+    private String create_on_end = "";
     private Boolean is_overdue;
-    private String uuids="";
+    private String uuids = "";
 
 
 }

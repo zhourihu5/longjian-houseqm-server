@@ -4,7 +4,7 @@ package com.longfor.longjian.houseqm.consts;
  * Created by Dongshun on 2019/1/16.
  */
 public enum IssueFieldDefaultListEnum {
-    JCX (1, "检查项"),
+    JCX(1, "检查项"),
     BCMS(2, "补充描述"),
     MSYY(3, "描述语音"),
     JCBW(4, "检查部位"),
@@ -19,16 +19,16 @@ public enum IssueFieldDefaultListEnum {
     private Integer id;
     private String value;
 
+    IssueFieldDefaultListEnum(Integer id, String value) {
+        this.id = id;
+        this.value = value;
+    }
+
     public Integer getId() {
         return id;
     }
 
     public String getValue() {
         return value;
-    }
-
-    IssueFieldDefaultListEnum(Integer id, String value) {
-        this.id = id;
-        this.value = value;
     }
 }

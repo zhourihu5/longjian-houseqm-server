@@ -11,6 +11,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
@@ -44,10 +45,9 @@ public class TaskCheckedAreasController {
      */
     @RequestMapping(value = "checked_areas", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     public TaskResponse<CheckedAreasRsp> doAction(HttpServletRequest request, @Valid CheckedAreasReq req) {
-        Integer userId = (Integer) sessionInfo.getBaseInfo("userId");
         TaskResponse<CheckedAreasRsp> taskResponse = new TaskResponse<>();
         try {
-            ctrlTool.projPerm(request,"项目.工程检查.任务管理.查看");
+            ctrlTool.projPerm(request, "项目.工程检查.任务管理.查看");
             List<Integer> areaIds = taskService.getHouseqmCheckTaskCheckedAreas(req.getProject_id(), req.getTask_id());
             String checkAreaIds = null;
             if (areaIds.isEmpty()) {

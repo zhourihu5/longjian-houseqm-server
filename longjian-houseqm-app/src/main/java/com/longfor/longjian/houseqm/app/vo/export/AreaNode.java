@@ -69,7 +69,7 @@ public class AreaNode implements Serializable {
 
     //获取这个节点下的所有区域，包含自己
     public List<Area> getSubAreas() {
-        List<Area> r= Lists.newArrayList();
+        List<Area> r = Lists.newArrayList();
         if (this.area != null) {
             r.add(this.area);
         }

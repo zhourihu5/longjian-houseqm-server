@@ -13,5 +13,5 @@ import java.util.List;
 @NoArgsConstructor
 public class HouseQmCheckTaskIssueDto {
     private Integer total;
-    private List<HouseQmCheckTaskIssue>items;
+    private List<HouseQmCheckTaskIssue> items;
 }

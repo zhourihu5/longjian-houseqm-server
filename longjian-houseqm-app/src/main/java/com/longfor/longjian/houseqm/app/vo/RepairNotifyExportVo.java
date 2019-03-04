@@ -12,7 +12,7 @@ import java.io.Serializable;
 @NoArgsConstructor
 public class RepairNotifyExportVo implements Serializable {
     private Integer result;
-   private String message;
-    private String  path;
-    private String  filename;
+    private String message;
+    private String path;
+    private String filename;
 }

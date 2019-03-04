@@ -2,7 +2,6 @@ package com.longfor.longjian.houseqm.app.vo;
 
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 
 import java.io.Serializable;
 import java.util.List;
@@ -13,14 +12,14 @@ import java.util.List;
  */
 @Data
 @NoArgsConstructor
-public class MyIssuePatchListVo implements Serializable{
+public class MyIssuePatchListVo implements Serializable {
 
     private List<LogVo> log_list;
     private List<AttachmentVo> attachment_list;
 
     @Data
     @NoArgsConstructor
-    public class LogVo implements Serializable{
+    public class LogVo implements Serializable {
         private Integer id;
         private Integer project_id;
         private Integer task_id;
@@ -40,7 +39,7 @@ public class MyIssuePatchListVo implements Serializable{
 
     @Data
     @NoArgsConstructor
-    public class AttachmentVo implements Serializable{
+    public class AttachmentVo implements Serializable {
         private Integer id;
         private Integer project_id;
         private Integer task_id;
@@ -56,7 +55,7 @@ public class MyIssuePatchListVo implements Serializable{
 
     @Data
     @NoArgsConstructor
-    public class LogDetailVo implements Serializable{
+    public class LogDetailVo implements Serializable {
         private String title;
         private Integer area_id;
         private Integer pos_x;

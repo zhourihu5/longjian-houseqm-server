@@ -1,58 +1,58 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
-<mapper namespace="com.longfor.longjian.houseqm.dao.stat.StatHouseQmProjectMonthlyStatMapper" >
-  <resultMap id="BaseResultMap" type="com.longfor.longjian.houseqm.po.stat.StatHouseQmProjectMonthlyStat" >
-    <!--
-      WARNING - @mbg.generated
-    -->
-    <id column="id" property="id" jdbcType="INTEGER" />
-    <result column="project_id" property="projectId" jdbcType="INTEGER" />
-    <result column="category_cls" property="categoryCls" jdbcType="INTEGER" />
-    <result column="area_id" property="areaId" jdbcType="INTEGER" />
-    <result column="area_father_id" property="areaFatherId" jdbcType="INTEGER" />
-    <result column="area_name" property="areaName" jdbcType="VARCHAR" />
-    <result column="area_path_and_id" property="areaPathAndId" jdbcType="VARCHAR" />
-    <result column="category_key" property="categoryKey" jdbcType="VARCHAR" />
-    <result column="category_father_key" property="categoryFatherKey" jdbcType="VARCHAR" />
-    <result column="category_name" property="categoryName" jdbcType="VARCHAR" />
-    <result column="category_path_and_key" property="categoryPathAndKey" jdbcType="VARCHAR" />
-    <result column="has_sub" property="hasSub" jdbcType="INTEGER" />
-    <result column="root_category_id" property="rootCategoryId" jdbcType="INTEGER" />
-    <result column="category_order" property="categoryOrder" jdbcType="VARCHAR" />
-    <result column="issue_count" property="issueCount" jdbcType="INTEGER" />
-    <result column="record_count" property="recordCount" jdbcType="INTEGER" />
-    <result column="issue_new_count" property="issueNewCount" jdbcType="INTEGER" />
-    <result column="record_new_count" property="recordNewCount" jdbcType="INTEGER" />
-    <result column="issue_note_no_assign_count" property="issueNoteNoAssignCount" jdbcType="INTEGER" />
-    <result column="issue_assign_no_reform_count" property="issueAssignNoReformCount" jdbcType="INTEGER" />
-    <result column="issue_reform_no_check_count" property="issueReformNoCheckCount" jdbcType="INTEGER" />
-    <result column="issue_check_yes_count" property="issueCheckYesCount" jdbcType="INTEGER" />
-    <result column="issue_overdue_to_assign_count" property="issueOverdueToAssignCount" jdbcType="INTEGER" />
-    <result column="issue_overdue_to_reform_count" property="issueOverdueToReformCount" jdbcType="INTEGER" />
-    <result column="issue_overdue_to_check_count" property="issueOverdueToCheckCount" jdbcType="INTEGER" />
-    <result column="issue_overdue_checked_count" property="issueOverdueCheckedCount" jdbcType="INTEGER" />
-    <result column="issue_intime_to_assign_count" property="issueIntimeToAssignCount" jdbcType="INTEGER" />
-    <result column="issue_intime_to_reform_count" property="issueIntimeToReformCount" jdbcType="INTEGER" />
-    <result column="issue_intime_to_check_count" property="issueIntimeToCheckCount" jdbcType="INTEGER" />
-    <result column="issue_intime_checked_count" property="issueIntimeCheckedCount" jdbcType="INTEGER" />
-    <result column="issue_notset_to_assign_count" property="issueNotsetToAssignCount" jdbcType="INTEGER" />
-    <result column="issue_notset_to_reform_count" property="issueNotsetToReformCount" jdbcType="INTEGER" />
-    <result column="issue_notset_to_check_count" property="issueNotsetToCheckCount" jdbcType="INTEGER" />
-    <result column="issue_notset_checked_count" property="issueNotsetCheckedCount" jdbcType="INTEGER" />
-    <result column="update_at" property="updateAt" jdbcType="TIMESTAMP" />
-  </resultMap>
-  <sql id="Base_Column_List" >
-    <!--
-      WARNING - @mbg.generated
-    -->
-    id, project_id, category_cls, area_id, area_father_id, area_name, area_path_and_id, 
-    category_key, category_father_key, category_name, category_path_and_key, has_sub, 
-    root_category_id, category_order, issue_count, record_count, issue_new_count, record_new_count, 
-    issue_note_no_assign_count, issue_assign_no_reform_count, issue_reform_no_check_count, 
-    issue_check_yes_count, issue_overdue_to_assign_count, issue_overdue_to_reform_count, 
-    issue_overdue_to_check_count, issue_overdue_checked_count, issue_intime_to_assign_count, 
-    issue_intime_to_reform_count, issue_intime_to_check_count, issue_intime_checked_count, 
-    issue_notset_to_assign_count, issue_notset_to_reform_count, issue_notset_to_check_count, 
-    issue_notset_checked_count, update_at
-  </sql>
+<mapper namespace="com.longfor.longjian.houseqm.dao.stat.StatHouseQmProjectMonthlyStatMapper">
+    <resultMap id="BaseResultMap" type="com.longfor.longjian.houseqm.po.stat.StatHouseQmProjectMonthlyStat">
+        <!--
+          WARNING - @mbg.generated
+        -->
+        <id column="id" property="id" jdbcType="INTEGER"/>
+        <result column="project_id" property="projectId" jdbcType="INTEGER"/>
+        <result column="category_cls" property="categoryCls" jdbcType="INTEGER"/>
+        <result column="area_id" property="areaId" jdbcType="INTEGER"/>
+        <result column="area_father_id" property="areaFatherId" jdbcType="INTEGER"/>
+        <result column="area_name" property="areaName" jdbcType="VARCHAR"/>
+        <result column="area_path_and_id" property="areaPathAndId" jdbcType="VARCHAR"/>
+        <result column="category_key" property="categoryKey" jdbcType="VARCHAR"/>
+        <result column="category_father_key" property="categoryFatherKey" jdbcType="VARCHAR"/>
+        <result column="category_name" property="categoryName" jdbcType="VARCHAR"/>
+        <result column="category_path_and_key" property="categoryPathAndKey" jdbcType="VARCHAR"/>
+        <result column="has_sub" property="hasSub" jdbcType="INTEGER"/>
+        <result column="root_category_id" property="rootCategoryId" jdbcType="INTEGER"/>
+        <result column="category_order" property="categoryOrder" jdbcType="VARCHAR"/>
+        <result column="issue_count" property="issueCount" jdbcType="INTEGER"/>
+        <result column="record_count" property="recordCount" jdbcType="INTEGER"/>
+        <result column="issue_new_count" property="issueNewCount" jdbcType="INTEGER"/>
+        <result column="record_new_count" property="recordNewCount" jdbcType="INTEGER"/>
+        <result column="issue_note_no_assign_count" property="issueNoteNoAssignCount" jdbcType="INTEGER"/>
+        <result column="issue_assign_no_reform_count" property="issueAssignNoReformCount" jdbcType="INTEGER"/>
+        <result column="issue_reform_no_check_count" property="issueReformNoCheckCount" jdbcType="INTEGER"/>
+        <result column="issue_check_yes_count" property="issueCheckYesCount" jdbcType="INTEGER"/>
+        <result column="issue_overdue_to_assign_count" property="issueOverdueToAssignCount" jdbcType="INTEGER"/>
+        <result column="issue_overdue_to_reform_count" property="issueOverdueToReformCount" jdbcType="INTEGER"/>
+        <result column="issue_overdue_to_check_count" property="issueOverdueToCheckCount" jdbcType="INTEGER"/>
+        <result column="issue_overdue_checked_count" property="issueOverdueCheckedCount" jdbcType="INTEGER"/>
+        <result column="issue_intime_to_assign_count" property="issueIntimeToAssignCount" jdbcType="INTEGER"/>
+        <result column="issue_intime_to_reform_count" property="issueIntimeToReformCount" jdbcType="INTEGER"/>
+        <result column="issue_intime_to_check_count" property="issueIntimeToCheckCount" jdbcType="INTEGER"/>
+        <result column="issue_intime_checked_count" property="issueIntimeCheckedCount" jdbcType="INTEGER"/>
+        <result column="issue_notset_to_assign_count" property="issueNotsetToAssignCount" jdbcType="INTEGER"/>
+        <result column="issue_notset_to_reform_count" property="issueNotsetToReformCount" jdbcType="INTEGER"/>
+        <result column="issue_notset_to_check_count" property="issueNotsetToCheckCount" jdbcType="INTEGER"/>
+        <result column="issue_notset_checked_count" property="issueNotsetCheckedCount" jdbcType="INTEGER"/>
+        <result column="update_at" property="updateAt" jdbcType="TIMESTAMP"/>
+    </resultMap>
+    <sql id="Base_Column_List">
+        <!--
+          WARNING - @mbg.generated
+        -->
+        id, project_id, category_cls, area_id, area_father_id, area_name, area_path_and_id,
+        category_key, category_father_key, category_name, category_path_and_key, has_sub,
+        root_category_id, category_order, issue_count, record_count, issue_new_count, record_new_count,
+        issue_note_no_assign_count, issue_assign_no_reform_count, issue_reform_no_check_count,
+        issue_check_yes_count, issue_overdue_to_assign_count, issue_overdue_to_reform_count,
+        issue_overdue_to_check_count, issue_overdue_checked_count, issue_intime_to_assign_count,
+        issue_intime_to_reform_count, issue_intime_to_check_count, issue_intime_checked_count,
+        issue_notset_to_assign_count, issue_notset_to_reform_count, issue_notset_to_check_count,
+        issue_notset_checked_count, update_at
+    </sql>
 </mapper>

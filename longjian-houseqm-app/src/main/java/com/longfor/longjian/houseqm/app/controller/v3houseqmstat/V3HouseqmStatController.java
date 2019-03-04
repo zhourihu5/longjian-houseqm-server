@@ -10,8 +10,8 @@ import com.longfor.longjian.houseqm.app.vo.houseqmstat.InspectionHouseStatusInfo
 import com.longfor.longjian.houseqm.consts.RepossessionStatusEnum;
 import com.longfor.longjian.houseqm.consts.StatisticFormInspectionIssueStatusEnum;
 import com.longfor.longjian.houseqm.consts.StatisticFormInspectionStatusEnum;
-import com.longfor.longjian.houseqm.domain.internalService.AreaService;
-import com.longfor.longjian.houseqm.domain.internalService.HouseQmCheckTaskService;
+import com.longfor.longjian.houseqm.domain.internalservice.AreaService;
+import com.longfor.longjian.houseqm.domain.internalservice.HouseQmCheckTaskService;
 import com.longfor.longjian.houseqm.po.zj2db.Area;
 import com.longfor.longjian.houseqm.po.zj2db.HouseQmCheckTask;
 import com.longfor.longjian.houseqm.util.StringUtil;
@@ -22,21 +22,15 @@ import org.springframework.http.MediaType;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+
 import javax.annotation.Resource;
 import javax.servlet.ServletOutputStream;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.io.UnsupportedEncodingException;
 import java.util.List;
 
-/**
- * @ProjectName: longjian-houseqm-server
- * @Package: com.longfor.longjian.houseqm.app.controller.v3houseqmstat
- * @ClassName: V3HouseqmStatController
- * @Description: java类作用描述
- * @Author: hy
- * @CreateDate: 2019/2/19 16:44
- */
 @RestController
 @RequestMapping("v3/houseqm/stat/")
 @Slf4j
@@ -53,8 +47,17 @@ public class V3HouseqmStatController {
 
     // 统计报告 -任务概况 -验房详情 导出excel
     @RequestMapping(value = "inspection_situation_export", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
-    public LjBaseResponse<Object> inspectionSituationExport(HttpServletRequest request, HttpServletResponse response, @Validated InspectionSituationExportReq req) throws Exception {
-        ctrlTool.projPermMulti(request, new String[]{"项目.移动验房.统计.查看", "项目.工程检查.统计.查看"});
+    public LjBaseResponse<Object> inspectionSituationExport(HttpServletRequest request, HttpServletResponse response, @Validated InspectionSituationExportReq req){
+        LjBaseResponse<Object> ljBaseResponse = new LjBaseResponse<>();
+        try {
+            ctrlTool.projPermMulti(request, new String[]{"项目.移动验房.统计.查看", "项目.工程检查.统计.查看"});
+        } catch (Exception e) {
+            log.error(e.getMessage());
+            ljBaseResponse.setMessage(e.getMessage());
+            ljBaseResponse.setResult(1);
+            return ljBaseResponse;
+        }
+
         if (req.getArea_id() == null) req.setArea_id(0);
         if (req.getIssue_status() == null) req.setIssue_status(0);
         if (req.getStatus() == null) req.setStatus(0);
@@ -73,20 +76,27 @@ public class V3HouseqmStatController {
         // 拼接 名字 导出文件名
         String title = "验房详情";
         HouseQmCheckTask task = houseQmCheckTaskService.getHouseQmCheckTaskByProjTaskId(req.getProject_id(), req.getTask_id());
-        if (task != null) title += "－" + task.getName();
+        if (task != null) {
+            title += "－" + task.getName();
+        }
         if (req.getArea_id() > 0) {
             Area area = areaService.selectById(req.getArea_id());
-            if (area != null) title += "－" + area.getName();
+            if (area != null) {
+                title += "－" + area.getName();
+            }
         }
         title += "－" + StatisticFormInspectionStatusEnum.getName(req.getStatus());
         title += "－" + StatisticFormInspectionIssueStatusEnum.getName(req.getIssue_status());
 
         response.setHeader("Content-Type", "application/vnd.ms-excel; charset=utf-8");
-        response.setHeader("Content-Disposition", " attachment; filename=" + new String(title.getBytes("utf-8"), "iso8859-1") + ".xlsx"); //File name extension was wrong
-        response.setHeader("Expires", " 0");
-        LjBaseResponse<Object> ljBaseResponse = new LjBaseResponse<>();
-        ServletOutputStream os = response.getOutputStream();
         try {
+            response.setHeader("Content-Disposition", " attachment; filename=" + new String(title.getBytes("utf-8"), "iso8859-1") + ".xlsx"); //File name extension was wrong
+        } catch (UnsupportedEncodingException e) {
+          log.error("转码失败",e.getMessage());
+        }
+        response.setHeader("Expires", " 0");
+
+        try (ServletOutputStream os = response.getOutputStream()) {
             SXSSFWorkbook wb = ExportUtils.exportInspectionSituationExcel(details);
             wb.write(os);
             os.flush();
@@ -94,8 +104,6 @@ public class V3HouseqmStatController {
             log.error("验房详情 excel 导出异常");
             ljBaseResponse.setResult(1);
             ljBaseResponse.setMessage(e.getMessage());
-        } finally {
-            os.close();
         }
         return ljBaseResponse;
     }

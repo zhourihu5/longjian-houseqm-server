@@ -21,10 +21,7 @@ public class DateUtil {
 
     public static final boolean datetimeZero(Date date) {
         //315532800000L=dateFormat.parse("1980-01-01 08:00:00").getTime()
-        if(date==null||date.getTime()<=315532800000L) {
-            return true;
-        }
-        return false;
+        return date == null || date.getTime() <= 315532800000L;
     }
 
     public static final String formatBySec(Date date) {
@@ -46,19 +43,19 @@ public class DateUtil {
         }
     }
 
-    public static final boolean datetimeBefore(Date date,Date date2) {
-        return date.getTime()<date2.getTime();
+    public static final boolean datetimeBefore(Date date, Date date2) {
+        return date.getTime() < date2.getTime();
     }
 
     public static Date strToDate(String str, String pattern) {
         Date date = null;
         try {
-            if (str.length()>0){
+            if (StringUtils.isNotEmpty(str)) {
                 SimpleDateFormat sdf = new SimpleDateFormat(pattern);
                 date = sdf.parse(str);
             }
         } catch (ParseException e) {
-            logger.error("error:",e.getMessage());
+            logger.error("error:", e.getMessage());
         }
         return date;
     }
@@ -77,7 +74,7 @@ public class DateUtil {
             Date d2 = sdf.parse(s2);
             return ((d1.getTime() - d2.getTime()) / (24 * 3600 * 1000));
         } catch (ParseException e) {
-            logger.error("error:",e.getMessage());
+            logger.error("error:", e.getMessage());
         }
         return 0;
     }
@@ -98,7 +95,7 @@ public class DateUtil {
             try {
                 initDate = formatter.parse("1980-01-01 08:00:00");
             } catch (ParseException e) {
-                logger.error("error:",e.getMessage());
+                logger.error("error:", e.getMessage());
             }
             if (strdt.equals("0001-01-01 00:00:00") || strdt.equals("") || !dt.after(initDate)) {
                 return 0;
@@ -124,7 +121,7 @@ public class DateUtil {
         try {
             timeDate = ymdhmsFormat.parse(nowTimeStr);
         } catch (ParseException e) {
-            logger.error("error:",e.getMessage());
+            logger.error("error:", e.getMessage());
         }
         return timeDate;
     }
@@ -160,8 +157,7 @@ public class DateUtil {
      */
     public static String getNowTimeStr(String partten) {
         Date now = new Date();
-        String nowStr = new SimpleDateFormat(partten).format(now);
-        return nowStr;
+        return new SimpleDateFormat(partten).format(now);
     }
 
     // 时间戳转日期
@@ -177,18 +173,17 @@ public class DateUtil {
                 String str = sdf.format(msl);
                 temp = sdf.parse(str);
             } catch (ParseException e) {
-                logger.error("error:",e.getMessage());
+                logger.error("error:", e.getMessage());
             }
         }
         return temp;
     }
 
-    public static Date dateAddDay(Date date,int day){
+    public static Date dateAddDay(Date date, int day) {
         Calendar c = Calendar.getInstance();
         c.setTime(date);
-        c.add(Calendar.DAY_OF_MONTH,day);
-        Date time = c.getTime();
-        return time;
+        c.add(Calendar.DAY_OF_MONTH, day);
+        return c.getTime();
     }
 
 }

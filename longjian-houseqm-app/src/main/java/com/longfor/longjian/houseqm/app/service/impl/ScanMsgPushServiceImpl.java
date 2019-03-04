@@ -1,17 +1,15 @@
 package com.longfor.longjian.houseqm.app.service.impl;
 
 import com.alibaba.fastjson.JSON;
-import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 import com.google.common.collect.Lists;
 import com.longfor.longjian.common.base.LjBaseResponse;
 import com.longfor.longjian.common.consts.*;
 import com.longfor.longjian.common.push.UmPushUtil;
-import com.longfor.longjian.common.push.xiaomi.XmPushUtil;
 import com.longfor.longjian.houseqm.app.service.ScanMsgPushService;
 import com.longfor.longjian.houseqm.app.vo.GcglIssueStatRecordVo;
 import com.longfor.longjian.houseqm.app.vo.NoticeStatKey;
 import com.longfor.longjian.houseqm.app.vo.NoticeStatValue;
-import com.longfor.longjian.houseqm.domain.internalService.*;
+import com.longfor.longjian.houseqm.domain.internalservice.*;
 import com.longfor.longjian.houseqm.po.zhijian2_apisvr.Team;
 import com.longfor.longjian.houseqm.po.zhijian2_apisvr.User;
 import com.longfor.longjian.houseqm.po.zhijian2_notify.GcglIssueStatRecord;
@@ -29,8 +27,6 @@ import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
 import java.util.*;
-import java.util.concurrent.Executors;
-import java.util.concurrent.ThreadFactory;
 
 /**
  * Created by Wang on 2019/2/28.
@@ -40,8 +36,6 @@ import java.util.concurrent.ThreadFactory;
 public class ScanMsgPushServiceImpl implements ScanMsgPushService {
 
     private final int PUSH_APP_GCGL = 1;
-    private final int PUSH_APP_YDYF = 2;
-    private final int PUSH_APP_GXGL = 3;
     private final int USER_ID_SIZE_MAX = 50;
 
     @Resource
@@ -91,7 +85,7 @@ public class ScanMsgPushServiceImpl implements ScanMsgPushService {
     @Override
     public LjBaseResponse scanNoticeCenter(String category_cls) {
 
-        Integer [] module_ids={};
+        Integer[] module_ids = {};
 
         if(StringUtils.isNotBlank(category_cls)){
             String [] module=category_cls.split(",");

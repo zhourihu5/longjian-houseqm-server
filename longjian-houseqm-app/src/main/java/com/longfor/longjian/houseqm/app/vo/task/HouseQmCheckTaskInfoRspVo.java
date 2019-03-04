@@ -2,10 +2,7 @@ package com.longfor.longjian.houseqm.app.vo.task;
 
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import net.jcip.annotations.NotThreadSafe;
-import org.hibernate.validator.constraints.NotBlank;
 
-import javax.validation.constraints.NotNull;
 import java.io.Serializable;
 
 /**

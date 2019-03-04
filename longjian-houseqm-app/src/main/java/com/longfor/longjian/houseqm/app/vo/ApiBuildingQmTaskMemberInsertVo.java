@@ -11,10 +11,10 @@ import java.io.Serializable;
 @Data
 @NoArgsConstructor
 public class ApiBuildingQmTaskMemberInsertVo implements Serializable {
-   private Integer squad_id =0;
-    private Integer group_role =0;
-    private Integer user_id=0;
-    private Integer  can_approve=0;
-    private Integer  can_direct_approve=0;
-    private Integer can_reassign=0 ;
+    private Integer squad_id = 0;
+    private Integer group_role = 0;
+    private Integer user_id = 0;
+    private Integer can_approve = 0;
+    private Integer can_direct_approve = 0;
+    private Integer can_reassign = 0;
 }

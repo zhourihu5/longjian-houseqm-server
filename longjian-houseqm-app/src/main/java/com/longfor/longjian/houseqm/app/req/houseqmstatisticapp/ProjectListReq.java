@@ -21,5 +21,5 @@ public class ProjectListReq implements Serializable {
     @NotNull
     private String source;//app名称，如：ydyf、gcgl
 
-    private Integer timestamp=0;//上次更新时间
+    private Integer timestamp = 0;//上次更新时间
 }

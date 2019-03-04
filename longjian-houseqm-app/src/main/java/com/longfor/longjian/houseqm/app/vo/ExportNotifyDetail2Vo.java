@@ -11,8 +11,8 @@ import java.io.Serializable;
 @Data
 @NoArgsConstructor
 public class ExportNotifyDetail2Vo implements Serializable {
-   private Integer issue_id=0;
-   private String content="";
-    private String issue_suggest="";
+    private Integer issue_id = 0;
+    private String content = "";
+    private String issue_suggest = "";
 
 }

@@ -13,14 +13,14 @@ import java.util.List;
 @NoArgsConstructor
 public class HouseqmStatisticTaskCheckitemStatRspMsgVo implements Serializable {
     List<ApiHouseQmCheckItemIssueStat> items;
-    private  Integer date_type;
+    private Integer date_type;
 
 
     @Data
     @NoArgsConstructor
-    public class ApiHouseQmCheckItemIssueStat implements  Serializable{
-     private  String  key;// 检查项key
-        private  String  name;   // 检查项名称
+    public class ApiHouseQmCheckItemIssueStat implements Serializable {
+        private String key;// 检查项key
+        private String name;   // 检查项名称
         private String father_key;// 检查项父级key
         private Integer issue_count;// 问题数
     }

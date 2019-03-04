@@ -2,7 +2,6 @@ package com.longfor.longjian.houseqm.app.req.houseqmstatistic;
 
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import net.jcip.annotations.NotThreadSafe;
 
 import javax.validation.constraints.NotNull;
 import java.io.Serializable;
@@ -34,7 +33,7 @@ public class HouseqmStatisticTaskIssueRepairListReq implements Serializable {
 
     private Integer task_id; // 任务ID
     @NotNull
-    private String  source; // app名称，如：ydyf、gcjc
+    private String source; // app名称，如：ydyf、gcjc
     private Integer area_id; // 区域id
     private Integer begin_on;// 开始时间戳
     private Integer end_on;// 结束时间戳

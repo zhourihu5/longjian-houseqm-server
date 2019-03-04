@@ -14,15 +14,15 @@ import java.util.List;
 @NoArgsConstructor
 public class BoardListVo implements Serializable {
 
-  private List<BoardVo> result;
+    private List<BoardVo> result;
 
-  @Data
-  @NoArgsConstructor
-  public class BoardVo implements Serializable {
+    @Data
+    @NoArgsConstructor
+    public class BoardVo implements Serializable {
 
-    private String label;
-    private Integer value;
-    private String name;
-    private int  key;
-  }
+        private String label;
+        private Integer value;
+        private String name;
+        private int key;
+    }
 }

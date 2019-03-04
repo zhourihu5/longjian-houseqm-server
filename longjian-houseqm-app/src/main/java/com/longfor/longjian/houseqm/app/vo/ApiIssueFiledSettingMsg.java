@@ -12,16 +12,17 @@ import java.util.List;
 @Data
 @NoArgsConstructor
 public class ApiIssueFiledSettingMsg implements Serializable {
-    private Integer  project_id=0;
-    private Integer  field_id=0;
-    private String name="";
-    private String alias="";
-    private Integer display_status=0;
-    private Integer required_status=0;
-    private Integer alias_status=0;
+    private Integer project_id = 0;
+    private Integer field_id = 0;
+    private String name = "";
+    private String alias = "";
+    private Integer display_status = 0;
+    private Integer required_status = 0;
+    private Integer alias_status = 0;
+
     @Data
     @NoArgsConstructor
-    public class IssueFileds{
-        List<ApiIssueFiledSettingMsg>issue_fileds;
+    public class IssueFileds {
+        List<ApiIssueFiledSettingMsg> issue_fileds;
     }
 }

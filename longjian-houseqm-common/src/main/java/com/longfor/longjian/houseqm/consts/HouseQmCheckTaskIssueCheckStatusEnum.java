@@ -12,23 +12,23 @@ public enum HouseQmCheckTaskIssueCheckStatusEnum {
 
     //CheckYes niuhe.IntConstItem `const:"1,通过"`
     //	CheckNo  niuhe.IntConstItem `const:"2,不通过"`
-    CheckYes(1,"通过"),
-    CheckNo(2,"不通过"),
+    CheckYes(1, "通过"),
+    CheckNo(2, "不通过"),
     ;
 
 
     private Integer id;
     private String value;
 
+HouseQmCheckTaskIssueCheckStatusEnum(Integer id, String value) {
+        this.id = id;
+        this.value = value;
+    }
+
     public Integer getId() {
         return id;
     }
 
-    public String getValue() {
+        public String getValue() {
         return value;
-    }
-
-    HouseQmCheckTaskIssueCheckStatusEnum(Integer id, String value) {
-        this.id = id;
-        this.value = value;
     }}

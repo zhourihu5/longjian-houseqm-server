@@ -19,8 +19,9 @@ import java.io.*;
 import java.net.URL;
 
 /**
- *    typeWiring -> typeWiring.dataFetcher
- *    JDK1.8 特殊语法： -> 前面是参数，后面是返回
+ * typeWiring -> typeWiring.dataFetcher
+ * JDK1.8 特殊语法： -> 前面是参数，后面是返回
+ *
  * @author lipeishuai
  * @date 2018/11/29 11:20
  */
@@ -29,7 +30,7 @@ import java.net.URL;
 public class GroupProgressStatSchema {
 
 
-    public static final String JAR_TYPE ="jar";
+    public static final String JAR_TYPE = "jar";
 
     public static final GraphQLScalarType DateField = new DateScalarType();
 
@@ -44,28 +45,28 @@ public class GroupProgressStatSchema {
      *
      * @return
      */
-    public RuntimeWiring buildRuntimeWiring(){
+    public RuntimeWiring buildRuntimeWiring() {
         return RuntimeWiring.newRuntimeWiring().scalar(DateField)
                 .type("gapiQuery", typeWiring -> typeWiring
-                        .dataFetcher("progressStat",statGroupDataFetcher.progressStatDataFetcher)
+                        .dataFetcher("progressStat", statGroupDataFetcher.progressStatDataFetcher)
                 )
                 .type("StatGroupItem", typeWiring -> typeWiring
                         .dataFetcher("items", statGroupDataFetcher.statGroupItemDataFetcher)
-                ).type("timeFrameType",typeWiring -> typeWiring
+                ).type("timeFrameType", typeWiring -> typeWiring
                         .enumValues(GroupProgressStatDataFetcher.timeFrameTypeResolver)
                 )
                 .build();
     }
 
     /**
-     *  1. 解析Schema文件
-     *  2. buildRuntimeWiring：Schema中定义的类型-获取数据
-     *
-     *  Cleanup：注解在输入输出流等需要释放资源的变量上，不需要写额外繁琐而重复的释放资源代码
+     * 1. 解析Schema文件
+     * 2. buildRuntimeWiring：Schema中定义的类型-获取数据
+     * <p>
+     * Cleanup：注解在输入输出流等需要释放资源的变量上，不需要写额外繁琐而重复的释放资源代码
      *
      * @return
      */
-    public GraphQLSchema buildSchema() throws IOException{
+    public GraphQLSchema buildSchema() throws IOException {
 
         log.info("GroupProgressStatSchema#buildSchema ing");
 
@@ -76,13 +77,13 @@ public class GroupProgressStatSchema {
 
         URL url = this.getClass().getResource("");
         String protocol = url.getProtocol();
-        if(JAR_TYPE.equals(protocol)){
+        if (JAR_TYPE.equals(protocol)) {
 
             @Cleanup InputStream in = this.getClass().getResourceAsStream("graphql/progressStat.graphqls");
             @Cleanup BufferedReader reader = new BufferedReader(new InputStreamReader(in));
             typeRegistry = schemaParser.parse(reader);
 
-        }else{
+        } else {
             File schemaFile = ResourceUtils.getFile("classpath:graphql/progressStat.graphqls");
             typeRegistry = schemaParser.parse(schemaFile);
         }

@@ -15,21 +15,21 @@ public interface IHouseqmStatService {
 
     ProjectOveralListVo.ProjectOveralVo getInspectTaskStatByProjTaskId(Integer projectId, Integer taskId);
 
-    TaskAreaListVo searchAreasByProjTaskIdTyp(Integer projectId, Integer taskId,int typ);
+    TaskAreaListVo searchAreasByProjTaskIdTyp(Integer projectId, Integer taskId, int typ);
 
     AreaTaskListVo searchHouseQmCheckTaskByProjIdAreaIdCategoryClsIn(Integer projectId, Integer areaId, List<Integer> categoryCls);
 
-    List<HouseQmStatTaskDetailMemberCheckerRspVo> searchCheckerIssueStatusStatByProjTaskIdBetweenTime(Integer project_id, Integer task_id, Date start, Date end);
+    List<HouseQmStatTaskDetailMemberCheckerRspVo> searchCheckerIssueStatusStatByProjTaskIdBetweenTime(Integer projectId, Integer taskId, Date start, Date end);
 
-    List<HouseQmStatTaskDetailMemberRepairerRspVo> searchRepaireIssueStatusStatByProjTaskIdBetweenTime(Integer project_id, Integer task_id, Date start, Date end);
+    List<HouseQmStatTaskDetailMemberRepairerRspVo> searchRepaireIssueStatusStatByProjTaskIdBetweenTime(Integer projectId, Integer taskId, Date start, Date end);
 
-    HouseQmStatAreaSituationIssueRspVo getAreaIssueTypeStatByProjectIdAreaIdCategoryCls(Integer project_id, Integer area_id, Integer category_cls) throws Exception;
+    HouseQmStatAreaSituationIssueRspVo getAreaIssueTypeStatByProjectIdAreaIdCategoryCls(Integer projectId, Integer areaId, Integer categoryCls);
 
-    StatCategoryStatRspVo searchHouseQmIssueCategoryStatByProjTaskIdAreaIdBeginOnEndOn(Integer project_id, Integer task_id, Integer area_id, Date beginOn, Date endOn);
+    StatCategoryStatRspVo searchHouseQmIssueCategoryStatByProjTaskIdAreaIdBeginOnEndOn(Integer projectId, Integer taskId, Integer areaId, Date beginOn, Date endOn);
 
-    List<Integer> searchRepossessInspectionAreaIdsByConditions(Integer project_id, Integer task_id, Integer area_id, Integer status, Integer issue_status, Date startTime, Date endTime);
+    List<Integer> searchRepossessInspectionAreaIdsByConditions(Integer projectId, Integer taskId, Integer areaId, Integer status, Integer issueStatus, Date startTime, Date endTime);
 
-    List<Integer> searchInspectionAreaIdsByConditions(Integer project_id, Integer task_id, Integer area_id, Integer status, Integer issue_status);
+    List<Integer> searchInspectionAreaIdsByConditions(Integer projectId, Integer taskId, Integer areaId, Integer status, Integer issueStatus);
 
-    List<InspectionHouseStatusInfoVo> formatFenhuHouseInspectionStatusInfoByAreaIds(Integer task_id, List<Integer> ids);
+    List<InspectionHouseStatusInfoVo> formatFenhuHouseInspectionStatusInfoByAreaIds(Integer taskId, List<Integer> ids);
 }

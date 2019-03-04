@@ -4,7 +4,5 @@ import com.longfor.gaia.gfs.data.mybatis.LFMySQLMapper;
 import com.longfor.longjian.houseqm.po.stat.StatHouseQmProjectUserWorkloadCheckerDailyStat;
 
 public interface StatHouseQmProjectUserWorkloadCheckerDailyStatMapper extends LFMySQLMapper<StatHouseQmProjectUserWorkloadCheckerDailyStat> {
-   /* int countByExample(StatHouseQmProjectUserWorkloadCheckerDailyStatExample example);
 
-    List<StatHouseQmProjectUserWorkloadCheckerDailyStat> selectByExample(StatHouseQmProjectUserWorkloadCheckerDailyStatExample example);*/
 }

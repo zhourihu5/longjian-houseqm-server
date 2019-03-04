@@ -1,12 +1,10 @@
 package com.longfor.longjian.houseqm.app.service.impl;
 
-import com.longfor.longjian.common.util.SessionInfo;
-import com.longfor.longjian.houseqm.app.vo.ApiHouseQmCheckTaskIssueLogDetailRspVo;
-
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.TypeReference;
 import com.google.common.collect.Lists;
 import com.longfor.longjian.common.base.LjBaseResponse;
+import com.longfor.longjian.common.util.SessionInfo;
 import com.longfor.longjian.houseqm.app.req.DeviceReq;
 import com.longfor.longjian.houseqm.app.service.IHouseqmService;
 import com.longfor.longjian.houseqm.app.vo.*;
@@ -16,17 +14,20 @@ import com.longfor.longjian.houseqm.app.vo.houseqm.ApiHouseQmCheckTaskIssueRsp;
 import com.longfor.longjian.houseqm.app.vo.houseqm.HouseqmMyIssueLogListRspVo;
 import com.longfor.longjian.houseqm.consts.HouseQmCheckTaskIssueAttachmentPublicTypeEnum;
 import com.longfor.longjian.houseqm.consts.HouseQmUserInIssueRoleTypeEnum;
-import com.longfor.longjian.houseqm.domain.internalService.*;
+import com.longfor.longjian.houseqm.domain.internalservice.*;
 import com.longfor.longjian.houseqm.po.zj2db.*;
 import com.longfor.longjian.houseqm.util.DateUtil;
 import com.longfor.longjian.houseqm.util.StringSplitToListUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections.CollectionUtils;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 @Service
@@ -46,6 +47,7 @@ public class HouseqmServiceImpl implements IHouseqmService {
     @Resource
     private SessionInfo sessionInfo;
 
+    private static final String USER_ID="userId";
     @Override
     public List<Integer> searchHouseQmApproveUserIdInMyCheckSquad(int userId, int taskId) {
         List<UserInHouseQmCheckTask> rs = userInHouseQmCheckTaskService.searchByTaskIdUserIdRoleType(taskId, userId, HouseQmUserInIssueRoleTypeEnum.Checker.getId());
@@ -69,7 +71,7 @@ public class HouseqmServiceImpl implements IHouseqmService {
         LjBaseResponse<HouseqmMyIssueLogListRspVo> taskResponse = new LjBaseResponse<>();
         HouseqmMyIssueLogListRspVo myIssueListVo = new HouseqmMyIssueLogListRspVo();
         List<ApiHouseQmCheckTaskIssueLogRsp> result = new ArrayList<>();
-        Integer userId = (Integer) sessionInfo.getBaseInfo("userId");
+        Integer userId = (Integer) sessionInfo.getBaseInfo(USER_ID);
         Integer start = 0;
         Integer lastId = 0;
         //可能会导致接口出现504 请求超时
@@ -81,16 +83,16 @@ public class HouseqmServiceImpl implements IHouseqmService {
                 lastId = houseQmCheckTaskIssueLogs.get(houseQmCheckTaskIssueLogs.size() - 1).getId();
             myIssueListVo.setLast_id(lastId);
             List<String> uuids = new ArrayList<>();
-            houseQmCheckTaskIssueLogs.forEach(item -> {
-                uuids.add(item.getIssueUuid());
-            });
+            houseQmCheckTaskIssueLogs.forEach(item ->
+                uuids.add(item.getIssueUuid())
+            );
             List<HouseQmCheckTaskIssue> resIssues = Lists.newArrayList();
             if (!uuids.isEmpty())
                 resIssues = houseQmCheckTaskIssueService.searchHouseQmCheckTaskIssueByTaskIdUuidIn(deviceReq.getTask_id(), uuids);
             Map<String, HouseQmCheckTaskIssue> mIssue = new HashMap<>();
-            resIssues.forEach(houseQmCheckTaskIssue -> {
-                mIssue.put(houseQmCheckTaskIssue.getUuid(), houseQmCheckTaskIssue);
-            });
+            resIssues.forEach(houseQmCheckTaskIssue ->
+                mIssue.put(houseQmCheckTaskIssue.getUuid(), houseQmCheckTaskIssue)
+            );
             houseQmCheckTaskIssueLogs.forEach(item -> {
                 ApiHouseQmCheckTaskIssueLogDetailRspVo rspVo = JSON.parseObject(item.getDetail(), new TypeReference<ApiHouseQmCheckTaskIssueLogDetailRspVo>() {
                 });
@@ -139,7 +141,7 @@ public class HouseqmServiceImpl implements IHouseqmService {
         LjBaseResponse<MyIssueListVo> taskResponse = new LjBaseResponse<>();
         MyIssueListVo myIssueListVo = new MyIssueListVo();
         List<ApiHouseQmCheckTaskIssueRsp> items = new ArrayList<>();
-        Integer userId = (Integer) sessionInfo.getBaseInfo("userId");
+        Integer userId = (Integer) sessionInfo.getBaseInfo(USER_ID);
         Integer start = 0;
         Integer limit = HOUSEQM_API_GET_PER_TIME;
         Integer lastId = 0;
@@ -219,7 +221,8 @@ public class HouseqmServiceImpl implements IHouseqmService {
         Integer lastId = 0;
         try {
             List<HouseQmCheckTaskIssueUser> houseQmCheckTaskIssueUsers = houseQmCheckTaskIssueService.searchHouseQmCheckTaskIssueUserByTaskIdLastIdUpdateAtGt(deviceReq.getTask_id(), deviceReq.getLast_id(), deviceReq.getTimestamp(), start, limit);
-            if (CollectionUtils.isNotEmpty(houseQmCheckTaskIssueUsers))lastId = houseQmCheckTaskIssueUsers.get(houseQmCheckTaskIssueUsers.size() - 1).getId();
+            if (CollectionUtils.isNotEmpty(houseQmCheckTaskIssueUsers))
+                lastId = houseQmCheckTaskIssueUsers.get(houseQmCheckTaskIssueUsers.size() - 1).getId();
             houseQmCheckTaskIssueUsers.forEach(houseQmCheckTaskIssueUser -> {
                 ApiHouseQmCheckTaskIssueMemberRspVo apiHouseQmCheckTaskIssueMemberRspVo = new ApiHouseQmCheckTaskIssueMemberRspVo();
                 apiHouseQmCheckTaskIssueMemberRspVo.setId(houseQmCheckTaskIssueUser.getId());
@@ -246,7 +249,7 @@ public class HouseqmServiceImpl implements IHouseqmService {
         MyIssueAttachListVo myIssueAttachListVo = new MyIssueAttachListVo();
         List<ApiHouseQmCheckTaskIssueAttachmentRspVo> houseQmCheckTaskIssueJsons = new ArrayList<>();
 
-        Integer userId = (Integer) sessionInfo.getBaseInfo("userId");
+        Integer userId = (Integer) sessionInfo.getBaseInfo(USER_ID);
         Integer start = 0;
         Integer limit = HOUSEQM_API_GET_PER_TIME;
         Integer lastId = 0;
@@ -263,7 +266,7 @@ public class HouseqmServiceImpl implements IHouseqmService {
         try {
             List<HouseQmCheckTaskIssueAttachment> attachments = houseQmCheckTaskIssueService.searchHouseQmCheckTaskIssueAttachmentByMyIdTaskIdLastIdUpdateAtGt(userId, deviceReq.getTask_id(), deviceReq.getLast_id(), deviceReq.getTimestamp(), start, limit, HouseQmCheckTaskIssueAttachmentPublicTypeEnum.Private.getId(), HouseQmCheckTaskIssueAttachmentPublicTypeEnum.Public.getId());
             // go源码中未对lastid进行处理
-            // if (attachments != null && attachments.size() > 0) lastId = attachments.get(attachments.size() - 1).getId();
+
             attachments.forEach(houseQmCheckTaskIssueAttachment -> {
                 ApiHouseQmCheckTaskIssueAttachmentRspVo apiHouseQmCheckTaskIssueAttachmentRspVo = new ApiHouseQmCheckTaskIssueAttachmentRspVo();
                 apiHouseQmCheckTaskIssueAttachmentRspVo.setId(houseQmCheckTaskIssueAttachment.getId());
@@ -277,7 +280,7 @@ public class HouseqmServiceImpl implements IHouseqmService {
                 apiHouseQmCheckTaskIssueAttachmentRspVo.setStatus(houseQmCheckTaskIssueAttachment.getStatus());
                 apiHouseQmCheckTaskIssueAttachmentRspVo.setUpdate_at(DateUtil.datetimeToTimeStamp(houseQmCheckTaskIssueAttachment.getUpdateAt()));
                 apiHouseQmCheckTaskIssueAttachmentRspVo.setDelete_at(houseQmCheckTaskIssueAttachment.getDeleteAt() == null ? 0 : DateUtil.datetimeToTimeStamp(houseQmCheckTaskIssueAttachment.getDeleteAt()));
-                //JSONObject jsonObject = JSON.parseObject(JSON.toJSONString(apiHouseQmCheckTaskIssueAttachmentRspVo));
+
                 houseQmCheckTaskIssueJsons.add(apiHouseQmCheckTaskIssueAttachmentRspVo);
             });
             myIssueAttachListVo.setAttachment_list(houseQmCheckTaskIssueJsons);
@@ -297,9 +300,9 @@ public class HouseqmServiceImpl implements IHouseqmService {
         //获取出任务下的区域与检验类型的交集
         List<Integer> areaIds = StringSplitToListUtil.strToInts(task.getAreaIds(), ",");
         List<Integer> areaTypes = StringSplitToListUtil.strToInts(task.getAreaTypes(), ",");
-        if (areaIds.size() == 0 || areaTypes.size() == 0) return null;
-        List<Area> areas = areaService.searchAreaListByRootIdAndTypes(projectId, areaIds, areaTypes);
-        return areas;
+        if (CollectionUtils.isEmpty(areaIds)|| CollectionUtils.isEmpty(areaTypes)) return null;
+        return  areaService.searchAreaListByRootIdAndTypes(projectId, areaIds, areaTypes);
+
     }
 
 }

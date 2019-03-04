@@ -5,9 +5,12 @@ import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.longfor.longjian.common.consts.HouseQmCheckTaskIssueStatusEnum;
 import com.longfor.longjian.houseqm.app.vo.*;
-import com.longfor.longjian.houseqm.consts.*;
-import com.longfor.longjian.houseqm.domain.internalService.*;
-import com.longfor.longjian.houseqm.po.*;
+import com.longfor.longjian.houseqm.consts.HouseQmCheckTaskIssueEnum;
+import com.longfor.longjian.houseqm.consts.HouseQmCheckTaskIssueTypeEnum;
+import com.longfor.longjian.houseqm.consts.RepossessionRepairStatusEnum;
+import com.longfor.longjian.houseqm.consts.RepossessionStatusEnum;
+import com.longfor.longjian.houseqm.domain.internalservice.*;
+import com.longfor.longjian.houseqm.po.HouseQmCheckTaskIssueAreaGroupModel;
 import com.longfor.longjian.houseqm.po.zj2db.Area;
 import com.longfor.longjian.houseqm.po.zj2db.HouseQmCheckTask;
 import com.longfor.longjian.houseqm.po.zj2db.RepossessionStatus;
@@ -23,7 +26,6 @@ import org.springframework.stereotype.Repository;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
-
 import java.util.*;
 
 /**
@@ -44,8 +46,8 @@ public class HouseqmStaticService {
     @Resource
     UserInHouseQmCheckTaskService userInHouseQmCheckTaskService;
 
-    public List<HouseQmCheckTaskSimpleRspVo> searchHouseQmCheckTaskByProjCategoryCls(Integer project_id, Integer category_cls) {
-        List<HouseQmCheckTask> houseQmCheckTasks = houseQmCheckTaskService.selectByProjectIdAndCategoryCls(project_id, category_cls);
+    public List<HouseQmCheckTaskSimpleRspVo> searchHouseQmCheckTaskByProjCategoryCls(Integer projectId, Integer categoryCls) {
+        List<HouseQmCheckTask> houseQmCheckTasks = houseQmCheckTaskService.selectByProjectIdAndCategoryCls(projectId, categoryCls);
         ArrayList<HouseQmCheckTaskSimpleRspVo> hQCTSRlist = new ArrayList<>();
         for (int i = 0; i < houseQmCheckTasks.size(); i++) {
             HouseQmCheckTaskSimpleRspVo rspVo = new HouseQmCheckTaskSimpleRspVo();
@@ -124,14 +126,14 @@ public class HouseqmStaticService {
         }
         String[] split = taskByProjTask.getAreaIds().split(",");
         //转成int数组
-        int[] order_int = new int[split.length];
+        int[] orderInt = new int[split.length];
         for (int i = 0; i < split.length; i++) {
-            order_int[i] = Integer.parseInt(split[i]);
+            orderInt[i] = Integer.parseInt(split[i]);
         }
         //转成list
         ArrayList<Integer> objects = new ArrayList<>();
-        for (int i = 0; i < order_int.length; i++) {
-            objects.add(order_int[i]);
+        for (int i = 0; i < orderInt.length; i++) {
+            objects.add(orderInt[i]);
         }
         List<Area> areas = areaService.selectByAreaIds(objects);
         ArrayList<ApiBuildingInfo> buildingInfoArrayList = Lists.newArrayList();
@@ -168,7 +170,7 @@ public class HouseqmStaticService {
         List<HouseQmCheckTaskIssueAreaGroupModel> result = Lists.newArrayList();
 
         /*if (onlyIssue && areaId > 0) {*/
-        result = houseQmCheckTaskIssueService.selectByTaskIdAndTyeInAndAreaPathAndIdLike(onlyIssue,taskId, types,  areaId);
+        result = houseQmCheckTaskIssueService.selectByTaskIdAndTyeInAndAreaPathAndIdLike(onlyIssue, taskId, types, areaId);
       /*  } else if (onlyIssue && areaId <= 0) {
             result = houseQmCheckTaskIssueService.selectByTaskIdAndTyeIn(taskId, types);
         } else if (!onlyIssue && areaId > 0) {
@@ -193,7 +195,7 @@ public class HouseqmStaticService {
 
     private List<Integer> splitToIdsComma(String ids, String sep) {
         List<Integer> list = Lists.newArrayList();
-        ids=ids.trim();
+        ids = ids.trim();
         String[] str = ids.split(sep);
         List<String> areaList = Arrays.asList(str);
         for (String s : areaList) {
@@ -205,12 +207,12 @@ public class HouseqmStaticService {
         return list;
     }
 
-    public RepossessionTasksStatusInfoVo getRepossessionTasksStatusInfo(Integer prodectId, ArrayList<Integer> taskIds, Integer areaId) {
+    public RepossessionTasksStatusInfoVo getRepossessionTasksStatusInfo(Integer prodectId, List<Integer> taskIds, Integer areaId) {
         RepossessionTasksStatusInfoVo info = new RepossessionTasksStatusInfoVo();
 
         for (int i = 0; i < taskIds.size(); i++) {
             List<Area> areas = searchTargetAreaByTaskId(prodectId, taskIds.get(i));
-            if(areas==null){
+            if (areas == null) {
                 continue;
             }
             int total = areas.size();
@@ -340,9 +342,9 @@ public class HouseqmStaticService {
         List<Integer> areaIds = splitToIdsComma(taskByProjTaskId.getAreaIds(), ",");
         List<Integer> areaTypes = splitToIdsComma(taskByProjTaskId.getAreaTypes(), ",");
         if (CollectionUtils.isEmpty(areaIds) || CollectionUtils.isEmpty(areaTypes)) {
-            return null;
+            return Lists.newArrayList();
         }
-        return  areaService.searchAreaListByRootIdAndTypes(prodectId, areaIds, areaTypes);
+        return areaService.searchAreaListByRootIdAndTypes(prodectId, areaIds, areaTypes);
 
     }
 

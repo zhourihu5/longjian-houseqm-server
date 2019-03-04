@@ -1,9 +1,10 @@
 package com.longfor.longjian.houseqm.app.service;
 
-import com.longfor.longjian.houseqm.po.zj2db.HouseQmCheckTaskIssue;
 import com.longfor.longjian.houseqm.po.zj2db.ExportFileRecord;
+import com.longfor.longjian.houseqm.po.zj2db.HouseQmCheckTaskIssue;
 import com.longfor.longjian.houseqm.po.zj2db.Project;
 
+import java.io.IOException;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
@@ -18,16 +19,16 @@ import java.util.Map;
  */
 public interface IHouseqmIssueService {
 
-    Project getProjectByProjId(Integer project_id);
+    Project getProjectByProjId(Integer projectId);
 
-    List<HouseQmCheckTaskIssue> searchHouseQmIssueListByProjUuidIn(Integer project_id, List<String> uuids) throws Exception;
+    List<HouseQmCheckTaskIssue> searchHouseQmIssueListByProjUuidIn(Integer projectId, List<String> uuids) ;
 
-    ExportFileRecord create(int userId, Integer teamId, Integer project_id, int exportType, Map<String, String> args, String exportName, Date executeAt) throws Exception;
+    ExportFileRecord create(int userId, Integer teamId, Integer projectId, int exportType, Map<String, String> args, String exportName, Date executeAt) throws IOException;
 
-    List<String> updateBatchIssueRepairInfoByUuids(List<String> uuids, Integer project_id, int uid, Integer repairer_id, String repair_follower_ids, Integer plan_end_on) throws Exception;
+    List<String> updateBatchIssueRepairInfoByUuids(List<String> uuids, Integer projectId, int uid, Integer repairerId, String repairFollowerIds, Integer planEndOn);
 
-    List<String> updateBatchIssueApproveStatusByUuids(List<String> uuids, int projectId, int senderId, int status, String desc, String attachmentMd5List) throws Exception;
+    List<String> updateBatchIssueApproveStatusByUuids(List<String> uuids, int projectId, int senderId, int status, String desc, String attachmentMd5List) ;
 
-    void deleteHouseQmCheckTaskIssueByProjUuid(Integer project_id, String issueUuid) throws Exception;
+    void deleteHouseQmCheckTaskIssueByProjUuid(Integer projectId, String issueUuid) ;
 
 }

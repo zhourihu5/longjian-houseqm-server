@@ -19,20 +19,20 @@ import java.util.Map;
 public class CheckItemV3MapVo implements Serializable {
     private Map<String, CheckItemV3> checkItemV3Map;
 
-    public List<String> getFullNamesByKey(String key){
-        if (checkItemV3Map.containsKey(key)){
+    public List<String> getFullNamesByKey(String key) {
+        if (checkItemV3Map.containsKey(key)) {
             return getFullNames(checkItemV3Map.get(key));
         }
         return Lists.newArrayList();
     }
 
-    public List<String> getFullNames(CheckItemV3 checkItemV3){
+    public List<String> getFullNames(CheckItemV3 checkItemV3) {
         List<String> r = Lists.newArrayList();
-        if (checkItemV3==null)return r;
+        if (checkItemV3 == null) return r;
         List<String> list = StringSplitToListUtil.removeStartAndEndStrAndSplit(checkItemV3.getPath(), "/", "/");
         list.add(checkItemV3.getKey());
         list.forEach(key -> {
-            if (checkItemV3Map.containsKey(key)){
+            if (checkItemV3Map.containsKey(key)) {
                 r.add(checkItemV3Map.get(key).getName());
             }
         });

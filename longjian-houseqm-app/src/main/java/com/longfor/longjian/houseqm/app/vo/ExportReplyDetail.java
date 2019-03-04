@@ -15,7 +15,7 @@ import java.util.List;
 public class ExportReplyDetail implements Serializable {
     private String task_name = "";
     private String check_item_name = "";
-    private List<ExportIssueDetail> issue_detail= Lists.newArrayList();
+    private List<ExportIssueDetail> issue_detail = Lists.newArrayList();
 
     @Data
     @NoArgsConstructor

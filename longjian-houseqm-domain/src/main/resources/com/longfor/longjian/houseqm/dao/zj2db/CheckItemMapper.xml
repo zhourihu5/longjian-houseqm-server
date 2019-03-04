@@ -29,7 +29,8 @@
         <!--
           WARNING - @mbg.generated
         -->
-        id, father_key, `key`, path,team_id,root_category_id,category_order,category_key,`order`,zj_std_key,custom_key,`name`,`desc`,common_issues,create_at
+        id, father_key, `key`,
+        path,team_id,root_category_id,category_order,category_key,`order`,zj_std_key,custom_key,`name`,`desc`,common_issues,create_at
         ,update_at,delete_at,required_type
     </sql>
 

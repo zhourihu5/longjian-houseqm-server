@@ -1,7 +1,10 @@
 package com.longfor.longjian.houseqm.po.zhijian2_apisvr;
 
+import javax.persistence.Column;
+import javax.persistence.Id;
+import javax.persistence.Table;
 import java.util.Date;
-import javax.persistence.*;
+
 @Table(name = "team")
 public class Team {
     @Id
@@ -22,7 +25,7 @@ public class Team {
     private Integer displayIndex;
 
     /**
-     * # 用户支付情况 10=试用 20=付费用户 
+     * # 用户支付情况 10=试用 20=付费用户
      */
     @Column(name = "payment_type")
     private Integer paymentType;
@@ -144,18 +147,18 @@ public class Team {
     }
 
     /**
-     * 获取# 用户支付情况 10=试用 20=付费用户 
+     * 获取# 用户支付情况 10=试用 20=付费用户
      *
-     * @return payment_type - # 用户支付情况 10=试用 20=付费用户 
+     * @return payment_type - # 用户支付情况 10=试用 20=付费用户
      */
     public Integer getPaymentType() {
         return paymentType;
     }
 
     /**
-     * 设置# 用户支付情况 10=试用 20=付费用户 
+     * 设置# 用户支付情况 10=试用 20=付费用户
      *
-     * @param paymentType # 用户支付情况 10=试用 20=付费用户 
+     * @param paymentType # 用户支付情况 10=试用 20=付费用户
      */
     public void setPaymentType(Integer paymentType) {
         this.paymentType = paymentType;

@@ -1,15 +1,19 @@
 package com.longfor.longjian.houseqm.app.controller.houseqmv3papi;
+
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import com.longfor.longjian.common.base.LjBaseResponse;
-import com.longfor.longjian.houseqm.app.feginclient1.IRepossessionFeignService;
+import com.longfor.longjian.houseqm.app.feginclient.IRepossessionFeignService;
 import com.longfor.longjian.houseqm.app.req.houseqmrepossession.RepossessionReportReq;
 import com.longfor.longjian.houseqm.app.vo.TaskResponse;
 import com.longfor.longjian.houseqm.app.vo.houseqmrepossessession.RepossessionGetRspVo;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.MediaType;
 import org.springframework.validation.annotation.Validated;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
+
 import javax.annotation.Resource;
 
 /**
@@ -50,14 +54,14 @@ public class HouseqmRepossessionController {
      * @Param
      **/
     @RequestMapping(value = "get", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
-    public TaskResponse<RepossessionGetRspVo> get(@RequestParam(required = true, name = "task_ids") String task_ids,
+    public TaskResponse<RepossessionGetRspVo> get(@RequestParam(required = true, name = "task_ids") String taskIds,
                                                   @RequestParam(required = true, name = "timestamp") Integer timestamp) {
-        log.info("get, task_ids=" + task_ids + ", timestamp=" + timestamp);
-        LjBaseResponse<Object> result = iRepossessionFeignService.get(task_ids, timestamp);
+        log.info("get, task_ids=" + taskIds + ", timestamp=" + timestamp);
+        LjBaseResponse<Object> result = iRepossessionFeignService.get(taskIds, timestamp);
         Object data = result.getData();
         String jsonString = JSON.toJSONString(data);
         JSONObject jsonObject = JSONObject.parseObject(jsonString);
-        RepossessionGetRspVo repossessionGetRspVo = JSONObject.toJavaObject(jsonObject,RepossessionGetRspVo.class);
+        RepossessionGetRspVo repossessionGetRspVo = JSONObject.toJavaObject(jsonObject, RepossessionGetRspVo.class);
         TaskResponse<RepossessionGetRspVo> response = new TaskResponse<>();
         response.setData(repossessionGetRspVo);
         return response;

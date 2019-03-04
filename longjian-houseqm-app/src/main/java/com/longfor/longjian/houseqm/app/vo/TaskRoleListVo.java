@@ -11,7 +11,7 @@ import java.util.List;
  */
 @Data
 @NoArgsConstructor
-public class TaskRoleListVo implements Serializable{
+public class TaskRoleListVo implements Serializable {
 
     private List<TaskRoleVo> role_list;
 
@@ -23,11 +23,11 @@ public class TaskRoleListVo implements Serializable{
         private Integer user_id;
         private Integer squad_id;
         private Integer role_type;
-        private Integer  can_approve;
+        private Integer can_approve;
         private Integer can_direct_approve;
         private Integer can_reassign;
         private String real_name;
-        private Integer  task_id;
+        private Integer task_id;
     }
 
 }

@@ -1,13 +1,11 @@
 package com.longfor.longjian.houseqm.app.controller.oapiv3houseqm;
 
-import com.google.common.collect.Maps;
-import com.longfor.longjian.common.util.DateUtil;
-import com.longfor.longjian.houseqm.app.vo.task.*;
-
 import com.google.common.collect.Lists;
+import com.google.common.collect.Maps;
 import com.longfor.longjian.common.base.LjBaseResponse;
 import com.longfor.longjian.common.entity.ProjectBase;
 import com.longfor.longjian.common.util.CtrlTool;
+import com.longfor.longjian.common.util.DateUtil;
 import com.longfor.longjian.common.util.SessionInfo;
 import com.longfor.longjian.houseqm.app.req.TaskDeleteReq;
 import com.longfor.longjian.houseqm.app.req.TaskTaskRoleReq;
@@ -17,17 +15,22 @@ import com.longfor.longjian.houseqm.app.service.ITaskService;
 import com.longfor.longjian.houseqm.app.vo.HouseQmCheckTaskRoleListRspVo;
 import com.longfor.longjian.houseqm.app.vo.HouseQmCheckTaskRspVo;
 import com.longfor.longjian.houseqm.app.vo.TaskTaskRoleRspVo;
-import com.longfor.longjian.houseqm.po.zj2db.HouseQmCheckTask;
+import com.longfor.longjian.houseqm.app.vo.task.*;
 import com.longfor.longjian.houseqm.po.zhijian2_apisvr.Team;
 import com.longfor.longjian.houseqm.po.zhijian2_apisvr.User;
+import com.longfor.longjian.houseqm.po.zj2db.HouseQmCheckTask;
 import com.longfor.longjian.houseqm.po.zj2db.UserInHouseQmCheckTask;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.MediaType;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
+
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
-import java.util.*;
+import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 /**
@@ -57,7 +60,7 @@ public class TaskController {
                                                       @RequestParam(value = "task_id") Integer taskId) {
 
         HouseQmCheckTaskRspVo houseQmCheckTaskRspVo = taskService.getHouseQmCheckTaskByProjTaskId(projectId, taskId);
-        LjBaseResponse<HouseQmCheckTaskRspVo> response = new LjBaseResponse<HouseQmCheckTaskRspVo>();
+        LjBaseResponse<HouseQmCheckTaskRspVo> response = new LjBaseResponse<>();
         response.setData(houseQmCheckTaskRspVo);
 
         return response;
@@ -199,7 +202,7 @@ public class TaskController {
             log.debug("task_role --->" + res);
             List<Integer> uids = res.stream().map(UserInHouseQmCheckTask::getUserId).collect(Collectors.toList());
             Map<Integer, User> userMap = taskService.getUsersByIds(uids);
-            List<HouseQmCheckTaskRoleListRspVo> role_list = Lists.newArrayList();
+            List<HouseQmCheckTaskRoleListRspVo> roleList = Lists.newArrayList();
             for (UserInHouseQmCheckTask item : res) {
                 HouseQmCheckTaskRoleListRspVo role = new HouseQmCheckTaskRoleListRspVo();
                 role.setId(item.getId());
@@ -212,10 +215,10 @@ public class TaskController {
                 if (userMap.containsKey(role.getUser_id())) {
                     role.setReal_name(userMap.get(role.getUser_id()).getRealName());
                 }
-                role_list.add(role);
+                roleList.add(role);
             }
             TaskTaskRoleRspVo data = new TaskTaskRoleRspVo();
-            data.setRole_list(role_list);
+            data.setRole_list(roleList);
             response.setData(data);
             response.setResult(0);
         } catch (Exception e) {

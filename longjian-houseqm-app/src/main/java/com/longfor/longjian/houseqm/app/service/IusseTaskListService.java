@@ -3,14 +3,12 @@ package com.longfor.longjian.houseqm.app.service;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.longfor.longjian.common.exception.LjBaseRuntimeException;
-import com.longfor.longjian.houseqm.app.vo.*;
-import com.longfor.longjian.houseqm.domain.internalService.*;
-import com.longfor.longjian.houseqm.po.zj2db.HouseQmCheckTask;
-import com.longfor.longjian.houseqm.po.zj2db.RepossessionMeterSetting;
+import com.longfor.longjian.houseqm.app.vo.ApiMineMsg;
+import com.longfor.longjian.houseqm.app.vo.ApiStatHouseqmMeterSettingMsgVo;
+import com.longfor.longjian.houseqm.app.vo.HouseQmCheckTaskSimpleRspVo;
+import com.longfor.longjian.houseqm.domain.internalservice.*;
 import com.longfor.longjian.houseqm.po.zhijian2_apisvr.Team;
-import com.longfor.longjian.houseqm.po.zj2db.Project;
-import com.longfor.longjian.houseqm.po.zj2db.UserInProject;
-import com.longfor.longjian.houseqm.po.zj2db.UserInTeamRole;
+import com.longfor.longjian.houseqm.po.zj2db.*;
 import com.longfor.longjian.houseqm.util.DateUtil;
 import com.longfor.longjian.houseqm.util.StringSplitToListUtil;
 import lombok.extern.slf4j.Slf4j;
@@ -136,98 +134,70 @@ public class IusseTaskListService {
                 teamIds.add(userlist.get(i).getTeamId());
             }
         }
-            List<Team> teamlist = teamService.selectByTeamIdsNotDel(teamIds);
-            for (int j = 0; j < teamlist.size(); j++) {
-                ApiMineMsg.ApiMineTeamsMsg apiMineTeamsMsg = new ApiMineMsg().new ApiMineTeamsMsg();
-                apiMineTeamsMsg.setId(teamlist.get(j).getTeamId());
-                apiMineTeamsMsg.setTeam_name(teamlist.get(j).getTeamName());
-                apiMineTeamsMsg.setParent_team_id(teamlist.get(j).getParentTeamId());
-                apiMineTeamsMsg.setUpdate_at(DateUtil.datetimeToTimeStamp(teamlist.get(j).getUpdateAt()));
-                teams.add(apiMineTeamsMsg);
+        List<Team> teamlist = teamService.selectByTeamIdsNotDel(teamIds);
+        for (int j = 0; j < teamlist.size(); j++) {
+            ApiMineMsg.ApiMineTeamsMsg apiMineTeamsMsg = new ApiMineMsg().new ApiMineTeamsMsg();
+            apiMineTeamsMsg.setId(teamlist.get(j).getTeamId());
+            apiMineTeamsMsg.setTeam_name(teamlist.get(j).getTeamName());
+            apiMineTeamsMsg.setParent_team_id(teamlist.get(j).getParentTeamId());
+            apiMineTeamsMsg.setUpdate_at(DateUtil.datetimeToTimeStamp(teamlist.get(j).getUpdateAt()));
+            teams.add(apiMineTeamsMsg);
+        }
+        ArrayList<Integer> parentIds = Lists.newArrayList();
+        for (int j = 0; j < teamlist.size(); j++) {
+            if (teamlist.get(j).getTeamId() > 0) {
+                parentIds.add(teamlist.get(j).getTeamId());
             }
-            ArrayList<Integer> parentIds = Lists.newArrayList();
-            for (int j = 0; j < teamlist.size(); j++) {
-                if (teamlist.get(j).getTeamId() > 0) {
-                    parentIds.add(teamlist.get(j).getTeamId());
-                }
-            }
-            Map<Integer, Team> parentMap = createTeamsMap(parentIds);
-            for (Map.Entry<Integer, Team> entry : parentMap.entrySet()) {
-                for (int k = 0; k < teamlist.size(); k++) {
-                    if (!entry.getKey().equals(teamlist.get(k).getTeamId())) {
-                        ApiMineMsg.ApiMineTeamsMsg apiMineTeamsMsg = new ApiMineMsg().new ApiMineTeamsMsg();
-                        apiMineTeamsMsg.setId(entry.getValue().getTeamId());
-                        apiMineTeamsMsg.setTeam_name(entry.getValue().getTeamName());
-                        apiMineTeamsMsg.setParent_team_id(entry.getValue().getParentTeamId());
-                        apiMineTeamsMsg.setUpdate_at(DateUtil.datetimeToTimeStamp(entry.getValue().getUpdateAt()));
-                        if (datetimeZero(entry.getValue().getDeleteAt())) {
-                            apiMineTeamsMsg.setDelete_at(DateUtil.datetimeToTimeStamp(entry.getValue().getDeleteAt()));
-                        }
-                        teams.add(apiMineTeamsMsg);
+        }
+        Map<Integer, Team> parentMap = createTeamsMap(parentIds);
+        for (Map.Entry<Integer, Team> entry : parentMap.entrySet()) {
+            for (int k = 0; k < teamlist.size(); k++) {
+                if (!entry.getKey().equals(teamlist.get(k).getTeamId())) {
+                    ApiMineMsg.ApiMineTeamsMsg apiMineTeamsMsg = new ApiMineMsg().new ApiMineTeamsMsg();
+                    apiMineTeamsMsg.setId(entry.getValue().getTeamId());
+                    apiMineTeamsMsg.setTeam_name(entry.getValue().getTeamName());
+                    apiMineTeamsMsg.setParent_team_id(entry.getValue().getParentTeamId());
+                    apiMineTeamsMsg.setUpdate_at(DateUtil.datetimeToTimeStamp(entry.getValue().getUpdateAt()));
+                    if (datetimeZero(entry.getValue().getDeleteAt())) {
+                        apiMineTeamsMsg.setDelete_at(DateUtil.datetimeToTimeStamp(entry.getValue().getDeleteAt()));
+                    }
+                    teams.add(apiMineTeamsMsg);
 
-                    }
                 }
             }
-            //# 读取出我参与的所有项目
-            List<UserInProject> projectList = userInProjectService.selectByUserIdNotDel(uid);
-            ArrayList<Integer> projectIds = Lists.newArrayList();
-            projectList.forEach(item -> {
-                if (!projectIds.contains(item.getProjectId())) {
-                    projectIds.add(item.getProjectId());
+        }
+        //# 读取出我参与的所有项目
+        List<UserInProject> projectList = userInProjectService.selectByUserIdNotDel(uid);
+        ArrayList<Integer> projectIds = Lists.newArrayList();
+        projectList.forEach(item -> {
+            if (!projectIds.contains(item.getProjectId())) {
+                projectIds.add(item.getProjectId());
+            }
+        });
+        //  # 判断每个项目下有没有验房任务
+        List<HouseQmCheckTask> tasklist = houseQmCheckTaskService.selectByProjectIdsAndCategoryClsNotDel(projectIds, categorylist);
+        ArrayList<Integer> projectIdsList = Lists.newArrayList();
+        tasklist.forEach(item ->
+            projectIdsList.add(item.getProjectId())
+        );
+        ArrayList<Integer> expTeamIds = Lists.newArrayList();
+        if (CollectionUtils.isNotEmpty(projectIdsList)) {
+            List<Project> projectlist = projectService.selectByIdNotDel(projectIdsList);
+            projectlist.forEach(item -> {
+                ApiMineMsg.ApiMineProjectsMsg project = new ApiMineMsg().new ApiMineProjectsMsg();
+                project.setId(item.getId());
+                project.setName(item.getName());
+                project.setTeam_id(item.getTeamId());
+                project.setUpdate_at(DateUtil.datetimeToTimeStamp(item.getUpdateAt()));
+                projects.add(project);
+                if (!teamIds.contains(item.getTeamId())) {
+                    expTeamIds.add(item.getTeamId());
                 }
             });
-            //  # 判断每个项目下有没有验房任务
-            List<HouseQmCheckTask> tasklist = houseQmCheckTaskService.selectByProjectIdsAndCategoryClsNotDel(projectIds, categorylist);
-            ArrayList<Integer> projectIdsList = Lists.newArrayList();
-            tasklist.forEach(item -> {
-                projectIdsList.add(item.getProjectId());
-            });
-            ArrayList<Integer> expTeamIds = Lists.newArrayList();
-            if (CollectionUtils.isNotEmpty(projectIdsList)) {
-                List<Project> projectlist = projectService.selectByIdNotDel(projectIdsList);
-                projectlist.forEach(item -> {
-                    ApiMineMsg.ApiMineProjectsMsg project = new ApiMineMsg().new ApiMineProjectsMsg();
-                    project.setId(item.getId());
-                    project.setName(item.getName());
-                    project.setTeam_id(item.getTeamId());
-                    project.setUpdate_at(DateUtil.datetimeToTimeStamp(item.getUpdateAt()));
-                    projects.add(project);
-                    if (!teamIds.contains(item.getTeamId())) {
-                        expTeamIds.add(item.getTeamId());
-                    }
-                });
-            }
-            if (CollectionUtils.isNotEmpty(expTeamIds)) {
-                List<Team> teamlists = teamService.selectByTeamIdsNotDel(expTeamIds);
-                teamlists.forEach(item -> {
-                    ApiMineMsg.ApiMineTeamsMsg msg = new ApiMineMsg().new ApiMineTeamsMsg();
-                    msg.setId(item.getTeamId());
-                    msg.setTeam_name(item.getTeamName());
-                    msg.setParent_team_id(item.getParentTeamId());
-                    msg.setUpdate_at(DateUtil.datetimeToTimeStamp(item.getUpdateAt()));
-                    teams.add(msg);
-                });
-            }
-            ArrayList<Integer> teamId = Lists.newArrayList();
-            teams.forEach(item -> {
-                teamId.add(item.getId());
-            });
-            List<Team> teamlists = teamService.selectByTeamIdsNotDel(teamId);
-            ArrayList<Integer> objects = Lists.newArrayList();
+        }
+        if (CollectionUtils.isNotEmpty(expTeamIds)) {
+            List<Team> teamlists = teamService.selectByTeamIdsNotDel(expTeamIds);
             teamlists.forEach(item -> {
-                if (!objects.contains(item.getTeamId())) {
-                    objects.add(item.getTeamId());
-                }
-                List<Integer> idsComma = StringSplitToListUtil.splitToIdsComma(item.getPath(), "/");
-                idsComma.forEach(items -> {
-                    if (!objects.contains(items)) {
-                        objects.add(items);
-                    }
-                });
-            });
-            List<Team> teamsLists = teamService.selectByTeamIdsNotDel(objects);
-                    teams.clear();
-            teamsLists.forEach(item -> {
                 ApiMineMsg.ApiMineTeamsMsg msg = new ApiMineMsg().new ApiMineTeamsMsg();
                 msg.setId(item.getTeamId());
                 msg.setTeam_name(item.getTeamName());
@@ -235,6 +205,34 @@ public class IusseTaskListService {
                 msg.setUpdate_at(DateUtil.datetimeToTimeStamp(item.getUpdateAt()));
                 teams.add(msg);
             });
+        }
+        ArrayList<Integer> teamId = Lists.newArrayList();
+        teams.forEach(item ->
+            teamId.add(item.getId())
+        );
+        List<Team> teamlists = teamService.selectByTeamIdsNotDel(teamId);
+        ArrayList<Integer> objects = Lists.newArrayList();
+        teamlists.forEach(item -> {
+            if (!objects.contains(item.getTeamId())) {
+                objects.add(item.getTeamId());
+            }
+            List<Integer> idsComma = StringSplitToListUtil.splitToIdsComma(item.getPath(), "/");
+            idsComma.forEach(items -> {
+                if (!objects.contains(items)) {
+                    objects.add(items);
+                }
+            });
+        });
+        List<Team> teamsLists = teamService.selectByTeamIdsNotDel(objects);
+        teams.clear();
+        teamsLists.forEach(item -> {
+            ApiMineMsg.ApiMineTeamsMsg msg = new ApiMineMsg().new ApiMineTeamsMsg();
+            msg.setId(item.getTeamId());
+            msg.setTeam_name(item.getTeamName());
+            msg.setParent_team_id(item.getParentTeamId());
+            msg.setUpdate_at(DateUtil.datetimeToTimeStamp(item.getUpdateAt()));
+            teams.add(msg);
+        });
         ApiMineMsg apiMineMsg = new ApiMineMsg();
         apiMineMsg.setProjects(projects);
         apiMineMsg.setTeams(teams);
@@ -242,15 +240,13 @@ public class IusseTaskListService {
     }
 
     private boolean datetimeZero(Date deleteAt) {
-        if(deleteAt==null){
+        if (deleteAt == null) {
             return false;
         }
 
         String dateStr = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss").format(deleteAt);
-        if (deleteAt == null || dateStr.equals("0001-01-01 00:00:00") || dateStr.equals("")) {
-            return true;
-        }
-        return false;
+        return dateStr.equals("0001-01-01 00:00:00") || dateStr.equals("")?true:false;
+
     }
 
     private Map createTeamsMap(ArrayList<Integer> parentIds) {

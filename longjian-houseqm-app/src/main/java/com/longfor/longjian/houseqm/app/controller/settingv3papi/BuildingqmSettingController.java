@@ -10,7 +10,9 @@ import com.longfor.longjian.houseqm.app.service.BuildingqmSettingService;
 import com.longfor.longjian.houseqm.app.vo.ApiIssueFiledSettingMsg;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.MediaType;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
 
 import javax.annotation.Resource;
 
@@ -26,21 +28,17 @@ import javax.annotation.Resource;
 public class BuildingqmSettingController {
 
 
-
     @Resource
     private BuildingqmSettingService buildingqmSettingService;
 
     /**
-     *
      * @param projectIds
      * @param timestamp
      * @return
      */
     @RequestMapping(value = "get_issuefiled_setting", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
-    public LjBaseResponse<ApiIssueFiledSettingMsg.IssueFileds> getIssuefiledSetting(@RequestParam(value = "project_ids")   String  projectIds, @RequestParam(value = "timestamp" ,required = false,defaultValue = "0") Integer timestamp) {
+    public LjBaseResponse<ApiIssueFiledSettingMsg.IssueFileds> getIssuefiledSetting(@RequestParam(value = "project_ids") String projectIds, @RequestParam(value = "timestamp", required = false, defaultValue = "0") Integer timestamp) {
 
-        LjBaseResponse<ApiIssueFiledSettingMsg.IssueFileds> response = buildingqmSettingService.getIssuefiledSetting(projectIds, timestamp);
-
-        return response;
+        return buildingqmSettingService.getIssuefiledSetting(projectIds, timestamp);
     }
 }

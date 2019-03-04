@@ -1,7 +1,8 @@
 package com.longfor.longjian.houseqm.po.zhijian2_apisvr;
 
+import javax.persistence.Column;
+import javax.persistence.Id;
 import java.util.Date;
-import javax.persistence.*;
 
 public class User {
     @Id

@@ -21,37 +21,39 @@ import java.util.Map;
 public class CheckItemMapVo implements Serializable {
     private Map<String, CheckItem> checkItemV3Map;
 
-    public List<String> getFullNamesByKey(String key){
-        if (checkItemV3Map.containsKey(key)){
+    public List<String> getFullNamesByKey(String key) {
+        if (checkItemV3Map.containsKey(key)) {
             return getFullNames(checkItemV3Map.get(key));
         }
         return Lists.newArrayList();
     }
 
-    public List<String> getFullNames(CheckItem checkItemV3){
+    public List<String> getFullNames(CheckItem checkItemV3) {
         List<String> r = Lists.newArrayList();
-        if (checkItemV3==null)return r;
+        if (checkItemV3 == null) return r;
         List<String> list = StringSplitToListUtil.removeStartAndEndStrAndSplit(checkItemV3.getPath(), "/", "/");
         list.add(checkItemV3.getKey());
         list.forEach(key -> {
-            if (checkItemV3Map.containsKey(key)){
+            if (checkItemV3Map.containsKey(key)) {
                 r.add(checkItemV3Map.get(key).getName());
             }
         });
         return r;
     }
-    public CheckItemMapVo  NewCategoryMap(List<CheckItem> c){
+
+    public CheckItemMapVo NewCategoryMap(List<CheckItem> c) {
         CheckItemMapVo categoryV3MapVo = new CheckItemMapVo();
         HashMap<String, CheckItem> map = Maps.newHashMap();
         for (int i = 0; i < c.size(); i++) {
-            map.put(c.get(i).getKey(),c.get(i));
+            map.put(c.get(i).getKey(), c.get(i));
         }
         categoryV3MapVo.setCheckItemV3Map(map);
         return categoryV3MapVo;
     }
+
     public String getNameByKey(String checkitemKey) {
-        if (checkItemV3Map.containsKey(checkitemKey)){
-            return   checkItemV3Map.get(checkitemKey).getName();
+        if (checkItemV3Map.containsKey(checkitemKey)) {
+            return checkItemV3Map.get(checkitemKey).getName();
         }
         return "";
     }

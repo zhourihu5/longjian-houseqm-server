@@ -2,6 +2,8 @@ package com.longfor.longjian.houseqm.app.service.impl;
 
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
+import com.longfor.longjian.common.consts.HouseQmCheckTaskIssueStatusEnum;
+import com.longfor.longjian.common.exception.LjBaseRuntimeException;
 import com.longfor.longjian.common.push.UmPushUtil;
 import com.longfor.longjian.common.push.xiaomi.XmPushUtil;
 import com.longfor.longjian.houseqm.app.service.PushService;
@@ -9,9 +11,9 @@ import com.longfor.longjian.houseqm.app.vo.PushConfigVo;
 import com.longfor.longjian.houseqm.app.vo.houseqmissue.HouseQmCheckTaskIssueVo;
 import com.longfor.longjian.houseqm.consts.AppPlatformTypeEnum;
 import com.longfor.longjian.houseqm.consts.CategoryClsTypeEnum;
-import com.longfor.longjian.common.consts.HouseQmCheckTaskIssueStatusEnum;
 import com.longfor.longjian.houseqm.util.StringSplitToListUtil;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.stereotype.Service;
 
@@ -25,15 +27,14 @@ import java.util.Map;
 public class PushServiceImpl implements PushService {
 
 
-    @Resource
-    private PushConfigVo pushConfigVo;
-
     private final int PUSH_APP_GCGL = 1;
     private final int PUSH_APP_YDYF = 2;
     private final int PUSH_APP_GXGL = 3;
+    @Resource
+    private PushConfigVo pushConfigVo;
 
     @Override
-    public void sendUPushByIssues(List<HouseQmCheckTaskIssueVo> issues) throws Exception {
+    public void sendUPushByIssues(List<HouseQmCheckTaskIssueVo> issues) {
         if (issues == null || issues.isEmpty()) {
             log.warn("send_upush_empty");
             return;
@@ -78,7 +79,7 @@ public class PushServiceImpl implements PushService {
                         e = value;
                     }
                 }
-                if(e==null){
+                if (e == null) {
                     continue;
                 }
                 switch (e) {
@@ -102,8 +103,8 @@ public class PushServiceImpl implements PushService {
     }
 
     // appFlag: 1-推送到工程管理APP，2-推送到移动验房APP，3-全部推送
-    public void sendUPush(String title, String msg, int taskId, List<Integer> userIds, int appFlag) throws Exception {
-        if (userIds.size() == 0) {
+    public void sendUPush(String title, String msg, int taskId, List<Integer> userIds, int appFlag) {
+        if (CollectionUtils.isEmpty(userIds)) {
             log.warn("Len of UserIds is zero");
             return;
         } else if (userIds.size() > 50) {
@@ -112,17 +113,17 @@ public class PushServiceImpl implements PushService {
                 userIdList.add(userIds.get(i));
             }
             sendUPush(title, msg, taskId, userIdList, appFlag);
-            List<Integer> user_id_list = Lists.newArrayList();
+            List<Integer> userIdsList = Lists.newArrayList();
             for (int i = 0; i < 50; i++) {
-                user_id_list.add(userIds.get(i));
+                userIdsList.add(userIds.get(i));
             }
             userIds.clear();
-            userIds.addAll(user_id_list);
+            userIds.addAll(userIdsList);
         }
 
 
         //
-        PushConfigVo.AppInfo cfgPush=null;
+        PushConfigVo.AppInfo cfgPush = null;
         switch (appFlag) {
             case PUSH_APP_GCGL:
                 cfgPush = pushConfigVo.getGcgl();
@@ -137,29 +138,29 @@ public class PushServiceImpl implements PushService {
                 log.error("appFlag 错误");
                 break;
         }
-        if (cfgPush==null){
-            throw new Exception("config of Push unfound, notice will not sended");
+        if (cfgPush == null) {
+            throw new LjBaseRuntimeException(1,"config of Push unfound, notice will not sended");
         }
         log.info("Sending_upush [taskId:%s] [userIds:%s] [appFlag:%s]", taskId, userIds, appFlag);
         ////接收者 信息
         ArrayList<String> alias = Lists.newArrayList();
-        for (int i = 0; i <userIds.size() ; i++) {
-            alias.add("user_id_"+userIds.get(i));
-            alias.add("user_id_"+pushConfigVo.getEnterprise_id()+"_"+userIds.get(i)+"");
+        for (int i = 0; i < userIds.size(); i++) {
+            alias.add("user_id_" + userIds.get(i));
+            alias.add("user_id_" + pushConfigVo.getEnterprise_id() + "_" + userIds.get(i) + "");
         }
         String alia = StringUtils.join(alias, ",");
 
         // 推送
         // 友盟推送Android
-        UmPushUtil.sendAndroidCustomizedcast(cfgPush.getApp_key_android(),cfgPush.getApp_master_secret_android(),alia, AppPlatformTypeEnum.PUSH_PLATFORM_UMENG_ANDROID.getValue(),
-                "Android",title,msg,msg,String.valueOf(taskId));
+        UmPushUtil.sendAndroidCustomizedcast(cfgPush.getApp_key_android(), cfgPush.getApp_master_secret_android(), alia, AppPlatformTypeEnum.PUSH_PLATFORM_UMENG_ANDROID.getValue(),
+                "Android", title, msg, msg, String.valueOf(taskId));
 
         //// 友盟推送Ios
-        UmPushUtil.sendIOSCustomizedcast(cfgPush.getApp_key_ios(),cfgPush.getApp_master_secret_ios(),alia,AppPlatformTypeEnum.PUSH_PLATFORM_UMENG_IOS.getValue(),
-                msg,String.valueOf(taskId));
+        UmPushUtil.sendIOSCustomizedcast(cfgPush.getApp_key_ios(), cfgPush.getApp_master_secret_ios(), alia, AppPlatformTypeEnum.PUSH_PLATFORM_UMENG_IOS.getValue(),
+                msg, String.valueOf(taskId));
 
         // xiaomi
-        XmPushUtil.sendMessageToUserAccounts(cfgPush.getApp_secret_xiao_mi(),cfgPush.getPackage_name_xiao_mi(),title,msg,alias);
+        XmPushUtil.sendMessageToUserAccounts(cfgPush.getApp_secret_xiao_mi(), cfgPush.getPackage_name_xiao_mi(), title, msg, alias);
 
     }
 
