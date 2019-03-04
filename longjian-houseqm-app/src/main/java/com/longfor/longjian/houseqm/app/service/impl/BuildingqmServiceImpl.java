@@ -1992,7 +1992,7 @@ public class BuildingqmServiceImpl implements IBuildingqmService {
         Map<String, Object> map = Maps.newHashMap();
         map.put("status", nstatus);
         map.put("repairerId", nrepairerId);
-        map.put("splitToIdsComma", repairerFollowerIds);
+        map.put("repairerFollowerIds", repairerFollowerIds);
         return map;
     }
 
