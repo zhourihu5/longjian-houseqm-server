@@ -48,7 +48,16 @@ public class V3HouseqmStatController {
     // 统计报告 -任务概况 -验房详情 导出excel
     @RequestMapping(value = "inspection_situation_export", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     public LjBaseResponse<Object> inspectionSituationExport(HttpServletRequest request, HttpServletResponse response, @Validated InspectionSituationExportReq req){
-        ctrlTool.projPermMulti(request, new String[]{"项目.移动验房.统计.查看", "项目.工程检查.统计.查看"});
+        LjBaseResponse<Object> ljBaseResponse = new LjBaseResponse<>();
+        try {
+            ctrlTool.projPermMulti(request, new String[]{"项目.移动验房.统计.查看", "项目.工程检查.统计.查看"});
+        } catch (Exception e) {
+            log.error(e.getMessage());
+            ljBaseResponse.setMessage(e.getMessage());
+            ljBaseResponse.setResult(1);
+            return ljBaseResponse;
+        }
+
         if (req.getArea_id() == null) req.setArea_id(0);
         if (req.getIssue_status() == null) req.setIssue_status(0);
         if (req.getStatus() == null) req.setStatus(0);
@@ -86,7 +95,7 @@ public class V3HouseqmStatController {
           log.error("转码失败",e.getMessage());
         }
         response.setHeader("Expires", " 0");
-        LjBaseResponse<Object> ljBaseResponse = new LjBaseResponse<>();
+
         try (ServletOutputStream os = response.getOutputStream()) {
             SXSSFWorkbook wb = ExportUtils.exportInspectionSituationExcel(details);
             wb.write(os);
