@@ -3,6 +3,7 @@ package com.longfor.longjian.houseqm.app.controller;
 import com.longfor.longjian.common.base.LjBaseResponse;
 import com.longfor.longjian.houseqm.app.req.ProjectOrdersReq;
 import com.longfor.longjian.houseqm.app.service.IHouseqmExportService;
+import com.longfor.longjian.houseqm.app.vo.houseqm.HouseqmExportVo;
 import com.longfor.longjian.houseqm.util.DateUtil;
 import com.longfor.longjian.houseqm.util.StringSplitToListUtil;
 import lombok.extern.slf4j.Slf4j;
@@ -56,7 +57,16 @@ public class HouseqmExportController {
             endOn = DateUtil.strToDate(req.getEnd_on(), "yyyy-MM-dd");
         }
         List<Integer> areaIds = StringSplitToListUtil.strToInts(req.getArea_ids(), ",");
-        iHouseqmExportService.exportProjectOrdersByProjIdTaskIdAreaIdsRepairedIdBeginOnEndOn(req.getProject_id(), req.getTask_id(), areaIds, req.getRepairer_id(), beginOn, endOn, req.getCategory_cls(), false);
+        HouseqmExportVo hevo=new HouseqmExportVo();
+        hevo.setAreaIds(areaIds);
+        hevo.setBeginOn(beginOn);
+        hevo.setCategoryCls(req.getCategory_cls());
+        hevo.setWithRule(false);
+        hevo.setTaskId(req.getTask_id());
+        hevo.setProjectId(req.getProject_id());
+        hevo.setEndOn(endOn);
+        hevo.setRepairerId(req.getRepairer_id());
+        iHouseqmExportService.exportProjectOrdersByProjIdTaskIdAreaIdsRepairedIdBeginOnEndOn(hevo);
 
         resp.setHeader("Content-Type", "application/octet-stream; charset=utf-8");
         resp.setHeader("Content-Disposition", " attachment; filename=\" 工程处理单.zip\"");
