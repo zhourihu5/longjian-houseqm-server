@@ -27,6 +27,9 @@ public class HouseQmCheckTaskIssueAttachmentServiceImpl implements HouseQmCheckT
     HouseQmCheckTaskIssueAttachmentMapper houseQmCheckTaskIssueAttachmentMapper;
 
 
+    private static final String ISSUE_UUID="issueUuid";
+
+    private static final String DELETE_AT="deleteAt";
     @LFAssignDataSource("zhijian2")
     public int inseretBatch(List<HouseQmCheckTaskIssueAttachment> attachements) {
         int result = 0;
@@ -45,7 +48,7 @@ public class HouseQmCheckTaskIssueAttachmentServiceImpl implements HouseQmCheckT
     public int deleteByIssueUuidMd5(String issueUuid, String md5) {
         Example example = new Example(HouseQmCheckTaskIssueAttachment.class);
         Example.Criteria criteria = example.createCriteria();
-        criteria.andEqualTo("issueUuid", issueUuid).andEqualTo("md5", md5);
+        criteria.andEqualTo(ISSUE_UUID, issueUuid).andEqualTo("md5", md5);
         HouseQmCheckTaskIssueAttachment attachment = new HouseQmCheckTaskIssueAttachment();
 
         attachment.setDeleteAt(new Date());
@@ -67,11 +70,11 @@ public class HouseQmCheckTaskIssueAttachmentServiceImpl implements HouseQmCheckT
     public List<HouseQmCheckTaskIssueAttachment> selectByissueUuidAnduserIdAndpublicTypeAndattachmentTypeAndNotDel(String issueUuid, Integer uid, Integer value, Integer value1) {
         Example example = new Example(HouseQmCheckTaskIssueAttachment.class);
         Example.Criteria criteria = example.createCriteria();
-        criteria.andEqualTo("issueUuid", issueUuid);
+        criteria.andEqualTo(ISSUE_UUID, issueUuid);
         criteria.andEqualTo("userId", uid);
         criteria.andEqualTo("publicType", value);
         criteria.andEqualTo("attachmentType", value1);
-        criteria.andIsNull("deleteAt");
+        criteria.andIsNull(DELETE_AT);
         return houseQmCheckTaskIssueAttachmentMapper.selectByExample(example);
     }
 
@@ -80,10 +83,10 @@ public class HouseQmCheckTaskIssueAttachmentServiceImpl implements HouseQmCheckT
     public List<HouseQmCheckTaskIssueAttachment> selectByIssueUuidAndpublicTypeAndattachmentTypeAndNotDel(String issueUuid, Integer value, Integer value1) {
         Example example = new Example(HouseQmCheckTaskIssueAttachment.class);
         Example.Criteria criteria = example.createCriteria();
-        criteria.andEqualTo("issueUuid", issueUuid);
+        criteria.andEqualTo(ISSUE_UUID, issueUuid);
         criteria.andEqualTo("publicType", value);
         criteria.andEqualTo("attachmentType", value1);
-        criteria.andIsNull("deleteAt");
+        criteria.andIsNull(DELETE_AT);
         return houseQmCheckTaskIssueAttachmentMapper.selectByExample(example);
     }
 
@@ -104,7 +107,7 @@ public class HouseQmCheckTaskIssueAttachmentServiceImpl implements HouseQmCheckT
         Example.Criteria criteria = example.createCriteria();
         criteria.andEqualTo("md5", attachment);
 
-        criteria.andIsNull("deleteAt");
+        criteria.andIsNull(DELETE_AT);
         return houseQmCheckTaskIssueAttachmentMapper.selectOneByExample(example);
     }
 
