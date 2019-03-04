@@ -13,7 +13,6 @@ import com.longfor.longjian.houseqm.app.req.issue.IssueBatchApproveReq;
 import com.longfor.longjian.houseqm.app.req.issue.IssueBatchDeleteReq;
 import com.longfor.longjian.houseqm.app.req.issue.IssueExportPdfReq;
 import com.longfor.longjian.houseqm.app.service.IHouseqmIssueService;
-import com.longfor.longjian.houseqm.app.utils.SessionUtil;
 import com.longfor.longjian.houseqm.app.vo.IssueBatchAppointRspVo;
 import com.longfor.longjian.houseqm.app.vo.houseqmissue.IssueBatchApproveRspVo;
 import com.longfor.longjian.houseqm.app.vo.houseqmissue.IssueBatchDeleteRspVo;
@@ -67,14 +66,7 @@ public class HouseqmIssueController {
     private static final String USER_ID="userId";
     private static final String AUTH_PROJECT_QUESTION_MANAGE_EDIT="项目.移动验房.问题管理.编辑";
     private static final String AUTH_PROJECT_ENGINEERING_QUESTION_MANAGE_EDIT_="项目.工程检查.问题管理.编辑";
-    /**
-     * @return com.longfor.longjian.common.base.LjBaseResponse
-     * @Author hy
-     * @Description 项目下问题导出PDF到任务
-     * http://192.168.37.159:3000/project/8/interface/api/3356
-     * @Date 17:13 2019/1/10
-     * @Param [req]
-     **/
+
     @RequestMapping(value = "export_pdf", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     public LjBaseResponse exportPdf(HttpServletRequest request, @Validated IssueExportPdfReq req) throws IOException {
         LjBaseResponse<Object> response = new LjBaseResponse<>();

@@ -301,8 +301,8 @@ public class HouseqmServiceImpl implements IHouseqmService {
         List<Integer> areaIds = StringSplitToListUtil.strToInts(task.getAreaIds(), ",");
         List<Integer> areaTypes = StringSplitToListUtil.strToInts(task.getAreaTypes(), ",");
         if (CollectionUtils.isEmpty(areaIds)|| CollectionUtils.isEmpty(areaTypes)) return null;
-        List<Area> areas = areaService.searchAreaListByRootIdAndTypes(projectId, areaIds, areaTypes);
-        return areas;
+        return  areaService.searchAreaListByRootIdAndTypes(projectId, areaIds, areaTypes);
+
     }
 
 }
