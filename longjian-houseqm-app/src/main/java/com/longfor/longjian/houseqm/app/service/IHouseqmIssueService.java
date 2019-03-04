@@ -4,6 +4,7 @@ import com.longfor.longjian.houseqm.po.zj2db.ExportFileRecord;
 import com.longfor.longjian.houseqm.po.zj2db.HouseQmCheckTaskIssue;
 import com.longfor.longjian.houseqm.po.zj2db.Project;
 
+import java.io.IOException;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
@@ -22,7 +23,7 @@ public interface IHouseqmIssueService {
 
     List<HouseQmCheckTaskIssue> searchHouseQmIssueListByProjUuidIn(Integer projectId, List<String> uuids) throws Exception;
 
-    ExportFileRecord create(int userId, Integer teamId, Integer projectId, int exportType, Map<String, String> args, String exportName, Date executeAt) throws Exception;
+    ExportFileRecord create(int userId, Integer teamId, Integer projectId, int exportType, Map<String, String> args, String exportName, Date executeAt) throws IOException;
 
     List<String> updateBatchIssueRepairInfoByUuids(List<String> uuids, Integer projectId, int uid, Integer repairerId, String repairFollowerIds, Integer planEndOn) throws Exception;
 
