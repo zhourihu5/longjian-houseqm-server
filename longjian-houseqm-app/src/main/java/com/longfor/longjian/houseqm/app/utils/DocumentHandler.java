@@ -248,6 +248,10 @@ public class DocumentHandler {
             directory.mkdirs();
             for(int i=0;i<mapList.size();i++) {
                 Map<String, Object> map=mapList.get(i);
+                List imageList = (List) map.get("image");
+                for (Object o : imageList) {
+                    DocumentHandler.getImageBase((String) o);
+                }
                 String title=titleList.get(i);
                 // 调用工具类的createDoc方法在临时目录下生成Word文档
                 file = createDoc(map, freemarkerTemplate, directory.getPath() + "/" + title + ".doc");
