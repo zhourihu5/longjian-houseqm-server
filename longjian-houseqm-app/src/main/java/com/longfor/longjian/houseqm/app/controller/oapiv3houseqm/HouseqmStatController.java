@@ -50,9 +50,9 @@ import java.util.List;
 @RequestMapping("oapi/v3/houseqm/")
 @Slf4j
 public class HouseqmStatController {
-    private static final String SEE ="项目.移动验房.统计.查看";
-    private static final String YMDHMS= "yyyy-MM-dd hh:mm:ss";
-    private static final String  YMD="yyyy-MM-dd";
+    private static final String SEE = "项目.移动验房.统计.查看";
+    private static final String YMDHMS = "yyyy-MM-dd hh:mm:ss";
+    private static final String YMD = "yyyy-MM-dd";
 
     @Resource
     private IHouseqmStatService houseqmStatService;
@@ -67,7 +67,14 @@ public class HouseqmStatController {
     @RequestMapping(value = "stat/category_stat", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     public LjBaseResponse<StatCategoryStatRspVo> categoryStat(HttpServletRequest request, @Validated StatCategoryStatReq req) {
         LjBaseResponse<StatCategoryStatRspVo> response = new LjBaseResponse<>();
-        ctrlTool.projPermMulti(request, new String[]{SEE, SEE});
+        try {
+            ctrlTool.projPermMulti(request, new String[]{SEE, SEE});
+        } catch (Exception e) {
+            log.error(e.getMessage());
+            response.setMessage(e.getMessage());
+            response.setResult(1);
+            return response;
+        }
         if (req.getArea_id() == null) req.setArea_id(0);
         Date beginOn = DateUtil.timeStampToDate(0, YMD);
         Date endOn = DateUtil.timeStampToDate(0, YMD);
@@ -86,7 +93,14 @@ public class HouseqmStatController {
     @RequestMapping(value = "stat/inspection_situation_search", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     public LjBaseResponse<StatInspectionSituationSearchRspVo> inspectionSituationSearch(HttpServletRequest request, @Validated StatInspectionSituationSearchReq req) {
         LjBaseResponse<StatInspectionSituationSearchRspVo> response = new LjBaseResponse<>();
-        ctrlTool.projPermMulti(request, new String[]{SEE, SEE});
+        try {
+            ctrlTool.projPermMulti(request, new String[]{SEE, SEE});
+        } catch (Exception e) {
+            log.error(e.getMessage());
+            response.setMessage(e.getMessage());
+            response.setResult(1);
+            return response;
+        }
         if (req.getArea_id() == null) req.setArea_id(0);
         if (req.getIssue_status() == null) req.setIssue_status(0);
         if (req.getStatus() == null) req.setStatus(0);
@@ -355,7 +369,6 @@ public class HouseqmStatController {
     }
 
     /**
-     *
      * @deprecated 接口废弃
      */
     @Deprecated
@@ -392,7 +405,6 @@ public class HouseqmStatController {
     }
 
     /**
-     *
      * @deprecated 接口废弃
      */
     @Deprecated
