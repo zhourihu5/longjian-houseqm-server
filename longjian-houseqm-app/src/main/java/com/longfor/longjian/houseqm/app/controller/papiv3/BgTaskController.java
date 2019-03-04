@@ -7,7 +7,6 @@ import com.longfor.longjian.houseqm.app.vo.bgtask.ExportRsp;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.MediaType;
 import org.springframework.validation.annotation.Validated;
-import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -40,7 +39,7 @@ public class BgTaskController {
      * @Param [req]
      **/
     @RequestMapping(value = "buildingqm/export_pic_excel", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
-    public LjBaseResponse<ExportRsp> exportPicExcel(@Validated @RequestBody ExportBuildingExcelReq req) {
+    public LjBaseResponse<ExportRsp> exportPicExcel(@Validated ExportBuildingExcelReq req) {
         return iBuildingqmExportFeignService.exportPicExcel(req);
     }
 
@@ -53,7 +52,7 @@ public class BgTaskController {
      * @Param [req]
      **/
     @RequestMapping(value = "buildingqm/export_ppt", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
-    public LjBaseResponse<ExportRsp> exportPpt(@Validated @RequestBody ExportBuildingExcelReq req) {
+    public LjBaseResponse<ExportRsp> exportPpt(@Validated ExportBuildingExcelReq req) {
         return iBuildingqmExportFeignService.exportPpt(req);
     }
 
