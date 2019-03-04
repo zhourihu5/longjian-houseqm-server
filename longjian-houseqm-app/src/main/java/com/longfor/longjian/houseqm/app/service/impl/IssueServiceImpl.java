@@ -1483,14 +1483,14 @@ public class IssueServiceImpl implements IIssueService {
             detailVo.setContent(issue.getContent());
             ArrayList<String> storeKeyList = Lists.newArrayList();
             for (String attachment : StringSplitToListUtil.splitToStringComma(issue.getAttachmentMd5List(), ",")) {
-                if (attachmentMap.containsKey(attachment) && (attachmentMap.get(attachment).getStoreKey()).length() > 0) {
+                if (attachmentMap.containsKey(attachment) && StringUtils.isNotBlank((attachmentMap.get(attachment).getStoreKey()))) {
                     if (detailVo.getAttachment_path().size() >= 2) {
                         break;
                     }
                     String attachmentPath = FileUtil.execDir() + File.separator + attachmentMap.get(attachment).getStoreKey();
                     storeKeyList.add(attachmentPath);
+                    detailVo.setAttachment_path(storeKeyList);
                 }
-                detailVo.setAttachment_path(storeKeyList);
             }
             input.add(detailVo);
         }
@@ -1535,19 +1535,27 @@ public class IssueServiceImpl implements IIssueService {
                 log.info("getAttachment_path={}", vo.getAttachment_path());
                 if (CollectionUtils.isNotEmpty(vo.getAttachment_path())) {
                     List<String> attachmentPath = vo.getAttachment_path();
-                    for (String s : attachmentPath) {
+                    if(CollectionUtils.isNotEmpty(attachmentPath)){
+                        map.put("image", attachmentPath);
+                        docList.add(map);
+                    }
+                  /*  for (String s : attachmentPath) {
                         try {
                             //导出图片
-                            picList.add(DocumentHandler.getImageBase(s));
+                            picList.add(s);
+                            map.put("image", picList);
+                            docList.add(map);
+                             *//*  picList.add(DocumentHandler.getImageBase(s));
+                         map.put("image", picList);
+                            docList.add(map);
+                            log.info("picList={}", JSON.toJSONString(picList));*//*
                         } catch (Exception e) {
                             log.error("error:", e.getMessage());
 
                         }
-                    }
+                    }*/
                 }
-                map.put("image", picList);
-                docList.add(map);
-                log.info("picList={}", JSON.toJSONString(picList));
+
             }
             //导出
             return new DocumentHandler().exportWordBatch(request, response, docList, issueIdsList, "notify_template.ftl");
