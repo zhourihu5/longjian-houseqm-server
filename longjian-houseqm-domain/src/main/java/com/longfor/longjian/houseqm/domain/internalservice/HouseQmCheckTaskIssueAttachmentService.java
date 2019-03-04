@@ -21,4 +21,6 @@ public interface HouseQmCheckTaskIssueAttachmentService {
 
 
     HouseQmCheckTaskIssueAttachment selectByMd5AndNotDel(Object attachment);
+
+    int delete(HouseQmCheckTaskIssueAttachment issueAttachment);
 }
