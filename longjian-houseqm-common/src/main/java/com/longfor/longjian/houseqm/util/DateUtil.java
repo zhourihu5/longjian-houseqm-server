@@ -50,7 +50,7 @@ public class DateUtil {
     public static Date strToDate(String str, String pattern) {
         Date date = null;
         try {
-            if (str.length() > 0) {
+            if (StringUtils.isNotEmpty(str)) {
                 SimpleDateFormat sdf = new SimpleDateFormat(pattern);
                 date = sdf.parse(str);
             }
