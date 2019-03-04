@@ -51,7 +51,7 @@ public class HouseqmIssueServiceImpl implements IHouseqmIssueService {
 
     // 删除问题
     @Override
-    public void deleteHouseQmCheckTaskIssueByProjUuid(Integer projectId, String issueUuid) throws Exception {
+    public void deleteHouseQmCheckTaskIssueByProjUuid(Integer projectId, String issueUuid) {
         int affect = houseQmCheckTaskIssueService.deleteHouseQmCheckTaskIssueByProjUuid(projectId, issueUuid);
         if (affect <= 0) {
             throw new LjBaseRuntimeException(-1, "删除问题失败");
@@ -60,7 +60,7 @@ public class HouseqmIssueServiceImpl implements IHouseqmIssueService {
 
     // 批量销项问题
     @Override
-    public List<String> updateBatchIssueApproveStatusByUuids(List<String> uuids, int projectId, int senderId, int status, String desc, String attachmentMd5List) throws Exception {
+    public List<String> updateBatchIssueApproveStatusByUuids(List<String> uuids, int projectId, int senderId, int status, String desc, String attachmentMd5List){
         int eInt = -1;
         String eStr = "";
         List<HouseQmCheckTaskIssue> issues = houseQmCheckTaskIssueService.searchByProjIdAndUuidIn(projectId, uuids);
@@ -92,7 +92,7 @@ public class HouseqmIssueServiceImpl implements IHouseqmIssueService {
     }
 
     @Override
-    public List<String> updateBatchIssueRepairInfoByUuids(List<String> uuids, Integer projectId, int senderId, Integer repairerId, String repairFollowerIds, Integer planEndOn) throws Exception {
+    public List<String> updateBatchIssueRepairInfoByUuids(List<String> uuids, Integer projectId, int senderId, Integer repairerId, String repairFollowerIds, Integer planEndOn) {
         int eInt = -1;
         String eStr = "";
         List<HouseQmCheckTaskIssue> issues = houseQmCheckTaskIssueService.searchByProjIdAndUuidIn(projectId, uuids);
@@ -191,7 +191,7 @@ public class HouseqmIssueServiceImpl implements IHouseqmIssueService {
     }
 
     @Override
-    public List<HouseQmCheckTaskIssue> searchHouseQmIssueListByProjUuidIn(Integer projectId, List<String> uuids) throws Exception {
+    public List<HouseQmCheckTaskIssue> searchHouseQmIssueListByProjUuidIn(Integer projectId, List<String> uuids) {
         return houseQmCheckTaskIssueService.searchByProjIdAndUuidIn(projectId, uuids);
     }
 
