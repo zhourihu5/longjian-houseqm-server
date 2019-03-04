@@ -20,6 +20,9 @@ import java.util.zip.ZipOutputStream;
 @Slf4j
 public class FileUtil {
 
+    private FileUtil(){
+
+    }
     /**
      * 读取文件并返回文件内容
      *
@@ -204,14 +207,12 @@ public class FileUtil {
     }
 
     private static void zip(File inputFileName, String zipFileName) throws Exception {
-        //ZipOutputStream out = new ZipOutputStream(new FileOutputStream(zipFileName));
         try (ZipOutputStream out = new ZipOutputStream(new FileOutputStream(zipFileName))) {
             zip(out, inputFileName, "");
         } catch (Exception e) {
             log.error(e.getMessage());
         }
-        // zip(out, inputFileName, "");
-        //out.close();
+
     }
 
     private static void zip(ZipOutputStream out, File f, String base) throws Exception {
@@ -223,8 +224,7 @@ public class FileUtil {
             }
         } else {
             out.putNextEntry(new ZipEntry(base));
-            //BufferedInputStream in = new BufferedInputStream(new FileInputStream(f));
-            try (BufferedInputStream in = new BufferedInputStream(new FileInputStream(f))) {
+           try (BufferedInputStream in = new BufferedInputStream(new FileInputStream(f))) {
                 int c;
                 while ((c = in.read()) != -1) {
                     out.write(c);
@@ -232,11 +232,7 @@ public class FileUtil {
             } catch (Exception e) {
                 log.error(e.getMessage());
             }
-           /* int c;
-            while ((c = in.read()) != -1) {
-                out.write(c);
-            }
-            in.close();*/
+
         }
     }
 
@@ -250,12 +246,7 @@ public class FileUtil {
         zip(new File(inputFileName), zipFileName);
     }
 
-  /*  public static void main(String[] args) throws Exception {
-        zip("c://222", "c://666/1.zip");
-        //deleteFile(new File("c://222"));
-        //copyFile("C://flower.jpg", "c://222/222/222/1.jpg");
-        //createDir("c://222/222/222/1");
-    }*/
+
 
     /**
      * 根据相对路径获取文件在项目下的绝对路径
