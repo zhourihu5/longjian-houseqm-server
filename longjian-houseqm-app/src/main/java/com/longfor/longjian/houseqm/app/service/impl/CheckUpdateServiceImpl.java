@@ -52,100 +52,71 @@ public class CheckUpdateServiceImpl implements ICheckUpdateService {
         if (info != null) return info.getUpdateAt();
         else return null;
     }
-
-    /**
-     * @param uid
-     * @param task_id
-     * @param issueUpdateTime
-     * @return java.lang.Integer
-     * @author hy
-     * @date 2018/12/25 0025
-     */
     @Override
-    public Integer getHouseqmCheckTaskIssueLastId(Integer uid, Integer task_id, Date issueUpdateTime) {
+    public Integer getHouseqmCheckTaskIssueLastId(Integer uid, Integer taskId, Date issueUpdateTime) {
         Integer checker = HouseQmCheckTaskRoleType.Checker.getValue();
-        List<UserInHouseQmCheckTask> checkTaskSquadInfo = userInHouseQmCheckTaskService.selectSquadIdByTaskIdAndUserIdAndRoleTypeAndNoDeleted(checker, uid, task_id);
+        List<UserInHouseQmCheckTask> checkTaskSquadInfo = userInHouseQmCheckTaskService.selectSquadIdByTaskIdAndUserIdAndRoleTypeAndNoDeleted(checker, uid, taskId);
         List<Integer> squadIds = Lists.newArrayList();
-        checkTaskSquadInfo.forEach(i -> {
-            squadIds.add(i.getSquadId());
-        });
+        checkTaskSquadInfo.forEach(i ->
+            squadIds.add(i.getSquadId())
+        );
 
         List<UserInHouseQmCheckTask> checkTaskUserIdInfo = userInHouseQmCheckTaskService.selectUserIdBySquadIdInAndNoDeleted(squadIds);
         List<Integer> userIds = Lists.newArrayList();
-        checkTaskUserIdInfo.forEach(i -> {
-            userIds.add(i.getUserId());
-        });
+        checkTaskUserIdInfo.forEach(i ->
+            userIds.add(i.getUserId())
+        );
         userIds.add(uid);
 
-        List<HouseQmCheckTaskIssueUser> issueUserIssueUuidInfo = houseQmCheckTaskIssueUserService.selectIssueUUIDByUserIdAndTaskIdAndNoDeleted(uid, task_id);
+        List<HouseQmCheckTaskIssueUser> issueUserIssueUuidInfo = houseQmCheckTaskIssueUserService.selectIssueUUIDByUserIdAndTaskIdAndNoDeleted(uid, taskId);
         List<String> issueUuids = Lists.newArrayList();
-        issueUserIssueUuidInfo.forEach(i -> {
-            issueUuids.add(i.getIssueUuid());
-        });
+        issueUserIssueUuidInfo.forEach(i ->
+            issueUuids.add(i.getIssueUuid())
+        );
 
-        HouseQmCheckTaskIssue taskIssueInfo = houseQmCheckTaskIssueService.selectIdByTaskIdAndIdGtAndUpdateAtGtAndSenderIdInOrUuidInAndNoDeletedOrderById(task_id, issueUpdateTime, userIds, issueUuids);
+        HouseQmCheckTaskIssue taskIssueInfo = houseQmCheckTaskIssueService.selectIdByTaskIdAndIdGtAndUpdateAtGtAndSenderIdInOrUuidInAndNoDeletedOrderById(taskId, issueUpdateTime, userIds, issueUuids);
         if (taskIssueInfo != null) return taskIssueInfo.getId();
         else return 0;
     }
 
-    /**
-     * @param uid
-     * @param task_id
-     * @param issueLogUpdateTime
-     * @return java.lang.Integer
-     * @author hy
-     * @date 2018/12/25 0025
-     */
     @Override
-    public Integer getHouseQmCheckTaskIssueLogLastId(Integer uid, Integer task_id, Date issueLogUpdateTime) {
+    public Integer getHouseQmCheckTaskIssueLogLastId(Integer uid, Integer taskId, Date issueLogUpdateTime) {
         Integer checker = HouseQmCheckTaskRoleType.Checker.getValue();
-        List<UserInHouseQmCheckTask> checkTaskSquadInfo = userInHouseQmCheckTaskService.selectSquadIdByTaskIdAndUserIdAndRoleTypeAndNoDeleted(checker, uid, task_id);
+        List<UserInHouseQmCheckTask> checkTaskSquadInfo = userInHouseQmCheckTaskService.selectSquadIdByTaskIdAndUserIdAndRoleTypeAndNoDeleted(checker, uid, taskId);
         List<Integer> squadIds = Lists.newArrayList();
-        checkTaskSquadInfo.forEach(i -> {
-            squadIds.add(i.getSquadId());
-        });
+        checkTaskSquadInfo.forEach(i ->
+            squadIds.add(i.getSquadId())
+        );
 
         List<UserInHouseQmCheckTask> checkTaskUserIdInfo = userInHouseQmCheckTaskService.selectUserIdBySquadIdInAndNoDeleted(squadIds);
         List<Integer> userIds = Lists.newArrayList();
-        checkTaskUserIdInfo.forEach(i -> {
-            userIds.add(i.getUserId());
-        });
+        checkTaskUserIdInfo.forEach(i ->
+            userIds.add(i.getUserId())
+        );
         userIds.add(uid);
 
-        List<HouseQmCheckTaskIssueUser> userIssueUuidInfo = houseQmCheckTaskIssueUserService.selectIssueUUIDByUserIdAndTaskIdAndNoDeleted(uid, task_id);
+        List<HouseQmCheckTaskIssueUser> userIssueUuidInfo = houseQmCheckTaskIssueUserService.selectIssueUUIDByUserIdAndTaskIdAndNoDeleted(uid, taskId);
         List<String> issueUuids = Lists.newArrayList();
-        userIssueUuidInfo.forEach(i -> {
-            issueUuids.add(i.getIssueUuid());
-        });
-        List<HouseQmCheckTaskIssue> taskIssueUuidInfo = houseQmCheckTaskIssueService.selectUuidBySenderIdInOrTaskIdAndUuidIn(userIds, task_id, issueUuids);
+        userIssueUuidInfo.forEach(i ->
+            issueUuids.add(i.getIssueUuid())
+        );
+        List<HouseQmCheckTaskIssue> taskIssueUuidInfo = houseQmCheckTaskIssueService.selectUuidBySenderIdInOrTaskIdAndUuidIn(userIds, taskId, issueUuids);
         List<String> uuids = taskIssueUuidInfo.stream().map(HouseQmCheckTaskIssue::getUuid).collect(Collectors.toList());
-        HouseQmCheckTaskIssueLog issueLogInfo = houseQmCheckTaskIssueLogService.selectIdByTaskIdAndIdAndUuidInAndUpdateAtGtAndNoDeletedOrderById(task_id, uuids, issueLogUpdateTime);
+        HouseQmCheckTaskIssueLog issueLogInfo = houseQmCheckTaskIssueLogService.selectIdByTaskIdAndIdAndUuidInAndUpdateAtGtAndNoDeletedOrderById(taskId, uuids, issueLogUpdateTime);
         if (issueLogInfo != null) return issueLogInfo.getId();
         else return 0;
     }
 
-    /**
-     * @param task_id
-     * @return java.util.Date
-     * @author hy
-     * @date 2018/12/25 0025
-     */
     @Override
-    public Date getHouseQmCheckTaskIssueUserLastUpdateTime(Integer task_id) {
-        HouseQmCheckTaskIssueUser issueUserUpdateInfo = houseQmCheckTaskIssueUserService.selectUpdateAtByTaskIdAndNoDeletedOrderByUpdateAt(task_id);
+    public Date getHouseQmCheckTaskIssueUserLastUpdateTime(Integer taskId) {
+        HouseQmCheckTaskIssueUser issueUserUpdateInfo = houseQmCheckTaskIssueUserService.selectUpdateAtByTaskIdAndNoDeletedOrderByUpdateAt(taskId);
         if (issueUserUpdateInfo != null) return issueUserUpdateInfo.getUpdateAt();
         else return DateUtil.timeStampToDate(0, "yyyy-MM-dd");
     }
 
-    /**
-     * @param task_id
-     * @return java.util.Date
-     * @author hy
-     * @date 2018/12/25 0025
-     */
     @Override
-    public Date getHouseQmCheckTaskLastUpdateTime(Integer task_id) {
-        List<UserInHouseQmCheckTask> issueUpdateInfo = userInHouseQmCheckTaskService.selectUpdateAtByTaskIdAndNoDeletedOrderByUpdateAt(task_id);
+    public Date getHouseQmCheckTaskLastUpdateTime(Integer taskId) {
+        List<UserInHouseQmCheckTask> issueUpdateInfo = userInHouseQmCheckTaskService.selectUpdateAtByTaskIdAndNoDeletedOrderByUpdateAt(taskId);
         if (!CollectionUtils.isEmpty(issueUpdateInfo)) return issueUpdateInfo.get(0).getUpdateAt();
         else return DateUtil.timeStampToDate(0, "yyyy-MM-dd");
     }

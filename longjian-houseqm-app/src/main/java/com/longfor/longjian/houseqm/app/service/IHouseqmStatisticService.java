@@ -41,6 +41,6 @@ public interface IHouseqmStatisticService {
 
     StatHouseqmCompleteDailyRspVo searchRepossessionStatusCompleteDaily(Integer projectId, List<Integer> taskIds, int beginOn, int endOn, Integer page, Integer pageSize);
 
-    AreaMapVo CreateAreasMapByAreaList(List<Area> areaList);
+    AreaMapVo createAreasMapByAreaList(List<Area> areaList);
 
 }

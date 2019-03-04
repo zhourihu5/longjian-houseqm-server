@@ -677,16 +677,16 @@ public class IssueServiceImpl implements IIssueService {
                 }
 
                 if (issueLogInfo.get(i).getDesc().length() > 0) {
-                    HouseQmCheckTaskIssueHistoryLogVo.HouseQmCheckTaskIssueHistoryLogItem log_items = new HouseQmCheckTaskIssueHistoryLogVo().new HouseQmCheckTaskIssueHistoryLogItem();
-                    log_items.setLog_type(HouseQmCheckTaskActionLogType.AddDesc.getValue());
-                    items.add(log_items);
+                    HouseQmCheckTaskIssueHistoryLogVo.HouseQmCheckTaskIssueHistoryLogItem logItems = new HouseQmCheckTaskIssueHistoryLogVo().new HouseQmCheckTaskIssueHistoryLogItem();
+                    logItems.setLog_type(HouseQmCheckTaskActionLogType.AddDesc.getValue());
+                    items.add(logItems);
                     singleItem.setItems(items);
 
                 }
                 if (issueLogInfo.get(i).getAttachmentMd5List().length() > 0) {
-                    HouseQmCheckTaskIssueHistoryLogVo.HouseQmCheckTaskIssueHistoryLogItem log_items = new HouseQmCheckTaskIssueHistoryLogVo().new HouseQmCheckTaskIssueHistoryLogItem();
-                    log_items.setLog_type(HouseQmCheckTaskActionLogType.AddAttachment.getValue());
-                    items.add(log_items);
+                    HouseQmCheckTaskIssueHistoryLogVo.HouseQmCheckTaskIssueHistoryLogItem logItems = new HouseQmCheckTaskIssueHistoryLogVo().new HouseQmCheckTaskIssueHistoryLogItem();
+                    logItems.setLog_type(HouseQmCheckTaskActionLogType.AddAttachment.getValue());
+                    items.add(logItems);
                     singleItem.setItems(items);
                 }
                 if (!items.isEmpty()) {

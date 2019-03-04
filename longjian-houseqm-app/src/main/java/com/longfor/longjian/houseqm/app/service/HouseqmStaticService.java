@@ -46,8 +46,8 @@ public class HouseqmStaticService {
     @Resource
     UserInHouseQmCheckTaskService userInHouseQmCheckTaskService;
 
-    public List<HouseQmCheckTaskSimpleRspVo> searchHouseQmCheckTaskByProjCategoryCls(Integer project_id, Integer category_cls) {
-        List<HouseQmCheckTask> houseQmCheckTasks = houseQmCheckTaskService.selectByProjectIdAndCategoryCls(project_id, category_cls);
+    public List<HouseQmCheckTaskSimpleRspVo> searchHouseQmCheckTaskByProjCategoryCls(Integer projectId, Integer categoryCls) {
+        List<HouseQmCheckTask> houseQmCheckTasks = houseQmCheckTaskService.selectByProjectIdAndCategoryCls(projectId, categoryCls);
         ArrayList<HouseQmCheckTaskSimpleRspVo> hQCTSRlist = new ArrayList<>();
         for (int i = 0; i < houseQmCheckTasks.size(); i++) {
             HouseQmCheckTaskSimpleRspVo rspVo = new HouseQmCheckTaskSimpleRspVo();
@@ -342,7 +342,7 @@ public class HouseqmStaticService {
         List<Integer> areaIds = splitToIdsComma(taskByProjTaskId.getAreaIds(), ",");
         List<Integer> areaTypes = splitToIdsComma(taskByProjTaskId.getAreaTypes(), ",");
         if (CollectionUtils.isEmpty(areaIds) || CollectionUtils.isEmpty(areaTypes)) {
-            return null;
+            return Lists.newArrayList();
         }
         return areaService.searchAreaListByRootIdAndTypes(prodectId, areaIds, areaTypes);
 

@@ -93,7 +93,7 @@ public class IssueListController {
                     os.close();
                 }
             } catch (IOException e) {
-                e.printStackTrace();
+              log.error(e.getMessage());
             }
         }
         return ljBaseResponse;
