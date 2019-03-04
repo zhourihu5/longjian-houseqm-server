@@ -161,7 +161,7 @@ public class HouseqmStatServiceImpl implements IHouseqmStatService {
     public List<String> filterAreaPathListByRootAreaId(Integer rootAreaId, List<String> areaPaths) {
         Area area = areaService.selectById(rootAreaId);
         if (area == null) return Lists.newArrayList();
-        String apath = String.format("%s%d/", area.getPath(), area.getId());
+        String apath = String.format(PATH_AND_ID_REPEX, area.getPath(), area.getId());
         ArrayList<String> result = Lists.newArrayList();
         for (String path : areaPaths) {
             if (path.startsWith(apath)) {
