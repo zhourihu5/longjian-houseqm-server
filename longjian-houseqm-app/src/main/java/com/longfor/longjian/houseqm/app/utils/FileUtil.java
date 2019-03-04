@@ -31,13 +31,9 @@ public class FileUtil {
      */
     public static String readFile(String filePath) {
         StringBuilder buffer = new StringBuilder();
-        InputStream is = null;
-        BufferedReader reader = null;
-        try {
-            is = new FileInputStream(filePath);
-            // 每行的数据
+        try (InputStream is =new FileInputStream(filePath); BufferedReader reader =new BufferedReader(new InputStreamReader(is))){
+             // 每行的数据
             String line;
-            reader = new BufferedReader(new InputStreamReader(is));
             line = reader.readLine();
             while (line != null) {
                 buffer.append(line).append("\n");
@@ -49,21 +45,6 @@ public class FileUtil {
         } catch (IOException e) {
             log.info("读取文件失败", e);
             throw new CommonRuntimeException("读取文件失败");
-        } finally {
-            if (reader != null) {
-                try {
-                    reader.close();
-                } catch (IOException e) {
-                    log.info("reader关闭失败", e);
-                }
-            }
-            if (is != null) {
-                try {
-                    is.close();
-                } catch (IOException e) {
-                    log.info("is关闭失败", e);
-                }
-            }
         }
         return buffer.toString();
     }
@@ -76,26 +57,14 @@ public class FileUtil {
      */
     public static String readFile(InputStream inputStream) {
         StringBuilder builder = new StringBuilder();
-        InputStreamReader reader;
-        BufferedReader bfReader = null;
-        try {
-            reader = new InputStreamReader(inputStream, StandardCharsets.UTF_8);
-            bfReader = new BufferedReader(reader);
-            String tmpContent;
+        try (InputStreamReader reader= new InputStreamReader(inputStream, StandardCharsets.UTF_8);BufferedReader bfReader = new BufferedReader(reader)){
+           String tmpContent;
             while ((tmpContent = bfReader.readLine()) != null) {
                 builder.append(tmpContent);
             }
         } catch (Exception e) {
             log.info("读取文件失败", e);
             throw new CommonRuntimeException("读取文件失败");
-        } finally {
-            try {
-                if (bfReader != null) {
-                    bfReader.close();
-                }
-            } catch (IOException e) {
-                log.info("bfReader关闭失败", e);
-            }
         }
         return builder.toString();
     }
@@ -111,7 +80,7 @@ public class FileUtil {
                 throw new LjBaseRuntimeException(-1, "创建文件失败");
             }
             if (f.isDirectory()) {
-                throw new RuntimeException("filePath is dir:" + filePath);
+                throw new LjBaseRuntimeException(-1,"filePath is dir:" + filePath);
             }
             return f;
         } catch (Exception e) {
@@ -126,7 +95,7 @@ public class FileUtil {
             f.getParentFile().mkdirs();
             f.mkdir();
             if (!f.isDirectory()) {
-                throw new RuntimeException("path is not dir:" + path);
+                throw new LjBaseRuntimeException(-1,"path is not dir:" + path);
             }
             return f;
         } catch (Exception e) {
@@ -290,28 +259,24 @@ public class FileUtil {
      * @throws Exception
      */
     public static byte[] readStream(InputStream inputStream) {
-        ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
-        byte[] buffer = new byte[1024];
+         byte[] buffer = new byte[1024];
+         byte[] result=null;
         int len;
-        try {
+        try (ByteArrayOutputStream outputStream = new ByteArrayOutputStream()){
             while ((len = inputStream.read(buffer)) != -1) {
                 outputStream.write(buffer, 0, len);
             }
+            result=outputStream.toByteArray();
         } catch (IOException e) {
             log.info("读取inputStream异常", e);
         } finally {
-            try {
-                outputStream.close();
-            } catch (IOException e) {
-                log.info("关闭输出流异常", e);
-            }
             try {
                 inputStream.close();
             } catch (IOException e) {
                 log.info("关闭输入流异常", e);
             }
         }
-        return outputStream.toByteArray();
+        return result;
     }
 
     /**
@@ -322,11 +287,7 @@ public class FileUtil {
      */
     public static void load(String filePath, HttpServletResponse response) {
         byte[] buff = new byte[1024];
-        BufferedInputStream bis = null;
-        OutputStream os = null;
-        try {
-            os = response.getOutputStream();
-            bis = new BufferedInputStream(new FileInputStream(filePath));
+        try (BufferedInputStream bis =new BufferedInputStream(new FileInputStream(filePath));OutputStream os =response.getOutputStream()){
             int i = 0;
             while ((i = bis.read(buff)) != -1) {
                 os.write(buff, 0, i);
@@ -334,12 +295,6 @@ public class FileUtil {
             }
         } catch (IOException e) {
             log.error(e.getMessage());
-        } finally {
-            try {
-                if (bis != null) bis.close();
-            } catch (IOException e) {
-                log.error(e.getMessage());
-            }
         }
     }
 }
