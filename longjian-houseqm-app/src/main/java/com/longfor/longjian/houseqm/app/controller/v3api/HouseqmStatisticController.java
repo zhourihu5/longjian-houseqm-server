@@ -391,8 +391,18 @@ public class HouseqmStatisticController {
         if (req.getArea_id() == null) req.setArea_id(0);
         if (req.getBegin_on() == null) req.setBegin_on(0);
         if (req.getEnd_on() == null) req.setEnd_on(0);
-
-        HouseqmStatisticCategoryIssueListRspMsgVo result = iHouseqmStatisticService.taskIssueRepairList(req.getProject_id(), req.getTask_id(), req.getArea_id(), req.getBegin_on(), req.getEnd_on(), req.getTimestamp(), req.getPlan_status(), req.getSource(), req.getPage(), req.getPage_size());
+        TaskIssueRepairListVo tvo=new TaskIssueRepairListVo();
+        tvo.setProjectId(req.getProject_id());
+        tvo.setAreaId(req.getArea_id());
+        tvo.setBeginOn(req.getBegin_on());
+        tvo.setEndOn(req.getEnd_on());
+        tvo.setPage(req.getPage());
+        tvo.setPageSize(req.getPage_size());
+        tvo.setPlanStatus(req.getPlan_status());
+        tvo.setSource(req.getSource());
+        tvo.setTimestamp(req.getTimestamp());
+        tvo.setTaskId(req.getTask_id());
+        HouseqmStatisticCategoryIssueListRspMsgVo result = iHouseqmStatisticService.taskIssueRepairList(tvo);
         LjBaseResponse<HouseqmStatisticTaskIssueRepairListRsp> response = new LjBaseResponse<>();
         HouseqmStatisticTaskIssueRepairListRsp data = new HouseqmStatisticTaskIssueRepairListRsp();
         data.setIssue_list(result.getIssue_list());

@@ -10,6 +10,7 @@ import com.longfor.longjian.houseqm.app.service.HouseqmStaticService;
 import com.longfor.longjian.houseqm.app.service.IHouseqmService;
 import com.longfor.longjian.houseqm.app.service.IHouseqmStatisticService;
 import com.longfor.longjian.houseqm.app.vo.*;
+import com.longfor.longjian.houseqm.app.vo.houseqmstatistic.TaskIssueRepairListVo;
 import com.longfor.longjian.houseqm.app.vo.houseqmstatisticapp.*;
 import com.longfor.longjian.houseqm.consts.*;
 import com.longfor.longjian.houseqm.domain.internalservice.*;
@@ -574,7 +575,17 @@ public class HouseqmStatisticServiceImpl implements IHouseqmStatisticService {
     }
 
     @Override
-    public HouseqmStatisticCategoryIssueListRspMsgVo taskIssueRepairList(Integer projectId, Integer taskId, Integer areaId, Integer beginOn, Integer endOn, Integer timestamp, Integer planStatus, String source, Integer page, Integer pageSize) {
+    public HouseqmStatisticCategoryIssueListRspMsgVo taskIssueRepairList(TaskIssueRepairListVo taskIssueRepairListVo) {
+        Integer projectId=taskIssueRepairListVo.getProjectId();
+        Integer taskId=taskIssueRepairListVo.getTaskId();
+        Integer areaId=taskIssueRepairListVo.getAreaId();
+        Integer beginOn=taskIssueRepairListVo.getBeginOn();
+        Integer endOn=taskIssueRepairListVo.getEndOn();
+        Integer timestamp=taskIssueRepairListVo.getTimestamp();
+        Integer planStatus=taskIssueRepairListVo.getPlanStatus();
+        String source=taskIssueRepairListVo.getSource();
+        Integer page=taskIssueRepairListVo.getPage();
+        Integer pageSize=taskIssueRepairListVo.getPageSize();
         Date beginOn1 = DateUtil.timeStampToDate(0, YYYY_MM_DD);
         Date endOn1 = DateUtil.timeStampToDate(0, YYYY_MM_DD);
         if (beginOn != null && beginOn > 0) {
