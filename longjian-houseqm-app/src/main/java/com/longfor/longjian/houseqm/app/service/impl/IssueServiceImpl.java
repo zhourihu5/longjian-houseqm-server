@@ -1544,9 +1544,10 @@ public class IssueServiceImpl implements IIssueService {
 
                         }
                     }
-                    map.put("image",picList);
-                    docList.add(map);
+
                 }
+                map.put("image",picList);
+                docList.add(map);
                 log.info("picList={}",JSON.toJSONString(picList));
             }
 
