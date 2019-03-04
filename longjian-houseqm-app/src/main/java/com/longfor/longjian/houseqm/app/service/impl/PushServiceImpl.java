@@ -12,6 +12,7 @@ import com.longfor.longjian.houseqm.consts.AppPlatformTypeEnum;
 import com.longfor.longjian.houseqm.consts.CategoryClsTypeEnum;
 import com.longfor.longjian.houseqm.util.StringSplitToListUtil;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.stereotype.Service;
 
@@ -102,7 +103,7 @@ public class PushServiceImpl implements PushService {
 
     // appFlag: 1-推送到工程管理APP，2-推送到移动验房APP，3-全部推送
     public void sendUPush(String title, String msg, int taskId, List<Integer> userIds, int appFlag) throws Exception {
-        if (userIds.size() == 0) {
+        if (CollectionUtils.isEmpty(userIds)) {
             log.warn("Len of UserIds is zero");
             return;
         } else if (userIds.size() > 50) {
@@ -111,12 +112,12 @@ public class PushServiceImpl implements PushService {
                 userIdList.add(userIds.get(i));
             }
             sendUPush(title, msg, taskId, userIdList, appFlag);
-            List<Integer> user_id_list = Lists.newArrayList();
+            List<Integer> userIdsList = Lists.newArrayList();
             for (int i = 0; i < 50; i++) {
-                user_id_list.add(userIds.get(i));
+                userIdsList.add(userIds.get(i));
             }
             userIds.clear();
-            userIds.addAll(user_id_list);
+            userIds.addAll(userIdsList);
         }
 
 

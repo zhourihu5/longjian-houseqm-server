@@ -19,6 +19,7 @@ import com.longfor.longjian.houseqm.po.zj2db.*;
 import com.longfor.longjian.houseqm.util.CollectionUtil;
 import com.longfor.longjian.houseqm.util.StringSplitToListUtil;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Service;
 
@@ -49,16 +50,16 @@ public class HouseqmExportServiceImpl implements IHouseqmExportService {
     private HouseOwnerInfoService houseOwnerInfoService;
 
     @Override
-    public List<ProjectOrdersVo> searchProjectOrdersByProjIdTaskIdAreaIdsRepairedIdBeginOnEndOn(Integer project_id, Integer task_id, List<Integer> areaIds, Integer repairer_id, Date begin_on, Date end_on, Integer category_cls) {
+    public List<ProjectOrdersVo> searchProjectOrdersByProjIdTaskIdAreaIdsRepairedIdBeginOnEndOn(Integer projectId, Integer taskId, List<Integer> areaIds, Integer repairerId, Date beginOn, Date endOn, Integer categoryCls) {
         //取出和这些areaids相关的区域 后面用来创建树使用
-        List<Area> areas = areaService.searchRelatedAreaByAreaIdIn(project_id, areaIds);
+        List<Area> areas = areaService.searchRelatedAreaByAreaIdIn(projectId, areaIds);
 
         //创建这颗树
         List<AreaNode> nodes = AreaNode.createAreaTree(areas);
         //获取森林下面的在areaIds下面的 所有区域 包含自己
         List<Area> subAreas = AreaNode.getSubTreeAllAreasByAreaId(nodes, areaIds);
         //把和这些areaids相关的区域 创建一个 areamMao类
-        AreaMapVo areaMap = houseqmStatisticService.CreateAreasMapByAreaList(areas);
+        AreaMapVo areaMap = houseqmStatisticService.createAreasMapByAreaList(areas);
 
         //获取户下面的区域 户的区域  户与房间关系map
         List<Integer> subAreaIds = Lists.newArrayList();
@@ -71,10 +72,10 @@ public class HouseqmExportServiceImpl implements IHouseqmExportService {
         }
         CollectionUtil.removeDuplicate(houseIds);
         //带条件检索 检查的问题
-        List<HouseQmCheckTaskIssue> resIssue = houseQmCheckTaskIssueService.searchByProjIdAndTaskIdAndAreaIdInAndRepairedIdAndClientCreateAt(project_id, task_id, subAreaIds, repairer_id, begin_on, end_on);
+        List<HouseQmCheckTaskIssue> resIssue = houseQmCheckTaskIssueService.searchByProjIdAndTaskIdAndAreaIdInAndRepairedIdAndClientCreateAt(projectId, taskId, subAreaIds, repairerId, beginOn, endOn);
 
         //获取工程处理单配置名称
-        ProjectSetting projSetting = projectSettingService.getSettingByProjectIdSKey(project_id, "PROJ_YDYF_PROJ_ORDER_NAME");
+        ProjectSetting projSetting = projectSettingService.getSettingByProjectIdSKey(projectId, "PROJ_YDYF_PROJ_ORDER_NAME");
         String projSettingName = "";
         boolean isShowHouseOwnerInfo = false;
         if (projSetting != null && projSetting.getValue().length() > 0) {
@@ -88,8 +89,8 @@ public class HouseqmExportServiceImpl implements IHouseqmExportService {
         projectOrderHouseOwnerInfoMap.put(CategoryClsTypeEnum.RHYF.getId(), "PROJ_YDYF_PROJ_ORDER_RHYF_HOUSE_OWNER");
         projectOrderHouseOwnerInfoMap.put(CategoryClsTypeEnum.FHYS.getId(), "PROJ_YDYF_PROJ_ORDER_FHYS_HOUSE_OWNER");
 
-        if (projectOrderHouseOwnerInfoMap.containsKey(category_cls)) {
-            ProjectSetting projectSetting = projectSettingService.getSettingByProjectIdSKey(project_id, projectOrderHouseOwnerInfoMap.get(category_cls));
+        if (projectOrderHouseOwnerInfoMap.containsKey(categoryCls)) {
+            ProjectSetting projectSetting = projectSettingService.getSettingByProjectIdSKey(projectId, projectOrderHouseOwnerInfoMap.get(categoryCls));
             if (projectSetting != null) {
                 if ("是".equals(projectSetting.getValue())) {
                     isShowHouseOwnerInfo = true;
@@ -117,25 +118,25 @@ public class HouseqmExportServiceImpl implements IHouseqmExportService {
         }
         userIds.addAll(senderIds);
         userIds.addAll(repairedIds);
-        List<Integer> user_ids = CollectionUtil.removeDuplicate(userIds);
-        List<String> category_keys = CollectionUtil.removeDuplicate(categoryKeys);
+        List<Integer> userList = CollectionUtil.removeDuplicate(userIds);
+        List<String> categoryKeysList = CollectionUtil.removeDuplicate(categoryKeys);
 
         //获取用户map
-        Map<Integer, User> userMap = userService.selectByIds(user_ids);
+        Map<Integer, User> userMap = userService.selectByIds(userList);
         //获取检查项 方便后面获取构件检查项map ，方便获取检查项名字
-        List<CategoryV3> categorys = categoryV3Service.searchCategoryV3ByKeyInAndNoDeleted(category_keys);
+        List<CategoryV3> categorys = categoryV3Service.searchCategoryV3ByKeyInAndNoDeleted(categoryKeysList);
         for (CategoryV3 item : categorys) {
-            category_keys.addAll(item.getPathSlice());
+            categoryKeysList.addAll(item.getPathSlice());
         }
-        Set<String> set = new HashSet<>(category_keys);
+        Set<String> set = new HashSet<>(categoryKeysList);
         List<String> categorykeys = set.stream().collect(Collectors.toList());
         List<CategoryV3> categoryV3s = categoryV3Service.searchCategoryV3ByKeyInAndNoDeleted(categorykeys);
         CategoryMapVo categoryMap = CategoryMapVo.NewCategoryMap(categoryV3s);
         //获取项目名称
-        Project project = projectService.getOneByProjId(project_id);
+        Project project = projectService.getOneByProjId(projectId);
         //获取业主信息
         List<Integer> projIds = Lists.newArrayList();
-        projIds.add(project_id);
+        projIds.add(projectId);
         List<HouseOwnerInfo> houseOwners = houseOwnerInfoService.searchHouseOwnerInfoByProjInAreaIdIn(projIds, houseIds);
 
         Map<Integer, HouseOwnerInfo> houseOwnerMap = houseOwners.stream().collect(Collectors.toMap(HouseOwnerInfo::getAreaId, h -> h));
@@ -193,9 +194,9 @@ public class HouseqmExportServiceImpl implements IHouseqmExportService {
     }
 
     @Override
-    public String exportProjectOrdersByProjIdTaskIdAreaIdsRepairedIdBeginOnEndOn(Integer project_id, Integer task_id, List<Integer> areaIds, Integer repairer_id, Date begin_on, Date end_on, Integer category_cls, boolean withRule) {
-        List<ProjectOrdersVo> res = searchProjectOrdersByProjIdTaskIdAreaIdsRepairedIdBeginOnEndOn(project_id, task_id, areaIds, repairer_id, begin_on, end_on, category_cls);
-        if (res.size() <= 0) {
+    public String exportProjectOrdersByProjIdTaskIdAreaIdsRepairedIdBeginOnEndOn(Integer projectId, Integer taskId, List<Integer> areaIds, Integer repairerId, Date beginOn, Date endOn, Integer categoryCls, boolean withRule) {
+        List<ProjectOrdersVo> res = searchProjectOrdersByProjIdTaskIdAreaIdsRepairedIdBeginOnEndOn(projectId, taskId, areaIds, repairerId, beginOn, endOn, categoryCls);
+        if (CollectionUtils.isEmpty(res)) {
             return "";//errors.New("没有任何导出数据。")
         }
 

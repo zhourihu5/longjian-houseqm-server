@@ -45,14 +45,14 @@ public class TaskServiceImpl implements ITaskService {
     private UserService userService;
 
     @Override
-    public HouseQmCheckTaskListAndTotalVo searchHouseQmCheckTaskByProjCategoryClsStatusPage(Integer projId, Integer category_cls, Integer status, Integer page, Integer page_size) {
-        Integer total = houseQmCheckTaskService.searchTotalByProjIdAndCategoryClsAndStatus(projId, category_cls, status);
-        int limit = page_size;
+    public HouseQmCheckTaskListAndTotalVo searchHouseQmCheckTaskByProjCategoryClsStatusPage(Integer projId, Integer categoryCls, Integer status, Integer page, Integer pageSize) {
+        Integer total = houseQmCheckTaskService.searchTotalByProjIdAndCategoryClsAndStatus(projId, categoryCls, status);
+        int limit = pageSize;
         if (page <= 0) {
             page = 1;
         }
-        int start = (page - 1) * page_size;
-        List<HouseQmCheckTask> list = houseQmCheckTaskService.searchByProjIdAndCategoryClsAndStatusByPage(projId, category_cls, status, limit, start);
+        int start = (page - 1) * pageSize;
+        List<HouseQmCheckTask> list = houseQmCheckTaskService.searchByProjIdAndCategoryClsAndStatusByPage(projId, categoryCls, status, limit, start);
         HouseQmCheckTaskListAndTotalVo result = new HouseQmCheckTaskListAndTotalVo();
         result.setList(list);
         result.setTotal(total);
@@ -87,8 +87,8 @@ public class TaskServiceImpl implements ITaskService {
             return result;
         }
         List<Integer> areaIds = StringSplitToListUtil.splitToIdsComma(areaIdsInfo.getAreaIds(), ",");
-        List<HouseQmCheckTaskIssue> issue_area_ids_info = houseQmCheckTaskIssueService.selectAreaIdByProjectIdAndTaskIdAndAreaIdInAndNoDeleted(projectId, taskId, areaIds);
-        for (HouseQmCheckTaskIssue i : issue_area_ids_info) {
+        List<HouseQmCheckTaskIssue> issueAreaIdsInfo = houseQmCheckTaskIssueService.selectAreaIdByProjectIdAndTaskIdAndAreaIdInAndNoDeleted(projectId, taskId, areaIds);
+        for (HouseQmCheckTaskIssue i : issueAreaIdsInfo) {
             result.add(i.getAreaId());
         }
         return result;
@@ -97,14 +97,14 @@ public class TaskServiceImpl implements ITaskService {
 
     @Override
     @LFAssignDataSource("zhijian2")
-    public void deleteHouseQmCheckTaskByProjTaskId(Integer project_id, Integer task_id) {
+    public void deleteHouseQmCheckTaskByProjTaskId(Integer projectId, Integer taskId) {
         try {
             // 删除人员
-            int affect = userInHouseQmCheckTaskService.removeByTaskId(task_id);
+            int affect = userInHouseQmCheckTaskService.removeByTaskId(taskId);
             // 删除问题
-            int affect2 = houseQmCheckTaskIssueService.removeHouseQmCheckTaskIssueByProjectIdAndTaskId(project_id, task_id);
+            int affect2 = houseQmCheckTaskIssueService.removeHouseQmCheckTaskIssueByProjectIdAndTaskId(projectId, taskId);
             // 删除任务
-            int affect3 = houseQmCheckTaskService.removeHouseQmCheckTaskByProjectIdAndTaskId(project_id, task_id);
+            int affect3 = houseQmCheckTaskService.removeHouseQmCheckTaskByProjectIdAndTaskId(projectId, taskId);
         } catch (Exception e) {
             log.error(e.getMessage());
             throw new LjBaseRuntimeException(500, e.getMessage());
@@ -112,8 +112,8 @@ public class TaskServiceImpl implements ITaskService {
     }
 
     @Override
-    public List<UserInHouseQmCheckTask> searchUserInKeyHouseQmCheckTaskByTaskId(Integer task_id) {
-        return userInHouseQmCheckTaskService.searchByTaskIdAndNoDeleted(task_id);
+    public List<UserInHouseQmCheckTask> searchUserInKeyHouseQmCheckTaskByTaskId(Integer taskId) {
+        return userInHouseQmCheckTaskService.searchByTaskIdAndNoDeleted(taskId);
     }
 
     @Override

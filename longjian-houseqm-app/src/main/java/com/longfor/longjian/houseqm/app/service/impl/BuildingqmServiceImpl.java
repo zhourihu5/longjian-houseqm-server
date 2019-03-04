@@ -185,10 +185,6 @@ public class BuildingqmServiceImpl implements IBuildingqmService {
         }
     }
 
-    /**
-     * @param taskIdsStr
-     * @return
-     */
     public TaskMemberListVo taskSquadsMembers(String taskIdsStr) {
 
         TaskMemberListVo taskMemberListVo = new TaskMemberListVo();
@@ -245,12 +241,6 @@ public class BuildingqmServiceImpl implements IBuildingqmService {
     }
 
 
-    /**
-     * @param userId
-     * @param taskId
-     * @param timestamp
-     * @return
-     */
     public MyIssuePatchListVo myIssuePathList(int userId, int taskId, int timestamp) {
         MyIssuePatchListVo myIssuePatchListVo = new MyIssuePatchListVo();
         myIssuePatchListVo.setLog_list(Lists.newArrayList());
@@ -295,7 +285,7 @@ public class BuildingqmServiceImpl implements IBuildingqmService {
             logVo.setMemo_audio_md5_list(issueLog.getMemoAudioMd5List());
             logVo.setClient_create_at(DateUtil.datetimeToTimeStamp(issueLog.getClientCreateAt()));
 
-            JSONObject dic_detail = JSONObject.parseObject(issueLog.getDetail());
+            JSONObject dicDetail = JSONObject.parseObject(issueLog.getDetail());
             MyIssuePatchListVo.LogDetailVo detail = myIssuePatchListVo.new LogDetailVo();
             if (issueMap.get(issueLog.getIssueUuid()) != null) {
                 detail.setTitle(issueMap.get(issueLog.getIssueUuid()).getTitle());
@@ -304,19 +294,19 @@ public class BuildingqmServiceImpl implements IBuildingqmService {
                 detail.setPos_y(issueMap.get(issueLog.getIssueUuid()).getPosY());
                 detail.setTyp(issueMap.get(issueLog.getIssueUuid()).getTyp());
             }
-            detail.setPlan_end_on(dic_detail.getIntValue("PlanEndOn"));
-            detail.setEnd_on(dic_detail.getIntValue("EndOn"));
-            detail.setRepairer_id(dic_detail.getIntValue("RepairerId"));
-            detail.setRepairer_follower_ids(dic_detail.getString("RepairerFollowerIds"));
-            detail.setCondition(dic_detail.getIntValue("Condition"));
-            detail.setCategory_cls(dic_detail.getIntValue("CategoryCls"));
-            detail.setCategory_key(dic_detail.getString("CategoryKey"));
-            detail.setCheck_item_key(dic_detail.getString("CheckItemKey"));
-            detail.setIssue_reason(dic_detail.getIntValue("IssueReason"));
-            detail.setIssue_reason_detail(dic_detail.getString("IssueReasonDetail"));
-            detail.setIssue_suggest(dic_detail.getString("IssueSuggest"));
-            detail.setPotential_risk(dic_detail.getString("PotentialRisk"));
-            detail.setPreventive_action_detail(dic_detail.getString("PreventiveActionDetail"));
+            detail.setPlan_end_on(dicDetail.getIntValue("PlanEndOn"));
+            detail.setEnd_on(dicDetail.getIntValue("EndOn"));
+            detail.setRepairer_id(dicDetail.getIntValue("RepairerId"));
+            detail.setRepairer_follower_ids(dicDetail.getString("RepairerFollowerIds"));
+            detail.setCondition(dicDetail.getIntValue("Condition"));
+            detail.setCategory_cls(dicDetail.getIntValue("CategoryCls"));
+            detail.setCategory_key(dicDetail.getString("CategoryKey"));
+            detail.setCheck_item_key(dicDetail.getString("CheckItemKey"));
+            detail.setIssue_reason(dicDetail.getIntValue("IssueReason"));
+            detail.setIssue_reason_detail(dicDetail.getString("IssueReasonDetail"));
+            detail.setIssue_suggest(dicDetail.getString("IssueSuggest"));
+            detail.setPotential_risk(dicDetail.getString("PotentialRisk"));
+            detail.setPreventive_action_detail(dicDetail.getString("PreventiveActionDetail"));
             logVo.setDetail(detail);
             logVo.setUpdate_at(DateUtil.datetimeToTimeStamp(issueLog.getUpdateAt()));
             logVo.setDelete_at(DateUtil.datetimeToTimeStamp(issueLog.getDeleteAt()));
@@ -396,7 +386,7 @@ public class BuildingqmServiceImpl implements IBuildingqmService {
     @Override
     public void create(Integer uid, TaskReq taskReq) {
         Map<String, Object> paramMap = prepareForCreateOrEdit(taskReq);
-        Execute(uid, taskReq, (List<Integer>) paramMap.get("areaIds"), (List<Integer>) paramMap.get("areaTypes"), (String) paramMap.get("planBeginOn"), (String) paramMap.get("planEndOn"), (List<ApiBuildingQmTaskMemberGroupVo>) paramMap.get("checkerGroups"), (List<ApiBuildingQmTaskMemberGroupVo>) paramMap.get("repairerGroups"), (ConfigVo) paramMap.get("config"));
+        execute(uid, taskReq, (List<Integer>) paramMap.get("areaIds"), (List<Integer>) paramMap.get("areaTypes"), (String) paramMap.get("planBeginOn"), (String) paramMap.get("planEndOn"), (List<ApiBuildingQmTaskMemberGroupVo>) paramMap.get("checkerGroups"), (List<ApiBuildingQmTaskMemberGroupVo>) paramMap.get("repairerGroups"), (ConfigVo) paramMap.get("config"));
     }
 
     @Override
@@ -637,26 +627,26 @@ public class BuildingqmServiceImpl implements IBuildingqmService {
         );
         List<String> areaIds = StringSplitToListUtil.removeStartAndEndStrAndSplit(issueInfo.getAreaPathAndId().replace("//", "/"), "/", "/");
         ArrayList<Integer> areaIdsList = Lists.newArrayList();
-        areaIds.forEach(item -> {
-            areaIdsList.add(Integer.valueOf(item));
-        });
+        areaIds.forEach(item ->
+            areaIdsList.add(Integer.valueOf(item))
+        );
         List<Area> areaLeaveInfo = areaService.selectByAreaIds(areaIdsList);
         HashMap<Object, Object> areaIdNameMap = Maps.newHashMap();
-        areaLeaveInfo.forEach(item -> {
-            areaIdNameMap.put(item.getId(), item.getName());
-        });
+        areaLeaveInfo.forEach(item ->
+            areaIdNameMap.put(item.getId(), item.getName())
+        );
         List<String> categoryKeys = StringSplitToListUtil.removeStartAndEndStrAndSplit(issueInfo.getCategoryPathAndKey().replace("//", "/"), "/", "/");
         List<CategoryV3> categoryKeysInfo = categoryV3Service.searchCategoryV3ByKeyInAndNoDeleted(categoryKeys);
         HashMap<String, String> categoryKeyNameMap = Maps.newHashMap();
-        categoryKeysInfo.forEach(item -> {
-            categoryKeyNameMap.put(item.getKey(), item.getName());
-        });
+        categoryKeysInfo.forEach(item ->
+            categoryKeyNameMap.put(item.getKey(), item.getName())
+        );
         List<String> checkItemKeys = StringSplitToListUtil.removeStartAndEndStrAndSplit(issueInfo.getCheckItemPathAndKey().replace("//", "/"), "/", "/");
         List<CheckItemV3> checkItemKeyNameInfo = checkItemV3Service.searchCheckItemyV3ByKeyInAndNoDeleted(checkItemKeys);
         HashMap<String, String> checkItemKeyNameMap = Maps.newHashMap();
-        checkItemKeyNameInfo.forEach(item -> {
-            checkItemKeyNameMap.put(item.getKey(), item.getName());
-        });
+        checkItemKeyNameInfo.forEach(item ->
+            checkItemKeyNameMap.put(item.getKey(), item.getName())
+        );
 
         int timestampZero = DateUtil.datetimeToTimeStamp(new Date(0));
         Map<String, Object> issueDetailJson = JSON.parseObject(issueInfo.getDetail(), Map.class);
@@ -696,16 +686,16 @@ public class BuildingqmServiceImpl implements IBuildingqmService {
         issue.setCategory_key(issueInfo.getCategoryKey());
         issue.setCategory_path_and_key(issueInfo.getCategoryPathAndKey());
         List<String> objects = Lists.newArrayList();
-        categoryKeys.forEach(item -> {
-            objects.add(categoryKeyNameMap.get(item));
-        });
+        categoryKeys.forEach(item ->
+            objects.add(categoryKeyNameMap.get(item))
+        );
         issue.setCategory_path_name(objects);
         issue.setCheck_item_key(issueInfo.getCheckItemKey());
         issue.setCheck_item_path_and_key(issueInfo.getCheckItemPathAndKey());
         List<String> objects1 = Lists.newArrayList();
-        checkItemKeys.forEach(item -> {
-            objects1.add(checkItemKeyNameMap.get(item));
-        });
+        checkItemKeys.forEach(item ->
+            objects1.add(checkItemKeyNameMap.get(item))
+        );
         issue.setCheck_item_path_name(objects1);
         issue.setDrawing_url(fileMd5StoreKeyMap.get(issueInfo.getDrawingMD5()));
         issue.setDrawing_md5(issueInfo.getDrawingMD5());
@@ -717,22 +707,22 @@ public class BuildingqmServiceImpl implements IBuildingqmService {
         issue.setCondition(issueInfo.getCondition());
         issue.setStatus(issueInfo.getStatus());
         List<String> objects2 = Lists.newArrayList();
-        issueAttachmentMd5List.forEach(item -> {
-            objects2.add(fileMd5StoreKeyMap.get(item));
-        });
+        issueAttachmentMd5List.forEach(item ->
+            objects2.add(fileMd5StoreKeyMap.get(item))
+        );
         issue.setAttachment_url_list(objects2);
         List<String> objects3 = Lists.newArrayList();
-        issueAudioMd5List.forEach(item -> {
-            objects3.add(fileMd5StoreKeyMap.get(item));
-        });
+        issueAudioMd5List.forEach(item ->
+            objects3.add(fileMd5StoreKeyMap.get(item))
+        );
         issue.setAudio_url_list(objects3);
         issue.setAttachment_md5_list(issueInfo.getAttachmentMd5List());
         issue.setAudio_md5_list(issueInfo.getAudioMd5List());
         issue.setRepairer_name(userIdRealNameMap.get(issueInfo.getRepairerId()));
         List<String> objects4 = Lists.newArrayList();
-        followerIds.forEach(item -> {
-            objects4.add(userIdRealNameMap.get(item));
-        });
+        followerIds.forEach(item ->
+            objects4.add(userIdRealNameMap.get(item))
+        );
         issue.setRepairer_follower_names(objects4);
         if (issueInfo.getClientCreateAt() != null && DateUtil.datetimeToTimeStamp(issueInfo.getClientCreateAt()) > timestampZero) {
             issue.setClient_create_at(DateUtil.datetimeToTimeStamp(issueInfo.getClientCreateAt()));
@@ -807,19 +797,19 @@ public class BuildingqmServiceImpl implements IBuildingqmService {
             singleLog.setAudio_md5_list(issueLogInfo.get(i).getAudioMd5List());
             singleLog.setMemo_audio_md5_list(issueLogInfo.get(i).getMemoAudioMd5List());
             ArrayList<String> md5List = Lists.newArrayList();
-            logAttachmentMd5.forEach(item -> {
-                md5List.add(fileMd5StoreKeyMap.get(item));
-            });
+            logAttachmentMd5.forEach(item ->
+                md5List.add(fileMd5StoreKeyMap.get(item))
+            );
             singleLog.setAttachment_url_list(md5List);
             ArrayList<String> urlList = Lists.newArrayList();
-            audioMd5List.forEach(item -> {
-                urlList.add(fileMd5StoreKeyMap.get(item));
-            });
+            audioMd5List.forEach(item ->
+                urlList.add(fileMd5StoreKeyMap.get(item))
+            );
             singleLog.setAudio_url_list(urlList);
             ArrayList<String> audioUrlList = Lists.newArrayList();
-            memoAudioMd5List.forEach(item -> {
-                audioUrlList.add(fileMd5StoreKeyMap.get(item));
-            });
+            memoAudioMd5List.forEach(item ->
+                audioUrlList.add(fileMd5StoreKeyMap.get(item))
+            );
             singleLog.setMemo_audio_url_list(audioUrlList);
 
             if (issueLogInfo.get(i).getClientCreateAt() != null && DateUtil.datetimeToTimeStamp(issueLogInfo.get(i).getClientCreateAt()) > timestampZero) {
@@ -1000,11 +990,11 @@ public class BuildingqmServiceImpl implements IBuildingqmService {
                 issue.setId(res);
             }
             // # 写入推送记录
-            if (CheckTaskIssueStatus.NoteNoAssign.getValue().equals(issue.getStatus())) {//当新建的问题为待分配时需要记录
-                List<Integer> desUserIds = getIssueCheckerList(checkerMap, issue, false);
-                desUserIds.forEach(userId -> {
-                    pushList.add(userId);
-                });
+            if (CheckTaskIssueStatus.NoteNoAssign.getValue().equals(issue.getStatus())) {
+                List<Integer> desUserIds = getIssueCheckerList(checkerMap, issue, null);
+                desUserIds.forEach(userId ->
+                    pushList.add(userId)
+                );
                 if (CollectionUtils.isNotEmpty(desUserIds)) {
                     HouseQmCheckTaskNotifyRecord itemNotify = new HouseQmCheckTaskNotifyRecord();
                     itemNotify.setProjectId(issue.getProjectId());
@@ -1086,9 +1076,9 @@ public class BuildingqmServiceImpl implements IBuildingqmService {
             } else if (CheckTaskIssueStatus.ReformNoCheck.getValue().equals(issue.getStatus()) &&
                    !CheckTaskIssueStatus.ReformNoCheck.getValue().equals(notifyStatMap.get(issue.getUuid()).get("status"))) {
                 ArrayList<Integer> desUserIds = getIssueCheckerList(checkerMap, issue, true);
-                desUserIds.forEach(userId -> {
-                    pushList.add(userId);
-                });
+                desUserIds.forEach(userId ->
+                    pushList.add(userId)
+                );
                 if (CollectionUtils.isNotEmpty(desUserIds)) {
                     HouseQmCheckTaskNotifyRecord itemNotify = new HouseQmCheckTaskNotifyRecord();
                     itemNotify.setProjectId(issue.getProjectId());
@@ -1369,8 +1359,8 @@ public class BuildingqmServiceImpl implements IBuildingqmService {
     }
 
     private Map createUsersMap(List<Integer> ids) {
-        Map<Integer, User> map = userService.selectByIds(ids);
-        return map;
+        return  userService.selectByIds(ids);
+
     }
 
     private Map<String, Object> modifyIssue(Map<HouseQmCheckTaskIssue, ApiRefundInfo> refundMap, HashMap<String, ApiUserRoleInIssue> issueRoleMap, HouseQmCheckTaskIssue issue, ApiHouseQmCheckTaskIssueLogInfo item, Boolean b) {
@@ -1984,7 +1974,7 @@ public class BuildingqmServiceImpl implements IBuildingqmService {
         lst.forEach(item -> {
             if (datetimeZero(item.getDeleteAt())) {
                 resultDict.put(item.getUuid(), item);
-                notifyStatDict.put(item.getUuid(), ApiNotifyStat(item.getStatus(), item.getRepairerId(), StringSplitToListUtil.splitToIdsComma(item.getRepairerFollowerIds(), ",")));
+                notifyStatDict.put(item.getUuid(), apiNotifyStat(item.getStatus(), item.getRepairerId(), StringSplitToListUtil.splitToIdsComma(item.getRepairerFollowerIds(), ",")));
             } else {
                 deleteIssueUuids.add(item.getUuid());
             }
@@ -1996,7 +1986,7 @@ public class BuildingqmServiceImpl implements IBuildingqmService {
         return issueMapBody;
     }
 
-    private Map<String, Object> ApiNotifyStat(Integer status, Integer repairerId, List<Integer> repairer_follower_ids) {
+    private Map<String, Object> apiNotifyStat(Integer status, Integer repairerId, List<Integer> repairer_follower_ids) {
         Integer nstatus = 0;
         Integer nrepairerId = 0;
         List<Integer> repairerFollowerIds = Lists.newArrayList();
@@ -2248,23 +2238,23 @@ public class BuildingqmServiceImpl implements IBuildingqmService {
                     log.info("create task squad failed");
                     throw new LjBaseRuntimeException(-99, "'创建任务组失败'");
                 }
-                List<Integer> user_ids = checkerGroups.get(i).getUser_ids();
-                for (int j = 0; j < user_ids.size(); j++) {
+                List<Integer> userIds = checkerGroups.get(i).getUser_ids();
+                for (int j = 0; j < userIds.size(); j++) {
                     Integer canApprove = CheckTaskRoleCanApproveType.No.getValue();
                     Integer canDirectApprove = CheckTaskRoleCanDirectApproveType.No.getValue();
                     Integer canReassign = CheckTaskRoleCanReassignType.No.getValue();
-                    if (checkerGroups.get(i).getApprove_ids().contains(user_ids.get(j))) {
+                    if (checkerGroups.get(i).getApprove_ids().contains(userIds.get(j))) {
                         canApprove = CheckTaskRoleCanApproveType.Yes.getValue();
                     }
-                    if (checkerGroups.get(i).getApprove_ids().contains(user_ids.get(j)) && checkerGroups.get(i).getDirect_approve_ids().contains(user_ids.get(j))) {
+                    if (checkerGroups.get(i).getApprove_ids().contains(userIds.get(j)) && checkerGroups.get(i).getDirect_approve_ids().contains(userIds.get(j))) {
                         canDirectApprove = CheckTaskRoleCanDirectApproveType.Yes.getValue();
                     }
-                    if ((checkerGroups.get(i).getReassign_ids().contains(user_ids.get(j)))) {
+                    if ((checkerGroups.get(i).getReassign_ids().contains(userIds.get(j)))) {
                         canReassign = CheckTaskRoleCanReassignType.Yes.getValue();
                     }
                     UserInHouseQmCheckTask qmCheckTask = new UserInHouseQmCheckTask();
                     qmCheckTask.setSquadId(squadInfo);
-                    qmCheckTask.setUserId(user_ids.get(j));
+                    qmCheckTask.setUserId(userIds.get(j));
                     qmCheckTask.setRoleType(checkerGroups.get(i).getGroup_role());
                     qmCheckTask.setProjectId(taskEditReq.getProject_id());
                     qmCheckTask.setTaskId(taskEditReq.getTask_id());
@@ -2547,7 +2537,7 @@ public class BuildingqmServiceImpl implements IBuildingqmService {
         return objects;
     }
 
-    private void Execute(Integer uid, TaskReq taskReq, List<Integer> areaIds, List<Integer> areaTypes, String planBeginOn, String planEndOn, List<ApiBuildingQmTaskMemberGroupVo> checkerGroups, List<ApiBuildingQmTaskMemberGroupVo> repairerGroups, ConfigVo config) {
+    private void execute(Integer uid, TaskReq taskReq, List<Integer> areaIds, List<Integer> areaTypes, String planBeginOn, String planEndOn, List<ApiBuildingQmTaskMemberGroupVo> checkerGroups, List<ApiBuildingQmTaskMemberGroupVo> repairerGroups, ConfigVo config) {
         Task task = new Task();
         task.setName(taskReq.getName());
         task.setProjectId(taskReq.getProject_id());
@@ -2560,14 +2550,14 @@ public class BuildingqmServiceImpl implements IBuildingqmService {
             log.info("create task failed");
             throw new LjBaseRuntimeException(-99, "'创建任务失败'");
         }
-        HashMap<String, Object> config_map = Maps.newHashMap();
-        config_map.put("repairer_refund_permission", taskReq.getRepairer_refund_permission());
-        config_map.put("repairer_follower_permission", taskReq.getRepairer_follower_permission());
-        config_map.put("checker_approve_permission", taskReq.getChecker_approve_permission());
-        config_map.put("repaired_picture_status", taskReq.getRepaired_picture_status());
-        config_map.put("issue_desc_status", taskReq.getIssue_desc_status());
-        config_map.put("issue_default_desc", taskReq.getIssue_default_desc());
-        String config_info = JSONObject.toJSONString(config_map);
+        HashMap<String, Object> configMap = Maps.newHashMap();
+        configMap.put("repairer_refund_permission", taskReq.getRepairer_refund_permission());
+        configMap.put("repairer_follower_permission", taskReq.getRepairer_follower_permission());
+        configMap.put("checker_approve_permission", taskReq.getChecker_approve_permission());
+        configMap.put("repaired_picture_status", taskReq.getRepaired_picture_status());
+        configMap.put("issue_desc_status", taskReq.getIssue_desc_status());
+        configMap.put("issue_default_desc", taskReq.getIssue_default_desc());
+        String configInfo = JSONObject.toJSONString(configMap);
         HouseQmCheckTask houseQmCheckTask = new HouseQmCheckTask();
         houseQmCheckTask.setProjectId(taskReq.getProject_id());
         houseQmCheckTask.setTaskId(taskObj);
@@ -2575,7 +2565,7 @@ public class BuildingqmServiceImpl implements IBuildingqmService {
         houseQmCheckTask.setStatus(CheckTaskStatus.UnFinish.getValue());
         houseQmCheckTask.setCategoryCls(taskReq.getCategory_cls());
         houseQmCheckTask.setRootCategoryKey(taskReq.getRoot_category_key());
-        houseQmCheckTask.setConfigInfo(config_info);
+        houseQmCheckTask.setConfigInfo(configInfo);
         houseQmCheckTask.setEndOn(new Date(0));//1970-01-01 08:00:00
         houseQmCheckTask.setCreator(uid);
         houseQmCheckTask.setEditor(0);
@@ -2702,8 +2692,8 @@ public class BuildingqmServiceImpl implements IBuildingqmService {
             pushStrategyAssignTime.setUpdateAt(new Date());
             pushStrategyAssignTime.setPushTime(stringToDate(config.getConfig_assign_time().getPush_time()));
             pushStrategyAssignTime.setUserIds(config.getConfig_assign_time().getUser_ids());
-            int Num = pushStrategyAssignTimeService.add(pushStrategyAssignTime);
-            if (Num <= 0) {
+            int nu = pushStrategyAssignTimeService.add(pushStrategyAssignTime);
+            if (nu <= 0) {
                 log.info("PushStrategyAssignTimeDao().add failed");
             }
 
@@ -2721,8 +2711,8 @@ public class BuildingqmServiceImpl implements IBuildingqmService {
             pushStrategyCategoryOverdue.setCategoryKeys(config.getConfig_category_overdue().getCategory_keys());
             pushStrategyCategoryOverdue.setUserIds(config.getConfig_category_overdue().getUser_ids());
             pushStrategyCategoryOverdue.setScanEndOn(DateUtil.timeStampToDate(DateUtil.datetimeToTimeStamp(checktaskObj.getPlanEndOn()) + (30 * 24 * 60 * 60), " yyyy-MM-dd HH-mm-ss"));
-            int Num = pushStrategyCategoryOverdueService.add(pushStrategyCategoryOverdue);
-            if (Num <= 0) {
+            int n = pushStrategyCategoryOverdueService.add(pushStrategyCategoryOverdue);
+            if (n <= 0) {
                 log.info("PushStrategyCategoryOverdueDao().add failed");
             }
 
@@ -2738,8 +2728,8 @@ public class BuildingqmServiceImpl implements IBuildingqmService {
             pushStrategyCategoryThreshold.setUserIds(config.getConfig_category_threshold().getUser_ids());
             pushStrategyCategoryThreshold.setThreshold(config.getConfig_category_threshold().getThreshold());
             pushStrategyCategoryThreshold.setScanEndOn(DateUtil.timeStampToDate(DateUtil.datetimeToTimeStamp(checktaskObj.getPlanEndOn()) + (30 * 24 * 60 * 60), " yyyy-MM-dd HH-mm-ss"));
-            int Num = pushStrategyCategoryThresholdService.add(pushStrategyCategoryThreshold);
-            if (Num <= 0) {
+            int nn = pushStrategyCategoryThresholdService.add(pushStrategyCategoryThreshold);
+            if (nn <= 0) {
                 log.info("PushStrategyCategoryOverdueDao().add failed");
             }
 
@@ -2787,10 +2777,10 @@ public class BuildingqmServiceImpl implements IBuildingqmService {
             String pushTime = (String) assignTime.get("push_time");
             String userIds = (String) assignTime.get("user_ids");
             if (pushTime.length() > 0 && userIds.length() > 0) {
-                ConfigVo.ApiPushStrategyAssignTime config_assign_time = new ConfigVo().new ApiPushStrategyAssignTime();
-                config_assign_time.setPush_time(pushTime);
-                config_assign_time.setUser_ids(userIds);
-                configVo.setConfig_assign_time(config_assign_time);
+                ConfigVo.ApiPushStrategyAssignTime configAssignTime = new ConfigVo().new ApiPushStrategyAssignTime();
+                configAssignTime.setPush_time(pushTime);
+                configAssignTime.setUser_ids(userIds);
+                configVo.setConfig_assign_time(configAssignTime);
             }
             if (categoryOverdue != null) {
                 String categoryKeys = (String) categoryOverdue.get("category_keys");
@@ -2832,8 +2822,8 @@ public class BuildingqmServiceImpl implements IBuildingqmService {
         return result;
     }
 
-    private List<ApiBuildingQmCheckTaskSquadObjVo> unmarshCheckerGroups(String checker_groups) {
-        List<Map<String, Object>> list = JSON.parseObject(checker_groups, List.class);
+    private List<ApiBuildingQmCheckTaskSquadObjVo> unmarshCheckerGroups(String checkerGroups) {
+        List<Map<String, Object>> list = JSON.parseObject(checkerGroups, List.class);
         ArrayList<ApiBuildingQmCheckTaskSquadObjVo> result = Lists.newArrayList();
         list.forEach(checkergroups -> {
             ApiBuildingQmCheckTaskSquadObjVo objVo = new ApiBuildingQmCheckTaskSquadObjVo();
@@ -2945,6 +2935,7 @@ public class BuildingqmServiceImpl implements IBuildingqmService {
     }
 
 
+
     /*private void fullAllTaskConfigVO(Map<Integer, ApiBuildingQmCheckTaskConfig> maps,
                                      List<HouseQmCheckTask> houseQmCheckTasks, List<TaskVo> vos) {
 
@@ -2992,7 +2983,7 @@ public class BuildingqmServiceImpl implements IBuildingqmService {
     }*/
 
     @Override
-    public Map<String, Object> issuestatisticexport(Integer category_cls, String items, HttpServletResponse response) {
+    public Map<String, Object> issuestatisticexport(Integer categoryCls, String items, HttpServletResponse response) {
         Integer result = 0;
         String message = "success";
         List<NodeDataVo> dataList = Lists.newArrayList();
@@ -3060,9 +3051,9 @@ public class BuildingqmServiceImpl implements IBuildingqmService {
                         }
                     }
                     if (isLast) {
-                        Integer child_count = obj.getChild_count();
-                        child_count += 1;
-                        obj.setChild_count(child_count);
+                        Integer childCount = obj.getChild_count();
+                        childCount += 1;
+                        obj.setChild_count(childCount);
                     }
                 }
             }
@@ -3102,9 +3093,9 @@ public class BuildingqmServiceImpl implements IBuildingqmService {
         SXSSFWorkbook wb = ExportUtils.exportIssueStatisticExcel(nodeTree, maxCol);
 
         String dt = DateUtil.getNowTimeStr("yyyyMMddHHmmss");
-        String category_name = CategoryClsTypeEnum.getName(category_cls);
-        if (category_name == null) category_name = "工程检查";
-        String fileName = String.format("%s_问题详情_%s.xlsx", category_name, dt);
+        String categoryName = CategoryClsTypeEnum.getName(categoryCls);
+        if (categoryName == null) categoryName = "工程检查";
+        String fileName = String.format("%s_问题详情_%s.xlsx", categoryName, dt);
 
         Map<String, Object> map = Maps.newHashMap();
         map.put("fileName", fileName);
@@ -3140,37 +3131,4 @@ public class BuildingqmServiceImpl implements IBuildingqmService {
         }
         return taskMap;
     }
-
-    @Data
-    @NoArgsConstructor
-    public class ApiHouseQmIssueReport {
-        private List<ApiHouseQmIssue> created_issues;
-        private List<ApiHouseQmIssue> assigned_issues;
-        private List<ApiHouseQmIssue> reformed_issues;
-        private List<ApiHouseQmIssue> checked_issues;
-    }
-
-    @Data
-    @NoArgsConstructor
-    public class ApiHouseQmIssue {
-        private String uuid;
-        private Integer proj_id;
-        private Integer task_id;
-        private Integer checker_id;
-        private Integer repairer_id;
-        private Integer area_id;
-        private String area_path_and_id;
-        private String category_key;
-        private String category_path_and_key;
-        private Integer sender_id;
-        private Integer timestamp;
-    }
-
-    @Data
-    @NoArgsConstructor
-    public class ApiRefundInfo {
-        private Integer repairer;
-        private Integer checker;
-    }
-
 }

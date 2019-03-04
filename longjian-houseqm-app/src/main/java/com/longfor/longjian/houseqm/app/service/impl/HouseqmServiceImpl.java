@@ -82,16 +82,16 @@ public class HouseqmServiceImpl implements IHouseqmService {
                 lastId = houseQmCheckTaskIssueLogs.get(houseQmCheckTaskIssueLogs.size() - 1).getId();
             myIssueListVo.setLast_id(lastId);
             List<String> uuids = new ArrayList<>();
-            houseQmCheckTaskIssueLogs.forEach(item -> {
-                uuids.add(item.getIssueUuid());
-            });
+            houseQmCheckTaskIssueLogs.forEach(item ->
+                uuids.add(item.getIssueUuid())
+            );
             List<HouseQmCheckTaskIssue> resIssues = Lists.newArrayList();
             if (!uuids.isEmpty())
                 resIssues = houseQmCheckTaskIssueService.searchHouseQmCheckTaskIssueByTaskIdUuidIn(deviceReq.getTask_id(), uuids);
             Map<String, HouseQmCheckTaskIssue> mIssue = new HashMap<>();
-            resIssues.forEach(houseQmCheckTaskIssue -> {
-                mIssue.put(houseQmCheckTaskIssue.getUuid(), houseQmCheckTaskIssue);
-            });
+            resIssues.forEach(houseQmCheckTaskIssue ->
+                mIssue.put(houseQmCheckTaskIssue.getUuid(), houseQmCheckTaskIssue)
+            );
             houseQmCheckTaskIssueLogs.forEach(item -> {
                 ApiHouseQmCheckTaskIssueLogDetailRspVo rspVo = JSON.parseObject(item.getDetail(), new TypeReference<ApiHouseQmCheckTaskIssueLogDetailRspVo>() {
                 });
@@ -299,7 +299,7 @@ public class HouseqmServiceImpl implements IHouseqmService {
         //获取出任务下的区域与检验类型的交集
         List<Integer> areaIds = StringSplitToListUtil.strToInts(task.getAreaIds(), ",");
         List<Integer> areaTypes = StringSplitToListUtil.strToInts(task.getAreaTypes(), ",");
-        if (areaIds.size() == 0 || areaTypes.size() == 0) return null;
+        if (CollectionUtils.isEmpty(areaIds)|| CollectionUtils.isEmpty(areaTypes)) return null;
         List<Area> areas = areaService.searchAreaListByRootIdAndTypes(projectId, areaIds, areaTypes);
         return areas;
     }

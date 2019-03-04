@@ -51,8 +51,8 @@ public class HouseqmIssueServiceImpl implements IHouseqmIssueService {
 
     // 删除问题
     @Override
-    public void deleteHouseQmCheckTaskIssueByProjUuid(Integer project_id, String issueUuid) throws Exception {
-        int affect = houseQmCheckTaskIssueService.deleteHouseQmCheckTaskIssueByProjUuid(project_id, issueUuid);
+    public void deleteHouseQmCheckTaskIssueByProjUuid(Integer projectId, String issueUuid) throws Exception {
+        int affect = houseQmCheckTaskIssueService.deleteHouseQmCheckTaskIssueByProjUuid(projectId, issueUuid);
         if (affect <= 0) {
             throw new LjBaseRuntimeException(-1, "删除问题失败");
         }
@@ -92,22 +92,22 @@ public class HouseqmIssueServiceImpl implements IHouseqmIssueService {
     }
 
     @Override
-    public List<String> updateBatchIssueRepairInfoByUuids(List<String> uuids, Integer project_id, int senderId, Integer repairer_id, String repair_follower_ids, Integer plan_end_on) throws Exception {
+    public List<String> updateBatchIssueRepairInfoByUuids(List<String> uuids, Integer projectId, int senderId, Integer repairerId, String repairFollowerIds, Integer planEndOn) throws Exception {
         int eInt = -1;
         String eStr = "";
-        List<HouseQmCheckTaskIssue> issues = houseQmCheckTaskIssueService.searchByProjIdAndUuidIn(project_id, uuids);
+        List<HouseQmCheckTaskIssue> issues = houseQmCheckTaskIssueService.searchByProjIdAndUuidIn(projectId, uuids);
 
         int status = eInt;
-        helper.init(project_id);
+        helper.init(projectId);
         for (HouseQmCheckTaskIssue issue : issues) {
-            if (HouseQmCheckTaskIssueStatusEnum.NoteNoAssign.getId().equals(issue.getStatus()) && repairer_id > 0) {
+            if (HouseQmCheckTaskIssueStatusEnum.NoteNoAssign.getId().equals(issue.getStatus()) && repairerId > 0) {
                 status = HouseQmCheckTaskIssueStatusEnum.AssignNoReform.getId();
             }
 
             // 整改负责人变化了，则需要将他添加进跟进人
             String issueRepairerFollowerIds = "";
-            if (repairer_id.equals(issue.getRepairerId()) && issue.getRepairerId() > 0) {
-                List<Integer> followers = StringSplitToListUtil.strToInts(repair_follower_ids, ",");
+            if (repairerId.equals(issue.getRepairerId()) && issue.getRepairerId() > 0) {
+                List<Integer> followers = StringSplitToListUtil.strToInts(repairFollowerIds, ",");
                 boolean flag = true;
                 for (Integer f : followers) {
                     if (f.equals(issue.getRepairerId())) flag = false;
@@ -120,7 +120,7 @@ public class HouseqmIssueServiceImpl implements IHouseqmIssueService {
             String uuid = UUID.randomUUID().toString().replace("-", "");
             int nowTimestamp = DateUtil.datetimeToTimeStamp(new Date());
             helper.start().setNormalField(issue.getTaskId(), uuid, issue.getUuid(), senderId, eStr, status, eStr, eStr, nowTimestamp, eStr)
-                    .setDetailField(eInt, eInt, eInt, plan_end_on, eInt, repairer_id, issueRepairerFollowerIds, eInt, eInt, eStr, eStr, eStr, eInt, eStr, eStr, eStr, eStr, eStr, eInt).done();
+                    .setDetailField(eInt, eInt, eInt, planEndOn, eInt, repairerId, issueRepairerFollowerIds, eInt, eInt, eStr, eStr, eStr, eInt, eStr, eStr, eStr, eStr, eStr, eInt).done();
         }
         try {
             helper.execute();
@@ -136,22 +136,22 @@ public class HouseqmIssueServiceImpl implements IHouseqmIssueService {
     }
 
     @Override
-    public ExportFileRecord create(int userId, Integer teamId, Integer project_id, int exportType, Map<String, String> args, String exportName, Date executeAt) throws Exception {
+    public ExportFileRecord create(int userId, Integer teamId, Integer projectId, int exportType, Map<String, String> args, String exportName, Date executeAt) throws Exception {
         //生成随机数
         Random random = new Random(Long.MAX_VALUE);
 
         long randCount = (long) (rand.nextDouble() * Long.MAX_VALUE);
-        String base_dir = exportVo.getBase_dir();
+        String baseDir = exportVo.getBase_dir();
         Integer ts = DateUtil.datetimeToTimeStamp(new Date());
-        String base_uri = exportVo.getBase_uri();
+        String baseUri = exportVo.getBase_uri();
         String inputFilename = String.format("%d%d.%s", randCount, ts, "input");
         String outputFilename = String.format("/export/%d%d.%s", randCount, ts, "output");
-        String filepath = base_dir + inputFilename;
+        String filepath = baseDir + inputFilename;
         String data = JSON.toJSONString(args);
         this.writeInput(data, exportName, filepath);
         //记录导出的内容到数据库
-        String resultFilePath = base_uri + "/" + outputFilename;
-        return exportFileRecordService.insertFull(userId, teamId, project_id, exportType, inputFilename + " " + outputFilename,
+        String resultFilePath = baseUri + "/" + outputFilename;
+        return exportFileRecordService.insertFull(userId, teamId, projectId, exportType, inputFilename + " " + outputFilename,
                 resultFilePath, exportName, 0, "", executeAt);
     }
 
@@ -188,13 +188,13 @@ public class HouseqmIssueServiceImpl implements IHouseqmIssueService {
     }
 
     @Override
-    public Project getProjectByProjId(Integer project_id) {
-        return projectService.getOneByProjId(project_id);
+    public Project getProjectByProjId(Integer projectId) {
+        return projectService.getOneByProjId(projectId);
     }
 
     @Override
-    public List<HouseQmCheckTaskIssue> searchHouseQmIssueListByProjUuidIn(Integer project_id, List<String> uuids) throws Exception {
-        return houseQmCheckTaskIssueService.searchByProjIdAndUuidIn(project_id, uuids);
+    public List<HouseQmCheckTaskIssue> searchHouseQmIssueListByProjUuidIn(Integer projectId, List<String> uuids) throws Exception {
+        return houseQmCheckTaskIssueService.searchByProjIdAndUuidIn(projectId, uuids);
     }
 
 

@@ -291,11 +291,11 @@ public class TaskListServiceImpl implements ITaskListService {
     }
 
     private String getExportIssueConfig(int teamId) {
-        String export_issue = null;
+        String exportIssue = null;
         if (teamGrop.equals("team_group_" + teamId)) {
-            export_issue = svrCfg;
+            exportIssue = svrCfg;
         }
-        return export_issue;
+        return exportIssue;
     }
 
     private TaskPushStrategyVo creatTaskPushStrategyMap(Set<Integer> taskIds) {

@@ -17,6 +17,7 @@ import com.longfor.longjian.houseqm.util.JsonUtil;
 import com.longfor.longjian.houseqm.util.StringSplitToListUtil;
 import lombok.Data;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.collections.CollectionUtils;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -431,7 +432,7 @@ public class HouseQmCheckTaskIssueHelperVo {
         for (String tempIssueLogUuid : this.needDeleteAtIssueLogMap.keySet()) {
             needDeleteIssueLog.add(tempIssueLogUuid);
         }
-        if (needDeleteIssueLog.size() > 0) {
+        if (CollectionUtils.isNotEmpty(needDeleteIssueLog)) {
             houseQmCheckTaskIssueLogService.deleteIssueLogByUuids(needDeleteIssueLog);
         }
 
@@ -482,15 +483,15 @@ public class HouseQmCheckTaskIssueHelperVo {
                 issueUsers.add(obj);
             }
         }
-        if (issueUsers.size() > 0) {
+        if (CollectionUtils.isNotEmpty(issueUsers)) {
             houseQmCheckTaskIssueUserService.insertBatch(issueUsers);
         }
         //处理issue attachment
-        if (this.needInsertAttachement.size() > 0) {
+        if (CollectionUtils.isNotEmpty(this.needInsertAttachement)) {
             houseQmCheckTaskIssueAttachmentService.inseretBatch(this.needInsertAttachement);
         }
         //移除 私有 附件
-        if (this.needRemoveAttachement.size() > 0) {
+        if (CollectionUtils.isNotEmpty(this.needRemoveAttachement)) {
             for (RemoveAttachement obj : this.needRemoveAttachement) {
                 houseQmCheckTaskIssueAttachmentService.deleteByIssueUuidMd5(obj.getIssueUuid(), obj.getMd5());
             }
@@ -531,7 +532,7 @@ public class HouseQmCheckTaskIssueHelperVo {
         for (HouseQmCheckTaskIssueLogVo issueLog : this.issueLogs) {
             //公有录音
             List<String> md5List = StringSplitToListUtil.splitToStringComma(issueLog.getAudioMd5List(), ",");
-            if (md5List.size() > 0) {
+            if (CollectionUtils.isNotEmpty(md5List)) {
                 for (String md5 : md5List) {
                     HouseQmCheckTaskIssueAttachment obj = new HouseQmCheckTaskIssueAttachment();
                     obj.setProjectId(this.currentProjectId);
@@ -548,7 +549,7 @@ public class HouseQmCheckTaskIssueHelperVo {
             }
             // 私有录音
             List<String> memoMd5List = StringSplitToListUtil.splitToStringComma(issueLog.getMemoAudioMd5List(), ",");
-            if (memoMd5List.size() > 0) {
+            if (CollectionUtils.isNotEmpty(memoMd5List)) {
                 for (String md5 : memoMd5List) {
                     HouseQmCheckTaskIssueAttachment obj = new HouseQmCheckTaskIssueAttachment();
                     obj.setProjectId(this.currentProjectId);
@@ -565,7 +566,7 @@ public class HouseQmCheckTaskIssueHelperVo {
             }
             // 要移除的私有录音
             List<String> removeMemoAudioMd5List = StringSplitToListUtil.splitToStringComma(issueLog.getDetail().getRemoveMemoAudioMd5List(), ",");
-            if (removeMemoAudioMd5List.size() > 0) {
+            if (CollectionUtils.isNotEmpty(removeMemoAudioMd5List)) {
                 for (String md5 : removeMemoAudioMd5List) {
                     RemoveAttachement obj = new RemoveAttachement();
                     obj.setIssueUuid(issueLog.getIssueUuid());
@@ -850,7 +851,7 @@ public class HouseQmCheckTaskIssueHelperVo {
             }
             //写入issue中的冗余字段
             issue.setRepairerId(this.currentLog.getDetail().getRepairerId());
-            if (follower.size() > 0) {
+            if (CollectionUtils.isNotEmpty(follower)) {
                 issue.setRepairerFollowerIds("," + StringSplitToListUtil.dataToString(follower, ",") + ",");
             } else {
                 issue.setRepairerFollowerIds("");
@@ -976,7 +977,7 @@ public class HouseQmCheckTaskIssueHelperVo {
             }
             //写入issue中的冗余字段
             issue.setRepairerId(this.currentLog.getDetail().getRepairerId());
-            if (follower.size() > 0) {
+            if (CollectionUtils.isNotEmpty(follower)) {
                 issue.setRepairerFollowerIds("," + StringSplitToListUtil.dataToString(follower, ",") + ",");
             } else {
                 issue.setRepairerFollowerIds("");

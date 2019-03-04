@@ -26,6 +26,7 @@ import com.longfor.longjian.houseqm.util.DateUtil;
 import com.longfor.longjian.houseqm.util.MathUtil;
 import com.longfor.longjian.houseqm.util.StringSplitToListUtil;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.collections.CollectionUtils;
 import org.springframework.stereotype.Repository;
 import org.springframework.stereotype.Service;
 
@@ -266,9 +267,9 @@ public class HouseqmStatisticServiceImpl implements IHouseqmStatisticService {
         item.setIssue_repaired_count(0);
         item.setRecord_count(0);
         result.setItem(item);
-        List<UserInHouseQmCheckTask> user_taskList = userInHouseQmCheckTaskService.searchByUserIdAndRoleType(uid, HouseQmCheckTaskRoleTypeEnum.Checker.getId());
+        List<UserInHouseQmCheckTask> userTaskList = userInHouseQmCheckTaskService.searchByUserIdAndRoleType(uid, HouseQmCheckTaskRoleTypeEnum.Checker.getId());
         List<Integer> taskIds = Lists.newArrayList();
-        user_taskList.forEach(task -> {
+        userTaskList.forEach(task -> {
             if (!taskIds.contains(task.getTaskId())) {
                 taskIds.add(task.getTaskId());
             }
@@ -287,13 +288,13 @@ public class HouseqmStatisticServiceImpl implements IHouseqmStatisticService {
             }
             List<Integer> newAreaIds = new HashSet<>(areaIds).stream().collect(Collectors.toList());
             List<Area> areaList = areaService.selectByAreaIds(newAreaIds);
-            Map<Integer, String> area_map = Maps.newHashMap();
+            Map<Integer, String> areaMap = Maps.newHashMap();
             for (Area area : areaList) {
-                area_map.put(area.getId(), area.getPath() + area.getId() + "/");
+                areaMap.put(area.getId(), area.getPath() + area.getId() + "/");
             }
             for (HouseQmCheckTask task : taskList) {
                 List<Integer> ids = StringUtil.strToInts(task.getAreaIds(), ",");
-                if (checkRootAreaIntersectAreas(area_map, areaId, ids)) {
+                if (checkRootAreaIntersectAreas(areaMap, areaId, ids)) {
                     item.setTask_count(item.getIssue_count() + 1);
                 }
             }
@@ -407,11 +408,7 @@ public class HouseqmStatisticServiceImpl implements IHouseqmStatisticService {
         return categoryClsList;
     }
 
-    /**
-     * @param taskId
-     * @param areaId
-     * @return
-     */
+
     public TaskStatVo.IssueStatVo getCheckTaskIssueTypeStatByTaskIdAreaId(Integer taskId, Integer areaId) {
         String areaPath = "";
         if (areaId > 0) {
@@ -615,9 +612,9 @@ public class HouseqmStatisticServiceImpl implements IHouseqmStatisticService {
         //调用file_resource service 方法 files
         List<FileResource> files = fileResourceService.searchFileResourceByFileMd5InAndNoDeleted(attachmentMd5List);
         HashMap<String, String> fileMap = Maps.newHashMap();
-        files.forEach(item -> {
-            fileMap.put(item.getFileMd5(), item.getStoreKey());
-        });
+        files.forEach(item ->
+            fileMap.put(item.getFileMd5(), item.getStoreKey())
+        );
 
         AreaMapVo areaMap = createAreasMapByLeaveIds(areaIdList);
         List<CategoryV3> categorys = categoryV3Service.searchCategoryV3ByKeyInAndNoDeleted(categoryKeyList);
@@ -754,7 +751,7 @@ public class HouseqmStatisticServiceImpl implements IHouseqmStatisticService {
             HashMap<Integer, Boolean> hasIssueAreaId = Maps.newHashMap();
             for (String path : hasIssuePaths) {
                 List<Integer> ids = StringSplitToListUtil.strToInts(path, "/");
-                if (ids.size() > 0) {
+                if (CollectionUtils.isNotEmpty(ids)) {
                     hasIssueAreaId.put(ids.get(ids.size() - 1), true);
                 }
             }
@@ -769,7 +766,7 @@ public class HouseqmStatisticServiceImpl implements IHouseqmStatisticService {
             HashMap<Integer, Boolean> hasIssueNoApprovedAreaId = Maps.newHashMap();
             for (String path : hasIssuePaths) {
                 List<Integer> ids = StringSplitToListUtil.strToInts(path, "/");
-                if (ids.size() > 0) {
+                if (CollectionUtils.isNotEmpty(ids)) {
                     hasIssueNoApprovedAreaId.put(ids.get(ids.size() - 1), true);
                 }
             }
@@ -855,14 +852,15 @@ public class HouseqmStatisticServiceImpl implements IHouseqmStatisticService {
         Map<String, Object> condi = Maps.newHashMap();
         condi.put(TASK_ID, taskIds);
         condi.put(STATUS, RepossessionStatusEnum.Accept.getId());
-        Date begin_on, end_on = null;
+        Date beginOns=null;
+        Date endOns = null;
         if (beginOn > 0) {
-            begin_on = DateUtil.timeStampToDate(beginOn, "yyyy-MM-dd hh:mm:ss");
-            condi.put("status_client_update_atgte", begin_on);
+            beginOns = DateUtil.timeStampToDate(beginOn, "yyyy-MM-dd hh:mm:ss");
+            condi.put("status_client_update_atgte", beginOns);
         }
         if (endOn > 0) {
-            end_on = DateUtil.timeStampToDate(endOn, "yyyy-MM-dd hh:mm:ss");
-            condi.put("status_client_update_atlte", end_on);
+            endOns = DateUtil.timeStampToDate(endOn, "yyyy-MM-dd hh:mm:ss");
+            condi.put("status_client_update_atlte", endOns);
         }
         RepossessionStatusCompleteDailyCountDto bean = repossessionStatusService.searchByTaskIdInAndStatusAndNoDeletedOrStatusClientUpdateAt(condi);
         int total = bean.getCount();
@@ -1110,13 +1108,13 @@ public class HouseqmStatisticServiceImpl implements IHouseqmStatisticService {
         ArrayList<String> checkItemKeys = Lists.newArrayList();
         for (int i = 0; i < infos.size(); i++) {
 
-            String[] CategoryPathAndKeys = GetPathSlice(infos.get(i).getCategoryPathAndKey());
-            for (int j = 0; j < CategoryPathAndKeys.length; j++) {
-                categoryKeys.add(CategoryPathAndKeys[j]);
+            String[] categoryPathAndKeys = getPathSlice(infos.get(i).getCategoryPathAndKey());
+            for (int j = 0; j < categoryPathAndKeys.length; j++) {
+                categoryKeys.add(categoryPathAndKeys[j]);
             }
-            String[] CheckItemPathAndKey = GetPathSlice(infos.get(i).getCheckItemPathAndKey());
-            for (int j = 0; j < CheckItemPathAndKey.length; j++) {
-                checkItemKeys.add(CheckItemPathAndKey[j]);
+            String[] checkItemPathAndKey = getPathSlice(infos.get(i).getCheckItemPathAndKey());
+            for (int j = 0; j < checkItemPathAndKey.length; j++) {
+                checkItemKeys.add(checkItemPathAndKey[j]);
             }
         }
         removeDuplicate(categoryKeys);
@@ -1137,7 +1135,7 @@ public class HouseqmStatisticServiceImpl implements IHouseqmStatisticService {
         return infos;
     }
 
-    private String[] GetPathSlice(String path) {
+    private String[] getPathSlice(String path) {
         String newStr = path.substring(1, path.length());
         String[] split = newStr.split("/");
         return split;
@@ -1148,7 +1146,7 @@ public class HouseqmStatisticServiceImpl implements IHouseqmStatisticService {
         for (int i = 0; i < infos.size(); i++) {
             areaIds.add(infos.get(i).getAreaId());
         }
-        AreaMapVo map = CreateAreasMapByLeaveIds(areaIds);
+        AreaMapVo map =createAreasMapByLeaveIds(areaIds);
         for (int i = 0; i < infos.size(); i++) {
             infos.get(i).setAreaPathName(map.getPathNames(infos.get(i).getAreaId()));
             infos.get(i).setAreaName(map.getName(infos.get(i).getAreaId()));
@@ -1157,13 +1155,13 @@ public class HouseqmStatisticServiceImpl implements IHouseqmStatisticService {
         return infos;
     }
 
-    private AreaMapVo CreateAreasMapByLeaveIds(Set<Integer> areaIds) {
+    private AreaMapVo createAreasMapByLeaveIds(Set<Integer> areaIds) {
         List<Area> areaList = SelectAllByLeaveIds(areaIds);
-        return CreateAreasMapByAreaList(areaList);
+        return createAreasMapByAreaList(areaList);
 
     }
 
-    public AreaMapVo CreateAreasMapByAreaList(List<Area> areaList) {
+    public AreaMapVo createAreasMapByAreaList(List<Area> areaList) {
         AreaMapVo vo = new AreaMapVo();
         Map<Integer, Area> map = Maps.newHashMap();
         for (int i = 0; i < areaList.size(); i++) {
@@ -1475,7 +1473,7 @@ public class HouseqmStatisticServiceImpl implements IHouseqmStatisticService {
         Map<Integer, IssueMinStatusVo> maps = Maps.newHashMap();
         for (HouseQmCheckTaskIssueAreaGroupModel area : result) {
             List<Integer> aIds = StringSplitToListUtil.splitToIdsComma(area.getAreaPath(), "/");
-            if (aIds.size() > 0) {
+            if (CollectionUtils.isNotEmpty(aIds)) {
                 IssueMinStatusVo minStatus = new IssueMinStatusVo();
                 minStatus.setCount(area.getExtendCol());
                 minStatus.setMinStatus(area.getStatus());

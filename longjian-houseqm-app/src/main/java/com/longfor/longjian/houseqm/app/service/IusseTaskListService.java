@@ -177,9 +177,9 @@ public class IusseTaskListService {
         //  # 判断每个项目下有没有验房任务
         List<HouseQmCheckTask> tasklist = houseQmCheckTaskService.selectByProjectIdsAndCategoryClsNotDel(projectIds, categorylist);
         ArrayList<Integer> projectIdsList = Lists.newArrayList();
-        tasklist.forEach(item -> {
-            projectIdsList.add(item.getProjectId());
-        });
+        tasklist.forEach(item ->
+            projectIdsList.add(item.getProjectId())
+        );
         ArrayList<Integer> expTeamIds = Lists.newArrayList();
         if (CollectionUtils.isNotEmpty(projectIdsList)) {
             List<Project> projectlist = projectService.selectByIdNotDel(projectIdsList);
@@ -207,9 +207,9 @@ public class IusseTaskListService {
             });
         }
         ArrayList<Integer> teamId = Lists.newArrayList();
-        teams.forEach(item -> {
-            teamId.add(item.getId());
-        });
+        teams.forEach(item ->
+            teamId.add(item.getId())
+        );
         List<Team> teamlists = teamService.selectByTeamIdsNotDel(teamId);
         ArrayList<Integer> objects = Lists.newArrayList();
         teamlists.forEach(item -> {
