@@ -8,6 +8,7 @@ import com.longfor.longjian.common.consts.HouseQmCheckTaskIssueLogStatus;
 import com.longfor.longjian.common.consts.HouseQmCheckTaskIssueStatusEnum;
 import com.longfor.longjian.common.kafka.KafkaProducer;
 import com.longfor.longjian.houseqm.app.service.PushService;
+import com.longfor.longjian.houseqm.app.vo.houseqm.HouseqmCheckTaskNotifyRecordVo;
 import com.longfor.longjian.houseqm.app.vo.houseqmissue.*;
 import com.longfor.longjian.houseqm.consts.*;
 import com.longfor.longjian.houseqm.domain.internalservice.*;
@@ -678,18 +679,28 @@ public class HouseQmCheckTaskIssueHelperVo {
             if (e == null) {
                 continue outer;
             }
+            HouseqmCheckTaskNotifyRecordVo hcvo=new HouseqmCheckTaskNotifyRecordVo();
+            hcvo.setProjectId(issue.getProjectId());
+            hcvo.setTaskId(issue.getTaskId());
+            hcvo.setSrcUserId(issue.getLastAssigner());
+            hcvo.setIssueStatus(issue.getStatus());
+            hcvo.setModuleId(moduleId);
+            hcvo.setIssueId(issue.getId());
+            hcvo.setExtraInfo("");
             switch (e) {
                 case AssignNoReform: {
                     List<Integer> userIds = Lists.newArrayList();
                     userIds.add(issue.getRepairerId());
                     List<Integer> fids = StringSplitToListUtil.strToInts(issue.getRepairerFollowerIds(), ",");
                     userIds.addAll(fids);
-                    houseQmCheckTaskNotifyRecordService.insertFull(issue.getProjectId(), issue.getTaskId(), issue.getLastAssigner(), StringSplitToListUtil.dataToString(userIds, ","), moduleId, issue.getId(), issue.getStatus(), "");
+                    hcvo.setDesUserIds(StringSplitToListUtil.dataToString(userIds, ","));
+                    houseQmCheckTaskNotifyRecordService.insertFull(hcvo);
                     break;
                 }
                 case ReformNoCheck: {
                     List<Integer> approveUserIds = cache.getResolveUserList(issue.getTaskId(), issue.getSenderId());
-                    houseQmCheckTaskNotifyRecordService.insertFull(issue.getProjectId(), issue.getTaskId(), issue.getLastAssigner(), StringSplitToListUtil.dataToString(approveUserIds, ","), moduleId, issue.getId(), issue.getStatus(), "");
+                    hcvo.setDesUserIds(StringSplitToListUtil.dataToString(approveUserIds, ","));
+                    houseQmCheckTaskNotifyRecordService.insertFull(hcvo);
                     break;
                 }
                 default:
