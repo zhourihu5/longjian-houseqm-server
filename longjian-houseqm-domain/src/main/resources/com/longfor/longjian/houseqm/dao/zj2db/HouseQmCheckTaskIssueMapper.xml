@@ -120,7 +120,7 @@
             parameterType="java.util.Map">
         SELECT check_item_key,check_item_path_and_key,category_key,category_path_and_key,count(*)as count
         from house_qm_check_task_issue
-        WHERE project_id=#{project_id} AND task_id =#{task_id} AND typ
+        WHERE project_id=#{projectId} AND task_id =#{taskId} AND typ
         IN
         <foreach collection="typ" item="type" open="(" separator="," close=")" index="index">
             #{type}
@@ -160,8 +160,8 @@
         house_qm_check_task_issue
         <where>
             delete_at IS NULL
-            AND project_id = #{project_id}
-            AND task_id = #{task_id}
+            AND project_id = #{projectId}
+            AND task_id = #{taskId}
             AND typ IN
             <foreach collection="typ" item="item" open="(" separator="," close=")" index="index">
                 #{item}
@@ -207,8 +207,8 @@
         FROM
         house_qm_check_task_issue
         <where>
-            project_id =#{project_id}
-            AND task_id =#{task_id}
+            project_id =#{projectId}
+            AND task_id =#{taskId}
             AND client_create_at &lt;= #{client_create_atlte}
             AND client_create_at &gt;= #{client_create_atgte}
             AND typ IN

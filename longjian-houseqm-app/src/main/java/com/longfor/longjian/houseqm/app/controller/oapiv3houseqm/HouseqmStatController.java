@@ -491,7 +491,7 @@ public class HouseqmStatController {
         try {
             ctrlTool.projPermMulti(request, new String[]{"项目.移动验房.统计.查看", "项目.工程检查.统计.查看"});
             if ("".equals(req.getBegin_on())) {
-                req.setBegin_on("1970-01-02");
+                req.setBegin_on("1970-01-01");
             }
             Date start = DateUtil.strToDate(req.getBegin_on(), "yyyy-MM-dd");
             Date end = null;
@@ -527,7 +527,7 @@ public class HouseqmStatController {
         try {
             ctrlTool.projPermMulti(request, new String[]{"项目.移动验房.统计.查看", "项目.工程检查.统计.查看"});
             if ("".equals(req.getBegin_on())) {
-                req.setBegin_on("1970-01-02");
+                req.setBegin_on("1970-01-01");
             }
             Date start = DateUtil.strToDate(req.getBegin_on(), "yyyy-MM-dd");
             Date end = null;
@@ -541,6 +541,7 @@ public class HouseqmStatController {
             data.setItems(res);
             response.setData(data);
         } catch (Exception e) {
+            e.printStackTrace();
             log.error(e.getMessage());
             response.setMessage(e.getMessage());
             response.setResult(1);

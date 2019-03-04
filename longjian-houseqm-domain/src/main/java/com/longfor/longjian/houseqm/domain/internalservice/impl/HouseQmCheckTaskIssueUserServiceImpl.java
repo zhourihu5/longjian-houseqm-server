@@ -29,6 +29,7 @@ public class HouseQmCheckTaskIssueUserServiceImpl implements HouseQmCheckTaskIss
     @Resource
     HouseQmCheckTaskIssueUserMapper houseQmCheckTaskIssueUserMapper;
 
+    private static final String USER_ID="userId";
     @Transactional
     @Override
     @LFAssignDataSource(value = "zhijian2")
@@ -47,10 +48,10 @@ public class HouseQmCheckTaskIssueUserServiceImpl implements HouseQmCheckTaskIss
     public List<HouseQmCheckTaskIssueUser> searchByUserIdAndTaskIdAndCreateAt(int userId, int taskId, int timestamp) {
         Example example = new Example(HouseQmCheckTaskIssueUser.class);
         Example.Criteria criteria = example.createCriteria();
-        criteria.andEqualTo("userId", userId).andEqualTo("taskId", taskId);
+        criteria.andEqualTo(USER_ID, userId).andEqualTo("taskId", taskId);
         criteria.andGreaterThan("createAt", DateUtil.timestampToString(timestamp, "yyyy-MM-dd"));
         ExampleUtil.addDeleteAtJudge(example);
-        //List<HouseQmCheckTaskIssueUser> houseQmCheckTaskIssueUsers = houseQmCheckTaskIssueUserMapper.selectByUserIdAndTaskIdAndCreateAt(userId, taskId, timestamp,"false");
+
         return houseQmCheckTaskIssueUserMapper.selectByExample(example);
     }
 
@@ -79,7 +80,7 @@ public class HouseQmCheckTaskIssueUserServiceImpl implements HouseQmCheckTaskIss
         Example example = new Example(HouseQmCheckTaskIssueUser.class);
         Example.Criteria criteria = example.createCriteria();
         criteria.andEqualTo("issueUuid", uuid);
-        criteria.andEqualTo("userId", repairerId);
+        criteria.andEqualTo(USER_ID, repairerId);
         criteria.andEqualTo("roleType", value).andIsNull("deleteAt");
         return houseQmCheckTaskIssueUserMapper.selectOneByExample(example);
     }
@@ -108,7 +109,7 @@ public class HouseQmCheckTaskIssueUserServiceImpl implements HouseQmCheckTaskIss
         Example example = new Example(HouseQmCheckTaskIssueUser.class);
         Example.Criteria criteria = example.createCriteria();
         criteria.andEqualTo("roleType", value);
-        criteria.andIn("userId", intFollowers);
+        criteria.andIn(USER_ID, intFollowers);
         criteria.andEqualTo("issueUuid", uuid).andIsNull("deleteAt");
         return houseQmCheckTaskIssueUserMapper.selectByExample(example);
     }

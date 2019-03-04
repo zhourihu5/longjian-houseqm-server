@@ -14,7 +14,7 @@ import java.util.List;
  */
 public interface PushService {
 
-    void sendUPushByIssues(List<HouseQmCheckTaskIssueVo> issues) throws Exception;
+    void sendUPushByIssues(List<HouseQmCheckTaskIssueVo> issues);
 
 
 }

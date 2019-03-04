@@ -27,6 +27,6 @@ public class StatTaskSituationMembersRepairerReq implements Serializable {
     private Integer project_id;
     @NotNull
     private Integer task_id;
-    private String begin_on;
-    private String end_on;
+    private String begin_on="";
+    private String end_on="";
 }

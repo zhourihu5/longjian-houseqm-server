@@ -3,6 +3,7 @@ package com.longfor.longjian.houseqm.app.service.impl;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.longfor.longjian.common.consts.HouseQmCheckTaskIssueStatusEnum;
+import com.longfor.longjian.common.exception.LjBaseRuntimeException;
 import com.longfor.longjian.common.push.UmPushUtil;
 import com.longfor.longjian.common.push.xiaomi.XmPushUtil;
 import com.longfor.longjian.houseqm.app.service.PushService;
@@ -33,7 +34,7 @@ public class PushServiceImpl implements PushService {
     private PushConfigVo pushConfigVo;
 
     @Override
-    public void sendUPushByIssues(List<HouseQmCheckTaskIssueVo> issues) throws Exception {
+    public void sendUPushByIssues(List<HouseQmCheckTaskIssueVo> issues) {
         if (issues == null || issues.isEmpty()) {
             log.warn("send_upush_empty");
             return;
@@ -102,7 +103,7 @@ public class PushServiceImpl implements PushService {
     }
 
     // appFlag: 1-推送到工程管理APP，2-推送到移动验房APP，3-全部推送
-    public void sendUPush(String title, String msg, int taskId, List<Integer> userIds, int appFlag) throws Exception {
+    public void sendUPush(String title, String msg, int taskId, List<Integer> userIds, int appFlag) {
         if (CollectionUtils.isEmpty(userIds)) {
             log.warn("Len of UserIds is zero");
             return;
@@ -138,7 +139,7 @@ public class PushServiceImpl implements PushService {
                 break;
         }
         if (cfgPush == null) {
-            throw new Exception("config of Push unfound, notice will not sended");
+            throw new LjBaseRuntimeException(1,"config of Push unfound, notice will not sended");
         }
         log.info("Sending_upush [taskId:%s] [userIds:%s] [appFlag:%s]", taskId, userIds, appFlag);
         ////接收者 信息

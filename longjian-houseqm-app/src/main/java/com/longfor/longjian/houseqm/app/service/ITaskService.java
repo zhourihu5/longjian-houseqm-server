@@ -13,7 +13,7 @@ public interface ITaskService {
 
     List<Integer> getHouseqmCheckTaskCheckedAreas(Integer projectId, Integer taskId);
 
-    void deleteHouseQmCheckTaskByProjTaskId(Integer projectId, Integer taskId) throws Exception;
+    void deleteHouseQmCheckTaskByProjTaskId(Integer projectId, Integer taskId);
 
     List<UserInHouseQmCheckTask> searchUserInKeyHouseQmCheckTaskByTaskId(Integer taskId);
 

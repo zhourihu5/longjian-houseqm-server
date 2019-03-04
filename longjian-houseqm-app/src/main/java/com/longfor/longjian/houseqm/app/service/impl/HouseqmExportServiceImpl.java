@@ -12,6 +12,7 @@ import com.longfor.longjian.houseqm.app.vo.CategoryMapVo;
 import com.longfor.longjian.houseqm.app.vo.export.AreaNode;
 import com.longfor.longjian.houseqm.app.vo.export.ProjectIssueInfo;
 import com.longfor.longjian.houseqm.app.vo.export.ProjectOrdersVo;
+import com.longfor.longjian.houseqm.app.vo.houseqm.HouseqmExportVo;
 import com.longfor.longjian.houseqm.consts.CategoryClsTypeEnum;
 import com.longfor.longjian.houseqm.domain.internalservice.*;
 import com.longfor.longjian.houseqm.po.zhijian2_apisvr.User;
@@ -194,7 +195,14 @@ public class HouseqmExportServiceImpl implements IHouseqmExportService {
     }
 
     @Override
-    public String exportProjectOrdersByProjIdTaskIdAreaIdsRepairedIdBeginOnEndOn(Integer projectId, Integer taskId, List<Integer> areaIds, Integer repairerId, Date beginOn, Date endOn, Integer categoryCls, boolean withRule) {
+    public String exportProjectOrdersByProjIdTaskIdAreaIdsRepairedIdBeginOnEndOn(HouseqmExportVo hevo) {
+        Integer projectId=hevo.getProjectId();
+        Integer taskId=hevo.getTaskId();
+        List<Integer> areaIds=hevo.getAreaIds();
+        Integer repairerId=hevo.getRepairerId();
+        Date beginOn=hevo.getBeginOn();
+        Date endOn=hevo.getEndOn();
+        Integer categoryCls=hevo.getCategoryCls();
         List<ProjectOrdersVo> res = searchProjectOrdersByProjIdTaskIdAreaIdsRepairedIdBeginOnEndOn(projectId, taskId, areaIds, repairerId, beginOn, endOn, categoryCls);
         if (CollectionUtils.isEmpty(res)) {
             return "";//errors.New("没有任何导出数据。")

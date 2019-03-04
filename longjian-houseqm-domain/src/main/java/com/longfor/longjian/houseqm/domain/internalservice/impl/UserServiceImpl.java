@@ -27,13 +27,13 @@ public class UserServiceImpl implements UserService {
     @Resource
     UserMapper userMapper;
 
-
+    private static final String USER_ID="userId";
     @LFAssignDataSource("zhijian2_apisvr")
     public Map<Integer, User> selectByIds(List<Integer> users) {
         if (CollectionUtils.isEmpty(users)) return Maps.newHashMap();
         Example example = new Example(User.class);
         Example.Criteria criteria = example.createCriteria();
-        criteria.andIn("userId", users);
+        criteria.andIn(USER_ID, users);
         List<User> userList = userMapper.selectByExample(example);
         return userList.stream().collect(Collectors.toMap(User::getUserId, u -> u));
     }
@@ -43,7 +43,7 @@ public class UserServiceImpl implements UserService {
     public List<User> searchByUserIdInAndNoDeleted(List<Integer> userIds) {
         Example example = new Example(User.class);
         Example.Criteria criteria = example.createCriteria();
-        criteria.andIn("userId", userIds);
+        criteria.andIn(USER_ID, userIds);
         ExampleUtil.addDeleteAtJudge(example);
         return userMapper.selectByExample(example);
     }
@@ -53,7 +53,7 @@ public class UserServiceImpl implements UserService {
     public User selectByUserIdAndNotDelete(Integer senderId) {
         Example example = new Example(User.class);
         Example.Criteria criteria = example.createCriteria();
-        criteria.andEqualTo("userId", senderId);
+        criteria.andEqualTo(USER_ID, senderId);
         criteria.andIsNull("deleteAt");
         return userMapper.selectOneByExample(example);
     }

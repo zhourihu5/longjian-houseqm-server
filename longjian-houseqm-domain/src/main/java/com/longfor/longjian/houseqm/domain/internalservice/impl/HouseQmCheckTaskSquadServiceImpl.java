@@ -27,6 +27,7 @@ public class HouseQmCheckTaskSquadServiceImpl implements HouseQmCheckTaskSquadSe
     @Resource
     HouseQmCheckTaskSquadMapper houseQmCheckTaskSquadMapper;
 
+    private static final String TASK_ID="taskId";
 
     @LFAssignDataSource("zhijian2")
     public List<HouseQmCheckTaskSquad> selectByTaskIds(Set<Integer> taskIdList) {
@@ -39,7 +40,7 @@ public class HouseQmCheckTaskSquadServiceImpl implements HouseQmCheckTaskSquadSe
     public List<HouseQmCheckTaskSquad> selectByTaskIdsEvenDeleted(Set<Integer> taskIdList) {
         Example example = new Example(HouseQmCheckTaskSquad.class);
         Example.Criteria criteria = example.createCriteria();
-        criteria.andIn("taskId", taskIdList);
+        criteria.andIn(TASK_ID, taskIdList);
         return houseQmCheckTaskSquadMapper.selectByExample(example);
     }
 
@@ -64,7 +65,7 @@ public class HouseQmCheckTaskSquadServiceImpl implements HouseQmCheckTaskSquadSe
     @LFAssignDataSource("zhijian2")
     public List<HouseQmCheckTaskSquad> searchHouseqmCheckTaskSquad(String projectId, String taskId) {
         Example example = new Example(HouseQmCheckTaskSquad.class);
-        example.createCriteria().andEqualTo("projectId", projectId).andEqualTo("taskId", taskId);
+        example.createCriteria().andEqualTo("projectId", projectId).andEqualTo(TASK_ID, taskId);
         return houseQmCheckTaskSquadMapper.selectByExample(example);
 
     }
@@ -89,7 +90,7 @@ public class HouseQmCheckTaskSquadServiceImpl implements HouseQmCheckTaskSquadSe
     public List<HouseQmCheckTaskSquad> selectByProjectIdAndTaskIdAndSquadType(Integer projectId, Integer taskId, Integer value) {
         Example example = new Example(HouseQmCheckTaskSquad.class);
         Example.Criteria criteria = example.createCriteria();
-        criteria.andEqualTo("projectId", projectId).andEqualTo("taskId", taskId).andEqualTo("squadType", value).andIsNull("deleteAt");
+        criteria.andEqualTo("projectId", projectId).andEqualTo(TASK_ID, taskId).andEqualTo("squadType", value).andIsNull("deleteAt");
         return houseQmCheckTaskSquadMapper.selectByExample(example);
     }
 
