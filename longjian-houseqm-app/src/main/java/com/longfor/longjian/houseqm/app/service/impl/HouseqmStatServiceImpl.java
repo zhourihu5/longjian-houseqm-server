@@ -302,7 +302,7 @@ public class HouseqmStatServiceImpl implements IHouseqmStatService {
                     Area area = areaMap.get(aPath);
                     //result[area.Id] = append(result[area.Id], issueMap[issuePaths[i]])
                     List<HouseQmCheckTaskIssue> list = result.get(area.getId());
-                    if (list != null) {
+                    if (CollectionUtils.isNotEmpty(list)) {
                         String key = issuePaths.get(i);
                         HouseQmCheckTaskIssue e = issueMap.get(key);
                         list.add(e);
