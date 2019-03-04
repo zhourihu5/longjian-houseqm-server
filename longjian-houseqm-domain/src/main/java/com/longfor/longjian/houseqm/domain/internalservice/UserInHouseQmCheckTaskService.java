@@ -2,7 +2,6 @@ package com.longfor.longjian.houseqm.domain.internalservice;
 
 import com.longfor.longjian.houseqm.po.zj2db.UserInHouseQmCheckTask;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 
@@ -50,5 +49,5 @@ public interface UserInHouseQmCheckTaskService {
 
     List<UserInHouseQmCheckTask> searchUserInHouseQmCheckTaskByUserIdRoleType(Integer uid, Integer id);
 
-    List<UserInHouseQmCheckTask> selectByTaskIdInAndRoleTypeNotDel(ArrayList<Integer> taskIds, Integer value);
+    List<UserInHouseQmCheckTask> selectByTaskIdInAndRoleTypeNotDel(List<Integer> taskIds, Integer value);
 }
