@@ -1033,8 +1033,8 @@ public class HouseqmStatisticServiceImpl implements IHouseqmStatisticService {
             simpleHouseQmCheckTaskIssueStatVo.setCount(issueList.get(i).getCount());
             issueStatVoList.add(simpleHouseQmCheckTaskIssueStatVo);
         }
-        List<HouseQmIssueCategoryStatVo> vos = calculateIssueCount(issueStatVoList);
-        return vos;
+        return calculateIssueCount(issueStatVoList);
+
     }
 
     @Override

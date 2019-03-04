@@ -278,7 +278,7 @@ public class DocumentHandler {
                 if (fin != null) fin.close();
                 if (out != null) out.close();
                 if (zipfile != null) if (!zipfile.delete()) {
-                    throw new LjBaseRuntimeException(-1, "zip文件删除失败");
+                    log.error("zip文件删除失败");
                 }
 
                 if (directory != null) {
