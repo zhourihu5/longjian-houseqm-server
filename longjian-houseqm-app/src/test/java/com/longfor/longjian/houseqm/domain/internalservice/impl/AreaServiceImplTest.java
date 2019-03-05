@@ -16,7 +16,7 @@ import java.util.Arrays;
 public class AreaServiceImplTest {
 
     @Resource
-    private AreaServiceImpl areaServiceImpl;
+    private com.longfor.longjian.houseqm.domain.internalservice.impl.AreaServiceImpl areaServiceImpl;
 
     @Test
     public void getRootRegexpConditionByAreaIds() {

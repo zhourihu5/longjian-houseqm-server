@@ -17,15 +17,16 @@ import java.util.Date;
 public class ExportFileRecordServiceImplTest {
 
     @Resource
-    private ExportFileRecordServiceImpl exportFileRecordServiceImpl;
+    private com.longfor.longjian.houseqm.domain.internalservice.impl.ExportFileRecordServiceImpl exportFileRecordServiceImpl;
 
     @Test
     public void insertFull() {
         int testId = -1;
         try {
             ExportFileRecord efr = exportFileRecordServiceImpl.insertFull(1, 1, 1, 1, "test", "test", "test", 1, "test", new Date());
-            testId = efr.getId();
+            //testId = efr.getId();
         } catch (Exception e) {
+            e.printStackTrace();
             Assert.fail(e.getMessage());
         }
     }
