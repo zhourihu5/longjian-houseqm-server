@@ -10,6 +10,7 @@ import com.longfor.longjian.houseqm.app.req.UpdateDeviceReq;
 import com.longfor.longjian.houseqm.app.req.buildingqm.MyIssuePatchListReq;
 import com.longfor.longjian.houseqm.app.service.IBuildingqmService;
 import com.longfor.longjian.houseqm.app.service.ICheckUpdateService;
+import com.longfor.longjian.houseqm.app.service.impl.ReportIssueService;
 import com.longfor.longjian.houseqm.app.utils.SessionUtil;
 import com.longfor.longjian.houseqm.app.vo.*;
 import com.longfor.longjian.houseqm.app.vo.buildingqm.ReportIssueReq;
@@ -61,6 +62,8 @@ public class BuildingqmController {
     private SessionInfo sessionInfo;
     @Resource
     private CtrlTool ctrlTool;
+    @Resource
+    private ReportIssueService reportIssueService;
 
     /**
      * 项目下获取我的任务列表
@@ -316,10 +319,6 @@ public class BuildingqmController {
     /**
      * http://192.168.37.159:3000/project/8/interface/api/3288  上报验房报告数据
      *
-     * @param taskId
-     * @param timestamp
-     * @param issueUuid
-     * @return
      */
     @RequestMapping(value = "issue/issue_log_info", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     public LjBaseResponse<ApiIssueLogVo> issueLogInfo(@RequestParam(name = "task_id", required = true) Integer taskId,
@@ -341,7 +340,7 @@ public class BuildingqmController {
     public LjBaseResponse<ReportIssueVo> reportIssue(@Validated ReportIssueReq req) {
         log.info("report_issue, project_id=" + req.getData() + ", data=" + req.getData() + "");
         Integer userId = SessionUtil.getUid(sessionInfo);
-        ReportIssueVo reportIssueVo = buildingqmService.reportIssue(userId, req.getProject_id(), req.getData());
+        ReportIssueVo reportIssueVo = reportIssueService.reportIssue(userId, req.getProject_id(), req.getData());
         LjBaseResponse<ReportIssueVo> response = new LjBaseResponse<>();
         response.setData(reportIssueVo);
         return response;
