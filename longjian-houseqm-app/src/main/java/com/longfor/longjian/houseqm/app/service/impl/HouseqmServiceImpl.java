@@ -14,6 +14,7 @@ import com.longfor.longjian.houseqm.app.vo.houseqm.ApiHouseQmCheckTaskIssueRsp;
 import com.longfor.longjian.houseqm.app.vo.houseqm.HouseqmMyIssueLogListRspVo;
 import com.longfor.longjian.houseqm.consts.HouseQmCheckTaskIssueAttachmentPublicTypeEnum;
 import com.longfor.longjian.houseqm.consts.HouseQmUserInIssueRoleTypeEnum;
+import com.longfor.longjian.houseqm.domain.internalservice.*;
 import com.longfor.longjian.houseqm.po.zj2db.*;
 import com.longfor.longjian.houseqm.util.DateUtil;
 import com.longfor.longjian.houseqm.util.StringSplitToListUtil;
@@ -34,15 +35,15 @@ import java.util.stream.Collectors;
 public class HouseqmServiceImpl implements IHouseqmService {
     private static final Integer HOUSEQM_API_GET_PER_TIME = 5000;
     @Resource
-    private com.longfor.longjian.houseqm.domain.internalservice.AreaService areaService;
+    private AreaService areaService;
     @Resource
-    private com.longfor.longjian.houseqm.domain.internalservice.HouseQmCheckTaskIssueLogService houseQmCheckTaskIssueLogService;
+    private HouseQmCheckTaskIssueLogService houseQmCheckTaskIssueLogService;
     @Resource
-    private com.longfor.longjian.houseqm.domain.internalservice.HouseQmCheckTaskIssueService houseQmCheckTaskIssueService;
+    private HouseQmCheckTaskIssueService houseQmCheckTaskIssueService;
     @Resource
-    private com.longfor.longjian.houseqm.domain.internalservice.HouseQmCheckTaskService houseQmCheckTaskService;
+    private HouseQmCheckTaskService houseQmCheckTaskService;
     @Resource
-    private com.longfor.longjian.houseqm.domain.internalservice.UserInHouseQmCheckTaskService userInHouseQmCheckTaskService;
+    private UserInHouseQmCheckTaskService userInHouseQmCheckTaskService;
     @Resource
     private SessionInfo sessionInfo;
 
