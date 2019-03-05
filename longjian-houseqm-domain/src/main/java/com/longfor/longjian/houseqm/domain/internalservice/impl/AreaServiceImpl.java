@@ -1,4 +1,4 @@
-package com.longfor.longjian.houseqm.domain.internalService.impl;
+package com.longfor.longjian.houseqm.domain.internalservice.impl;
 
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
