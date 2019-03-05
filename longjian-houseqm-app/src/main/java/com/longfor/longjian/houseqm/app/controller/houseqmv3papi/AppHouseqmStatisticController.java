@@ -5,7 +5,6 @@ import com.longfor.longjian.common.util.SessionInfo;
 import com.longfor.longjian.houseqm.app.req.houseqmstatisticapp.ProjectCheckerStatReq;
 import com.longfor.longjian.houseqm.app.req.houseqmstatisticapp.ProjectIssueStatReq;
 import com.longfor.longjian.houseqm.app.req.houseqmstatisticapp.ProjectListReq;
-import com.longfor.longjian.houseqm.app.req.houseqmstatisticapp.ProjectRepairerStatReq;
 import com.longfor.longjian.houseqm.app.service.IHouseqmStatisticService;
 import com.longfor.longjian.houseqm.app.utils.SessionUtil;
 import com.longfor.longjian.houseqm.app.vo.TaskResponse;
@@ -73,10 +72,7 @@ public class AppHouseqmStatisticController {
         log.info("project_checker_stat, project_id=" + req.getProject_id() + ", task_id=" + req.getTask_id() + ", source=" + req.getSource() + ", stat_begin=" + req.getStat_begin() + ", stat_end=" + req.getStat_end() + ", timestamp=" + req.getTimestamp());
         Integer userId = SessionUtil.getUid(sessionInfo);
         try {
-            if (req.getTask_id() == null) req.setTask_id(0);
-            if (req.getStat_begin() == null) req.setStat_begin(0);
-            if (req.getStat_end() == null) req.setStat_end(0);
-            if (req.getTimestamp() == null) req.setTimestamp(0);
+            requestParamInitProjChecker(req);
             ProjectCheckerStatRspVo item = iHouseqmStatisticService.projectCheckerStat(userId, req.getProject_id(), req.getTask_id(), req.getSource(), req.getStat_begin(), req.getStat_end(), req.getTimestamp());
             response.setData(item);
         } catch (Exception e) {
@@ -87,16 +83,14 @@ public class AppHouseqmStatisticController {
         return response;
     }
 
+
     @RequestMapping(value = "project_repairer_stat", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
-    public TaskResponse<ProjectRepairerStatRspVo> projectRepairerStat(HttpServletRequest request, @Valid ProjectRepairerStatReq req) {
+    public TaskResponse<ProjectRepairerStatRspVo> projectRepairerStat(HttpServletRequest request, @Valid ProjectCheckerStatReq req) {
         TaskResponse<ProjectRepairerStatRspVo> response = new TaskResponse<>();
         log.info("project_repairer_stat, project_id=" + req.getProject_id() + ", task_id=" + req.getTask_id() + ", source=" + req.getSource() + ", stat_begin=" + req.getStat_begin() + ", stat_end=" + req.getStat_end() + ", timestamp=" + req.getTimestamp());
         Integer userId = SessionUtil.getUid(sessionInfo);
         try {
-            if (req.getTask_id() == null) req.setTask_id(0);
-            if (req.getStat_begin() == null) req.setStat_begin(0);
-            if (req.getStat_end() == null) req.setStat_end(0);
-            if (req.getTimestamp() == null) req.setTimestamp(0);
+            requestParamInitProjChecker(req);
             ProjectRepairerStatRspVo items = iHouseqmStatisticService.projectRepairerStat(userId, req.getProject_id(), req.getTask_id(), req.getSource(), req.getStat_begin(), req.getStat_end(), req.getTimestamp());
             response.setData(items);
         } catch (Exception e) {
@@ -107,5 +101,11 @@ public class AppHouseqmStatisticController {
         return response;
     }
 
+    private void requestParamInitProjChecker(@Valid ProjectCheckerStatReq req) {
+        if (req.getTask_id() == null) req.setTask_id(0);
+        if (req.getStat_begin() == null) req.setStat_begin(0);
+        if (req.getStat_end() == null) req.setStat_end(0);
+        if (req.getTimestamp() == null) req.setTimestamp(0);
+    }
 
 }
