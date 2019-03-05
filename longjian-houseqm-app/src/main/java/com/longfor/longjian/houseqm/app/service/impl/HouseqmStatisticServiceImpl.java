@@ -302,7 +302,7 @@ public class HouseqmStatisticServiceImpl implements IHouseqmStatisticService {
         String areaPath = "";
         if (areaId > 0) {
             Area area = areaService.selectById(areaId);
-            areaPath = area.getPath() + area.getId() + "/";
+            areaPath =String.format("%s%d%s", area.getPath(),area.getId(),"/");
         }
         List<HouseQmCheckTaskIssue> issueList = houseQmCheckTaskIssueService.searchByProjectIdAndCategoryClsInAndTaskIdInAndAreaPathAndIdLike(projectId, categoryClsList, taskIds, areaPath);
         for (HouseQmCheckTaskIssue issue : issueList) {
@@ -1212,7 +1212,8 @@ public class HouseqmStatisticServiceImpl implements IHouseqmStatisticService {
             isStatLevel3 = isCategoryStatLevelThree(rootKey);
         }
         Map<String, HouseQmIssueCategoryStatVo> categoryStatMap = (Map<String, HouseQmIssueCategoryStatVo>) map.get("categoryStatMap");
-        for (Map.Entry<String, HouseQmIssueCategoryStatVo> categoryStat : categoryStatMap.entrySet()) {
+        for (Iterator<Map.Entry<String, HouseQmIssueCategoryStatVo>> iterator = categoryStatMap.entrySet().iterator(); iterator.hasNext(); ) {
+            Map.Entry<String, HouseQmIssueCategoryStatVo> categoryStat = iterator.next();
             // 过滤掉不包括的大类，因为前两级可能是根节点
             // 为了兼容旧数据转换的问题。旧检查项转过来会多一级的根节点。所以过滤出V开头的，跳过前两级；其他的默认只跳过第一级
 

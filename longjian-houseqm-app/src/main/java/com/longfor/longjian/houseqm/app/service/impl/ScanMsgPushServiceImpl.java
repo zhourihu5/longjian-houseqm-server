@@ -110,7 +110,7 @@ public class ScanMsgPushServiceImpl implements ScanMsgPushService {
     private LjBaseResponse scan_notice_center_and_push(Integer moduleId){
 
 
-        long stat_timestamp=1000 * 60 * 60 * 24;
+        long stat_timestamp=(long) 1000 * 60 * 60 * 24;
 
         long now=new Date().getTime();
 
@@ -169,7 +169,7 @@ public class ScanMsgPushServiceImpl implements ScanMsgPushService {
                         if(!projectIds.contains(record.getProjectId())){
                             projectIds.add(record.getProjectId());
                         }
-                        if(!noticeUserIds.contains(id)){
+                        if(!noticeUserIds.contains(Integer.parseInt(id))){
                             noticeUserIds.add(Integer.parseInt(id));
                         }
                     }

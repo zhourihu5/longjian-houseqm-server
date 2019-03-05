@@ -1878,7 +1878,7 @@ public class BuildingqmServiceImpl implements IBuildingqmService {
         String areaPathAndId = "";
         Area area = areaService.selectById(areaId);
         if (area != null) {
-            areaPathAndId= area.getPath() + areaId+"/";
+            areaPathAndId =String.format("%s%d%s",area.getPath(),areaId,"/");
         }
         return areaPathAndId;
     }
@@ -1887,7 +1887,7 @@ public class BuildingqmServiceImpl implements IBuildingqmService {
         String checkItemPathAndKey = "";
         CheckItemV3 checkItem = checkItemV3Service.selectByKeyNotDel(checkItemKey);
         if (checkItem != null) {
-            checkItemPathAndKey= checkItem.getPath() + checkItemKey+"/";
+            checkItemPathAndKey =String.format("%s%s%s",checkItem.getPath(),checkItemKey,"/");
         }
         return checkItemPathAndKey;
 
@@ -1897,7 +1897,7 @@ public class BuildingqmServiceImpl implements IBuildingqmService {
         String categoryPathAndKey = "";
         CategoryV3 category = categoryV3Service.selectByKeyNotDel(categoryKey);
         if (category != null) {
-            categoryPathAndKey= category.getPath() + categoryKey+"/";
+            categoryPathAndKey=  String.format("%s%s%s",category.getPath(), categoryKey,"/");
         }
         return categoryPathAndKey;
     }
