@@ -25,6 +25,7 @@ import com.longfor.longjian.houseqm.util.DateUtil;
 import com.longfor.longjian.houseqm.util.StringSplitToListUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections.CollectionUtils;
+import org.apache.commons.lang.StringUtils;
 import org.springframework.stereotype.Repository;
 import org.springframework.stereotype.Service;
 
@@ -510,7 +511,7 @@ public class HouseqmStatServiceImpl implements IHouseqmStatService {
         CheckerStatListVo statListVo = new CheckerStatListVo();
         List<CheckerStatListVo.CheckerStatVo> checkerStatList = Lists.newArrayList();
         List<CheckerIssueStat> checkerIssueStats = houseQmCheckTaskIssueService.searchCheckerIssueStatisticByProjIdAndTaskId(projectId, taskIds);
-
+        if (CollectionUtils.isEmpty(checkerIssueStats))return statListVo;
         List<Integer> list = Lists.newArrayList();
         for (CheckerIssueStat stat : checkerIssueStats) {
             list.add(stat.getUserId());
@@ -527,11 +528,11 @@ public class HouseqmStatServiceImpl implements IHouseqmStatService {
                 checkerStatVo.setIssue_count(0);
                 checkerStatVo.setChecked_count(0);
                 checkerStatVo.setUser_id(l.getUserId());
-                checkerMap.put(l.getUserId(), checkerStatVo);
 
                 if (userMap.containsKey(l.getUserId())) {
-                    checkerMap.get(l.getUserId()).setReal_name(userMap.get(l.getUserId()).getRealName());
+                    checkerStatVo.setReal_name(userMap.get(l.getUserId()).getRealName());
                 }
+                checkerMap.put(l.getUserId(), checkerStatVo);
             }
             CheckerStatListVo.CheckerStatVo stat = checkerMap.get(l.getUserId());
             // 以下应使用枚举类，由于未改动包结构 先写死
@@ -546,8 +547,7 @@ public class HouseqmStatServiceImpl implements IHouseqmStatService {
                 areaMap.put(l.getUserId(), map);
             }
             String areapath = l.getAreaId() + "/";
-            String fatherPath = l.getAreaPathAndId().replace(areapath, "");
-
+            String fatherPath =StringUtils.removeEnd(l.getAreaPathAndId(),areapath);
             fatherPathMap.put(fatherPath, true);
             areaMap.put(l.getUserId(), fatherPathMap);
         }
@@ -584,6 +584,7 @@ public class HouseqmStatServiceImpl implements IHouseqmStatService {
             }
             totalDates.set(j + 1, tmp);
         }
+
         List<String> dates = Lists.newArrayList();
         if (totalDates.size() > start) {
             if (totalDates.size() > (start + pageSize)) {
@@ -613,7 +614,7 @@ public class HouseqmStatServiceImpl implements IHouseqmStatService {
             Map<String, Boolean> areaMap = Maps.newHashMap();
             for (CheckerIssueStat l : checkerIssueStat) {
                 String areapath = l.getAreaId() + "/";
-                String fatherPath = l.getAreaPathAndId().replace(areapath, "");
+                String fatherPath = StringUtils.removeEnd(l.getAreaPathAndId(),areapath);
                 if (l.getTyp().equals(HouseQmCheckTaskIssueEnum.Record.getId())) {
                     stat.setRecords_count(l.getCount() + stat.getRecords_count());
                 } else if (l.getTyp().equals(HouseQmCheckTaskIssueEnum.FindProblem.getId()) || l.getTyp().equals(HouseQmCheckTaskIssueEnum.Difficult.getId())) {
@@ -629,7 +630,7 @@ public class HouseqmStatServiceImpl implements IHouseqmStatService {
 
             for (CheckerIssueStat l : totals) {
                 String areapath = l.getAreaId() + "/";
-                String fatherPath = l.getAreaPathAndId().replace(areapath, "");
+                String fatherPath = StringUtils.removeEnd(l.getAreaPathAndId(),areapath);
                 areaMap2.put(fatherPath, l.getCount());
             }
             stat.setTotal_checked_count(areaMap2.size());
@@ -643,10 +644,11 @@ public class HouseqmStatServiceImpl implements IHouseqmStatService {
 
 
     public ProjectOveralListVo.ProjectOveralVo getInspectTaskStatByProjTaskId(Integer projectId, Integer taskId) {
+        ProjectOveralListVo.ProjectOveralVo item = new ProjectOveralListVo().new ProjectOveralVo();
         List<CheckerIssueStat> list = houseQmCheckTaskIssueService.searchByProjectIdAndTaskId(projectId, taskId);
+        if (CollectionUtils.isEmpty(list))return item;
         //计算下检查户数据
         HouseQmCheckTask task = houseQmCheckTaskService.selectByProjectIdAndTaskId(projectId, taskId);
-        ProjectOveralListVo.ProjectOveralVo item = new ProjectOveralListVo().new ProjectOveralVo();
         item.setChecked_count(0);
         item.setRecords_count(0);
         item.setIssue_count(0);
@@ -656,18 +658,15 @@ public class HouseqmStatServiceImpl implements IHouseqmStatService {
         for (CheckerIssueStat l : list) {
 
             String areapath =String.format("%d%s", l.getAreaId() , "/");
-            int end = l.getAreaPathAndId().lastIndexOf(areapath);
-            String fatherPath =null;
-            if (end==l.getAreaPathAndId().length()-areapath.length()){//以 字符 结尾
-                fatherPath= l.getAreaPathAndId().replace(areapath, "");
-            }
+            String fatherPath=StringUtils.removeEnd(l.getAreaPathAndId(),areapath);
+
             // 以下应使用枚举类，由于未改动包结构 先写死
             if (l.getTyp().equals(HouseQmCheckTaskIssueEnum.Record.getId())) {
                 item.setRecords_count(l.getCount() + item.getRecords_count());
             } else if (l.getTyp().equals(HouseQmCheckTaskIssueEnum.FindProblem.getId()) || l.getTyp().equals(HouseQmCheckTaskIssueEnum.Difficult.getId())) {
                 item.setIssue_count(l.getCount() + item.getIssue_count());
             }
-            if (fatherPath != null && fatherPath.length() > 1) areaMap.put(fatherPath, true);
+            areaMap.put(fatherPath, true);
         }
         item.setChecked_count(areaMap.size());
         return item;

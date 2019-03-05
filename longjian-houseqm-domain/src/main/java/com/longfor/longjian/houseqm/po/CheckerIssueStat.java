@@ -1,5 +1,7 @@
 package com.longfor.longjian.houseqm.po;
 
+import lombok.Data;
+
 import javax.persistence.Column;
 import javax.persistence.Table;
 import java.util.Date;
@@ -10,6 +12,7 @@ import java.util.Date;
  * @author Houyan
  * @date 2018/12/15 0015 12:45
  */
+@Data
 @Table(name = "house_qm_check_task_issue")
 public class CheckerIssueStat {
     /**
