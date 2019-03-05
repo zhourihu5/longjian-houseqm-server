@@ -16,10 +16,10 @@ import java.util.Arrays;
 public class AreaServiceImplTest {
 
     @Resource
-    private AreaServiceImpl areaServiceImpl;
+    private com.longfor.longjian.houseqm.domain.internalservice.impl.AreaServiceImpl areaServiceImpl;
 
     @Test
-    public void getRootRegexpConditionByAreaIds() {
+    public void testGetRootRegexpConditionByAreaIds() {
         try {
             areaServiceImpl.getRootRegexpConditionByAreaIds(Arrays.asList(1, 2, 3, 4, 5, 6, 7, 8, 9, 10));
         } catch (Exception e) {
@@ -28,7 +28,7 @@ public class AreaServiceImplTest {
     }
 
     @Test
-    public void searchRelatedAreaByAreaIdIn() {
+    public void testSearchRelatedAreaByAreaIdIn() {
         try {
             areaServiceImpl.searchRelatedAreaByAreaIdIn(1, Arrays.asList(1, 2, 3, 4, 5, 6, 7, 8, 9, 10));
         } catch (Exception e) {
