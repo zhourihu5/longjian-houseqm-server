@@ -545,7 +545,7 @@ public class HouseqmStatServiceImpl implements IHouseqmStatService {
                 HashMap<String, Boolean> map = Maps.newHashMap();
                 areaMap.put(l.getUserId(), map);
             }
-            String areapath = l.getAreaId() + "/";
+            String areapath=   String.format("%d%s", l.getAreaId(), "/");
             String fatherPath = l.getAreaPathAndId().replace(areapath, "");
 
             fatherPathMap.put(fatherPath, true);
@@ -612,7 +612,7 @@ public class HouseqmStatServiceImpl implements IHouseqmStatService {
             //计算检查户数据
             Map<String, Boolean> areaMap = Maps.newHashMap();
             for (CheckerIssueStat l : checkerIssueStat) {
-                String areapath = l.getAreaId() + "/";
+                String areapath=   String.format("%d%s", l.getAreaId(), "/");
                 String fatherPath = l.getAreaPathAndId().replace(areapath, "");
                 if (l.getTyp().equals(HouseQmCheckTaskIssueEnum.Record.getId())) {
                     stat.setRecords_count(l.getCount() + stat.getRecords_count());
@@ -628,7 +628,7 @@ public class HouseqmStatServiceImpl implements IHouseqmStatService {
             List<CheckerIssueStat> totals = houseQmCheckTaskIssueService.searchByProjectIdAndTaskIdsAndClientCreateAt(projectId, taskIdList, beginOn);
 
             for (CheckerIssueStat l : totals) {
-                String areapath = l.getAreaId() + "/";
+                String areapath=   String.format("%d%s", l.getAreaId(), "/");
                 String fatherPath = l.getAreaPathAndId().replace(areapath, "");
                 areaMap2.put(fatherPath, l.getCount());
             }
