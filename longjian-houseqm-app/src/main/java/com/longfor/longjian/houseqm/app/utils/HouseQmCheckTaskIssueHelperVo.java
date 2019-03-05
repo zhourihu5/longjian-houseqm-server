@@ -103,55 +103,49 @@ public class HouseQmCheckTaskIssueHelperVo {
     }
 
     //设置普通字段
-    public HouseQmCheckTaskIssueHelperVo setNormalField(int taskId, String uuid, String issueUuid, int senderId, String desc, int status,
-                                                        String attachmentMd5List, String audioMd5List, int clientCreateAt, String memoAudioMd5List) {
+    public HouseQmCheckTaskIssueHelperVo setNormalField(Map<String,Object>map) {
 
         this.currentLog.setProjectId(this.currentProjectId);
-        this.currentLog.setTaskId(taskId);
-        this.currentLog.setUuid(uuid);
-        this.currentLog.setIssueUuid(issueUuid);
-        this.currentLog.setSenderId(senderId);
-        this.currentLog.setDesc(desc);
-        this.currentLog.setStatus(status);
-        this.currentLog.setAttachmentMd5List(attachmentMd5List);
-        this.currentLog.setAudioMd5List(audioMd5List);
-        this.currentLog.setMemoAudioMd5List(memoAudioMd5List);
-        this.currentLog.setClientCreateAt(DateUtil.timeStampToDate(clientCreateAt, "yyyy-MM-dd hh:mm:ss"));
+        this.currentLog.setTaskId(Integer.parseInt(String.valueOf(map.get("taskId"))));
+        this.currentLog.setUuid(String.valueOf(map.get("uuid")));
+        this.currentLog.setIssueUuid(String.valueOf(map.get("issueUUId")));
+        this.currentLog.setSenderId(Integer.parseInt(String.valueOf(map.get("senderId"))==null?"0":String.valueOf(map.get("senderId"))));
+        this.currentLog.setDesc(String.valueOf(map.get("desc")));
+        this.currentLog.setStatus(Integer.parseInt(String.valueOf(map.get("status"))));
+        this.currentLog.setAttachmentMd5List(String.valueOf(map.get("str")));
+        this.currentLog.setAudioMd5List(String.valueOf(map.get("eStr1")));
+        this.currentLog.setMemoAudioMd5List(String.valueOf(map.get("eStr2")));
+        this.currentLog.setClientCreateAt(DateUtil.timeStampToDate(Integer.parseInt(String.valueOf("nowTimestamp")), "yyyy-MM-dd hh:mm:ss"));
 
         return this;
     }
 
     //设置Detail字段
-    public HouseQmCheckTaskIssueHelperVo setDetailField(int areaId, int posX, int posY,
-                                                        int planEndOn, int endOn, int repairerId, String repairerFollowerIds, int condition,
-                                                        int categoryCls, String checkItemKey, String categoryKey, String drawingMd5,
-                                                        int issueReason, String issueReasonDetail, String issueSuggest,
-                                                        String potentialRisk, String preventiveActionDetail, String removeMemoAudioMd5List, int typ) {
+    public HouseQmCheckTaskIssueHelperVo setDetailField(Map<String,Object>map) {
 
         HouseQmCheckTaskIssueLogDetailStruct detail = new HouseQmCheckTaskIssueLogDetailStruct();
 
-        detail.setAreaId(areaId);
-        detail.setPosX(posX);
-        detail.setPosY(posY);
+        detail.setAreaId(Integer.parseInt(String.valueOf(map.get("areaId"))==null?"0":String.valueOf(map.get("areaId"))));
+        detail.setPosX(Integer.parseInt(String.valueOf(map.get("posX"))==null?"0":String.valueOf(map.get("posX"))));
+        detail.setPosY(Integer.parseInt(String.valueOf(map.get("posY"))==null?"0":String.valueOf(map.get("posY"))));
 
-        detail.setPlanEndOn(planEndOn);
-        detail.setEndOn(endOn);
-        detail.setRepairerId(repairerId);
-        detail.setRepairerFollowerIds(repairerFollowerIds);
+        detail.setPlanEndOn(Integer.parseInt(String.valueOf(map.get("planEndOn"))==null?"0":String.valueOf(map.get("planEndOn"))));
+        detail.setEndOn(Integer.parseInt(String.valueOf(map.get("endOn"))==null?"0":String.valueOf(map.get("endOn"))));
+        detail.setRepairerId(Integer.parseInt(String.valueOf(map.get("repairerId"))==null?"0":String.valueOf(map.get("repairerId"))));
+        detail.setRepairerFollowerIds(String.valueOf(map.get("repairerFollowerIds")));
 
-        detail.setCondition(condition);
-        detail.setCategoryCls(categoryCls);
-        detail.setCheckItemKey(checkItemKey);
-        detail.setCategoryKey(categoryKey);
-        detail.setIssueReason(issueReason);
-
-        detail.setIssueReasonDetail(issueReasonDetail);
-        detail.setIssueSuggest(issueSuggest);
-        detail.setPotentialRisk(potentialRisk);
-        detail.setPreventiveActionDetail(preventiveActionDetail);
-        detail.setRemoveMemoAudioMd5List(removeMemoAudioMd5List);
-        detail.setTyp(typ);
-        detail.setDrawingMD5(drawingMd5);
+        detail.setCondition(Integer.parseInt(String.valueOf(map.get("condition"))==null?"0":String.valueOf(map.get("condition"))));
+        detail.setCategoryCls(Integer.parseInt(String.valueOf(map.get("categoryCls"))==null?"0":String.valueOf(map.get("categoryCls"))));
+        detail.setCheckItemKey(String.valueOf(map.get("checkItemKey")));
+        detail.setCategoryKey(String.valueOf(map.get("categoryKey")));
+        detail.setIssueReason(Integer.parseInt(String.valueOf(map.get("issueReason"))==null?"0":String.valueOf(map.get("issueReason"))));
+        detail.setIssueReasonDetail(String.valueOf(map.get("issueReasonDetail")));
+        detail.setIssueSuggest(String.valueOf(map.get("issueSuggest")));
+        detail.setPotentialRisk(String.valueOf(map.get("potentialRisk")));
+        detail.setPreventiveActionDetail(String.valueOf(map.get("preventiveActionDetail")));
+        detail.setRemoveMemoAudioMd5List(String.valueOf(map.get("removeMemoAudioMd5List")));
+        detail.setTyp(Integer.parseInt(String.valueOf(map.get("typ"))==null?"0":String.valueOf(map.get("typ"))));
+        detail.setDrawingMD5(String.valueOf(map.get("drawingMd5")));
 
         // log.Debug(helper.currentLog.Detail)
         this.currentLog.setDetail(detail);
