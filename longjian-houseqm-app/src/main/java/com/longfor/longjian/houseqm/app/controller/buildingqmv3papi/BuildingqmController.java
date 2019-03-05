@@ -348,9 +348,10 @@ public class BuildingqmController {
     }
 
     @RequestMapping(value = "stat/issue_statistic_export", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
-    public LjBaseResponse<ReportIssueVo> issueStatisticExport(@RequestParam(name = "category_cls", required = true) Integer categoryCls,
-                                                              @RequestParam(name = "items", required = true) String items, HttpServletRequest request, HttpServletResponse response) throws IOException {
+    public LjBaseResponse<ReportIssueVo> issueStatisticExport( HttpServletRequest request, HttpServletResponse response) throws IOException {
 
+        String categoryCls = request.getParameter("category_cls");
+        String items = request.getParameter("items");
         log.info(String.format("issue_statistic_export, category_cls=%s, items=%s", categoryCls, items));
         LjBaseResponse<ReportIssueVo> ljBaseResponse = new LjBaseResponse<>();
         if (categoryCls == null || StringUtils.isBlank(items)) {
@@ -358,7 +359,7 @@ public class BuildingqmController {
             ljBaseResponse.setMessage("args error");
             return ljBaseResponse;
         }
-        Map<String, Object> map = buildingqmService.issuestatisticexport(categoryCls, items, response);
+        Map<String, Object> map = buildingqmService.issuestatisticexport(Integer.valueOf(categoryCls), items, response);
         String result = (String) map.get("result");
         log.info("export issue statistic, result={}, message={}, path={}", result, map.get("message"), map.get("path"));
         if (Integer.parseInt(result) != 0) {
