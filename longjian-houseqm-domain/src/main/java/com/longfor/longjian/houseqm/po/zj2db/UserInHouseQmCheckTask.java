@@ -46,6 +46,9 @@ public class UserInHouseQmCheckTask {
     @Column(name = "can_reassign")
     private Integer canReassign;
 
+    @Column(name="adminer_status")
+    private Integer adminerStatus;
+
     /**
      * @return id
      */
@@ -216,5 +219,13 @@ public class UserInHouseQmCheckTask {
      */
     public void setCanReassign(Integer canReassign) {
         this.canReassign = canReassign;
+    }
+
+    public Integer getAdminerStatus() {
+        return adminerStatus;
+    }
+
+    public void setAdminerStatus(Integer adminerStatus) {
+        this.adminerStatus = adminerStatus;
     }
 }
