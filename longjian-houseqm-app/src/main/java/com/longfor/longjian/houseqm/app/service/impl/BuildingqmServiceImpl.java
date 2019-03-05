@@ -98,6 +98,37 @@ public class BuildingqmServiceImpl implements IBuildingqmService {
     private KafkaProducer kafkaProducer;
     @Resource
     private IssueServiceImpl issueService;
+    private static final String ISSUEREASON="IssueReason";
+    private static final String ISSUE_REASOND_ETAIL="IssueReasonDetail";
+    private static final String ISSUE_SUGGEST="IssueSuggest";
+    private static final String POTENTIAL_RISK="PotentialRisk";
+    private static final String PREVENTIVE_ACTION_DETAIL="PreventiveActionDetail";
+    private static final String YMDHMS="yyyy-MM-dd HH:mm:ss";
+    private static final String AREA_IDS="areaIds";
+    private static final String AREA_TYPES="areaTypes";
+    private static final String PLAN_BEGIN_ON="planBeginOn";
+    private static final String PLAN_END_ON="planEndOn";
+    private static final String CHECKER_GROUPS ="checkerGroups";
+    private static final String REPAIR_GROUPS ="repairerGroups";
+    private static final String CONFIG="config";
+    private static final String CHECK_ITEM_MD5="CheckItemMD5";
+    private static final String ISSUE="issue";
+    private static final String  REFUNDMAP="refundMap";
+    private static final String STATUS  ="status";
+    private static final String REPAIR_REFOUND_PERMISSION="repairer_refund_permission";
+    private static final String REPAIR_FOLLOWER_PERMISSION= "repairer_follower_permission";
+    private static final String CHECKER_APPROVE_PERMISSION=  "checker_approve_permission";
+    private static final String REPAIR_PICTURE_STATUS= "repaired_picture_status";
+    private static final String ISSUE_DESC_STATUS="issue_desc_status";
+    private static final String ISSUE_DEFAULT_DESC= "issue_default_desc";
+    private static final String CREATE_TASK_SQUAD_FAILAD="create task squad failed";
+    private static final String CREATE_FAIL="创建任务组失败";
+    private static final String CREATE_TASK_USER_FAILED="create task user failed";
+    private static final String CREATE_TASK_PEOPLE_FAIL="创建任务组人员失败";
+    private static final String PUSH_STRATEGY_CATEGORY_OVERDUE_ADD_FAIL ="PushStrategyCategoryOverdueDao().add failed";
+    private static final String USER_IDS ="user_ids";
+    private static final String NAME_NOT_EXIST= "name not exist, data='unmarshCheckerGroups'";
+    private static final String QUESTION_NO_DESC= "(该问题无文字描述)";
 
     public static void setTaskProperties(TaskVo tvo, ApiBuildingQmCheckTaskMsg abm, Map<Integer, ApiBuildingQmCheckTaskConfig> taskMap, HouseQmCheckTask checkTask) {
         ApiBuildingQmCheckTaskMsg task = new ApiBuildingQmCheckTaskMsg();
@@ -292,7 +323,7 @@ public class BuildingqmServiceImpl implements IBuildingqmService {
                 detail.setPos_y(issueMap.get(issueLog.getIssueUuid()).getPosY());
                 detail.setTyp(issueMap.get(issueLog.getIssueUuid()).getTyp());
             }
-            detail.setPlan_end_on(dicDetail.getIntValue("PlanEndOn"));
+            detail.setPlan_end_on(dicDetail.getIntValue(PLAN_END_ON));
             detail.setEnd_on(dicDetail.getIntValue("EndOn"));
             detail.setRepairer_id(dicDetail.getIntValue("RepairerId"));
             detail.setRepairer_follower_ids(dicDetail.getString("RepairerFollowerIds"));
@@ -300,11 +331,11 @@ public class BuildingqmServiceImpl implements IBuildingqmService {
             detail.setCategory_cls(dicDetail.getIntValue("CategoryCls"));
             detail.setCategory_key(dicDetail.getString("CategoryKey"));
             detail.setCheck_item_key(dicDetail.getString("CheckItemKey"));
-            detail.setIssue_reason(dicDetail.getIntValue("IssueReason"));
-            detail.setIssue_reason_detail(dicDetail.getString("IssueReasonDetail"));
-            detail.setIssue_suggest(dicDetail.getString("IssueSuggest"));
-            detail.setPotential_risk(dicDetail.getString("PotentialRisk"));
-            detail.setPreventive_action_detail(dicDetail.getString("PreventiveActionDetail"));
+            detail.setIssue_reason(dicDetail.getIntValue(ISSUEREASON));
+            detail.setIssue_reason_detail(dicDetail.getString(ISSUE_REASOND_ETAIL));
+            detail.setIssue_suggest(dicDetail.getString(ISSUE_SUGGEST));
+            detail.setPotential_risk(dicDetail.getString(POTENTIAL_RISK));
+            detail.setPreventive_action_detail(dicDetail.getString(PREVENTIVE_ACTION_DETAIL));
             logVo.setDetail(detail);
             logVo.setUpdate_at(DateUtil.datetimeToTimeStamp(issueLog.getUpdateAt()));
             logVo.setDelete_at(DateUtil.datetimeToTimeStamp(issueLog.getDeleteAt()));
@@ -357,7 +388,7 @@ public class BuildingqmServiceImpl implements IBuildingqmService {
         ConfigVo config = unmarshPushStrategy(taskReq.getPush_strategy_config());
         String planBeginOn = taskReq.getPlan_begin_on() + " 00:00:00";
         String planEndOn = taskReq.getPlan_end_on() + " 23:59:59";
-        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        SimpleDateFormat sdf = new SimpleDateFormat(YMDHMS);
         Date begin = null;
         Date endon = null;
         try {
@@ -369,13 +400,13 @@ public class BuildingqmServiceImpl implements IBuildingqmService {
         } catch (ParseException e) {
             log.error("error:", e.getMessage());
         }
-        paramMap.put("areaIds", areaIds);
-        paramMap.put("areaTypes", areaTypes);
-        paramMap.put("planBeginOn", planBeginOn);
-        paramMap.put("planEndOn", planEndOn);
-        paramMap.put("checkerGroups", checkerGroups);
-        paramMap.put("repairerGroups", repairerGroups);
-        paramMap.put("config", config);
+        paramMap.put(AREA_IDS, areaIds);
+        paramMap.put(AREA_TYPES, areaTypes);
+        paramMap.put(PLAN_BEGIN_ON, planBeginOn);
+        paramMap.put(PLAN_END_ON, planEndOn);
+        paramMap.put(CHECKER_GROUPS, checkerGroups);
+        paramMap.put(REPAIR_GROUPS, repairerGroups);
+        paramMap.put(CONFIG, config);
         paramMap.put("begin", begin);
         paramMap.put("endon", endon);
         return paramMap;
@@ -384,7 +415,7 @@ public class BuildingqmServiceImpl implements IBuildingqmService {
     @Override
     public void create(Integer uid, TaskReq taskReq) {
         Map<String, Object> paramMap = prepareForCreateOrEdit(taskReq);
-        execute(uid, taskReq, (List<Integer>) paramMap.get("areaIds"), (List<Integer>) paramMap.get("areaTypes"), (String) paramMap.get("planBeginOn"), (String) paramMap.get("planEndOn"), (List<ApiBuildingQmTaskMemberGroupVo>) paramMap.get("checkerGroups"), (List<ApiBuildingQmTaskMemberGroupVo>) paramMap.get("repairerGroups"), (ConfigVo) paramMap.get("config"));
+        execute(uid, taskReq, (List<Integer>) paramMap.get(AREA_IDS), (List<Integer>) paramMap.get(AREA_TYPES), (String) paramMap.get(PLAN_BEGIN_ON), (String) paramMap.get(PLAN_END_ON), (List<ApiBuildingQmTaskMemberGroupVo>) paramMap.get(CHECKER_GROUPS), (List<ApiBuildingQmTaskMemberGroupVo>) paramMap.get(REPAIR_GROUPS), (ConfigVo) paramMap.get(CONFIG));
     }
 
     @Override
@@ -403,7 +434,7 @@ public class BuildingqmServiceImpl implements IBuildingqmService {
             log.error(e.getMessage());
         }
         Map<String, Object> paramMap = this.prepareForCreateOrEdit(taskReq);
-        editExecute((Date) paramMap.get("begin"), (Date) paramMap.get("endon"), uid, taskEditReq, (List<Integer>) paramMap.get("areaIds"), (List<Integer>) paramMap.get("areaTypes"), (String) paramMap.get("planBeginOn"), (String) paramMap.get("planEndOn"), (List<ApiBuildingQmTaskMemberGroupVo>) paramMap.get("checkerGroups"), (List<ApiBuildingQmTaskMemberGroupVo>) paramMap.get("repairerGroups"), (ConfigVo) paramMap.get("config"));
+        editExecute((Date) paramMap.get("begin"), (Date) paramMap.get("endon"), uid, taskEditReq, (List<Integer>) paramMap.get(AREA_IDS), (List<Integer>) paramMap.get(AREA_TYPES), (String) paramMap.get(PLAN_BEGIN_ON), (String) paramMap.get(PLAN_END_ON), (List<ApiBuildingQmTaskMemberGroupVo>) paramMap.get(CHECKER_GROUPS), (List<ApiBuildingQmTaskMemberGroupVo>) paramMap.get(REPAIR_GROUPS), (ConfigVo) paramMap.get(CONFIG));
 
     }
 
@@ -649,11 +680,11 @@ public class BuildingqmServiceImpl implements IBuildingqmService {
         int timestampZero = DateUtil.datetimeToTimeStamp(new Date(0));
         Map<String, Object> issueDetailJson = JSON.parseObject(issueInfo.getDetail(), Map.class);
         ApiHouseQmCheckTaskIssueDetailVo issueDetail = new ApiHouseQmCheckTaskIssueDetailVo();
-        issueDetail.setIssue_reason((Integer) issueDetailJson.get("IssueReason"));
-        issueDetail.setIssue_reason_detail((String) issueDetailJson.get("IssueReasonDetail"));
-        issueDetail.setIssue_suggest((String) issueDetailJson.get("IssueSuggest"));
-        issueDetail.setPotential_risk((String) issueDetailJson.get("PotentialRisk"));
-        issueDetail.setPreventive_action_detail((String) issueDetailJson.get("PreventiveActionDetail"));
+        issueDetail.setIssue_reason((Integer) issueDetailJson.get(ISSUEREASON));
+        issueDetail.setIssue_reason_detail((String) issueDetailJson.get(ISSUE_REASOND_ETAIL));
+        issueDetail.setIssue_suggest((String) issueDetailJson.get(ISSUE_SUGGEST));
+        issueDetail.setPotential_risk((String) issueDetailJson.get(POTENTIAL_RISK));
+        issueDetail.setPreventive_action_detail((String) issueDetailJson.get(PREVENTIVE_ACTION_DETAIL));
         issue.setId(issueInfo.getId());
         issue.setProject_id(issueInfo.getProjectId());
         issue.setTask_id(issueInfo.getTaskId());
@@ -922,14 +953,14 @@ public class BuildingqmServiceImpl implements IBuildingqmService {
                     dropped.add(msg);
                 } else {
                     Map detail = JSON.parseObject(issue.getDetail(), Map.class);
-                    String checkItemMD5 = (String) detail.get("CheckItemMD5")!=null?(String) detail.get("CheckItemMD5"):"";
+                    String checkItemMD5 = (String) detail.get(CHECK_ITEM_MD5)!=null?(String) detail.get(CHECK_ITEM_MD5):"";
 
                     List<ApiHouseQmCheckTaskIssueLogInfo.ApiHouseQmCheckTaskIssueLogDetailInfo> detail1 = item.getDetail();
                     for (int i = 0; i < detail1.size(); i++) {
                         if (isCheckItemChange(issue, item) || StringUtils.isEmpty(checkItemMD5) || StringUtils.isEmpty(detail1.get(i).getCheck_item_md5()) || detail1.get(i).getCheck_item_md5().equals(checkItemMD5)) {
                             Map<String, Object> modifyIssueMap = modifyIssue(refundMap, issueRoleMap, issue, item, true);
-                            HouseQmCheckTaskIssue issues = (HouseQmCheckTaskIssue) modifyIssueMap.get("issue");
-                            refundMap = (HashMap<HouseQmCheckTaskIssue, ApiRefundInfo>) modifyIssueMap.get("refundMap");
+                            HouseQmCheckTaskIssue issues = (HouseQmCheckTaskIssue) modifyIssueMap.get(ISSUE);
+                            refundMap = (HashMap<HouseQmCheckTaskIssue, ApiRefundInfo>) modifyIssueMap.get(REFUNDMAP);
                             issueInsertMap.put(item.getIssue_uuid(), issues);
                             logInsertList.add(createIssueLog(projectId, item));
 
@@ -952,13 +983,13 @@ public class BuildingqmServiceImpl implements IBuildingqmService {
                         dropped.add(msg);
                     } else {
                         Map detail = JSON.parseObject(issue.getDetail(), Map.class);
-                        String checkItemMD5 = (String) detail.get("CheckItemMD5")!=null?(String) detail.get("CheckItemMD5"):"";
+                        String checkItemMD5 = (String) detail.get(CHECK_ITEM_MD5)!=null?(String) detail.get(CHECK_ITEM_MD5):"";
                         List<ApiHouseQmCheckTaskIssueLogInfo.ApiHouseQmCheckTaskIssueLogDetailInfo> detail1 = item.getDetail();
                         for (int i = 0; i < detail1.size(); i++) {
                             if (isCheckItemChange(issue, item) || StringUtils.isEmpty(checkItemMD5) || StringUtils.isEmpty(detail1.get(i).getCheck_item_md5()) || detail1.get(i).getCheck_item_md5().equals(checkItemMD5)) {
                                 Map<String, Object> modifyIssueMap = modifyIssue(refundMap, issueRoleMap, issue, item, false);
-                                HouseQmCheckTaskIssue issues = (HouseQmCheckTaskIssue) modifyIssueMap.get("issue");
-                                refundMap = (HashMap<HouseQmCheckTaskIssue, ApiRefundInfo>) modifyIssueMap.get("refundMap");
+                                HouseQmCheckTaskIssue issues = (HouseQmCheckTaskIssue) modifyIssueMap.get(ISSUE);
+                                refundMap = (HashMap<HouseQmCheckTaskIssue, ApiRefundInfo>) modifyIssueMap.get(REFUNDMAP);
                                 issueUpdateMap.put(item.getIssue_uuid(), issues);
                                 logInsertList.add(createIssueLog(projectId, item));
 
@@ -1045,14 +1076,14 @@ public class BuildingqmServiceImpl implements IBuildingqmService {
             if (CheckTaskIssueStatus.AssignNoReform.getValue().equals(issue.getStatus())) {
                 List<Integer> desUserIds = Lists.newArrayList();
 
-                if (issue.getRepairerId() > 0 && (!issue.getRepairerId().equals(notifyStatMap.get(issue.getUuid()).get("repairerId")) || CheckTaskIssueStatus.ReformNoCheck.getValue().equals(notifyStatMap.get(issue.getUuid()).get("status")))) {
+                if (issue.getRepairerId() > 0 && (!issue.getRepairerId().equals(notifyStatMap.get(issue.getUuid()).get("repairerId")) || CheckTaskIssueStatus.ReformNoCheck.getValue().equals(notifyStatMap.get(issue.getUuid()).get(STATUS)))) {
                     desUserIds.add(issue.getRepairerId());
                     pushList.add(issue.getRepairerId());
                 }
                 List<Integer> idsComma = StringSplitToListUtil.splitToIdsComma(issue.getRepairerFollowerIds(), ",");
                 idsComma.forEach(user -> {
                     List splitToIdsComma = (List) notifyStatMap.get(issue.getUuid()).get("repairerFollowerIds");
-                    if (user > 0 && (!splitToIdsComma.contains(user) || CheckTaskIssueStatus.ReformNoCheck.getValue().equals(notifyStatMap.get(issue.getUuid()).get("status")))) {
+                    if (user > 0 && (!splitToIdsComma.contains(user) || CheckTaskIssueStatus.ReformNoCheck.getValue().equals(notifyStatMap.get(issue.getUuid()).get(STATUS)))) {
                         desUserIds.add(user);
                         pushList.add(user);
                     }
@@ -1468,28 +1499,28 @@ public class BuildingqmServiceImpl implements IBuildingqmService {
             Map<String, Object> map = JSON.parseObject(issue.getDetail(), Map.class);
             // # 编辑问题的detail字段
           /*  if (!detailInfo.getCheck_item_md5().equals("") || !detailInfo.getCheck_item_md5().equals("-1")) {
-                map.put("CheckItemMD5", detailInfo.getCheck_item_md5());
+                map.put(CHECKkITEM_MD5, detailInfo.getCheck_item_md5());
             }*/
             if (detailInfo.getIssue_reason() != -1 || detailInfo.getIssue_reason() != 0) {
-                map.put("IssueReason", detailInfo.getIssue_reason());
+                map.put(ISSUEREASON, detailInfo.getIssue_reason());
             }
             if (!detailInfo.getIssue_reason_detail().equals("") || !detailInfo.getIssue_reason_detail().equals("-1")) {
-                map.put("IssueReasonDetail", detailInfo.getIssue_reason_detail());
+                map.put(ISSUE_REASOND_ETAIL, detailInfo.getIssue_reason_detail());
             }
             if (!detailInfo.getIssue_suggest().equals("") || !detailInfo.getIssue_suggest().equals("-1")) {
-                map.put("IssueSuggest", detailInfo.getIssue_suggest());
+                map.put(ISSUE_SUGGEST, detailInfo.getIssue_suggest());
             }
             if (!detailInfo.getPotential_risk().equals("") || !detailInfo.getPotential_risk().equals("-1")) {
-                map.put("PotentialRisk", detailInfo.getPotential_risk());
+                map.put(POTENTIAL_RISK, detailInfo.getPotential_risk());
             }
             if (!detailInfo.getPreventive_action_detail().equals("") || !detailInfo.getPreventive_action_detail().equals("-1")) {
-                map.put("PreventiveActionDetail", detailInfo.getPreventive_action_detail());
+                map.put(PREVENTIVE_ACTION_DETAIL, detailInfo.getPreventive_action_detail());
             }
             issue.setDetail(JSON.toJSONString(map));
         });
         Map<String, Object> resmap = Maps.newHashMap();
-        resmap.put("issue", issue);
-        resmap.put("refundMap", refundMap);
+        resmap.put(ISSUE, issue);
+        resmap.put(REFUNDMAP, refundMap);
         return resmap;
     }
 
@@ -1561,28 +1592,28 @@ public class BuildingqmServiceImpl implements IBuildingqmService {
             Map<String,Object> map = JSON.parseObject(issue.getDetail(), Map.class);
             // # 编辑问题的detail字段
             /*if (!detailInfo.getCheck_item_md5().equals("") || !detailInfo.getCheck_item_md5().equals("-1")) {
-                map.put("CheckItemMD5", detailInfo.getCheck_item_md5());
+                map.put(CHECKkITEM_MD5, detailInfo.getCheck_item_md5());
             }*/
             if (detailInfo.getIssue_reason() != -1 || detailInfo.getIssue_reason() != 0) {
-                map.put("IssueReason", detailInfo.getIssue_reason());
+                map.put(ISSUEREASON, detailInfo.getIssue_reason());
             }
             if (!detailInfo.getIssue_reason_detail().equals("") || !detailInfo.getIssue_reason_detail().equals("-1")) {
-                map.put("IssueReasonDetail", detailInfo.getIssue_reason_detail());
+                map.put(ISSUE_REASOND_ETAIL, detailInfo.getIssue_reason_detail());
             }
             if (!detailInfo.getIssue_suggest().equals("") || !detailInfo.getIssue_suggest().equals("-1")) {
-                map.put("IssueSuggest", detailInfo.getIssue_suggest());
+                map.put(ISSUE_SUGGEST, detailInfo.getIssue_suggest());
             }
             if (!detailInfo.getPotential_risk().equals("") || !detailInfo.getPotential_risk().equals("-1")) {
-                map.put("PotentialRisk", detailInfo.getPotential_risk());
+                map.put(POTENTIAL_RISK, detailInfo.getPotential_risk());
             }
             if (!detailInfo.getPreventive_action_detail().equals("") || !detailInfo.getPreventive_action_detail().equals("-1")) {
-                map.put("PreventiveActionDetail", detailInfo.getPreventive_action_detail());
+                map.put(PREVENTIVE_ACTION_DETAIL, detailInfo.getPreventive_action_detail());
             }
             issue.setDetail(JSON.toJSONString(map));
         });
         Map<String, Object> resmap = Maps.newHashMap();
-        resmap.put("issue", issue);
-        resmap.put("refundMap", Maps.newHashMap());
+        resmap.put(ISSUE, issue);
+        resmap.put(REFUNDMAP, Maps.newHashMap());
         return resmap;
     }
 
@@ -1662,28 +1693,28 @@ public class BuildingqmServiceImpl implements IBuildingqmService {
             Map map = JSON.parseObject(issue.getDetail(), Map.class);
             // # 编辑问题的detail字段
             if (!detailInfo.getCheck_item_md5().equals("") || !detailInfo.getCheck_item_md5().equals("-1")) {
-                map.put("CheckItemMD5", detailInfo.getCheck_item_md5());
+                map.put(CHECK_ITEM_MD5, detailInfo.getCheck_item_md5());
             }
             if (detailInfo.getIssue_reason() != -1 || detailInfo.getIssue_reason() != 0) {
-                map.put("IssueReason", detailInfo.getIssue_reason());
+                map.put(ISSUEREASON, detailInfo.getIssue_reason());
             }
             if (!detailInfo.getIssue_reason_detail().equals("") || !detailInfo.getIssue_reason_detail().equals("-1")) {
-                map.put("IssueReasonDetail", detailInfo.getIssue_reason_detail());
+                map.put(ISSUE_REASOND_ETAIL, detailInfo.getIssue_reason_detail());
             }
             if (!detailInfo.getIssue_suggest().equals("") || !detailInfo.getIssue_suggest().equals("-1")) {
-                map.put("IssueSuggest", detailInfo.getIssue_suggest());
+                map.put(ISSUE_SUGGEST, detailInfo.getIssue_suggest());
             }
             if (!detailInfo.getPotential_risk().equals("") || !detailInfo.getPotential_risk().equals("-1")) {
-                map.put("PotentialRisk", detailInfo.getPotential_risk());
+                map.put(POTENTIAL_RISK, detailInfo.getPotential_risk());
             }
             if (!detailInfo.getPreventive_action_detail().equals("") || !detailInfo.getPreventive_action_detail().equals("-1")) {
-                map.put("PreventiveActionDetail", detailInfo.getPreventive_action_detail());
+                map.put(PREVENTIVE_ACTION_DETAIL, detailInfo.getPreventive_action_detail());
             }
             issue.setDetail(JSON.toJSONString(map));
         });
         Map<String, Object> resmap = Maps.newHashMap();
-        resmap.put("issue", issue);
-        resmap.put("refundMap", Maps.newHashMap());
+        resmap.put(ISSUE, issue);
+        resmap.put(REFUNDMAP, Maps.newHashMap());
         return resmap;
     }
 
@@ -1799,31 +1830,31 @@ public class BuildingqmServiceImpl implements IBuildingqmService {
             issue.setDestroyUser(0);
             issue.setDeleteUser(0);
             HashMap<String, Object> details = Maps.newHashMap();
-            details.put("CheckItemMD5", "");
+            details.put(CHECK_ITEM_MD5, "");
             if (detail.getIssue_reason() != null && detail.getIssue_reason() != -1) {
-                details.put("IssueReason", detail.getIssue_reason());
+                details.put(ISSUEREASON, detail.getIssue_reason());
             } else {
-                details.put("IssueReason", 0);
+                details.put(ISSUEREASON, 0);
             }
             if (detail.getIssue_reason_detail() != null && !detail.getIssue_reason_detail().equals("-1")) {
-                details.put("IssueReasonDetail", detail.getIssue_reason_detail());
+                details.put(ISSUE_REASOND_ETAIL, detail.getIssue_reason_detail());
             } else {
-                details.put("IssueReasonDetail", "");
+                details.put(ISSUE_REASOND_ETAIL, "");
             }
             if (detail.getIssue_suggest() != null && !detail.getIssue_suggest().equals("-1")) {
-                details.put("IssueSuggest", detail.getIssue_suggest());
+                details.put(ISSUE_SUGGEST, detail.getIssue_suggest());
             } else {
-                details.put("IssueSuggest", "");
+                details.put(ISSUE_SUGGEST, "");
             }
             if (StringUtils.isNotEmpty(detail.getPotential_risk()) && !detail.getPotential_risk().equals("-1")) {
-                details.put("PotentialRisk", detail.getPotential_risk());
+                details.put(POTENTIAL_RISK, detail.getPotential_risk());
             } else {
-                details.put("PotentialRisk", "");
+                details.put(POTENTIAL_RISK, "");
             }
             if (StringUtils.isNotEmpty(detail.getPreventive_action_detail()) && !detail.getPreventive_action_detail().equals("-1")) {
-                details.put("PreventiveActionDetail", detail.getPreventive_action_detail());
+                details.put(PREVENTIVE_ACTION_DETAIL, detail.getPreventive_action_detail());
             } else {
-                details.put("PreventiveActionDetail", "");
+                details.put(PREVENTIVE_ACTION_DETAIL, "");
             }
             issue.setDetail(JSON.toJSONString(detail));
             ApiUserRoleInIssue roleItem = new ApiUserRoleInIssue();
@@ -1926,7 +1957,7 @@ public class BuildingqmServiceImpl implements IBuildingqmService {
         HashMap<String, Object> detailMap = null;
         for (ApiHouseQmCheckTaskIssueLogInfo.ApiHouseQmCheckTaskIssueLogDetailInfo item : detail) {
             detailMap = Maps.newHashMap();
-            detailMap.put("PlanEndOn", item.getPlan_end_on());
+            detailMap.put(PLAN_END_ON, item.getPlan_end_on());
             detailMap.put("EndOn", item.getEnd_on());
             detailMap.put("RepairerId", item.getRepairer_id());
             detailMap.put("RepairerFollowerIds", item.getRepairer_follower_ids());
@@ -1941,12 +1972,12 @@ public class BuildingqmServiceImpl implements IBuildingqmService {
             detailMap.put("CategoryKey", item.getCategory_key());
             detailMap.put("DrawingMD5", item.getDrawing_md5());
             detailMap.put("RemoveMemoAudioMd5List", item.getRemove_memo_audio_md5_list());
-            detailMap.put("CheckItemMD5", item.getCheck_item_md5());
-            detailMap.put("IssueReason", item.getIssue_reason());
-            detailMap.put("IssueReasonDetail", item.getIssue_reason_detail());
-            detailMap.put("IssueSuggest", item.getIssue_suggest());
-            detailMap.put("PotentialRisk", item.getPotential_risk());
-            detailMap.put("PreventiveActionDetail", item.getPreventive_action_detail());
+            detailMap.put(CHECK_ITEM_MD5, item.getCheck_item_md5());
+            detailMap.put(ISSUEREASON, item.getIssue_reason());
+            detailMap.put(ISSUE_REASOND_ETAIL, item.getIssue_reason_detail());
+            detailMap.put(ISSUE_SUGGEST, item.getIssue_suggest());
+            detailMap.put(POTENTIAL_RISK, item.getPotential_risk());
+            detailMap.put(PREVENTIVE_ACTION_DETAIL, item.getPreventive_action_detail());
         }
         issueLog.setDetail(JSON.toJSONString(detailMap));
         issueLog.setClientCreateAt(DateUtil.transForDate(log.getClient_create_at()));
@@ -1987,14 +2018,14 @@ public class BuildingqmServiceImpl implements IBuildingqmService {
         Integer nrepairerId = 0;
         List<Integer> repairerFollowerIds = Lists.newArrayList();
         Map<String, Object> map = Maps.newHashMap();
-        map.put("status", status);
+        map.put(STATUS, status);
         map.put("repairerId", repairerId);
         map.put("repairerFollowerIds", repairerFollowerId);
         return map;
     }
 
     private boolean datetimeZero(Date deleteAt) {
-        if (deleteAt == null || new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(deleteAt).equals("0001-01-01 00:00:00") || new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(deleteAt).equals("") || DateUtil.datetimeToTimeStamp(deleteAt) <= DateUtil.datetimeToTimeStamp(new Date(0))) {
+        if (deleteAt == null || new SimpleDateFormat(YMDHMS).format(deleteAt).equals("0001-01-01 00:00:00") || new SimpleDateFormat(YMDHMS).format(deleteAt).equals("") || DateUtil.datetimeToTimeStamp(deleteAt) <= DateUtil.datetimeToTimeStamp(new Date(0))) {
             return true;
         } else {
             return false;
@@ -2048,8 +2079,8 @@ public class BuildingqmServiceImpl implements IBuildingqmService {
 
             items.setDesc(item.get("desc")!=null?(String) item.get("desc"):"");
 
-            if ((Integer) item.get("status") != null) {
-                items.setStatus((Integer) item.get("status"));
+            if ((Integer) item.get(STATUS) != null) {
+                items.setStatus((Integer) item.get(STATUS));
             } else {
                 items.setStatus(-1);
             }
@@ -2188,28 +2219,28 @@ public class BuildingqmServiceImpl implements IBuildingqmService {
         taskInfo.setEditor(uid);
         if (taskInfo.getConfigInfo() == null) {
             HashMap<String, Object> configMap = Maps.newHashMap();
-            configMap.put("repairer_refund_permission", taskEditReq.getRepairer_refund_permission());
-            configMap.put("repairer_follower_permission", taskEditReq.getRepairer_follower_permission());
-            configMap.put("checker_approve_permission", taskEditReq.getChecker_approve_permission());
-            configMap.put("repaired_picture_status", taskEditReq.getRepaired_picture_status());
-            configMap.put("issue_desc_status", taskEditReq.getIssue_desc_status());
-            configMap.put("issue_default_desc", taskEditReq.getIssue_default_desc());
+            configMap.put(REPAIR_REFOUND_PERMISSION, taskEditReq.getRepairer_refund_permission());
+            configMap.put(REPAIR_FOLLOWER_PERMISSION, taskEditReq.getRepairer_follower_permission());
+            configMap.put(CHECKER_APPROVE_PERMISSION, taskEditReq.getChecker_approve_permission());
+            configMap.put(REPAIR_PICTURE_STATUS, taskEditReq.getRepaired_picture_status());
+            configMap.put(ISSUE_DESC_STATUS, taskEditReq.getIssue_desc_status());
+            configMap.put(ISSUE_DEFAULT_DESC, taskEditReq.getIssue_default_desc());
             taskInfo.setConfigInfo(JSON.toJSONString(configMap));
         } else {
             Map configInfo = JSON.parseObject(taskInfo.getConfigInfo(), Map.class);
-            if (!taskEditReq.getRepairer_refund_permission().equals(configInfo.get("repairer_refund_permission")) ||
-                    !taskEditReq.getRepairer_follower_permission().equals(configInfo.get("repairer_follower_permission")) ||
-                    !taskEditReq.getChecker_approve_permission().equals(configInfo.get("checker_approve_permission")) ||
-                    !taskEditReq.getRepaired_picture_status().equals(configInfo.get("repaired_picture_status")) ||
-                    !taskEditReq.getIssue_desc_status().equals(configInfo.get("issue_desc_status")) ||
-                    !taskEditReq.getIssue_default_desc().equals(configInfo.get("issue_default_desc"))
+            if (!taskEditReq.getRepairer_refund_permission().equals(configInfo.get(REPAIR_REFOUND_PERMISSION)) ||
+                    !taskEditReq.getRepairer_follower_permission().equals(configInfo.get(REPAIR_FOLLOWER_PERMISSION)) ||
+                    !taskEditReq.getChecker_approve_permission().equals(configInfo.get(CHECKER_APPROVE_PERMISSION)) ||
+                    !taskEditReq.getRepaired_picture_status().equals(configInfo.get(REPAIR_PICTURE_STATUS)) ||
+                    !taskEditReq.getIssue_desc_status().equals(configInfo.get(ISSUE_DESC_STATUS)) ||
+                    !taskEditReq.getIssue_default_desc().equals(configInfo.get(ISSUE_DEFAULT_DESC))
             ) {
-                configInfo.put("repairer_refund_permission", taskEditReq.getRepairer_refund_permission());
-                configInfo.put("repairer_follower_permission", taskEditReq.getRepairer_follower_permission());
-                configInfo.put("checker_approve_permission", taskEditReq.getChecker_approve_permission());
-                configInfo.put("repaired_picture_status", taskEditReq.getRepaired_picture_status());
-                configInfo.put("issue_desc_status", taskEditReq.getIssue_desc_status());
-                configInfo.put("issue_default_desc", taskEditReq.getIssue_default_desc());
+                configInfo.put(REPAIR_REFOUND_PERMISSION, taskEditReq.getRepairer_refund_permission());
+                configInfo.put(REPAIR_FOLLOWER_PERMISSION, taskEditReq.getRepairer_follower_permission());
+                configInfo.put(CHECKER_APPROVE_PERMISSION, taskEditReq.getChecker_approve_permission());
+                configInfo.put(REPAIR_PICTURE_STATUS, taskEditReq.getRepaired_picture_status());
+                configInfo.put(ISSUE_DESC_STATUS, taskEditReq.getIssue_desc_status());
+                configInfo.put(ISSUE_DEFAULT_DESC, taskEditReq.getIssue_default_desc());
                 taskInfo.setConfigInfo(JSON.toJSONString(configInfo));
             }
         }
@@ -2231,8 +2262,8 @@ public class BuildingqmServiceImpl implements IBuildingqmService {
                 squad.setUpdateAt(new Date());
                 int squadInfo = houseQmCheckTaskSquadService.add(squad);
                 if (squadInfo <= 0) {
-                    log.info("create task squad failed");
-                    throw new LjBaseRuntimeException(-99, "'创建任务组失败'");
+                    log.info(CREATE_TASK_SQUAD_FAILAD);
+                    throw new LjBaseRuntimeException(-99, CREATE_FAIL);
                 }
                 List<Integer> userIds = checkerGroups.get(i).getUser_ids();
                 for (int j = 0; j < userIds.size(); j++) {
@@ -2261,8 +2292,8 @@ public class BuildingqmServiceImpl implements IBuildingqmService {
                     qmCheckTask.setUpdateAt(new Date());
                     int num = userInHouseQmCheckTaskService.add(qmCheckTask);
                     if (num <= 0) {
-                        log.info("create task user failed");
-                        throw new LjBaseRuntimeException(-99, "创建任务组人员失败");
+                        log.info(CREATE_TASK_USER_FAILED);
+                        throw new LjBaseRuntimeException(-99, CREATE_TASK_PEOPLE_FAIL);
                     }
                 }
             }
@@ -2342,7 +2373,7 @@ public class BuildingqmServiceImpl implements IBuildingqmService {
                 item.setCanReassign(needInsertCheckTaskSquadUser.get(i).getCan_reassign());
                 int one = userInHouseQmCheckTaskService.add(item);
                 if (one <= 0) {
-                    log.info("create task user failed");
+                    log.info(CREATE_TASK_USER_FAILED);
                     throw new LjBaseRuntimeException(-99, "增加人员信息失败");
                 }
             }
@@ -2436,7 +2467,7 @@ public class BuildingqmServiceImpl implements IBuildingqmService {
                 item.setScanEndOn(DateUtil.timeStampToDate(DateUtil.datetimeToTimeStamp(taskInfo.getPlanEndOn()) + (30 * 24 * 60 * 60), " yyyy-MM-dd HH-mm-ss"));
                 int one = pushStrategyCategoryOverdueService.add(item);
                 if (one <= 0) {
-                    log.info("PushStrategyCategoryOverdueDao().add failed");
+                    log.info(PUSH_STRATEGY_CATEGORY_OVERDUE_ADD_FAIL);
                 }
 
             } else if (!dbConfigCategoryOverdue.getCategoryKeys().equals(config.getConfig_category_overdue().getCategory_keys()) ||
@@ -2480,7 +2511,7 @@ public class BuildingqmServiceImpl implements IBuildingqmService {
                 item.setScanEndOn(DateUtil.timeStampToDate(DateUtil.datetimeToTimeStamp(taskInfo.getPlanEndOn()) + (30 * 24 * 60 * 60), " yyyy-MM-dd HH-mm-ss"));
                 int nums = pushStrategyCategoryThresholdService.add(item);
                 if (nums <= 0) {
-                    log.info("PushStrategyCategoryOverdueDao().add failed");
+                    log.info(PUSH_STRATEGY_CATEGORY_OVERDUE_ADD_FAIL);
                 }
 
             } else if (!dbConfigCategoryThreshold.getCategoryKeys().equals(config.getConfig_category_threshold().getCategory_keys()) ||
@@ -2547,12 +2578,12 @@ public class BuildingqmServiceImpl implements IBuildingqmService {
             throw new LjBaseRuntimeException(-99, "'创建任务失败'");
         }
         HashMap<String, Object> configMap = Maps.newHashMap();
-        configMap.put("repairer_refund_permission", taskReq.getRepairer_refund_permission());
-        configMap.put("repairer_follower_permission", taskReq.getRepairer_follower_permission());
-        configMap.put("checker_approve_permission", taskReq.getChecker_approve_permission());
-        configMap.put("repaired_picture_status", taskReq.getRepaired_picture_status());
-        configMap.put("issue_desc_status", taskReq.getIssue_desc_status());
-        configMap.put("issue_default_desc", taskReq.getIssue_default_desc());
+        configMap.put(REPAIR_REFOUND_PERMISSION, taskReq.getRepairer_refund_permission());
+        configMap.put(REPAIR_FOLLOWER_PERMISSION, taskReq.getRepairer_follower_permission());
+        configMap.put(CHECKER_APPROVE_PERMISSION, taskReq.getChecker_approve_permission());
+        configMap.put(REPAIR_PICTURE_STATUS, taskReq.getRepaired_picture_status());
+        configMap.put(ISSUE_DESC_STATUS, taskReq.getIssue_desc_status());
+        configMap.put(ISSUE_DEFAULT_DESC, taskReq.getIssue_default_desc());
         String configInfo = JSONObject.toJSONString(configMap);
         HouseQmCheckTask houseQmCheckTask = new HouseQmCheckTask();
         houseQmCheckTask.setProjectId(taskReq.getProject_id());
@@ -2596,8 +2627,8 @@ public class BuildingqmServiceImpl implements IBuildingqmService {
             //返回主键
             int squadInfo = houseQmCheckTaskSquadService.add(squad);
             if (squadInfo <= 0) {
-                log.info("create task squad failed");
-                throw new LjBaseRuntimeException(-99, "'创建任务组失败'");
+                log.info(CREATE_TASK_SQUAD_FAILAD);
+                throw new LjBaseRuntimeException(-99, CREATE_FAIL);
             }
             List<Integer> userIds = checkerGroups.get(i).getUser_ids();
             for (int j = 0; j < userIds.size(); j++) {
@@ -2627,8 +2658,8 @@ public class BuildingqmServiceImpl implements IBuildingqmService {
                 qmCheckTask.setCanReassign(canReassign);
                 int num = userInHouseQmCheckTaskService.add(qmCheckTask);
                 if (num <= 0) {
-                    log.info("create task user failed");
-                    throw new LjBaseRuntimeException(-99, "创建任务组人员失败");
+                    log.info(CREATE_TASK_USER_FAILED);
+                    throw new LjBaseRuntimeException(-99, CREATE_TASK_PEOPLE_FAIL);
                 }
 
             }
@@ -2647,8 +2678,8 @@ public class BuildingqmServiceImpl implements IBuildingqmService {
             squad.setUpdateAt(new Date());
             int squadInfo = houseQmCheckTaskSquadService.add(squad);
             if (squadInfo <= 0) {
-                log.info("create task squad failed");
-                throw new LjBaseRuntimeException(-99, "'创建任务组失败'");
+                log.info(CREATE_TASK_SQUAD_FAILAD);
+                throw new LjBaseRuntimeException(-99, CREATE_FAIL);
             }
             List<Integer> userId = repairerGroups.get(i).getUser_ids();
             for (int j = 0; j < userId.size(); j++) {
@@ -2670,7 +2701,7 @@ public class BuildingqmServiceImpl implements IBuildingqmService {
                 int num = userInHouseQmCheckTaskService.add(qmCheckTask);
                 if (num <= 0) {
                     log.info("create task user failed");
-                    throw new LjBaseRuntimeException(-99, "创建任务组人员失败");
+                    throw new LjBaseRuntimeException(-99, CREATE_TASK_PEOPLE_FAIL);
                 }
             }
 
@@ -2709,7 +2740,7 @@ public class BuildingqmServiceImpl implements IBuildingqmService {
             pushStrategyCategoryOverdue.setScanEndOn(DateUtil.timeStampToDate(DateUtil.datetimeToTimeStamp(checktaskObj.getPlanEndOn()) + (30 * 24 * 60 * 60), " yyyy-MM-dd HH-mm-ss"));
             int n = pushStrategyCategoryOverdueService.add(pushStrategyCategoryOverdue);
             if (n <= 0) {
-                log.info("PushStrategyCategoryOverdueDao().add failed");
+                log.info(PUSH_STRATEGY_CATEGORY_OVERDUE_ADD_FAIL);
             }
 
         }
@@ -2726,7 +2757,7 @@ public class BuildingqmServiceImpl implements IBuildingqmService {
             pushStrategyCategoryThreshold.setScanEndOn(DateUtil.timeStampToDate(DateUtil.datetimeToTimeStamp(checktaskObj.getPlanEndOn()) + (30 * 24 * 60 * 60), " yyyy-MM-dd HH-mm-ss"));
             int nn = pushStrategyCategoryThresholdService.add(pushStrategyCategoryThreshold);
             if (nn <= 0) {
-                log.info("PushStrategyCategoryOverdueDao().add failed");
+                log.info(PUSH_STRATEGY_CATEGORY_OVERDUE_ADD_FAIL);
             }
 
         }
@@ -2751,7 +2782,7 @@ public class BuildingqmServiceImpl implements IBuildingqmService {
      * @return
      */
     private Date stringToDate(String time) {
-        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        SimpleDateFormat sdf = new SimpleDateFormat(YMDHMS);
         try {
             return sdf.parse(time);
         } catch (ParseException e) {
@@ -2771,7 +2802,7 @@ public class BuildingqmServiceImpl implements IBuildingqmService {
         Map categoryThreshold = (Map) pushStrategysConfig.get("category_threshold");
         if (assignTime != null) {
             String pushTime = (String) assignTime.get("push_time");
-            String userIds = (String) assignTime.get("user_ids");
+            String userIds = (String) assignTime.get(USER_IDS);
             if (pushTime.length() > 0 && userIds.length() > 0) {
                 ConfigVo.ApiPushStrategyAssignTime configAssignTime = new ConfigVo().new ApiPushStrategyAssignTime();
                 configAssignTime.setPush_time(pushTime);
@@ -2780,7 +2811,7 @@ public class BuildingqmServiceImpl implements IBuildingqmService {
             }
             if (categoryOverdue != null) {
                 String categoryKeys = (String) categoryOverdue.get("category_keys");
-                String uIds = (String) categoryOverdue.get("user_ids");
+                String uIds = (String) categoryOverdue.get(USER_IDS);
                 if (StringUtils.isNotBlank(categoryKeys) && StringUtils.isNotBlank(uIds)) {
                     ConfigVo.ApiPushStrategyCategoryOverdue configCategoryOverdue = new ConfigVo().new ApiPushStrategyCategoryOverdue();
                     configCategoryOverdue.setCategory_keys(categoryKeys);
@@ -2791,7 +2822,7 @@ public class BuildingqmServiceImpl implements IBuildingqmService {
             }
             if (categoryThreshold != null) {
                 String categoryKeys = (String) categoryThreshold.get("category_keys");
-                String usIds = (String) categoryThreshold.get("user_ids");
+                String usIds = (String) categoryThreshold.get(USER_IDS);
                 Integer threshold = (Integer) categoryThreshold.get("threshold");
                 if (categoryKeys.length() > 0 && usIds.length() > 0 && threshold > 0) {
                     ConfigVo.ApiPushStrategyCategoryThreshold configCategoryThreshold = new ConfigVo().new ApiPushStrategyCategoryThreshold();
@@ -2830,22 +2861,22 @@ public class BuildingqmServiceImpl implements IBuildingqmService {
             }
             objVo.setName((String) checkergroups.get("name"));
             if (objVo.getName() == null) {
-                log.info("name not exist, data='unmarshCheckerGroups'");
+                log.info(NAME_NOT_EXIST);
                 throw new LjBaseRuntimeException(-99, "name not exist");
             }
-            objVo.setUser_ids((String) checkergroups.get("user_ids"));
+            objVo.setUser_ids((String) checkergroups.get(USER_IDS));
             if (objVo.getUser_ids() == null) {
-                log.info("name not exist, data='unmarshCheckerGroups'");
+                log.info(NAME_NOT_EXIST);
                 throw new LjBaseRuntimeException(-99, "user_ids not exist");
             }
             objVo.setApprove_ids((String) checkergroups.get("approve_ids"));
             if (objVo.getApprove_ids() == null) {
-                log.info("name not exist, data='unmarshCheckerGroups'");
+                log.info(NAME_NOT_EXIST);
                 throw new LjBaseRuntimeException(-99, "approve_ids not exist");
             }
             objVo.setDirect_approve_ids((String) checkergroups.get("direct_approve_ids"));
             if (objVo.getDirect_approve_ids() == null) {
-                log.info("name not exist, data='unmarshCheckerGroups'");
+                log.info(NAME_NOT_EXIST);
                 throw new LjBaseRuntimeException(-99, "direct_approve_ids not exist");
             }
 
@@ -2881,17 +2912,17 @@ public class BuildingqmServiceImpl implements IBuildingqmService {
                 item.setIssue_default_desc("(该问题无文字描述)");
             } else {
                 JSONObject configData = JSON.parseObject(task.getConfigInfo());
-                item.setRepairer_refund_permission(getValueOrDefault(configData, "repairer_refund_permission",
+                item.setRepairer_refund_permission(getValueOrDefault(configData, REPAIR_REFOUND_PERMISSION,
                         CheckTaskRepairerRefundPermission.No.getValue()));
-                item.setRepairer_follower_permission(getValueOrDefault(configData, "repairer_follower_permission",
+                item.setRepairer_follower_permission(getValueOrDefault(configData, REPAIR_FOLLOWER_PERMISSION,
                         CheckTaskRepairerFollowerPermission.CompleteRepair.getValue()));
-                item.setChecker_approve_permission(getValueOrDefault(configData, "checker_approve_permission",
+                item.setChecker_approve_permission(getValueOrDefault(configData, CHECKER_APPROVE_PERMISSION,
                         CheckerApprovePermission.No.getValue()));
-                item.setRepaired_picture_status(getValueOrDefault(configData, "repaired_picture_status",
+                item.setRepaired_picture_status(getValueOrDefault(configData, REPAIR_PICTURE_STATUS,
                         CheckTaskRepairedPictureEnum.UnForcePicture.getValue()));
-                item.setIssue_desc_status(getValueOrDefault(configData, "issue_desc_status",
+                item.setIssue_desc_status(getValueOrDefault(configData, ISSUE_DESC_STATUS,
                         CheckTaskIssueDescEnum.Arbitrary.getValue()));
-                item.setIssue_default_desc(getStringValueOrDefault(configData, "issue_default_desc", "(该问题无文字描述)"));
+                item.setIssue_default_desc(getStringValueOrDefault(configData, ISSUE_DEFAULT_DESC, QUESTION_NO_DESC));
             }
 
             maps.put(task.getTaskId(), item);
@@ -3112,15 +3143,15 @@ public class BuildingqmServiceImpl implements IBuildingqmService {
                 item.setChecker_approve_permission(CheckerApprovePermission.No.getValue());
                 item.setRepaired_picture_status(CheckTaskRepairedPictureEnum.UnForcePicture.getValue());
                 item.setIssue_desc_status(CheckTaskIssueDescEnum.Arbitrary.getValue());
-                item.setIssue_default_desc("(该问题无文字描述)");
+                item.setIssue_default_desc(QUESTION_NO_DESC);
             } else {
                 JSONObject configData = JSON.parseObject(task.getConfigInfo());
-                item.setRepairer_refund_permission(configData.getIntValue("repairer_refund_permission"));
-                item.setRepairer_follower_permission(configData.getIntValue("repairer_follower_permission"));
-                item.setChecker_approve_permission(configData.getIntValue("checker_approve_permission"));
-                item.setRepaired_picture_status(configData.getIntValue("repaired_picture_status"));
-                item.setIssue_desc_status(configData.getIntValue("issue_desc_status"));
-                item.setIssue_default_desc(configData.getString("issue_default_desc"));
+                item.setRepairer_refund_permission(configData.getIntValue(REPAIR_REFOUND_PERMISSION));
+                item.setRepairer_follower_permission(configData.getIntValue(REPAIR_FOLLOWER_PERMISSION));
+                item.setChecker_approve_permission(configData.getIntValue(CHECKER_APPROVE_PERMISSION));
+                item.setRepaired_picture_status(configData.getIntValue(REPAIR_PICTURE_STATUS));
+                item.setIssue_desc_status(configData.getIntValue(ISSUE_DESC_STATUS));
+                item.setIssue_default_desc(configData.getString(ISSUE_DEFAULT_DESC));
             }
             taskMap.put(task.getTaskId(), item);
 

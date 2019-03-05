@@ -128,30 +128,30 @@ public class IusseTaskListService {
         }
         List<UserInTeamRole> userlist = userInTeamRoleService.selectByUserIdNotDel(uid);
         ArrayList<Integer> teamIds = Lists.newArrayList();
-        for (int i = 0; i < userlist.size(); i++) {
-            if (!teamIds.contains(userlist.get(i).getTeamId())) {
-                teamIds.add(userlist.get(i).getTeamId());
+        for (UserInTeamRole userInTeamRole : userlist) {
+            if (!teamIds.contains(userInTeamRole.getTeamId())) {
+                teamIds.add(userInTeamRole.getTeamId());
             }
         }
         List<Team> teamlist = teamService.selectByTeamIdsNotDel(teamIds);
-        for (int j = 0; j < teamlist.size(); j++) {
+        for (Team team : teamlist) {
             ApiMineMsg.ApiMineTeamsMsg apiMineTeamsMsg = new ApiMineMsg().new ApiMineTeamsMsg();
-            apiMineTeamsMsg.setId(teamlist.get(j).getTeamId());
-            apiMineTeamsMsg.setTeam_name(teamlist.get(j).getTeamName());
-            apiMineTeamsMsg.setParent_team_id(teamlist.get(j).getParentTeamId());
-            apiMineTeamsMsg.setUpdate_at(DateUtil.datetimeToTimeStamp(teamlist.get(j).getUpdateAt()));
+            apiMineTeamsMsg.setId(team.getTeamId());
+            apiMineTeamsMsg.setTeam_name(team.getTeamName());
+            apiMineTeamsMsg.setParent_team_id(team.getParentTeamId());
+            apiMineTeamsMsg.setUpdate_at(DateUtil.datetimeToTimeStamp(team.getUpdateAt()));
             teams.add(apiMineTeamsMsg);
         }
         ArrayList<Integer> parentIds = Lists.newArrayList();
-        for (int j = 0; j < teamlist.size(); j++) {
-            if (teamlist.get(j).getTeamId() > 0) {
-                parentIds.add(teamlist.get(j).getTeamId());
+        for (Team team : teamlist) {
+            if (team.getTeamId() > 0) {
+                parentIds.add(team.getTeamId());
             }
         }
         Map<Integer, Team> parentMap = createTeamsMap(parentIds);
         for (Map.Entry<Integer, Team> entry : parentMap.entrySet()) {
-            for (int k = 0; k < teamlist.size(); k++) {
-                if (!entry.getKey().equals(teamlist.get(k).getTeamId())) {
+            for (Team team : teamlist) {
+                if (!entry.getKey().equals(team.getTeamId())) {
                     ApiMineMsg.ApiMineTeamsMsg apiMineTeamsMsg = new ApiMineMsg().new ApiMineTeamsMsg();
                     apiMineTeamsMsg.setId(entry.getValue().getTeamId());
                     apiMineTeamsMsg.setTeam_name(entry.getValue().getTeamName());

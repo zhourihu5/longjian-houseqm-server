@@ -66,6 +66,7 @@ public class TaskListServiceImpl implements ITaskListService {
     private String svrCfg;
     @Value("team_group_100194")
     private String teamGrop;
+    private static final String USER_IDS="user_ids";
 
     // 通过taskIds获取以任务为索引的问题累计统计的map
     @Override
@@ -177,20 +178,20 @@ public class TaskListServiceImpl implements ITaskListService {
                 HashMap<String, Object> assignTime = Maps.newHashMap();
                 String pushTime = DateUtil.dateToString(assignTimeMap.get(task.getTask_id()).getPushTime(), "yyyy-MM-dd HH:mm:ss");
                 assignTime.put("push_time", pushTime);
-                assignTime.put("user_ids", assignTimeMap.get(task.getTask_id()).getUserIds());
+                assignTime.put(USER_IDS, assignTimeMap.get(task.getTask_id()).getUserIds());
                 pushStrategy.put("assign_time", assignTime);
             }
             if (categoryOverdueMap.containsKey(task.getTask_id())) {
                 HashMap<String, Object> categoryOverdue = Maps.newHashMap();
                 categoryOverdue.put("category_keys", categoryOverdueMap.get(task.getTask_id()).getCategoryKeys());
-                categoryOverdue.put("user_ids", categoryOverdueMap.get(task.getTask_id()).getUserIds());
+                categoryOverdue.put(USER_IDS, categoryOverdueMap.get(task.getTask_id()).getUserIds());
                 pushStrategy.put("category_overdue", categoryOverdue);
             }
 
             if (categoryThresholdMap.containsKey(task.getTask_id())) {
                 HashMap<Object, Object> categoryThreshold = Maps.newHashMap();
                 categoryThreshold.put("category_keys", categoryThresholdMap.get(task.getTask_id()).getCategoryKeys());
-                categoryThreshold.put("user_ids", categoryThresholdMap.get(task.getTask_id()).getUserIds());
+                categoryThreshold.put(USER_IDS, categoryThresholdMap.get(task.getTask_id()).getUserIds());
                 categoryThreshold.put("threshold", categoryThresholdMap.get(task.getTask_id()).getThreshold());
                 pushStrategy.put("category_threshold", categoryThreshold);
             }
