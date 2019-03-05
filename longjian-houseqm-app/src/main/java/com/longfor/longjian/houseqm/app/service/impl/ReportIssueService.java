@@ -65,6 +65,7 @@ public class ReportIssueService {
     private static final String ISSUE="issue";
     private static final String  REFUNDMAP="refundMap";
     private static final String STATUS  ="status";
+    private static final String   START_VALUE="0001-01-01 00:00:00";
 
     public ReportIssueVo reportIssue(Integer uid, Integer projectId, String data) {
         ArrayList<ReportIssueVo.ApiHouseQmCheckTaskReportMsg> dropped = Lists.newArrayList();
@@ -148,7 +149,7 @@ public class ReportIssueService {
             }
             //    # log已加入需要新建的issue队列里面，则更新issue的信息
             if (issueInsertMap.containsKey(item.getIssue_uuid())) {
-                HouseQmCheckTaskIssue issue = (HouseQmCheckTaskIssue) issueInsertMap.get(item.getIssue_uuid());
+                HouseQmCheckTaskIssue issue =  issueInsertMap.get(item.getIssue_uuid());
                 // # 已经销项的问题不再能够修改
                 if (issue.getStatus().equals(CheckTaskIssueStatus.CheckYes.getValue())) {
                     ReportIssueVo.ApiHouseQmCheckTaskReportMsg msg = new ReportIssueVo().new ApiHouseQmCheckTaskReportMsg();
@@ -216,7 +217,7 @@ public class ReportIssueService {
 
         //  # 处理新增问题
         for (Map.Entry<String, HouseQmCheckTaskIssue> entry : issueInsertMap.entrySet()) {
-            HouseQmCheckTaskIssue issue = (HouseQmCheckTaskIssue) entry.getValue();
+            HouseQmCheckTaskIssue issue = entry.getValue();
             Integer res = houseQmCheckTaskIssueService.add(issue);
             if (res == null) {
                 log.info("insert new issue failed, data=" + JSON.toJSONString(issue) + "");
@@ -270,7 +271,7 @@ public class ReportIssueService {
 
         //  # 处理更新问题
         for (Map.Entry<Object, HouseQmCheckTaskIssue> entry : issueUpdateMap.entrySet()) {
-            HouseQmCheckTaskIssue issue = (HouseQmCheckTaskIssue) entry.getValue();
+            HouseQmCheckTaskIssue issue =entry.getValue();
             try {
                 houseQmCheckTaskIssueService.update(issue);
             } catch (Exception e) {
@@ -307,7 +308,7 @@ public class ReportIssueService {
                     notifyList.add(itemNotify);
                 }
             } else if (CheckTaskIssueStatus.ReformNoCheck.getValue().equals(issue.getStatus()) &&
-                    !CheckTaskIssueStatus.ReformNoCheck.getValue().equals(notifyStatMap.get(issue.getUuid()).get("status"))) {
+                    !CheckTaskIssueStatus.ReformNoCheck.getValue().equals(notifyStatMap.get(issue.getUuid()).get(STATUS))) {
                 ArrayList<Integer> desUserIds = getIssueCheckerList(checkerMap, issue, true);
                 pushList.addAll(desUserIds);
                 if (CollectionUtils.isNotEmpty(desUserIds)) {
@@ -729,7 +730,7 @@ public class ReportIssueService {
         issue.setRepairerId(0);
         issue.setRepairerFollowerIds("");
         issue.setLastRepairer(0);
-        issue.setLastRepairerAt(DateUtil.strToDate("0001-01-01 00:00:00", "yyyy-MM-dd-HH-mm-ss"));
+        issue.setLastRepairerAt(DateUtil.strToDate(START_VALUE, "yyyy-MM-dd-HH-mm-ss"));
         issue.setPlanEndOn(DateUtil.strToDate("1970-01-01 08:00:00 ","yyyy-MM-dd-HH-mm-ss"));//1970-01-01 08:00:00
         Integer newStatus = convertLogStatus(item.getStatus());
         if (newStatus > 0) {
@@ -791,10 +792,6 @@ public class ReportIssueService {
                 }
             }
             Map<String,Object> map = JSON.parseObject(issue.getDetail(), Map.class);
-            // # 编辑问题的detail字段
-            /*if (!detailInfo.getCheck_item_md5().equals("") || !detailInfo.getCheck_item_md5().equals("-1")) {
-                map.put(CHECKkITEM_MD5, detailInfo.getCheck_item_md5());
-            }*/
             if (detailInfo.getIssue_reason() != -1 || detailInfo.getIssue_reason() != 0) {
                 map.put(ISSUEREASON, detailInfo.getIssue_reason());
             }
@@ -959,10 +956,6 @@ public class ReportIssueService {
             } else {
                 Map<Integer, Map<Integer, Integer>> integerMapMap = resultDict.get(item.getTaskId());
                 if (!integerMapMap.containsKey(item.getUserId())) {
-
-/*
-                    resultDict.get(item.getTaskId()).get(item.getUserId()).put(item.getSquadId(), item.getCanApprove());
-*/
                     HashMap<Integer, Integer> map = Maps.newHashMap();
                     map.put(item.getSquadId(), item.getCanApprove());
                     resultDict.get(item.getTaskId()).put(item.getUserId(), map);
@@ -1234,7 +1227,7 @@ public class ReportIssueService {
     }
 
     private boolean datetimeZero(Date deleteAt) {
-        return deleteAt == null || new SimpleDateFormat(YMDHMS).format(deleteAt).equals("0001-01-01 00:00:00") || new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(deleteAt).equals("") || DateUtil.datetimeToTimeStamp(deleteAt) <= DateUtil.datetimeToTimeStamp(new Date(0));
+        return deleteAt == null || new SimpleDateFormat(YMDHMS).format(deleteAt).equals(START_VALUE) || new SimpleDateFormat(YMDHMS).format(deleteAt).equals("") || DateUtil.datetimeToTimeStamp(deleteAt) <= DateUtil.datetimeToTimeStamp(new Date(0));
 
     }
 

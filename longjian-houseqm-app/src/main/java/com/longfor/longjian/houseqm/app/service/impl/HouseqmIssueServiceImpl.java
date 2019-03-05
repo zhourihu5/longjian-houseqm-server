@@ -44,6 +44,7 @@ public class HouseqmIssueServiceImpl implements IHouseqmIssueService {
     @Resource
     private HouseQmCheckTaskIssueHelperVo helper;
     private Random rand;
+    private static final String STATUS="status";
 
     public HouseqmIssueServiceImpl() throws NoSuchAlgorithmException {
         rand = SecureRandom.getInstanceStrong();
