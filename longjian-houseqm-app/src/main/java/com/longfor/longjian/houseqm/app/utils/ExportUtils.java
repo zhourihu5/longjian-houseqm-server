@@ -278,7 +278,7 @@ public class ExportUtils {
     }
 
     // 导出 统计报告 -任务概况 -验房详情 导出excel 使用freemaker
-    public static void exportStatExcel(String templateName, Map<String, Object> data, HttpServletResponse response, HttpServletRequest request) throws IOException, TemplateException {
+    public static void exportStatExcel(String templateName, Map<String, Object> data, HttpServletResponse response) throws IOException, TemplateException {
         // 加载模板
         File file = new File("temp.xlsx");// 临时名称
         Configuration configuration = new Configuration();

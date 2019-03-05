@@ -8,6 +8,9 @@ import java.text.DecimalFormat;
  * @date 2018/12/19 0019 17:56
  */
 public class MathUtil {
+    private MathUtil(){
+
+    }
 
     /**
      * 用于taskDetail() 计算百分比

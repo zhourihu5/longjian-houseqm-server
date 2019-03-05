@@ -12,6 +12,9 @@ import java.util.stream.Stream;
  * @author zhouxingjia
  */
 public class StringUtil {
+    private StringUtil(){
+
+    }
 
     public static List<Integer> strToInts(String str, String split) {
         if (StringUtils.isBlank(str)) {

@@ -15,6 +15,8 @@ import java.util.stream.Stream;
  * @date 2018/12/19 0019 16:56
  */
 public class StringSplitToListUtil {
+    private StringSplitToListUtil(){
+    }
 
     private static final String IS_NUM = "^[-\\+]?[\\d]*$";
 
