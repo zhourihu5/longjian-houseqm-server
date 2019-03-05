@@ -1,4 +1,4 @@
-package com.longfor.longjian.houseqm.domain.internalservice.impl;
+package com.longfor.longjian.houseqm.domain.internalService.impl;
 
 import com.github.pagehelper.PageHelper;
 import com.google.common.collect.Lists;

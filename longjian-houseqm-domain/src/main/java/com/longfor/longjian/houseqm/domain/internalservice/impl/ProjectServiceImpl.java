@@ -1,4 +1,4 @@
-package com.longfor.longjian.houseqm.domain.internalservice.impl;
+package com.longfor.longjian.houseqm.domain.internalService.impl;
 
 import com.longfor.gaia.gfs.data.mybatis.datasource.LFAssignDataSource;
 import com.longfor.longjian.houseqm.dao.zj2db.ProjectMapper;

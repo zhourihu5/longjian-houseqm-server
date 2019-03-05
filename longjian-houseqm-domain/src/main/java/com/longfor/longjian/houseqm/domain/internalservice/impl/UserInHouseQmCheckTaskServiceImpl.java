@@ -1,4 +1,4 @@
-package com.longfor.longjian.houseqm.domain.internalservice.impl;
+package com.longfor.longjian.houseqm.domain.internalService.impl;
 
 import com.google.common.collect.Lists;
 import com.longfor.gaia.gfs.data.mybatis.datasource.LFAssignDataSource;
@@ -224,10 +224,12 @@ public class UserInHouseQmCheckTaskServiceImpl implements UserInHouseQmCheckTask
 
     @Override
     @LFAssignDataSource("zhijian2")
-    public List<UserInHouseQmCheckTask> selectByTaskIdInAndRoleTypeNotDel(List<Integer> taskIds, Integer value) {
+    public List<UserInHouseQmCheckTask> selectByTaskIdInAndRoleTypeNotDel(List<Integer> taskIds, Integer value,Integer key) {
         Example example = new Example(UserInHouseQmCheckTask.class);
         Example.Criteria criteria = example.createCriteria();
-        criteria.andIn("taskId", taskIds).andEqualTo("roleType", value).andIsNull("deleteAt");
+        criteria.andIn("taskId", taskIds).andEqualTo("roleType", value)
+                .andEqualTo("adminerStatus",key)
+                .andIsNull("deleteAt");
         return userInHouseQmCheckTaskMapper.selectByExample(example);
     }
 

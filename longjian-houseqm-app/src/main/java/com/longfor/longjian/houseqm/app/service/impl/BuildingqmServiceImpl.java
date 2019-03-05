@@ -1163,7 +1163,7 @@ public class BuildingqmServiceImpl implements IBuildingqmService {
         });
         //     # 处理退单情况融合推送
         for (Map.Entry<HouseQmCheckTaskIssue, ApiRefundInfo> entry : refundMap.entrySet()) {
-            List<Integer> desUserIds = getIssueCheckerList(checkerMap, entry.getKey(), null);
+            List<Integer> desUserIds = getIssueCheckerList(checkerMap, entry.getKey(), false);
             if (CollectionUtils.isNotEmpty(desUserIds)) {
                 HouseQmCheckTaskNotifyRecord itemNotify = new HouseQmCheckTaskNotifyRecord();
                 itemNotify.setProjectId(entry.getKey().getProjectId());
@@ -1359,8 +1359,8 @@ public class BuildingqmServiceImpl implements IBuildingqmService {
         ArrayList<Object> squadIds = Lists.newArrayList();
         Map<Integer, Integer> map = checkerMap.get(issue.getTaskId()).get(issue.getSenderId());
         for (Map.Entry<Integer, Integer> entry : map.entrySet()) {
-            if (squadIds.contains(entry.getKey())) {
-                squadIds.add(entry.getValue());
+            if (!squadIds.contains(entry.getKey())) {
+                squadIds.add(entry.getKey());
             }
         }
         if (CollectionUtils.isEmpty(squadIds)) {//如果创建者属于检查人组
@@ -1397,7 +1397,7 @@ public class BuildingqmServiceImpl implements IBuildingqmService {
             return reassignIssue(issueRoleMap, issue, item);
         }
         //  # 如果是退单情况
-        if (b == null && convertLogStatus(item.getStatus()).equals(CheckTaskIssueStatus.NoteNoAssign.getValue()) && issue.getStatus().equals(CheckTaskIssueStatus.AssignNoReform.getValue())) {
+        if (!b  && convertLogStatus(item.getStatus()).equals(CheckTaskIssueStatus.NoteNoAssign.getValue()) && issue.getStatus().equals(CheckTaskIssueStatus.AssignNoReform.getValue())) {
             log.info("refund issue");
             if (issue.getRepairerId() > 0 && issue.getSenderId() > 0) {
                 ApiRefundInfo info = new ApiRefundInfo();
@@ -1525,11 +1525,11 @@ public class BuildingqmServiceImpl implements IBuildingqmService {
     }
 
     private Map<String, Object> refundIssue(HashMap<String, ApiUserRoleInIssue> issueRoleMap, HouseQmCheckTaskIssue issue, ApiHouseQmCheckTaskIssueLogInfo item) {
-        /*issue.setRepairerId(0);
+        issue.setRepairerId(0);
         issue.setRepairerFollowerIds("");
         issue.setLastRepairer(0);
         issue.setLastRepairerAt(DateUtil.strToDate("0001-01-01 00:00:00", "yyyy-MM-dd-HH-mm-ss"));
-        issue.setPlanEndOn(new Date());//1970-01-01 08:00:00 */
+        issue.setPlanEndOn(DateUtil.strToDate("1970-01-01 08:00:00 ","yyyy-MM-dd-HH-mm-ss"));//1970-01-01 08:00:00
         Integer newStatus = convertLogStatus(item.getStatus());
         if (newStatus > 0) {
             issue.setStatus(newStatus);
@@ -1618,11 +1618,11 @@ public class BuildingqmServiceImpl implements IBuildingqmService {
     }
 
     private Map<String, Object> reassignIssue(HashMap<String, ApiUserRoleInIssue> issueRoleMap, HouseQmCheckTaskIssue issue, ApiHouseQmCheckTaskIssueLogInfo item) {
-        /*issue.setRepairerId(0);
+        issue.setRepairerId(0);
         issue.setRepairerFollowerIds("");
         issue.setLastRepairer(0);
         issue.setLastRepairerAt(DateUtil.strToDate("0001-01-01 00:00:00", "yyyy-MM-dd-HH-mm-ss"));
-        issue.setPlanEndOn(new Date()); // 1970-01-01 08:00:00 */
+        issue.setPlanEndOn(DateUtil.strToDate("1970-01-01 08:00:00 ","yyyy-MM-dd-HH-mm-ss"));//1970-01-01 08:00:00
         List<ApiHouseQmCheckTaskIssueLogInfo.ApiHouseQmCheckTaskIssueLogDetailInfo> detail = item.getDetail();
         detail.forEach(detailInfo -> {
             if (!detailInfo.getCategory_key().equals("-1")) {
@@ -1739,7 +1739,7 @@ public class BuildingqmServiceImpl implements IBuildingqmService {
         if (CollectionUtils.isEmpty(taskIds)) {
             return Maps.newHashMap();
         }
-        List<UserInHouseQmCheckTask> lst = userInHouseQmCheckTaskService.selectByTaskIdInAndRoleTypeNotDel(taskIds, CheckTaskRoleType.Checker.getValue());
+        List<UserInHouseQmCheckTask> lst = userInHouseQmCheckTaskService.selectByTaskIdInAndRoleTypeNotDel(taskIds, CheckTaskRoleType.Checker.getValue(),HouseQmCheckTaskAdminerType.NO.getKey());
         HashMap<Integer, Map<Integer, Map<Integer, Integer>>> resultDict = Maps.newHashMap();
         lst.forEach(item -> {
             if (!resultDict.containsKey(item.getTaskId())) {
