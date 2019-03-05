@@ -14,7 +14,6 @@ import com.longfor.longjian.houseqm.app.vo.export.ProjectIssueInfo;
 import com.longfor.longjian.houseqm.app.vo.export.ProjectOrdersVo;
 import com.longfor.longjian.houseqm.app.vo.houseqm.HouseqmExportVo;
 import com.longfor.longjian.houseqm.consts.CategoryClsTypeEnum;
-import com.longfor.longjian.houseqm.domain.internalservice.*;
 import com.longfor.longjian.houseqm.po.zhijian2_apisvr.User;
 import com.longfor.longjian.houseqm.po.zj2db.*;
 import com.longfor.longjian.houseqm.util.CollectionUtil;
@@ -34,21 +33,21 @@ import java.util.stream.Collectors;
 public class HouseqmExportServiceImpl implements IHouseqmExportService {
 
     @Resource
-    private AreaService areaService;
+    private com.longfor.longjian.houseqm.domain.internalservice.AreaService areaService;
     @Resource
     private IHouseqmStatisticService houseqmStatisticService;
     @Resource
-    private HouseQmCheckTaskIssueService houseQmCheckTaskIssueService;
+    private com.longfor.longjian.houseqm.domain.internalservice.HouseQmCheckTaskIssueService houseQmCheckTaskIssueService;
     @Resource
-    private ProjectSettingService projectSettingService;
+    private com.longfor.longjian.houseqm.domain.internalservice.ProjectSettingService projectSettingService;
     @Resource
-    private UserService userService;
+    private com.longfor.longjian.houseqm.domain.internalservice.UserService userService;
     @Resource
-    private CategoryV3Service categoryV3Service;
+    private com.longfor.longjian.houseqm.domain.internalservice.CategoryV3Service categoryV3Service;
     @Resource
-    private ProjectService projectService;
+    private com.longfor.longjian.houseqm.domain.internalservice.ProjectService projectService;
     @Resource
-    private HouseOwnerInfoService houseOwnerInfoService;
+    private com.longfor.longjian.houseqm.domain.internalservice.HouseOwnerInfoService houseOwnerInfoService;
 
     @Override
     public List<ProjectOrdersVo> searchProjectOrdersByProjIdTaskIdAreaIdsRepairedIdBeginOnEndOn(Integer projectId, Integer taskId, List<Integer> areaIds, Integer repairerId, Date beginOn, Date endOn, Integer categoryCls) {

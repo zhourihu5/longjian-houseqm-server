@@ -8,10 +8,13 @@ import com.longfor.longjian.houseqm.po.zj2db.HouseQmCheckTaskNotifyRecord;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import tk.mybatis.mapper.entity.Example;
 
 import javax.annotation.Resource;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
+import java.util.Map;
 
 /**
  * Created by Dongshun on 2019/1/11.
@@ -41,6 +44,21 @@ public class HouseQmCheckTaskNotifyRecordServiceImpl implements HouseQmCheckTask
             record.setUpdateAt(new Date());
         }
         houseQmCheckTaskNotifyRecordMapper.insertList(dataSource);
+    }
+
+    @Override
+    @LFAssignDataSource("zhijian2")
+    public List<HouseQmCheckTaskNotifyRecord> findExample(Map<String,Object> map, List<Integer> statusList) {
+
+        Example example = new Example(HouseQmCheckTaskNotifyRecord.class);
+        example.createCriteria()
+                .andEqualTo("moduleId",map.get("moduleId"))
+                .andIn("issueStatus", statusList)
+                .andGreaterThan("createAt",map.get("statBeg"))
+                .andLessThanOrEqualTo("createAt",map.get("statEnd"))
+                .andIsNull("deleteAt");
+
+        return houseQmCheckTaskNotifyRecordMapper.selectByExample(example);
     }
 
     @Override

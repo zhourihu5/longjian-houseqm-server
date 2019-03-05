@@ -13,7 +13,6 @@ import com.longfor.longjian.houseqm.app.vo.*;
 import com.longfor.longjian.houseqm.app.vo.houseqmstatistic.TaskIssueRepairListVo;
 import com.longfor.longjian.houseqm.app.vo.houseqmstatisticapp.*;
 import com.longfor.longjian.houseqm.consts.*;
-import com.longfor.longjian.houseqm.domain.internalservice.*;
 import com.longfor.longjian.houseqm.dto.HouseQmCheckTaskIssueDto;
 import com.longfor.longjian.houseqm.dto.HouseQmCheckTaskIssueListDto;
 import com.longfor.longjian.houseqm.dto.RepossessionStatusCompleteDailyCountDto;
@@ -53,39 +52,39 @@ public class HouseqmStatisticServiceImpl implements IHouseqmStatisticService {
     private static final String ERROR = "error:";
     private static final String YYYY_MM_DD = "yyyy-MM-dd";
     @Resource
-    HouseQmCheckTaskIssueService houseQmCheckTaskIssueService;
+    com.longfor.longjian.houseqm.domain.internalservice.HouseQmCheckTaskIssueService houseQmCheckTaskIssueService;
     @Resource
-    HouseQmCheckTaskService houseQmCheckTaskService;
+    com.longfor.longjian.houseqm.domain.internalservice.HouseQmCheckTaskService houseQmCheckTaskService;
     @Resource
     IHouseqmService iHouseqmService;
     @Resource
     HouseqmStaticService houseqmStaticService;
     @Resource
-    AreaService areaService;
+    com.longfor.longjian.houseqm.domain.internalservice.AreaService areaService;
     @Resource
-    CategoryService categoryService;
+    com.longfor.longjian.houseqm.domain.internalservice.CategoryService categoryService;
     @Resource
-    CheckItemService checkItemService;
+    com.longfor.longjian.houseqm.domain.internalservice.CheckItemService checkItemService;
     @Resource
-    FileResourceService fileService;
+    com.longfor.longjian.houseqm.domain.internalservice.FileResourceService fileService;
     @Resource
-    FileResourceService fileResourceService;
+    com.longfor.longjian.houseqm.domain.internalservice.FileResourceService fileResourceService;
     @Resource
-    CategoryV3Service categoryV3Service;
+    com.longfor.longjian.houseqm.domain.internalservice.CategoryV3Service categoryV3Service;
     @Resource
-    CheckItemV3Service checkItemV3Service;
+    com.longfor.longjian.houseqm.domain.internalservice.CheckItemV3Service checkItemV3Service;
     @Resource
-    RepossessionStatusService repossessionStatusService;
+    com.longfor.longjian.houseqm.domain.internalservice.RepossessionStatusService repossessionStatusService;
     @Resource
-    private UserInProjectService iUserInProjectService;
+    private com.longfor.longjian.houseqm.domain.internalservice.UserInProjectService iUserInProjectService;
     @Resource
-    private UserInHouseQmCheckTaskService userInHouseQmCheckTaskService;
+    private com.longfor.longjian.houseqm.domain.internalservice.UserInHouseQmCheckTaskService userInHouseQmCheckTaskService;
     @Resource
-    private ProjectService projectService;
+    private com.longfor.longjian.houseqm.domain.internalservice.ProjectService projectService;
     @Resource
-    private TeamService teamService;
+    private com.longfor.longjian.houseqm.domain.internalservice.TeamService teamService;
     @Resource
-    private UserService userService;
+    private com.longfor.longjian.houseqm.domain.internalservice.UserService userService;
 
     /**
      * 判断某个字符串出现的次数
