@@ -286,8 +286,8 @@ public class ReportIssueService {
                     pushList.add(issue.getRepairerId());
                 }
                 List<Integer> idsComma = StringSplitToListUtil.splitToIdsComma(issue.getRepairerFollowerIds(), ",");
+                List splitToIdsComma = (List) notifyStatMap.get(issue.getUuid()).get("repairerFollowerIds");
                 idsComma.forEach(user -> {
-                    List splitToIdsComma = (List) notifyStatMap.get(issue.getUuid()).get("repairerFollowerIds");
                     if (user > 0 && (!splitToIdsComma.contains(user) || CheckTaskIssueStatus.ReformNoCheck.getValue().equals(notifyStatMap.get(issue.getUuid()).get(STATUS)))) {
                         desUserIds.add(user);
                         pushList.add(user);
