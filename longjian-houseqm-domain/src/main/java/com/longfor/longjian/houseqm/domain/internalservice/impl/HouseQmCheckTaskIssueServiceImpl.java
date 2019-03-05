@@ -296,21 +296,11 @@ public class HouseQmCheckTaskIssueServiceImpl implements HouseQmCheckTaskIssueSe
     public List<HouseQmCheckTaskIssueAreaGroupModel> selectByTaskIdAndTyeIn(Integer taskId, List<Integer> types) {
         return houseQmCheckTaskIssueMapper.selectByTaskIdAndTyeIn(taskId, types, FALSE);
     }
-
-    /**
-     * @param taskId
-     * @param areaPathLike
-     * @return
-     */
     @LFAssignDataSource("zhijian2")
     public List<HouseQmCheckTaskIssueAreaGroupModel> selectHouseQmCheckTaskIssueAreaGroupModelByTaskIdAndAreaPathAndIdLike(Integer taskId, String areaPathLike) {
         return houseQmCheckTaskIssueMapper.selectHouseQmCheckTaskIssueAreaGroupModelByTaskIdAndAreaPathAndIdLike(taskId, areaPathLike, FALSE);
     }
 
-    /**
-     * @param taskId
-     * @return
-     */
     @LFAssignDataSource("zhijian2")
     public List<HouseQmCheckTaskIssueAreaGroupModel> selectByTaskId(Integer taskId) {
         return houseQmCheckTaskIssueMapper.selectByTaskId(taskId, FALSE);
@@ -356,7 +346,7 @@ public class HouseQmCheckTaskIssueServiceImpl implements HouseQmCheckTaskIssueSe
         } catch (Exception e) {
             log.error("error:" + e);
         }
-        return null;
+        return Lists.newArrayList();
     }
 
     @Override
@@ -557,7 +547,6 @@ public class HouseQmCheckTaskIssueServiceImpl implements HouseQmCheckTaskIssueSe
         if (CollectionUtils.isNotEmpty(issueUuids)) {
             criteria1.orIn(UUID, issueUuids);
         }
-        //example.and(criteria);
         example.and(criteria1);
         ExampleUtil.addDeleteAtJudge(example);
         example.orderBy(ID).asc();
@@ -574,9 +563,7 @@ public class HouseQmCheckTaskIssueServiceImpl implements HouseQmCheckTaskIssueSe
         Example.Criteria criteria = example.createCriteria();
         if (CollectionUtils.isNotEmpty(userIds)) criteria.andIn(SENDER_ID, userIds);
         Example.Criteria criteria1 = example.createCriteria();
-        //criteria1.andEqualTo(TASK_ID, task_id);
         if (CollectionUtils.isNotEmpty(issueUuids)) criteria1.andEqualTo(TASK_ID, taskId).andIn(UUID, issueUuids);
-        //example.and(criteria);
         example.or(criteria1);
         return houseQmCheckTaskIssueMapper.selectByExample(example);
     }
@@ -689,7 +676,6 @@ public class HouseQmCheckTaskIssueServiceImpl implements HouseQmCheckTaskIssueSe
         issue.setUpdateAt(new Date());
         issue.setCreateAt(new Date());
         issue.setClientCreateAt(new Date());
-        //int affect = houseQmCheckTaskIssueMapper.insert(issue);
         houseQmCheckTaskIssueMapper.insert(issue);
 
         return issue.getId();

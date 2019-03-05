@@ -90,9 +90,6 @@ public class HouseQmCheckTaskIssueLogServiceImpl implements HouseQmCheckTaskIssu
             userInHouseQmCheckTaskSearchSquadIdsList.forEach(userInHouseQmCheckTask -> userIds.add(userInHouseQmCheckTask.getUserId()));
             if (CollectionUtils.isEmpty(userIds)) userIds.add(userId);
             houseQmCheckTaskIssueLogs = houseQmCheckTaskIssueLogMapper.searchHouseQmCheckTaskIssueLogByMyIdTaskIdLastIdUpdateAtGt(userId, userIds, taskId, lastId, timestamp, start, limit);
-           /* houseQmCheckTaskIssueLogs.forEach(houseQmCheckTaskIssueLog -> {
-                System.out.println(houseQmCheckTaskIssueLog.getId());
-            });*/
         } catch (Exception e) {
             log.error(e.getMessage());
         }
@@ -114,12 +111,10 @@ public class HouseQmCheckTaskIssueLogServiceImpl implements HouseQmCheckTaskIssu
         Example.Criteria criteria2 = example.createCriteria();
         criteria2.andGreaterThan("updateAt", issueLogUpdateTime);
 
-        //example.and(criteria);
         example.and(criteria1);
         example.and(criteria2);
         ExampleUtil.addDeleteAtJudge(example);
         example.orderBy("id").desc();
-        //List<HouseQmCheckTaskIssueLog> result = houseQmCheckTaskIssueLogMapper.selectByExample(example);
         //限制 返回值数据条数
         RowBounds rowBounds = new RowBounds(0, 2);
         List<HouseQmCheckTaskIssueLog> result = houseQmCheckTaskIssueLogMapper.selectByExampleAndRowBounds(example, rowBounds);

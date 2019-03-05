@@ -18,12 +18,7 @@ import java.util.Date;
 import java.util.List;
 
 /**
- * @ProjectName: longjian-houseqm-server
- * @Package: com.longfor.longjian.houseqm.app.controller
- * @ClassName: HouseqmExportController
- * @Description: java类作用描述
- * @Author: hy
- * @CreateDate: 2019/1/12 19:36
+ * @deprecated  类废弃
  */
 @RestController
 @RequestMapping("oapi/v3/houseqm/export/")
@@ -35,15 +30,9 @@ public class HouseqmExportController {
     @Resource
     private IHouseqmExportService iHouseqmExportService;
 
-
     /**
-     * @return com.longfor.longjian.common.base.LjBaseResponse
-     * ////该接口不用了，废弃
-     * @Author hy
-     * @Description 工程处理单导出
-     * @Date 10:08 2019/1/14
-     * @Param [req]
-     **/
+     * @deprecated  接口废弃
+     */
     @Deprecated
     @GetMapping(value = "project_orders", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     public LjBaseResponse projectOrders(ProjectOrdersReq req, HttpServletResponse resp) {

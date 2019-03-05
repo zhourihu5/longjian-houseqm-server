@@ -29,14 +29,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
-/**
- * @ProjectName: longjian-houseqm-server
- * @Package: com.longfor.longjian.houseqm.app.vo
- * @ClassName: HouseQmCheckTaskIssueHelperVo
- * @Description: java类作用描述
- * @Author: hy
- * @CreateDate: 2019/1/11 15:09
- */
+
 @Component
 @Data
 @Slf4j
