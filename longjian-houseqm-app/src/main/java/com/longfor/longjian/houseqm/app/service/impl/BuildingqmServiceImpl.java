@@ -419,8 +419,8 @@ public class BuildingqmServiceImpl implements IBuildingqmService {
         String planEndOn= (String) paramMap.get("planEndOn");
         ConfigVo config= (ConfigVo) paramMap.get("config");*/
         TaskEditReq taskEditReq= (TaskEditReq) paramMap.get("taskEditReq");
-        List<ApiBuildingQmTaskMemberGroupVo> checkerGroups= (List<ApiBuildingQmTaskMemberGroupVo>) paramMap.get("checkerGroups");
-        List<ApiBuildingQmTaskMemberGroupVo> repairerGroups= (List<ApiBuildingQmTaskMemberGroupVo>) paramMap.get("repairerGroups");
+        List<ApiBuildingQmTaskMemberGroupVo> checkerGroups= (List<ApiBuildingQmTaskMemberGroupVo>) paramMap.get(CHECKER_GROUPS);
+        List<ApiBuildingQmTaskMemberGroupVo> repairerGroups= (List<ApiBuildingQmTaskMemberGroupVo>) paramMap.get(REPAIR_GROUPS);
 
         checkSquads(checkerGroupsDel, checkerGroupsEdit, checkerGroupsAdd, taskEditReq, checkerGroups);
         compareSquadCheckers(needUpdateCheckTaskSquadUser, needInsertCheckTaskSquadUser, checkerGroups, checkerGroupsDel, doNotNeedDeleteSquaduserPkId, taskEditReq);
@@ -856,13 +856,13 @@ public class BuildingqmServiceImpl implements IBuildingqmService {
         ConfigVo config = (ConfigVo) map.get(CONFIG);
         paramMap.put("uid",uid);
         paramMap.put("taskEditReq",taskEditReq);
-        paramMap.put("areaIds",map.get(AREA_IDS));
-        paramMap.put("areaTypes",map.get(AREA_TYPES));
-        paramMap.put("planBeginOn",map.get(PLAN_BEGIN_ON));
-        paramMap.put("planEndOn",map.get(PLAN_END_ON));
-        paramMap.put("checkerGroups",map.get(CHECKER_GROUPS));
-        paramMap.put("repairerGroups",map.get(REPAIR_GROUPS));
-        paramMap.put("config",config);
+        paramMap.put(AREA_IDS,map.get(AREA_IDS));
+        paramMap.put(AREA_TYPES,map.get(AREA_TYPES));
+        paramMap.put(PLAN_BEGIN_ON,map.get(PLAN_BEGIN_ON));
+        paramMap.put(PLAN_END_ON,map.get(PLAN_END_ON));
+        paramMap.put(CHECKER_GROUPS,map.get(CHECKER_GROUPS));
+        paramMap.put(REPAIR_GROUPS,map.get(REPAIR_GROUPS));
+        paramMap.put(CONFIG,config);
 
         beforeExecute(checkerGroupsAdd, checkerGroupsEdit, checkerGroupsDel, needInsertCheckTaskSquadUser, needUpdateCheckTaskSquadUser, doNotNeedDeleteSquaduserPkId, paramMap);
         //    # 更新验房任务
