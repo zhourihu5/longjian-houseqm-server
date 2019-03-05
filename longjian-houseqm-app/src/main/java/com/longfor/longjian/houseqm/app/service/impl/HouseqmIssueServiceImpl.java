@@ -70,13 +70,51 @@ public class HouseqmIssueServiceImpl implements IHouseqmIssueService {
         for (HouseQmCheckTaskIssue issue : issues) {
             String uuid = UUID.randomUUID().toString().replace("-", "");
             int nowTimestamp = DateUtil.datetimeToTimeStamp(new Date());
+
+            Map<String,Object>map=new HashMap<>();
+            map.put("taskId",issue.getTaskId());
+            map.put("uuid",uuid);
+            map.put("issueUUId",issue.getUuid());
+            map.put("senderId",senderId);
+            map.put("desc",desc);
+            map.put("eStr1",eStr);
+            map.put("nowTimestamp",nowTimestamp);
+            map.put("eStr2",eStr);
+
+
+            Map<String,Object>detailMap=new HashMap<>();
+            detailMap.put("areaId",eInt);
+            detailMap.put("posX",eInt);
+            detailMap.put("posY",eInt);
+            detailMap.put("planEndOn",eInt);
+            detailMap.put("endOn",eInt);
+            detailMap.put("repairerId",eInt);
+            detailMap.put("repairerFollowerIds",eStr);
+            detailMap.put("condition",eInt);
+            detailMap.put("categoryCls",eInt);
+            detailMap.put("checkItemKey",eStr);
+            detailMap.put("categoryKey",eStr);
+            detailMap.put("drawingMd5",eStr);
+            detailMap.put("issueReason",eInt);
+            detailMap.put("issueReasonDetail",eStr);
+            detailMap.put("issueSuggest",eStr);
+            detailMap.put("potentialRisk",eStr);
+            detailMap.put("preventiveActionDetail",eStr);
+            detailMap.put("removeMemoAudioMd5List",eStr);
+            detailMap.put("typ",eInt);
+
             if (HouseQmCheckTaskIssueCheckStatusEnum.CheckYes.getId().equals(status)) {
+
+                map.put("status",HouseQmCheckTaskIssueStatusEnum.CheckYes.getId());
+                map.put("str",eStr);
                 // 审核通过
-                helper.start().setNormalField(issue.getTaskId(), uuid, issue.getUuid(), senderId, desc, HouseQmCheckTaskIssueStatusEnum.CheckYes.getId(), eStr, eStr, nowTimestamp, eStr).
-                        setDetailField(eInt, eInt, eInt, eInt, eInt, eInt, eStr, eInt, eInt, eStr, eStr, eStr, eInt, eStr, eStr, eStr, eStr, eStr, eInt).done();
+                helper.start().setNormalField(map).
+                        setDetailField(detailMap).done();
             } else if (HouseQmCheckTaskIssueCheckStatusEnum.CheckNo.getId().equals(status)) {
-                helper.start().setNormalField(issue.getTaskId(), uuid, issue.getUuid(), senderId, desc, HouseQmCheckTaskIssueStatusEnum.AssignNoReform.getId(), attachmentMd5List, eStr, nowTimestamp, eStr).
-                        setDetailField(eInt, eInt, eInt, eInt, eInt, eInt, eStr, eInt, eInt, eStr, eStr, eStr, eInt, eStr, eStr, eStr, eStr, eStr, eInt).done();
+                map.put("status",HouseQmCheckTaskIssueCheckStatusEnum.CheckNo.getId());
+                map.put("str",attachmentMd5List);
+                helper.start().setNormalField(map).
+                        setDetailField(detailMap).done();
             }
         }
         try {
@@ -120,8 +158,43 @@ public class HouseqmIssueServiceImpl implements IHouseqmIssueService {
             // 变更类型
             String uuid = UUID.randomUUID().toString().replace("-", "");
             int nowTimestamp = DateUtil.datetimeToTimeStamp(new Date());
-            helper.start().setNormalField(issue.getTaskId(), uuid, issue.getUuid(), senderId, eStr, status, eStr, eStr, nowTimestamp, eStr)
-                    .setDetailField(eInt, eInt, eInt, planEndOn, eInt, repairerId, issueRepairerFollowerIds, eInt, eInt, eStr, eStr, eStr, eInt, eStr, eStr, eStr, eStr, eStr, eInt).done();
+
+            Map<String,Object>map=new HashMap<>();
+            map.put("taskId",issue.getTaskId());
+            map.put("uuid",uuid);
+            map.put("issueUUId",issue.getUuid());
+            map.put("senderId",senderId);
+            map.put("desc",eStr);
+            map.put("eStr1",eStr);
+            map.put("nowTimestamp",nowTimestamp);
+            map.put("eStr2",eStr);
+            map.put("status",status);
+            map.put("str",eStr);
+
+
+            Map<String,Object>detailMap=new HashMap<>();
+            detailMap.put("areaId",eInt);
+            detailMap.put("posX",eInt);
+            detailMap.put("posY",eInt);
+            detailMap.put("planEndOn",planEndOn);
+            detailMap.put("endOn",eInt);
+            detailMap.put("repairerId",repairerId);
+            detailMap.put("repairerFollowerIds",issueRepairerFollowerIds);
+            detailMap.put("condition",eInt);
+            detailMap.put("categoryCls",eInt);
+            detailMap.put("checkItemKey",eStr);
+            detailMap.put("categoryKey",eStr);
+            detailMap.put("drawingMd5",eStr);
+            detailMap.put("issueReason",eInt);
+            detailMap.put("issueReasonDetail",eStr);
+            detailMap.put("issueSuggest",eStr);
+            detailMap.put("potentialRisk",eStr);
+            detailMap.put("preventiveActionDetail",eStr);
+            detailMap.put("removeMemoAudioMd5List",eStr);
+            detailMap.put("typ",eInt);
+
+            helper.start().setNormalField(map)
+                    .setDetailField(detailMap).done();
         }
         try {
             helper.execute();

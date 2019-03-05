@@ -287,8 +287,8 @@ public class ReportIssueService {
                     pushList.add(issue.getRepairerId());
                 }
                 List<Integer> idsComma = StringSplitToListUtil.splitToIdsComma(issue.getRepairerFollowerIds(), ",");
+                List splitToIdsComma = (List) notifyStatMap.get(issue.getUuid()).get("repairerFollowerIds");
                 idsComma.forEach(user -> {
-                    List splitToIdsComma = (List) notifyStatMap.get(issue.getUuid()).get("repairerFollowerIds");
                     if (user > 0 && (!splitToIdsComma.contains(user) || CheckTaskIssueStatus.ReformNoCheck.getValue().equals(notifyStatMap.get(issue.getUuid()).get(STATUS)))) {
                         desUserIds.add(user);
                         pushList.add(user);
@@ -815,11 +815,12 @@ public class ReportIssueService {
     }
 
     private Map<String, Object> reassignIssue(HashMap<String, ApiUserRoleInIssue> issueRoleMap, HouseQmCheckTaskIssue issue, ApiHouseQmCheckTaskIssueLogInfo item) {
-        issue.setRepairerId(0);
+    /*   issue.setRepairerId(0);
         issue.setRepairerFollowerIds("");
         issue.setLastRepairer(0);
         issue.setLastRepairerAt(DateUtil.strToDate(START_VALUE, "yyyy-MM-dd-HH-mm-ss"));
         issue.setPlanEndOn(DateUtil.strToDate("1970-01-01 08:00:00 ","yyyy-MM-dd-HH-mm-ss"));//1970-01-01 08:00:00
+*/
         List<ApiHouseQmCheckTaskIssueLogInfo.ApiHouseQmCheckTaskIssueLogDetailInfo> detail = item.getDetail();
         detail.forEach(detailInfo -> {
             if (!detailInfo.getCategory_key().equals("-1")) {

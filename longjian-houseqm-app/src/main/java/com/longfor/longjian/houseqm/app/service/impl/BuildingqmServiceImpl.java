@@ -412,15 +412,15 @@ public class BuildingqmServiceImpl implements IBuildingqmService {
     }
 
     private void beforeExecute(List<ApiBuildingQmTaskMemberGroupVo> checkerGroupsAdd, List<ApiBuildingQmTaskMemberGroupVo> checkerGroupsEdit, List<Object> checkerGroupsDel, List<ApiBuildingQmTaskMemberInsertVo> needInsertCheckTaskSquadUser, List<UserInHouseQmCheckTask> needUpdateCheckTaskSquadUser, Map doNotNeedDeleteSquaduserPkId,Map<String,Object> paramMap) {
-        Integer uid = (Integer) paramMap.get("uid");
-        TaskEditReq taskEditReq= (TaskEditReq) paramMap.get("taskEditReq");
+      /*  Integer uid = (Integer) paramMap.get("uid");
         List<Integer> areaIds= (List<Integer>) paramMap.get("areaIds");
         List<Integer> areaTypes= (List<Integer>) paramMap.get("areaTypes");
         String planBeginOn= (String) paramMap.get("planBeginOn");
         String planEndOn= (String) paramMap.get("planEndOn");
-        List<ApiBuildingQmTaskMemberGroupVo> checkerGroups= (List<ApiBuildingQmTaskMemberGroupVo>) paramMap.get("checkerGroups");
-        List<ApiBuildingQmTaskMemberGroupVo> repairerGroups= (List<ApiBuildingQmTaskMemberGroupVo>) paramMap.get("repairerGroups");
-        ConfigVo config= (ConfigVo) paramMap.get("config");
+        ConfigVo config= (ConfigVo) paramMap.get("config");*/
+        TaskEditReq taskEditReq= (TaskEditReq) paramMap.get("taskEditReq");
+        List<ApiBuildingQmTaskMemberGroupVo> checkerGroups= (List<ApiBuildingQmTaskMemberGroupVo>) paramMap.get(CHECKER_GROUPS);
+        List<ApiBuildingQmTaskMemberGroupVo> repairerGroups= (List<ApiBuildingQmTaskMemberGroupVo>) paramMap.get(REPAIR_GROUPS);
 
         checkSquads(checkerGroupsDel, checkerGroupsEdit, checkerGroupsAdd, taskEditReq, checkerGroups);
         compareSquadCheckers(needUpdateCheckTaskSquadUser, needInsertCheckTaskSquadUser, checkerGroups, checkerGroupsDel, doNotNeedDeleteSquaduserPkId, taskEditReq);
@@ -851,19 +851,18 @@ public class BuildingqmServiceImpl implements IBuildingqmService {
         List<UserInHouseQmCheckTask> needUpdateCheckTaskSquadUser = Lists.newArrayList();
         Map<Object, Object> doNotNeedDeleteSquaduserPkId = Maps.newHashMap();
         Map<String, Object> paramMap = Maps.newHashMap();
-        //(Date) paramMap, (Date) paramMap., (List<Integer>) paramMap.get(AREA_IDS), (List<Integer>) paramMap.get(AREA_TYPES), (String) param, (String) paramMap.get(PLAN_END_ON), () paramMap.get(CHECKER_GROUPS), (List<ApiBuildingQmTaskMemberGroupVo>) paramMap.get(REPAIR_GROUPS), (ConfigVo) paramMap
         List<ApiBuildingQmTaskMemberGroupVo> checkerGroups = (List<ApiBuildingQmTaskMemberGroupVo>) map.get(CHECKER_GROUPS);
-        List<ApiBuildingQmTaskMemberGroupVo> repairGroups = (List<ApiBuildingQmTaskMemberGroupVo>) map.get(REPAIR_GROUPS);
+        //List<ApiBuildingQmTaskMemberGroupVo> repairGroups = (List<ApiBuildingQmTaskMemberGroupVo>) map.get(REPAIR_GROUPS);
         ConfigVo config = (ConfigVo) map.get(CONFIG);
         paramMap.put("uid",uid);
         paramMap.put("taskEditReq",taskEditReq);
-        paramMap.put("areaIds",map.get(AREA_IDS));
-        paramMap.put("areaTypes",map.get(AREA_TYPES));
-        paramMap.put("planBeginOn",map.get(PLAN_BEGIN_ON));
-        paramMap.put("planEndOn",map.get(PLAN_END_ON));
-        paramMap.put("checkerGroups",map.get(CHECKER_GROUPS));
-        paramMap.put("repairerGroups",map.get(REPAIR_GROUPS));
-        paramMap.put("config",config);
+        paramMap.put(AREA_IDS,map.get(AREA_IDS));
+        paramMap.put(AREA_TYPES,map.get(AREA_TYPES));
+        paramMap.put(PLAN_BEGIN_ON,map.get(PLAN_BEGIN_ON));
+        paramMap.put(PLAN_END_ON,map.get(PLAN_END_ON));
+        paramMap.put(CHECKER_GROUPS,map.get(CHECKER_GROUPS));
+        paramMap.put(REPAIR_GROUPS,map.get(REPAIR_GROUPS));
+        paramMap.put(CONFIG,config);
 
         beforeExecute(checkerGroupsAdd, checkerGroupsEdit, checkerGroupsDel, needInsertCheckTaskSquadUser, needUpdateCheckTaskSquadUser, doNotNeedDeleteSquaduserPkId, paramMap);
         //    # 更新验房任务
@@ -969,6 +968,7 @@ public class BuildingqmServiceImpl implements IBuildingqmService {
                 }
             }
         }
+
         //    # 删除人组 及其 人员
         if (CollectionUtils.isNotEmpty(checkerGroupsDel)) {
             for (int i = 0; i < checkerGroupsDel.size(); i++) {
@@ -1121,7 +1121,7 @@ public class BuildingqmServiceImpl implements IBuildingqmService {
         }
 
 
-        //    # 超期问题发起推送配置
+        //    #
         PushStrategyCategoryOverdue dbConfigCategoryOverdue = pushStrategyCategoryOverdueService.selectByTaskIdAndNotDel(taskEditReq.getTask_id());
         if (config.getConfig_category_overdue() != null) {
             if (dbConfigCategoryOverdue == null) {
@@ -1135,7 +1135,7 @@ public class BuildingqmServiceImpl implements IBuildingqmService {
                 item.setUpdateAt(new Date());
                 item.setCategoryKeys(config.getConfig_category_overdue().getCategory_keys());
                 item.setUserIds(config.getConfig_category_overdue().getUser_ids());
-                item.setScanEndOn(DateUtil.timeStampToDate(DateUtil.datetimeToTimeStamp(taskInfo.getPlanEndOn()) + (30 * 24 * 60 * 60), " yyyy-MM-dd HH-mm-ss"));
+                item.setScanEndOn(DateUtil.timeStampToDate(DateUtil.datetimeToTimeStamp(taskInfo.getPlanEndOn()) + (30 * 24 * 60 * 60), "yyyy-MM-dd HH-mm-ss"));
                 int one = pushStrategyCategoryOverdueService.add(item);
                 if (one <= 0) {
                     log.info(PUSH_STRATEGY_CATEGORY_OVERDUE_ADD_FAIL);
@@ -1408,7 +1408,7 @@ public class BuildingqmServiceImpl implements IBuildingqmService {
             pushStrategyCategoryOverdue.setUpdateAt(new Date());
             pushStrategyCategoryOverdue.setCategoryKeys(config.getConfig_category_overdue().getCategory_keys());
             pushStrategyCategoryOverdue.setUserIds(config.getConfig_category_overdue().getUser_ids());
-            pushStrategyCategoryOverdue.setScanEndOn(DateUtil.timeStampToDate(DateUtil.datetimeToTimeStamp(checktaskObj.getPlanEndOn()) + (30 * 24 * 60 * 60), " yyyy-MM-dd HH-mm-ss"));
+            pushStrategyCategoryOverdue.setScanEndOn(DateUtil.timeStampToDate(DateUtil.datetimeToTimeStamp(checktaskObj.getPlanEndOn()) + (30 * 24 * 60 * 60), YMDHMS));
             int n = pushStrategyCategoryOverdueService.add(pushStrategyCategoryOverdue);
             if (n <= 0) {
                 log.info(PUSH_STRATEGY_CATEGORY_OVERDUE_ADD_FAIL);
