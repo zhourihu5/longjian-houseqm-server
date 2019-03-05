@@ -208,6 +208,8 @@ public class IssueListController {
         return new LjBaseResponse<>();
     }
 
+    private final String  PROJ_ISSUE_REASON_SWITCH="PROJ_ISSUE_REASON_SWITCH";
+
     @RequestMapping(value = "configs/", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     public LjBaseResponse<ProjectSettingConfigVo> configs(HttpServletRequest request, @RequestParam(value = "project_id") Integer projectId) {
         LjBaseResponse<ProjectSettingConfigVo> response = new LjBaseResponse<>();
@@ -217,13 +219,18 @@ public class IssueListController {
             log.error("问题鉴权异常:", e.getMessage());
             response.setResult(1);
             response.setMessage(e.getMessage());
+            return response;
         }
         List<ProjectSettingConfigVo.HouseQmIssueReason> reasonList = Lists.newArrayList();
         Integer reasonId = 0;
 
+
         List<ProjectSettingV2> projectSetting = iIssueService.getProjectSettingId(projectId);
         ProjectSettingConfigVo vo = new ProjectSettingConfigVo();
         for (ProjectSettingV2 projectSettingV2 : projectSetting) {
+          /*  switch (projectSettingV2.getsKey()){
+                case PROJ_ISSUE_REASON_SWITCH:vo.setHas_issue_reason(true);break;
+            }*/
             if ("PROJ_ISSUE_REASON_SWITCH".equals(projectSettingV2.getsKey())) {
                 vo.setHas_issue_reason(true);
             }
