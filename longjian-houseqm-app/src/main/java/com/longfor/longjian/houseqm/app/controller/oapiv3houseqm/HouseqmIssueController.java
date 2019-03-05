@@ -240,7 +240,7 @@ public class HouseqmIssueController {
     }
 
     @RequestMapping(value = "batch_approve", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
-    public LjBaseResponse<IssueBatchApproveRspVo> batchApprove(HttpServletRequest request, @Validated IssueBatchApproveReq req) throws Exception {
+    public LjBaseResponse<IssueBatchApproveRspVo> batchApprove(HttpServletRequest request, @Validated IssueBatchApproveReq req) {
         LjBaseResponse<IssueBatchApproveRspVo> response = new LjBaseResponse<>();
         try {
             ctrlTool.projPermMulti(request, new String[]{AUTH_PROJECT_QUESTION_MANAGE_EDIT, AUTH_PROJECT_ENGINEERING_QUESTION_MANAGE_EDIT_});
@@ -264,6 +264,13 @@ public class HouseqmIssueController {
         LjBaseResponse<IssueBatchDeleteRspVo> response = new LjBaseResponse<>();
         try {
             ctrlTool.projPermMulti(request, new String[]{AUTH_PROJECT_QUESTION_MANAGE_EDIT, AUTH_PROJECT_ENGINEERING_QUESTION_MANAGE_EDIT_});
+        } catch (Exception e) {
+            log.error(e.getMessage());
+            log.error(e.getMessage());
+            response.setResult(1);
+            response.setMessage(e.getMessage());
+            return response;
+        }
             List<String> issueUuids = StringSplitToListUtil.splitToStringComma(req.getIssue_uuids(), ",");
             IssueBatchDeleteRspVo data = new IssueBatchDeleteRspVo();
             List<String> fails = Lists.newArrayList();
@@ -276,12 +283,6 @@ public class HouseqmIssueController {
             }
             data.setFails(fails);
             response.setData(data);
-        } catch (Exception e) {
-            log.error(e.getMessage());
-            log.error(e.getMessage());
-            response.setResult(1);
-            response.setMessage(e.getMessage());
-        }
         return response;
     }
 

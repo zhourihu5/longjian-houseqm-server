@@ -244,7 +244,7 @@ public class IusseTaskListService {
         }
 
         String dateStr = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss").format(deleteAt);
-        return dateStr.equals("0001-01-01 00:00:00") || dateStr.equals("")?true:false;
+        return dateStr.equals("0001-01-01 00:00:00") || dateStr.equals("");
 
     }
 
