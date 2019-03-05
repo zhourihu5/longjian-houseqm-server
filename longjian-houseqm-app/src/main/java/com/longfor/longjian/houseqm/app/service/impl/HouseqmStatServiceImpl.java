@@ -374,9 +374,13 @@ public class HouseqmStatServiceImpl implements IHouseqmStatService {
         List<HouseQmCheckTaskIssue> issues = houseQmCheckTaskIssueService.searchByProjIdAndCategoryClsAndAreaPathAndIdLikeGroupByStatus(projectId, categoryCls, areaPath);
 
         HouseQmStatAreaSituationIssueRspVo result = new HouseQmStatAreaSituationIssueRspVo();
+        result.setIssue_approveded_count(0);
+        result.setIssue_assigned_count(0);
+        result.setIssue_count(0);
         result.setIssue_recorded_count(0);
         result.setIssue_repaired_count(0);
         result.setRecord_count(0);
+
         for (HouseQmCheckTaskIssue res : issues) {
             //处理详细统计数
             HouseQmCheckTaskIssueStatusEnum e = null;
