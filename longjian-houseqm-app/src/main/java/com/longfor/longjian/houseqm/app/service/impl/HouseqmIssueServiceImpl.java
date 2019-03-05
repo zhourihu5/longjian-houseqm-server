@@ -148,7 +148,7 @@ public class HouseqmIssueServiceImpl implements IHouseqmIssueService {
         String data = JSON.toJSONString(args);
         this.writeInput(data, exportName, filepath);
         //记录导出的内容到数据库
-        String resultFilePath = baseUri + "/" + outputFilename;
+        String resultFilePath=  String.format("%s%s%s",baseDir,"/",outputFilename);
         return exportFileRecordService.insertFull(userId, teamId, projectId, exportType, inputFilename + " " + outputFilename,
                 resultFilePath, exportName, 0, "", executeAt);
     }

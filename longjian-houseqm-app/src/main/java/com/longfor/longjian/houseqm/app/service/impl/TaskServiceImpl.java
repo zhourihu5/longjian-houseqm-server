@@ -100,11 +100,11 @@ public class TaskServiceImpl implements ITaskService {
     public void deleteHouseQmCheckTaskByProjTaskId(Integer projectId, Integer taskId) {
         try {
             // 删除人员
-            int affect = userInHouseQmCheckTaskService.removeByTaskId(taskId);
+            userInHouseQmCheckTaskService.removeByTaskId(taskId);
             // 删除问题
-            int affect2 = houseQmCheckTaskIssueService.removeHouseQmCheckTaskIssueByProjectIdAndTaskId(projectId, taskId);
+          houseQmCheckTaskIssueService.removeHouseQmCheckTaskIssueByProjectIdAndTaskId(projectId, taskId);
             // 删除任务
-            int affect3 = houseQmCheckTaskService.removeHouseQmCheckTaskByProjectIdAndTaskId(projectId, taskId);
+          houseQmCheckTaskService.removeHouseQmCheckTaskByProjectIdAndTaskId(projectId, taskId);
         } catch (Exception e) {
             log.error(e.getMessage());
             throw new LjBaseRuntimeException(500, e.getMessage());
