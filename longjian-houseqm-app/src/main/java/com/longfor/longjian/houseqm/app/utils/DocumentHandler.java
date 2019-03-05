@@ -21,11 +21,14 @@ import java.util.Map;
 public class DocumentHandler {
     //Configuration存储一些全局常量和常用设置
     private static Configuration configuration = null;
+    private static final String UTF_8="utf-8";
+    private static final  String TEMPLATES="/templates";
+    private static final String ERROR="error:";
 
     //构造函数生成实例并设置编码
     public DocumentHandler() {
         configuration = new Configuration();
-        configuration.setDefaultEncoding("utf-8");
+        configuration.setDefaultEncoding(UTF_8);
     }
 
 
@@ -40,35 +43,24 @@ public class DocumentHandler {
         boolean status = false;
 
         // 设置模本装置方法和路径,FreeMarker支持多种模板装载方法。可以重servlet，classpath，数据库装载，
-        configuration.setClassForTemplateLoading(this.getClass(), "/templates");
+        configuration.setClassForTemplateLoading(this.getClass(), TEMPLATES);
 
         Template t = null;
 
         try {
             // tempName.ftl为要装载的模板
             t = configuration.getTemplate(tempName + ".ftl");
-            t.setEncoding("utf-8");
+            t.setEncoding(UTF_8);
         } catch (IOException e) {
             log.error(e.getMessage());
         }
 
-        //Writer out = null;
-        try (Writer out = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(outFile), "utf-8"))) {
-            //out = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(outFile), "utf-8"));
+        try (Writer out = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(outFile), UTF_8))) {
             t.process(dataMap, out);
             status = true;
         } catch (Exception e1) {
-            log.error("error:", e1.getMessage());
+            log.error(ERROR, e1.getMessage());
         }
-
-        /*try{
-            t.process(dataMap, out);
-            out.close();
-        }catch(TemplateException e){
-            e.printStackTrace();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }*/
 
         return status;
     }
@@ -79,59 +71,39 @@ public class DocumentHandler {
      * @param tempName，要使用的模板
      * @param docName，导出文档名称
      * @param dataMap，模板中变量数据
-     * @param resp,HttpServletResponse
      */
     public boolean exportDoc(String tempName, String docName, Map<?, ?> dataMap, HttpServletResponse resp) {
         boolean status = false;
-        //ServletOutputStream sos = null;
-        //InputStream fin = null;
         if (resp != null) {
             resp.reset();
         }
-
         // 设置模本装置方法和路径,FreeMarker支持多种模板装载方法。可以重servlet，classpath，数据库装载。参数2为模板路径
-        configuration.setClassForTemplateLoading(this.getClass(), "/templates");
-
+        configuration.setClassForTemplateLoading(this.getClass(), TEMPLATES);
         Template t = null;
-
         try {
             // tempName.ftl为要装载的模板
             t = configuration.getTemplate(tempName + ".ftl");
-            t.setEncoding("utf-8");
+            t.setEncoding(UTF_8);
         } catch (IOException e) {
             log.error(e.getMessage());
         }
-
         // 输出文档路径及名称 ,以临时文件的形式导出服务器，再进行下载
         String name = "temp" + (int) (Math.random() * 100000) + ".doc";
         File outFile = new File(name);
-
-        //Writer out = null;
-        try (Writer out = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(outFile), "utf-8"))) {
-            // out = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(outFile), "utf-8"));
+        try (Writer out = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(outFile), UTF_8))) {
             t.process(dataMap, out);
             status = true;
         } catch (Exception e1) {
-            log.error("error:", e1.getMessage());
+            log.error(ERROR, e1.getMessage());
         }
-
-        /*try {
-            t.process(dataMap, out);
-            out.close();
-        } catch (TemplateException e) {
-            e.printStackTrace();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }*/
         if (resp == null) {
             return false;
         }
         try (InputStream fin = new FileInputStream(outFile); ServletOutputStream sos = resp.getOutputStream()) {
-            //fin = new FileInputStream(outFile);
             if (resp != null) {
-                resp.setCharacterEncoding("utf-8");
+                resp.setCharacterEncoding(UTF_8);
                 resp.setContentType("application/msword");
-                docName = new String(docName.getBytes("UTF-8"), "ISO-8859-1");
+                docName = new String(docName.getBytes(UTF_8), "ISO-8859-1");
                 resp.setHeader("Content-disposition", "attachment;filename=" + docName + ".doc");
             }
             byte[] buffer = new byte[512];
@@ -150,62 +122,21 @@ public class DocumentHandler {
                 }
             }
         }
-        // 文档下载
-        //resp.setCharacterEncoding("utf-8");
-        // resp.setContentType("application/msword");
-        /*try {
-            docName = new String(docName.getBytes("UTF-8"), "ISO-8859-1");
-        } catch (UnsupportedEncodingException e1) {
-            e1.printStackTrace();
-        }
-        resp.setHeader("Content-disposition", "attachment;filename=" + docName + ".doc");
-        try {
-            sos = resp.getOutputStream();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }*/
-       /* byte[] buffer = new byte[512]; // 缓冲区
-        int bytesToRead = -1;
-        // 通过循环将读入的Word文件的内容输出到浏览器中
-        try {
-            while ((bytesToRead = fin.read(buffer)) != -1) {
-                sos.write(buffer, 0, bytesToRead);
-            }
-        } catch (IOException e) {
-            e.printStackTrace();
-        } finally {
-            if (fin != null)
-                try {
-                    fin.close();
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-            if (sos != null)
-                try {
-                    sos.close();
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-            if (outFile != null)
-                outFile.delete(); // 删除临时文件
-        }*/
 
         return status;
     }
 
     //获得图片的base64码
-    public static String getImageBase(String src) throws Exception {
-        if (src == null || src == "") {
+    public static String getImageBase(String src)  {
+        if (src == null || src.equals("")) {
             return "";
         }
         File file = new File(src);
         if (!file.exists()) {
             return "";
         }
-        //InputStream in = null;
         byte[] data = null;
         try (InputStream in = new FileInputStream(file)) {
-            //in = new FileInputStream(file);
             data = new byte[in.available()];
             int readCount = in.read(data);
             log.info("getImageBase:read bytes-" + readCount);
@@ -224,18 +155,18 @@ public class DocumentHandler {
         File directory = null;
         InputStream fin = null;
         ServletOutputStream out = null;
-        response.setCharacterEncoding("UTF-8");
+        response.setCharacterEncoding(UTF_8);
         response.setContentType("application/octet-stream");
         String str = DateUtil.getNowTimeStr("yyyy_MM_dd_hh_mm_ss");
         try {
-            response.addHeader("Content-Disposition", "attachment;filename=" + String.format("%s%s%s", URLEncoder.encode("整改通知单_", "utf-8"), str.replace("_", ""), ".zip"));
+            response.addHeader("Content-Disposition", "attachment;filename=" + String.format("%s%s%s", URLEncoder.encode("整改通知单_", UTF_8), str.replace("_", ""), ".zip"));
         } catch (UnsupportedEncodingException e) {
             log.error(e.getMessage());
         }
 
-        configuration.setClassForTemplateLoading(DocumentHandler.class, "/templates");
+        configuration.setClassForTemplateLoading(DocumentHandler.class, TEMPLATES);
         try {
-            Template freemarkerTemplate = configuration.getTemplate(ftlFile, "UTF-8");
+            Template freemarkerTemplate = configuration.getTemplate(ftlFile, UTF_8);
             out = response.getOutputStream();
             //根据当前时间和用户id创建临时目录
             String path = request.getRealPath("/resources/word/" + String.format("%s%s", "整改通知单_", str.replace("_", "")));
@@ -277,7 +208,7 @@ public class DocumentHandler {
                     ZipUtils.deleteFile(directory);
                 }
             } catch (Exception e2) {
-                log.error("error:", e2.getMessage());
+                log.error(ERROR, e2.getMessage());
             }
 
         }
@@ -288,32 +219,16 @@ public class DocumentHandler {
     private static File createDoc(Map<?, ?> dataMap, Template template,String filename) {
         File f = new File(filename);
         Template t = template;
-        //Writer w =null;
-        //FileOutputStream fos=null;
-        try (FileOutputStream fos = new FileOutputStream(f); Writer w = new OutputStreamWriter(fos, "utf-8")) {
-            // 这个地方不能使用FileWriter因为需要指定编码类型否则生成的Word文档会因为有无法识别的编码而无法打开
-            //fos=new FileOutputStream(f);
-            //w = new OutputStreamWriter(fos, "utf-8");
-            //不要偷懒写成下面酱紫: 否则无法关闭fos流，打zip包时存取被拒抛异常
-            //w = new OutputStreamWriter(new FileOutputStream(f), "utf-8");
+        try (FileOutputStream fos = new FileOutputStream(f); Writer w = new OutputStreamWriter(fos, UTF_8)) {
             List imageList = (List) dataMap.get("image");
             for (Object o : imageList) {
                 DocumentHandler.getImageBase((String) o);
             }
             t.process(dataMap, w);
         } catch (Exception ex) {
-            log.error("error:", ex.getMessage());
+            log.error(ERROR, ex.getMessage());
 
         }
-        /*finally {
-            try {
-                fos.close();
-                w.close();
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-
-        }*/
         return f;
     }
 }

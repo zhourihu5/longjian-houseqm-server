@@ -9,7 +9,9 @@ import java.util.Date;
  */
 
 public class LjTimeUtil {
+private LjTimeUtil(){
 
+}
 
     /**
      * 昨天的零点零分零秒

@@ -25,6 +25,7 @@ public class FileUtil {
     private FileUtil(){
 
     }
+    private  static final String READ_FILE_FAILED="读取文件失败";
     /**
      * 读取文件并返回文件内容
      *
@@ -45,8 +46,8 @@ public class FileUtil {
             log.info("文件不存在, filePath=", filePath, e);
             throw new CommonRuntimeException("文件不存在, filePath=" + filePath);
         } catch (IOException e) {
-            log.info("读取文件失败", e);
-            throw new CommonRuntimeException("读取文件失败");
+            log.info(READ_FILE_FAILED, e);
+            throw new CommonRuntimeException(READ_FILE_FAILED);
         }
         return buffer.toString();
     }
@@ -65,8 +66,8 @@ public class FileUtil {
                 builder.append(tmpContent);
             }
         } catch (Exception e) {
-            log.info("读取文件失败", e);
-            throw new CommonRuntimeException("读取文件失败");
+            log.info(READ_FILE_FAILED, e);
+            throw new CommonRuntimeException(READ_FILE_FAILED);
         }
         return builder.toString();
     }

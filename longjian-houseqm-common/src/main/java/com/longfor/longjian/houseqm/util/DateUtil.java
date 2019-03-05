@@ -16,9 +16,12 @@ import java.util.Date;
  * @date 2018/12/19 0019 17:28
  */
 public class DateUtil {
-    private static final Logger logger = LoggerFactory.getLogger(DateUtil.class);
-    //private static final SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-mm-dd hh:mm:ss");
+    private DateUtil(){
 
+    }
+    private static final Logger logger = LoggerFactory.getLogger(DateUtil.class);
+    private  static final String YMDHMS="yyyy-MM-dd HH:mm:ss";
+    private  static final String ERROR=  "error:";
     public static final boolean datetimeZero(Date date) {
         //315532800000L=dateFormat.parse("1980-01-01 08:00:00").getTime()
         return date == null || date.getTime() <= 315532800000L;
@@ -26,7 +29,7 @@ public class DateUtil {
 
     public static final String formatBySec(Date date) {
 
-        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-mm-dd hh:mm:ss");
+        SimpleDateFormat dateFormat = new SimpleDateFormat(YMDHMS);
         return dateFormat.format(date);
     }
 
@@ -35,7 +38,7 @@ public class DateUtil {
             return "";
         } else {
             if (StringUtils.isEmpty(formatStr)) {
-                formatStr = "yyyy-MM-dd HH:mm:ss";
+                formatStr = YMDHMS;
             }
 
             DateTime dateTime = new DateTime(date);
@@ -55,7 +58,7 @@ public class DateUtil {
                 date = sdf.parse(str);
             }
         } catch (ParseException e) {
-            logger.error("error:", e.getMessage());
+            logger.error(ERROR, e.getMessage());
         }
         return date;
     }
@@ -74,7 +77,7 @@ public class DateUtil {
             Date d2 = sdf.parse(s2);
             return ((d1.getTime() - d2.getTime()) / (24 * 3600 * 1000));
         } catch (ParseException e) {
-            logger.error("error:", e.getMessage());
+            logger.error(ERROR, e.getMessage());
         }
         return 0;
     }
@@ -89,13 +92,13 @@ public class DateUtil {
         if (dt == null) {
             return 0;
         } else {
-            SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+            SimpleDateFormat formatter = new SimpleDateFormat(YMDHMS);
             String strdt = formatter.format(dt);
             Date initDate = null;
             try {
                 initDate = formatter.parse("1980-01-01 08:00:00");
             } catch (ParseException e) {
-                logger.error("error:", e.getMessage());
+                logger.error(ERROR, e.getMessage());
             }
             if (strdt.equals("0001-01-01 00:00:00") || strdt.equals("") || !dt.after(initDate)) {
                 return 0;
@@ -121,7 +124,7 @@ public class DateUtil {
         try {
             timeDate = ymdhmsFormat.parse(nowTimeStr);
         } catch (ParseException e) {
-            logger.error("error:", e.getMessage());
+            logger.error(ERROR, e.getMessage());
         }
         return timeDate;
     }
@@ -135,14 +138,13 @@ public class DateUtil {
      * @date 2018/12/22 0022
      */
     public static Date timeStampTwoToDate(long timestamp, String partten) {
-        //long timeLong = timestamp / 1000l;
         SimpleDateFormat  ymdhmsFormat = new SimpleDateFormat (partten);
         String nowTimeStr = ymdhmsFormat.format(timestamp);
         Date timeDate = null;
         try {
             timeDate = ymdhmsFormat.parse(nowTimeStr);
         } catch (ParseException e) {
-            logger.error("error:",e.getMessage());
+            logger.error(ERROR,e.getMessage());
         }
         return timeDate;
     }
@@ -166,14 +168,14 @@ public class DateUtil {
             ms = 0;
         }
         long msl = (long) ms * 1000;
-        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        SimpleDateFormat sdf = new SimpleDateFormat(YMDHMS);
         Date temp = null;
         if (ms != null) {
             try {
                 String str = sdf.format(msl);
                 temp = sdf.parse(str);
             } catch (ParseException e) {
-                logger.error("error:", e.getMessage());
+                logger.error(ERROR, e.getMessage());
             }
         }
         return temp;
