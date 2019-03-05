@@ -57,6 +57,7 @@
     <resultMap id="checkerIssueStat" type="com.longfor.longjian.houseqm.po.CheckerIssueStat">
         <result column="project_id" property="projectId" jdbcType="INTEGER"/>
         <result column="task_id" property="taskId" jdbcType="INTEGER"/>
+        <result column="user_id" property="userId" jdbcType="INTEGER"/>
         <result column="sender_id" property="userId" jdbcType="INTEGER"/>
         <result column="area_id" property="areaId" jdbcType="INTEGER"/>
         <result column="area_path_and_id" property="areaPathAndId" jdbcType="VARCHAR"/>
@@ -259,7 +260,7 @@
         <if test="deleted =='false'">
             and delete_at is NULL
         </if>
-        GROUP BY area_id,typ
+        GROUP BY area_id,sender_id,`typ`
     </select>
     <select id="selectCreateAtByProjectIdAndTaskIdsIn" resultMap="checkerIssueStat">
         SELECT DATE_FORMAT(client_create_at,'%Y-%m-%d') AS date from house_qm_check_task_issue
@@ -273,7 +274,7 @@
         GROUP BY date
     </select>
     <select id="selectByProjectIdAndTaskIdAndClientCreateAt" resultMap="checkerIssueStat">
-        SELECT area_id,typ,sender_id as user_id,area_path_and_id,COUNT(*) AS count from house_qm_check_task_issue
+        SELECT area_id,`typ`,sender_id as user_id,area_path_and_id,COUNT(*) AS count from house_qm_check_task_issue
         WHERE project_id=#{projectId} AND task_id IN
         <foreach collection="taskIds" index="index" item="taskId" open="(" separator="," close=")">
             #{taskId}
@@ -283,7 +284,7 @@
         <if test="deleted=='false'">
             AND delete_at IS NULL
         </if>
-        GROUP BY area_id,typ
+        GROUP BY area_id,`typ`
     </select>
     <select id="selectByProjectIdAndTaskIdsAndClientCreateAt" resultMap="checkerIssueStat">
         SELECT area_id,typ,sender_id,area_path_and_id,COUNT(*) AS count from house_qm_check_task_issue
