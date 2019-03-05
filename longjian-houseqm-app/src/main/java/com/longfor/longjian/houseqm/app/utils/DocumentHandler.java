@@ -1,6 +1,5 @@
 package com.longfor.longjian.houseqm.app.utils;
 
-import com.longfor.longjian.common.exception.LjBaseRuntimeException;
 import com.longfor.longjian.houseqm.util.DateUtil;
 import freemarker.template.Configuration;
 import freemarker.template.Template;
@@ -12,12 +11,8 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.*;
 import java.net.URLEncoder;
-import java.nio.charset.StandardCharsets;
-import java.nio.file.Files;
-import java.nio.file.Paths;
 import java.util.List;
 import java.util.Map;
-import java.util.Random;
 
 /**
  * Created by Dongshun on 2019/2/15.
