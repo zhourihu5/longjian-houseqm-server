@@ -412,15 +412,15 @@ public class BuildingqmServiceImpl implements IBuildingqmService {
     }
 
     private void beforeExecute(List<ApiBuildingQmTaskMemberGroupVo> checkerGroupsAdd, List<ApiBuildingQmTaskMemberGroupVo> checkerGroupsEdit, List<Object> checkerGroupsDel, List<ApiBuildingQmTaskMemberInsertVo> needInsertCheckTaskSquadUser, List<UserInHouseQmCheckTask> needUpdateCheckTaskSquadUser, Map doNotNeedDeleteSquaduserPkId,Map<String,Object> paramMap) {
-        Integer uid = (Integer) paramMap.get("uid");
-        TaskEditReq taskEditReq= (TaskEditReq) paramMap.get("taskEditReq");
+      /*  Integer uid = (Integer) paramMap.get("uid");
         List<Integer> areaIds= (List<Integer>) paramMap.get("areaIds");
         List<Integer> areaTypes= (List<Integer>) paramMap.get("areaTypes");
         String planBeginOn= (String) paramMap.get("planBeginOn");
         String planEndOn= (String) paramMap.get("planEndOn");
+        ConfigVo config= (ConfigVo) paramMap.get("config");*/
+        TaskEditReq taskEditReq= (TaskEditReq) paramMap.get("taskEditReq");
         List<ApiBuildingQmTaskMemberGroupVo> checkerGroups= (List<ApiBuildingQmTaskMemberGroupVo>) paramMap.get("checkerGroups");
         List<ApiBuildingQmTaskMemberGroupVo> repairerGroups= (List<ApiBuildingQmTaskMemberGroupVo>) paramMap.get("repairerGroups");
-        ConfigVo config= (ConfigVo) paramMap.get("config");
 
         checkSquads(checkerGroupsDel, checkerGroupsEdit, checkerGroupsAdd, taskEditReq, checkerGroups);
         compareSquadCheckers(needUpdateCheckTaskSquadUser, needInsertCheckTaskSquadUser, checkerGroups, checkerGroupsDel, doNotNeedDeleteSquaduserPkId, taskEditReq);
@@ -851,9 +851,8 @@ public class BuildingqmServiceImpl implements IBuildingqmService {
         List<UserInHouseQmCheckTask> needUpdateCheckTaskSquadUser = Lists.newArrayList();
         Map<Object, Object> doNotNeedDeleteSquaduserPkId = Maps.newHashMap();
         Map<String, Object> paramMap = Maps.newHashMap();
-        //(Date) paramMap, (Date) paramMap., (List<Integer>) paramMap.get(AREA_IDS), (List<Integer>) paramMap.get(AREA_TYPES), (String) param, (String) paramMap.get(PLAN_END_ON), () paramMap.get(CHECKER_GROUPS), (List<ApiBuildingQmTaskMemberGroupVo>) paramMap.get(REPAIR_GROUPS), (ConfigVo) paramMap
         List<ApiBuildingQmTaskMemberGroupVo> checkerGroups = (List<ApiBuildingQmTaskMemberGroupVo>) map.get(CHECKER_GROUPS);
-        List<ApiBuildingQmTaskMemberGroupVo> repairGroups = (List<ApiBuildingQmTaskMemberGroupVo>) map.get(REPAIR_GROUPS);
+        //List<ApiBuildingQmTaskMemberGroupVo> repairGroups = (List<ApiBuildingQmTaskMemberGroupVo>) map.get(REPAIR_GROUPS);
         ConfigVo config = (ConfigVo) map.get(CONFIG);
         paramMap.put("uid",uid);
         paramMap.put("taskEditReq",taskEditReq);
@@ -959,6 +958,7 @@ public class BuildingqmServiceImpl implements IBuildingqmService {
                 }
             }
         }
+
         //    # 删除人组 及其 人员
         if (CollectionUtils.isNotEmpty(checkerGroupsDel)) {
             for (int i = 0; i < checkerGroupsDel.size(); i++) {
