@@ -29,7 +29,6 @@ import com.longfor.longjian.houseqm.po.zj2db.*;
 import com.longfor.longjian.houseqm.util.CollectionUtil;
 import com.longfor.longjian.houseqm.util.DateUtil;
 import com.longfor.longjian.houseqm.util.StringSplitToListUtil;
-import lombok.Data;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.beanutils.BeanUtils;
 import org.apache.commons.collections.CollectionUtils;
@@ -1988,9 +1987,9 @@ public class BuildingqmServiceImpl implements IBuildingqmService {
         Integer nrepairerId = 0;
         List<Integer> repairerFollowerIds = Lists.newArrayList();
         Map<String, Object> map = Maps.newHashMap();
-        map.put("status", nstatus);
-        map.put("repairerId", nrepairerId);
-        map.put("repairerFollowerIds", repairerFollowerIds);
+        map.put("status", status);
+        map.put("repairerId", repairerId);
+        map.put("repairerFollowerIds", repairerFollowerId);
         return map;
     }
 

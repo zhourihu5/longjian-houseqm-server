@@ -248,10 +248,6 @@ public class DocumentHandler {
             directory.mkdirs();
             for(int i=0;i<mapList.size();i++) {
                 Map<String, Object> map=mapList.get(i);
-                List imageList = (List) map.get("image");
-                for (Object o : imageList) {
-                    DocumentHandler.getImageBase((String) o);
-                }
                 String title=titleList.get(i);
                 // 调用工具类的createDoc方法在临时目录下生成Word文档
                 file = createDoc(map, freemarkerTemplate, directory.getPath() + "/" + title + ".doc");
@@ -305,6 +301,10 @@ public class DocumentHandler {
             //w = new OutputStreamWriter(fos, "utf-8");
             //不要偷懒写成下面酱紫: 否则无法关闭fos流，打zip包时存取被拒抛异常
             //w = new OutputStreamWriter(new FileOutputStream(f), "utf-8");
+            List imageList = (List) dataMap.get("image");
+            for (Object o : imageList) {
+                DocumentHandler.getImageBase((String) o);
+            }
             t.process(dataMap, w);
         } catch (Exception ex) {
             log.error("error:", ex.getMessage());
