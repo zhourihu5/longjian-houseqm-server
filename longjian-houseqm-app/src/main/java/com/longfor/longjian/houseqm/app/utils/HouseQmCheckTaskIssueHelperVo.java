@@ -57,7 +57,7 @@ public class HouseQmCheckTaskIssueHelperVo {
     @Resource
     private HouseQmCheckTaskIssueAttachmentService houseQmCheckTaskIssueAttachmentService;
 
-    private Error error;
+
     private Map<String, CategoryV3> categoryMap;
     private Map<Integer, Area> areaMap;
     private Map<String, CheckItemV3> checkItemMap;
@@ -92,8 +92,6 @@ public class HouseQmCheckTaskIssueHelperVo {
         this.issueMembers = Maps.newHashMap();
 
         this.currentProjectId = projectId;
-
-        this.error = null;
 
         return this;
     }
@@ -241,7 +239,7 @@ public class HouseQmCheckTaskIssueHelperVo {
         //需要新创建的
         if (needCreate) {
             Map<String, Object> map = initNewIssue();
-            HouseQmCheckTaskIssueVo newIssue = (HouseQmCheckTaskIssueVo) map.get("houseqmissue");
+            //HouseQmCheckTaskIssueVo newIssue = (HouseQmCheckTaskIssueVo) map.get("houseqmissue");
             UserInIssue newIssueRole = (UserInIssue) map.get("issueRole");
             String tempIssueUid = this.currentLog.getIssueUuid();
             if (newIssueRole.getModified()) {
@@ -353,7 +351,7 @@ public class HouseQmCheckTaskIssueHelperVo {
             HouseQmCheckTaskIssueDetail detail = issue.getDetail();
             issue1.setDetail(JsonUtil.gsonString(detail));
             //插入
-            int affect = houseQmCheckTaskIssueService.insertOneHouseQmCheckTaskIssue(issue1);
+            houseQmCheckTaskIssueService.insertOneHouseQmCheckTaskIssue(issue1);
         }
         //更新issue
         for (HouseQmCheckTaskIssueVo issue : this.needUpdateIssueMap.values()) {
@@ -616,7 +614,7 @@ public class HouseQmCheckTaskIssueHelperVo {
                         }
                     }
                     if (e == null) {
-                        continue outer;
+                        continue;
                     }
                     switch (e) {
                         case AssignNoReform:
@@ -670,7 +668,7 @@ public class HouseQmCheckTaskIssueHelperVo {
                 }
             }
             if (e == null) {
-                continue outer;
+                continue;
             }
             HouseqmCheckTaskNotifyRecordVo hcvo=new HouseqmCheckTaskNotifyRecordVo();
             hcvo.setProjectId(issue.getProjectId());

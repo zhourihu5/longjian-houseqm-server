@@ -141,7 +141,7 @@ public class HouseqmIssueServiceImpl implements IHouseqmIssueService {
         long randCount = (long) (rand.nextDouble() * Long.MAX_VALUE);
         String baseDir = exportVo.getBase_dir();
         Integer ts = DateUtil.datetimeToTimeStamp(new Date());
-        String baseUri = exportVo.getBase_uri();
+        //String baseUri = exportVo.getBase_uri();
         String inputFilename = String.format("%d%d.%s", randCount, ts, "input");
         String outputFilename = String.format("/export/%d%d.%s", randCount, ts, "output");
         String filepath = baseDir + inputFilename;
