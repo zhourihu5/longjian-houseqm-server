@@ -32,36 +32,16 @@ public class ReportIssueService {
 
     @Resource
     UserInHouseQmCheckTaskService userInHouseQmCheckTaskService;
-
-    @Resource
-    HouseQmCheckTaskService houseQmCheckTaskService;
-
-    @Resource
-    HouseQmCheckTaskSquadService houseQmCheckTaskSquadService;
-
     @Resource
     HouseQmCheckTaskIssueUserService houseQmCheckTaskIssueUserService;
-
     @Resource
     HouseQmCheckTaskIssueService houseQmCheckTaskIssueService;
-
     @Resource
     HouseQmCheckTaskIssueLogService houseQmCheckTaskIssueLogService;
-
     @Resource
     HouseQmCheckTaskIssueAttachmentService houseQmCheckTaskIssueAttachmentService;
     @Resource
-    TasksService taskService;
-    @Resource
-    PushStrategyAssignTimeService pushStrategyAssignTimeService;
-    @Resource
-    PushStrategyCategoryOverdueService pushStrategyCategoryOverdueService;
-    @Resource
-    PushStrategyCategoryThresholdService pushStrategyCategoryThresholdService;
-    @Resource
     UserService userService;
-    @Resource
-    FileResourceService fileResourceService;
     @Resource
     AreaService areaService;
     @Resource
@@ -80,32 +60,11 @@ public class ReportIssueService {
     private static final String POTENTIAL_RISK="PotentialRisk";
     private static final String PREVENTIVE_ACTION_DETAIL="PreventiveActionDetail";
     private static final String YMDHMS="yyyy-MM-dd HH:mm:ss";
-    private static final String AREA_IDS="areaIds";
-    private static final String AREA_TYPES="areaTypes";
-    private static final String PLAN_BEGIN_ON="planBeginOn";
     private static final String PLAN_END_ON="planEndOn";
-    private static final String CHECKER_GROUPS ="checkerGroups";
-    private static final String REPAIR_GROUPS ="repairerGroups";
-    private static final String CONFIG="config";
     private static final String CHECK_ITEM_MD5="CheckItemMD5";
     private static final String ISSUE="issue";
     private static final String  REFUNDMAP="refundMap";
     private static final String STATUS  ="status";
-    private static final String REPAIR_REFOUND_PERMISSION="repairer_refund_permission";
-    private static final String REPAIR_FOLLOWER_PERMISSION= "repairer_follower_permission";
-    private static final String CHECKER_APPROVE_PERMISSION=  "checker_approve_permission";
-    private static final String REPAIR_PICTURE_STATUS= "repaired_picture_status";
-    private static final String ISSUE_DESC_STATUS="issue_desc_status";
-    private static final String ISSUE_DEFAULT_DESC= "issue_default_desc";
-    private static final String CREATE_TASK_SQUAD_FAILAD="create task squad failed";
-    private static final String CREATE_FAIL="创建任务组失败";
-    private static final String CREATE_TASK_USER_FAILED="create task user failed";
-    private static final String CREATE_TASK_PEOPLE_FAIL="创建任务组人员失败";
-    private static final String PUSH_STRATEGY_CATEGORY_OVERDUE_ADD_FAIL ="PushStrategyCategoryOverdueDao().add failed";
-    private static final String USER_IDS ="user_ids";
-    private static final String NAME_NOT_EXIST= "name not exist, data='unmarshCheckerGroups'";
-    private static final String QUESTION_NO_DESC= "(该问题无文字描述)";
-
 
     public ReportIssueVo reportIssue(Integer uid, Integer projectId, String data) {
         ArrayList<ReportIssueVo.ApiHouseQmCheckTaskReportMsg> dropped = Lists.newArrayList();
