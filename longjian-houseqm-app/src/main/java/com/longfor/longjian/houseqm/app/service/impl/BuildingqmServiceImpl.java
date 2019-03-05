@@ -1111,7 +1111,7 @@ public class BuildingqmServiceImpl implements IBuildingqmService {
         }
 
 
-        //    # 超期问题发起推送配置
+        //    #
         PushStrategyCategoryOverdue dbConfigCategoryOverdue = pushStrategyCategoryOverdueService.selectByTaskIdAndNotDel(taskEditReq.getTask_id());
         if (config.getConfig_category_overdue() != null) {
             if (dbConfigCategoryOverdue == null) {
@@ -1125,7 +1125,7 @@ public class BuildingqmServiceImpl implements IBuildingqmService {
                 item.setUpdateAt(new Date());
                 item.setCategoryKeys(config.getConfig_category_overdue().getCategory_keys());
                 item.setUserIds(config.getConfig_category_overdue().getUser_ids());
-                item.setScanEndOn(DateUtil.timeStampToDate(DateUtil.datetimeToTimeStamp(taskInfo.getPlanEndOn()) + (30 * 24 * 60 * 60), " yyyy-MM-dd HH-mm-ss"));
+                item.setScanEndOn(DateUtil.timeStampToDate(DateUtil.datetimeToTimeStamp(taskInfo.getPlanEndOn()) + (30 * 24 * 60 * 60), "yyyy-MM-dd HH-mm-ss"));
                 int one = pushStrategyCategoryOverdueService.add(item);
                 if (one <= 0) {
                     log.info(PUSH_STRATEGY_CATEGORY_OVERDUE_ADD_FAIL);
@@ -1398,7 +1398,7 @@ public class BuildingqmServiceImpl implements IBuildingqmService {
             pushStrategyCategoryOverdue.setUpdateAt(new Date());
             pushStrategyCategoryOverdue.setCategoryKeys(config.getConfig_category_overdue().getCategory_keys());
             pushStrategyCategoryOverdue.setUserIds(config.getConfig_category_overdue().getUser_ids());
-            pushStrategyCategoryOverdue.setScanEndOn(DateUtil.timeStampToDate(DateUtil.datetimeToTimeStamp(checktaskObj.getPlanEndOn()) + (30 * 24 * 60 * 60), " yyyy-MM-dd HH-mm-ss"));
+            pushStrategyCategoryOverdue.setScanEndOn(DateUtil.timeStampToDate(DateUtil.datetimeToTimeStamp(checktaskObj.getPlanEndOn()) + (30 * 24 * 60 * 60), YMDHMS));
             int n = pushStrategyCategoryOverdueService.add(pushStrategyCategoryOverdue);
             if (n <= 0) {
                 log.info(PUSH_STRATEGY_CATEGORY_OVERDUE_ADD_FAIL);
