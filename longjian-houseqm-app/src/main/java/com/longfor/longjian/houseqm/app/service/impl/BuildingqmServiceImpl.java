@@ -1708,7 +1708,7 @@ public class BuildingqmServiceImpl implements IBuildingqmService {
         if (CollectionUtils.isEmpty(taskIds)) {
             return Maps.newHashMap();
         }
-        List<UserInHouseQmCheckTask> lst = userInHouseQmCheckTaskService.selectByTaskIdInAndRoleTypeNotDel(taskIds, CheckTaskRoleType.Checker.getValue());
+        List<UserInHouseQmCheckTask> lst = userInHouseQmCheckTaskService.selectByTaskIdInAndRoleTypeNotDel(taskIds, CheckTaskRoleType.Checker.getValue(),HouseQmCheckTaskAdminerType.NO.getKey());
         HashMap<Integer, Map<Integer, Map<Integer, Integer>>> resultDict = Maps.newHashMap();
         lst.forEach(item -> {
             if (!resultDict.containsKey(item.getTaskId())) {

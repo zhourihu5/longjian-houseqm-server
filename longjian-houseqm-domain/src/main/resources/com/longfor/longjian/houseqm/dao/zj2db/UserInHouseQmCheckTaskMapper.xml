@@ -17,13 +17,14 @@
         <result column="can_approve" jdbcType="INTEGER" property="canApprove"/>
         <result column="can_direct_approve" jdbcType="INTEGER" property="canDirectApprove"/>
         <result column="can_reassign" jdbcType="INTEGER" property="canReassign"/>
+        <result column="adminer_status" jdbcType="INTEGER" property="adminerStatus"/>
     </resultMap>
     <sql id="Base_Column_List">
         <!--
           WARNING - @mbg.generated
         -->
         id, squad_id, user_id, role_type, project_id, task_id, create_at, update_at, delete_at,
-        can_approve, can_direct_approve, can_reassign
+        can_approve, can_direct_approve, can_reassign,adminer_status
     </sql>
 
     <select id="selectByUserId" parameterType="java.lang.Integer" resultMap="BaseResultMap">
