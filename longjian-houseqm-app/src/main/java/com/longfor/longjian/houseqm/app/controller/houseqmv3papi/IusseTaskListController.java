@@ -9,6 +9,7 @@ import com.longfor.longjian.houseqm.app.req.EditDetailReq;
 import com.longfor.longjian.houseqm.app.req.IssueListDoActionReq;
 import com.longfor.longjian.houseqm.app.service.IIssueService;
 import com.longfor.longjian.houseqm.app.service.IusseTaskListService;
+import com.longfor.longjian.houseqm.app.utils.CtrlToolUtils;
 import com.longfor.longjian.houseqm.app.utils.SessionUtil;
 import com.longfor.longjian.houseqm.app.vo.*;
 import com.longfor.longjian.houseqm.app.vo.issuelist.DetailLogRspVo;
@@ -56,13 +57,15 @@ public class IusseTaskListController {
     public LjBaseResponse<HouseQmCheckTaskSimpleRspVo.TaskList> doAction(HttpServletRequest request, @RequestParam(value = "project_id") Integer projectId,
                                                                        @RequestParam(value = "category_cls") Integer categoryCls
     ) {
+
+        LjBaseResponse<HouseQmCheckTaskSimpleRspVo.TaskList> response = new LjBaseResponse<>();
         try {
             ctrlTool.projPerm(request, "项目.移动验房.问题管理.查看");
         } catch (Exception e) {
             log.error(e.getMessage());
+            return CtrlToolUtils.errorReturn(response,e);
         }
         //通过id projectId 判断
-        LjBaseResponse<HouseQmCheckTaskSimpleRspVo.TaskList> response = new LjBaseResponse<>();
         List<HouseQmCheckTaskSimpleRspVo> vos = iusseTaskListService.selectByProjectIdAndCategoryCls(projectId, categoryCls);
         HouseQmCheckTaskSimpleRspVo.TaskList taskList = new HouseQmCheckTaskSimpleRspVo().new TaskList();
         taskList.setTask_list(vos);
@@ -106,10 +109,7 @@ public class IusseTaskListController {
             ctrlTool.projPerm(request, "项目.移动验房.问题管理.查看");
         } catch (Exception e) {
             log.error("我的问题 鉴权异常:", e.getMessage());
-            response.setResult(1);
-            response.setCode(1);
-            response.setMessage("PermissionDenied");
-            return response;
+            return CtrlToolUtils.errorReturn(response,e);
         }
         IssueListRsp result = iIssueService.list(req);
 
