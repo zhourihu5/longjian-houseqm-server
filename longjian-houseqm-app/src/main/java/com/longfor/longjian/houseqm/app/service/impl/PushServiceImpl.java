@@ -83,16 +83,13 @@ public class PushServiceImpl implements PushService {
                     continue;
                 }
                 switch (e) {
-                    case AssignNoReform: {
-                        userIds.add(issue.getRepairerId());
-                        List<Integer> fids = StringSplitToListUtil.strToInts(issue.getRepairerFollowerIds(), ",");
-                        userIds.addAll(fids);
+                    case AssignNoReform:
+                        getAssignNoReform(userIds, issue);
                         break;
-                    }
-                    case ReformNoCheck: {
-                        userIds.add(issue.getSenderId());
+
+                    case ReformNoCheck:
+                        getReformNoCheck(userIds, issue);
                         break;
-                    }
                     default:
                         break;
                 }
@@ -100,6 +97,16 @@ public class PushServiceImpl implements PushService {
             String msg = "您在［" + appName + "］有新的待处理问题，请进入App同步更新。";
             sendUPush("", msg, taskId, userIds, appFlag);
         }
+    }
+
+    private void getReformNoCheck(List<Integer> userIds, HouseQmCheckTaskIssueVo issue) {
+        userIds.add(issue.getSenderId());
+    }
+
+    private void getAssignNoReform(List<Integer> userIds, HouseQmCheckTaskIssueVo issue) {
+        userIds.add(issue.getRepairerId());
+        List<Integer> fids = StringSplitToListUtil.strToInts(issue.getRepairerFollowerIds(), ",");
+        userIds.addAll(fids);
     }
 
     // appFlag: 1-推送到工程管理APP，2-推送到移动验房APP，3-全部推送

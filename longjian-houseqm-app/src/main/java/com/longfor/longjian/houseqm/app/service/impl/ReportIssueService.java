@@ -539,6 +539,9 @@ public class ReportIssueService {
         report.setAssigned_issues(kafkaAssigned);
         report.setReformed_issues(kafkaReformed);
         report.setChecked_issues(kafkaChecked);
+
+        log.info("kafka推送  data---------------:{}",JSON.toJSONString(report));
+
         //kafka消息推送
         kafkaProducer.produce(EventQueueEnum.PKG_HOUSEQM_ISSUE_REPORTED.getValue(), report);
 
