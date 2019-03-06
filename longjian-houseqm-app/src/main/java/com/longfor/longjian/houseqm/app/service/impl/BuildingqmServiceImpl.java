@@ -1542,35 +1542,6 @@ public class BuildingqmServiceImpl implements IBuildingqmService {
 
     }
 
-
-    /**
-     * @param configData
-     * @param name
-     * @param defautValue
-     * @return
-     */
-    private Integer getValueOrDefault(JSONObject configData, String name, Integer defautValue) {
-        Integer obj = configData.getInteger(name);
-        if (obj == null) {
-            return defautValue;
-        } else {
-            return obj;
-        }
-    }
-
-
-    private String getStringValueOrDefault(JSONObject configData, String name, String defautValue) {
-
-        String obj = configData.getString(name);
-
-        if (configData.get(name) == null) {
-            return defautValue;
-        } else {
-            return obj;
-        }
-    }
-
-
     @Override
     public Map<String, Object> issuestatisticexport(Integer categoryCls, String items, HttpServletResponse response) {
         Integer result = 0;
