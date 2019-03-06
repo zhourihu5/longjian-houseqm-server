@@ -97,7 +97,7 @@ public class ScanMsgPushServiceImpl implements ScanMsgPushService {
             module_ids=new Integer[1];
             module_ids[0]=ModuleInfoEnum.GCGL.getValue();
         }
-        log.info("notice center begin to scan, task list:[%s]", StringUtils.join(module_ids, ','));
+        log.info("notice center begin to scan, task list----------------:{}", StringUtils.join(module_ids, ','));
 
         for(Integer moduleId:module_ids){
             scan_notice_center_and_push(moduleId);
@@ -148,7 +148,7 @@ public class ScanMsgPushServiceImpl implements ScanMsgPushService {
 
         List<HouseQmCheckTaskNotifyRecord>recordList=qmCheckTaskNotifyRecordService.findExample(map,statusList);
 
-        log.debug("recordList: {}",recordList==null?"":JSON.toJSONString(recordList));
+        log.debug("recordList:---------------- {}",recordList==null?"":JSON.toJSONString(recordList));
 
         Map<NoticeStatKey,NoticeStatValue>statMap=new HashMap<>();
         List<Integer>projectIds=new ArrayList<>();
@@ -183,7 +183,7 @@ public class ScanMsgPushServiceImpl implements ScanMsgPushService {
             return new LjBaseResponse();
         }
 
-        log.debug("statMap : {}",JSON.toJSONString(statMap));
+        log.debug("statMap ---------------: {}",JSON.toJSONString(statMap));
 
         Map<Integer,User>userMap=createUserMap(noticeUserIds);
         Map<Integer,Project>projectMap= createProjectMap(projectIds);
@@ -239,7 +239,7 @@ public class ScanMsgPushServiceImpl implements ScanMsgPushService {
         return noticeStatValue;
     }
 
-    private Map<Integer,User>createUserMap(List<Integer>noticeUserIds){
+    public Map<Integer,User>createUserMap(List<Integer>noticeUserIds){
 
         Map<Integer,User>userMap=new HashMap<>();
 
