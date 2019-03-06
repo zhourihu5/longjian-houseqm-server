@@ -229,11 +229,10 @@ public class UserInHouseQmCheckTaskServiceImpl implements UserInHouseQmCheckTask
 
     @Override
     @LFAssignDataSource("zhijian2")
-    public List<UserInHouseQmCheckTask> selectByTaskIdInAndRoleTypeNotDel(List<Integer> taskIds, Integer value,Integer key) {
+    public List<UserInHouseQmCheckTask> selectByTaskIdInAndRoleTypeNotDel(List<Integer> taskIds, Integer value) {
         Example example = new Example(UserInHouseQmCheckTask.class);
         Example.Criteria criteria = example.createCriteria();
         criteria.andIn(TASK_ID, taskIds).andEqualTo(ROLE_TYPE, value)
-                .andEqualTo("adminerStatus",key)
                 .andIsNull(DELETE_AT);
         return userInHouseQmCheckTaskMapper.selectByExample(example);
     }

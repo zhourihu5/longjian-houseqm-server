@@ -49,5 +49,5 @@ public interface UserInHouseQmCheckTaskService {
 
     List<UserInHouseQmCheckTask> searchUserInHouseQmCheckTaskByUserIdRoleType(Integer uid, Integer id);
 
-    List<UserInHouseQmCheckTask> selectByTaskIdInAndRoleTypeNotDel(List<Integer> taskIds, Integer value,Integer key);
+    List<UserInHouseQmCheckTask> selectByTaskIdInAndRoleTypeNotDel(List<Integer> taskIds, Integer value);
 }
