@@ -53,7 +53,7 @@ public class IusseTaskListController {
 
 
     @RequestMapping(value = "issue/task_list", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
-    public TaskResponse<HouseQmCheckTaskSimpleRspVo.TaskList> doAction(HttpServletRequest request, @RequestParam(value = "project_id") Integer projectId,
+    public LjBaseResponse<HouseQmCheckTaskSimpleRspVo.TaskList> doAction(HttpServletRequest request, @RequestParam(value = "project_id") Integer projectId,
                                                                        @RequestParam(value = "category_cls") Integer categoryCls
     ) {
         try {
@@ -62,7 +62,7 @@ public class IusseTaskListController {
             log.error(e.getMessage());
         }
         //通过id projectId 判断
-        TaskResponse<HouseQmCheckTaskSimpleRspVo.TaskList> response = new TaskResponse<>();
+        LjBaseResponse<HouseQmCheckTaskSimpleRspVo.TaskList> response = new LjBaseResponse<>();
         List<HouseQmCheckTaskSimpleRspVo> vos = iusseTaskListService.selectByProjectIdAndCategoryCls(projectId, categoryCls);
         HouseQmCheckTaskSimpleRspVo.TaskList taskList = new HouseQmCheckTaskSimpleRspVo().new TaskList();
         taskList.setTask_list(vos);

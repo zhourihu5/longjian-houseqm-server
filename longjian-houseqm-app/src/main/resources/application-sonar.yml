@@ -1,6 +1,6 @@
 #start
-server.port: 8082
-management.port: 9982 #9982
+server.port: 8085
+management.port: 9985 #9982
 
 spring:
   application:

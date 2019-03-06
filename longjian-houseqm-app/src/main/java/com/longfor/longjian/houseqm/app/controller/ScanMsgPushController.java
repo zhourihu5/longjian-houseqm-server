@@ -4,7 +4,6 @@ import com.longfor.longjian.common.base.LjBaseResponse;
 import com.longfor.longjian.houseqm.app.service.ScanMsgPushService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.MediaType;
-import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -22,7 +21,7 @@ public class ScanMsgPushController {
     private ScanMsgPushService scanMsgPushService;
 
 
-    @PostMapping(value = "scan_notice_center", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+    @RequestMapping(value = "scan_notice_center", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     public LjBaseResponse scanNoticeCenter(String categoryCls) {
 
         log.info("scan_notice_center, categoryCls=" + categoryCls);
