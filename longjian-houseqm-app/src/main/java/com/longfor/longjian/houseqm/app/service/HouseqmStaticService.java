@@ -18,8 +18,6 @@ import com.longfor.longjian.houseqm.po.zj2db.UserInHouseQmCheckTask;
 import com.longfor.longjian.houseqm.util.CollectionUtil;
 import com.longfor.longjian.houseqm.util.DateUtil;
 import com.longfor.longjian.houseqm.util.StringSplitToListUtil;
-import lombok.Data;
-import lombok.NoArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections.CollectionUtils;
 import org.springframework.stereotype.Repository;
@@ -162,7 +160,7 @@ public class HouseqmStaticService {
         return buildlist;
     }
 
-    private Map<Integer, HouseqmStaticService.IssueMinStatus> getIssueMinStatusMapByTaskIdAndAreaId(Integer taskId, Integer areaId, Boolean onlyIssue) {
+    private Map<Integer,IssueMinStatus> getIssueMinStatusMapByTaskIdAndAreaId(Integer taskId, Integer areaId, Boolean onlyIssue) {
         List<Integer> types = Lists.newArrayList();
         types.add(HouseQmCheckTaskIssueEnum.FindProblem.getId());
         types.add(HouseQmCheckTaskIssueEnum.Difficult.getId());
@@ -201,14 +199,14 @@ public class HouseqmStaticService {
     public RepossessionTasksStatusInfoVo getRepossessionTasksStatusInfo(Integer prodectId, List<Integer> taskIds, Integer areaId) {
         RepossessionTasksStatusInfoVo info = new RepossessionTasksStatusInfoVo();
 
-        for (int i = 0; i < taskIds.size(); i++) {
-            List<Area> areas = searchTargetAreaByTaskId(prodectId, taskIds.get(i));
+        for (Integer taskId : taskIds) {
+            List<Area> areas = searchTargetAreaByTaskId(prodectId, taskId);
             if (areas == null) {
                 continue;
             }
             int total = areas.size();
-            List<RepossessionStatus> items = repossessionStatusService.searchByTaskIdAreaIdLike(taskIds.get(i), areaId);
-            List<String> hasIssuePaths = getHasIssueTaskCheckedAreaPathListByTaskId(taskIds.get(i), true, null, areaId);
+            List<RepossessionStatus> items = repossessionStatusService.searchByTaskIdAreaIdLike(taskId, areaId);
+            List<String> hasIssuePaths = getHasIssueTaskCheckedAreaPathListByTaskId(taskId, true, null, areaId);
             HashMap<Integer, Boolean> hasIssueAreaId = Maps.newHashMap();
             for (int j = 0; j < hasIssuePaths.size(); j++) {
                 List<Integer> ids = StringSplitToListUtil.splitToIdsComma(hasIssuePaths.get(j), "/");
@@ -224,7 +222,7 @@ public class HouseqmStaticService {
             statuses.add(HouseQmCheckTaskIssueStatusEnum.AssignNoReform.getId());
             statuses.add(HouseQmCheckTaskIssueStatusEnum.ReformNoCheck.getId());
             // 有问题但是未销项完成的
-            List<String> hasIssueNoApprovedPaths = getHasIssueTaskCheckedAreaPathListByTaskId(taskIds.get(i), true, statuses, areaId);
+            List<String> hasIssueNoApprovedPaths = getHasIssueTaskCheckedAreaPathListByTaskId(taskId, true, statuses, areaId);
             HashMap<Integer, Boolean> hasIssueNoApprovedAreaId = Maps.newHashMap();
             for (int j = 0; j < hasIssueNoApprovedPaths.size(); j++) {
                 List<Integer> ids = StringSplitToListUtil.splitToIdsComma(hasIssueNoApprovedPaths.get(j), "/");
@@ -387,16 +385,4 @@ public class HouseqmStaticService {
 
         return false;
     }
-
-    /**
-     * 用于getIssueMinStatusMapByTaskIdAndAreaId()方法
-     */
-    @NoArgsConstructor
-    @Data
-    public class IssueMinStatus {
-        private Integer count;
-        private Integer minStatus;
-    }
-
-
 }

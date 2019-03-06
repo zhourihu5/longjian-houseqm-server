@@ -31,6 +31,7 @@ public class AreaServiceImpl implements AreaService {
 
     @Resource
     AreaMapper areaMapper;
+    private static final String PROJECT_ID="projectId";
 
     @Override
     @LFAssignDataSource("zhijian2")
@@ -57,7 +58,7 @@ public class AreaServiceImpl implements AreaService {
     public List<Area> searchRelatedAreaByAreaIdIn(Integer projectId, List<Integer> areaIds) {
         Example example = new Example(Area.class);
         Example.Criteria criteria = example.createCriteria();
-        criteria.andEqualTo("projectId", projectId).andIn("id", areaIds);
+        criteria.andEqualTo(PROJECT_ID, projectId).andIn("id", areaIds);
         ExampleUtil.addDeleteAtJudge(example);
         List<Area> fAreas = areaMapper.selectByExample(example);
 
@@ -79,7 +80,7 @@ public class AreaServiceImpl implements AreaService {
 
         Example example1 = new Example(Area.class);
         Example.Criteria criteria1 = example1.createCriteria();
-        criteria1.andEqualTo("projectId", projectId).andIn("id", set);
+        criteria1.andEqualTo(PROJECT_ID, projectId).andIn("id", set);
         for (Area item : fAreas) {
             criteria1.orLike("path", item.getPath() + item.getId() + "/%%");
         }
@@ -168,7 +169,7 @@ public class AreaServiceImpl implements AreaService {
     public List<Area> searchAreaListByRootIdAndTypes(Integer projectId, List<Integer> rootIds, List<Integer> types) {
         Example example = new Example(Area.class);
         Example.Criteria criteria = example.createCriteria();
-        criteria.andEqualTo("projectId", projectId);
+        criteria.andEqualTo(PROJECT_ID, projectId);
         if (CollectionUtils.isNotEmpty(rootIds)) criteria.andIn("id", rootIds);
         ExampleUtil.addDeleteAtJudge(example);
         List<Area> areas = areaMapper.selectByExample(example);
@@ -181,7 +182,7 @@ public class AreaServiceImpl implements AreaService {
             Example example1 = new Example(Area.class);
             Example.Criteria criteria1 = example1.createCriteria();
             Example.Criteria criteria2 = example1.createCriteria();
-            criteria1.andEqualTo("projectId", projectId);
+            criteria1.andEqualTo(PROJECT_ID, projectId);
             criteria2.andLike("path", likePath).orEqualTo("id", area.getId());// regex
 
             example1.and(criteria2);
@@ -210,7 +211,7 @@ public class AreaServiceImpl implements AreaService {
     public List<Area> selectByFatherId(Integer prodectId, Integer i) {
         Example example = new Example(Area.class);
         Example.Criteria criteria = example.createCriteria();
-        criteria.andEqualTo("projectId", prodectId).andEqualTo("fatherId", i).andIsNull("deleteAt");
+        criteria.andEqualTo(PROJECT_ID, prodectId).andEqualTo("fatherId", i).andIsNull("deleteAt");
         return areaMapper.selectByExample(example);
     }
 

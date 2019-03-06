@@ -57,6 +57,9 @@ public class HouseQmCheckTaskIssueHelperVo {
     @Resource
     private HouseQmCheckTaskIssueAttachmentService houseQmCheckTaskIssueAttachmentService;
 
+    private static final String CHANGED="changed";
+    private static final String ISSUE_ROLE="issueRole";
+    private static final String YMDHMS ="yyyy-MM-dd hh:mm:ss";
 
     private Map<String, CategoryV3> categoryMap;
     private Map<Integer, Area> areaMap;
@@ -115,7 +118,7 @@ public class HouseQmCheckTaskIssueHelperVo {
         this.currentLog.setAttachmentMd5List(String.valueOf(map.get("str")));
         this.currentLog.setAudioMd5List(String.valueOf(map.get("eStr1")));
         this.currentLog.setMemoAudioMd5List(String.valueOf(map.get("eStr2")));
-        this.currentLog.setClientCreateAt(DateUtil.timeStampToDate(Integer.parseInt(String.valueOf("nowTimestamp")), "yyyy-MM-dd hh:mm:ss"));
+        this.currentLog.setClientCreateAt(DateUtil.timeStampToDate(Integer.parseInt(String.valueOf("nowTimestamp")), YMDHMS));
 
         return this;
     }
@@ -169,15 +172,13 @@ public class HouseQmCheckTaskIssueHelperVo {
             this.taskMap.put(this.currentLog.getTaskId(), task);
         }
         HouseQmCheckTask task = this.taskMap.get(this.currentLog.getTaskId());
-        if (task != null) {
-            if (task.getDeleteAt() != null) {
+        if (task != null&&task.getDeleteAt() != null) {
                 log.debug("HouseQm Task Has Delete ");
                 String name = ApiDropDataReasonEnum.HouseQmTaskRemoved.getName();
                 int value = ApiDropDataReasonEnum.HouseQmTaskRemoved.getValue();
                 this.setDroppedIssue(issueUuid, value, name);
                 this.setDroppedIssueLog(this.currentLog.getUuid(), value, name);
                 return this;
-            }
         }
         issue = this.needInsertIssueMap.get(issueUuid);
         if (issue != null) inNew = true;
@@ -233,8 +234,7 @@ public class HouseQmCheckTaskIssueHelperVo {
         //需要新创建的
         if (needCreate) {
             Map<String, Object> map = initNewIssue();
-            //HouseQmCheckTaskIssueVo newIssue = (HouseQmCheckTaskIssueVo) map.get("houseqmissue");
-            UserInIssue newIssueRole = (UserInIssue) map.get("issueRole");
+            UserInIssue newIssueRole = (UserInIssue) map.get(ISSUE_ROLE);
             String tempIssueUid = this.currentLog.getIssueUuid();
             if (newIssueRole.getModified()) {
                 this.issueMembers.put(tempIssueUid, newIssueRole);
@@ -250,9 +250,9 @@ public class HouseQmCheckTaskIssueHelperVo {
                 setDroppedIssueLog(this.currentLog.getUuid(), ApiDropDataReasonEnum.Other.getValue(), "问题已销项");
             } else {
                 Map<String, Object> map = modifyIssue(tempIssue);
-                Boolean changed = (Boolean) map.get("changed");
+                Boolean changed = (Boolean) map.get(CHANGED);
                 HouseQmCheckTaskIssueVo modifiedIssue = (HouseQmCheckTaskIssueVo) map.get("houseqmissue");
-                UserInIssue newIssueRole = (UserInIssue) map.get("issueRole");
+                UserInIssue newIssueRole = (UserInIssue) map.get(ISSUE_ROLE);
                 if (changed) {
                     this.needUpdateIssueMap.put(issueUuid, modifiedIssue);
                 }
@@ -270,9 +270,9 @@ public class HouseQmCheckTaskIssueHelperVo {
             } else {
                 String tempIssueUid = this.currentLog.getIssueUuid();
                 Map<String, Object> map = this.modifyIssue(tempIssue);
-                Boolean changed = (Boolean) map.get("changed");
+                Boolean changed = (Boolean) map.get(CHANGED);
                 HouseQmCheckTaskIssueVo modifiedIssue = (HouseQmCheckTaskIssueVo) map.get("houseqmissue");
-                UserInIssue newIssueRole = (UserInIssue) map.get("issueRole");
+                UserInIssue newIssueRole = (UserInIssue) map.get(ISSUE_ROLE);
                 if (changed) {
                     this.needUpdateIssueMap.put(issueUuid, modifiedIssue);
                 }
@@ -286,9 +286,9 @@ public class HouseQmCheckTaskIssueHelperVo {
             HouseQmCheckTaskIssueVo tempIssue = this.needInsertIssueMap.get(issueUuid);
             String tempIssueUid = this.currentLog.getIssueUuid();
             Map<String, Object> map = this.modifyIssue(tempIssue);
-            Boolean changed = (Boolean) map.get("changed");
+            Boolean changed = (Boolean) map.get(CHANGED);
             HouseQmCheckTaskIssueVo modifiedIssue = (HouseQmCheckTaskIssueVo) map.get("houseqmissue");
-            UserInIssue newIssueRole = (UserInIssue) map.get("issueRole");
+            UserInIssue newIssueRole = (UserInIssue) map.get(ISSUE_ROLE);
             if (changed) {
                 this.needUpdateIssueMap.put(issueUuid, modifiedIssue);
             }
@@ -300,7 +300,7 @@ public class HouseQmCheckTaskIssueHelperVo {
     }
 
     //执行
-    public void execute() throws Exception {
+    public void execute() {
         //执行前补全各种数据
         this.beforeExecute();
         for (HouseQmCheckTaskIssueVo issue : this.needInsertIssueMap.values()) {
@@ -488,8 +488,6 @@ public class HouseQmCheckTaskIssueHelperVo {
         this.appendNotifyRecord(upushIssues);
         // PUSH Kafka Logs
         this.pushKafkaMsg();
-
-
     }
 
     public HouseQmCheckTaskIssueHelperVo beforeExecute() {
@@ -791,10 +789,8 @@ public class HouseQmCheckTaskIssueHelperVo {
                     issue.setLastAssigner(this.currentLog.getSenderId());
                     issue.setLastAssignAt(this.currentLog.getClientCreateAt());
                 }
-            } else if (HouseQmCheckTaskIssueLogStatusEnum.UpdateIssueInfo.getId().equals(this.currentLog.getStatus())) {
-                if (this.currentLog.getDesc().length() > 0) {
+            } else if (HouseQmCheckTaskIssueLogStatusEnum.UpdateIssueInfo.getId().equals(this.currentLog.getStatus())&&this.currentLog.getDesc().length() > 0) {
                     issue.setContent(issue.getContent() + ":" + this.currentLog.getDesc());
-                }
             }
 
         }
@@ -808,12 +804,12 @@ public class HouseQmCheckTaskIssueHelperVo {
         //计划结束时间
         if (this.currentLog.getDetail().getPlanEndOn() != -1) {
             changed = true;
-            issue.setPlanEndOn(DateUtil.timeStampToDate(this.currentLog.getDetail().getPlanEndOn(), "yyyy-MM-dd hh:mm:ss"));
+            issue.setPlanEndOn(DateUtil.timeStampToDate(this.currentLog.getDetail().getPlanEndOn(), YMDHMS));
         }
         //结束时间
         if (this.currentLog.getDetail().getEndOn() != -1) {
             changed = true;
-            issue.setEndOn(DateUtil.timeStampToDate(this.currentLog.getDetail().getEndOn(), "yyyy-MM-dd hh:mm:ss"));
+            issue.setEndOn(DateUtil.timeStampToDate(this.currentLog.getDetail().getEndOn(), YMDHMS));
         }
         //严重程度
         if (this.currentLog.getDetail().getCondition() != -1) {
@@ -883,8 +879,8 @@ public class HouseQmCheckTaskIssueHelperVo {
 
         HashMap<String, Object> map = Maps.newHashMap();
         map.put("houseqmissue", issue);
-        map.put("changed", changed);
-        map.put("issueRole", issueRole);
+        map.put(CHANGED, changed);
+        map.put(ISSUE_ROLE, issueRole);
 
         return map;
     }
@@ -905,10 +901,10 @@ public class HouseQmCheckTaskIssueHelperVo {
         issue.setSenderId(this.currentLog.getSenderId());
         issue.setPlanEndOn(null);
         if (this.currentLog.getDetail().getPlanEndOn() != -1) {
-            issue.setPlanEndOn(DateUtil.timeStampToDate(this.currentLog.getDetail().getPlanEndOn(), "yyyy-MM-dd hh:mm:ss"));
+            issue.setPlanEndOn(DateUtil.timeStampToDate(this.currentLog.getDetail().getPlanEndOn(), YMDHMS));
         }
         if (this.currentLog.getDetail().getEndOn() != -1) {
-            issue.setEndOn(DateUtil.timeStampToDate(this.currentLog.getDetail().getEndOn(), "yyyy-MM-dd hh:mm:ss"));
+            issue.setEndOn(DateUtil.timeStampToDate(this.currentLog.getDetail().getEndOn(), YMDHMS));
         }
         issue.setCategoryCls(this.currentLog.getDetail().getCategoryCls());
         //完整category路径后补
@@ -985,7 +981,7 @@ public class HouseQmCheckTaskIssueHelperVo {
         issueRole.setUserRole(userRole);
         HashMap<String, Object> map = Maps.newHashMap();
         map.put("houseqmissue", issue);
-        map.put("issueRole", issueRole);
+        map.put(ISSUE_ROLE, issueRole);
         return map;
     }
 

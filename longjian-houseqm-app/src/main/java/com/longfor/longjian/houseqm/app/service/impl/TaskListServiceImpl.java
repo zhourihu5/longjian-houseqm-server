@@ -155,7 +155,6 @@ public class TaskListServiceImpl implements ITaskListService {
         }
         Set<Integer> taskIds = Sets.newHashSet();
         for (HouseQmCheckTask item : checkTaskList) {
-            //if (!taskIds.contains(item.getTaskId()))
             taskIds.add(item.getTaskId());
         }
         Map<Integer, ApiBuildingQmCheckTaskConfig> taskMap = creatTaskMap(taskIds);
@@ -170,7 +169,6 @@ public class TaskListServiceImpl implements ITaskListService {
 
         for (HouseQmCheckTask checkTask : checkTaskList) {
             ApiBuildingQmCheckTaskMsg task = new ApiBuildingQmCheckTaskMsg();
-            //TaskVo task = new TaskVo();
             BuildingqmServiceImpl.setTaskProperties(null, task, taskMap, checkTask);
 
             HashMap<String, Map> pushStrategy = Maps.newHashMap();

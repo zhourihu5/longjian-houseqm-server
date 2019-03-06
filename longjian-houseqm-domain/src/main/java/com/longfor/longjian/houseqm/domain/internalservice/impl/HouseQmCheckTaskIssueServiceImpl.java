@@ -51,6 +51,8 @@ public class HouseQmCheckTaskIssueServiceImpl implements HouseQmCheckTaskIssueSe
     private static final String UUID = "uuid";
     private static final String SENDER_ID = "senderId";
     private static final String FALSE = "false";
+    private static final String ERROR="error:";
+    private static final String AREA_ID="areaId";
     @Resource
     private HouseQmCheckTaskIssueMapper houseQmCheckTaskIssueMapper;
     @Resource
@@ -104,7 +106,7 @@ public class HouseQmCheckTaskIssueServiceImpl implements HouseQmCheckTaskIssueSe
         if (CollectionUtils.isEmpty(taskIds)) return Lists.newArrayList();
         Example example = new Example(HouseQmCheckTaskIssue.class);
         Example.Criteria criteria = example.createCriteria();
-        criteria.andIn("taskId", taskIds);
+        criteria.andIn(TASK_ID, taskIds);
         ExampleUtil.addDeleteAtJudge(example);
         return houseQmCheckTaskIssueMapper.selectByExample(example);
     }
@@ -170,7 +172,7 @@ public class HouseQmCheckTaskIssueServiceImpl implements HouseQmCheckTaskIssueSe
     public List<HouseQmCheckTaskIssue> searchByProjIdAndTaskIdAndAreaIdInAndRepairedIdAndClientCreateAt(Integer projectId, Integer taskId, List<Integer> subAreaIds, Integer repairerId, Date beginOn, Date endOn) {
         Example example = new Example(HouseQmCheckTaskIssue.class);
         Example.Criteria criteria = example.createCriteria();
-        criteria.andEqualTo(PROJECT_ID, projectId).andEqualTo(TASK_ID, taskId).andIn("areaId", subAreaIds);
+        criteria.andEqualTo(PROJECT_ID, projectId).andEqualTo(TASK_ID, taskId).andIn(AREA_ID, subAreaIds);
         if (repairerId > 0) {
             criteria.andEqualTo(REPAIRER_ID, repairerId);
         }
@@ -201,7 +203,7 @@ public class HouseQmCheckTaskIssueServiceImpl implements HouseQmCheckTaskIssueSe
             }
             return taskIssues.size();
         } catch (Exception e) {
-            log.error("error:", e.getMessage());
+            log.error(ERROR, e.getMessage());
             return 0;
         }
     }
@@ -344,7 +346,7 @@ public class HouseQmCheckTaskIssueServiceImpl implements HouseQmCheckTaskIssueSe
         try {
             return houseQmCheckTaskIssueUserMapper.searchByConditionOrderByPageUnscoped(taskId, lastId, timestamp, start, limit);
         } catch (Exception e) {
-            log.error("error:" + e);
+            log.error(ERROR + e);
         }
         return Lists.newArrayList();
     }
@@ -377,7 +379,7 @@ public class HouseQmCheckTaskIssueServiceImpl implements HouseQmCheckTaskIssueSe
             //
             return houseQmCheckTaskIssueAttachmentMapper.searchByTaskIdAndSelfJoinOrderByIdASCPageUnscoped(taskId, userId, timestamp, userIds, privateInt, publicInt, start, limit);
         } catch (Exception e) {
-            log.error("error:" + e);
+            log.error(ERROR + e);
         }
         return Lists.newArrayList();
     }
@@ -514,8 +516,8 @@ public class HouseQmCheckTaskIssueServiceImpl implements HouseQmCheckTaskIssueSe
         Example example = new Example(HouseQmCheckTaskIssue.class);
         Example.Criteria criteria = example.createCriteria();
         criteria.andEqualTo(PROJECT_ID, condiMap.get(PROJECT_ID)).andIn(TYPE, (List<Integer>) condiMap.get("types")).andLike(CATEGORY_PATH_AND_KEY, "%" + (String) condiMap.get("categoryKey") + "%");
-        if (condiMap.get("areaId") != null) {
-            criteria.andLike(AREA_PATH_AND_ID, "%" + condiMap.get("areaId") + "%");
+        if (condiMap.get(AREA_ID) != null) {
+            criteria.andLike(AREA_PATH_AND_ID, "%" + condiMap.get(AREA_ID) + "%");
         }
         HouseQmCheckTaskIssueDto dto = new HouseQmCheckTaskIssueDto();
         int i = houseQmCheckTaskIssueMapper.selectCountByExample(example);

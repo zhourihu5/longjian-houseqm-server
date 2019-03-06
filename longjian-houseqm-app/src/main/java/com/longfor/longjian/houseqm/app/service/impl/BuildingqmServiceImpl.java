@@ -412,12 +412,6 @@ public class BuildingqmServiceImpl implements IBuildingqmService {
     }
 
     private void beforeExecute(List<ApiBuildingQmTaskMemberGroupVo> checkerGroupsAdd, List<ApiBuildingQmTaskMemberGroupVo> checkerGroupsEdit, List<Object> checkerGroupsDel, List<ApiBuildingQmTaskMemberInsertVo> needInsertCheckTaskSquadUser, List<UserInHouseQmCheckTask> needUpdateCheckTaskSquadUser, Map doNotNeedDeleteSquaduserPkId,Map<String,Object> paramMap) {
-      /*  Integer uid = (Integer) paramMap.get("uid");
-        List<Integer> areaIds= (List<Integer>) paramMap.get("areaIds");
-        List<Integer> areaTypes= (List<Integer>) paramMap.get("areaTypes");
-        String planBeginOn= (String) paramMap.get("planBeginOn");
-        String planEndOn= (String) paramMap.get("planEndOn");
-        ConfigVo config= (ConfigVo) paramMap.get("config");*/
         TaskEditReq taskEditReq= (TaskEditReq) paramMap.get("taskEditReq");
         List<ApiBuildingQmTaskMemberGroupVo> checkerGroups= (List<ApiBuildingQmTaskMemberGroupVo>) paramMap.get(CHECKER_GROUPS);
         List<ApiBuildingQmTaskMemberGroupVo> repairerGroups= (List<ApiBuildingQmTaskMemberGroupVo>) paramMap.get(REPAIR_GROUPS);
@@ -852,7 +846,6 @@ public class BuildingqmServiceImpl implements IBuildingqmService {
         Map<Object, Object> doNotNeedDeleteSquaduserPkId = Maps.newHashMap();
         Map<String, Object> paramMap = Maps.newHashMap();
         List<ApiBuildingQmTaskMemberGroupVo> checkerGroups = (List<ApiBuildingQmTaskMemberGroupVo>) map.get(CHECKER_GROUPS);
-        //List<ApiBuildingQmTaskMemberGroupVo> repairGroups = (List<ApiBuildingQmTaskMemberGroupVo>) map.get(REPAIR_GROUPS);
         ConfigVo config = (ConfigVo) map.get(CONFIG);
         paramMap.put("uid",uid);
         paramMap.put("taskEditReq",taskEditReq);
@@ -1267,9 +1260,6 @@ public class BuildingqmServiceImpl implements IBuildingqmService {
         houseQmCheckTask.setPlanEndOn(stringToDate(planEndOn));
         houseQmCheckTask.setCreateAt(new Date());
         houseQmCheckTask.setUpdateAt(new Date());
-   /*     String stringAreaIds = areaIds.toString();
-        String s = StringUtils.removeStart(stringAreaIds, "[");
-        String s1 = StringUtils.removeEnd(s, "]");*/
         houseQmCheckTask.setAreaIds(StringUtils.join(areaIds,","));
         houseQmCheckTask.setAreaTypes(StringUtils.join(areaTypes,","));
         //返回主键
@@ -1364,7 +1354,7 @@ public class BuildingqmServiceImpl implements IBuildingqmService {
                 qmCheckTask.setCanReassign(canReassign);
                 int num = userInHouseQmCheckTaskService.add(qmCheckTask);
                 if (num <= 0) {
-                    log.info("create task user failed");
+                    log.info(CREATE_TASK_USER_FAILED);
                     throw new LjBaseRuntimeException(-99, CREATE_TASK_PEOPLE_FAIL);
                 }
             }
@@ -1573,7 +1563,7 @@ public class BuildingqmServiceImpl implements IBuildingqmService {
                 item.setChecker_approve_permission(CheckerApprovePermission.No.getValue());
                 item.setRepaired_picture_status(CheckTaskRepairedPictureEnum.UnForcePicture.getValue());
                 item.setIssue_desc_status(CheckTaskIssueDescEnum.Arbitrary.getValue());
-                item.setIssue_default_desc("(该问题无文字描述)");
+                item.setIssue_default_desc(QUESTION_NO_DESC);
             } else {
                 JSONObject configData = JSON.parseObject(task.getConfigInfo());
                 item.setRepairer_refund_permission(getValueOrDefault(configData, REPAIR_REFOUND_PERMISSION,

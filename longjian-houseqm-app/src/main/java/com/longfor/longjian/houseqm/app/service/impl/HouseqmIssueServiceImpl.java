@@ -45,7 +45,6 @@ public class HouseqmIssueServiceImpl implements IHouseqmIssueService {
     private HouseQmCheckTaskIssueHelperVo helper;
     private Random rand;
     private static final String STATUS="status";
-
     public HouseqmIssueServiceImpl() throws NoSuchAlgorithmException {
         rand = SecureRandom.getInstanceStrong();
     }
@@ -105,13 +104,13 @@ public class HouseqmIssueServiceImpl implements IHouseqmIssueService {
 
             if (HouseQmCheckTaskIssueCheckStatusEnum.CheckYes.getId().equals(status)) {
 
-                map.put("status",HouseQmCheckTaskIssueStatusEnum.CheckYes.getId());
+                map.put(STATUS,HouseQmCheckTaskIssueStatusEnum.CheckYes.getId());
                 map.put("str",eStr);
                 // 审核通过
                 helper.start().setNormalField(map).
                         setDetailField(detailMap).done();
             } else if (HouseQmCheckTaskIssueCheckStatusEnum.CheckNo.getId().equals(status)) {
-                map.put("status",HouseQmCheckTaskIssueCheckStatusEnum.CheckNo.getId());
+                map.put(STATUS,HouseQmCheckTaskIssueCheckStatusEnum.CheckNo.getId());
                 map.put("str",attachmentMd5List);
                 helper.start().setNormalField(map).
                         setDetailField(detailMap).done();
@@ -168,7 +167,7 @@ public class HouseqmIssueServiceImpl implements IHouseqmIssueService {
             map.put("eStr1",eStr);
             map.put("nowTimestamp",nowTimestamp);
             map.put("eStr2",eStr);
-            map.put("status",status);
+            map.put(STATUS,status);
             map.put("str",eStr);
 
 
@@ -215,7 +214,6 @@ public class HouseqmIssueServiceImpl implements IHouseqmIssueService {
         long randCount = (long) (rand.nextDouble() * Long.MAX_VALUE);
         String baseDir = exportVo.getBase_dir();
         Integer ts = DateUtil.datetimeToTimeStamp(new Date());
-        //String baseUri = exportVo.getBase_uri();
         String inputFilename = String.format("%d%d.%s", randCount, ts, "input");
         String outputFilename = String.format("/export/%d%d.%s", randCount, ts, "output");
         String filepath = baseDir + inputFilename;

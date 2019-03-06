@@ -32,7 +32,7 @@ import java.util.stream.Collectors;
 
 @Service
 @Slf4j
-public class HouseqmServiceImpl implements IHouseqmService {
+public class  HouseqmServiceImpl implements IHouseqmService {
     private static final Integer HOUSEQM_API_GET_PER_TIME = 5000;
     @Resource
     private AreaService areaService;
@@ -300,7 +300,7 @@ public class HouseqmServiceImpl implements IHouseqmService {
         //获取出任务下的区域与检验类型的交集
         List<Integer> areaIds = StringSplitToListUtil.strToInts(task.getAreaIds(), ",");
         List<Integer> areaTypes = StringSplitToListUtil.strToInts(task.getAreaTypes(), ",");
-        if (CollectionUtils.isEmpty(areaIds)|| CollectionUtils.isEmpty(areaTypes)) return null;
+        if (CollectionUtils.isEmpty(areaIds)|| CollectionUtils.isEmpty(areaTypes)) return Lists.newArrayList();
         return  areaService.searchAreaListByRootIdAndTypes(projectId, areaIds, areaTypes);
 
     }

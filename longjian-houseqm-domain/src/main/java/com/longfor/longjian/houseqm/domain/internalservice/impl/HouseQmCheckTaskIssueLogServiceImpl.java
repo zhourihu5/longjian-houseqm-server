@@ -29,10 +29,14 @@ import java.util.Set;
 @Service
 @Slf4j
 public class HouseQmCheckTaskIssueLogServiceImpl implements HouseQmCheckTaskIssueLogService {
+
     @Resource
     HouseQmCheckTaskIssueLogMapper houseQmCheckTaskIssueLogMapper;
     @Resource
     private UserInHouseQmCheckTaskMapper userInHouseQmCheckTaskMapper;
+    private static final String STATUS="status";
+    private static final String DELETE_AT="deleteAt";
+    private static final String ISSUE_UUID= "issueUuid";
 
     @Override
     @LFAssignDataSource("zhijian2")
@@ -106,7 +110,7 @@ public class HouseQmCheckTaskIssueLogServiceImpl implements HouseQmCheckTaskIssu
         criteria.andEqualTo("taskId", taskId).andGreaterThan("id", 0);
 
         Example.Criteria criteria1 = example.createCriteria();
-        if (CollectionUtils.isNotEmpty(uuids)) criteria1.andIn("issueUuid", uuids);
+        if (CollectionUtils.isNotEmpty(uuids)) criteria1.andIn(ISSUE_UUID, uuids);
 
         Example.Criteria criteria2 = example.createCriteria();
         criteria2.andGreaterThan("updateAt", issueLogUpdateTime);
@@ -127,7 +131,7 @@ public class HouseQmCheckTaskIssueLogServiceImpl implements HouseQmCheckTaskIssu
     public List<HouseQmCheckTaskIssueLog> selectByUuidAndNotDelete(String issueUuid) {
         Example example = new Example(HouseQmCheckTaskIssueLog.class);
         Example.Criteria criteria = example.createCriteria();
-        criteria.andEqualTo("issueUuid", issueUuid).andIsNull("deleteAt");
+        criteria.andEqualTo(ISSUE_UUID, issueUuid).andIsNull(DELETE_AT);
         return houseQmCheckTaskIssueLogMapper.selectByExample(example);
     }
 
@@ -146,9 +150,9 @@ public class HouseQmCheckTaskIssueLogServiceImpl implements HouseQmCheckTaskIssu
     public List<HouseQmCheckTaskIssueLog> selectByIssueUuIdAndStatusNotDel(String issueUuid, ArrayList<Integer> issueLogStatus) {
         Example example = new Example(HouseQmCheckTaskIssueLog.class);
         Example.Criteria criteria = example.createCriteria();
-        criteria.andEqualTo("issueUuid", issueUuid);
-        criteria.andIn("status", issueLogStatus);
-        criteria.andIsNull("deleteAt");
+        criteria.andEqualTo(ISSUE_UUID, issueUuid);
+        criteria.andIn(STATUS, issueLogStatus);
+        criteria.andIsNull(DELETE_AT);
         return houseQmCheckTaskIssueLogMapper.selectByExample(example);
     }
 
@@ -157,9 +161,9 @@ public class HouseQmCheckTaskIssueLogServiceImpl implements HouseQmCheckTaskIssu
     public int selectByIssueUuIdAndStatusNotDelAndCount(String issueUuid, ArrayList<Integer> issueLogStatus) {
         Example example = new Example(HouseQmCheckTaskIssueLog.class);
         Example.Criteria criteria = example.createCriteria();
-        criteria.andEqualTo("issueUuid", issueUuid);
-        criteria.andIn("status", issueLogStatus);
-        criteria.andIsNull("deleteAt");
+        criteria.andEqualTo(ISSUE_UUID, issueUuid);
+        criteria.andIn(STATUS, issueLogStatus);
+        criteria.andIsNull(DELETE_AT);
         return houseQmCheckTaskIssueLogMapper.selectCountByExample(example);
     }
 
@@ -169,7 +173,7 @@ public class HouseQmCheckTaskIssueLogServiceImpl implements HouseQmCheckTaskIssu
         Example example = new Example(HouseQmCheckTaskIssueLog.class);
         Example.Criteria criteria = example.createCriteria();
         criteria.andIn("uuid", logUuids);
-        criteria.andIsNull("deleteAt");
+        criteria.andIsNull(DELETE_AT);
         return houseQmCheckTaskIssueLogMapper.selectByExample(example);
     }
 
@@ -178,8 +182,8 @@ public class HouseQmCheckTaskIssueLogServiceImpl implements HouseQmCheckTaskIssu
     public List<HouseQmCheckTaskIssueLog> selectByIssueUuIdInAndStatus(List<String> issueUuids, Integer status) {
         Example example = new Example(HouseQmCheckTaskIssueLog.class);
         Example.Criteria criteria = example.createCriteria();
-        criteria.andIn("issueUuid", issueUuids);
-        criteria.andEqualTo("status", status);
+        criteria.andIn(ISSUE_UUID, issueUuids);
+        criteria.andEqualTo(STATUS, status);
         ExampleUtil.addDeleteAtJudge(example);
         example.orderBy("clientCreateAt").asc();
         return houseQmCheckTaskIssueLogMapper.selectByExample(example);

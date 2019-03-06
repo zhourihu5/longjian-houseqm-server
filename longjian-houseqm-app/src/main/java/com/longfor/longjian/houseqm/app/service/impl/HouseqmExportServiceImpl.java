@@ -91,10 +91,8 @@ public class HouseqmExportServiceImpl implements IHouseqmExportService {
 
         if (projectOrderHouseOwnerInfoMap.containsKey(categoryCls)) {
             ProjectSetting projectSetting = projectSettingService.getSettingByProjectIdSKey(projectId, projectOrderHouseOwnerInfoMap.get(categoryCls));
-            if (projectSetting != null) {
-                if ("是".equals(projectSetting.getValue())) {
+            if (projectSetting != null&&"是".equals(projectSetting.getValue())) {
                     isShowHouseOwnerInfo = true;
-                }
             }
         }
 
