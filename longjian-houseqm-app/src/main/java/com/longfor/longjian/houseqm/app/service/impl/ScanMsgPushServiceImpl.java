@@ -35,8 +35,8 @@ import java.util.*;
 @Service
 public class ScanMsgPushServiceImpl implements ScanMsgPushService {
 
-    private final int PUSH_APP_GCGL = 1;
-    private final int USER_ID_SIZE_MAX = 50;
+    private static  final int PUSH_APP_GCGL = 1;
+    private static  final int USER_ID_SIZE_MAX = 50;
 
     @Resource
     private StatScanRecordService statScanRecordService;
@@ -265,9 +265,9 @@ public class ScanMsgPushServiceImpl implements ScanMsgPushService {
     private Map<Integer,Team> createTeamMap(Map<Integer,Project>projectMap){
         Map<Integer,Team> teamMap=new HashMap<>();
         List<Integer> teamIds=new ArrayList<>();
-        projectMap.forEach((key, value) -> {
-            teamIds.add(value.getTeamId());
-        });
+        projectMap.forEach((key, value) ->
+            teamIds.add(value.getTeamId())
+        );
 
         List<Team>teamList=teamService.searchByTeamIdIn(teamIds);
 

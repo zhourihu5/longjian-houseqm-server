@@ -27,9 +27,9 @@ import java.util.Map;
 public class PushServiceImpl implements PushService {
 
 
-    private final int PUSH_APP_GCGL = 1;
-    private final int PUSH_APP_YDYF = 2;
-    private final int PUSH_APP_GXGL = 3;
+    private static  final int PUSH_APP_GCGL = 1;
+    private static  final int PUSH_APP_YDYF = 2;
+    private static  final int PUSH_APP_GXGL = 3;
     @Resource
     private PushConfigVo pushConfigVo;
 

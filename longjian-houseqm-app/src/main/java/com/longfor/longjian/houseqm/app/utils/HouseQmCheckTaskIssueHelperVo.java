@@ -60,6 +60,7 @@ public class HouseQmCheckTaskIssueHelperVo {
     private static final String CHANGED="changed";
     private static final String ISSUE_ROLE="issueRole";
     private static final String YMDHMS ="yyyy-MM-dd hh:mm:ss";
+    private static  final String  HOUSEQM_ISSUE="houseqmissue";
 
     private Map<String, CategoryV3> categoryMap;
     private Map<Integer, Area> areaMap;
@@ -251,7 +252,7 @@ public class HouseQmCheckTaskIssueHelperVo {
             } else {
                 Map<String, Object> map = modifyIssue(tempIssue);
                 Boolean changed = (Boolean) map.get(CHANGED);
-                HouseQmCheckTaskIssueVo modifiedIssue = (HouseQmCheckTaskIssueVo) map.get("houseqmissue");
+                HouseQmCheckTaskIssueVo modifiedIssue = (HouseQmCheckTaskIssueVo) map.get(HOUSEQM_ISSUE);
                 UserInIssue newIssueRole = (UserInIssue) map.get(ISSUE_ROLE);
                 if (changed) {
                     this.needUpdateIssueMap.put(issueUuid, modifiedIssue);
@@ -271,7 +272,7 @@ public class HouseQmCheckTaskIssueHelperVo {
                 String tempIssueUid = this.currentLog.getIssueUuid();
                 Map<String, Object> map = this.modifyIssue(tempIssue);
                 Boolean changed = (Boolean) map.get(CHANGED);
-                HouseQmCheckTaskIssueVo modifiedIssue = (HouseQmCheckTaskIssueVo) map.get("houseqmissue");
+                HouseQmCheckTaskIssueVo modifiedIssue = (HouseQmCheckTaskIssueVo) map.get(HOUSEQM_ISSUE);
                 UserInIssue newIssueRole = (UserInIssue) map.get(ISSUE_ROLE);
                 if (changed) {
                     this.needUpdateIssueMap.put(issueUuid, modifiedIssue);
@@ -287,7 +288,7 @@ public class HouseQmCheckTaskIssueHelperVo {
             String tempIssueUid = this.currentLog.getIssueUuid();
             Map<String, Object> map = this.modifyIssue(tempIssue);
             Boolean changed = (Boolean) map.get(CHANGED);
-            HouseQmCheckTaskIssueVo modifiedIssue = (HouseQmCheckTaskIssueVo) map.get("houseqmissue");
+            HouseQmCheckTaskIssueVo modifiedIssue = (HouseQmCheckTaskIssueVo) map.get(HOUSEQM_ISSUE);
             UserInIssue newIssueRole = (UserInIssue) map.get(ISSUE_ROLE);
             if (changed) {
                 this.needUpdateIssueMap.put(issueUuid, modifiedIssue);
@@ -878,7 +879,7 @@ public class HouseQmCheckTaskIssueHelperVo {
 
 
         HashMap<String, Object> map = Maps.newHashMap();
-        map.put("houseqmissue", issue);
+        map.put(HOUSEQM_ISSUE, issue);
         map.put(CHANGED, changed);
         map.put(ISSUE_ROLE, issueRole);
 
@@ -980,7 +981,7 @@ public class HouseQmCheckTaskIssueHelperVo {
         }
         issueRole.setUserRole(userRole);
         HashMap<String, Object> map = Maps.newHashMap();
-        map.put("houseqmissue", issue);
+        map.put(HOUSEQM_ISSUE, issue);
         map.put(ISSUE_ROLE, issueRole);
         return map;
     }

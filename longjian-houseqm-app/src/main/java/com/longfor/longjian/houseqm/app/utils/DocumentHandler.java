@@ -11,6 +11,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.*;
 import java.net.URLEncoder;
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
@@ -88,7 +89,7 @@ public class DocumentHandler {
             log.error(e.getMessage());
         }
         // 输出文档路径及名称 ,以临时文件的形式导出服务器，再进行下载
-        String name = "temp" + (int) (Math.random() * 100000) + ".doc";
+        String name = "temp" + (int) (new Date().getTime() * 100000) + ".doc";
         File outFile = new File(name);
         try (Writer out = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(outFile), UTF_8))) {
             t.process(dataMap, out);
