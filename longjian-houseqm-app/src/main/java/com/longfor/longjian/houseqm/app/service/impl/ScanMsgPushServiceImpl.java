@@ -328,7 +328,7 @@ public class ScanMsgPushServiceImpl implements ScanMsgPushService {
     if(noticeStatValue.getAssignNoReformIssueIds().size()>0){
       recordUuid = UUID.randomUUID().toString();
       description="「"+projectName+"」有新的问题需要整改";
-      content="你好,"+desUserName+"项目「"+projectName+"」新增待整改问题"+noticeStatValue.getAssignNoReformIssueIds()+"条，请及时跟进处理。";
+      content="你好,"+desUserName+"项目「"+projectName+"」新增待整改问题"+noticeStatValue.getAssignNoReformIssueIds().size()+"条，请及时跟进处理。";
 
       Map<String,Object>gcglMap=new HashMap<>();
       gcglMap.put("stat_id",recordUuid);
@@ -356,7 +356,7 @@ public class ScanMsgPushServiceImpl implements ScanMsgPushService {
 
         description = "「" + projectName + "」有新的问题需要销项";
 
-        content = "你好," + desUserName + "项目「" + projectName + "」新增待销项问题" + noticeStatValue.getReformNoCheckIssueIds() + "条，请及时跟进处理。";
+        content = "你好," + desUserName + "项目「" + projectName + "」新增待销项问题" + noticeStatValue.getReformNoCheckIssueIds().size() + "条，请及时跟进处理。";
 
         Map<String, Object> gcglMap = new HashMap<>();
         gcglMap.put("stat_id", recordUuid);
