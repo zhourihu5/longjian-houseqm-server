@@ -167,17 +167,8 @@ public class HouseqmStaticService {
         types.add(HouseQmCheckTaskIssueEnum.FindProblem.getId());
         types.add(HouseQmCheckTaskIssueEnum.Difficult.getId());
         types.add(HouseQmCheckTaskIssueEnum.Difficult.getId());
-        List<HouseQmCheckTaskIssueAreaGroupModel> result = Lists.newArrayList();
 
-        /*if (onlyIssue && areaId > 0) {*/
-        result = houseQmCheckTaskIssueService.selectByTaskIdAndTyeInAndAreaPathAndIdLike(onlyIssue, taskId, types, areaId);
-      /*  } else if (onlyIssue && areaId <= 0) {
-            result = houseQmCheckTaskIssueService.selectByTaskIdAndTyeIn(taskId, types);
-        } else if (!onlyIssue && areaId > 0) {
-            result = houseQmCheckTaskIssueService.selectHouseQmCheckTaskIssueAreaGroupModelByTaskIdAndAreaPathAndIdLike(taskId, "%%/" + areaId + "/%%");
-        } else {
-            result = houseQmCheckTaskIssueService.selectByTaskId(taskId);
-        }*/
+        List<HouseQmCheckTaskIssueAreaGroupModel> result = houseQmCheckTaskIssueService.selectByTaskIdAndTyeInAndAreaPathAndIdLike(onlyIssue, taskId, types, areaId);
 
         HashMap<Integer, IssueMinStatus> maps = Maps.newHashMap();
         for (HouseQmCheckTaskIssueAreaGroupModel area : result) {
