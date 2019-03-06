@@ -5,6 +5,7 @@ import com.longfor.longjian.common.base.LjBaseResponse;
 import com.longfor.longjian.common.util.CtrlTool;
 import com.longfor.longjian.houseqm.app.req.v3houseqmstat.InspectionSituationExportReq;
 import com.longfor.longjian.houseqm.app.service.IHouseqmStatService;
+import com.longfor.longjian.houseqm.app.utils.CtrlToolUtils;
 import com.longfor.longjian.houseqm.app.utils.ExportUtils;
 import com.longfor.longjian.houseqm.app.vo.houseqmstat.InspectionHouseStatusInfoVo;
 import com.longfor.longjian.houseqm.consts.RepossessionStatusEnum;
@@ -53,9 +54,7 @@ public class V3HouseqmStatController {
             ctrlTool.projPermMulti(request, new String[]{"项目.移动验房.统计.查看", "项目.工程检查.统计.查看"});
         } catch (Exception e) {
             log.error(e.getMessage());
-            ljBaseResponse.setMessage(e.getMessage());
-            ljBaseResponse.setResult(1);
-            return ljBaseResponse;
+            return CtrlToolUtils.errorReturn(ljBaseResponse,e);
         }
 
         if (req.getArea_id() == null) req.setArea_id(0);

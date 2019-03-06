@@ -5,6 +5,7 @@ import com.longfor.longjian.common.util.CtrlTool;
 import com.longfor.longjian.houseqm.app.req.tasklist.TaskListListReq;
 import com.longfor.longjian.houseqm.app.req.tasklist.TaskRoleReq;
 import com.longfor.longjian.houseqm.app.service.ITaskListService;
+import com.longfor.longjian.houseqm.app.utils.CtrlToolUtils;
 import com.longfor.longjian.houseqm.app.vo.TaskList2Vo;
 import com.longfor.longjian.houseqm.app.vo.TaskRoleListVo;
 import lombok.extern.slf4j.Slf4j;
@@ -52,8 +53,7 @@ public class TaskListController {
             taskResponse.setData(taskListVo);
         } catch (Exception e) {
             log.error("获取项目下任务列表任务信息error:", e.getMessage());
-            taskResponse.setResult(1);
-            taskResponse.setMessage(e.getMessage());
+            CtrlToolUtils.errorReturn(taskResponse,e);
         }
         return taskResponse;
     }
@@ -74,8 +74,7 @@ public class TaskListController {
             taskResponse.setData(roleListVos);
         } catch (Exception e) {
             log.error("获取任务角色列表error:", e.getMessage());
-            taskResponse.setResult(1);
-            taskResponse.setMessage(e.getMessage());
+            CtrlToolUtils.errorReturn(taskResponse,e);
         }
         return taskResponse;
     }

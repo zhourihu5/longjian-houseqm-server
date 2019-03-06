@@ -12,6 +12,7 @@ import com.longfor.longjian.houseqm.app.req.TaskTaskRoleReq;
 import com.longfor.longjian.houseqm.app.req.task.TaskListInfoReq;
 import com.longfor.longjian.houseqm.app.service.ITaskListService;
 import com.longfor.longjian.houseqm.app.service.ITaskService;
+import com.longfor.longjian.houseqm.app.utils.CtrlToolUtils;
 import com.longfor.longjian.houseqm.app.vo.HouseQmCheckTaskRoleListRspVo;
 import com.longfor.longjian.houseqm.app.vo.HouseQmCheckTaskRspVo;
 import com.longfor.longjian.houseqm.app.vo.TaskTaskRoleRspVo;
@@ -81,6 +82,7 @@ public class TaskController {
             ctrlTool.projPermMulti(request, new String[]{"项目.移动验房.任务管理.查看", "项目.工程检查.任务管理.查看"});
         } catch (Exception e) {
             log.error(e.getMessage());
+            return CtrlToolUtils.errorReturn(response,e);
         }
         // 如果没有页数，默认取1000个
         if (req.getPage() == 0) {
@@ -180,8 +182,7 @@ public class TaskController {
             taskService.deleteHouseQmCheckTaskByProjTaskId(req.getProject_id(), req.getTask_id());
         } catch (Exception e) {
             log.error(e.getMessage());
-            response.setMessage(e.getMessage());
-            response.setResult(1);
+            return CtrlToolUtils.errorReturn(response,e);
         }
         return response;
     }
@@ -223,8 +224,7 @@ public class TaskController {
             response.setResult(0);
         } catch (Exception e) {
             log.error(e.getMessage());
-            response.setResult(1);
-            response.setMessage(e.getMessage());
+            return CtrlToolUtils.errorReturn(response,e);
         }
         return response;
     }
