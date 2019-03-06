@@ -592,13 +592,14 @@ public class ReportIssueService {
     }
 
     private Map<String, Object> modifyIssue(Map<HouseQmCheckTaskIssue, ApiRefundInfo> refundMap, HashMap<String, ApiUserRoleInIssue> issueRoleMap, HouseQmCheckTaskIssue issue, ApiHouseQmCheckTaskIssueLogInfo item, Boolean b) {
+        Boolean flag=!b && convertLogStatus(item.getStatus()).equals(CheckTaskIssueStatus.NoteNoAssign.getValue()) && issue.getStatus().equals(CheckTaskIssueStatus.AssignNoReform.getValue());
         //  # 判断是否修改检查项
         if (isCheckItemChange(issue, item)) {
             log.info("check_item info need to update");
-            return reassignIssue(issueRoleMap, issue, item);
+            return reassignIssue(flag,issueRoleMap, issue, item);
         }
         //  # 如果是退单情况
-        if (!b  && convertLogStatus(item.getStatus()).equals(CheckTaskIssueStatus.NoteNoAssign.getValue()) && issue.getStatus().equals(CheckTaskIssueStatus.AssignNoReform.getValue())) {
+        if (!b  && flag) {
             log.info("refund issue");
             if (issue.getRepairerId() > 0 && issue.getSenderId() > 0) {
                 ApiRefundInfo info = new ApiRefundInfo();
@@ -606,7 +607,7 @@ public class ReportIssueService {
                 info.setChecker(issue.getSenderId());
                 refundMap.put(issue, info);
             }
-            return refundIssue(issueRoleMap, issue, item);
+            return refundIssue(refundMap,issueRoleMap, issue, item);
         }
         List<ApiHouseQmCheckTaskIssueLogInfo.ApiHouseQmCheckTaskIssueLogDetailInfo> detail = item.getDetail();
         detail.forEach(detailInfo -> {
@@ -725,7 +726,7 @@ public class ReportIssueService {
         return resmap;
     }
 
-    private Map<String, Object> refundIssue(HashMap<String, ApiUserRoleInIssue> issueRoleMap, HouseQmCheckTaskIssue issue, ApiHouseQmCheckTaskIssueLogInfo item) {
+    private Map<String, Object> refundIssue(Map<HouseQmCheckTaskIssue, ApiRefundInfo> refundMap,HashMap<String, ApiUserRoleInIssue> issueRoleMap, HouseQmCheckTaskIssue issue, ApiHouseQmCheckTaskIssueLogInfo item) {
         issue.setRepairerId(0);
         issue.setRepairerFollowerIds("");
         issue.setLastRepairer(0);
@@ -810,17 +811,23 @@ public class ReportIssueService {
         });
         Map<String, Object> resmap = Maps.newHashMap();
         resmap.put(ISSUE, issue);
-        resmap.put(REFUNDMAP, Maps.newHashMap());
+        resmap.put(REFUNDMAP, refundMap);
         return resmap;
     }
-
-    private Map<String, Object> reassignIssue(HashMap<String, ApiUserRoleInIssue> issueRoleMap, HouseQmCheckTaskIssue issue, ApiHouseQmCheckTaskIssueLogInfo item) {
-    /*   issue.setRepairerId(0);
+    // 检查项修改
+    private Map<String, Object> reassignIssue(Boolean flag,HashMap<String, ApiUserRoleInIssue> issueRoleMap, HouseQmCheckTaskIssue issue, ApiHouseQmCheckTaskIssueLogInfo item) {
+        if (flag){
+            issue.setRepairerId(0);
+            issue.setRepairerFollowerIds("");
+            issue.setLastRepairer(0);
+            issue.setLastRepairerAt(DateUtil.strToDate("0001-01-01 00:00:00", "yyyy-MM-dd-HH-mm-ss"));
+            issue.setPlanEndOn(DateUtil.strToDate("1970-01-01 08:00:00 ","yyyy-MM-dd-HH-mm-ss"));
+        }
+       /* issue.setRepairerId(0);
         issue.setRepairerFollowerIds("");
         issue.setLastRepairer(0);
-        issue.setLastRepairerAt(DateUtil.strToDate(START_VALUE, "yyyy-MM-dd-HH-mm-ss"));
-        issue.setPlanEndOn(DateUtil.strToDate("1970-01-01 08:00:00 ","yyyy-MM-dd-HH-mm-ss"));//1970-01-01 08:00:00
-*/
+        issue.setLastRepairerAt(DateUtil.strToDate("0001-01-01 00:00:00", "yyyy-MM-dd-HH-mm-ss"));
+        issue.setPlanEndOn(DateUtil.strToDate("1970-01-01 08:00:00 ","yyyy-MM-dd-HH-mm-ss"));*///1970-01-01 08:00:00
         List<ApiHouseQmCheckTaskIssueLogInfo.ApiHouseQmCheckTaskIssueLogDetailInfo> detail = item.getDetail();
         detail.forEach(detailInfo -> {
             if (!detailInfo.getCategory_key().equals("-1")) {

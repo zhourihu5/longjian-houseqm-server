@@ -73,9 +73,10 @@ public class HouseQmCheckTaskServiceImpl implements HouseQmCheckTaskService {
     @Override
     @LFAssignDataSource("zhijian2")
     public List<HouseQmCheckTask> searchByProjectIdInAndCategoryClsIn(List<Integer> projectIds, List<Integer> categoryClsList) {
+        if (CollectionUtils.isEmpty(projectIds)||CollectionUtils.isEmpty(categoryClsList))return Lists.newArrayList();
         Example example = new Example(HouseQmCheckTask.class);
         Example.Criteria criteria = example.createCriteria();
-        if (CollectionUtils.isNotEmpty(projectIds)) criteria.andIn(PROJECT_ID, projectIds);
+        criteria.andIn(PROJECT_ID, projectIds);
         criteria.andIn(CATEGORY_CLS, categoryClsList);
         ExampleUtil.addDeleteAtJudge(example);
         return houseQmCheckTaskMapper.selectByExample(example);

@@ -134,7 +134,7 @@
         <finalName>${project.name}</finalName>
         <plugins>
 
-            <!--<plugin>
+            <plugin>
                 <groupId>org.springframework.boot</groupId>
                 <artifactId>spring-boot-maven-plugin</artifactId>
                 <configuration>
@@ -148,7 +148,7 @@
                         </goals>
                     </execution>
                 </executions>
-            </plugin>-->
+            </plugin>
             <!--检查代码覆盖率的插件配置-->
             <plugin>
                 <groupId>org.jacoco</groupId>

@@ -1,11 +1,13 @@
 package com.longfor.longjian.houseqm.domain.internalservice.impl;
 
+import com.google.common.collect.Lists;
 import com.longfor.gaia.gfs.data.mybatis.datasource.LFAssignDataSource;
 import com.longfor.longjian.houseqm.dao.zj2db.ProjectMapper;
 import com.longfor.longjian.houseqm.domain.internalservice.ProjectService;
 import com.longfor.longjian.houseqm.po.zj2db.Project;
 import com.longfor.longjian.houseqm.utils.ExampleUtil;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.collections.CollectionUtils;
 import org.springframework.stereotype.Service;
 import tk.mybatis.mapper.entity.Example;
 
@@ -24,6 +26,7 @@ public class ProjectServiceImpl implements ProjectService {
     @Override
     @LFAssignDataSource("zhijian2")
     public List<Project> searchByProjectIdIn(List<Integer> projectIds) {
+        if (CollectionUtils.isEmpty(projectIds))return Lists.newArrayList();
         Example example = new Example(Project.class);
         Example.Criteria criteria = example.createCriteria();
         criteria.andIn("id", projectIds);

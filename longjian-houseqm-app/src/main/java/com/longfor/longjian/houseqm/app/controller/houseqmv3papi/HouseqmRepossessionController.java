@@ -5,7 +5,6 @@ import com.alibaba.fastjson.JSONObject;
 import com.longfor.longjian.common.base.LjBaseResponse;
 import com.longfor.longjian.houseqm.app.feginclient.IRepossessionFeignService;
 import com.longfor.longjian.houseqm.app.req.houseqmrepossession.RepossessionReportReq;
-import com.longfor.longjian.houseqm.app.vo.TaskResponse;
 import com.longfor.longjian.houseqm.app.vo.houseqmrepossessession.RepossessionGetRspVo;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.MediaType;
@@ -54,7 +53,7 @@ public class HouseqmRepossessionController {
      * @Param
      **/
     @RequestMapping(value = "get", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
-    public TaskResponse<RepossessionGetRspVo> get(@RequestParam(required = true, name = "task_ids") String taskIds,
+    public LjBaseResponse<RepossessionGetRspVo> get(@RequestParam(required = true, name = "task_ids") String taskIds,
                                                   @RequestParam(required = true, name = "timestamp") Integer timestamp) {
         log.info("get, task_ids=" + taskIds + ", timestamp=" + timestamp);
         LjBaseResponse<Object> result = iRepossessionFeignService.get(taskIds, timestamp);
@@ -62,7 +61,7 @@ public class HouseqmRepossessionController {
         String jsonString = JSON.toJSONString(data);
         JSONObject jsonObject = JSONObject.parseObject(jsonString);
         RepossessionGetRspVo repossessionGetRspVo = JSONObject.toJavaObject(jsonObject, RepossessionGetRspVo.class);
-        TaskResponse<RepossessionGetRspVo> response = new TaskResponse<>();
+        LjBaseResponse<RepossessionGetRspVo> response = new LjBaseResponse<>();
         response.setData(repossessionGetRspVo);
         return response;
     }
