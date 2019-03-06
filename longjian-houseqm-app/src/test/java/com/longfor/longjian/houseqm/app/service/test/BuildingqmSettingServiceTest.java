@@ -1,21 +1,21 @@
 package com.longfor.longjian.houseqm.app.service.test;
 
-import com.longfor.longjian.houseqm.Application;
 import com.longfor.longjian.houseqm.app.service.BuildingqmSettingService;
 import com.longfor.longjian.houseqm.util.DateUtil;
 import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit4.SpringRunner;
 
 import javax.annotation.Resource;
 
 import java.util.Date;
 
-import static org.junit.Assert.*;
 @RunWith(SpringRunner.class)
-@SpringBootTest(classes = {Application.class},webEnvironment = SpringBootTest.WebEnvironment.DEFINED_PORT)
+@ActiveProfiles("sonar")
+@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.DEFINED_PORT)
 public class BuildingqmSettingServiceTest {
 
     @Resource
