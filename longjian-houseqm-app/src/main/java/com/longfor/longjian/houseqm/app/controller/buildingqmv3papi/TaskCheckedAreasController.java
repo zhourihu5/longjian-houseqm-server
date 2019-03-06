@@ -1,10 +1,10 @@
 package com.longfor.longjian.houseqm.app.controller.buildingqmv3papi;
 
+import com.longfor.longjian.common.base.LjBaseResponse;
 import com.longfor.longjian.common.util.CtrlTool;
 import com.longfor.longjian.common.util.SessionInfo;
 import com.longfor.longjian.houseqm.app.req.taskcheckedareas.CheckedAreasReq;
 import com.longfor.longjian.houseqm.app.service.ITaskService;
-import com.longfor.longjian.houseqm.app.vo.TaskResponse;
 import com.longfor.longjian.houseqm.app.vo.taskcheckedareas.CheckedAreasRsp;
 import com.longfor.longjian.houseqm.util.StringSplitToListUtil;
 import lombok.extern.slf4j.Slf4j;
@@ -44,8 +44,8 @@ public class TaskCheckedAreasController {
      * @return
      */
     @RequestMapping(value = "checked_areas", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
-    public TaskResponse<CheckedAreasRsp> doAction(HttpServletRequest request, @Valid CheckedAreasReq req) {
-        TaskResponse<CheckedAreasRsp> taskResponse = new TaskResponse<>();
+    public LjBaseResponse<CheckedAreasRsp> doAction(HttpServletRequest request, @Valid CheckedAreasReq req) {
+        LjBaseResponse<CheckedAreasRsp> taskResponse = new LjBaseResponse<>();
         try {
             ctrlTool.projPerm(request, "项目.工程检查.任务管理.查看");
             List<Integer> areaIds = taskService.getHouseqmCheckTaskCheckedAreas(req.getProject_id(), req.getTask_id());
