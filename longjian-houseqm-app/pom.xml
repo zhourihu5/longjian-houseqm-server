@@ -149,7 +149,7 @@
                     </execution>
                 </executions>
             </plugin>
-            <!--检查代码覆盖率的插件配置-->
+   <!--         &lt;!&ndash;检查代码覆盖率的插件配置&ndash;&gt;
             <plugin>
                 <groupId>org.jacoco</groupId>
                 <artifactId>jacoco-maven-plugin</artifactId>
@@ -176,32 +176,32 @@
                     </execution>
                 </executions>
 
-                <!-- Configuration 里面写配置信息 -->
+                &lt;!&ndash; Configuration 里面写配置信息 &ndash;&gt;
                 <configuration>
-                    <!-- rules里面指定覆盖规则 -->
+                    &lt;!&ndash; rules里面指定覆盖规则 &ndash;&gt;
                     <rules>
                         <rule implementation="org.jacoco.maven.RuleConfiguration">
                             <element>BUNDLE</element>
                             <limits>
-                                <!-- 指定方法覆盖到80% -->
+                                &lt;!&ndash; 指定方法覆盖到80% &ndash;&gt;
                                 <limit implementation="org.jacoco.report.check.Limit">
                                     <counter>METHOD</counter>
                                     <value>COVEREDRATIO</value>
                                     <minimum>0.80</minimum>
                                 </limit>
-                                <!-- 指定指令覆盖到80% -->
+                                &lt;!&ndash; 指定指令覆盖到80% &ndash;&gt;
                                 <limit implementation="org.jacoco.report.check.Limit">
                                     <counter>INSTRUCTION</counter>
                                     <value>COVEREDRATIO</value>
                                     <minimum>0.80</minimum>
                                 </limit>
-                                <!-- 指定行覆盖到80% -->
+                                &lt;!&ndash; 指定行覆盖到80% &ndash;&gt;
                                 <limit implementation="org.jacoco.report.check.Limit">
                                     <counter>LINE</counter>
                                     <value>COVEREDRATIO</value>
                                     <minimum>0.80</minimum>
                                 </limit>
-                                <!-- 指定类覆盖到100%，不能遗失任何类 -->
+                                &lt;!&ndash; 指定类覆盖到100%，不能遗失任何类 &ndash;&gt;
                                 <limit implementation="org.jacoco.report.check.Limit">
                                     <counter>CLASS</counter>
                                     <value>MISSEDCOUNT</value>
@@ -220,7 +220,7 @@
                 <configuration>
                     <argLine>${surefireArgLine}</argLine>
                 </configuration>
-            </plugin>
+            </plugin>-->
         </plugins>
     </build>
 
