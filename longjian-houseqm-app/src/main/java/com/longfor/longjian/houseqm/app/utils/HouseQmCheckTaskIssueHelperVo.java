@@ -586,8 +586,6 @@ public class HouseQmCheckTaskIssueHelperVo {
                 );
             }
         }
-
-        outer:
         for (HouseQmCheckTaskIssueLogVo log : this.issueLogs) {
             if (log != null) {
                 if (log.getUuid() != null && this.needDeleteAtIssueLogMap.get(log.getUuid()) != null && this.needDeleteAtIssueLogMap.get(log.getUuid())) {
@@ -649,7 +647,7 @@ public class HouseQmCheckTaskIssueHelperVo {
         HouseqmSquadUserCache cache = new HouseqmSquadUserCache();
         cache.setCache(Maps.newHashMap());
 
-        outer:
+
         for (HouseQmCheckTaskIssueVo issue : issueList) {
             if (CategoryClsTypeEnum.RCJC.getId().equals(issue.getCategoryCls())) {
                 continue;

@@ -11,6 +11,7 @@ import com.longfor.longjian.houseqm.app.req.StatTaskSituationMembersRepairerReq;
 import com.longfor.longjian.houseqm.app.req.houseqmstat.*;
 import com.longfor.longjian.houseqm.app.service.IHouseqmStatService;
 import com.longfor.longjian.houseqm.app.service.IHouseqmStatisticService;
+import com.longfor.longjian.houseqm.app.utils.CtrlToolUtils;
 import com.longfor.longjian.houseqm.app.vo.*;
 import com.longfor.longjian.houseqm.app.vo.houseqmstat.*;
 import com.longfor.longjian.houseqm.consts.RepossessionStatusEnum;
@@ -71,9 +72,7 @@ public class HouseqmStatController {
             ctrlTool.projPermMulti(request, new String[]{SEE, SEE});
         } catch (Exception e) {
             log.error(e.getMessage());
-            response.setMessage(e.getMessage());
-            response.setResult(1);
-            return response;
+            return CtrlToolUtils.errorReturn(response,e);
         }
         if (req.getArea_id() == null) req.setArea_id(0);
         Date beginOn = DateUtil.timeStampToDate(0, YMD);
@@ -97,9 +96,7 @@ public class HouseqmStatController {
             ctrlTool.projPermMulti(request, new String[]{SEE, SEE});
         } catch (Exception e) {
             log.error(e.getMessage());
-            response.setMessage(e.getMessage());
-            response.setResult(1);
-            return response;
+            return CtrlToolUtils.errorReturn(response,e);
         }
         if (req.getArea_id() == null) req.setArea_id(0);
         if (req.getIssue_status() == null) req.setIssue_status(0);
@@ -166,9 +163,7 @@ public class HouseqmStatController {
             ctrlTool.projPermMulti(request, new String[]{SEE, SEE});
         } catch (Exception e) {
             log.error(e.getMessage());
-            response.setResult(1);
-            response.setMessage(e.getMessage());
-            return response;
+            return CtrlToolUtils.errorReturn(response,e);
         }
         try {
             List<Integer> taskIdList = StringSplitToListUtil.splitToIdsComma(req.getTask_ids(), ",");
@@ -189,9 +184,7 @@ public class HouseqmStatController {
             ctrlTool.projPermMulti(request, new String[]{SEE, SEE});
         } catch (Exception e) {
             log.error(e.getMessage());
-            response.setMessage(e.getMessage());
-            response.setResult(1);
-            return response;
+            return CtrlToolUtils.errorReturn(response,e);
         }
         try {
             List<Integer> taskIdList = StringUtil.strToInts(req.getTask_ids(), ",");
@@ -212,9 +205,7 @@ public class HouseqmStatController {
             ctrlTool.projPermMulti(request, new String[]{SEE, SEE});
         } catch (Exception e) {
             log.error(e.getMessage());
-            response.setMessage(e.getMessage());
-            response.setResult(1);
-            return response;
+            return CtrlToolUtils.errorReturn(response,e);
         }
         List<Integer> taskIdList = StringSplitToListUtil.splitToIdsComma(req.getTask_ids(), ",");
         ProjectOveralListVo projectOveralListVo = new ProjectOveralListVo();
@@ -254,9 +245,7 @@ public class HouseqmStatController {
             ctrlTool.projPermMulti(request, new String[]{SEE, SEE});
         } catch (Exception e) {
             log.error(e.getMessage());
-            response.setMessage(e.getMessage());
-            response.setResult(1);
-            return response;
+            return CtrlToolUtils.errorReturn(response,e);
         }
         try {
             if (req.getTyp() == null) req.setTyp(0);
@@ -278,9 +267,7 @@ public class HouseqmStatController {
             ctrlTool.projPermMulti(request, new String[]{SEE, SEE});
         } catch (Exception e) {
             log.error(e.getMessage());
-            response.setMessage(e.getMessage());
-            response.setResult(1);
-            return response;
+            return CtrlToolUtils.errorReturn(response,e);
         }
         try {
             AreaTaskListVo areaTaskListVo = houseqmStatService.searchHouseQmCheckTaskByProjIdAreaIdCategoryClsIn(req.getProject_id(), req.getArea_id(), Arrays.asList(req.getCategory_cls()));
@@ -301,9 +288,7 @@ public class HouseqmStatController {
             ctrlTool.projPermMulti(request, new String[]{SEE, SEE});
         } catch (Exception e) {
             log.error(e.getMessage());
-            response.setResult(1);
-            response.setMessage(e.getMessage());
-            return response;
+            return CtrlToolUtils.errorReturn(response,e);
         }
         try {
             if (req.getArea_id() == null) req.setArea_id(0);
@@ -332,9 +317,7 @@ public class HouseqmStatController {
             ctrlTool.projPermMulti(request, new String[]{SEE, SEE});
         } catch (Exception e) {
             log.error(e.getMessage());
-            response.setMessage(e.getMessage());
-            response.setResult(1);
-            return response;
+            return CtrlToolUtils.errorReturn(response,e);
         }
         Date t = null;
         try {
@@ -390,9 +373,7 @@ public class HouseqmStatController {
             response.setData(data);
         } catch (Exception e) {
             log.error(e.getMessage());
-            response.setMessage(e.getMessage());
-            response.setResult(1);
-            return response;
+            return CtrlToolUtils.errorReturn(response,e);
         }
         return response;
     }
@@ -419,9 +400,7 @@ public class HouseqmStatController {
             response.setData(data);
         } catch (Exception e) {
             log.error(e.getMessage());
-            response.setMessage(e.getMessage());
-            response.setResult(1);
-            return response;
+            return CtrlToolUtils.errorReturn(response,e);
         }
         return response;
     }
@@ -433,9 +412,7 @@ public class HouseqmStatController {
             ctrlTool.projPermMulti(request, new String[]{SEE, SEE});
         } catch (Exception e) {
             log.error(e.getMessage());
-            response.setMessage(e.getMessage());
-            response.setResult(1);
-            return response;
+            return CtrlToolUtils.errorReturn(response,e);
         }
         try {
             HouseQmStatAreaSituationIssueRspVo result = houseqmStatService.getAreaIssueTypeStatByProjectIdAreaIdCategoryCls(req.getProject_id(), req.getArea_id(), req.getCategory_cls());

@@ -398,28 +398,6 @@ public class ExportUtils {
         }
         return cell;
     }
-    private static String getPicXml(String blipId, int width, int height) {
-        return
-                "" + "<a:graphic xmlns:a=\"http://schemas.openxmlformats.org/drawingml/2006/main\">" +
-                        "   <a:graphicData uri=\"http://schemas.openxmlformats.org/drawingml/2006/picture\">" +
-                        "      <pic:pic xmlns:pic=\"http://schemas.openxmlformats.org/drawingml/2006/picture\">" +
-                        "         <pic:nvPicPr>" + "            <pic:cNvPr id=\"" + 0 +
-                        "\" name=\"Generated\"/>" + "            <pic:cNvPicPr/>" +
-                        "         </pic:nvPicPr>" + "         <pic:blipFill>" +
-                        "            <a:blip r:embed=\"" + blipId +
-                        "\" xmlns:r=\"http://schemas.openxmlformats.org/officeDocument/2006/relationships\"/>" +
-                        "            <a:stretch>" + "               <a:fillRect/>" +
-                        "            </a:stretch>" + "         </pic:blipFill>" +
-                        "         <pic:spPr>" + "            <a:xfrm>" +
-                        "               <a:off x=\"0\" y=\"0\"/>" +
-                        "               <a:ext cx=\"" + width + "\" cy=\"" + height +
-                        "\"/>" + "            </a:xfrm>" +
-                        "            <a:prstGeom prst=\"rect\">" +
-                        "               <a:avLst/>" + "            </a:prstGeom>" +
-                        "         </pic:spPr>" + "      </pic:pic>" +
-                        "   </a:graphicData>" + "</a:graphic>";
-    }
-
 
     public static void createPicture(XWPFDocument doc, String blipId, int id, int width, int height) {
         final int EMU = 9525;

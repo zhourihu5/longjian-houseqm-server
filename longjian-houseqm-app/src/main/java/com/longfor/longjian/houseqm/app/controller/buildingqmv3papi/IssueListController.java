@@ -10,6 +10,7 @@ import com.longfor.longjian.houseqm.app.req.EditDetailReq;
 import com.longfor.longjian.houseqm.app.req.IssueListDoActionReq;
 import com.longfor.longjian.houseqm.app.req.bgtask.ExportBuildingExcelReq;
 import com.longfor.longjian.houseqm.app.service.IIssueService;
+import com.longfor.longjian.houseqm.app.utils.CtrlToolUtils;
 import com.longfor.longjian.houseqm.app.utils.SessionUtil;
 import com.longfor.longjian.houseqm.app.vo.*;
 import com.longfor.longjian.houseqm.app.vo.issuelist.DetailLogRspVo;
@@ -82,8 +83,7 @@ public class IssueListController {
             os.flush();
         } catch (Exception e) {
             log.error("excel 导出异常");
-            ljBaseResponse.setResult(1);
-            ljBaseResponse.setMessage(e.getMessage());
+            return CtrlToolUtils.errorReturn(ljBaseResponse,e);
         } finally {
             try {
                 if (os != null) {
@@ -108,8 +108,7 @@ public class IssueListController {
             response.setData(result);
         } catch (Exception e) {
             log.error("问题检索异常:", e.getMessage());
-            response.setResult(1);
-            response.setMessage(e.getMessage());
+            return CtrlToolUtils.errorReturn(response,e);
         }
         return response;
     }
@@ -126,9 +125,7 @@ public class IssueListController {
             response.setData(data);
         } catch (Exception e) {
             log.error(e.getMessage());
-            response.setMessage(e.getMessage());
-            response.setResult(1);
-            response.setCode(1);
+            return CtrlToolUtils.errorReturn(response,e);
         }
         return response;
     }
@@ -213,9 +210,7 @@ public class IssueListController {
             ctrlTool.projPerm(request, DESC);
         } catch (Exception e) {
             log.error("问题鉴权异常:", e.getMessage());
-            response.setResult(1);
-            response.setMessage(e.getMessage());
-            return response;
+            return CtrlToolUtils.errorReturn(response,e);
         }
         List<ProjectSettingConfigVo.HouseQmIssueReason> reasonList = Lists.newArrayList();
         Integer reasonId = 0;
@@ -270,8 +265,7 @@ public class IssueListController {
             iIssueService.deleteHouseqmCheckTaskIssueByProjectAndUuid(projectId, issueUuid);
         } catch (Exception e) {
             log.error("删除问题:", e.getMessage());
-            response.setResult(1);
-            response.setMessage(e.getMessage());
+            return CtrlToolUtils.errorReturn(response,e);
         }
         return response;
     }
@@ -286,6 +280,7 @@ public class IssueListController {
             ctrlTool.projPerm(request, DESC_EDIT);
         } catch (Exception e) {
             log.error("修改整改责任人异常:", e.getMessage());
+            return CtrlToolUtils.errorReturn(new LjBaseResponse<>(),e);
         }
         return iIssueService.updateIssueRepairInfoByProjectAndUuid(userId, repairerId, repairFollowerIds, projectId, issueUuid);
     }
@@ -299,6 +294,7 @@ public class IssueListController {
             ctrlTool.projPerm(request, DESC_EDIT);
         } catch (Exception e) {
             log.error("追加描述异常:", e.getMessage());
+            return CtrlToolUtils.errorReturn(new LjBaseResponse<>(),e);
         }
         return iIssueService.updeteIssueDescByUuid(projectId, issueUuid, userId, content);
     }
@@ -312,6 +308,7 @@ public class IssueListController {
             ctrlTool.projPerm(request, DESC_EDIT);
         } catch (Exception e) {
             log.error("更新完成时间异常:", e.getMessage());
+            return CtrlToolUtils.errorReturn(new LjBaseResponse<>(),e);
         }
         return iIssueService.updateIssuePlanEndOnByProjectAndUuid(projectId, issueUuid, userId, planEndOn);
     }
@@ -326,6 +323,7 @@ public class IssueListController {
             ctrlTool.projPerm(request, DESC_EDIT);
         } catch (Exception e) {
             log.error("销项问题异常:", e.getMessage());
+            return CtrlToolUtils.errorReturn(new LjBaseResponse<>(),e);
         }
         return iIssueService.updateIssueApproveStatusByUuid(projectId, issueUuid, userId, status, content);
     }
@@ -337,6 +335,7 @@ public class IssueListController {
             ctrlTool.projPerm(request, DESC);
         } catch (Exception e) {
             log.error("鉴权异常:", e.getMessage());
+            return CtrlToolUtils.errorReturn(new LjBaseResponse<>(),e);
         }
         LjBaseResponse<List<HouseQmCheckTaskIssueDetailRepairLogVo>> result = iIssueService.getDetailRepairLogByIssueUuid(issueUuid);
 
@@ -355,6 +354,7 @@ public class IssueListController {
             ctrlTool.projPerm(request, DESC);
         } catch (Exception e) {
             log.error("问题详情鉴权异常:", e.getMessage());
+            return CtrlToolUtils.errorReturn(new LjBaseResponse<>(),e);
         }
 
         return iIssueService.getHouseQmCheckTaskIssueDetailBaseByProjectAndUuid(userId, projectId, issueUuid);
@@ -368,9 +368,7 @@ public class IssueListController {
             ctrlTool.projPerm(request, DESC_EDIT);
         } catch (Exception e) {
             log.error("信息编辑异常:", e.getMessage());
-            response.setResult(1);
-            response.setMessage("PermissionDenied");
-            return response;
+            return CtrlToolUtils.errorReturn(response,e);
         }
 
         return iIssueService.updateIssueDetailByProjectAndUuid(userId, req.getProject_id(), req.getIssue_uuid(), req.getTyp(), req.getData());

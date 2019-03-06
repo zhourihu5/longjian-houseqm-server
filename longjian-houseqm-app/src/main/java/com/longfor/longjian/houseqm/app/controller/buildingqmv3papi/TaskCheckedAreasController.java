@@ -5,6 +5,7 @@ import com.longfor.longjian.common.util.CtrlTool;
 import com.longfor.longjian.common.util.SessionInfo;
 import com.longfor.longjian.houseqm.app.req.taskcheckedareas.CheckedAreasReq;
 import com.longfor.longjian.houseqm.app.service.ITaskService;
+import com.longfor.longjian.houseqm.app.utils.CtrlToolUtils;
 import com.longfor.longjian.houseqm.app.vo.taskcheckedareas.CheckedAreasRsp;
 import com.longfor.longjian.houseqm.util.StringSplitToListUtil;
 import lombok.extern.slf4j.Slf4j;
@@ -62,8 +63,7 @@ public class TaskCheckedAreasController {
             taskResponse.setData(data);
         } catch (Exception e) {
             log.error(e.getMessage());
-            taskResponse.setResult(1);
-            taskResponse.setMessage(e.getMessage());
+            return CtrlToolUtils.errorReturn(taskResponse,e);
         }
         return taskResponse;
     }
