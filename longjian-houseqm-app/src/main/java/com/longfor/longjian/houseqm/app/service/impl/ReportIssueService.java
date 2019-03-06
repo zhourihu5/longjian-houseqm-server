@@ -18,6 +18,7 @@ import com.longfor.longjian.houseqm.util.StringSplitToListUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 import org.springframework.stereotype.Service;
 
@@ -50,7 +51,7 @@ public class ReportIssueService {
     CheckItemV3Service checkItemV3Service;
     @Resource
     HouseQmCheckTaskNotifyRecordService houseQmCheckTaskNotifyRecordService;
-    @Resource
+    @Autowired
     private KafkaProducer kafkaProducer;
     @Resource
     private IssueServiceImpl issueService;
