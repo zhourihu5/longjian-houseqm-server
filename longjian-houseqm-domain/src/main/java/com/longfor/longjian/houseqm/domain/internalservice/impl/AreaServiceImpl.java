@@ -254,8 +254,7 @@ public class AreaServiceImpl implements AreaService {
         String lastPath = paths.get(0);
 
         for (int i = 1; i < paths.size(); i++) {
-            if (paths.get(i).startsWith(lastPath)) {
-            } else {
+            if (!paths.get(i).startsWith(lastPath)) {
                 remainPath.add(lastPath);
                 lastPath = paths.get(i);
             }

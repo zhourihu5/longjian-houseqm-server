@@ -406,7 +406,7 @@ public class ReportIssueService {
         if (CollectionUtils.isNotEmpty(pushList)) {
             String title = "新的待处理问题";
             String msg = "您在［工程检查］有新的待处理问题，请进入App同步更新。";
-            ////todo 消息推送
+            //todo 消息推送
               /*   notify_srv = NotifyMessage()
                  notify_srv.push_base_message(0, push_list, title, msg)
                  task_id, des_user_ids, title, description
@@ -429,11 +429,11 @@ public class ReportIssueService {
             for (Map.Entry<HouseQmCheckTaskIssue, ApiRefundInfo> entry : refundMap.entrySet()) {
                 ids.add(refundMap.get(entry.getKey()).getRepairer());
             }
-            //Map userMap = createUsersMap(ids);
+            // Map userMap = createUsersMap(ids);
             String title = "新的待处理问题";
             for (Map.Entry<HouseQmCheckTaskIssue, ApiRefundInfo> entry : refundMap.entrySet()) {
                 String msg = "[],退回了一条问题，请进入[工程检查]App跟进处理";
-                ////todo 消息推送
+                //todo 消息推送
                    /*  notify_srv = NotifyMessage();
                      notify_srv.push_base_message(0, push_list, title, msg);
                      //安卓推送
@@ -634,10 +634,8 @@ public class ReportIssueService {
                 } else if (item.getStatus().equals(CheckTaskIssueLogStatus.AssignNoReform.getValue())) {
                     issue.setLastAssigner(item.getSender_id());
                     issue.setLastAssignAt(DateUtil.transForDate(item.getClient_create_at()));
-                } else if (item.getStatus().equals(CheckTaskIssueLogStatus.UpdateIssueInfo.getValue())) {
-                    if (StringUtils.isNotEmpty(item.getDesc())) {
-                        issue.setContent(String.format("%s; %s",issue.getContent() , item.getDesc()));
-                    }
+                } else if (item.getStatus().equals(CheckTaskIssueLogStatus.UpdateIssueInfo.getValue())&&StringUtils.isNotEmpty(item.getDesc())) {
+                    issue.setContent(String.format("%s; %s",issue.getContent() , item.getDesc()));
                 }
             }
             //  # 最后整改负责人
@@ -700,9 +698,6 @@ public class ReportIssueService {
             }
             Map<String, Object> map = JSON.parseObject(issue.getDetail(), Map.class);
             // # 编辑问题的detail字段
-          /*  if (!detailInfo.getCheck_item_md5().equals("") || !detailInfo.getCheck_item_md5().equals("-1")) {
-                map.put(CHECKkITEM_MD5, detailInfo.getCheck_item_md5());
-            }*/
             if (detailInfo.getIssue_reason() != -1 || detailInfo.getIssue_reason() != 0) {
                 map.put(ISSUEREASON, detailInfo.getIssue_reason());
             }
@@ -730,8 +725,8 @@ public class ReportIssueService {
         issue.setRepairerId(0);
         issue.setRepairerFollowerIds("");
         issue.setLastRepairer(0);
-        issue.setLastRepairerAt(DateUtil.strToDate(START_VALUE, "yyyy-MM-dd-HH-mm-ss"));
-        issue.setPlanEndOn(DateUtil.strToDate("1970-01-01 08:00:00 ","yyyy-MM-dd-HH-mm-ss"));//1970-01-01 08:00:00
+        issue.setLastRepairerAt(DateUtil.strToDate(START_VALUE, YMDHMS));
+        issue.setPlanEndOn(DateUtil.strToDate("1970-01-01 08:00:00 ",YMDHMS));//1970-01-01 08:00:00
         Integer newStatus = convertLogStatus(item.getStatus());
         if (newStatus > 0) {
             issue.setStatus(newStatus);
@@ -820,14 +815,9 @@ public class ReportIssueService {
             issue.setRepairerId(0);
             issue.setRepairerFollowerIds("");
             issue.setLastRepairer(0);
-            issue.setLastRepairerAt(DateUtil.strToDate("0001-01-01 00:00:00", "yyyy-MM-dd-HH-mm-ss"));
-            issue.setPlanEndOn(DateUtil.strToDate("1970-01-01 08:00:00 ","yyyy-MM-dd-HH-mm-ss"));
+            issue.setLastRepairerAt(DateUtil.strToDate(START_VALUE, YMDHMS));
+            issue.setPlanEndOn(DateUtil.strToDate("1970-01-01 08:00:00 ",YMDHMS));
         }
-       /* issue.setRepairerId(0);
-        issue.setRepairerFollowerIds("");
-        issue.setLastRepairer(0);
-        issue.setLastRepairerAt(DateUtil.strToDate("0001-01-01 00:00:00", "yyyy-MM-dd-HH-mm-ss"));
-        issue.setPlanEndOn(DateUtil.strToDate("1970-01-01 08:00:00 ","yyyy-MM-dd-HH-mm-ss"));*///1970-01-01 08:00:00
         List<ApiHouseQmCheckTaskIssueLogInfo.ApiHouseQmCheckTaskIssueLogDetailInfo> detail = item.getDetail();
         detail.forEach(detailInfo -> {
             if (!detailInfo.getCategory_key().equals("-1")) {
@@ -1216,8 +1206,8 @@ public class ReportIssueService {
 
     private Map createUsersMap(List<Integer> ids) {
         return  userService.selectByIds(ids);
-
     }
+
     private Map<String, Object> apiNotifyStat(Integer status, Integer repairerId, List<Integer> repairerFollowerId) {
         Map<String, Object> map = Maps.newHashMap();
         map.put(STATUS, status);
@@ -1228,7 +1218,6 @@ public class ReportIssueService {
 
     private boolean datetimeZero(Date deleteAt) {
         return deleteAt == null || new SimpleDateFormat(YMDHMS).format(deleteAt).equals(START_VALUE) || new SimpleDateFormat(YMDHMS).format(deleteAt).equals("") || DateUtil.datetimeToTimeStamp(deleteAt) <= DateUtil.datetimeToTimeStamp(new Date(0));
-
     }
 
     private List checkLogUuid(List<String> logUuids) {
