@@ -17,7 +17,7 @@ spring:
 
 logging:
   level:
-    ROOT: warn #INFO
+    ROOT: WARN #INFO
     com.longfor: INFO
     com.longfor.longjian: debug
     graphql.GraphQL: debug
