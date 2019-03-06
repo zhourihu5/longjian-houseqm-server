@@ -871,8 +871,18 @@ public class BuildingqmServiceImpl implements IBuildingqmService {
             throw new LjBaseRuntimeException(-99, "'任务信息不存在'");
         }
         taskInfo.setName(taskEditReq.getName());
-        taskInfo.setAreaIds(StringUtils.join(map.get(AREA_IDS), ","));
-        taskInfo.setAreaTypes(StringUtils.join(map.get(AREA_TYPES), ","));
+     /*   taskInfo.setAreaIds(StringUtils.join(map.get(AREA_IDS), ","));*/
+        List<Integer> areaIds  =(List<Integer>) map.get(AREA_IDS);
+        String stringAreaIds = areaIds.toString();
+        String s = StringUtils.removeStart(stringAreaIds, "[");
+        String s1 = StringUtils.removeEnd(s, "]");
+        taskInfo.setAreaIds(s1.replaceAll(" ", ""));
+        List<Integer> areaTypes  =(List<Integer>) map.get(AREA_TYPES);
+        String stringAreaTypes = areaTypes.toString();
+        String s2 = StringUtils.removeStart(stringAreaTypes, "[");
+        String s3 = StringUtils.removeEnd(s2, "]");
+        taskInfo.setAreaTypes(s3.replaceAll(" ", ""));
+     /*   taskInfo.setAreaTypes(StringUtils.join(map.get(AREA_TYPES), ","));*/
         taskInfo.setPlanBeginOn((Date) map.get("begin"));
         taskInfo.setPlanEndOn((Date) map.get("endon"));
         taskInfo.setUpdateAt(new Date());

@@ -6,6 +6,7 @@ import com.longfor.longjian.common.exception.LjBaseRuntimeException;
 import com.longfor.longjian.houseqm.app.vo.ApiMineMsg;
 import com.longfor.longjian.houseqm.app.vo.ApiStatHouseqmMeterSettingMsgVo;
 import com.longfor.longjian.houseqm.app.vo.HouseQmCheckTaskSimpleRspVo;
+import com.longfor.longjian.houseqm.domain.internalservice.*;
 import com.longfor.longjian.houseqm.po.zhijian2_apisvr.Team;
 import com.longfor.longjian.houseqm.po.zj2db.*;
 import com.longfor.longjian.houseqm.util.DateUtil;
@@ -27,17 +28,17 @@ import java.util.*;
 @Slf4j
 public class IusseTaskListService {
     @Resource
-    com.longfor.longjian.houseqm.domain.internalservice.HouseQmCheckTaskService houseQmCheckTaskService;
+    private HouseQmCheckTaskService houseQmCheckTaskService;
     @Resource
-    com.longfor.longjian.houseqm.domain.internalservice.RepossessionMeterSettingService repossessionMeterSettingService;
+    private RepossessionMeterSettingService repossessionMeterSettingService;
     @Resource
-    com.longfor.longjian.houseqm.domain.internalservice.UserInTeamRoleService userInTeamRoleService;
+    private UserInTeamRoleService userInTeamRoleService;
     @Resource
-    com.longfor.longjian.houseqm.domain.internalservice.TeamService teamService;
+    private TeamService teamService;
     @Resource
-    com.longfor.longjian.houseqm.domain.internalservice.UserInProjectService userInProjectService;
+    private UserInProjectService userInProjectService;
     @Resource
-    com.longfor.longjian.houseqm.domain.internalservice.ProjectService projectService;
+    private ProjectService projectService;
 
     public List<HouseQmCheckTaskSimpleRspVo> selectByProjectIdAndCategoryCls(Integer projectId, Integer categoryCls) {
         List<HouseQmCheckTask> houseQmCheckTaskList = houseQmCheckTaskService.selectByProjectIdAndCategoryCls(projectId, categoryCls);
