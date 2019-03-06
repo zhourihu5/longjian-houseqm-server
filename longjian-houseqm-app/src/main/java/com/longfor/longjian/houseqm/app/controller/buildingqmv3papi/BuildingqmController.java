@@ -20,6 +20,7 @@ import com.longfor.longjian.houseqm.util.DateUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang.StringUtils;
 import org.apache.poi.xssf.streaming.SXSSFWorkbook;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -58,9 +59,9 @@ public class BuildingqmController {
     private IBuildingqmService buildingqmService;
     @Resource
     private ICheckUpdateService iCheckUpdateService;
-    @Resource
+    @Autowired
     private SessionInfo sessionInfo;
-    @Resource
+    @Autowired
     private CtrlTool ctrlTool;
     @Resource
     private ReportIssueService reportIssueService;

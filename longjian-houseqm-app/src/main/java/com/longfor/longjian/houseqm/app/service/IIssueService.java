@@ -24,11 +24,6 @@ public interface IIssueService {
 
     Map<String, Object> exportExcel(Integer uid, ExportBuildingExcelReq req);
 
-    /**
-     * @return com.longfor.gaia.gfs.core.bean.PageInfo<com.longfor.longjian.houseqm.app.vo.IssueListVo>
-     * @author hy
-     * @date 2018/12/21 0021
-     */
     IssueListRsp list(IssueListDoActionReq req);
 
     List<HouseQmCheckTaskIssueHistoryLogVo> getHouseQmCheckTaskIssueActionLogByIssueUuid(String issueUuid);

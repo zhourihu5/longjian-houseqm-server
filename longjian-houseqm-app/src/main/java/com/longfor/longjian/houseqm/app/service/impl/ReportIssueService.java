@@ -8,18 +8,23 @@ import com.longfor.longjian.common.consts.*;
 import com.longfor.longjian.common.consts.checktask.*;
 import com.longfor.longjian.common.exception.LjBaseRuntimeException;
 import com.longfor.longjian.common.kafka.KafkaProducer;
+import com.longfor.longjian.houseqm.app.service.ScanMsgPushService;
 import com.longfor.longjian.houseqm.app.vo.*;
 import com.longfor.longjian.houseqm.consts.DropDataReasonEnum;
 import com.longfor.longjian.houseqm.domain.internalservice.*;
+import com.longfor.longjian.houseqm.po.zhijian2_apisvr.User;
 import com.longfor.longjian.houseqm.po.zj2db.*;
 import com.longfor.longjian.houseqm.util.CollectionUtil;
 import com.longfor.longjian.houseqm.util.DateUtil;
 import com.longfor.longjian.houseqm.util.StringSplitToListUtil;
+import io.swagger.models.auth.In;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 import org.springframework.stereotype.Service;
+import org.springframework.web.bind.annotation.RequestMapping;
 
 import javax.annotation.Resource;
 import java.text.SimpleDateFormat;
@@ -50,7 +55,11 @@ public class ReportIssueService {
     CheckItemV3Service checkItemV3Service;
     @Resource
     HouseQmCheckTaskNotifyRecordService houseQmCheckTaskNotifyRecordService;
+
     @Resource
+    ScanMsgPushService scanMsgPushService;
+    @Resource
+    @Autowired
     private KafkaProducer kafkaProducer;
     @Resource
     private IssueServiceImpl issueService;
@@ -406,46 +415,32 @@ public class ReportIssueService {
         if (CollectionUtils.isNotEmpty(pushList)) {
             String title = "新的待处理问题";
             String msg = "您在［工程检查］有新的待处理问题，请进入App同步更新。";
-            ////todo 消息推送
-              /*   notify_srv = NotifyMessage()
-                 notify_srv.push_base_message(0, push_list, title, msg)
-                 task_id, des_user_ids, title, description
-                 //安卓推送
-                 umPushUtil.sendAndroidCustomizedcast();
-                 //苹果推送
-                 umPushUtil.sendIOSCustomizedcast();
-                 //小米推送
-                 xmPushUtil.sendMessageToUserAccounts();*/
-            ArrayList<String> ids = Lists.newArrayList();
+            List<Integer> ids = new ArrayList<>();
             for (Object push : pushList) {
-                ids.add((Integer) push + "");
+                ids.add(Integer.parseInt(String.valueOf(push)));
             }
-            issueService.pushBaseMessage(0, ids, title, msg);
+            scanMsgPushService.sendUPush(title,msg,0,ids,1);
 
         }
         //   # 处理退单消息推送
-        ArrayList<Integer> ids = Lists.newArrayList();
+        List<Integer> ids = new ArrayList<>();
+        List<Integer> sendIds = new ArrayList<>();
+
         if (refundMap.size() > 0) {
             for (Map.Entry<HouseQmCheckTaskIssue, ApiRefundInfo> entry : refundMap.entrySet()) {
                 ids.add(refundMap.get(entry.getKey()).getRepairer());
+
             }
-            //Map userMap = createUsersMap(ids);
             String title = "新的待处理问题";
+            Map<Integer,User>userMap=scanMsgPushService.createUserMap(ids);
+
             for (Map.Entry<HouseQmCheckTaskIssue, ApiRefundInfo> entry : refundMap.entrySet()) {
-                String msg = "[],退回了一条问题，请进入[工程检查]App跟进处理";
-                ////todo 消息推送
-                   /*  notify_srv = NotifyMessage();
-                     notify_srv.push_base_message(0, push_list, title, msg);
-                     //安卓推送
-                     umPushUtil.sendAndroidCustomizedcast();
-                     //苹果推送
-                     umPushUtil.sendIOSCustomizedcast();
-                     //小米推送
-                     xmPushUtil.sendMessageToUserAccounts();*/
-                ArrayList<String> checker = Lists.newArrayList();
+                sendIds.add(refundMap.get(entry.getKey()).getChecker());
+                String msg = " 退回了一条问题，请进入[工程检查]App跟进处理";
                 ApiRefundInfo info = refundMap.get(entry);
-                if (info != null) checker.add(info.getChecker() + "");
-                issueService.pushBaseMessage(0, checker, title, msg);
+                if (info != null) msg=userMap.get(info.getRepairer()).getRealName()+msg;
+                log.debug("处理退单消息推送: ====> {}",msg);
+                scanMsgPushService.sendUPush(title,msg,0,sendIds,1);
             }
         }
         // # 处理kafka数据统计消息
@@ -554,6 +549,7 @@ public class ReportIssueService {
         return vo;
     }
 
+
     private ArrayList<Integer> getIssueCheckerList(Map<Integer, Map<Integer, Map<Integer, Integer>>> checkerMap, HouseQmCheckTaskIssue issue, Boolean b) {
         ArrayList<Integer> desUserIds = Lists.newArrayList();
         if (!checkerMap.containsKey(issue.getTaskId())) {
@@ -634,10 +630,8 @@ public class ReportIssueService {
                 } else if (item.getStatus().equals(CheckTaskIssueLogStatus.AssignNoReform.getValue())) {
                     issue.setLastAssigner(item.getSender_id());
                     issue.setLastAssignAt(DateUtil.transForDate(item.getClient_create_at()));
-                } else if (item.getStatus().equals(CheckTaskIssueLogStatus.UpdateIssueInfo.getValue())) {
-                    if (StringUtils.isNotEmpty(item.getDesc())) {
-                        issue.setContent(String.format("%s; %s",issue.getContent() , item.getDesc()));
-                    }
+                } else if (item.getStatus().equals(CheckTaskIssueLogStatus.UpdateIssueInfo.getValue())&&StringUtils.isNotEmpty(item.getDesc())) {
+                    issue.setContent(String.format("%s; %s",issue.getContent() , item.getDesc()));
                 }
             }
             //  # 最后整改负责人
@@ -700,9 +694,6 @@ public class ReportIssueService {
             }
             Map<String, Object> map = JSON.parseObject(issue.getDetail(), Map.class);
             // # 编辑问题的detail字段
-          /*  if (!detailInfo.getCheck_item_md5().equals("") || !detailInfo.getCheck_item_md5().equals("-1")) {
-                map.put(CHECKkITEM_MD5, detailInfo.getCheck_item_md5());
-            }*/
             if (detailInfo.getIssue_reason() != -1 || detailInfo.getIssue_reason() != 0) {
                 map.put(ISSUEREASON, detailInfo.getIssue_reason());
             }
@@ -730,8 +721,8 @@ public class ReportIssueService {
         issue.setRepairerId(0);
         issue.setRepairerFollowerIds("");
         issue.setLastRepairer(0);
-        issue.setLastRepairerAt(DateUtil.strToDate(START_VALUE, "yyyy-MM-dd-HH-mm-ss"));
-        issue.setPlanEndOn(DateUtil.strToDate("1970-01-01 08:00:00 ","yyyy-MM-dd-HH-mm-ss"));//1970-01-01 08:00:00
+        issue.setLastRepairerAt(DateUtil.strToDate(START_VALUE, YMDHMS));
+        issue.setPlanEndOn(DateUtil.strToDate("1970-01-01 08:00:00 ",YMDHMS));//1970-01-01 08:00:00
         Integer newStatus = convertLogStatus(item.getStatus());
         if (newStatus > 0) {
             issue.setStatus(newStatus);
@@ -820,14 +811,9 @@ public class ReportIssueService {
             issue.setRepairerId(0);
             issue.setRepairerFollowerIds("");
             issue.setLastRepairer(0);
-            issue.setLastRepairerAt(DateUtil.strToDate("0001-01-01 00:00:00", "yyyy-MM-dd-HH-mm-ss"));
-            issue.setPlanEndOn(DateUtil.strToDate("1970-01-01 08:00:00 ","yyyy-MM-dd-HH-mm-ss"));
+            issue.setLastRepairerAt(DateUtil.strToDate(START_VALUE, YMDHMS));
+            issue.setPlanEndOn(DateUtil.strToDate("1970-01-01 08:00:00 ",YMDHMS));
         }
-       /* issue.setRepairerId(0);
-        issue.setRepairerFollowerIds("");
-        issue.setLastRepairer(0);
-        issue.setLastRepairerAt(DateUtil.strToDate("0001-01-01 00:00:00", "yyyy-MM-dd-HH-mm-ss"));
-        issue.setPlanEndOn(DateUtil.strToDate("1970-01-01 08:00:00 ","yyyy-MM-dd-HH-mm-ss"));*///1970-01-01 08:00:00
         List<ApiHouseQmCheckTaskIssueLogInfo.ApiHouseQmCheckTaskIssueLogDetailInfo> detail = item.getDetail();
         detail.forEach(detailInfo -> {
             if (!detailInfo.getCategory_key().equals("-1")) {
@@ -1216,8 +1202,8 @@ public class ReportIssueService {
 
     private Map createUsersMap(List<Integer> ids) {
         return  userService.selectByIds(ids);
-
     }
+
     private Map<String, Object> apiNotifyStat(Integer status, Integer repairerId, List<Integer> repairerFollowerId) {
         Map<String, Object> map = Maps.newHashMap();
         map.put(STATUS, status);
@@ -1228,7 +1214,6 @@ public class ReportIssueService {
 
     private boolean datetimeZero(Date deleteAt) {
         return deleteAt == null || new SimpleDateFormat(YMDHMS).format(deleteAt).equals(START_VALUE) || new SimpleDateFormat(YMDHMS).format(deleteAt).equals("") || DateUtil.datetimeToTimeStamp(deleteAt) <= DateUtil.datetimeToTimeStamp(new Date(0));
-
     }
 
     private List checkLogUuid(List<String> logUuids) {
