@@ -23,7 +23,7 @@ public interface HouseQmCheckTaskIssueService {
 
     List<HouseQmCheckTaskIssue> searchByTaskIdInGroupByTaskIdAndStatus(List<Integer> taskIds);
 
-    List<HouseQmCheckTaskIssue> searchByProjIdAndCategoryClsInAndRepairerIdAndClientCreateAtAndTypInAndStatusInAndTaskIdOrderByClientCreateAt(Integer projectId, List<Integer> categoryClsList, String statBegin, String statEnd, List<Integer> typs, List<Integer> status, Integer taskId, List<Integer> myTaskIds);
+    List<HouseQmCheckTaskIssue> searchByProjIdAndCategoryClsInAndRepairerIdAndClientCreateAtAndTypInAndStatusInAndTaskIdOrderByClientCreateAt(Map<String,Object> paramMap, List<Integer> myTaskIds);
 
     List<HouseQmCheckTaskIssue> searchByProjIdAndCategoryClsInAndSenderIdAndClientCreateAtAndTypAndTaskIdOrderByClientCreateAt(Integer projectId, List<Integer> categoryClsList, String statBegin, String statEnd, List<Integer> typs, Integer taskId, List<Integer> myTaskIds);
 
@@ -72,7 +72,7 @@ public interface HouseQmCheckTaskIssueService {
 
     List<HouseQmCheckTaskIssueUser> searchHouseQmCheckTaskIssueUserByTaskIdLastIdUpdateAtGt(Integer taskId, Integer lastId, Integer timestamp, Integer start, Integer limit);
 
-    List<HouseQmCheckTaskIssueAttachment> searchHouseQmCheckTaskIssueAttachmentByMyIdTaskIdLastIdUpdateAtGt(Integer userId, Integer taskId, Integer lastId, Integer timestamp, Integer start, Integer limit, Integer privateInt, Integer publicInt);
+    List<HouseQmCheckTaskIssueAttachment> searchHouseQmCheckTaskIssueAttachmentByMyIdTaskIdLastIdUpdateAtGt(Integer userId, Map<String, Object> paramMap, Integer start, Integer limit, Integer privateInt, Integer publicInt);
 
     List<HouseQmCheckTaskIssue> searchByProjectIdAndCategoryClsAndNoDeletedAndDongTai(Map<String, Object> map);
 
@@ -82,7 +82,7 @@ public interface HouseQmCheckTaskIssueService {
 
     Integer selectCountByProjectIdAndCategoryClsAndTypeAndStatusInAndDongTai(Map<String, Object> map);
 
-    HouseQmCheckTaskIssueListDto selectCountByProjectIdAndCategoryClsAndTypeAndStatusInAndDongTai2(Integer projectId, Integer taskId, List<Integer> categoryClsList, Integer areaId, Integer planStatus, Date beginOn, Date endOn, Integer page, Integer pageSize);
+    HouseQmCheckTaskIssueListDto selectCountByProjectIdAndCategoryClsAndTypeAndStatusInAndDongTai2(Integer projectId, Integer taskId, List<Integer> categoryClsList, Integer areaId, Integer planStatus, Map<String, Object> paramMap);
 
     List<HouseQmCheckTaskIssue> selectHouseQmCheckTaskIssueByProjectIdAndCategoryClsAndTypeAndStatusInAndOrderByDescAndPageDongTai(Map<String, Object> map);
 

@@ -148,7 +148,16 @@ public class HouseqmStatisticServiceImpl implements IHouseqmStatisticService {
         List<Integer> typs = Lists.newArrayList(HouseQmCheckTaskIssueTypeEnum.FindProblem.getId(), HouseQmCheckTaskIssueTypeEnum.Difficult.getId());
         List<Integer> status = Lists.newArrayList(HouseQmCheckTaskIssueStatusEnum.AssignNoReform.getId(), HouseQmCheckTaskIssueStatusEnum.ReformNoCheck.getId(), HouseQmCheckTaskIssueStatusEnum.CheckYes.getId());
 
-        List<HouseQmCheckTaskIssue> issueList = houseQmCheckTaskIssueService.searchByProjIdAndCategoryClsInAndRepairerIdAndClientCreateAtAndTypInAndStatusInAndTaskIdOrderByClientCreateAt(projectId, categoryClsList, statBeginInt, statEndStr, typs, status, taskId, myTaskIds);
+        Map<String, Object> paramMap = Maps.newHashMap();
+        paramMap.put("projectId",projectId);
+        paramMap.put("categoryClsList",categoryClsList);
+        paramMap.put("statBeginInt",statBeginInt);
+        paramMap.put("statEndStr",statEndStr);
+        paramMap.put("typs",typs);
+        paramMap.put("status",status);
+        paramMap.put("taskId",taskId);
+
+        List<HouseQmCheckTaskIssue> issueList = houseQmCheckTaskIssueService.searchByProjIdAndCategoryClsInAndRepairerIdAndClientCreateAtAndTypInAndStatusInAndTaskIdOrderByClientCreateAt(paramMap, myTaskIds);
 
         for (HouseQmCheckTaskIssue item : issueList) {
             if (statMap.containsKey(item.getRepairerId())) {
@@ -594,7 +603,14 @@ public class HouseqmStatisticServiceImpl implements IHouseqmStatisticService {
         if (planStatus <= 0 || planStatus > 5) throw new LjBaseRuntimeException(500, "invalid plan_status.");
         List<Integer> categoryClsList = getCategoryClsList(source);
         // 没有deleted_at is null
-        HouseQmCheckTaskIssueListDto issueListVo = houseQmCheckTaskIssueService.selectCountByProjectIdAndCategoryClsAndTypeAndStatusInAndDongTai2(projectId, taskId, categoryClsList, areaId, planStatus, beginOn1, endOn1, page, pageSize);
+        Map<String, Object> paramMap = Maps.newHashMap();
+        //beginOn1, endOn1, page, pageSize
+        paramMap.put("beginOn1",beginOn1);
+        paramMap.put("endOn1",endOn1);
+        paramMap.put("page",page);
+        paramMap.put("pageSize",pageSize);
+
+        HouseQmCheckTaskIssueListDto issueListVo = houseQmCheckTaskIssueService.selectCountByProjectIdAndCategoryClsAndTypeAndStatusInAndDongTai2(projectId, taskId, categoryClsList, areaId, planStatus, paramMap);
         HouseQmCheckTaskIssueListVo houseQmCheckTaskIssueListVo = new HouseQmCheckTaskIssueListVo();
         houseQmCheckTaskIssueListVo.setHouseQmCheckTaskIssues(issueListVo.getHouseQmCheckTaskIssues());
         houseQmCheckTaskIssueListVo.setTotal(issueListVo.getTotal());
