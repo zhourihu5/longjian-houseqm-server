@@ -398,36 +398,6 @@ public class ExportUtils {
         }
         return cell;
     }
-
-    private static void insertPicture(String blipId, XWPFDocument document, String filePath,
-                                      CTInline inline, int width,
-                                      int height) throws FileNotFoundException, InvalidFormatException {
-        document.addPictureData(new FileInputStream(filePath), XWPFDocument.PICTURE_TYPE_PNG);
-        int id = document.getAllPictures().size() - 1;
-        final int EMU = 9525;
-        width *= EMU;
-        height *= EMU;
-        String picXml = getPicXml(blipId, width, height);
-        XmlToken xmlToken = null;
-        try {
-            xmlToken = XmlToken.Factory.parse(picXml);
-        } catch (XmlException xe) {
-            log.error(xe.getMessage());
-        }
-        inline.set(xmlToken);
-        inline.setDistT(0);
-        inline.setDistB(0);
-        inline.setDistL(0);
-        inline.setDistR(0);
-        CTPositiveSize2D extent = inline.addNewExtent();
-        extent.setCx(width);
-        extent.setCy(height);
-        CTNonVisualDrawingProps docPr = inline.addNewDocPr();
-        docPr.setId(id);
-        docPr.setName("IMG_" + id);
-        docPr.setDescr("IMG_" + id);
-    }
-
     private static String getPicXml(String blipId, int width, int height) {
         return
                 "" + "<a:graphic xmlns:a=\"http://schemas.openxmlformats.org/drawingml/2006/main\">" +

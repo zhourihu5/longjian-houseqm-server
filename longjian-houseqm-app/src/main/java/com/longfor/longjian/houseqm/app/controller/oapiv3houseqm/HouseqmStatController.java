@@ -5,7 +5,9 @@ import com.longfor.longjian.common.base.LjBaseResponse;
 import com.longfor.longjian.common.util.CtrlTool;
 import com.longfor.longjian.common.util.SessionInfo;
 import com.longfor.longjian.common.util.StringUtil;
-import com.longfor.longjian.houseqm.app.req.*;
+import com.longfor.longjian.houseqm.app.req.StatAreaSituationReq;
+import com.longfor.longjian.houseqm.app.req.StatTaskSituationMembersCheckerReq;
+import com.longfor.longjian.houseqm.app.req.StatTaskSituationMembersRepairerReq;
 import com.longfor.longjian.houseqm.app.req.houseqmstat.*;
 import com.longfor.longjian.houseqm.app.service.IHouseqmStatService;
 import com.longfor.longjian.houseqm.app.service.IHouseqmStatisticService;
@@ -18,8 +20,6 @@ import com.longfor.longjian.houseqm.util.StringSplitToListUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.MediaType;
 import org.springframework.validation.annotation.Validated;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -368,69 +368,6 @@ public class HouseqmStatController {
         return response;
     }
 
-    /**
-     * @deprecated 接口废弃
-     */
-    @Deprecated
-    @GetMapping(value = "stat_houseqm/task_situation_overall", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
-    public LjBaseResponse<StatHouseqmTaskSituationOverallRspVo> taskSituationOverall(HttpServletRequest request, @RequestBody @Valid StatHouseqmTaskSituationOverallReq req) {
-        LjBaseResponse<StatHouseqmTaskSituationOverallRspVo> response = new LjBaseResponse<>();
-        try {
-            ctrlTool.projPermMulti(request, new String[]{SEE, SEE});
-            List<Integer> taskIds = StringSplitToListUtil.strToInts(req.getTask_ids(), ",");
-            RepossessionTasksStatusInfoVo info = houseqmStatisticService.getRepossessionTasksStatusInfo(req.getProject_id(), taskIds, 0);
-            response.setResult(0);
-            StatHouseqmTaskSituationOverallRspVo data = new StatHouseqmTaskSituationOverallRspVo();
-            HouseQmHouseQmStatTaskSituationOverallRspVo status = new HouseQmHouseQmStatTaskSituationOverallRspVo();
-            status.setAccept_has_issue_count(info.getAcceptHasIssueCount());
-            status.setAccept_has_issue_sign_count(info.getAcceptHasIssueSignCount());
-            status.setAccept_no_issue(info.getAcceptNoIssueCount());
-            status.setAccept_no_issue_sign_count(info.getAcceptNoIssueSignCount());
-            status.setChecked_count(info.getCheckedCount());
-            status.setChecked_rate(info.getCheckedRate());
-            status.setOnly_watch(info.getOnlyWatch());
-            status.setReject_count(info.getRejectCount());
-            status.setTask_name(info.getTaskName());
-            status.setTotal(info.getTotal());
-            status.setUnaccept_count(info.getUnacceptCount());
-            status.setUnchecked_count(info.getUncheckedCount());
-            data.setStatus(status);
-            response.setData(data);
-        } catch (Exception e) {
-            log.error(e.getMessage());
-            response.setMessage(e.getMessage());
-            response.setResult(1);
-        }
-        return response;
-    }
-
-    /**
-     * @deprecated 接口废弃
-     */
-    @Deprecated
-    @GetMapping(value = "stat_houseqm/complete_daily", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
-    public LjBaseResponse<StatHouseqmCompleteDailyRspVo> completeDaily(HttpServletRequest request, @Valid StatHouseqmCompleteDailyReq req) {
-        LjBaseResponse<StatHouseqmCompleteDailyRspVo> response = new LjBaseResponse<>();
-        try {
-            ctrlTool.projPermMulti(request, new String[]{SEE, SEE});
-            List<Integer> taskIds = StringSplitToListUtil.strToInts(req.getTask_ids(), ",");
-            int beginOn = 0;
-            int endOn = 0;
-            if (req.getBegin_on().length() > 0) {
-                beginOn = DateUtil.datetimeToTimeStamp(DateUtil.strToDate(req.getBegin_on(), YMDHMS));
-            }
-            if (req.getEnd_on().length() > 0) {
-                endOn = DateUtil.datetimeToTimeStamp(DateUtil.strToDate(req.getEnd_on(), YMDHMS));
-            }
-            StatHouseqmCompleteDailyRspVo data = houseqmStatisticService.searchRepossessionStatusCompleteDaily(req.getProject_id(), taskIds, beginOn, endOn, req.getPage(), req.getPage_size());
-            response.setData(data);
-        } catch (Exception e) {
-            log.error(e.getMessage());
-            response.setMessage(e.getMessage());
-            response.setResult(1);
-        }
-        return response;
-    }
 
     @RequestMapping(value = "stat/task_situation_members_checker", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     public LjBaseResponse<StatTaskSituationMembersCheckerRspVo> taskSituationMembersChecker(HttpServletRequest request, @Valid StatTaskSituationMembersCheckerReq req) {

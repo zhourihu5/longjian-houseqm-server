@@ -49,7 +49,6 @@ public class AreaServiceImpl implements AreaService {
             areaPaths.remove(i);
             areaPaths.add(i, String.format("(%s[^,]*)*", path));
         }
-       // String pathsRegexp = "^" + StringSplitToListUtil.dataToString(areaPaths, ",{0,1}") + "$";
         return StringSplitToListUtil.dataToString(idsStr, "|");
     }
 
