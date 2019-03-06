@@ -15,7 +15,7 @@ public class NoticeStatValue {
 
     private  List<Integer> assignNoReformIssueIds=new ArrayList<>();
 
-    public NoticeStatValue(List<Integer> reformNoCheckIssueIds, List<Integer> assignNoReformIssueIds) {
+    public NoticeStatValue(List<Integer> assignNoReformIssueIds, List<Integer> reformNoCheckIssueIds) {
         this.reformNoCheckIssueIds = reformNoCheckIssueIds;
         this.assignNoReformIssueIds = assignNoReformIssueIds;
     }
