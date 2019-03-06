@@ -871,8 +871,8 @@ public class BuildingqmServiceImpl implements IBuildingqmService {
             throw new LjBaseRuntimeException(-99, "'任务信息不存在'");
         }
         taskInfo.setName(taskEditReq.getName());
-     /*   taskInfo.setAreaIds(StringUtils.join(map.get(AREA_IDS), ","));*/
-        List<Integer> areaIds  =(List<Integer>) map.get(AREA_IDS);
+        taskInfo.setAreaIds(StringUtils.join(paramMap.get(AREA_IDS), ","));
+       /* List<Integer> areaIds  =(List<Integer>) map.get(AREA_IDS);
         String stringAreaIds = areaIds.toString();
         String s = StringUtils.removeStart(stringAreaIds, "[");
         String s1 = StringUtils.removeEnd(s, "]");
@@ -881,8 +881,8 @@ public class BuildingqmServiceImpl implements IBuildingqmService {
         String stringAreaTypes = areaTypes.toString();
         String s2 = StringUtils.removeStart(stringAreaTypes, "[");
         String s3 = StringUtils.removeEnd(s2, "]");
-        taskInfo.setAreaTypes(s3.replaceAll(" ", ""));
-     /*   taskInfo.setAreaTypes(StringUtils.join(map.get(AREA_TYPES), ","));*/
+        taskInfo.setAreaTypes(s3.replaceAll(" ", ""));*/
+        taskInfo.setAreaTypes(StringUtils.join(paramMap.get(AREA_TYPES), ","));
         taskInfo.setPlanBeginOn((Date) map.get("begin"));
         taskInfo.setPlanEndOn((Date) map.get("endon"));
         taskInfo.setUpdateAt(new Date());
@@ -1271,14 +1271,11 @@ public class BuildingqmServiceImpl implements IBuildingqmService {
         houseQmCheckTask.setPlanEndOn(stringToDate(planEndOn));
         houseQmCheckTask.setCreateAt(new Date());
         houseQmCheckTask.setUpdateAt(new Date());
-        String stringAreaIds = areaIds.toString();
+   /*     String stringAreaIds = areaIds.toString();
         String s = StringUtils.removeStart(stringAreaIds, "[");
-        String s1 = StringUtils.removeEnd(s, "]");
-        houseQmCheckTask.setAreaIds(s1.replaceAll(" ", ""));
-        String stringAreaTypes = areaTypes.toString();
-        String s2 = StringUtils.removeStart(stringAreaTypes, "[");
-        String s3 = StringUtils.removeEnd(s2, "]");
-        houseQmCheckTask.setAreaTypes(s3.replaceAll(" ", ""));
+        String s1 = StringUtils.removeEnd(s, "]");*/
+        houseQmCheckTask.setAreaIds(StringUtils.join(areaIds,","));
+        houseQmCheckTask.setAreaTypes(StringUtils.join(areaTypes,","));
         //返回主键
         int one = houseQmCheckTaskService.add(houseQmCheckTask);
         HouseQmCheckTask checktaskObj = houseQmCheckTaskService.selectById(one);
