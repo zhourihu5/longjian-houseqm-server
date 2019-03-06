@@ -1542,46 +1542,6 @@ public class BuildingqmServiceImpl implements IBuildingqmService {
 
     }
 
-    /**
-     * @param maps
-     * @param houseQmCheckTasks
-     */
-    private void fullTaskConfigVO(Map<Integer, ApiBuildingQmCheckTaskConfig> maps,
-                                  List<HouseQmCheckTask> houseQmCheckTasks) {
-
-        if (CollectionUtils.isEmpty(houseQmCheckTasks)) {
-            return;
-        }
-
-        for (HouseQmCheckTask task : houseQmCheckTasks) {
-
-            ApiBuildingQmCheckTaskConfig item = new ApiBuildingQmCheckTaskConfig();
-            if (StringUtils.isEmpty(task.getConfigInfo())) {
-
-                item.setRepairer_refund_permission(CheckTaskRepairerRefundPermission.No.getValue());
-                item.setRepairer_follower_permission(CheckTaskRepairerFollowerPermission.CompleteRepair.getValue());
-                item.setChecker_approve_permission(CheckerApprovePermission.No.getValue());
-                item.setRepaired_picture_status(CheckTaskRepairedPictureEnum.UnForcePicture.getValue());
-                item.setIssue_desc_status(CheckTaskIssueDescEnum.Arbitrary.getValue());
-                item.setIssue_default_desc(QUESTION_NO_DESC);
-            } else {
-                JSONObject configData = JSON.parseObject(task.getConfigInfo());
-                item.setRepairer_refund_permission(getValueOrDefault(configData, REPAIR_REFOUND_PERMISSION,
-                        CheckTaskRepairerRefundPermission.No.getValue()));
-                item.setRepairer_follower_permission(getValueOrDefault(configData, REPAIR_FOLLOWER_PERMISSION,
-                        CheckTaskRepairerFollowerPermission.CompleteRepair.getValue()));
-                item.setChecker_approve_permission(getValueOrDefault(configData, CHECKER_APPROVE_PERMISSION,
-                        CheckerApprovePermission.No.getValue()));
-                item.setRepaired_picture_status(getValueOrDefault(configData, REPAIR_PICTURE_STATUS,
-                        CheckTaskRepairedPictureEnum.UnForcePicture.getValue()));
-                item.setIssue_desc_status(getValueOrDefault(configData, ISSUE_DESC_STATUS,
-                        CheckTaskIssueDescEnum.Arbitrary.getValue()));
-                item.setIssue_default_desc(getStringValueOrDefault(configData, ISSUE_DEFAULT_DESC, QUESTION_NO_DESC));
-            }
-
-            maps.put(task.getTaskId(), item);
-        }
-    }
 
     /**
      * @param configData

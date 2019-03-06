@@ -65,7 +65,7 @@ public class HouseqmIssueController {
 
     private static final String USER_ID="userId";
     private static final String AUTH_PROJECT_QUESTION_MANAGE_EDIT="项目.移动验房.问题管理.编辑";
-    private static final String AUTH_PROJECT_ENGINEERING_QUESTION_MANAGE_EDIT_="项目.工程检查.问题管理.编辑";
+    private static final String PROJECT_ENGINEERING_QUESTION_MANAGE_EDIT="项目.工程检查.问题管理.编辑";
 
     @RequestMapping(value = "export_pdf", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     public LjBaseResponse exportPdf(HttpServletRequest request, @Validated IssueExportPdfReq req) throws IOException {
@@ -211,7 +211,7 @@ public class HouseqmIssueController {
     public LjBaseResponse<IssueBatchAppointRspVo> batchAppoint(HttpServletRequest request, @Valid IssueBatchAppointReq req) {
         LjBaseResponse<IssueBatchAppointRspVo> response = new LjBaseResponse<>();
         try {
-            ctrlTool.projPermMulti(request, new String[]{AUTH_PROJECT_QUESTION_MANAGE_EDIT, AUTH_PROJECT_ENGINEERING_QUESTION_MANAGE_EDIT_});
+            ctrlTool.projPermMulti(request, new String[]{AUTH_PROJECT_QUESTION_MANAGE_EDIT, PROJECT_ENGINEERING_QUESTION_MANAGE_EDIT});
             if (req.getRepairer_id() == null) req.setRepairer_id(0);
             if (req.getPlan_end_on() == null) req.setPlan_end_on(0);
             // 过滤掉不同task下的问题，感觉有点多余，不过还是处理下
@@ -243,7 +243,7 @@ public class HouseqmIssueController {
     public LjBaseResponse<IssueBatchApproveRspVo> batchApprove(HttpServletRequest request, @Validated IssueBatchApproveReq req) {
         LjBaseResponse<IssueBatchApproveRspVo> response = new LjBaseResponse<>();
         try {
-            ctrlTool.projPermMulti(request, new String[]{AUTH_PROJECT_QUESTION_MANAGE_EDIT, AUTH_PROJECT_ENGINEERING_QUESTION_MANAGE_EDIT_});
+            ctrlTool.projPermMulti(request, new String[]{AUTH_PROJECT_QUESTION_MANAGE_EDIT, PROJECT_ENGINEERING_QUESTION_MANAGE_EDIT});
             // 过滤掉不同task下的问题，感觉有点多余，不过还是处理下
             List<String> uuids = filterIssueUuidByProjIdTaskIdUuids(req.getProject_id(), req.getTask_id(), req.getIssue_uuids());
             Integer userId = (Integer) sessionInfo.getBaseInfo(USER_ID);
@@ -263,7 +263,7 @@ public class HouseqmIssueController {
     public LjBaseResponse<IssueBatchDeleteRspVo> batchDelete(HttpServletRequest request, @Validated IssueBatchDeleteReq req) {
         LjBaseResponse<IssueBatchDeleteRspVo> response = new LjBaseResponse<>();
         try {
-            ctrlTool.projPermMulti(request, new String[]{AUTH_PROJECT_QUESTION_MANAGE_EDIT, AUTH_PROJECT_ENGINEERING_QUESTION_MANAGE_EDIT_});
+            ctrlTool.projPermMulti(request, new String[]{AUTH_PROJECT_QUESTION_MANAGE_EDIT, PROJECT_ENGINEERING_QUESTION_MANAGE_EDIT});
         } catch (Exception e) {
             log.error(e.getMessage());
             log.error(e.getMessage());

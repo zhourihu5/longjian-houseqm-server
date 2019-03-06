@@ -376,10 +376,8 @@ public class HouseqmStaticService {
             if (comma.get(i).equals(areaId)) {
                 return true;
             }
-            if (areaMap.containsKey(comma.get(i))) {
-                if (areaMap.get(comma.get(i)).contains(String.valueOf(areaId))) {
+            if (areaMap.containsKey(comma.get(i))&&areaMap.get(comma.get(i)).contains(String.valueOf(areaId))) {
                     return true;
-                }
             }
         }
 

@@ -236,6 +236,7 @@ public class HouseqmIssueServiceImpl implements IHouseqmIssueService {
 
             if (!file.getParentFile().exists()) {
                 boolean mkdirs = file.getParentFile().mkdirs();
+                log.info("创建文件目录",mkdirs);
             }
 
             if (!file.exists()) {
