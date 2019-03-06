@@ -18,8 +18,8 @@ spring:
 logging:
   level:
     ROOT: WARN #INFO
-    com.longfor: INFO
-    com.longfor.longjian: debug
+    com.longfor: debug
+    com.longfor.longjian.houseqm.dao: debug
     graphql.GraphQL: debug
 
 management:
