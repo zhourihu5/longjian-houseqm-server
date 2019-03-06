@@ -212,13 +212,13 @@ public class HouseqmIssueServiceImpl implements IHouseqmIssueService {
     @Override
     public ExportFileRecord create(int userId, Integer teamId, Integer projectId, int exportType, Map<String, String> args, String exportName, Date executeAt) throws IOException {
         //生成随机数
-        long randCount = (long) (rand.nextDouble() * Long.MAX_VALUE);
+        long randCount = new Date().getTime();
         String baseDir = exportVo.getBase_dir();
         Integer ts = DateUtil.datetimeToTimeStamp(new Date());
         //String baseUri = exportVo.getBase_uri();
         String inputFilename = String.format("%d%d.%s", randCount, ts, "input");
         String outputFilename = String.format("/export/%d%d.%s", randCount, ts, "output");
-        String filepath = baseDir + inputFilename;
+        String filepath = baseDir+"/" + inputFilename;
         String data = JSON.toJSONString(args);
         this.writeInput(data, exportName, filepath);
         //记录导出的内容到数据库

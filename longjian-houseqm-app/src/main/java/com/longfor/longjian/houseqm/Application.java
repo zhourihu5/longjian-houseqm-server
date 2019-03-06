@@ -2,6 +2,7 @@ package com.longfor.longjian.houseqm;
 
 import com.longfor.gaia.gfs.web.feign.EnableLFFeignClients;
 import org.springframework.boot.SpringApplication;
+import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 /**

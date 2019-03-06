@@ -21,6 +21,7 @@ import io.swagger.models.auth.In;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -58,6 +59,7 @@ public class ReportIssueService {
     @Resource
     ScanMsgPushService scanMsgPushService;
     @Resource
+    @Autowired
     private KafkaProducer kafkaProducer;
     @Resource
     private IssueServiceImpl issueService;
@@ -628,10 +630,8 @@ public class ReportIssueService {
                 } else if (item.getStatus().equals(CheckTaskIssueLogStatus.AssignNoReform.getValue())) {
                     issue.setLastAssigner(item.getSender_id());
                     issue.setLastAssignAt(DateUtil.transForDate(item.getClient_create_at()));
-                } else if (item.getStatus().equals(CheckTaskIssueLogStatus.UpdateIssueInfo.getValue())) {
-                    if (StringUtils.isNotEmpty(item.getDesc())) {
-                        issue.setContent(String.format("%s; %s",issue.getContent() , item.getDesc()));
-                    }
+                } else if (item.getStatus().equals(CheckTaskIssueLogStatus.UpdateIssueInfo.getValue())&&StringUtils.isNotEmpty(item.getDesc())) {
+                    issue.setContent(String.format("%s; %s",issue.getContent() , item.getDesc()));
                 }
             }
             //  # 最后整改负责人
@@ -694,9 +694,6 @@ public class ReportIssueService {
             }
             Map<String, Object> map = JSON.parseObject(issue.getDetail(), Map.class);
             // # 编辑问题的detail字段
-          /*  if (!detailInfo.getCheck_item_md5().equals("") || !detailInfo.getCheck_item_md5().equals("-1")) {
-                map.put(CHECKkITEM_MD5, detailInfo.getCheck_item_md5());
-            }*/
             if (detailInfo.getIssue_reason() != -1 || detailInfo.getIssue_reason() != 0) {
                 map.put(ISSUEREASON, detailInfo.getIssue_reason());
             }
@@ -724,8 +721,8 @@ public class ReportIssueService {
         issue.setRepairerId(0);
         issue.setRepairerFollowerIds("");
         issue.setLastRepairer(0);
-        issue.setLastRepairerAt(DateUtil.strToDate(START_VALUE, "yyyy-MM-dd-HH-mm-ss"));
-        issue.setPlanEndOn(DateUtil.strToDate("1970-01-01 08:00:00 ","yyyy-MM-dd-HH-mm-ss"));//1970-01-01 08:00:00
+        issue.setLastRepairerAt(DateUtil.strToDate(START_VALUE, YMDHMS));
+        issue.setPlanEndOn(DateUtil.strToDate("1970-01-01 08:00:00 ",YMDHMS));//1970-01-01 08:00:00
         Integer newStatus = convertLogStatus(item.getStatus());
         if (newStatus > 0) {
             issue.setStatus(newStatus);
@@ -814,14 +811,9 @@ public class ReportIssueService {
             issue.setRepairerId(0);
             issue.setRepairerFollowerIds("");
             issue.setLastRepairer(0);
-            issue.setLastRepairerAt(DateUtil.strToDate("0001-01-01 00:00:00", "yyyy-MM-dd-HH-mm-ss"));
-            issue.setPlanEndOn(DateUtil.strToDate("1970-01-01 08:00:00 ","yyyy-MM-dd-HH-mm-ss"));
+            issue.setLastRepairerAt(DateUtil.strToDate(START_VALUE, YMDHMS));
+            issue.setPlanEndOn(DateUtil.strToDate("1970-01-01 08:00:00 ",YMDHMS));
         }
-       /* issue.setRepairerId(0);
-        issue.setRepairerFollowerIds("");
-        issue.setLastRepairer(0);
-        issue.setLastRepairerAt(DateUtil.strToDate("0001-01-01 00:00:00", "yyyy-MM-dd-HH-mm-ss"));
-        issue.setPlanEndOn(DateUtil.strToDate("1970-01-01 08:00:00 ","yyyy-MM-dd-HH-mm-ss"));*///1970-01-01 08:00:00
         List<ApiHouseQmCheckTaskIssueLogInfo.ApiHouseQmCheckTaskIssueLogDetailInfo> detail = item.getDetail();
         detail.forEach(detailInfo -> {
             if (!detailInfo.getCategory_key().equals("-1")) {
@@ -1210,8 +1202,8 @@ public class ReportIssueService {
 
     private Map createUsersMap(List<Integer> ids) {
         return  userService.selectByIds(ids);
-
     }
+
     private Map<String, Object> apiNotifyStat(Integer status, Integer repairerId, List<Integer> repairerFollowerId) {
         Map<String, Object> map = Maps.newHashMap();
         map.put(STATUS, status);
@@ -1222,7 +1214,6 @@ public class ReportIssueService {
 
     private boolean datetimeZero(Date deleteAt) {
         return deleteAt == null || new SimpleDateFormat(YMDHMS).format(deleteAt).equals(START_VALUE) || new SimpleDateFormat(YMDHMS).format(deleteAt).equals("") || DateUtil.datetimeToTimeStamp(deleteAt) <= DateUtil.datetimeToTimeStamp(new Date(0));
-
     }
 
     private List checkLogUuid(List<String> logUuids) {
