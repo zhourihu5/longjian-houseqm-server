@@ -123,7 +123,8 @@ public class HouseQmCheckTaskIssueServiceImpl implements HouseQmCheckTaskIssueSe
         criteria.andLessThanOrEqualTo(CLIENT_CREATE_AT, statEnd);
         if (CollectionUtils.isNotEmpty(typs)) criteria.andIn(TYPE, typs);
         if (CollectionUtils.isNotEmpty(status)) criteria.andIn(STATUS, status);
-        if (taskId > 0) {
+
+         if (taskId > 0) {
             criteria.andEqualTo(TASK_ID, taskId);
         } else {
             if (CollectionUtils.isNotEmpty(myTaskIds)) criteria.andIn(TASK_ID, myTaskIds);

@@ -108,15 +108,7 @@ public class ZipUtils {
                 File a = new File(oldResPath.get(m));
                 // 如果已经是具体文件，读取
                 if (a.isFile()) {
-                    try (FileInputStream input = new FileInputStream(a); FileOutputStream output = new FileOutputStream(newResPath + "/" + (a.getName()))) {
-                        byte[] b = new byte[1024 * 4];
-                        int len;
-                        while ((len = input.read(b)) != -1) {
-                            output.write(b, 0, len);
-                        }
-                    } catch (IOException e) {
-                        log.error(e.getMessage());
-                    }
+                    readFile(newResPath, a);
                 }
                 // 如果文件夹下还存在文件，遍历，直到得到具体的文件
                 else {
@@ -130,15 +122,7 @@ public class ZipUtils {
                         }
 
                         if (temp.isFile()) {
-                            try (FileInputStream input = new FileInputStream(temp); FileOutputStream output = new FileOutputStream(newResPath + "/" + (temp.getName()))) {
-                                byte[] b = new byte[1024 * 4];
-                                int len;
-                                while ((len = input.read(b)) != -1) {
-                                    output.write(b, 0, len);
-                                }
-                            } catch (Exception e) {
-                                log.error(e.getMessage());
-                            }
+                            readFile(newResPath, temp);
                         }
                         if (temp.isDirectory()) {
                             List<String> oldChildPath = new ArrayList<>();
@@ -152,6 +136,18 @@ public class ZipUtils {
             } catch (Exception e) {
                 log.error("copy all files failed", e);
             }
+        }
+    }
+
+    private static void readFile(String newResPath, File a) {
+        try (FileInputStream input = new FileInputStream(a); FileOutputStream output = new FileOutputStream(newResPath + "/" + (a.getName()))) {
+            byte[] b = new byte[1024 * 4];
+            int len;
+            while ((len = input.read(b)) != -1) {
+                output.write(b, 0, len);
+            }
+        } catch (IOException e) {
+            log.error(e.getMessage());
         }
     }
 

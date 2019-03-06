@@ -1007,8 +1007,9 @@ public class HouseQmCheckTaskIssueHelperVo {
                 return HouseQmCheckTaskIssueStatusEnum.CheckYes.getId();
             case Cancel:
                 return HouseQmCheckTaskIssueStatusEnum.Cancel.getId();
+                default:
+                      return 0;
         }
-        return 0;
     }
 
     //
