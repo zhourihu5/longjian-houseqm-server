@@ -19,7 +19,7 @@ logging:
   level:
     ROOT: WARN #INFO
     com.longfor: debug
-    com.longfor.longjian.houseqm: debug
+    com.longfor.longjian.houseqm.dao: debug
     graphql.GraphQL: debug
 
 management:
