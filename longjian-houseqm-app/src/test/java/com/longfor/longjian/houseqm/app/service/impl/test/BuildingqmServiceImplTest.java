@@ -4,6 +4,7 @@ import com.longfor.longjian.houseqm.app.req.TaskEditReq;
 import com.longfor.longjian.houseqm.app.req.TaskReq;
 import com.longfor.longjian.houseqm.app.service.impl.BuildingqmServiceImpl;
 import com.longfor.longjian.houseqm.util.DateUtil;
+import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -125,7 +126,7 @@ public class BuildingqmServiceImplTest {
         try{
             buildingqmServiceImpl.getIssueListLogByLastIdAndUpdataAt(1,DateUtil.datetimeToTimeStamp(new Date()),"1");
         }catch (Exception e){
-            //Assert.fail(e.getMessage());
+            Assert.fail(e.getMessage());
         }
     }
 

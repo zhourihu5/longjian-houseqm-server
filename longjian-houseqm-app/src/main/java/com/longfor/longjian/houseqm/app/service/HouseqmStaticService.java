@@ -160,7 +160,7 @@ public class HouseqmStaticService {
         return buildlist;
     }
 
-    private Map<Integer,IssueMinStatus> getIssueMinStatusMapByTaskIdAndAreaId(Integer taskId, Integer areaId, Boolean onlyIssue) {
+    public Map<Integer,IssueMinStatus> getIssueMinStatusMapByTaskIdAndAreaId(Integer taskId, Integer areaId, Boolean onlyIssue) {
         List<Integer> types = Lists.newArrayList();
         types.add(HouseQmCheckTaskIssueEnum.FindProblem.getId());
         types.add(HouseQmCheckTaskIssueEnum.Difficult.getId());
@@ -182,7 +182,7 @@ public class HouseqmStaticService {
     }
 
 
-    private List<Integer> splitToIdsComma(String ids, String sep) {
+    public List<Integer> splitToIdsComma(String ids, String sep) {
         List<Integer> list = Lists.newArrayList();
         ids = ids.trim();
         String[] str = ids.split(sep);
@@ -323,7 +323,7 @@ public class HouseqmStaticService {
         return paths;
     }
 
-    private List<Area> searchTargetAreaByTaskId(Integer prodectId, Integer taskId) {
+    public List<Area> searchTargetAreaByTaskId(Integer prodectId, Integer taskId) {
 
         //读取任务
         HouseQmCheckTask taskByProjTaskId = houseQmCheckTaskService.getHouseQmCheckTaskByProjTaskId(prodectId, taskId);
@@ -371,7 +371,7 @@ public class HouseqmStaticService {
         return Lists.newArrayList();
     }
 
-    private Boolean checkRootAreaIntersectAreas(HashMap<Integer, String> areaMap, Integer areaId, List<Integer> comma) {
+    public Boolean checkRootAreaIntersectAreas(HashMap<Integer, String> areaMap, Integer areaId, List<Integer> comma) {
         for (int i = 0; i < comma.size(); i++) {
             if (comma.get(i).equals(areaId)) {
                 return true;
