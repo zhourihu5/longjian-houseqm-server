@@ -23,7 +23,7 @@ public class HouseqmIssueServiceImplTest {
 
     @Resource
     private HouseqmIssueServiceImpl houseqmIssueServiceImpl;
-
+//LjBaseRuntimeException(errorCode=-1, errorMsg=删除问题失败)
     @Test
     @Transactional
     public void deleteHouseQmCheckTaskIssueByProjUuid() {
@@ -31,7 +31,7 @@ public class HouseqmIssueServiceImplTest {
             houseqmIssueServiceImpl.deleteHouseQmCheckTaskIssueByProjUuid(1,"a");
         }catch (Exception e){
             e.printStackTrace();
-            //Assert.fail(e.getMessage());
+            Assert.fail(e.getMessage());
         }
     }
 
@@ -78,7 +78,7 @@ public class HouseqmIssueServiceImplTest {
             hcti.setUpdateAt(new Date());
             houseqmIssueServiceImpl.updateBatchIssueApproveStatusByUuids(Arrays.asList("1","2","3"),1,1,1,"a","a,b,c");
         }catch (Exception e){
-            //Assert.fail(e.getMessage());
+            Assert.fail(e.getMessage());
         }
     }
 
@@ -88,7 +88,7 @@ public class HouseqmIssueServiceImplTest {
             houseqmIssueServiceImpl.updateBatchIssueRepairInfoByUuids(Arrays.asList("1","2","3"),1,1,1,"1,2,3,4",DateUtil.datetimeToTimeStamp(new Date()));
         }catch (Exception e){
             e.printStackTrace();
-            //Assert.fail(e.getMessage());
+            Assert.fail(e.getMessage());
         }
     }
 
