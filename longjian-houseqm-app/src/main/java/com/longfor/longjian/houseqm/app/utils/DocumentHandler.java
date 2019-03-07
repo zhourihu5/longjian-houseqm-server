@@ -25,6 +25,7 @@ public class DocumentHandler {
     private static final String UTF_8="utf-8";
     private static final  String TEMPLATES="/templates";
     private static final String ERROR="error:";
+    private static final String ISO= "ISO-8859-1";
 
     //构造函数生成实例并设置编码
     public DocumentHandler() {
@@ -104,7 +105,7 @@ public class DocumentHandler {
             if (resp != null) {
                 resp.setCharacterEncoding(UTF_8);
                 resp.setContentType("application/msword");
-                docName = new String(docName.getBytes(UTF_8), "ISO-8859-1");
+                docName = new String(docName.getBytes(UTF_8), ISO);
                 resp.setHeader("Content-disposition", "attachment;filename=" + docName + ".doc");
             }
             byte[] buffer = new byte[512];
@@ -117,10 +118,8 @@ public class DocumentHandler {
         } catch (IOException e) {
             log.error(e.getMessage());
         } finally {
-            if (outFile != null) {
-                if (outFile.delete()) {
+            if (outFile.delete()) {
                     log.info("文件删除成功");
-                }
             }
         }
 
@@ -141,7 +140,6 @@ public class DocumentHandler {
             data = new byte[in.available()];
             int readCount = in.read(data);
             log.info("getImageBase:read bytes-" + readCount);
-            in.close();
         } catch (IOException e) {
             log.error(e.getMessage());
         }
@@ -151,7 +149,6 @@ public class DocumentHandler {
 
     public static boolean exportWordBatch(HttpServletRequest request, HttpServletResponse response, List<Map<String, Object>> mapList, List<String> titleList, String ftlFile) {
         boolean status = false;
-        File file = null;
         File zipfile = null;
         File directory = null;
         InputStream fin = null;
@@ -177,7 +174,7 @@ public class DocumentHandler {
                 Map<String, Object> map=mapList.get(i);
                 String title=titleList.get(i);
                 // 调用工具类的createDoc方法在临时目录下生成Word文档
-                file = createDoc(map, freemarkerTemplate, directory.getPath() + "/" + title + ".doc");
+          createDoc(map, freemarkerTemplate, directory.getPath() + "/" + title + ".doc");
             }
             //压缩目录
             /*  String.format("%s%s", "ds",str.replace("_", ""))+*/

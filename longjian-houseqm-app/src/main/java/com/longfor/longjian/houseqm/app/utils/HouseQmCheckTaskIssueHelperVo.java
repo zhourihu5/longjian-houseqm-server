@@ -669,25 +669,31 @@ public class HouseQmCheckTaskIssueHelperVo {
             hcvo.setIssueId(issue.getId());
             hcvo.setExtraInfo("");
             switch (e) {
-                case AssignNoReform: {
-                    List<Integer> userIds = Lists.newArrayList();
-                    userIds.add(issue.getRepairerId());
-                    List<Integer> fids = StringSplitToListUtil.strToInts(issue.getRepairerFollowerIds(), ",");
-                    userIds.addAll(fids);
-                    hcvo.setDesUserIds(StringSplitToListUtil.dataToString(userIds, ","));
-                    houseQmCheckTaskNotifyRecordService.insertFull(hcvo);
+                case AssignNoReform:
+                    getAssignNoReform(issue, hcvo);
                     break;
-                }
-                case ReformNoCheck: {
-                    List<Integer> approveUserIds = cache.getResolveUserList(issue.getTaskId(), issue.getSenderId());
-                    hcvo.setDesUserIds(StringSplitToListUtil.dataToString(approveUserIds, ","));
-                    houseQmCheckTaskNotifyRecordService.insertFull(hcvo);
+                case ReformNoCheck:
+                    getReformNoCheck(cache, issue, hcvo);
                     break;
-                }
                 default:
                     break;
             }
         }
+    }
+
+    private void getAssignNoReform(HouseQmCheckTaskIssueVo issue, HouseqmCheckTaskNotifyRecordVo hcvo) {
+        List<Integer> userIds = Lists.newArrayList();
+        userIds.add(issue.getRepairerId());
+        List<Integer> fids = StringSplitToListUtil.strToInts(issue.getRepairerFollowerIds(), ",");
+        userIds.addAll(fids);
+        hcvo.setDesUserIds(StringSplitToListUtil.dataToString(userIds, ","));
+        houseQmCheckTaskNotifyRecordService.insertFull(hcvo);
+    }
+
+    private void getReformNoCheck(HouseqmSquadUserCache cache, HouseQmCheckTaskIssueVo issue, HouseqmCheckTaskNotifyRecordVo hcvo) {
+        List<Integer> approveUserIds = cache.getResolveUserList(issue.getTaskId(), issue.getSenderId());
+        hcvo.setDesUserIds(StringSplitToListUtil.dataToString(approveUserIds, ","));
+        houseQmCheckTaskNotifyRecordService.insertFull(hcvo);
     }
 
 
