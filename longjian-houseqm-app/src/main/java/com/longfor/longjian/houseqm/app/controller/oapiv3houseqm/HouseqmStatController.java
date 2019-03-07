@@ -52,6 +52,7 @@ import java.util.List;
 @Slf4j
 public class HouseqmStatController {
     private static final String SEE = "项目.移动验房.统计.查看";
+    private static final String GCJCSEE = "项目.工程检查.统计.查看";
     private static final String YMDHMS = "yyyy-MM-dd hh:mm:ss";
     private static final String YMD = "yyyy-MM-dd";
 
@@ -69,7 +70,7 @@ public class HouseqmStatController {
     public LjBaseResponse<StatCategoryStatRspVo> categoryStat(HttpServletRequest request, @Validated StatCategoryStatReq req) {
         LjBaseResponse<StatCategoryStatRspVo> response = new LjBaseResponse<>();
         try {
-            ctrlTool.projPermMulti(request, new String[]{SEE, SEE});
+            ctrlTool.projPermMulti(request, new String[]{SEE, GCJCSEE});
         } catch (Exception e) {
             log.error(e.getMessage());
             return CtrlToolUtils.errorReturn(response,e);
@@ -93,7 +94,7 @@ public class HouseqmStatController {
     public LjBaseResponse<StatInspectionSituationSearchRspVo> inspectionSituationSearch(HttpServletRequest request, @Validated StatInspectionSituationSearchReq req) {
         LjBaseResponse<StatInspectionSituationSearchRspVo> response = new LjBaseResponse<>();
         try {
-            ctrlTool.projPermMulti(request, new String[]{SEE, SEE});
+            ctrlTool.projPermMulti(request, new String[]{SEE, GCJCSEE});
         } catch (Exception e) {
             log.error(e.getMessage());
             return CtrlToolUtils.errorReturn(response,e);
@@ -160,7 +161,7 @@ public class HouseqmStatController {
     public LjBaseResponse<CheckerStatListVo> checkerStat(HttpServletRequest request, @Valid StatHouseqmCheckerStatReq req) {
         LjBaseResponse<CheckerStatListVo> response = new LjBaseResponse<>();
         try {
-            ctrlTool.projPermMulti(request, new String[]{SEE, SEE});
+            ctrlTool.projPermMulti(request, new String[]{SEE, GCJCSEE});
         } catch (Exception e) {
             log.error(e.getMessage());
             return CtrlToolUtils.errorReturn(response,e);
@@ -181,7 +182,7 @@ public class HouseqmStatController {
     public LjBaseResponse<ProjectDailyListVo> taskSituationDaily(HttpServletRequest request, @Valid StatTaskSituationDailyReq req) {
         LjBaseResponse<ProjectDailyListVo> response = new LjBaseResponse<>();
         try {
-            ctrlTool.projPermMulti(request, new String[]{SEE, SEE});
+            ctrlTool.projPermMulti(request, new String[]{SEE, GCJCSEE});
         } catch (Exception e) {
             log.error(e.getMessage());
             return CtrlToolUtils.errorReturn(response,e);
@@ -202,7 +203,7 @@ public class HouseqmStatController {
     public LjBaseResponse<ProjectOveralListVo> taskSituationOverall(HttpServletRequest request, @Valid StatTaskSituationOverallReq req) {
         LjBaseResponse<ProjectOveralListVo> response = new LjBaseResponse<>();
         try {
-            ctrlTool.projPermMulti(request, new String[]{SEE, SEE});
+            ctrlTool.projPermMulti(request, new String[]{SEE, GCJCSEE});
         } catch (Exception e) {
             log.error(e.getMessage());
             return CtrlToolUtils.errorReturn(response,e);
@@ -242,7 +243,7 @@ public class HouseqmStatController {
     public LjBaseResponse<TaskAreaListVo> taskAreaList(HttpServletRequest request, @Valid StatTaskAreaListReq req) {
         LjBaseResponse<TaskAreaListVo> response = new LjBaseResponse<>();
         try {
-            ctrlTool.projPermMulti(request, new String[]{SEE, SEE});
+            ctrlTool.projPermMulti(request, new String[]{SEE, GCJCSEE});
         } catch (Exception e) {
             log.error(e.getMessage());
             return CtrlToolUtils.errorReturn(response,e);
@@ -264,7 +265,7 @@ public class HouseqmStatController {
     public LjBaseResponse<AreaTaskListVo> areaSituationTaskList(HttpServletRequest request, @Valid StatAreaSituationTaskListReq req) {
         LjBaseResponse<AreaTaskListVo> response = new LjBaseResponse<>();
         try {
-            ctrlTool.projPermMulti(request, new String[]{SEE, SEE});
+            ctrlTool.projPermMulti(request, new String[]{SEE, GCJCSEE});
         } catch (Exception e) {
             log.error(e.getMessage());
             return CtrlToolUtils.errorReturn(response,e);
@@ -285,7 +286,7 @@ public class HouseqmStatController {
     public LjBaseResponse<TaskStatVo> taskDetail(HttpServletRequest request, @Valid StatTaskDetailReq req) {
         LjBaseResponse<TaskStatVo> response = new LjBaseResponse<>();
         try {
-            ctrlTool.projPermMulti(request, new String[]{SEE, SEE});
+            ctrlTool.projPermMulti(request, new String[]{SEE, GCJCSEE});
         } catch (Exception e) {
             log.error(e.getMessage());
             return CtrlToolUtils.errorReturn(response,e);
@@ -314,7 +315,7 @@ public class HouseqmStatController {
     public LjBaseResponse<StatTaskSituationRepairStatRsp> taskSituationRepairStat(HttpServletRequest request, @Valid StatTaskSituationRepairStatReq req) {
         LjBaseResponse<StatTaskSituationRepairStatRsp> response = new LjBaseResponse<>();
         try {
-            ctrlTool.projPermMulti(request, new String[]{SEE, SEE});
+            ctrlTool.projPermMulti(request, new String[]{SEE, GCJCSEE});
         } catch (Exception e) {
             log.error(e.getMessage());
             return CtrlToolUtils.errorReturn(response,e);
@@ -356,7 +357,7 @@ public class HouseqmStatController {
     public LjBaseResponse<StatTaskSituationMembersCheckerRspVo> taskSituationMembersChecker(HttpServletRequest request, @Valid StatTaskSituationMembersCheckerReq req) {
         LjBaseResponse<StatTaskSituationMembersCheckerRspVo> response = new LjBaseResponse<>();
         try {
-            ctrlTool.projPermMulti(request, new String[]{SEE, SEE});
+            ctrlTool.projPermMulti(request, new String[]{SEE, GCJCSEE});
             if ("".equals(req.getBegin_on())) {
                 req.setBegin_on("1970-01-01");
             }
@@ -383,7 +384,7 @@ public class HouseqmStatController {
     public LjBaseResponse<StatTaskSituationMembersRepairerRspVo> taskSituationMembersRepairer(HttpServletRequest request, @Valid StatTaskSituationMembersRepairerReq req) {
         LjBaseResponse<StatTaskSituationMembersRepairerRspVo> response = new LjBaseResponse<>();
         try {
-            ctrlTool.projPermMulti(request, new String[]{SEE, SEE});
+            ctrlTool.projPermMulti(request, new String[]{SEE, GCJCSEE});
             if ("".equals(req.getBegin_on())) {
                 req.setBegin_on("1970-01-01");
             }
@@ -409,7 +410,7 @@ public class HouseqmStatController {
     public LjBaseResponse<StatAreaSituationRspVo> areaSituation(HttpServletRequest request, @Valid StatAreaSituationReq req) {
         LjBaseResponse<StatAreaSituationRspVo> response = new LjBaseResponse<>();
         try {
-            ctrlTool.projPermMulti(request, new String[]{SEE, SEE});
+            ctrlTool.projPermMulti(request, new String[]{SEE, GCJCSEE});
         } catch (Exception e) {
             log.error(e.getMessage());
             return CtrlToolUtils.errorReturn(response,e);
