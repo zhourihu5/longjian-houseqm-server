@@ -123,18 +123,18 @@
             <version>1.7.1</version>
             <scope>test</scope>
         </dependency>-->
-     <!--   <dependency>
+        <dependency>
             <groupId>org.jacoco</groupId>
             <artifactId>jacoco-maven-plugin</artifactId>
             <version>0.7.8</version>
-        </dependency>-->
+        </dependency>
     </dependencies>
 
     <build>
         <finalName>${project.name}</finalName>
         <plugins>
 
-            <plugin>
+         <!--   <plugin>
                 <groupId>org.springframework.boot</groupId>
                 <artifactId>spring-boot-maven-plugin</artifactId>
                 <configuration>
@@ -148,9 +148,9 @@
                         </goals>
                     </execution>
                 </executions>
-            </plugin>
+            </plugin>-->
 
-          <!--  <plugin>
+            <plugin>
                 <groupId>org.jacoco</groupId>
                 <artifactId>jacoco-maven-plugin</artifactId>
                 <version>0.7.8</version>
@@ -220,7 +220,7 @@
                 <configuration>
                     <argLine>${surefireArgLine}</argLine>
                 </configuration>
-            </plugin>-->
+            </plugin>
         </plugins>
     </build>
 

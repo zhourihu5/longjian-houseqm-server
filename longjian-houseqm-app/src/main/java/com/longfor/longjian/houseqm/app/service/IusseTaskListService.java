@@ -240,7 +240,7 @@ public class IusseTaskListService {
         return apiMineMsg;
     }
 
-    private boolean datetimeZero(Date deleteAt) {
+    public boolean datetimeZero(Date deleteAt) {
         if (deleteAt == null) {
             return false;
         }
@@ -250,7 +250,7 @@ public class IusseTaskListService {
 
     }
 
-    private Map createTeamsMap(ArrayList<Integer> parentIds) {
+    public Map createTeamsMap(List<Integer> parentIds) {
         List<Team> teamlist = teamService.selectByTeamIdsNotDel(parentIds);
         HashMap<Integer, Team> parentDict = Maps.newHashMap();
         for (int i = 0; i < teamlist.size(); i++) {
