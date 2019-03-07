@@ -93,46 +93,50 @@ public class TaskListServiceImpl implements ITaskListService {
                     e = value;
                 }
             }
-            if (e != null) {
-                //处理详细统计数
-                switch (e) {
-                    //已记录未分配
-                    case NoteNoAssign:
-                        result.setIssueRecordedCount(res.getPosX());
-                        break;
-                    //已分配未整改
-                    case AssignNoReform:
-                        result.setIssueAssignedCount(res.getPosX());
-                        break;
-                    //已整改未验收
-                    case ReformNoCheck:
-                        result.setIssueRepairedCount(res.getPosX());
-                        break;
-                    //已验收
-                    case CheckYes:
-                        result.setIssueApprovededCount(res.getPosX());
-                        break;
-                    default:
-                        break;
-                }
-                //处理状态统计
-                switch (e) {
-                    case NoProblem:
-                        result.setRecordCount(result.getRecordCount() + res.getPosX());
-                        break;
-                    case NoteNoAssign:
-                    case AssignNoReform:
-                    case ReformNoCheck:
-                    case CheckYes:
-                        result.setIssueCount(result.getIssueCount() + res.getPosX());
-                        break;
-                    default:
-                        break;
-                }
-
-            }
+            handleStatistics(res, result, e);
         }
         return statMap;
+    }
+
+    private void handleStatistics(HouseQmCheckTaskIssue res, CheckTaskIssueTypeStatInfo result, HouseQmCheckTaskIssueStatusEnum e) {
+        if (e != null) {
+            //处理详细统计数
+            switch (e) {
+                //已记录未分配
+                case NoteNoAssign:
+                    result.setIssueRecordedCount(res.getPosX());
+                    break;
+                //已分配未整改
+                case AssignNoReform:
+                    result.setIssueAssignedCount(res.getPosX());
+                    break;
+                //已整改未验收
+                case ReformNoCheck:
+                    result.setIssueRepairedCount(res.getPosX());
+                    break;
+                //已验收
+                case CheckYes:
+                    result.setIssueApprovededCount(res.getPosX());
+                    break;
+                default:
+                    break;
+            }
+            //处理状态统计
+            switch (e) {
+                case NoProblem:
+                    result.setRecordCount(result.getRecordCount() + res.getPosX());
+                    break;
+                case NoteNoAssign:
+                case AssignNoReform:
+                case ReformNoCheck:
+                case CheckYes:
+                    result.setIssueCount(result.getIssueCount() + res.getPosX());
+                    break;
+                default:
+                    break;
+            }
+
+        }
     }
 
     /**
