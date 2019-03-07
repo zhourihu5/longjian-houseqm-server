@@ -43,7 +43,7 @@ public class HouseqmIssueServiceImpl implements IHouseqmIssueService {
     private ExportFileRecordService exportFileRecordService;
     @Resource
     private HouseQmCheckTaskIssueHelperVo helper;
-    private Random rand;
+    Random rand;
     private static final String STATUS="status";
     public HouseqmIssueServiceImpl() throws NoSuchAlgorithmException {
         rand = SecureRandom.getInstanceStrong();
@@ -64,7 +64,7 @@ public class HouseqmIssueServiceImpl implements IHouseqmIssueService {
         int eInt = -1;
         String eStr = "";
         List<HouseQmCheckTaskIssue> issues = houseQmCheckTaskIssueService.searchByProjIdAndUuidIn(projectId, uuids);
-        HouseQmCheckTaskIssueHelperVo helper = new HouseQmCheckTaskIssueHelperVo();
+
         helper.init(projectId);
         for (HouseQmCheckTaskIssue issue : issues) {
             String uuid = UUID.randomUUID().toString().replace("-", "");
@@ -225,18 +225,15 @@ public class HouseqmIssueServiceImpl implements IHouseqmIssueService {
                 resultFilePath, exportName, 0, "", executeAt);
     }
 
-    private void writeInput(String data, String exportName, String filepath) throws IOException {
-        FileOutputStream out = null;
-        OutputStreamWriter op = null;
-        try {
+    private void writeInput(String data, String exportName, String filepath) {
+        try (FileOutputStream out = new FileOutputStream(String.format("%s", filepath));
+             OutputStreamWriter op = new OutputStreamWriter(out, "utf-8")){
             log.info("erxportName :{}", exportName);
-            out = new FileOutputStream(String.format("%s", filepath));
-            op = new OutputStreamWriter(out, "utf-8");
             File file = new File(String.format("%s", filepath));
 
             if (!file.getParentFile().exists()) {
                 boolean mkdirs = file.getParentFile().mkdirs();
-                log.info("创建文件目录",mkdirs);
+                log.info("Mkdirs is {}",mkdirs);
             }
 
             if (!file.exists()) {
@@ -247,15 +244,7 @@ public class HouseqmIssueServiceImpl implements IHouseqmIssueService {
             op.flush();
         } catch (IOException e) {
             log.error("error:", e);
-        } finally {
-            if (op != null) {
-                op.close();
-            }
-            if (out != null) {
-                out.close();
-            }
         }
-
     }
 
     @Override

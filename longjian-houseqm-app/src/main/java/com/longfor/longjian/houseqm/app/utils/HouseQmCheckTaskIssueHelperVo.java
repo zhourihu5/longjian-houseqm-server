@@ -160,7 +160,7 @@ public class HouseQmCheckTaskIssueHelperVo {
         //将log加入到insert列表中
         this.issueLogs.add(this.currentLog);
         String issueUuid = this.currentLog.getIssueUuid();
-        HouseQmCheckTaskIssueVo issue = new HouseQmCheckTaskIssueVo();
+        HouseQmCheckTaskIssueVo issue;
         boolean inNew = false;
         boolean inOld = false;
         boolean inUpdate = false;
@@ -423,7 +423,6 @@ public class HouseQmCheckTaskIssueHelperVo {
             houseQmCheckTaskIssueLogService.deleteIssueLogByUuids(needDeleteIssueLog);
         }
 
-        // TODO uuid or id go源码写的todo 不太明白 ?
         // needDeleteIssueLog转换为map 用于查询
         Map<String, Boolean> needDeleteIssueLogSet = Maps.newHashMap();
         for (String uuid : needDeleteIssueLog) {
@@ -1055,18 +1054,8 @@ public class HouseQmCheckTaskIssueHelperVo {
         taskIssueVo.setAttachmentMd5List(issue.getAttachmentMd5List());
         taskIssueVo.setAudioMd5List(issue.getAudioMd5List());
         String detailstr = issue.getDetail();
-        //{"IssueReason":0,"IssueReasonDetail":"","IssueSuggest":"","PotentialRisk":"","PreventiveActionDetail":""}
-        /*HouseQmCheckTaskIssueDetail detail = new HouseQmCheckTaskIssueDetail();
-        Map<String, Object> map = JsonUtil.GsonToMaps(detailstr);
-        detail.setIssueReason((Integer) map.get("IssueReason"));
-        detail.setIssueReasonDetail((String) map.get("IssueReasonDetail"));
-        detail.setIssueSuggest((String) map.get("IssueSuggest"));
-        detail.setPotentialRisk((String) map.get("PotentialRisk"));
-        detail.setPreventiveActionDetail((String) map.get("PreventiveActionDetail"));*/
         HouseQmCheckTaskIssueDetail detail = JSON.parseObject(detailstr, HouseQmCheckTaskIssueDetail.class);
-
         taskIssueVo.setDetail(detail);
-
 
         return taskIssueVo;
     }
