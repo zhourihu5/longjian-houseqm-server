@@ -148,6 +148,11 @@ public class AreaServiceImpl implements AreaService {
         List<String> pathB = getUnionPaths(pathsB);
 
         // 遍历比较，发现一个包含另一个直接跳过
+        checkPath(result, pathA, pathB);
+        return new ArrayList<>(new HashSet<>(result));
+    }
+
+    private void checkPath(List<Integer> result, List<String> pathA, List<String> pathB) {
         for (String pA : pathA) {
             for (String pB : pathB) {
                 if (pA.startsWith(pB)) {
@@ -161,7 +166,6 @@ public class AreaServiceImpl implements AreaService {
                 }
             }
         }
-        return new ArrayList<>(new HashSet<>(result));
     }
 
     @LFAssignDataSource("zhijian2")

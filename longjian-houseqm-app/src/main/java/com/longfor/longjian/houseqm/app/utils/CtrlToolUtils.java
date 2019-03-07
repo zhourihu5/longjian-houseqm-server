@@ -5,7 +5,7 @@ import com.longfor.longjian.common.base.LjBaseResponse;
 
 public class CtrlToolUtils {
 
-    public CtrlToolUtils() {
+    private CtrlToolUtils() {
         throw new IllegalStateException("Utility class");
     }
 
