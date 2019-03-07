@@ -51,17 +51,23 @@ public class StringSplitToListUtil {
      * @return
      */
     public static List<Integer> splitToIdsComma(String ids, String sep) {
-        List<Integer> list = Lists.newArrayList();
-        ids = ids.trim();
-        String[] str = ids.split(sep);
-        List<String> areaList = Arrays.asList(str);
-        for (String s : areaList) {
-            if (s.equals("")) {
-                continue;
+        try {
+            List<Integer> list = Lists.newArrayList();
+            ids = ids.trim();
+            String[] str = ids.split(sep);
+            List<String> areaList = Arrays.asList(str);
+            for (String s : areaList) {
+                if (s.equals("")) {
+                    continue;
+                }
+                s.trim();
+                list.add(Integer.valueOf(s));
             }
-            list.add(Integer.valueOf(s));
+            return list;
+        } catch (NumberFormatException e) {
+            e.printStackTrace();
+            return null;
         }
-        return list;
     }
 
     /**

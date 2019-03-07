@@ -22,7 +22,6 @@ import com.longfor.longjian.houseqm.po.zj2db.HouseQmCheckTask;
 import com.longfor.longjian.houseqm.po.zj2db.HouseQmCheckTaskIssue;
 import com.longfor.longjian.houseqm.po.zj2db.RepossessionStatus;
 import com.longfor.longjian.houseqm.util.DateUtil;
-import com.longfor.longjian.houseqm.util.StringSplitToListUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang.StringUtils;
@@ -737,7 +736,7 @@ public class HouseqmStatServiceImpl implements IHouseqmStatService {
         List<AreaTaskListVo.AreaTaskVo> list = Lists.newArrayList();
         for (HouseQmCheckTask item : tasks) {
             AreaTaskListVo.AreaTaskVo areaTaskVo = areaTaskListVo.new AreaTaskVo();
-            List<Integer> areaList = StringSplitToListUtil.splitToIdsComma(item.getAreaIds(), ",");
+            List<Integer> areaList = StringUtil.strToInts(item.getAreaIds(), ",");
             if (checkRootAreaIntersectAreas(areaMap, areaId, areaList)) {
                 areaTaskVo.setId(item.getTaskId());
                 areaTaskVo.setName(item.getName());

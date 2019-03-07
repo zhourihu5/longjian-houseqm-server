@@ -64,7 +64,7 @@ public class AreaServiceImpl implements AreaService {
         List<Integer> areaIds2 = Lists.newArrayList();
         for (Area item : fAreas) {
             if (item.getPath().startsWith("/")) {
-                List<String> paths = StringSplitToListUtil.splitToStringComma(item.getPath(), "/");
+                List<String> paths = StringUtil.strToStrs(item.getPath(), "/");
                 for (String path : paths) {
                     if (path.length() <= 0) {
                         continue;

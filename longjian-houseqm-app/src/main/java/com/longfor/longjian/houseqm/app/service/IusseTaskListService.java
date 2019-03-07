@@ -60,7 +60,7 @@ public class IusseTaskListService {
     }
 
     public List<ApiStatHouseqmMeterSettingMsgVo> getAcceptanceitemsSetting(String projectIds, Integer timestamp) {
-        List<Integer> projectIdList = StringSplitToListUtil.splitToIdsComma(projectIds, ",");
+        List<Integer> projectIdList = StringUtil.strToInts(projectIds, ",");
         List<ApiStatHouseqmMeterSettingMsgVo> acceptanceItems = Lists.newArrayList();
         for (int i = 0; i < projectIdList.size(); i++) {
             List<RepossessionMeterSetting> itemlist = repossessionMeterSettingService.selectByProjectId(projectIdList.get(i));
@@ -123,7 +123,7 @@ public class IusseTaskListService {
     public ApiMineMsg teamsAndProjects(Integer uid, String categorys) {
         ArrayList<ApiMineMsg.ApiMineTeamsMsg> teams = Lists.newArrayList();
         ArrayList<ApiMineMsg.ApiMineProjectsMsg> projects = Lists.newArrayList();
-        List<Integer> categorylist = StringSplitToListUtil.splitToIdsComma(categorys, ",");
+        List<Integer> categorylist = StringUtil.strToInts(categorys, ",");
         if (CollectionUtils.isEmpty(categorylist)) {
             log.info("categorysis empty, categorys=%" + categorys + "");
             throw new LjBaseRuntimeException(117, "任务类型错误");
@@ -217,7 +217,7 @@ public class IusseTaskListService {
             if (!objects.contains(item.getTeamId())) {
                 objects.add(item.getTeamId());
             }
-            List<Integer> idsComma = StringSplitToListUtil.splitToIdsComma(item.getPath(), "/");
+            List<Integer> idsComma = StringUtil.strToInts(item.getPath(), "/");
             idsComma.forEach(items -> {
                 if (!objects.contains(items)) {
                     objects.add(items);
