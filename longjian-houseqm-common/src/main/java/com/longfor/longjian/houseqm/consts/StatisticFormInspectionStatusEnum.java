@@ -29,7 +29,7 @@ public enum StatisticFormInspectionStatusEnum {
         for (StatisticFormInspectionStatusEnum value : values) {
             if (value.getId().equals(id)) return value.getValue();
         }
-        return null;
+        return StatisticFormInspectionStatusEnum.getName(1);
     }
 
     public Integer getId() {

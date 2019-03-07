@@ -115,7 +115,7 @@ public class HouseqmStatServiceImpl implements IHouseqmStatService {
     @Override
     public List<Integer> searchRepossessInspectionAreaIdsByConditions(Integer projectId, Integer taskId, Integer areaId, Integer status, Integer issueStatus, Date startTime, Date endTime) {
         //取出该任务下的所有户path
-        List<String> areaPaths = null;
+        List<String> areaPaths ;
         HouseQmCheckTask task = houseQmCheckTaskService.getHouseQmCheckTaskByProjTaskId(projectId, taskId);
         List<Integer> aids = StringUtil.strToInts(task.getAreaIds(), ",");
         List<Integer> types = StringUtil.strToInts(task.getAreaTypes(), ",");
@@ -125,9 +125,9 @@ public class HouseqmStatServiceImpl implements IHouseqmStatService {
             taskAreaPaths.add(String.format(PATH_AND_ID_REPEX, area.getPath(), area.getId()));
         }
 
-        //取出对应状态条件path
+        //筛选 户状态 取出对应状态条件path
         if (!status.equals(StatisticFormRepossessionStatusEnum.All.getId())) {
-            if (status.equals(StatisticFormRepossessionStatusEnum.None.getId())) {//未检查
+            if (status.equals(StatisticFormRepossessionStatusEnum.None.getId())) {//户状态 未检查
                 List<String> checkedAreaPaths = getRepossessAreaPathListByTaskIdAndStatusesAndClientUpdateAt(taskId, Collections.singletonList(StatisticFormRepossessionStatusEnum.None.getId()), startTime, endTime);
                 //求差集
                 taskAreaPaths.removeAll(checkedAreaPaths);
@@ -140,11 +140,11 @@ public class HouseqmStatServiceImpl implements IHouseqmStatService {
         }
         // 筛选问题状态
         // 区分是否存在问题
-        if (issueStatus.equals(StatisticFormInspectionIssueStatusEnum.HasIssue.getId())) {
+        if (issueStatus.equals(StatisticFormInspectionIssueStatusEnum.HasIssue.getId())) {// 有问题
             List<String> checkedAreaPaths = houseqmStaticService.getHasIssueTaskCheckedAreaPathListByTaskId(taskId, true, null, areaId);
             //求交集 源码求交集
             areaPaths.retainAll(checkedAreaPaths);
-        } else if (issueStatus.equals(StatisticFormInspectionIssueStatusEnum.NoProblem.getId())) {
+        } else if (issueStatus.equals(StatisticFormInspectionIssueStatusEnum.NoProblem.getId())) {//无问题
             // 不存在问题的包括了那些未检查，就是 所有-已查验存在问题的
             List<String> checkedAreaPaths = houseqmStaticService.getHasIssueTaskCheckedAreaPathListByTaskId(taskId, true, null, areaId);
             // 取差集
@@ -173,7 +173,7 @@ public class HouseqmStatServiceImpl implements IHouseqmStatService {
     }
 
     //通过任务id和需要的验房状态（已经收楼）以及收楼时间获取对应的area_path_and_id
-    //通过任务id和需要的验房状态获取对应的area_path_and_id
+    //通过任务id和需要的验房状态获取对应的area_path_and_id // RepossessionStatus 库中无数据 导致筛选条件无意义
     public List<String> getRepossessAreaPathListByTaskIdAndStatusesAndClientUpdateAt(int taskId, List<Integer> repossStatuses, Date startTime, Date endTime) {
 
         List<RepossessionStatus> reposs = repossessionStatusService.searchByTaskIdAndStatusInAndStatusClientUpdateAt(taskId, repossStatuses, startTime, endTime);
@@ -209,7 +209,7 @@ public class HouseqmStatServiceImpl implements IHouseqmStatService {
             item.setIssueCount(0);
             //补全问题信息
             List<HouseQmCheckTaskIssue> issues = issuesMap.get(aid);
-            if (CollectionUtils.isNotEmpty(issues)) {
+            if (issuesMap.containsKey(aid)) {
                 item.setStatus(StatisticFormInspectionStatusEnum.Checked.getId());
                 for (HouseQmCheckTaskIssue issue : issues) {
                     HouseQmCheckTaskIssueStatusEnum e = null;
@@ -271,7 +271,7 @@ public class HouseqmStatServiceImpl implements IHouseqmStatService {
             areaMap.put(pAId, a);
             areaPaths.add(pAId);
         }
-        Map<String, HouseQmCheckTaskIssue> issueMap = Maps.newHashMap();
+        Map<String, HouseQmCheckTaskIssue> issueMap = new IdentityHashMap<>();
         List<String> issuePaths = Lists.newArrayList();
         for (HouseQmCheckTaskIssue issue : issues) {
             issueMap.put(issue.getAreaPathAndId(), issue);

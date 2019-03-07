@@ -799,8 +799,7 @@
     </select>
     <select id="selectByTaskIdAreaPathAndIdAndStatusIn"
             resultMap="houseQmCheckTaskIssueAreaGroupModel" parameterType="java.util.Map">
-        SELECT LEFT(area_path_and_id,LENGTH(area_path_and_id)-LENGTH(area_id)-1) AS area_path,
-        Max(status) AS extend_col
+        SELECT LEFT(area_path_and_id,LENGTH(area_path_and_id)-LENGTH(area_id)-1) AS area_path,MAX(status) AS extend_col
         FROM house_qm_check_task_issue
         WHERE task_id=#{taskId}
         <if test="types!=null">
