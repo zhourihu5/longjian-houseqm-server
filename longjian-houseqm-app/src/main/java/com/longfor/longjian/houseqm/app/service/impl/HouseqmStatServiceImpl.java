@@ -119,13 +119,13 @@ public class HouseqmStatServiceImpl implements IHouseqmStatService {
         HouseQmCheckTask task = houseQmCheckTaskService.getHouseQmCheckTaskByProjTaskId(projectId, taskId);
         List<Integer> aids = StringUtil.strToInts(task.getAreaIds(), ",");
         List<Integer> types = StringUtil.strToInts(task.getAreaTypes(), ",");
-        List<Area> areas = areaService.searchAreaListByRootIdAndTypes(projectId, aids, types);
+        List<Area> areas = areaService.searchAreaListByRootIdAndTypes(projectId, aids, types);// 获取对应项目 区域下的楼栋 层 户
         List<String> taskAreaPaths = Lists.newArrayList();
         for (Area area : areas) {
             taskAreaPaths.add(String.format(PATH_AND_ID_REPEX, area.getPath(), area.getId()));
         }
 
-        //筛选 户状态 取出对应状态条件path
+        //筛选 户状态 取出对应状态条件path 库表 repossession_status 库中无数据 导致筛选条件无意义
         if (!status.equals(StatisticFormRepossessionStatusEnum.All.getId())) {
             if (status.equals(StatisticFormRepossessionStatusEnum.None.getId())) {//户状态 未检查
                 List<String> checkedAreaPaths = getRepossessAreaPathListByTaskIdAndStatusesAndClientUpdateAt(taskId, Collections.singletonList(StatisticFormRepossessionStatusEnum.None.getId()), startTime, endTime);
