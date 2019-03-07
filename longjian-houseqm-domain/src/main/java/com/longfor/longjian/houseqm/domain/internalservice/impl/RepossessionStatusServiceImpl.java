@@ -1,6 +1,7 @@
 package com.longfor.longjian.houseqm.domain.internalservice.impl;
 
 import com.longfor.gaia.gfs.data.mybatis.datasource.LFAssignDataSource;
+import com.longfor.longjian.common.util.DateUtil;
 import com.longfor.longjian.houseqm.dao.zj2db.RepossessionStatusMapper;
 import com.longfor.longjian.houseqm.domain.internalservice.RepossessionStatusService;
 import com.longfor.longjian.houseqm.dto.RepossessionStatusCompleteDailyCountDto;
@@ -60,10 +61,11 @@ public class RepossessionStatusServiceImpl implements RepossessionStatusService 
         Example.Criteria criteria = example.createCriteria();
         criteria.andEqualTo("taskId", taskId);
         if (CollectionUtils.isNotEmpty(repossStatuses)) criteria.andIn("status", repossStatuses);
-        if (!(startTime.getSeconds() == 0 && startTime.getTime() == 0)) {
+
+        if (!(DateUtil.datetimeZero(startTime))) {
             criteria.andGreaterThanOrEqualTo("statusClientUpdateAt", startTime);
         }
-        if (!(endTime.getSeconds() == 0 && endTime.getTime() == 0)) {
+        if (!(DateUtil.datetimeZero(endTime))) {
             criteria.andLessThanOrEqualTo("statusClientUpdateAt", endTime);
         }
         ExampleUtil.addDeleteAtJudge(example);

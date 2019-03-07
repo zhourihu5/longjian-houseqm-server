@@ -92,7 +92,8 @@ public class BuildingqmServiceImplTest {
             Assert.fail(e.getMessage());
         }
     }
-
+//java.lang.AssertionError:
+//### Error querying database.  Cause: com.mysql.jdbc.exceptions.jdbc4.MySQLSyntaxErrorException: Table 'zhijian2.push_strategy_assign_time' doesn't exist
     @Test
     @Transactional
     public void edit() {
@@ -117,16 +118,16 @@ public class BuildingqmServiceImplTest {
             buildingqmServiceImpl.edit(9,req);
         }catch (Exception e){
             e.printStackTrace();
-            //Assert.fail(e.getMessage());
+            Assert.fail(e.getMessage());
         }
     }
-
+//java.lang.AssertionError: 没找到此问题
     @Test
     public void getIssueListLogByLastIdAndUpdataAt() {
         try{
             buildingqmServiceImpl.getIssueListLogByLastIdAndUpdataAt(1,DateUtil.datetimeToTimeStamp(new Date()),"1");
         }catch (Exception e){
-            //Assert.fail(e.getMessage());
+            Assert.fail(e.getMessage());
         }
     }
 

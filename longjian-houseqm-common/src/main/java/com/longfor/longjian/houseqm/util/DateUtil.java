@@ -170,13 +170,11 @@ public class DateUtil {
         long msl = (long) ms * 1000;
         SimpleDateFormat sdf = new SimpleDateFormat(YMDHMS);
         Date temp = null;
-        if (ms != null) {
-            try {
-                String str = sdf.format(msl);
-                temp = sdf.parse(str);
-            } catch (ParseException e) {
-                logger.error(ERROR, e.getMessage());
-            }
+        try {
+            String str = sdf.format(msl);
+            temp = sdf.parse(str);
+        } catch (ParseException e) {
+            logger.error(ERROR, e.getMessage());
         }
         return temp;
     }

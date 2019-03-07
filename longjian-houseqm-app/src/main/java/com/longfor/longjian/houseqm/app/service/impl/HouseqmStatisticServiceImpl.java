@@ -149,13 +149,13 @@ public class HouseqmStatisticServiceImpl implements IHouseqmStatisticService {
         List<Integer> status = Lists.newArrayList(HouseQmCheckTaskIssueStatusEnum.AssignNoReform.getId(), HouseQmCheckTaskIssueStatusEnum.ReformNoCheck.getId(), HouseQmCheckTaskIssueStatusEnum.CheckYes.getId());
 
         Map<String, Object> paramMap = Maps.newHashMap();
-        paramMap.put("projectId",projectId);
+        paramMap.put(PROJECT_ID,projectId);
         paramMap.put("categoryClsList",categoryClsList);
         paramMap.put("statBeginInt",statBeginInt);
         paramMap.put("statEndStr",statEndStr);
         paramMap.put("typs",typs);
-        paramMap.put("status",status);
-        paramMap.put("taskId",taskId);
+        paramMap.put(STATUS,status);
+        paramMap.put(TASK_ID,taskId);
 
         List<HouseQmCheckTaskIssue> issueList = houseQmCheckTaskIssueService.searchByProjIdAndCategoryClsInAndRepairerIdAndClientCreateAtAndTypInAndStatusInAndTaskIdOrderByClientCreateAt(paramMap, myTaskIds);
 
