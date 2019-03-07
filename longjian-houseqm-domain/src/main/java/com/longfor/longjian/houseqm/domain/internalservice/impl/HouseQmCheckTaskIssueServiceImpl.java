@@ -127,6 +127,10 @@ public class HouseQmCheckTaskIssueServiceImpl implements HouseQmCheckTaskIssueSe
         if (CollectionUtils.isNotEmpty(typs)) criteria.andIn(TYPE, typs);
         if (CollectionUtils.isNotEmpty(status)) criteria.andIn(STATUS, status);
         Integer taskId = (Integer) paramMap.get("taskId");
+        return getHouseQmCheckTaskIssues(myTaskIds, example, criteria, taskId);
+    }
+
+    private List<HouseQmCheckTaskIssue> getHouseQmCheckTaskIssues(List<Integer> myTaskIds, Example example, Example.Criteria criteria, Integer taskId) {
         if (taskId > 0) {
             criteria.andEqualTo(TASK_ID, taskId);
         } else {
@@ -148,14 +152,7 @@ public class HouseQmCheckTaskIssueServiceImpl implements HouseQmCheckTaskIssueSe
         criteria.andGreaterThanOrEqualTo(CLIENT_CREATE_AT, statBegin);
         criteria.andLessThanOrEqualTo(CLIENT_CREATE_AT, statEnd);
         if (CollectionUtils.isNotEmpty(typs)) criteria.andIn(TYPE, typs);
-        if (taskId > 0) {
-            criteria.andEqualTo(TASK_ID, taskId);
-        } else {
-            if (CollectionUtils.isNotEmpty(myTaskIds)) criteria.andIn(TASK_ID, myTaskIds);
-        }
-        example.orderBy(CLIENT_CREATE_AT).desc();
-        ExampleUtil.addDeleteAtJudge(example);
-        return houseQmCheckTaskIssueMapper.selectByExample(example);
+        return getHouseQmCheckTaskIssues(myTaskIds, example, criteria, taskId);
     }
 
     @Override
@@ -360,7 +357,6 @@ public class HouseQmCheckTaskIssueServiceImpl implements HouseQmCheckTaskIssueSe
     public List<HouseQmCheckTaskIssueAttachment> searchHouseQmCheckTaskIssueAttachmentByMyIdTaskIdLastIdUpdateAtGt(Integer userId, Map<String, Object> paramMap, Integer start, Integer limit, Integer privateInt, Integer publicInt) {
         try {
             Integer taskId = (Integer) paramMap.get("taskId");
-            Integer lastId = (Integer) paramMap.get("lastId");
             Integer timestamp = (Integer) paramMap.get("timestamp");
             //A找出与自己同组的人
             ////找到任务中，用户所在的所有组
@@ -439,11 +435,7 @@ public class HouseQmCheckTaskIssueServiceImpl implements HouseQmCheckTaskIssueSe
         Example example = new Example(HouseQmCheckTaskIssue.class);
         Example.Criteria criteria = example.createCriteria();
         criteria.andEqualTo(PROJECT_ID, projectId).andIn(CATEGORY_CLS, categoryClsList);
-        if (taskId != null && taskId > 0) criteria.andEqualTo(TASK_ID, taskId);
-        if (areaId != null && areaId > 0) criteria.andLike(AREA_PATH_AND_ID, "%/" + areaId + "/%");
-        if (beginOn != null && beginOn.getTime() / 1000 > 0)
-            criteria.andGreaterThanOrEqualTo(CLIENT_CREATE_AT, beginOn);
-        if (endOn != null && endOn.getTime() / 1000 > 0) criteria.andGreaterThanOrEqualTo(CLIENT_CREATE_AT, endOn);
+        judgeValue(taskId, areaId, beginOn, endOn, criteria);
         ArrayList<Integer> typs = Lists.newArrayList();
         typs.add(HouseQmCheckTaskIssueEnum.FindProblem.getId());
         typs.add(HouseQmCheckTaskIssueEnum.Difficult.getId());
@@ -497,6 +489,14 @@ public class HouseQmCheckTaskIssueServiceImpl implements HouseQmCheckTaskIssueSe
         houseQmCheckTaskIssueListVo.setTotal(total);
         houseQmCheckTaskIssueListVo.setHouseQmCheckTaskIssues(houseQmCheckTaskIssues);
         return houseQmCheckTaskIssueListVo;
+    }
+
+    private void judgeValue(Integer taskId, Integer areaId, Date beginOn, Date endOn, Example.Criteria criteria) {
+        if (taskId != null && taskId > 0) criteria.andEqualTo(TASK_ID, taskId);
+        if (areaId != null && areaId > 0) criteria.andLike(AREA_PATH_AND_ID, "%/" + areaId + "/%");
+        if (beginOn != null && beginOn.getTime() / 1000 > 0)
+            criteria.andGreaterThanOrEqualTo(CLIENT_CREATE_AT, beginOn);
+        if (endOn != null && endOn.getTime() / 1000 > 0) criteria.andGreaterThanOrEqualTo(CLIENT_CREATE_AT, endOn);
     }
 
     @Override

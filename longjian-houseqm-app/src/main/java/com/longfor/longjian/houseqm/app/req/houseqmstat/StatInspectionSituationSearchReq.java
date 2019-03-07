@@ -32,8 +32,8 @@ public class StatInspectionSituationSearchReq implements Serializable {
     @NotNull
     private Integer task_id;
     private Integer area_id = 0;
-    private Integer issue_status = 0;
-    private Integer status = 0;
+    private Integer issue_status = 0;// 问题状态
+    private Integer status = 0;// 户状态
     private String start_time = "";
     private String end_time = "";
     @NotNull

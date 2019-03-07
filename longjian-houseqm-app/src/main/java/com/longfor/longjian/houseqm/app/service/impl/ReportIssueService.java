@@ -23,6 +23,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.Resource;
 import java.text.SimpleDateFormat;
@@ -74,6 +75,7 @@ public class ReportIssueService {
     private static final String STATUS  ="status";
     private static final String   START_VALUE="0001-01-01 00:00:00";
 
+    @Transactional
     public ReportIssueVo reportIssue(Integer uid, Integer projectId, String data) {
         ArrayList<ReportIssueVo.ApiHouseQmCheckTaskReportMsg> dropped = Lists.newArrayList();
         UnmarshReportIssueRequestBody issueRequestBody = unmarshReportIssueRequest(data);
