@@ -94,7 +94,7 @@ public class HouseqmStatController {
     public LjBaseResponse<StatInspectionSituationSearchRspVo> inspectionSituationSearch(HttpServletRequest request, @Validated StatInspectionSituationSearchReq req) {
         LjBaseResponse<StatInspectionSituationSearchRspVo> response = new LjBaseResponse<>();
         try {
-            //ctrlTool.projPermMulti(request, new String[]{SEE, GCJCSEE});
+            ctrlTool.projPermMulti(request, new String[]{SEE, GCJCSEE});
         } catch (Exception e) {
             log.error(e.getMessage());
             return CtrlToolUtils.errorReturn(response,e);
