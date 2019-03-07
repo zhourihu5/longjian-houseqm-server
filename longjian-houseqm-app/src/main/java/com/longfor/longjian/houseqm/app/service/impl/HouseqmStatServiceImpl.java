@@ -22,7 +22,6 @@ import com.longfor.longjian.houseqm.po.zj2db.HouseQmCheckTask;
 import com.longfor.longjian.houseqm.po.zj2db.HouseQmCheckTaskIssue;
 import com.longfor.longjian.houseqm.po.zj2db.RepossessionStatus;
 import com.longfor.longjian.houseqm.util.DateUtil;
-import com.longfor.longjian.houseqm.util.StringSplitToListUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang.StringUtils;
@@ -119,13 +118,13 @@ public class HouseqmStatServiceImpl implements IHouseqmStatService {
         HouseQmCheckTask task = houseQmCheckTaskService.getHouseQmCheckTaskByProjTaskId(projectId, taskId);
         List<Integer> aids = StringUtil.strToInts(task.getAreaIds(), ",");
         List<Integer> types = StringUtil.strToInts(task.getAreaTypes(), ",");
-        List<Area> areas = areaService.searchAreaListByRootIdAndTypes(projectId, aids, types);
+        List<Area> areas = areaService.searchAreaListByRootIdAndTypes(projectId, aids, types);// 获取对应项目 区域下的楼栋 层 户
         List<String> taskAreaPaths = Lists.newArrayList();
         for (Area area : areas) {
             taskAreaPaths.add(String.format(PATH_AND_ID_REPEX, area.getPath(), area.getId()));
         }
 
-        //筛选 户状态 取出对应状态条件path
+        //筛选 户状态 取出对应状态条件path 库表 repossession_status 库中无数据 导致筛选条件无意义
         if (!status.equals(StatisticFormRepossessionStatusEnum.All.getId())) {
             if (status.equals(StatisticFormRepossessionStatusEnum.None.getId())) {//户状态 未检查
                 List<String> checkedAreaPaths = getRepossessAreaPathListByTaskIdAndStatusesAndClientUpdateAt(taskId, Collections.singletonList(StatisticFormRepossessionStatusEnum.None.getId()), startTime, endTime);
@@ -737,7 +736,7 @@ public class HouseqmStatServiceImpl implements IHouseqmStatService {
         List<AreaTaskListVo.AreaTaskVo> list = Lists.newArrayList();
         for (HouseQmCheckTask item : tasks) {
             AreaTaskListVo.AreaTaskVo areaTaskVo = areaTaskListVo.new AreaTaskVo();
-            List<Integer> areaList = StringSplitToListUtil.splitToIdsComma(item.getAreaIds(), ",");
+            List<Integer> areaList = StringUtil.strToInts(item.getAreaIds(), ",");
             if (checkRootAreaIntersectAreas(areaMap, areaId, areaList)) {
                 areaTaskVo.setId(item.getTaskId());
                 areaTaskVo.setName(item.getName());

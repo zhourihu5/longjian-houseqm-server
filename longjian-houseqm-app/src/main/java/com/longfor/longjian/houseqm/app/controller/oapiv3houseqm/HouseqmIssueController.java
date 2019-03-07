@@ -269,7 +269,7 @@ public class HouseqmIssueController {
             log.error(e.getMessage());
             return CtrlToolUtils.errorReturn(response,e);
         }
-            List<String> issueUuids = StringSplitToListUtil.splitToStringComma(req.getIssue_uuids(), ",");
+            List<String> issueUuids = StringUtil.strToStrs(req.getIssue_uuids(), ",");
             IssueBatchDeleteRspVo data = new IssueBatchDeleteRspVo();
             List<String> fails = Lists.newArrayList();
             for (String issueUuid : issueUuids) {
@@ -285,7 +285,7 @@ public class HouseqmIssueController {
     }
 
     private List<String> filterIssueUuidByProjIdTaskIdUuids(int projId, int taskId, String uuidStr) {
-        List<String> issueUuids = StringSplitToListUtil.splitToStringComma(uuidStr, ",");
+        List<String> issueUuids = StringUtil.strToStrs(uuidStr, ",");
         if (issueUuids.isEmpty()) return Lists.newArrayList();
         List<HouseQmCheckTaskIssue> issues = houseQmCheckTaskIssueService.searchHouseQmCheckTaskIssueByTaskIdUuidIn(taskId, issueUuids);
         List<String> uuids = Lists.newArrayList();

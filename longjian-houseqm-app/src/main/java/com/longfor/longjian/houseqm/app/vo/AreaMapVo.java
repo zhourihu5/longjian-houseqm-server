@@ -3,8 +3,8 @@ package com.longfor.longjian.houseqm.app.vo;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.longfor.longjian.common.consts.AreaTypeEnum;
+import com.longfor.longjian.common.util.StringUtil;
 import com.longfor.longjian.houseqm.po.zj2db.Area;
-import com.longfor.longjian.houseqm.util.StringSplitToListUtil;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
@@ -27,7 +27,7 @@ public class AreaMapVo implements Serializable {
     public List<String> getPathNames(Integer id) {
         List<String> names = Lists.newArrayList();
         Area area = this.get(id);
-        List<Integer> ids = StringSplitToListUtil.splitToIdsComma(area.getPath(), "/");
+        List<Integer> ids = StringUtil.strToInts(area.getPath(), "/");
         ids.add(area.getId());
         ids.forEach(aid -> {
             names.add(getName(aid));
@@ -50,7 +50,7 @@ public class AreaMapVo implements Serializable {
         String building = "";
         Area area = get(id);
         if (area == null) return null;
-        List<Integer> totalIds = StringSplitToListUtil.strToInts(area.getPath(), "/");
+        List<Integer> totalIds = StringUtil.strToInts(area.getPath(), "/");
         totalIds.add(area.getId());
         for (int i = totalIds.size() - 1; i >= 0; i--) {
             Area area1 = get(totalIds.get(i));
