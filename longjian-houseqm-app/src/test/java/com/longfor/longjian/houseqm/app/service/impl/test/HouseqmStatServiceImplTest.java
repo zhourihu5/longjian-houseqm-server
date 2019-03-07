@@ -62,7 +62,7 @@ public class HouseqmStatServiceImplTest {
     @Test
     public void formatFenhuHouseInspectionStatusInfoByAreaIds() {
         try{
-            houseqmStatServiceImpl.formatFenhuHouseInspectionStatusInfoByAreaIds(1,Arrays.asList(new Integer[]{1,2,3,4,5,6,7,8,9,10}));
+            houseqmStatServiceImpl.formatFenhuHouseInspectionStatusInfoByAreaIds(1,1,Arrays.asList(new Integer[]{1,2,3,4,5,6,7,8,9,10}));
         }catch (Exception e){
             e.printStackTrace();
             Assert.fail(e.getMessage());
@@ -72,7 +72,7 @@ public class HouseqmStatServiceImplTest {
     @Test
     public void searchHouseQmCheckTaskIssueMapByTaskIdAreaIds() {
         try{
-            houseqmStatServiceImpl.searchHouseQmCheckTaskIssueMapByTaskIdAreaIds(1,Arrays.asList(new Integer[]{1,2,3,4,5,6,7,8,9,10}));
+            houseqmStatServiceImpl.searchHouseQmCheckTaskIssueMapByTaskIdAreaIds(1,1,Arrays.asList(new Integer[]{1,2,3,4,5,6,7,8,9,10}));
         }catch (Exception e){
             e.printStackTrace();
             Assert.fail(e.getMessage());

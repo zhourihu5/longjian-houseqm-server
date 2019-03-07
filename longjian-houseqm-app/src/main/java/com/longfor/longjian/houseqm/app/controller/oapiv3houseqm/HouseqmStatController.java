@@ -117,7 +117,7 @@ public class HouseqmStatController {
         StatInspectionSituationSearchRspVo data = new StatInspectionSituationSearchRspVo();
         data.setTotal(areaIds.size());
         List<Integer> ids = splitSliceByPaged(areaIds, req.getPage(), req.getPage_size());
-        List<InspectionHouseStatusInfoVo> details = houseqmStatService.formatFenhuHouseInspectionStatusInfoByAreaIds(req.getTask_id(), ids);
+        List<InspectionHouseStatusInfoVo> details = houseqmStatService.formatFenhuHouseInspectionStatusInfoByAreaIds(req.getIssue_status(),req.getTask_id(), ids);
         List<HouseQmStatInspectionSituationRspVo> items = new ArrayList<>();
         for (InspectionHouseStatusInfoVo detail : details) {
             HouseQmStatInspectionSituationRspVo item = new HouseQmStatInspectionSituationRspVo();
