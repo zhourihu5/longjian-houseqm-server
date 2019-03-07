@@ -113,16 +113,20 @@ public class HouseQmCheckTaskIssueServiceImpl implements HouseQmCheckTaskIssueSe
 
     @Override
     @LFAssignDataSource("zhijian2")
-    public List<HouseQmCheckTaskIssue> searchByProjIdAndCategoryClsInAndRepairerIdAndClientCreateAtAndTypInAndStatusInAndTaskIdOrderByClientCreateAt(Integer projectId, List<Integer> categoryClsList, String statBegin, String statEnd, List<Integer> typs, List<Integer> status, Integer taskId, List<Integer> myTaskIds) {
+    public List<HouseQmCheckTaskIssue> searchByProjIdAndCategoryClsInAndRepairerIdAndClientCreateAtAndTypInAndStatusInAndTaskIdOrderByClientCreateAt(Map<String,Object> paramMap, List<Integer> myTaskIds) {
+
         Example example = new Example(HouseQmCheckTaskIssue.class);
         Example.Criteria criteria = example.createCriteria();
-        criteria.andEqualTo(PROJECT_ID, projectId);
-        if (CollectionUtils.isNotEmpty(categoryClsList)) criteria.andIn(CATEGORY_CLS, categoryClsList);
+        criteria.andEqualTo(PROJECT_ID, paramMap.get("projectId"));
+        if (CollectionUtils.isNotEmpty((List)paramMap.get("categoryClsList"))) criteria.andIn(CATEGORY_CLS, (List)paramMap.get("categoryClsList"));
         criteria.andNotEqualTo(REPAIRER_ID, 0);
-        criteria.andGreaterThanOrEqualTo(CLIENT_CREATE_AT, statBegin);
-        criteria.andLessThanOrEqualTo(CLIENT_CREATE_AT, statEnd);
+        criteria.andGreaterThanOrEqualTo(CLIENT_CREATE_AT, paramMap.get("statBegin"));
+        criteria.andLessThanOrEqualTo(CLIENT_CREATE_AT, paramMap.get("statEnd"));
+        List<Integer> typs = (List<Integer>) paramMap.get("typs");
+        List<Integer> status = (List<Integer>) paramMap.get("status");
         if (CollectionUtils.isNotEmpty(typs)) criteria.andIn(TYPE, typs);
         if (CollectionUtils.isNotEmpty(status)) criteria.andIn(STATUS, status);
+        Integer taskId = (Integer) paramMap.get("taskId");
         if (taskId > 0) {
             criteria.andEqualTo(TASK_ID, taskId);
         } else {
@@ -353,8 +357,11 @@ public class HouseQmCheckTaskIssueServiceImpl implements HouseQmCheckTaskIssueSe
 
     @Override
     @LFAssignDataSource("zhijian2")
-    public List<HouseQmCheckTaskIssueAttachment> searchHouseQmCheckTaskIssueAttachmentByMyIdTaskIdLastIdUpdateAtGt(Integer userId, Integer taskId, Integer lastId, Integer timestamp, Integer start, Integer limit, Integer privateInt, Integer publicInt) {
+    public List<HouseQmCheckTaskIssueAttachment> searchHouseQmCheckTaskIssueAttachmentByMyIdTaskIdLastIdUpdateAtGt(Integer userId, Map<String, Object> paramMap, Integer start, Integer limit, Integer privateInt, Integer publicInt) {
         try {
+            Integer taskId = (Integer) paramMap.get("taskId");
+            Integer lastId = (Integer) paramMap.get("lastId");
+            Integer timestamp = (Integer) paramMap.get("timestamp");
             //A找出与自己同组的人
             ////找到任务中，用户所在的所有组
             List<UserInHouseQmCheckTask> userInHouseQmCheckTasks = userInHouseQmCheckTaskMapper.searchByCondition(taskId, userId);
@@ -422,7 +429,13 @@ public class HouseQmCheckTaskIssueServiceImpl implements HouseQmCheckTaskIssueSe
 
     @Override
     @LFAssignDataSource("zhijian2")
-    public HouseQmCheckTaskIssueListDto selectCountByProjectIdAndCategoryClsAndTypeAndStatusInAndDongTai2(Integer projectId, Integer taskId, List<Integer> categoryClsList, Integer areaId, Integer planStatus, Date beginOn, Date endOn, Integer page, Integer pageSize) {
+    public HouseQmCheckTaskIssueListDto selectCountByProjectIdAndCategoryClsAndTypeAndStatusInAndDongTai2(Integer projectId, Integer taskId, List<Integer> categoryClsList, Integer areaId, Integer planStatus, Map<String, Object> paramMap) {
+        //beginOn1, endOn1, page, pageSize
+        Date beginOn = (Date) paramMap.get("beginOn1");
+        Date endOn = (Date) paramMap.get("endOn1");
+        Integer page = (Integer) paramMap.get("page");
+        Integer pageSize = (Integer) paramMap.get("pageSize");
+
         Example example = new Example(HouseQmCheckTaskIssue.class);
         Example.Criteria criteria = example.createCriteria();
         criteria.andEqualTo(PROJECT_ID, projectId).andIn(CATEGORY_CLS, categoryClsList);

@@ -13,6 +13,7 @@ import com.longfor.longjian.houseqm.app.req.issue.IssueBatchApproveReq;
 import com.longfor.longjian.houseqm.app.req.issue.IssueBatchDeleteReq;
 import com.longfor.longjian.houseqm.app.req.issue.IssueExportPdfReq;
 import com.longfor.longjian.houseqm.app.service.IHouseqmIssueService;
+import com.longfor.longjian.houseqm.app.utils.CtrlToolUtils;
 import com.longfor.longjian.houseqm.app.vo.IssueBatchAppointRspVo;
 import com.longfor.longjian.houseqm.app.vo.houseqmissue.IssueBatchApproveRspVo;
 import com.longfor.longjian.houseqm.app.vo.houseqmissue.IssueBatchDeleteRspVo;
@@ -74,8 +75,7 @@ public class HouseqmIssueController {
             ctrlTool.projPermMulti(request, new String[]{"项目.移动验房.问题管理.查看", "项目.工程检查.问题管理.查看"});
         } catch (Exception e) {
             log.error(e.getMessage());
-            response.setResult(1);
-            response.setMessage(e.getMessage());
+            return CtrlToolUtils.errorReturn(response,e);
         }
         if (req.getTask_id() == null) req.setTask_id(0);
         Project proj = iHouseqmIssueService.getProjectByProjId(req.getProject_id());
@@ -267,9 +267,7 @@ public class HouseqmIssueController {
         } catch (Exception e) {
             log.error(e.getMessage());
             log.error(e.getMessage());
-            response.setResult(1);
-            response.setMessage(e.getMessage());
-            return response;
+            return CtrlToolUtils.errorReturn(response,e);
         }
             List<String> issueUuids = StringSplitToListUtil.splitToStringComma(req.getIssue_uuids(), ",");
             IssueBatchDeleteRspVo data = new IssueBatchDeleteRspVo();

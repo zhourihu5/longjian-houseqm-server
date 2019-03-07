@@ -83,38 +83,38 @@ public class ScanMsgPushServiceImpl implements ScanMsgPushService {
     private  String gcglpackageNameXiaomi;
 
     @Override
-    public LjBaseResponse scanNoticeCenter(String category_cls) {
+    public LjBaseResponse scanNoticeCenter(String categoryCls) {
 
-        Integer[] module_ids = {};
+        Integer[] moduleIds;
 
-        if(StringUtils.isNotBlank(category_cls)){
-            String [] module=category_cls.split(",");
-            module_ids=new Integer[module.length];
+        if(StringUtils.isNotBlank(categoryCls)){
+            String [] module=categoryCls.split(",");
+            moduleIds=new Integer[module.length];
             for(int i=0;i<module.length;i++){
-                module_ids[i]=Integer.parseInt(module[i]);
+                moduleIds[i]=Integer.parseInt(module[i]);
             }
         }else{
-            module_ids=new Integer[1];
-            module_ids[0]=ModuleInfoEnum.GCGL.getValue();
+            moduleIds=new Integer[1];
+            moduleIds[0]=ModuleInfoEnum.GCGL.getValue();
         }
-        log.info("notice center begin to scan, task list----------------:{}", StringUtils.join(module_ids, ','));
+        log.info("notice center begin to scan, task list----------------:{}", StringUtils.join(moduleIds, ','));
 
-        for(Integer moduleId:module_ids){
-            scan_notice_center_and_push(moduleId);
+        for(Integer moduleId:moduleIds){
+            scanNoticeCenterAndPush(moduleId);
         }
 
 
         return null;
     }
 
-    private LjBaseResponse scan_notice_center_and_push(Integer moduleId){
+    private LjBaseResponse scanNoticeCenterAndPush(Integer moduleId){
 
 
-        long stat_timestamp=(long) 1000 * 60 * 60 * 24;
+        long statTimestamp=(long) 1000 * 60 * 60 * 24;
 
         long now=new Date().getTime();
 
-        Date statBeg= DateUtil.timeStampTwoToDate((now -stat_timestamp),"yy-MM-dd HH:mm:ss");
+        Date statBeg= DateUtil.timeStampTwoToDate((now -statTimestamp),"yy-MM-dd HH:mm:ss");
         Date statEnd=DateUtil.timeStampTwoToDate(now,"yy-MM-dd HH:mm:ss");
 
 
@@ -153,7 +153,7 @@ public class ScanMsgPushServiceImpl implements ScanMsgPushService {
         Map<NoticeStatKey,NoticeStatValue>statMap=new HashMap<>();
         List<Integer>projectIds=new ArrayList<>();
         List<Integer>noticeUserIds=new ArrayList<>();
-        if(recordList!=null&&recordList.size()>0){
+        if(CollectionUtils.isNotEmpty(recordList)){
             for(HouseQmCheckTaskNotifyRecord record:recordList){
                 String desUserIds=record.getDesUserIds();
                 if(StringUtils.isNotBlank(desUserIds)){
@@ -215,7 +215,7 @@ public class ScanMsgPushServiceImpl implements ScanMsgPushService {
 
         if(issueStatus>0&&issueId>0){
 
-            if(issueStatus==HouseQmCheckTaskIssueStatus.AssignNoReform.getValue()){
+            if(issueStatus.equals(HouseQmCheckTaskIssueStatus.AssignNoReform.getValue())){
                 assignNoReformIssueIds.add(issueId);
             }else{
                 reformNoCheckIssueIds.add(issueId);
@@ -226,7 +226,7 @@ public class ScanMsgPushServiceImpl implements ScanMsgPushService {
 
     private NoticeStatValue addNoticeStatValue(NoticeStatValue noticeStatValue,Integer issueStatus,Integer issueId){
 
-        if(issueStatus==HouseQmCheckTaskIssueStatus.AssignNoReform.getValue()){
+        if(issueStatus.equals(HouseQmCheckTaskIssueStatus.AssignNoReform.getValue())){
 
             if(!noticeStatValue.getAssignNoReformIssueIds().contains(issueId)){
                 noticeStatValue.getAssignNoReformIssueIds().add(issueId);
@@ -468,18 +468,20 @@ public class ScanMsgPushServiceImpl implements ScanMsgPushService {
                 userIds = userIds.subList(0, 50);
             }
 
-            String appkeyAndroid, appMasterSecretAndroid, appkeyIos, appMasterSecretIos, appSecretXiaoMi, packageNameXiaoMi;
+            String appkeyAndroid;
+            String appMasterSecretAndroid;
+            String appkeyIos;
+            String appMasterSecretIos;
+            // String appSecretXiaoMi;String packageNameXiaoMi;
 
-            switch (appFlag) {
-                case PUSH_APP_GCGL:
-                    appkeyAndroid = gcglappKeyAndroid;
-                    appMasterSecretAndroid = gcglappMasterSecretAndroid;
-                    appkeyIos = gcglappKeyIOS;
-                    appMasterSecretIos = gcglappMasterSecretIOS;
-                    break;
-                default:
-                    log.error("appFlag 错误");
-                    return;
+            if (appFlag == PUSH_APP_GCGL) {
+                appkeyAndroid = gcglappKeyAndroid;
+                appMasterSecretAndroid = gcglappMasterSecretAndroid;
+                appkeyIos = gcglappKeyIOS;
+                appMasterSecretIos = gcglappMasterSecretIOS;
+            } else {
+                log.error("appFlag 错误");
+                return;
             }
 
             log.info("Sending_upush [taskId:{}] [userIds:{}] [appFlag:{}]", taskId, userIds, appFlag);

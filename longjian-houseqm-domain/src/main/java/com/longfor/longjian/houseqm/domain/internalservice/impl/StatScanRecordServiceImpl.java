@@ -5,6 +5,7 @@ import com.longfor.longjian.houseqm.dao.zhijian2_notify.StatScanRecordMapper;
 import com.longfor.longjian.houseqm.domain.internalservice.StatScanRecordService;
 import com.longfor.longjian.houseqm.po.zhijian2_notify.StatScanRecord;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.collections.CollectionUtils;
 import org.springframework.stereotype.Service;
 import tk.mybatis.mapper.entity.Example;
 
@@ -30,7 +31,7 @@ public class StatScanRecordServiceImpl implements StatScanRecordService {
         example.createCriteria()
                 .andEqualTo("moduleId",moduleId);
         List<StatScanRecord>statScanRecordList=statScanRecordMapper.selectByExample(example);
-        if(statScanRecordList!=null&&statScanRecordList.size()>0){
+        if(CollectionUtils.isNotEmpty(statScanRecordList)){
             statScanRecord=statScanRecordList.get(0);
         }
         return statScanRecord;

@@ -304,7 +304,7 @@ public class HouseqmStatisticController {
         vo.setItems(issueStatList);
 
         //total
-        LjBaseResponse<HouseqmStatisticTaskCheckitemStatRspMsgVo> ljBaseResponse = new LjBaseResponse();
+        LjBaseResponse<HouseqmStatisticTaskCheckitemStatRspMsgVo> ljBaseResponse = new LjBaseResponse<>();
         ljBaseResponse.setData(vo);
 
         return ljBaseResponse;

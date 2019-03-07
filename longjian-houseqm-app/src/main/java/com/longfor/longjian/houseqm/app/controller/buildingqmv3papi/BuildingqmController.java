@@ -11,6 +11,7 @@ import com.longfor.longjian.houseqm.app.req.buildingqm.MyIssuePatchListReq;
 import com.longfor.longjian.houseqm.app.service.IBuildingqmService;
 import com.longfor.longjian.houseqm.app.service.ICheckUpdateService;
 import com.longfor.longjian.houseqm.app.service.impl.ReportIssueService;
+import com.longfor.longjian.houseqm.app.utils.CtrlToolUtils;
 import com.longfor.longjian.houseqm.app.utils.SessionUtil;
 import com.longfor.longjian.houseqm.app.vo.*;
 import com.longfor.longjian.houseqm.app.vo.buildingqm.ReportIssueReq;
@@ -82,8 +83,7 @@ public class BuildingqmController {
             response.setData(vo);
         } catch (Exception e) {
             log.error("任务列表异常:", e.getMessage());
-            response.setResult(1);
-            response.setMessage(e.getMessage());
+            return CtrlToolUtils.errorReturn(response,e);
         }
         return response;
     }
@@ -158,8 +158,7 @@ public class BuildingqmController {
             respone.setData(taskIssueListVo);
         } catch (Exception e) {
             log.error("任务更新异常:", e.getMessage());
-            respone.setResult(1);
-            respone.setMessage(e.getMessage());
+            return CtrlToolUtils.errorReturn(respone,e);
         }
         return respone;
     }
@@ -180,8 +179,7 @@ public class BuildingqmController {
             response.setData(vo);
         } catch (Exception e) {
             log.error("获取任务角色列表异常:", e.getMessage());
-            response.setResult(1);
-            response.setMessage(e.getMessage());
+            return CtrlToolUtils.errorReturn(response,e);
         }
         return response;
     }
@@ -205,8 +203,7 @@ public class BuildingqmController {
             response.setData(miplv);
         } catch (Exception e) {
             log.error("补全与我相关问题信息异常:", e.getMessage());
-            response.setResult(1);
-            response.setMessage(e.getMessage());
+            return CtrlToolUtils.errorReturn(response,e);
         }
         return response;
     }
@@ -242,8 +239,7 @@ public class BuildingqmController {
             buildingqmService.create(userId, taskReq);
         } catch (Exception e) {
             log.error("项目下创建任务异常:", e.getMessage());
-            response.setResult(1);
-            response.setMessage(e.getMessage());
+            return CtrlToolUtils.errorReturn(response,e);
         }
         return response;
     }
@@ -275,8 +271,7 @@ public class BuildingqmController {
             response.setData(houseQmCheckTaskSquadListRspVoList);
         } catch (Exception e) {
             log.error("项目下获取检查组信息异常:", e.getMessage());
-            response.setResult(1);
-            response.setMessage(e.getMessage());
+            return CtrlToolUtils.errorReturn(response,e);
         }
         return response;
     }
@@ -311,8 +306,7 @@ public class BuildingqmController {
             buildingqmService.edit(userId, taskEditReq);
         } catch (Exception e) {
             log.error("项目下任务内容修改异常:", e.getMessage());
-            response.setResult(1);
-            response.setMessage(e.getMessage());
+            return CtrlToolUtils.errorReturn(response,e);
         }
         return response;
     }
@@ -340,10 +334,15 @@ public class BuildingqmController {
     @RequestMapping(value = "buildingqm/report_issue", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     public LjBaseResponse<ReportIssueVo> reportIssue(@Validated ReportIssueReq req) {
         log.info("report_issue, project_id=" + req.getData() + ", data=" + req.getData() + "");
-        Integer userId = SessionUtil.getUid(sessionInfo);
-        ReportIssueVo reportIssueVo = reportIssueService.reportIssue(userId, req.getProject_id(), req.getData());
-        LjBaseResponse<ReportIssueVo> response = new LjBaseResponse<>();
-        response.setData(reportIssueVo);
+        LjBaseResponse<ReportIssueVo>  response = new LjBaseResponse<>();
+        try {
+            Integer userId = SessionUtil.getUid(sessionInfo);
+            ReportIssueVo reportIssueVo = reportIssueService.reportIssue(userId, req.getProject_id(), req.getData());
+            response.setData(reportIssueVo);
+        } catch (Exception e) {
+           log.error("report_issue:"+e.getMessage());
+            return CtrlToolUtils.errorReturn(response,e);
+        }
         return response;
     }
 

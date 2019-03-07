@@ -3,6 +3,7 @@ package com.longfor.longjian.houseqm.app.service.impl;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.TypeReference;
 import com.google.common.collect.Lists;
+import com.google.common.collect.Maps;
 import com.longfor.longjian.common.base.LjBaseResponse;
 import com.longfor.longjian.common.util.SessionInfo;
 import com.longfor.longjian.houseqm.app.req.DeviceReq;
@@ -264,7 +265,12 @@ public class  HouseqmServiceImpl implements IHouseqmService {
         //C1、根据相关的issue，找到与issue相关的所有人员，再找到这批人员的相关的 公开 的附件
         //C2、根据相关的issue 或 根据task_id和user_id，检索自己私人的附件
         try {
-            List<HouseQmCheckTaskIssueAttachment> attachments = houseQmCheckTaskIssueService.searchHouseQmCheckTaskIssueAttachmentByMyIdTaskIdLastIdUpdateAtGt(userId, deviceReq.getTask_id(), deviceReq.getLast_id(), deviceReq.getTimestamp(), start, limit, HouseQmCheckTaskIssueAttachmentPublicTypeEnum.Private.getId(), HouseQmCheckTaskIssueAttachmentPublicTypeEnum.Public.getId());
+            Map<String, Object> paramMap = Maps.newHashMap();
+            paramMap.put("taskId",deviceReq.getTask_id());
+            paramMap.put("lastId",deviceReq.getLast_id());
+            paramMap.put("timestamp",deviceReq.getTimestamp());
+
+            List<HouseQmCheckTaskIssueAttachment> attachments = houseQmCheckTaskIssueService.searchHouseQmCheckTaskIssueAttachmentByMyIdTaskIdLastIdUpdateAtGt(userId, paramMap, start, limit, HouseQmCheckTaskIssueAttachmentPublicTypeEnum.Private.getId(), HouseQmCheckTaskIssueAttachmentPublicTypeEnum.Public.getId());
             // go源码中未对lastid进行处理
 
             attachments.forEach(houseQmCheckTaskIssueAttachment -> {
