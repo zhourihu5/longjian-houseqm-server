@@ -16,6 +16,7 @@ import com.longfor.longjian.houseqm.po.zj2db.*;
 import com.longfor.longjian.houseqm.util.DateUtil;
 import com.longfor.longjian.houseqm.util.JsonUtil;
 import com.longfor.longjian.houseqm.util.StringSplitToListUtil;
+import com.longfor.longjian.houseqm.util.StringUtil;
 import lombok.Data;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections.CollectionUtils;
@@ -515,7 +516,7 @@ public class HouseQmCheckTaskIssueHelperVo {
         this.needRemoveAttachement = Lists.newArrayList();
         for (HouseQmCheckTaskIssueLogVo issueLog : this.issueLogs) {
             //公有录音
-            List<String> md5List = StringSplitToListUtil.splitToStringComma(issueLog.getAudioMd5List(), ",");
+            List<String> md5List = StringUtil.strToStrs(issueLog.getAudioMd5List(), ",");
             if (CollectionUtils.isNotEmpty(md5List)) {
                 for (String md5 : md5List) {
                     HouseQmCheckTaskIssueAttachment obj = new HouseQmCheckTaskIssueAttachment();
@@ -532,7 +533,7 @@ public class HouseQmCheckTaskIssueHelperVo {
                 }
             }
             // 私有录音
-            List<String> memoMd5List = StringSplitToListUtil.splitToStringComma(issueLog.getMemoAudioMd5List(), ",");
+            List<String> memoMd5List = StringUtil.strToStrs(issueLog.getMemoAudioMd5List(), ",");
             if (CollectionUtils.isNotEmpty(memoMd5List)) {
                 for (String md5 : memoMd5List) {
                     HouseQmCheckTaskIssueAttachment obj = new HouseQmCheckTaskIssueAttachment();
@@ -549,7 +550,7 @@ public class HouseQmCheckTaskIssueHelperVo {
                 }
             }
             // 要移除的私有录音
-            List<String> removeMemoAudioMd5List = StringSplitToListUtil.splitToStringComma(issueLog.getDetail().getRemoveMemoAudioMd5List(), ",");
+            List<String> removeMemoAudioMd5List = StringUtil.strToStrs(issueLog.getDetail().getRemoveMemoAudioMd5List(), ",");
             if (CollectionUtils.isNotEmpty(removeMemoAudioMd5List)) {
                 for (String md5 : removeMemoAudioMd5List) {
                     RemoveAttachement obj = new RemoveAttachement();
@@ -684,7 +685,7 @@ public class HouseQmCheckTaskIssueHelperVo {
     private void getAssignNoReform(HouseQmCheckTaskIssueVo issue, HouseqmCheckTaskNotifyRecordVo hcvo) {
         List<Integer> userIds = Lists.newArrayList();
         userIds.add(issue.getRepairerId());
-        List<Integer> fids = StringSplitToListUtil.strToInts(issue.getRepairerFollowerIds(), ",");
+        List<Integer> fids = StringUtil.strToInts(issue.getRepairerFollowerIds(), ",");
         userIds.addAll(fids);
         hcvo.setDesUserIds(StringSplitToListUtil.dataToString(userIds, ","));
         houseQmCheckTaskNotifyRecordService.insertFull(hcvo);
@@ -841,7 +842,7 @@ public class HouseQmCheckTaskIssueHelperVo {
             //整改负责人
             userRole.put(this.currentLog.getDetail().getRepairerId(), HouseQmUserInIssueRoleTypeEnum.Repairer.getId());
             //整改参与人
-            List<Integer> follower = StringSplitToListUtil.strToInts(this.currentLog.getDetail().getRepairerFollowerIds(), ",");
+            List<Integer> follower = StringUtil.strToInts(this.currentLog.getDetail().getRepairerFollowerIds(), ",");
             for (Integer uid : follower) {
                 userRole.put(uid, HouseQmUserInIssueRoleTypeEnum.RepairerFollower.getId());
             }
@@ -967,7 +968,7 @@ public class HouseQmCheckTaskIssueHelperVo {
             //整改负责人
             userRole.put(this.currentLog.getDetail().getRepairerId(), HouseQmUserInIssueRoleTypeEnum.Repairer.getId());
             //整改参与人
-            List<Integer> follower = StringSplitToListUtil.strToInts(this.currentLog.getDetail().getRepairerFollowerIds(), ",");
+            List<Integer> follower = StringUtil.strToInts(this.currentLog.getDetail().getRepairerFollowerIds(), ",");
             for (Integer uid : follower) {
                 userRole.put(uid, HouseQmUserInIssueRoleTypeEnum.RepairerFollower.getId());
             }

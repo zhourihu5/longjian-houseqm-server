@@ -219,8 +219,8 @@ public class IssueServiceImpl implements IIssueService {
     public Map<String, Object> exportExcel(Integer uid, ExportBuildingExcelReq req) {
 
         //准备数据
-        List<Integer> areaIdList = StringSplitToListUtil.splitToIdsComma(req.getArea_ids(), ",");
-        List<Integer> statusInList = StringSplitToListUtil.splitToIdsComma(req.getStatus_in(), ",");
+        List<Integer> areaIdList = com.longfor.longjian.common.util.StringUtil.strToInts(req.getArea_ids(), ",");
+        List<Integer> statusInList = com.longfor.longjian.common.util.StringUtil.strToInts(req.getStatus_in(), ",");
         Map<String, Object> condiMap = Maps.newHashMap();
         condiMap.put("projectId", req.getProject_id());
         condiMap.put("categoryCls", req.getCategory_cls());
@@ -406,8 +406,8 @@ public class IssueServiceImpl implements IIssueService {
         } else {
             host = "";
         }
-        List<Integer> areaIdList = StringSplitToListUtil.splitToIdsComma(req.getArea_ids(), ",");
-        List<Integer> statusInList = StringSplitToListUtil.splitToIdsComma(req.getStatus_in(), ",");
+        List<Integer> areaIdList = com.longfor.longjian.common.util.StringUtil.strToInts(req.getArea_ids(), ",");
+        List<Integer> statusInList = com.longfor.longjian.common.util.StringUtil.strToInts(req.getStatus_in(), ",");
         Map<String, Object> condiMap = Maps.newHashMap();
         condiMap.put("projectId", req.getProject_id());
         condiMap.put("categoryCls", req.getCategory_cls());
@@ -462,15 +462,15 @@ public class IssueServiceImpl implements IIssueService {
         for (HouseQmCheckTaskIssue issue : validIssues) {
             if (!categoryKeys.contains(issue.getCategoryKey())) categoryKeys.add(issue.getCategoryKey());
             if (issue.getRepairerId() != 0) repairers.add(issue.getRepairerId());
-            List<String> checkItemPathAndKeyList = StringSplitToListUtil.splitToStringComma(issue.getCheckItemPathAndKey(), "/");
+            List<String> checkItemPathAndKeyList = com.longfor.longjian.common.util.StringUtil.strToStrs(issue.getCheckItemPathAndKey(), "/");
             checkItemPathAndKeyList.forEach(s -> {
                 if (!checkItems.contains(s)) checkItems.add(s);
             });
-            List<Integer> areaPathAndIdList = StringSplitToListUtil.splitToIdsComma(issue.getAreaPathAndId(), "/");
+            List<Integer> areaPathAndIdList = com.longfor.longjian.common.util.StringUtil.strToInts(issue.getAreaPathAndId(), "/");
             areaPathAndIdList.forEach(item -> {
                 if (!areaPaths.contains(item)) areaPaths.add(item);
             });
-            List<String> attachmentMd5List = StringSplitToListUtil.splitToStringComma(issue.getAttachmentMd5List(), ",");
+            List<String> attachmentMd5List = com.longfor.longjian.common.util.StringUtil.strToStrs(issue.getAttachmentMd5List(), ",");
             attachmentMd5List.forEach(item -> {
                 if (!attachments.contains(item)) attachments.add(item);
             });
@@ -529,7 +529,7 @@ public class IssueServiceImpl implements IIssueService {
             item.setDelete_user(issue.getDeleteUser());
             item.setDelete_time(DateUtil.datetimeToTimeStamp(issue.getDeleteTime()));
 
-            List<String> attachmentsList = StringSplitToListUtil.splitToStringComma(issue.getAttachmentMd5List(), ",");
+            List<String> attachmentsList = StringUtil.strToStrs(issue.getAttachmentMd5List(), ",");
             List<String> pictures = item.getPictures();
             for (String md5 : attachmentsList) {
                 if (attachmentMap.containsKey(md5)) {
@@ -620,7 +620,7 @@ public class IssueServiceImpl implements IIssueService {
                 ArrayList<String> followers = Lists.newArrayList();
                 if ((Integer) issueLogDetail.get(REPAIRER_FOLLOWER_IDS) > 0) {
 
-                    List<Integer> followersId = StringSplitToListUtil.splitToIdsComma((String) issueLogDetail.get(REPAIRER_FOLLOWER_IDS), ",");
+                    List<Integer> followersId = StringUtil.strToInts((String) issueLogDetail.get(REPAIRER_FOLLOWER_IDS), ",");
                     for (int j = 0; j < followersId.size(); j++) {
                         followers.add(userIdRealNameMap.get(followersId.get(j)));
                     }
@@ -659,7 +659,7 @@ public class IssueServiceImpl implements IIssueService {
                     ArrayList<String> followers = Lists.newArrayList();
 
                     if (StringUtils.isNotBlank((String) issueLogDetail.get(REPAIRER_FOLLOWER_IDS))) {
-                        List<Integer> followersId = StringSplitToListUtil.splitToIdsComma((String) issueLogDetail.get(REPAIRER_FOLLOWER_IDS), ",");
+                        List<Integer> followersId = StringUtil.strToInts((String) issueLogDetail.get(REPAIRER_FOLLOWER_IDS), ",");
                         for (int j = 0; j < followersId.size(); j++) {
                             if (userIdRealNameMap.containsKey(followersId.get(j))) {
                                 followers.add(userIdRealNameMap.get(followersId.get(j)));
@@ -909,7 +909,7 @@ public class IssueServiceImpl implements IIssueService {
     @Override
     public Boolean repairNotifyExport2(Integer uid, Integer projectId, String issueUuid, HttpServletResponse resp) {
         List<ExportNotifyDetail2Vo> input = Lists.newArrayList();
-        List<Integer> issueIds = StringSplitToListUtil.splitToIdsComma(issueUuid, ",");
+        List<Integer> issueIds = StringUtil.strToInts(issueUuid, ",");
         if (CollectionUtils.isEmpty(issueIds)) {
             throw new LjBaseRuntimeException(-99, "");
         }
@@ -1332,7 +1332,7 @@ public class IssueServiceImpl implements IIssueService {
         }
         List<Integer> repairerFollowerIds = null;
         if (StringUtils.isNotBlank(issueInfo.getRepairerFollowerIds())) {
-            repairerFollowerIds = StringSplitToListUtil.splitToIdsComma(issueInfo.getRepairerFollowerIds(), ",");
+            repairerFollowerIds = StringUtil.strToInts(issueInfo.getRepairerFollowerIds(), ",");
             if (repairerFollowerIds.contains(0)) {
                 repairerFollowerIds.remove(0);
             }
@@ -1439,7 +1439,7 @@ public class IssueServiceImpl implements IIssueService {
     @Override
     public Boolean repairNotifyExport(Integer userId, int projectId, String issueUuid, HttpServletResponse response, HttpServletRequest request) {
         List<ExportNotifyDetailVo> input = Lists.newArrayList();
-        List<Integer> issueIds = StringSplitToListUtil.splitToIdsComma(issueUuid, ",");
+        List<Integer> issueIds = StringUtil.strToInts(issueUuid, ",");
         if (CollectionUtils.isEmpty(issueIds)) {
             throw new LjBaseRuntimeException(-99, "");
         }
@@ -1458,10 +1458,10 @@ public class IssueServiceImpl implements IIssueService {
             if (!taskIds.contains(item.getTaskId())) {
                 taskIds.add(item.getTaskId());
             }
-            areaIds.addAll(StringSplitToListUtil.splitToIdsComma(item.getAreaPathAndId(), "/"));
-            categoryKeys.addAll(StringSplitToListUtil.splitToStringComma(item.getCategoryPathAndKey(), "/"));
-            checkItems.addAll(StringSplitToListUtil.splitToStringComma(item.getCheckItemPathAndKey(), "/"));
-            attachmentMd5s.addAll(StringSplitToListUtil.splitToStringComma(item.getAttachmentMd5List(), ","));
+            areaIds.addAll(com.longfor.longjian.common.util.StringUtil.strToInts(item.getAreaPathAndId(), "/"));
+            categoryKeys.addAll(com.longfor.longjian.common.util.StringUtil.strToStrs(item.getCategoryPathAndKey(), "/"));
+            checkItems.addAll(com.longfor.longjian.common.util.StringUtil.strToStrs(item.getCheckItemPathAndKey(), "/"));
+            attachmentMd5s.addAll(com.longfor.longjian.common.util.StringUtil.strToStrs(item.getAttachmentMd5List(), ","));
         });
         Map<Integer, HouseQmCheckTask> taskMap = createTaskMap(CollectionUtil.removeDuplicate(taskIds));
         Map<Integer, Area> areaMap = createAreaMap(CollectionUtil.removeDuplicate(areaIds));
@@ -1482,7 +1482,7 @@ public class IssueServiceImpl implements IIssueService {
             detailVo.setCheck_item_name(StringUtils.join(checkItemNames, "/"));
             detailVo.setContent(issue.getContent());
             ArrayList<String> storeKeyList = Lists.newArrayList();
-            for (String attachment : StringSplitToListUtil.splitToStringComma(issue.getAttachmentMd5List(), ",")) {
+            for (String attachment : com.longfor.longjian.common.util.StringUtil.strToStrs(issue.getAttachmentMd5List(), ",")) {
                 if (attachmentMap.containsKey(attachment) && StringUtils.isNotBlank((attachmentMap.get(attachment).getStoreKey()))) {
                     if (detailVo.getAttachment_path().size() >= 2) {
                         break;
@@ -1653,7 +1653,7 @@ public class IssueServiceImpl implements IIssueService {
      */
     private List<String> getAreaPathName(Map<Integer, Area> map, String areaPathAndId) {
         List<String> areaNames = Lists.newArrayList();
-        List<Integer> areaIds = StringSplitToListUtil.splitToIdsComma(areaPathAndId, "/");
+        List<Integer> areaIds = com.longfor.longjian.common.util.StringUtil.strToInts(areaPathAndId, "/");
         areaIds.forEach(id -> {
             String areaName = id + "";
             if (map.containsKey(id)) {
@@ -1674,7 +1674,7 @@ public class IssueServiceImpl implements IIssueService {
      */
     private List<String> getCheckItemPathName(Map<String, CheckItemV3> checkItemMap, String pathAndKey) {
         List<String> pathNames = Lists.newArrayList();
-        List<String> paths = StringSplitToListUtil.splitToStringComma(pathAndKey, "/");
+        List<String> paths = StringUtil.strToStrs(pathAndKey, "/");
         paths.forEach(path -> {
             String pathName = path;
             if (checkItemMap.containsKey(path)) {
@@ -1687,7 +1687,7 @@ public class IssueServiceImpl implements IIssueService {
 
     private List<String> getCategoryPathName(Map<String, CategoryV3> categoryMap, String pathAndKey) {
         List<String> pathNames = Lists.newArrayList();
-        List<String> paths = StringSplitToListUtil.splitToStringComma(pathAndKey, "/");
+        List<String> paths = com.longfor.longjian.common.util.StringUtil.strToStrs(pathAndKey, "/");
         paths.forEach(path -> {
             String pathName = path;
             if (categoryMap.containsKey(path)) {

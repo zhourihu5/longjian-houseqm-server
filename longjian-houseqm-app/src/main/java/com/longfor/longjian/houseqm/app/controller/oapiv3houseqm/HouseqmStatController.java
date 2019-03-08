@@ -17,7 +17,6 @@ import com.longfor.longjian.houseqm.app.vo.houseqmstat.*;
 import com.longfor.longjian.houseqm.consts.RepossessionStatusEnum;
 import com.longfor.longjian.houseqm.util.DateUtil;
 import com.longfor.longjian.houseqm.util.MathUtil;
-import com.longfor.longjian.houseqm.util.StringSplitToListUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.MediaType;
 import org.springframework.validation.annotation.Validated;
@@ -118,7 +117,7 @@ public class HouseqmStatController {
         StatInspectionSituationSearchRspVo data = new StatInspectionSituationSearchRspVo();
         data.setTotal(areaIds.size());
         List<Integer> ids = splitSliceByPaged(areaIds, req.getPage(), req.getPage_size());
-        List<InspectionHouseStatusInfoVo> details = houseqmStatService.formatFenhuHouseInspectionStatusInfoByAreaIds(req.getTask_id(), ids);
+        List<InspectionHouseStatusInfoVo> details = houseqmStatService.formatFenhuHouseInspectionStatusInfoByAreaIds(req.getIssue_status(),req.getTask_id(), ids);
         List<HouseQmStatInspectionSituationRspVo> items = new ArrayList<>();
         for (InspectionHouseStatusInfoVo detail : details) {
             HouseQmStatInspectionSituationRspVo item = new HouseQmStatInspectionSituationRspVo();
@@ -167,7 +166,7 @@ public class HouseqmStatController {
             return CtrlToolUtils.errorReturn(response,e);
         }
         try {
-            List<Integer> taskIdList = StringSplitToListUtil.splitToIdsComma(req.getTask_ids(), ",");
+            List<Integer> taskIdList = StringUtil.strToInts(req.getTask_ids(), ",");
             CheckerStatListVo checkerStatListVo = houseqmStatService.searchCheckerIssueStatisticByProjIdAndTaskId(req.getProject_id(), taskIdList);
             response.setData(checkerStatListVo);
         } catch (Exception e) {
@@ -208,7 +207,7 @@ public class HouseqmStatController {
             log.error(e.getMessage());
             return CtrlToolUtils.errorReturn(response,e);
         }
-        List<Integer> taskIdList = StringSplitToListUtil.splitToIdsComma(req.getTask_ids(), ",");
+        List<Integer> taskIdList = StringUtil.strToInts(req.getTask_ids(), ",");
         ProjectOveralListVo projectOveralListVo = new ProjectOveralListVo();
         ProjectOveralListVo.ProjectOveralVo totalStat = projectOveralListVo.new ProjectOveralVo();
         ArrayList<ProjectOveralListVo.ProjectOveralVo> items = Lists.newArrayList();

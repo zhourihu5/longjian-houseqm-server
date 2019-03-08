@@ -488,8 +488,8 @@ public class HouseqmStatisticServiceImpl implements IHouseqmStatisticService {
             HouseQmCheckTask task = houseQmCheckTaskService.selectByProjectIdAndTaskId(projectId, taskId);
             if (task == null) throw new LjBaseRuntimeException(500, "任务不存在");
             // 获取出任务下的区域与检验类型的交集
-            List<Integer> areaIds = StringSplitToListUtil.splitToIdsComma(task.getAreaIds(), ",");
-            List<Integer> areaTypes = StringSplitToListUtil.splitToIdsComma(task.getAreaTypes(), ",");
+            List<Integer> areaIds = StringUtil.strToInts(task.getAreaIds(), ",");
+            List<Integer> areaTypes = StringUtil.strToInts(task.getAreaTypes(), ",");
             if (areaIds.isEmpty() || areaTypes.isEmpty()) {
                 return houseStatVo;
             }
@@ -625,7 +625,7 @@ public class HouseqmStatisticServiceImpl implements IHouseqmStatisticService {
             areaIds.add(item.getAreaId());
             categoryKeys.addAll(StringSplitToListUtil.removeStartAndEndStrAndSplit(item.getCategoryKey(), "/", "/"));
             checkItemKeys.addAll(StringSplitToListUtil.removeStartAndEndStrAndSplit(item.getCheckItemPathAndKey(), "/", "/"));
-            attachmentMd5List.addAll(StringSplitToListUtil.splitToStringComma(item.getAttachmentMd5List(), ","));
+            attachmentMd5List.addAll(StringUtil.strToStrs(item.getAttachmentMd5List(), ","));
         });
         //列表元素去重
         List<Integer> areaIdList = CollectionUtil.removeDuplicate(areaIds);
@@ -677,7 +677,7 @@ public class HouseqmStatisticServiceImpl implements IHouseqmStatisticService {
             apiTaskIssueRepairListRsp.setClient_create_at(DateUtil.datetimeToTimeStamp(item.getClientCreateAt()));
             apiTaskIssueRepairListRsp.setUpdate_at(DateUtil.datetimeToTimeStamp(item.getUpdateAt()));
 
-            List<String> list = StringSplitToListUtil.splitToStringComma(item.getAttachmentMd5List(), ",");
+            List<String> list = StringUtil.strToStrs(item.getAttachmentMd5List(), ",");
             list.forEach(fm -> {
                 if (fileMap.containsKey(fm)) {
                     List<String> attachmentUrlList = Lists.newArrayList();
@@ -773,7 +773,7 @@ public class HouseqmStatisticServiceImpl implements IHouseqmStatisticService {
             List<String> hasIssuePaths = houseqmStaticService.getHasIssueTaskCheckedAreaPathListByTaskId(taskId, true, null, areaId);
             HashMap<Integer, Boolean> hasIssueAreaId = Maps.newHashMap();
             for (String path : hasIssuePaths) {
-                List<Integer> ids = StringSplitToListUtil.strToInts(path, "/");
+                List<Integer> ids = StringUtil.strToInts(path, "/");
                 if (CollectionUtils.isNotEmpty(ids)) {
                     hasIssueAreaId.put(ids.get(ids.size() - 1), true);
                 }
@@ -788,7 +788,7 @@ public class HouseqmStatisticServiceImpl implements IHouseqmStatisticService {
             houseqmStaticService.getHasIssueTaskCheckedAreaPathListByTaskId(taskId, true, statuses, areaId);
             HashMap<Integer, Boolean> hasIssueNoApprovedAreaId = Maps.newHashMap();
             for (String path : hasIssuePaths) {
-                List<Integer> ids = StringSplitToListUtil.strToInts(path, "/");
+                List<Integer> ids = StringUtil.strToInts(path, "/");
                 if (CollectionUtils.isNotEmpty(ids)) {
                     hasIssueNoApprovedAreaId.put(ids.get(ids.size() - 1), true);
                 }
@@ -1372,7 +1372,7 @@ public class HouseqmStatisticServiceImpl implements IHouseqmStatisticService {
         List<Integer> totalIds = Lists.newArrayList();
         for (Area area : areas) {
             totalIds.add(area.getId());
-            List<Integer> list = StringSplitToListUtil.strToInts(area.getPath(), "/");
+            List<Integer> list = StringUtil.strToInts(area.getPath(), "/");
             totalIds.addAll(list);
         }
         List<Integer> areaIds = CollectionUtil.removeDuplicate(totalIds);
@@ -1435,7 +1435,7 @@ public class HouseqmStatisticServiceImpl implements IHouseqmStatisticService {
 
         Map<Integer, IssueMinStatusVo> maps = Maps.newHashMap();
         for (HouseQmCheckTaskIssueAreaGroupModel area : result) {
-            List<Integer> aIds = StringSplitToListUtil.splitToIdsComma(area.getAreaPath(), "/");
+            List<Integer> aIds = StringUtil.strToInts(area.getAreaPath(), "/");
             if (CollectionUtils.isNotEmpty(aIds)) {
                 IssueMinStatusVo minStatus = new IssueMinStatusVo();
                 minStatus.setCount(area.getExtendCol());

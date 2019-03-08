@@ -6,12 +6,12 @@ import com.longfor.longjian.common.consts.HouseQmCheckTaskIssueStatusEnum;
 import com.longfor.longjian.common.exception.LjBaseRuntimeException;
 import com.longfor.longjian.common.push.UmPushUtil;
 import com.longfor.longjian.common.push.xiaomi.XmPushUtil;
+import com.longfor.longjian.common.util.StringUtil;
 import com.longfor.longjian.houseqm.app.service.PushService;
 import com.longfor.longjian.houseqm.app.vo.PushConfigVo;
 import com.longfor.longjian.houseqm.app.vo.houseqmissue.HouseQmCheckTaskIssueVo;
 import com.longfor.longjian.houseqm.consts.AppPlatformTypeEnum;
 import com.longfor.longjian.houseqm.consts.CategoryClsTypeEnum;
-import com.longfor.longjian.houseqm.util.StringSplitToListUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang.StringUtils;
@@ -105,7 +105,7 @@ public class PushServiceImpl implements PushService {
 
     private void getAssignNoReform(List<Integer> userIds, HouseQmCheckTaskIssueVo issue) {
         userIds.add(issue.getRepairerId());
-        List<Integer> fids = StringSplitToListUtil.strToInts(issue.getRepairerFollowerIds(), ",");
+        List<Integer> fids = StringUtil.strToInts(issue.getRepairerFollowerIds(), ",");
         userIds.addAll(fids);
     }
 

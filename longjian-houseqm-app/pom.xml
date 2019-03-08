@@ -89,6 +89,7 @@
             <artifactId>poi-scratchpad</artifactId>
             <version>4.0.1</version>
         </dependency>
+        <!--单元测试-->
         <dependency>
             <groupId>junit</groupId>
             <artifactId>junit</artifactId>
@@ -105,36 +106,18 @@
             <artifactId>sonar-maven-plugin</artifactId>
             <version>5.1</version>
         </dependency>
-       <!-- <dependency>
-            <groupId>com.h2database</groupId>
-            <artifactId>h2</artifactId>
-            <version>${h2.version}</version>
-            <scope>test</scope>
-        </dependency>
         <dependency>
-            <groupId>org.powermock</groupId>
-            <artifactId>powermock-module-junit4</artifactId>
-            <version>1.7.1</version>
-            <scope>test</scope>
-        </dependency>
-        <dependency>
-            <groupId>org.powermock</groupId>
-            <artifactId>powermock-api-mockito</artifactId>
-            <version>1.7.1</version>
-            <scope>test</scope>
-        </dependency>-->
-     <!--   <dependency>
             <groupId>org.jacoco</groupId>
             <artifactId>jacoco-maven-plugin</artifactId>
             <version>0.7.8</version>
-        </dependency>-->
+        </dependency>
     </dependencies>
 
     <build>
         <finalName>${project.name}</finalName>
         <plugins>
 
-            <!--<plugin>
+            <plugin>
                 <groupId>org.springframework.boot</groupId>
                 <artifactId>spring-boot-maven-plugin</artifactId>
                 <configuration>
@@ -148,9 +131,20 @@
                         </goals>
                     </execution>
                 </executions>
-            </plugin>-->
-
-          <!--  <plugin>
+            </plugin>
+            <plugin>
+                <groupId>org.springframework.boot</groupId>
+                <artifactId>spring-boot-maven-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <goals>
+                            <goal>repackage</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+            <!--检查代码覆盖率的插件配置-->
+            <plugin>
                 <groupId>org.jacoco</groupId>
                 <artifactId>jacoco-maven-plugin</artifactId>
                 <version>0.7.8</version>
@@ -176,32 +170,32 @@
                     </execution>
                 </executions>
 
-
+                <!-- Configuration 里面写配置信息 -->
                 <configuration>
-
+                    <!-- rules里面指定覆盖规则 -->
                     <rules>
                         <rule implementation="org.jacoco.maven.RuleConfiguration">
                             <element>BUNDLE</element>
                             <limits>
-
+                                <!-- 指定方法覆盖到80% -->
                                 <limit implementation="org.jacoco.report.check.Limit">
                                     <counter>METHOD</counter>
                                     <value>COVEREDRATIO</value>
                                     <minimum>0.80</minimum>
                                 </limit>
-
+                                <!-- 指定指令覆盖到80% -->
                                 <limit implementation="org.jacoco.report.check.Limit">
                                     <counter>INSTRUCTION</counter>
                                     <value>COVEREDRATIO</value>
                                     <minimum>0.80</minimum>
                                 </limit>
-
+                                <!-- 指定行覆盖到80% -->
                                 <limit implementation="org.jacoco.report.check.Limit">
                                     <counter>LINE</counter>
                                     <value>COVEREDRATIO</value>
                                     <minimum>0.80</minimum>
                                 </limit>
-
+                                <!-- 指定类覆盖到100%，不能遗失任何类 -->
                                 <limit implementation="org.jacoco.report.check.Limit">
                                     <counter>CLASS</counter>
                                     <value>MISSEDCOUNT</value>
@@ -220,7 +214,7 @@
                 <configuration>
                     <argLine>${surefireArgLine}</argLine>
                 </configuration>
-            </plugin>-->
+            </plugin>
         </plugins>
     </build>
 

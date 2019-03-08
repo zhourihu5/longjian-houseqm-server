@@ -5,7 +5,6 @@ import com.longfor.longjian.houseqm.app.vo.SimpleHouseQmCheckTaskIssueStatVo;
 import com.longfor.longjian.houseqm.app.vo.houseqmstatistic.TaskIssueRepairListVo;
 import com.longfor.longjian.houseqm.po.zj2db.Area;
 import com.longfor.longjian.houseqm.util.DateUtil;
-import edu.emory.mathcs.backport.java.util.Arrays;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -15,11 +14,11 @@ import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.Resource;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 
 @RunWith(SpringRunner.class)
-@ActiveProfiles("sonar")
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.DEFINED_PORT)
 public class HouseqmStatisticServiceImplTest {
 
@@ -152,7 +151,7 @@ public class HouseqmStatisticServiceImplTest {
     @Test
     public void searchRepossessionStatusCompleteDaily() {
         try{
-            houseqmStatisticServiceImpl.searchRepossessionStatusCompleteDaily(927,Arrays.asList(new Integer[]{1,2,3,4,5,6,7,8,9}),DateUtil.datetimeToTimeStamp(new Date()),DateUtil.datetimeToTimeStamp(new Date()),1,10);
+            houseqmStatisticServiceImpl.searchRepossessionStatusCompleteDaily(927, Arrays.asList(new Integer[]{1,2,3,4,5,6,7,8,9}),DateUtil.datetimeToTimeStamp(new Date()),DateUtil.datetimeToTimeStamp(new Date()),1,10);
         }catch (Exception e){
             e.printStackTrace();
             //Assert.fail(e.getMessage());

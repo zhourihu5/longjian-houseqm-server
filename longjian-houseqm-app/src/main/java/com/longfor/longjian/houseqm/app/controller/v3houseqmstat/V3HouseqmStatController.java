@@ -71,7 +71,7 @@ public class V3HouseqmStatController {
         } else {
             areaIds = iHouseqmStatService.searchInspectionAreaIdsByConditions(req.getProject_id(), req.getTask_id(), req.getArea_id(), req.getStatus(), req.getIssue_status());
         }
-        List<InspectionHouseStatusInfoVo> details = iHouseqmStatService.formatFenhuHouseInspectionStatusInfoByAreaIds(req.getTask_id(), areaIds);
+        List<InspectionHouseStatusInfoVo> details = iHouseqmStatService.formatFenhuHouseInspectionStatusInfoByAreaIds(req.getIssue_status(),req.getTask_id(), areaIds);
         // 拼接 名字 导出文件名
         String title = "验房详情";
         HouseQmCheckTask task = houseQmCheckTaskService.getHouseQmCheckTaskByProjTaskId(req.getProject_id(), req.getTask_id());

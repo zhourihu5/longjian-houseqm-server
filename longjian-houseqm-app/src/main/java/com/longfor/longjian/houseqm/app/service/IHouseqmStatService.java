@@ -31,5 +31,5 @@ public interface IHouseqmStatService {
 
     List<Integer> searchInspectionAreaIdsByConditions(Integer projectId, Integer taskId, Integer areaId, Integer status, Integer issueStatus);
 
-    List<InspectionHouseStatusInfoVo> formatFenhuHouseInspectionStatusInfoByAreaIds(Integer taskId, List<Integer> ids);
+    List<InspectionHouseStatusInfoVo> formatFenhuHouseInspectionStatusInfoByAreaIds(Integer issueStatus,Integer taskId, List<Integer> ids);
 }

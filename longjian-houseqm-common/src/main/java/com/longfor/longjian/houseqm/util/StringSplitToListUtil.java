@@ -43,26 +43,6 @@ public class StringSplitToListUtil {
         return count;
     }
 
-    /**
-     * 字符串分割 转换为int类型的
-     *
-     * @param ids
-     * @param sep 分割符
-     * @return
-     */
-    public static List<Integer> splitToIdsComma(String ids, String sep) {
-        List<Integer> list = Lists.newArrayList();
-        ids = ids.trim();
-        String[] str = ids.split(sep);
-        List<String> areaList = Arrays.asList(str);
-        for (String s : areaList) {
-            if (s.equals("")) {
-                continue;
-            }
-            list.add(Integer.valueOf(s));
-        }
-        return list;
-    }
 
     /**
      * 字符串转换成对应的List String泛型

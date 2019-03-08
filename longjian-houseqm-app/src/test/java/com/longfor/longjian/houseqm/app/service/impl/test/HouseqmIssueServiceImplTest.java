@@ -15,7 +15,6 @@ import java.util.Arrays;
 import java.util.Date;
 
 @RunWith(SpringRunner.class)
-@ActiveProfiles("sonar")
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.DEFINED_PORT)
 public class HouseqmIssueServiceImplTest {
 
