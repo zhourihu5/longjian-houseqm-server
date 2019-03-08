@@ -15,29 +15,31 @@ import org.springframework.test.web.servlet.result.MockMvcResultHandlers;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.context.WebApplicationContext;
 
+import static org.junit.Assert.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-/**
- * Created by Dongshun on 2019/3/8.
- */
-@RunWith(SpringJUnit4ClassRunner.class) // SpringJUnit支持，由此引入Spring-Test框架支持！
-@SpringBootTest(classes = Application.class,webEnvironment = SpringBootTest.WebEnvironment.DEFINED_PORT) // 指定我们SpringBoot工程的Application启动类
-public class BuildingqmControllerTest {
+@RunWith(SpringJUnit4ClassRunner.class)
+@SpringBootTest(classes = Application.class,webEnvironment = SpringBootTest.WebEnvironment.DEFINED_PORT)
+public class HouseqmStatControllerTest {
+
     private static final String TOKEN = TokenGetUtil.getToken();
     private MockMvc mockMvc;
     @Autowired
     protected WebApplicationContext wac;
+
     @Before()
     public void setup() {
         mockMvc = MockMvcBuilders.webAppContextSetup(wac).addFilter(new UrlFilter()).build();
     }
 
     @Test
-    public void testBuildingqmMyTaskList() throws Exception {
+    public void categoryStat() throws Exception {
         mockMvc.perform(
-                post("/buildingqm/v3/papi/buildingqm/my_task_list/").header("token",TOKEN)
+                post("/oapi/v3/houseqm/stat/category_stat/").header("token",TOKEN)
+                        .param("task_id","67645644")
+                        .param("project_id","930")
                         .contentType(MediaType.APPLICATION_JSON_VALUE))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.message").value("success"))
@@ -45,12 +47,15 @@ public class BuildingqmControllerTest {
     }
 
     @Test
-    public void testCheckUpdateCheck() throws Exception {
+    public void inspectionSituationSearch() {
+    }
+
+    @Test
+    public void checkerStat() throws Exception {
         mockMvc.perform(
-                post("/buildingqm/v3/papi/check_update/check").header("token",TOKEN)
-                        .param("issue_log_update_time","1541500296").param("issue_members_update_time","1541500295")
-                        .param("issue_update_time","1541500295").param("task_members_update_time","76225907")
-                        .param("task_update_time","1541501156").param("task_id","1541500299")
+                post("/oapi/v3/houseqm/stat_houseqm/checker_stat/").header("token",TOKEN)
+                        .param("task_ids","67645644")
+                        .param("project_id","930")
                         .contentType(MediaType.APPLICATION_JSON_VALUE))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.message").value("success"))
@@ -58,10 +63,13 @@ public class BuildingqmControllerTest {
     }
 
     @Test
-    public void testTaskSquadsMembers() throws Exception {
+    public void taskSituationDaily() throws Exception {
         mockMvc.perform(
-                post("/buildingqm/v3/papi/buildingqm/task_squads_members").header("token",TOKEN)
-                        .param("task_ids","67645752")
+                post("/oapi/v3/houseqm/stat/task_situation_daily/").header("token",TOKEN)
+                        .param("task_ids","67645644")
+                        .param("project_id","930")
+                        .param("page","1")
+                        .param("page_size","20")
                         .contentType(MediaType.APPLICATION_JSON_VALUE))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.message").value("success"))
@@ -69,26 +77,58 @@ public class BuildingqmControllerTest {
     }
 
     @Test
-    public void testMyIssuePatchList() throws Exception {
+    public void taskSituationOverall() throws Exception {
         mockMvc.perform(
-                post("/buildingqm/v3/papi/buildingqm/my_issue_patch_list/").header("token",TOKEN)
-                        .param("task_id","67645644").param("timestamp","1541500295")
+                post("/oapi/v3/houseqm/stat/task_situation_overall/").header("token",TOKEN)
+                        .param("task_ids","67645644")
+                        .param("project_id","930")
                         .contentType(MediaType.APPLICATION_JSON_VALUE))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.message").value("success"))
                 .andDo(MockMvcResultHandlers.print()).andReturn();
     }
-
 
     @Test
-    public void testTaskSquad() throws Exception {
+    public void taskAreaList() throws Exception {
         mockMvc.perform(
-                post("/buildingqm/v3/papi/task/task_squad").header("token",TOKEN)
-                        .param("task_id","67645644").param("project_id","930")
+                post("/oapi/v3/houseqm/stat/task_area_list/").header("token",TOKEN)
+                        .param("task_id","67645644")
+                        .param("project_id","930")
                         .contentType(MediaType.APPLICATION_JSON_VALUE))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.message").value("success"))
                 .andDo(MockMvcResultHandlers.print()).andReturn();
     }
 
+    @Test
+    public void areaSituationTaskList() {
+    }
+
+    @Test
+    public void taskDetail() throws Exception {
+        mockMvc.perform(
+                post("/oapi/v3/houseqm/stat/task_detail/").header("token",TOKEN)
+                        .param("task_id","67645644")
+                        .param("project_id","930")
+                        .contentType(MediaType.APPLICATION_JSON_VALUE))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.message").value("success"))
+                .andDo(MockMvcResultHandlers.print()).andReturn();
+    }
+
+    @Test
+    public void taskSituationRepairStat() {
+    }
+
+    @Test
+    public void taskSituationMembersChecker() {
+    }
+
+    @Test
+    public void taskSituationMembersRepairer() {
+    }
+
+    @Test
+    public void areaSituation() {
+    }
 }
