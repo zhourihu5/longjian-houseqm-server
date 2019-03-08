@@ -22,7 +22,7 @@ public class AreaServiceImplTest {
     @Test
     public void getRootRegexpConditionByAreaIds(){
         try {
-            areaService.getRootRegexpConditionByAreaIds(Arrays.asList(1,2,3,4,5));
+            areaService.getRootRegexpConditionByAreaIds(Arrays.asList(100,110));
         } catch (Exception e) {
            // Assert.fail(e.getMessage());
         }
