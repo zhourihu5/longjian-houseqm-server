@@ -2,6 +2,7 @@ package com.longfor.longjian.houseqm.web;
 
 import com.longfor.longjian.common.filter.UrlFilter;
 import com.longfor.longjian.houseqm.Application;
+import com.longfor.longjian.houseqm.util.TokenGetUtil;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -25,7 +26,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @RunWith(SpringJUnit4ClassRunner.class) // SpringJUnit支持，由此引入Spring-Test框架支持！
 @SpringBootTest(classes = Application.class,webEnvironment = SpringBootTest.WebEnvironment.DEFINED_PORT) // 指定我们SpringBoot工程的Application启动类
 public class HouseqmControllerTest {
-    private static final String TOKEN = "vMJ2e4YWceiEpc-5LhNry4Knfz2GlkkNHkBQq4H-_rcMDPacTBW_u6MjF8Gx4hON";
+    private static final String TOKEN = TokenGetUtil.getToken();
     private MockMvc mockMvc;
     @Autowired
     protected WebApplicationContext wac;
