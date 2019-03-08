@@ -17,6 +17,7 @@ import com.longfor.longjian.houseqm.po.zj2db.*;
 import com.longfor.longjian.houseqm.util.CollectionUtil;
 import com.longfor.longjian.houseqm.util.DateUtil;
 import com.longfor.longjian.houseqm.util.StringSplitToListUtil;
+import com.longfor.longjian.houseqm.util.StringUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -256,7 +257,7 @@ public class ReportIssueService {
                     desUserIds.add(issue.getRepairerId());
                     pushList.add(issue.getRepairerId());
                 }
-                List<Integer> idsComma = StringSplitToListUtil.splitToIdsComma(issue.getRepairerFollowerIds(), ",");
+                List<Integer> idsComma = StringUtil.strToInts(issue.getRepairerFollowerIds(), ",");
                 idsComma.forEach(user -> {
                     if (user > 0 && !desUserIds.contains(user)) {
                         desUserIds.add(user);
@@ -295,7 +296,7 @@ public class ReportIssueService {
                     desUserIds.add(issue.getRepairerId());
                     pushList.add(issue.getRepairerId());
                 }
-                List<Integer> idsComma = StringSplitToListUtil.splitToIdsComma(issue.getRepairerFollowerIds(), ",");
+                List<Integer> idsComma = StringUtil.strToInts(issue.getRepairerFollowerIds(), ",");
                 List splitToIdsComma = (List) notifyStatMap.get(issue.getUuid()).get("repairerFollowerIds");
                 idsComma.forEach(user -> {
                     if (user > 0 && (!splitToIdsComma.contains(user) || CheckTaskIssueStatus.ReformNoCheck.getValue().equals(notifyStatMap.get(issue.getUuid()).get(STATUS)))) {
@@ -681,7 +682,7 @@ public class ReportIssueService {
                 map.put(roleUser(detailInfo.getRepairer_id(), UserInIssueRoleType.Repairer.getValue()), true);
                 roleItem.setUser_role(map);
                 // # 整改参与人
-                List<Integer> followerIds = StringSplitToListUtil.splitToIdsComma(detailInfo.getRepairer_follower_ids(), ",");
+                List<Integer> followerIds = StringUtil.strToInts(detailInfo.getRepairer_follower_ids(), ",");
                 for (Integer followerId : followerIds) {
                     map.put(roleUser(followerId, UserInIssueRoleType.RepairerFollower.getValue()), true);
                     roleItem.setUser_role(map);
@@ -771,7 +772,7 @@ public class ReportIssueService {
                 map.put(roleUser(detailInfo.getRepairer_id(), UserInIssueRoleType.Repairer.getValue()), true);
                 roleItem.setUser_role(map);
                 // # 整改参与人
-                List<Integer> followerIds = StringSplitToListUtil.splitToIdsComma(detailInfo.getRepairer_follower_ids(), ",");
+                List<Integer> followerIds = StringUtil.strToInts(detailInfo.getRepairer_follower_ids(), ",");
                 for (Integer followerId : followerIds) {
                     map.put(roleUser(followerId, UserInIssueRoleType.RepairerFollower.getValue()), true);
                     roleItem.setUser_role(map);
@@ -870,7 +871,7 @@ public class ReportIssueService {
                 map.put(roleUser(detailInfo.getRepairer_id(), UserInIssueRoleType.Repairer.getValue()), true);
                 roleItem.setUser_role(map);
                 // # 整改参与人
-                List<Integer> followerIds = StringSplitToListUtil.splitToIdsComma(detailInfo.getRepairer_follower_ids(), ",");
+                List<Integer> followerIds = StringUtil.strToInts(detailInfo.getRepairer_follower_ids(), ",");
                 for (Integer followerId : followerIds) {
                     map.put(roleUser(followerId, UserInIssueRoleType.RepairerFollower.getValue()), true);
                     roleItem.setUser_role(map);
@@ -1058,7 +1059,7 @@ public class ReportIssueService {
                 map.put(roleUser(issue.getRepairerId(), UserInIssueRoleType.Repairer.getValue()), true);
                 roleItem.setUser_role(map);
                 // # 整改参与人
-                List<Integer> followerIds = StringSplitToListUtil.splitToIdsComma(detail.getRepairer_follower_ids(), ",");
+                List<Integer> followerIds = StringUtil.strToInts(detail.getRepairer_follower_ids(), ",");
                 followerIds.forEach(followerId -> {
                     map.put(roleUser(followerId, UserInIssueRoleType.RepairerFollower.getValue()), true);
                     roleItem.setUser_role(map);
@@ -1191,7 +1192,7 @@ public class ReportIssueService {
         lst.forEach(item -> {
             if (datetimeZero(item.getDeleteAt())) {
                 resultDict.put(item.getUuid(), item);
-                notifyStatDict.put(item.getUuid(), apiNotifyStat(item.getStatus(), item.getRepairerId(), StringSplitToListUtil.splitToIdsComma(item.getRepairerFollowerIds(), ",")));
+                notifyStatDict.put(item.getUuid(), apiNotifyStat(item.getStatus(), item.getRepairerId(), StringUtil.strToInts(item.getRepairerFollowerIds(), ",")));
             } else {
                 deleteIssueUuids.add(item.getUuid());
             }

@@ -6,6 +6,7 @@ import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.longfor.longjian.common.base.LjBaseResponse;
 import com.longfor.longjian.common.util.SessionInfo;
+import com.longfor.longjian.common.util.StringUtil;
 import com.longfor.longjian.houseqm.app.req.DeviceReq;
 import com.longfor.longjian.houseqm.app.service.IHouseqmService;
 import com.longfor.longjian.houseqm.app.vo.*;
@@ -18,7 +19,6 @@ import com.longfor.longjian.houseqm.consts.HouseQmUserInIssueRoleTypeEnum;
 import com.longfor.longjian.houseqm.domain.internalservice.*;
 import com.longfor.longjian.houseqm.po.zj2db.*;
 import com.longfor.longjian.houseqm.util.DateUtil;
-import com.longfor.longjian.houseqm.util.StringSplitToListUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections.CollectionUtils;
 import org.springframework.stereotype.Service;
@@ -304,8 +304,8 @@ public class  HouseqmServiceImpl implements IHouseqmService {
         //读取出任务
         HouseQmCheckTask task = houseQmCheckTaskService.selectAreaIdsByProjectIdAndTaskIdAndNoDeleted(projectId, taskId);
         //获取出任务下的区域与检验类型的交集
-        List<Integer> areaIds = StringSplitToListUtil.strToInts(task.getAreaIds(), ",");
-        List<Integer> areaTypes = StringSplitToListUtil.strToInts(task.getAreaTypes(), ",");
+        List<Integer> areaIds = StringUtil.strToInts(task.getAreaIds(), ",");
+        List<Integer> areaTypes = StringUtil.strToInts(task.getAreaTypes(), ",");
         if (CollectionUtils.isEmpty(areaIds)|| CollectionUtils.isEmpty(areaTypes)) return Lists.newArrayList();
         return  areaService.searchAreaListByRootIdAndTypes(projectId, areaIds, areaTypes);
 

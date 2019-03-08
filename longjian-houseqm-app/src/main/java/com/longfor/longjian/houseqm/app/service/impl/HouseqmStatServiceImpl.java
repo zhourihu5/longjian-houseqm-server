@@ -21,8 +21,8 @@ import com.longfor.longjian.houseqm.po.zj2db.Area;
 import com.longfor.longjian.houseqm.po.zj2db.HouseQmCheckTask;
 import com.longfor.longjian.houseqm.po.zj2db.HouseQmCheckTaskIssue;
 import com.longfor.longjian.houseqm.po.zj2db.RepossessionStatus;
+import com.longfor.longjian.houseqm.util.CollectionUtil;
 import com.longfor.longjian.houseqm.util.DateUtil;
-import com.longfor.longjian.houseqm.util.StringSplitToListUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang.StringUtils;
@@ -119,13 +119,13 @@ public class HouseqmStatServiceImpl implements IHouseqmStatService {
         HouseQmCheckTask task = houseQmCheckTaskService.getHouseQmCheckTaskByProjTaskId(projectId, taskId);
         List<Integer> aids = StringUtil.strToInts(task.getAreaIds(), ",");
         List<Integer> types = StringUtil.strToInts(task.getAreaTypes(), ",");
-        List<Area> areas = areaService.searchAreaListByRootIdAndTypes(projectId, aids, types);
+        List<Area> areas = areaService.searchAreaListByRootIdAndTypes(projectId, aids, types);// 获取对应项目 区域下的楼栋 层 户
         List<String> taskAreaPaths = Lists.newArrayList();
         for (Area area : areas) {
             taskAreaPaths.add(String.format(PATH_AND_ID_REPEX, area.getPath(), area.getId()));
         }
 
-        //筛选 户状态 取出对应状态条件path
+        //筛选 户状态 取出对应状态条件path 库表 repossession_status 库中无数据 导致筛选条件无意义
         if (!status.equals(StatisticFormRepossessionStatusEnum.All.getId())) {
             if (status.equals(StatisticFormRepossessionStatusEnum.None.getId())) {//户状态 未检查
                 List<String> checkedAreaPaths = getRepossessAreaPathListByTaskIdAndStatusesAndClientUpdateAt(taskId, Collections.singletonList(StatisticFormRepossessionStatusEnum.None.getId()), startTime, endTime);
@@ -187,14 +187,14 @@ public class HouseqmStatServiceImpl implements IHouseqmStatService {
 
     // 格式化验房信息
     @Override
-    public List<InspectionHouseStatusInfoVo> formatFenhuHouseInspectionStatusInfoByAreaIds(Integer taskId, List<Integer> ids) {
+    public List<InspectionHouseStatusInfoVo> formatFenhuHouseInspectionStatusInfoByAreaIds(Integer issueStatus,Integer taskId, List<Integer> ids) {
         List<InspectionHouseStatusInfoVo> result = Lists.newArrayList();
         if (ids.isEmpty()) return result;
 
         //获取区域信息
         AreaMapVo areaMap = houseqmStatisticService.createAreasMapByLeaveIds(ids);
         //获取问题map
-        Map<Integer, List<HouseQmCheckTaskIssue>> issuesMap = searchHouseQmCheckTaskIssueMapByTaskIdAreaIds(taskId, ids);
+        Map<Integer, List<HouseQmCheckTaskIssue>> issuesMap = searchHouseQmCheckTaskIssueMapByTaskIdAreaIds(issueStatus,taskId, ids);
 
         for (Integer aid : ids) {
             InspectionHouseStatusInfoVo item = new InspectionHouseStatusInfoVo();
@@ -228,6 +228,7 @@ public class HouseqmStatServiceImpl implements IHouseqmStatService {
                             default:
                                 break;
                         }
+                        e=null;
                     }
                     HouseQmCheckTaskIssueTypeEnum e1 = null;
                     for (HouseQmCheckTaskIssueTypeEnum value : HouseQmCheckTaskIssueTypeEnum.values()) {
@@ -243,6 +244,7 @@ public class HouseqmStatServiceImpl implements IHouseqmStatService {
                                 break;
                         }
                     }
+                    e1=null;
                 }
             } else {
                 item.setStatus(StatisticFormInspectionStatusEnum.UnChecked.getId());
@@ -254,8 +256,8 @@ public class HouseqmStatServiceImpl implements IHouseqmStatService {
         return result;
     }
 
-    // 通过taskId和areaId获取按area_id分组的问题map
-    public Map<Integer, List<HouseQmCheckTaskIssue>> searchHouseQmCheckTaskIssueMapByTaskIdAreaIds(int taskId, List<Integer> areaIds) {
+    // 通过taskId和areaId获取按area_id分组的问题map 添加issueStatus 作区分
+    public Map<Integer, List<HouseQmCheckTaskIssue>> searchHouseQmCheckTaskIssueMapByTaskIdAreaIds(Integer issueStatus,int taskId, List<Integer> areaIds) {
         Map<Integer, List<HouseQmCheckTaskIssue>> result = Maps.newHashMap();
 
         String regexp = areaService.getRootRegexpConditionByAreaIds(areaIds);
@@ -291,21 +293,45 @@ public class HouseqmStatServiceImpl implements IHouseqmStatService {
             }
             for (int i = issuePos; i < issuePaths.size(); i++) {
                 if (issuePaths.get(i).startsWith(aPath)) {
-                    Area area = areaMap.get(aPath);
-                    //result[area.Id] = append(result[area.Id], issueMap[issuePaths[i]])
-                    List<HouseQmCheckTaskIssue> list = result.get(area.getId());
-                    if (CollectionUtils.isNotEmpty(list)) {
-                        String key = issuePaths.get(i);
-                        HouseQmCheckTaskIssue e = issueMap.get(key);
-                        list.add(e);
-                        result.put(area.getId(), list);
-                    } else {
-                        List<HouseQmCheckTaskIssue> list1 = Lists.newArrayList();
-                        list1.add(issueMap.get(issuePaths.get(i)));
-                        result.put(area.getId(), list1);
+                    Area area=null;
+                    if (issueStatus.equals(1)||issueStatus.equals(0)) {
+                        area = areaMap.get(issuePaths.get(i));// 源码是 aPath
+                        List<HouseQmCheckTaskIssue> list = result.get(area.getId());
+                        if (list!=null) {
+                            String key = issuePaths.get(i);
+                            HouseQmCheckTaskIssue e = issueMap.get(key);
+                            list.add(e);
+                            List<HouseQmCheckTaskIssue> ls = CollectionUtil.removeDuplicate(list);
+                            result.put(area.getId(), ls);
+                        } else {
+                            List<HouseQmCheckTaskIssue> list1 = Lists.newArrayList();
+                            list1.add(issueMap.get(issuePaths.get(i)));
+                            List<HouseQmCheckTaskIssue> ls = CollectionUtil.removeDuplicate(list1);
+                            result.put(area.getId(), ls);
+                            result.put(area.getId(), list1);
+                        }
+                        lastCount++;
                     }
-                    lastCount++;
-                } else {
+                    else if (issueStatus.equals(2)){
+                        area = areaMap.get(aPath);// 源码是 aPath
+                        List<HouseQmCheckTaskIssue> list = result.get(area.getId());
+                        if (list!=null) {
+                            String key = issuePaths.get(i);
+                            HouseQmCheckTaskIssue e = issueMap.get(key);
+                            list.add(e);
+                            List<HouseQmCheckTaskIssue> ls = CollectionUtil.removeDuplicate(list);
+                            result.put(area.getId(), ls);
+                        } else {
+                            List<HouseQmCheckTaskIssue> list1 = Lists.newArrayList();
+                            list1.add(issueMap.get(issuePaths.get(i)));
+                            List<HouseQmCheckTaskIssue> ls = CollectionUtil.removeDuplicate(list1);
+                            result.put(area.getId(), ls);
+                            result.put(area.getId(), list1);
+                        }
+                        lastCount++;
+                    }
+
+                }else {
                     break;
                 }
             }
@@ -737,7 +763,7 @@ public class HouseqmStatServiceImpl implements IHouseqmStatService {
         List<AreaTaskListVo.AreaTaskVo> list = Lists.newArrayList();
         for (HouseQmCheckTask item : tasks) {
             AreaTaskListVo.AreaTaskVo areaTaskVo = areaTaskListVo.new AreaTaskVo();
-            List<Integer> areaList = StringSplitToListUtil.splitToIdsComma(item.getAreaIds(), ",");
+            List<Integer> areaList = StringUtil.strToInts(item.getAreaIds(), ",");
             if (checkRootAreaIntersectAreas(areaMap, areaId, areaList)) {
                 areaTaskVo.setId(item.getTaskId());
                 areaTaskVo.setName(item.getName());

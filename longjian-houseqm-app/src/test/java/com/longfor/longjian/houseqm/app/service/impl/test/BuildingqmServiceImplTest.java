@@ -125,7 +125,7 @@ public class BuildingqmServiceImplTest {
         try{
             buildingqmServiceImpl.getIssueListLogByLastIdAndUpdataAt(1,DateUtil.datetimeToTimeStamp(new Date()),"1");
         }catch (Exception e){
-            //Assert.fail(e.getMessage());
+           //Assert.fail(e.getMessage());
         }
     }
 

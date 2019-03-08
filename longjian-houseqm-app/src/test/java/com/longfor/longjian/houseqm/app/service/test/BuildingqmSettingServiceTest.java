@@ -25,7 +25,7 @@ public class BuildingqmSettingServiceTest {
         try{
             buildingqmSettingService.getIssuefiledSetting("1,2,3,4,5,6,7,8,9,10", DateUtil.datetimeToTimeStamp(new Date()));
         }catch (Exception e){
-            //Assert.fail(e.getMessage());
+            ////Assert.fail(e.getMessage());
         }
     }
 }

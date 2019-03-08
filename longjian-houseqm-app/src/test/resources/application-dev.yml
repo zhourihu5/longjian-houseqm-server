@@ -275,3 +275,12 @@ display_system_name: 智检
   # app_key_ios: "5b559ccb8f4a9d7a4800000f"
 # app_master_secret_ios: "zzl7yp8youbkvto9os8ucs1x2fu6rdw2"
 #########
+verify:
+  geetest_id: 5f728fbc77c89e8e77547695495f3c57
+  geetest_key: 4e8633e755dae34e9289d1cfc881f5bd
+  max_account_count: 5
+  max_fail_count: 3
+  # 以毫秒为单位
+  login_fail_ttl: 86400000
+  login_inhibit_ttl: 900000
+  login_account_ttl: 14400000

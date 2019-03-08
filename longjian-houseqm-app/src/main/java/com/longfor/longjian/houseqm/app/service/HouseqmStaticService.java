@@ -4,6 +4,7 @@ package com.longfor.longjian.houseqm.app.service;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.longfor.longjian.common.consts.HouseQmCheckTaskIssueStatusEnum;
+import com.longfor.longjian.common.util.StringUtil;
 import com.longfor.longjian.houseqm.app.vo.*;
 import com.longfor.longjian.houseqm.consts.HouseQmCheckTaskIssueEnum;
 import com.longfor.longjian.houseqm.consts.HouseQmCheckTaskIssueTypeEnum;
@@ -51,7 +52,7 @@ public class HouseqmStaticService {
             HouseQmCheckTaskSimpleRspVo rspVo = new HouseQmCheckTaskSimpleRspVo();
             rspVo.setProject_id(houseQmCheckTasks.get(i).getProjectId());
             rspVo.setTask_id(houseQmCheckTasks.get(i).getTaskId());
-            List<Integer> split = StringSplitToListUtil.splitToIdsComma(houseQmCheckTasks.get(i).getAreaTypes(), ",");
+            List<Integer> split = StringUtil.strToInts(houseQmCheckTasks.get(i).getAreaTypes(), ",");
             rspVo.setArea_types(split);
             rspVo.setName(houseQmCheckTasks.get(i).getName());
             rspVo.setPlan_end_on(DateUtil.datetimeToTimeStamp(houseQmCheckTasks.get(i).getPlanEndOn()));
@@ -160,7 +161,7 @@ public class HouseqmStaticService {
         return buildlist;
     }
 
-    private Map<Integer,IssueMinStatus> getIssueMinStatusMapByTaskIdAndAreaId(Integer taskId, Integer areaId, Boolean onlyIssue) {
+    public Map<Integer,IssueMinStatus> getIssueMinStatusMapByTaskIdAndAreaId(Integer taskId, Integer areaId, Boolean onlyIssue) {
         List<Integer> types = Lists.newArrayList();
         types.add(HouseQmCheckTaskIssueEnum.FindProblem.getId());
         types.add(HouseQmCheckTaskIssueEnum.Difficult.getId());
@@ -182,7 +183,7 @@ public class HouseqmStaticService {
     }
 
 
-    private List<Integer> splitToIdsComma(String ids, String sep) {
+    public List<Integer> splitToIdsComma(String ids, String sep) {
         List<Integer> list = Lists.newArrayList();
         ids = ids.trim();
         String[] str = ids.split(sep);
@@ -209,7 +210,7 @@ public class HouseqmStaticService {
             List<String> hasIssuePaths = getHasIssueTaskCheckedAreaPathListByTaskId(taskId, true, null, areaId);
             HashMap<Integer, Boolean> hasIssueAreaId = Maps.newHashMap();
             for (int j = 0; j < hasIssuePaths.size(); j++) {
-                List<Integer> ids = StringSplitToListUtil.splitToIdsComma(hasIssuePaths.get(j), "/");
+                List<Integer> ids = StringUtil.strToInts(hasIssuePaths.get(j), "/");
                 if (CollectionUtils.isNotEmpty(ids)) {
                     for (int k = 0; k < ids.size(); k++) {
                         hasIssueAreaId.put(ids.get(ids.size() - 1), true);
@@ -225,7 +226,7 @@ public class HouseqmStaticService {
             List<String> hasIssueNoApprovedPaths = getHasIssueTaskCheckedAreaPathListByTaskId(taskId, true, statuses, areaId);
             HashMap<Integer, Boolean> hasIssueNoApprovedAreaId = Maps.newHashMap();
             for (int j = 0; j < hasIssueNoApprovedPaths.size(); j++) {
-                List<Integer> ids = StringSplitToListUtil.splitToIdsComma(hasIssueNoApprovedPaths.get(j), "/");
+                List<Integer> ids = StringUtil.strToInts(hasIssueNoApprovedPaths.get(j), "/");
                 if (CollectionUtils.isNotEmpty(ids)) {
                     for (int k = 0; k < ids.size(); k++) {
                         hasIssueNoApprovedAreaId.put(ids.get(ids.size() - 1), true);
@@ -323,7 +324,7 @@ public class HouseqmStaticService {
         return paths;
     }
 
-    private List<Area> searchTargetAreaByTaskId(Integer prodectId, Integer taskId) {
+    public List<Area> searchTargetAreaByTaskId(Integer prodectId, Integer taskId) {
 
         //读取任务
         HouseQmCheckTask taskByProjTaskId = houseQmCheckTaskService.getHouseQmCheckTaskByProjTaskId(prodectId, taskId);
@@ -351,7 +352,7 @@ public class HouseqmStaticService {
         List<HouseQmCheckTask> tasks = houseQmCheckTaskService.searchByProjectIdAndCategoryClsIn(projectId, categoryClsList);
         ArrayList<Integer> areaIds = Lists.newArrayList();
         for (int i = 0; i < tasks.size(); i++) {
-            List<Integer> ids = StringSplitToListUtil.splitToIdsComma(tasks.get(i).getAreaIds(), ",");
+            List<Integer> ids = StringUtil.strToInts(tasks.get(i).getAreaIds(), ",");
             areaIds.addAll(ids);
         }
         List list = CollectionUtil.removeDuplicate(areaIds);
@@ -361,7 +362,7 @@ public class HouseqmStaticService {
             areaMap.put(areas.get(i).getId(), areas.get(i).getPath() + areas.get(i).getId());
         }
         for (int i = 0; i < tasks.size(); i++) {
-            List<Integer> comma = StringSplitToListUtil.splitToIdsComma(tasks.get(i).getAreaIds(), ",");
+            List<Integer> comma = StringUtil.strToInts(tasks.get(i).getAreaIds(), ",");
             Boolean b = checkRootAreaIntersectAreas(areaMap, areaId, comma);
             if (b) {
                 return tasks;
@@ -371,7 +372,7 @@ public class HouseqmStaticService {
         return Lists.newArrayList();
     }
 
-    private Boolean checkRootAreaIntersectAreas(HashMap<Integer, String> areaMap, Integer areaId, List<Integer> comma) {
+    public Boolean checkRootAreaIntersectAreas(HashMap<Integer, String> areaMap, Integer areaId, List<Integer> comma) {
         for (int i = 0; i < comma.size(); i++) {
             if (comma.get(i).equals(areaId)) {
                 return true;

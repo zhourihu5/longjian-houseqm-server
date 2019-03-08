@@ -4,6 +4,7 @@ import com.alibaba.fastjson.JSON;
 import com.google.common.collect.Lists;
 import com.longfor.longjian.common.consts.HouseQmCheckTaskIssueStatusEnum;
 import com.longfor.longjian.common.exception.LjBaseRuntimeException;
+import com.longfor.longjian.common.util.StringUtil;
 import com.longfor.longjian.houseqm.app.service.IHouseqmIssueService;
 import com.longfor.longjian.houseqm.app.utils.HouseQmCheckTaskIssueHelperVo;
 import com.longfor.longjian.houseqm.app.vo.houseqmissue.ApiHouseQmCheckTaskReportRsp;
@@ -145,7 +146,7 @@ public class HouseqmIssueServiceImpl implements IHouseqmIssueService {
             // 整改负责人变化了，则需要将他添加进跟进人
             String issueRepairerFollowerIds = "";
             if (repairerId.equals(issue.getRepairerId()) && issue.getRepairerId() > 0) {
-                List<Integer> followers = StringSplitToListUtil.strToInts(repairFollowerIds, ",");
+                List<Integer> followers = StringUtil.strToInts(repairFollowerIds, ",");
                 boolean flag = true;
                 for (Integer f : followers) {
                     if (f.equals(issue.getRepairerId())) flag = false;

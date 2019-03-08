@@ -3,6 +3,7 @@ package com.longfor.longjian.houseqm.app.service.impl;
 import com.google.common.collect.Lists;
 import com.longfor.gaia.gfs.data.mybatis.datasource.LFAssignDataSource;
 import com.longfor.longjian.common.exception.LjBaseRuntimeException;
+import com.longfor.longjian.common.util.StringUtil;
 import com.longfor.longjian.houseqm.app.service.ITaskService;
 import com.longfor.longjian.houseqm.app.vo.HouseQmCheckTaskRspVo;
 import com.longfor.longjian.houseqm.app.vo.task.HouseQmCheckTaskListAndTotalVo;
@@ -86,7 +87,7 @@ public class TaskServiceImpl implements ITaskService {
         if (areaIdsInfo == null) {
             return result;
         }
-        List<Integer> areaIds = StringSplitToListUtil.splitToIdsComma(areaIdsInfo.getAreaIds(), ",");
+        List<Integer> areaIds = StringUtil.strToInts(areaIdsInfo.getAreaIds(), ",");
         List<HouseQmCheckTaskIssue> issueAreaIdsInfo = houseQmCheckTaskIssueService.selectAreaIdByProjectIdAndTaskIdAndAreaIdInAndNoDeleted(projectId, taskId, areaIds);
         for (HouseQmCheckTaskIssue i : issueAreaIdsInfo) {
             result.add(i.getAreaId());

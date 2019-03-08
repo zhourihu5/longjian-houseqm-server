@@ -10,6 +10,7 @@ import com.longfor.longjian.common.consts.CategoryClsTypeEnum;
 import com.longfor.longjian.common.consts.ModuleInfoEnum;
 import com.longfor.longjian.common.consts.checktask.*;
 import com.longfor.longjian.common.exception.LjBaseRuntimeException;
+import com.longfor.longjian.common.util.StringUtil;
 import com.longfor.longjian.houseqm.app.req.TaskEditReq;
 import com.longfor.longjian.houseqm.app.req.TaskReq;
 import com.longfor.longjian.houseqm.app.service.IBuildingqmService;
@@ -341,11 +342,11 @@ public class BuildingqmServiceImpl implements IBuildingqmService {
 
     private Map<String, Object> prepareForCreateOrEdit(TaskReq taskReq) {
         Map<String, Object> paramMap = new HashMap<>();
-        List<Integer> areaIds = StringSplitToListUtil.splitToIdsComma(taskReq.getArea_ids(), ",");
+        List<Integer> areaIds = StringUtil.strToInts(taskReq.getArea_ids(), ",");
         if (CollectionUtils.isEmpty(areaIds)) {
             throw new LjBaseRuntimeException(-99, "区域不能为空");
         }
-        List<Integer> areaTypes = StringSplitToListUtil.splitToIdsComma(taskReq.getArea_types(), ",");
+        List<Integer> areaTypes = StringUtil.strToInts(taskReq.getArea_types(), ",");
         if (CollectionUtils.isEmpty(areaTypes)) {
             throw new LjBaseRuntimeException(-99, "区域类型不能为空");
         }
@@ -354,7 +355,7 @@ public class BuildingqmServiceImpl implements IBuildingqmService {
             throw new LjBaseRuntimeException(-99, "检查人组不能为空");
         }
         List<ApiBuildingQmTaskMemberGroupVo> checkerGroups = createCheckerGroups(groupsInfo);
-        List<Integer> repairerIds = StringSplitToListUtil.splitToIdsComma(taskReq.getRepairer_ids(), ",");
+        List<Integer> repairerIds = StringUtil.strToInts(taskReq.getRepairer_ids(), ",");
         if (CollectionUtils.isEmpty(repairerIds)) {
             throw new LjBaseRuntimeException(-99, "整改人不能为空");
         }
@@ -1205,10 +1206,10 @@ public class BuildingqmServiceImpl implements IBuildingqmService {
     private List<ApiBuildingQmTaskMemberGroupVo> createCheckerGroups(List<ApiBuildingQmCheckTaskSquadObjVo> groupsInfo) {
         ArrayList<ApiBuildingQmTaskMemberGroupVo> objects = Lists.newArrayList();
         for (int i = 0; i < groupsInfo.size(); i++) {
-            List<Integer> userIds = StringSplitToListUtil.splitToIdsComma(groupsInfo.get(i).getUser_ids(), ",");
-            List<Integer> approveIds = StringSplitToListUtil.splitToIdsComma(groupsInfo.get(i).getApprove_ids(), ",");
-            List<Integer> directApproveIds = StringSplitToListUtil.splitToIdsComma(groupsInfo.get(i).getDirect_approve_ids(), ",");
-            List<Integer> reassignIds = StringSplitToListUtil.splitToIdsComma(groupsInfo.get(i).getReassign_ids(), ",");
+            List<Integer> userIds = StringUtil.strToInts(groupsInfo.get(i).getUser_ids(), ",");
+            List<Integer> approveIds = StringUtil.strToInts(groupsInfo.get(i).getApprove_ids(), ",");
+            List<Integer> directApproveIds = StringUtil.strToInts(groupsInfo.get(i).getDirect_approve_ids(), ",");
+            List<Integer> reassignIds = StringUtil.strToInts(groupsInfo.get(i).getReassign_ids(), ",");
             ApiBuildingQmTaskMemberGroupVo groupVo = new ApiBuildingQmTaskMemberGroupVo();
             groupVo.setGroup_id(groupsInfo.get(i).getId());
             groupVo.setGroup_name(groupsInfo.get(i).getName());

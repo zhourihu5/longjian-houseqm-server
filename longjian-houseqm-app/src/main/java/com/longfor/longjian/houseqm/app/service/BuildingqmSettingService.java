@@ -4,6 +4,7 @@ import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.longfor.longjian.common.base.LjBaseResponse;
 import com.longfor.longjian.common.consts.ModuleInfoEnum;
+import com.longfor.longjian.common.util.StringUtil;
 import com.longfor.longjian.houseqm.app.vo.ApiIssueFiledSettingMsg;
 import com.longfor.longjian.houseqm.consts.IssueFieldAliasStatusEnum;
 import com.longfor.longjian.houseqm.consts.IssueFieldDefaultListEnum;
@@ -50,7 +51,7 @@ public class BuildingqmSettingService {
     }
 
     public LjBaseResponse<ApiIssueFiledSettingMsg.IssueFileds> getIssuefiledSetting(String projectIds, Integer timestamp) {
-        List<Integer> projectIdList = StringSplitToListUtil.splitToIdsComma(projectIds, ",");
+        List<Integer> projectIdList = StringUtil.strToInts(projectIds, ",");
         ArrayList<ApiIssueFiledSettingMsg> issueFileds = Lists.newArrayList();
         List<IssueFieldSetting> settingList = issueFieldSettingService.findProjectIdsAndModuleId(projectIdList, ModuleInfoEnum.GCGL.getValue());
         HashMap<Integer, List<IssueFieldSetting>> projectMap = Maps.newHashMap();
