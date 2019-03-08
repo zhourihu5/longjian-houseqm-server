@@ -89,8 +89,7 @@ public class BuildingqmServiceImplTest {
             //Assert.fail(e.getMessage());
         }
     }
-//java.lang.AssertionError:
-//### Error querying database.  Cause: com.mysql.jdbc.exceptions.jdbc4.MySQLSyntaxErrorException: Table 'zhijian2.push_strategy_assign_time' doesn't exist
+
     @Test
     @Transactional
     public void edit() {
