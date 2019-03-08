@@ -730,10 +730,10 @@ public class HouseqmStatisticServiceImpl implements IHouseqmStatisticService {
         result.setOnlyWatchCount(repossessionInfo.getOnlyWatch());
         result.setRejectCount(repossessionInfo.getRejectCount());
         result.setAcceptApprovedCount(repossessionInfo.getAcceptApprovedCount());
-        result.setHouseCount(normalStat.getHouseCount());
-        result.setHasIssueCount(normalStat.getHasIssueCount());
-        result.setRepairedCount(normalStat.getRepairedCount());
-        result.setApprovedCount(normalStat.getApprovedCount());
+        result.setHouseCount(normalStat==null?0:normalStat.getHouseCount());
+        result.setHasIssueCount(normalStat==null?0:normalStat.getHasIssueCount());
+        result.setRepairedCount(normalStat==null?0:normalStat.getRepairedCount());
+        result.setApprovedCount(normalStat==null?0:normalStat.getApprovedCount());
 
         return result;
     }
@@ -908,7 +908,7 @@ public class HouseqmStatisticServiceImpl implements IHouseqmStatisticService {
         String nowStr = DateUtil.getNowTimeStr("yyyy-MM-dd HH:mm:ss");
         HashMap<String, Object> condiMap = new HashMap<>();
         condiMap.put(PROJECT_ID, projectId);
-        condiMap.put("categoryClsList", categoryClsList);
+        if (CollectionUtils.isNotEmpty(categoryClsList))condiMap.put("categoryClsList", categoryClsList);
 
         if (areaId > 0) condiMap.put("areaPathAndId", "%/" + areaId + "/%");
         if (beginOn1.getTime() / 1000 > 0) condiMap.put("clientCreateAtGte", beginOn1);

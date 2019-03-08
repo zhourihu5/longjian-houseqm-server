@@ -95,6 +95,7 @@ public class AreaServiceImpl implements AreaService {
      */
     @LFAssignDataSource("zhijian2")
     public List<Area> selectAreasByIdInAreaIds(List<Integer> areaIds) {
+        if (CollectionUtils.isEmpty(areaIds))return Lists.newArrayList();
         Example example = new Example(Area.class);
         Example.Criteria criteria = example.createCriteria();
         criteria.andIn("id", areaIds);

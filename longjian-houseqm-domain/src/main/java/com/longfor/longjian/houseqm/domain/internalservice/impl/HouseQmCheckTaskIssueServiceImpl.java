@@ -169,7 +169,8 @@ public class HouseQmCheckTaskIssueServiceImpl implements HouseQmCheckTaskIssueSe
     public List<HouseQmCheckTaskIssue> searchByProjIdAndTaskIdAndAreaIdInAndRepairedIdAndClientCreateAt(Integer projectId, Integer taskId, List<Integer> subAreaIds, Integer repairerId, Date beginOn, Date endOn) {
         Example example = new Example(HouseQmCheckTaskIssue.class);
         Example.Criteria criteria = example.createCriteria();
-        criteria.andEqualTo(PROJECT_ID, projectId).andEqualTo(TASK_ID, taskId).andIn(AREA_ID, subAreaIds);
+        criteria.andEqualTo(PROJECT_ID, projectId).andEqualTo(TASK_ID, taskId);
+        if (CollectionUtils.isNotEmpty(subAreaIds))criteria.andIn(AREA_ID, subAreaIds);
         if (repairerId > 0) {
             criteria.andEqualTo(REPAIRER_ID, repairerId);
         }

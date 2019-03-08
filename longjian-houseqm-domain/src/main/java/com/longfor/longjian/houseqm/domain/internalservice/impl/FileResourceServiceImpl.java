@@ -1,10 +1,12 @@
 package com.longfor.longjian.houseqm.domain.internalservice.impl;
 
+import com.google.common.collect.Lists;
 import com.longfor.gaia.gfs.data.mybatis.datasource.LFAssignDataSource;
 import com.longfor.longjian.houseqm.dao.zj2db.FileResourceMapper;
 import com.longfor.longjian.houseqm.domain.internalservice.FileResourceService;
 import com.longfor.longjian.houseqm.po.zj2db.FileResource;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.collections.CollectionUtils;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
@@ -31,6 +33,7 @@ public class FileResourceServiceImpl implements FileResourceService {
     @Override
     @LFAssignDataSource("zhijian2")
     public List<FileResource> searchFileResourceByFileMd5InAndNoDeleted(List<String> attachments) {
+        if (CollectionUtils.isEmpty(attachments))return Lists.newArrayList();
         return fileResourceMapper.selectFileResourceByFileMd5InAndNoDeleted(attachments, "false");
     }
 

@@ -720,10 +720,10 @@
         NULL END) as intime_finish
         FROM house_qm_check_task_issue
         <where>
-            project_id=#{projectId} AND category_cls IN
+            project_id=#{projectId} <if test="categoryClsList!=null">AND category_cls IN
             <foreach collection="categoryClsList" item="item" open="(" separator="," close=")" index="index">
                 #{item}
-            </foreach>
+            </foreach></if>
             <if test="areaPathAndId!=null">
                 AND area_path_and_id LIKE concat('',#{areaPathAndId})
             </if>

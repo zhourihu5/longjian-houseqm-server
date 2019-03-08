@@ -557,7 +557,8 @@ public class BuildingqmServiceImpl implements IBuildingqmService {
         ApiIssueLogVo.ApiIssueLogInfoIssueRsp issue = new ApiIssueLogVo().new ApiIssueLogInfoIssueRsp();
         ArrayList<ApiIssueLogVo.ApiIssueLogListRsp> issueLogList = Lists.newArrayList();
         if (issueInfo == null) {
-            throw new LjBaseRuntimeException(-99, "没找到此问题");
+            //throw new LjBaseRuntimeException(-99, "没找到此问题");
+            return new ApiIssueLogVo();
         }
         ArrayList<Integer> usersId = Lists.newArrayList();
         usersId.add(issueInfo.getSenderId());
