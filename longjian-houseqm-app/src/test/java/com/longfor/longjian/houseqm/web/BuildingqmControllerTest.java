@@ -90,14 +90,4 @@ public class BuildingqmControllerTest {
                 .andExpect(jsonPath("$.message").value("success"))
                 .andDo(MockMvcResultHandlers.print()).andReturn();
     }
-    @Test
-    public void testCreate() throws Exception {
-        mockMvc.perform(
-                post("/buildingqm/v3/papi/task/create").header("token",TOKEN)
-                        .param("task_id","67645644").param("project_id","930")
-                        .contentType(MediaType.APPLICATION_JSON_VALUE))
-                .andExpect(status().isOk())
-                .andExpect(jsonPath("$.message").value("success"))
-                .andDo(MockMvcResultHandlers.print()).andReturn();
-    }
 }
