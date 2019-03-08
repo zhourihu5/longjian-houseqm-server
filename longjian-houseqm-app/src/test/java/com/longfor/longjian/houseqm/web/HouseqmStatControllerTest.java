@@ -3,6 +3,7 @@ package com.longfor.longjian.houseqm.web;
 import com.longfor.longjian.common.filter.UrlFilter;
 import com.longfor.longjian.houseqm.Application;
 import com.longfor.longjian.houseqm.util.TokenGetUtil;
+import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -47,7 +48,23 @@ public class HouseqmStatControllerTest {
     }
 
     @Test
-    public void inspectionSituationSearch() {
+    public void inspectionSituationSearch() throws Exception {
+        try {
+            mockMvc.perform(
+                    post("/oapi/v3/houseqm/stat/inspection_situation_search/").header("token",TOKEN)
+                            .param("task_id","67645644")
+                            .param("project_id","930")
+                            .param("issue_status","2")
+                            .param("page","1")
+                            .param("page_size","20")
+                            .contentType(MediaType.APPLICATION_JSON_VALUE))
+                    .andExpect(status().isOk())
+                    .andExpect(jsonPath("$.message").value("success"))
+                    .andDo(MockMvcResultHandlers.print()).andReturn();
+        } catch (Exception e) {
+            e.printStackTrace();
+            Assert.fail(e.getMessage());
+        }
     }
 
     @Test
@@ -117,15 +134,39 @@ public class HouseqmStatControllerTest {
     }
 
     @Test
-    public void taskSituationRepairStat() {
+    public void taskSituationRepairStat() throws Exception {
+        mockMvc.perform(
+                post("/oapi/v3/houseqm/stat/task_situation_repair_stat/").header("token",TOKEN)
+                        .param("task_id","67645644")
+                        .param("project_id","930")
+                        .contentType(MediaType.APPLICATION_JSON_VALUE))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.message").value("success"))
+                .andDo(MockMvcResultHandlers.print()).andReturn();
     }
 
     @Test
-    public void taskSituationMembersChecker() {
+    public void taskSituationMembersChecker() throws Exception {
+        mockMvc.perform(
+                post("/oapi/v3/houseqm/stat/task_situation_members_checker/").header("token",TOKEN)
+                        .param("task_id","67645644")
+                        .param("project_id","930")
+                        .contentType(MediaType.APPLICATION_JSON_VALUE))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.message").value("success"))
+                .andDo(MockMvcResultHandlers.print()).andReturn();
     }
 
     @Test
-    public void taskSituationMembersRepairer() {
+    public void taskSituationMembersRepairer() throws Exception {
+        mockMvc.perform(
+                post("/oapi/v3/houseqm/stat/task_situation_members_repairer/").header("token",TOKEN)
+                        .param("task_id","67645644")
+                        .param("project_id","930")
+                        .contentType(MediaType.APPLICATION_JSON_VALUE))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.message").value("success"))
+                .andDo(MockMvcResultHandlers.print()).andReturn();
     }
 
     @Test

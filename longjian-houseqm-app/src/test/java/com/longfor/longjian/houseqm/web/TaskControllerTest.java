@@ -53,7 +53,7 @@ public class TaskControllerTest {
                 .andExpect(jsonPath("$.message").value("success"))
                 .andDo(MockMvcResultHandlers.print()).andReturn();
     }
-   /* @Test
+    @Test
     public void testTaskRole() throws Exception {
         mockMvc.perform(
                 post("/oapi/v3/houseqm/task/task_role/").header("token",TOKEN)
@@ -62,5 +62,5 @@ public class TaskControllerTest {
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.message").value("success"))
                 .andDo(MockMvcResultHandlers.print()).andReturn();
-    }*/
+    }
 }

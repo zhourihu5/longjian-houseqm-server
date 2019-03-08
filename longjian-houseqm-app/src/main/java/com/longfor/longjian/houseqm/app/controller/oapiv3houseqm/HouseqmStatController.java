@@ -99,7 +99,7 @@ public class HouseqmStatController {
             return CtrlToolUtils.errorReturn(response,e);
         }
         if (req.getArea_id() == null) req.setArea_id(0);
-        if (req.getIssue_status() == null) req.setIssue_status(0);
+        if (req.getIssue_status() == null) req.setIssue_status(2);
         if (req.getStatus() == null) req.setStatus(0);
 
         if (!req.getStatus().equals(RepossessionStatusEnum.Accept.getId())) {
