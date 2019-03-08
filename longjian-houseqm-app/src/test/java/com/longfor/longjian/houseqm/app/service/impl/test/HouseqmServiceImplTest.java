@@ -3,7 +3,6 @@ package com.longfor.longjian.houseqm.app.service.impl.test;
 import com.longfor.longjian.houseqm.app.req.DeviceReq;
 import com.longfor.longjian.houseqm.app.service.impl.HouseqmServiceImpl;
 import com.longfor.longjian.houseqm.util.DateUtil;
-import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -13,10 +12,7 @@ import org.springframework.test.context.junit4.SpringRunner;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
-
 import java.util.Date;
-
-import static org.junit.Assert.*;
 
 
 @RunWith(SpringRunner.class)

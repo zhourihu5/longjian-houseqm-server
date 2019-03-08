@@ -1,10 +1,8 @@
 package com.longfor.longjian.houseqm.app.service.impl.test;
 
 import com.longfor.longjian.houseqm.app.service.impl.HouseqmIssueServiceImpl;
-import com.longfor.longjian.houseqm.domain.internalservice.impl.HouseQmCheckTaskIssueServiceImpl;
 import com.longfor.longjian.houseqm.po.zj2db.HouseQmCheckTaskIssue;
 import com.longfor.longjian.houseqm.util.DateUtil;
-import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.boot.test.context.SpringBootTest;
