@@ -1,21 +1,18 @@
 package com.longfor.longjian.houseqm.app.service.impl.test;
 
 import com.longfor.longjian.houseqm.app.service.impl.TaskListServiceImpl;
-import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit4.SpringRunner;
 
 import javax.annotation.Resource;
-import java.util.Arrays;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.DEFINED_PORT)
 public class TaskListServiceImplTest {
     @Resource
     private TaskListServiceImpl taskListService;
-
+/*
     @Test
     public void searchTaskIssueStatMapByTaskIds() {
         try {
@@ -50,5 +47,5 @@ public class TaskListServiceImplTest {
         } catch (Exception e) {
            //Assert.fail(e.getMessage());
         }
-    }
+    }*/
 }
