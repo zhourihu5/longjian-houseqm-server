@@ -10,6 +10,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.result.MockMvcResultHandlers;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.context.WebApplicationContext;
 
@@ -32,16 +33,15 @@ public class TaskControllerTest {
         mockMvc = MockMvcBuilders.webAppContextSetup(wac).addFilter(new UrlFilter()).build();
     }
     @Test
-    public void testMeasureRule() throws Exception {
+    public void testTaskView() throws Exception {
         mockMvc.perform(
                 post("/oapi/v3/houseqm/task/view/").header("token",TOKEN)
                         .param("project_id","3").param("task_id","291")
                         .contentType(MediaType.APPLICATION_JSON_VALUE))
                 .andExpect(status().isOk())
                  .andExpect(jsonPath("$.message").value("success"))
-                .andReturn();
+                .andDo(MockMvcResultHandlers.print()).andReturn();
     }
-/*
     @Test
     public void testListInfo() throws Exception {
         mockMvc.perform(
@@ -50,16 +50,16 @@ public class TaskControllerTest {
                         .contentType(MediaType.APPLICATION_JSON_VALUE))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.message").value("success"))
-                .andReturn();
-    }*/
-  /*  @Test
+                .andDo(MockMvcResultHandlers.print()).andReturn();
+    }
+   /* @Test
     public void testTaskRole() throws Exception {
         mockMvc.perform(
                 post("/oapi/v3/houseqm/task/task_role/").header("token",TOKEN)
-                        .param("project_id","930").param("taskId","67651028")
+                        .param("project_id","854").param("task_id","79319153")
                         .contentType(MediaType.APPLICATION_JSON_VALUE))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.message").value("success"))
-                .andReturn();
+                .andDo(MockMvcResultHandlers.print()).andReturn();
     }*/
 }

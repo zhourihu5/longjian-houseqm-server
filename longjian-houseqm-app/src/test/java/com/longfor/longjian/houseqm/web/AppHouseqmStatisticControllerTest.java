@@ -8,7 +8,6 @@ import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
-import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.result.MockMvcResultHandlers;
@@ -22,10 +21,9 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 /**
  * Created by Dongshun on 2019/3/8.
  */
-@ActiveProfiles("sonar")
 @RunWith(SpringJUnit4ClassRunner.class) // SpringJUnit支持，由此引入Spring-Test框架支持！
 @SpringBootTest(classes = Application.class,webEnvironment = SpringBootTest.WebEnvironment.DEFINED_PORT) // 指定我们SpringBoot工程的Application启动类
-public class HouseqmControllerTest {
+public class AppHouseqmStatisticControllerTest {
     private static final String TOKEN = "7gaxyW9RW9VrALW1dC9cdHn7ISufeyz1MBNd3hMzbZkEQoU89Boq35hh1xRLAT_y";
     private MockMvc mockMvc;
     @Autowired
@@ -34,22 +32,21 @@ public class HouseqmControllerTest {
     public void setup() {
         mockMvc = MockMvcBuilders.webAppContextSetup(wac).addFilter(new UrlFilter()).build();
     }
-
     @Test
-    public void testMyIssueLogList() throws Exception {
+    public void testProjectList() throws Exception {
         mockMvc.perform(
-                post("/v3/api/houseqm/my_issue_log_list/").header("token",TOKEN)
-                        .param("task_id","67645644").param("last_id","0").param("timestamp","1541500296")
+                post("/houseqm/v3/papi/houseqm_statistic/project_list").header("token",TOKEN)
+                        .param("source","gcgl").param("timestamp","0")
                         .contentType(MediaType.APPLICATION_JSON_VALUE))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.message").value("success"))
-                .andReturn();
+                .andDo(MockMvcResultHandlers.print()).andReturn();
     }
     @Test
-    public void testMyIssueList() throws Exception {
+    public void testProjectIssueStat() throws Exception {
         mockMvc.perform(
-                post("/v3/api/houseqm/my_issue_list/").header("token",TOKEN)
-                        .param("task_id","67645644").param("last_id","0").param("timestamp","1541500296")
+                post("/houseqm/v3/papi/houseqm_statistic/project_issue_stat").header("token",TOKEN)
+                        .param("source","gcgl").param("project_id","930")
                         .contentType(MediaType.APPLICATION_JSON_VALUE))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.message").value("success"))
@@ -57,10 +54,10 @@ public class HouseqmControllerTest {
     }
 
     @Test
-    public void testIssueMembers() throws Exception {
+    public void testProjectCheckStat() throws Exception {
         mockMvc.perform(
-                post("/v3/api/houseqm/issue_members/").header("token",TOKEN)
-                        .param("task_id","67645644").param("last_id","0").param("timestamp","1541500296")
+                post("/houseqm/v3/papi/houseqm_statistic/project_checker_stat").header("token",TOKEN)
+                        .param("source","gcgl").param("project_id","930")
                         .contentType(MediaType.APPLICATION_JSON_VALUE))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.message").value("success"))
@@ -68,15 +65,13 @@ public class HouseqmControllerTest {
     }
 
     @Test
-    public void testMyIssueAttachmentList() throws Exception {
+    public void testProjecRepairStat() throws Exception {
         mockMvc.perform(
-                post("/v3/api/houseqm/my_issue_attachment_list/").header("token",TOKEN)
-                        .param("task_id","67645644").param("last_id","0").param("timestamp","1541500296")
+                post("/houseqm/v3/papi/houseqm_statistic/project_repairer_stat").header("token",TOKEN)
+                        .param("source","gcgl").param("project_id","930")
                         .contentType(MediaType.APPLICATION_JSON_VALUE))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.message").value("success"))
-                .andDo(MockMvcResultHandlers.print()) .andReturn();
+                .andDo(MockMvcResultHandlers.print()).andReturn();
     }
-
-
 }
