@@ -25,7 +25,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @RunWith(SpringJUnit4ClassRunner.class) // SpringJUnit支持，由此引入Spring-Test框架支持！
 @SpringBootTest(classes = Application.class,webEnvironment = SpringBootTest.WebEnvironment.DEFINED_PORT) // 指定我们SpringBoot工程的Application启动类
 public class HouseqmControllerTest {
-    private static final String TOKEN = "l8PLqmIPv8L-iQK85VMG03BPGsXa3FJRVdkHhTkgAUL5TQ0fODeug6IyrG9_f14g";
+    private static final String TOKEN = "xF3fnRclIvv3KuIdaUpPnOgqkWnVzaIFBRO_ATlWz_0ljHf0b4jnce37_CaQkdeC";
     private MockMvc mockMvc;
     @Autowired
     protected WebApplicationContext wac;

@@ -18,7 +18,6 @@ import com.longfor.longjian.houseqm.po.zj2db.RepossessionStatus;
 import com.longfor.longjian.houseqm.po.zj2db.UserInHouseQmCheckTask;
 import com.longfor.longjian.houseqm.util.CollectionUtil;
 import com.longfor.longjian.houseqm.util.DateUtil;
-import com.longfor.longjian.houseqm.util.StringSplitToListUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections.CollectionUtils;
 import org.springframework.stereotype.Repository;
@@ -290,9 +289,9 @@ public class HouseqmStaticService {
                     info.setUnacceptCount(info.getUnacceptCount() + 1);
                 }
             }
-            info.setTotal(info.getTotal() + total);
-            info.setCheckedCount(info.getCheckedCount() + checkedCount);
-            info.setUncheckedCount(info.getUncheckedCount() + total - checkedCount);
+            info.setTotal(info.getTotal()==null?0:info.getTotal() + total);
+            info.setCheckedCount(info.getCheckedCount()==null?0:info.getCheckedCount() + checkedCount);
+            info.setUncheckedCount(info.getUncheckedCount()==null?0:info.getUncheckedCount() + total - checkedCount);
 
         }
         info.setCheckedRate((float) info.getCheckedCount() / (float) info.getTotal() / 100 + "f");
@@ -328,6 +327,7 @@ public class HouseqmStaticService {
 
         //读取任务
         HouseQmCheckTask taskByProjTaskId = houseQmCheckTaskService.getHouseQmCheckTaskByProjTaskId(prodectId, taskId);
+        if (taskByProjTaskId==null)return Lists.newArrayList();
         // 获取出任务下的区域与检验类型的交集
         List<Integer> areaIds = splitToIdsComma(taskByProjTaskId.getAreaIds(), ",");
         List<Integer> areaTypes = splitToIdsComma(taskByProjTaskId.getAreaTypes(), ",");

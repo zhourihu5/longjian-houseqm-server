@@ -21,7 +21,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @SpringBootTest(classes = Application.class,webEnvironment = SpringBootTest.WebEnvironment.DEFINED_PORT)
 public class TaskListControllerTest {
 
-    private static final String TOKEN = "l8PLqmIPv8L-iQK85VMG03BPGsXa3FJRVdkHhTkgAUL5TQ0fODeug6IyrG9_f14g";
+    private static final String TOKEN = "xF3fnRclIvv3KuIdaUpPnOgqkWnVzaIFBRO_ATlWz_0ljHf0b4jnce37_CaQkdeC";
     private MockMvc mockMvc;
     @Autowired
     protected WebApplicationContext wac;

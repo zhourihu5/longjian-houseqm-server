@@ -8,7 +8,6 @@ import com.longfor.longjian.houseqm.util.DateUtil;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -96,7 +95,7 @@ public class HouseqmStatisticServiceImplTest {
             //Assert.fail(e.getMessage());
         }
     }
-//org.springframework.jdbc.UncategorizedSQLException:
+
     @Test
     public void taskIssueRepairList() {
         try{
@@ -117,7 +116,7 @@ public class HouseqmStatisticServiceImplTest {
             //Assert.fail(e.getMessage());
         }
     }
-//org.mybatis.spring.MyBatisSystemException: nested exception is org.apache.ibatis.builder.BuilderException: The expression 'categoryClsList' evaluated to a null value.
+
     @Test
     public void projectIssueRepair() {
         try{
@@ -127,21 +126,21 @@ public class HouseqmStatisticServiceImplTest {
             //Assert.fail(e.getMessage());
         }
     }
-//java.lang.NullPointerException
+
     @Test
     public void getHouseQmHouseQmCheckTaskHouseStatByTaskId() {
         try{
-            houseqmStatisticServiceImpl.getHouseQmHouseQmCheckTaskHouseStatByTaskId(927,1,1);
+            houseqmStatisticServiceImpl.getHouseQmHouseQmCheckTaskHouseStatByTaskId(1,1,8);
         }catch (Exception e){
             e.printStackTrace();
             //Assert.fail(e.getMessage());
         }
     }
-//java.lang.NullPointerException
+
     @Test
     public void getRepossessionTasksStatusInfo() {
         try{
-            houseqmStatisticServiceImpl.getRepossessionTasksStatusInfo(927, Arrays.asList(new Integer[]{1,2,3,4,5,6,7}),1);
+            houseqmStatisticServiceImpl.getRepossessionTasksStatusInfo(930, Arrays.asList(new Integer[]{67645644}),2942698);
         }catch (Exception e){
             e.printStackTrace();
             //Assert.fail(e.getMessage());
@@ -171,7 +170,7 @@ public class HouseqmStatisticServiceImplTest {
     @Test
     public void searchHouseQmCheckTaskIssueOnlineInfoByProjCategoryKeyAreaIdPaged() {
         try{
-            houseqmStatisticServiceImpl.searchHouseQmCheckTaskIssueOnlineInfoByProjCategoryKeyAreaIdPaged(927,"1",1,1,10);
+            houseqmStatisticServiceImpl.searchHouseQmCheckTaskIssueOnlineInfoByProjCategoryKeyAreaIdPaged(930,"1585_575_0",2942698 ,1,10);
         }catch (Exception e){
             e.printStackTrace();
             //Assert.fail(e.getMessage());
