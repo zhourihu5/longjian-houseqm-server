@@ -4,7 +4,6 @@ package com.longfor.longjian.houseqm.domain.internalservice.impl;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit4.SpringRunner;
 
 import javax.annotation.Resource;
@@ -14,7 +13,6 @@ import java.util.Arrays;
  * Created by Dongshun on 2019/3/7.
  */
 @RunWith(SpringRunner.class)
-@ActiveProfiles("sonar")
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.DEFINED_PORT)
 public class AreaServiceImplTest {
     @Resource

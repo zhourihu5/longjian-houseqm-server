@@ -13,7 +13,6 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.context.WebApplicationContext;
 
-import static org.junit.Assert.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -35,7 +34,7 @@ public class TaskListControllerTest {
     @Test
     public void list() throws Exception {
         mockMvc.perform(
-                post("buildingqm/v3/papi/task/list").header("token",TOKEN)
+                post("/buildingqm/v3/papi/task/list/").header("token",TOKEN)
                         .param("team_id","25")
                         .param("project_id","930")
                         .param("category_cls","23")
