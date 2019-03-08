@@ -1,15 +1,8 @@
 package com.longfor.longjian.houseqm.app.service.test;
 
-import com.longfor.longjian.houseqm.app.service.IusseTaskListService;
-import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit4.SpringRunner;
-
-import javax.annotation.Resource;
-import java.util.Arrays;
-import java.util.Date;
 
 /**
  * Created by Dongshun on 2019/3/7.
@@ -17,7 +10,7 @@ import java.util.Date;
 @RunWith(SpringRunner.class)
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.DEFINED_PORT)
 public class IusseTaskListServiceTest {
-    @Resource
+   /* @Resource
     IusseTaskListService iusseTaskListService;
     @Test
     public void selectByProjectIdAndCategoryCls(){
@@ -31,14 +24,6 @@ public class IusseTaskListServiceTest {
     public void getAcceptanceitemsSetting(){
         try {
             iusseTaskListService.getAcceptanceitemsSetting("1,2,3,45",1);
-        } catch (Exception e) {
-            //Assert.fail(e.getMessage());
-        }
-    }
-    @Test
-    public void teamsAndProjects(){
-        try {
-            iusseTaskListService.teamsAndProjects(1,"1");
         } catch (Exception e) {
             //Assert.fail(e.getMessage());
         }
@@ -59,5 +44,5 @@ public class IusseTaskListServiceTest {
         } catch (Exception e) {
             //Assert.fail(e.getMessage());
         }
-    }
+    }*/
 }

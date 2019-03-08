@@ -1,16 +1,8 @@
 package com.longfor.longjian.houseqm.app.service.test;
 
-import com.google.common.collect.Maps;
-import com.longfor.longjian.houseqm.app.service.HouseqmStaticService;
-import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit4.SpringRunner;
-
-import javax.annotation.Resource;
-import java.util.Arrays;
-import java.util.HashMap;
 
 /**
  * Created by Dongshun on 2019/3/7.
@@ -18,7 +10,7 @@ import java.util.HashMap;
 @RunWith(SpringRunner.class)
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.DEFINED_PORT)
 public class HouseqmStaticServiceTest {
-    @Resource
+  /*  @Resource
     HouseqmStaticService houseqmStaticService;
     @Test
     public  void  searchHouseQmCheckTaskByProjCategoryCls(){
@@ -127,5 +119,5 @@ public class HouseqmStaticServiceTest {
         } catch (Exception e) {
             //Assert.fail(e.getMessage());
         }
-    }
+    }*/
 }

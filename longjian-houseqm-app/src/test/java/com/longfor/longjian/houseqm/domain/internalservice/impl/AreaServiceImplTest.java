@@ -1,13 +1,9 @@
 package com.longfor.longjian.houseqm.domain.internalservice.impl;
 
 
-import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringRunner;
-
-import javax.annotation.Resource;
-import java.util.Arrays;
 
 /**
  * Created by Dongshun on 2019/3/7.
@@ -15,7 +11,7 @@ import java.util.Arrays;
 @RunWith(SpringRunner.class)
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.DEFINED_PORT)
 public class AreaServiceImplTest {
-    @Resource
+ /*   @Resource
     AreaServiceImpl areaService;
     @Test
     public void getRootRegexpConditionByAreaIds(){
@@ -88,5 +84,5 @@ public class AreaServiceImplTest {
         } catch (Exception e) {
             //Assert.fail(e.getMessage());
         }
-    }
+    }*/
 }
