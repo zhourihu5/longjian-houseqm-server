@@ -16,7 +16,6 @@ import java.util.HashMap;
  * Created by Dongshun on 2019/3/7.
  */
 @RunWith(SpringRunner.class)
-@ActiveProfiles("sonar")
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.DEFINED_PORT)
 public class HouseqmStaticServiceTest {
     @Resource

@@ -1,5 +1,6 @@
 package com.longfor.longjian.houseqm.app.service.impl.test;
 
+import com.longfor.longjian.houseqm.Application;
 import com.longfor.longjian.houseqm.app.req.TaskEditReq;
 import com.longfor.longjian.houseqm.app.req.TaskReq;
 import com.longfor.longjian.houseqm.app.service.impl.BuildingqmServiceImpl;
@@ -8,7 +9,6 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.mock.web.MockHttpServletResponse;
-import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -17,8 +17,7 @@ import javax.servlet.http.HttpServletResponse;
 import java.util.Date;
 
 @RunWith(SpringRunner.class)
-@ActiveProfiles("sonar")
-@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.DEFINED_PORT)
+@SpringBootTest(classes = Application.class,webEnvironment = SpringBootTest.WebEnvironment.DEFINED_PORT)
 public class BuildingqmServiceImplTest {
 
     @Resource

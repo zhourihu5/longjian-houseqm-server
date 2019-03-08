@@ -11,7 +11,6 @@ import javax.annotation.Resource;
 import java.util.Arrays;
 
 @RunWith(SpringRunner.class)
-@ActiveProfiles("sonar")
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.DEFINED_PORT)
 public class TaskServiceImplTest {
     @Resource

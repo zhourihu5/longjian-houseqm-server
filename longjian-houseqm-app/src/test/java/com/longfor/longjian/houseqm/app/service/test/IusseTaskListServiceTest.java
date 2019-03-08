@@ -15,7 +15,6 @@ import java.util.Date;
  * Created by Dongshun on 2019/3/7.
  */
 @RunWith(SpringRunner.class)
-@ActiveProfiles("sonar")
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.DEFINED_PORT)
 public class IusseTaskListServiceTest {
     @Resource
