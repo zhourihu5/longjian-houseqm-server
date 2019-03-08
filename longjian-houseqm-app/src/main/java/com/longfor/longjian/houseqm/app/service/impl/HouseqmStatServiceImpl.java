@@ -296,19 +296,21 @@ public class HouseqmStatServiceImpl implements IHouseqmStatService {
                     Area area=null;
                     if (issueStatus.equals(1)||issueStatus.equals(0)) {
                         area = areaMap.get(issuePaths.get(i));// 源码是 aPath
-                        List<HouseQmCheckTaskIssue> list = result.get(area.getId());
-                        if (list!=null) {
-                            String key = issuePaths.get(i);
-                            HouseQmCheckTaskIssue e = issueMap.get(key);
-                            list.add(e);
-                            List<HouseQmCheckTaskIssue> ls = CollectionUtil.removeDuplicate(list);
-                            result.put(area.getId(), ls);
-                        } else {
-                            List<HouseQmCheckTaskIssue> list1 = Lists.newArrayList();
-                            list1.add(issueMap.get(issuePaths.get(i)));
-                            List<HouseQmCheckTaskIssue> ls = CollectionUtil.removeDuplicate(list1);
-                            result.put(area.getId(), ls);
-                            result.put(area.getId(), list1);
+                        List<HouseQmCheckTaskIssue> list = (area==null)? Lists.newArrayList():result.get(area.getId());
+                        if (area!=null){
+                            if (list!=null) {
+                                String key = issuePaths.get(i);
+                                HouseQmCheckTaskIssue e = issueMap.get(key);
+                                list.add(e);
+                                List<HouseQmCheckTaskIssue> ls = CollectionUtil.removeDuplicate(list);
+                                result.put(area.getId(), ls);
+                            } else {
+                                List<HouseQmCheckTaskIssue> list1 = Lists.newArrayList();
+                                list1.add(issueMap.get(issuePaths.get(i)));
+                                List<HouseQmCheckTaskIssue> ls = CollectionUtil.removeDuplicate(list1);
+                                result.put(area.getId(), ls);
+                                result.put(area.getId(), list1);
+                            }
                         }
                         lastCount++;
                     }
