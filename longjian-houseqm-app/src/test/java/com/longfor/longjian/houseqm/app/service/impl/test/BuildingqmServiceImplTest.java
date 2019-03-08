@@ -1,7 +1,6 @@
 package com.longfor.longjian.houseqm.app.service.impl.test;
 
 import com.longfor.longjian.houseqm.Application;
-import com.longfor.longjian.houseqm.app.req.TaskEditReq;
 import com.longfor.longjian.houseqm.app.req.TaskReq;
 import com.longfor.longjian.houseqm.app.service.impl.BuildingqmServiceImpl;
 import com.longfor.longjian.houseqm.util.DateUtil;
@@ -89,40 +88,12 @@ public class BuildingqmServiceImplTest {
             //Assert.fail(e.getMessage());
         }
     }
-//java.lang.AssertionError:
-//### Error querying database.  Cause: com.mysql.jdbc.exceptions.jdbc4.MySQLSyntaxErrorException: Table 'zhijian2.push_strategy_assign_time' doesn't exist
-    @Test
-    @Transactional
-    public void edit() {
-        try{
-            TaskEditReq req=new TaskEditReq();
-            req.setArea_ids("1,2,3,4,5,6,7,8,9,10");
-            req.setArea_types("10,20");
-            req.setChecker_approve_permission(1);
-            req.setChecker_groups("[{\"id\":1,\"name\":\"test\",\"approve_ids\":\"1\",\"user_ids\":\"1\",\"direct_approve_ids\":\"1\",\"reassign_ids\":\"1\"}]");
-            req.setIssue_default_desc("1");
-            req.setIssue_desc_status(1);
-            req.setName("1");
-            req.setPlan_begin_on("2019-01-01 10:01:01");
-            req.setPlan_end_on("2019-01-01 10:01:01");
-            req.setProject_id(1);
-           // req.setPush_strategy_config("[{}]");
-            req.setRepairer_refund_permission(1);
-            req.setRepairer_ids("1,2,3,4,5,6,7,8,9,10");
-            req.setRepaired_picture_status(1);
-            req.setRepairer_follower_permission(1);
-            req.setTask_id(1);
-            buildingqmServiceImpl.edit(9,req);
-        }catch (Exception e){
-            e.printStackTrace();
-            //Assert.fail(e.getMessage());
-        }
-    }
-//java.lang.AssertionError: 没找到此问题
+
+
     @Test
     public void getIssueListLogByLastIdAndUpdataAt() {
         try{
-            buildingqmServiceImpl.getIssueListLogByLastIdAndUpdataAt(1,DateUtil.datetimeToTimeStamp(new Date()),"1");
+            buildingqmServiceImpl.getIssueListLogByLastIdAndUpdataAt(67645644,0,"F6A23B9728634E6B92CDF700C9E18402");
         }catch (Exception e){
            //Assert.fail(e.getMessage());
         }

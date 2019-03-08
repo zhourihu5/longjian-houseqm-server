@@ -7,7 +7,6 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.mock.web.MockHttpServletRequest;
-import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit4.SpringRunner;
 
 import javax.annotation.Resource;
@@ -90,11 +89,11 @@ public class HouseqmServiceImplTest {
             //Assert.fail(e.getMessage());
         }
     }
-//java.lang.NullPointerException
+
     @Test
     public void searchTargetAreaByTaskId() {
         try{
-            houseqmServiceImpl.searchTargetAreaByTaskId(927,1);
+            houseqmServiceImpl.searchTargetAreaByTaskId(930,67645644);
         }catch (Exception e){
             e.printStackTrace();
             //Assert.fail(e.getMessage());

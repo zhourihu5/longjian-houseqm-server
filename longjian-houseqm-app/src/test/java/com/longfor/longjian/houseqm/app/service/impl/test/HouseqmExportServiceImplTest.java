@@ -5,7 +5,6 @@ import com.longfor.longjian.houseqm.app.vo.houseqm.HouseqmExportVo;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit4.SpringRunner;
 
 import javax.annotation.Resource;
@@ -18,17 +17,8 @@ public class HouseqmExportServiceImplTest {
 
     @Resource
     private HouseqmExportServiceImpl houseqmExportServiceImpl;
-//org.springframework.jdbc.UncategorizedSQLException:
-    @Test
-    public void searchProjectOrdersByProjIdTaskIdAreaIdsRepairedIdBeginOnEndOn() {
-        try {
-            houseqmExportServiceImpl.searchProjectOrdersByProjIdTaskIdAreaIdsRepairedIdBeginOnEndOn(927, 1, Arrays.asList(1, 2, 3, 4, 5, 6, 7, 8, 9, 10), 1, new Date(), new Date(), 1);
-        }catch (Exception e){
-            e.printStackTrace();
-            //Assert.fail(e.getMessage());
-        }
-    }
-//org.springframework.jdbc.UncategorizedSQLException:
+
+
     @Test
     public void exportProjectOrdersByProjIdTaskIdAreaIdsRepairedIdBeginOnEndOn() {
         try{

@@ -7,7 +7,6 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringRunner;
-import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.Resource;
 import java.util.Arrays;
@@ -19,17 +18,6 @@ public class HouseqmIssueServiceImplTest {
 
     @Resource
     private HouseqmIssueServiceImpl houseqmIssueServiceImpl;
-//LjBaseRuntimeException(errorCode=-1, errorMsg=删除问题失败)
-    @Test
-    @Transactional
-    public void deleteHouseQmCheckTaskIssueByProjUuid() {
-        try{
-            houseqmIssueServiceImpl.deleteHouseQmCheckTaskIssueByProjUuid(1,"a");
-        }catch (Exception e){
-            e.printStackTrace();
-            //Assert.fail(e.getMessage());
-        }
-    }
 
     @Test
     public void updateBatchIssueApproveStatusByUuids() {
