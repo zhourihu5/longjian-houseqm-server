@@ -8,7 +8,6 @@ import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
-import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
@@ -21,10 +20,9 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 /**
  * Created by Dongshun on 2019/3/8.
  */
-@ActiveProfiles("sonar")
 @RunWith(SpringJUnit4ClassRunner.class) // SpringJUnit支持，由此引入Spring-Test框架支持！
 @SpringBootTest(classes = Application.class,webEnvironment = SpringBootTest.WebEnvironment.DEFINED_PORT) // 指定我们SpringBoot工程的Application启动类
-public class HouseqmControllerTest {
+public class BuildingqmControllerTest {
     private static final String TOKEN = "7gaxyW9RW9VrALW1dC9cdHn7ISufeyz1MBNd3hMzbZkEQoU89Boq35hh1xRLAT_y";
     private MockMvc mockMvc;
     @Autowired
@@ -35,20 +33,10 @@ public class HouseqmControllerTest {
     }
 
     @Test
-    public void testMyIssueLogList() throws Exception {
+    public void testMyIssuePatchList() throws Exception {
         mockMvc.perform(
-                post("/v3/api/houseqm/my_issue_log_list/").header("token",TOKEN)
-                        .param("task_id","67645644").param("last_id","0").param("timestamp","1541500296")
-                        .contentType(MediaType.APPLICATION_JSON_VALUE))
-                .andExpect(status().isOk())
-                .andExpect(jsonPath("$.message").value("success"))
-                .andReturn();
-    }
-    @Test
-    public void testMyIssueList() throws Exception {
-        mockMvc.perform(
-                post("/v3/api/houseqm/my_issue_list/").header("token",TOKEN)
-                        .param("task_id","67645644").param("last_id","0").param("timestamp","1541500296")
+                post("/buildingqm/v3/papi/buildingqm/my_issue_patch_list/").header("token",TOKEN)
+                        .param("task_id","67645644").param("timestamp","1541500295")
                         .contentType(MediaType.APPLICATION_JSON_VALUE))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.message").value("success"))
@@ -56,26 +44,13 @@ public class HouseqmControllerTest {
     }
 
     @Test
-    public void testIssueMembers() throws Exception {
+    public void testMyTaskList() throws Exception {
         mockMvc.perform(
-                post("/v3/api/houseqm/issue_members/").header("token",TOKEN)
-                        .param("task_id","67645644").param("last_id","0").param("timestamp","1541500296")
+                post("/buildingqm/v3/papi/buildingqm/my_task_list/").header("token",TOKEN)
+                        .param("task_id","67645644").param("timestamp","1541500295")
                         .contentType(MediaType.APPLICATION_JSON_VALUE))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.message").value("success"))
                 .andReturn();
     }
-
-    @Test
-    public void testMyIssueAttachmentList() throws Exception {
-        mockMvc.perform(
-                post("/v3/api/houseqm/my_issue_attachment_list/").header("token",TOKEN)
-                        .param("task_id","67645644").param("last_id","0").param("timestamp","1541500296")
-                        .contentType(MediaType.APPLICATION_JSON_VALUE))
-                .andExpect(status().isOk())
-                .andExpect(jsonPath("$.message").value("success"))
-                .andReturn();
-    }
-
-
 }

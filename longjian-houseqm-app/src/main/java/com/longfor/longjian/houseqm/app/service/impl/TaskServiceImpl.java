@@ -16,7 +16,6 @@ import com.longfor.longjian.houseqm.po.zj2db.HouseQmCheckTask;
 import com.longfor.longjian.houseqm.po.zj2db.HouseQmCheckTaskIssue;
 import com.longfor.longjian.houseqm.po.zj2db.UserInHouseQmCheckTask;
 import com.longfor.longjian.houseqm.util.DateUtil;
-import com.longfor.longjian.houseqm.util.StringSplitToListUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Repository;
 import org.springframework.stereotype.Service;
@@ -64,6 +63,9 @@ public class TaskServiceImpl implements ITaskService {
     public HouseQmCheckTaskRspVo getHouseQmCheckTaskByProjTaskId(Integer projectId, Integer taskId) {
         HouseQmCheckTask houseQmCheckTask = houseQmCheckTaskRspService.getHouseQmCheckTaskByProjTaskId(projectId, taskId);
         HouseQmCheckTaskRspVo houseQmCheckTaskRspVo = new HouseQmCheckTaskRspVo();
+        if(houseQmCheckTask==null){
+            return houseQmCheckTaskRspVo;
+        }
         houseQmCheckTaskRspVo.setProject_id(houseQmCheckTask.getProjectId());
         houseQmCheckTaskRspVo.setTask_id(houseQmCheckTask.getTaskId());
         houseQmCheckTaskRspVo.setName(houseQmCheckTask.getName());
