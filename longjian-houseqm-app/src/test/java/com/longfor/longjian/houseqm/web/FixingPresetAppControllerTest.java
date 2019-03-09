@@ -22,9 +22,9 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 /**
  * Created by Dongshun on 2019/3/8.
  */
-@RunWith(SpringJUnit4ClassRunner.class)
-@SpringBootTest(classes = Application.class,webEnvironment = SpringBootTest.WebEnvironment.DEFINED_PORT)
-public class HouseqmIssueControllerTest {
+@RunWith(SpringJUnit4ClassRunner.class) // SpringJUnit支持，由此引入Spring-Test框架支持！
+@SpringBootTest(classes = Application.class,webEnvironment = SpringBootTest.WebEnvironment.DEFINED_PORT) // 指定我们SpringBoot工程的Application启动类
+public class FixingPresetAppControllerTest {
     private static final String TOKEN = TokenGetUtil.getToken();
     private MockMvc mockMvc;
     @Autowired
@@ -35,14 +35,14 @@ public class HouseqmIssueControllerTest {
     }
 
     @Test
-    public void testList() throws Exception {
+    public void testreport() throws Exception {
         mockMvc.perform(
-                post("/oapi/v3/houseqm/issue/batch_appoint").header("token",TOKEN)
-                        .param("project_id","930") .param("group_id","4")
-                        .param("category_cls","23") .param("team_id","25").param("task_id","67651028")
+                post("/core_srv_check_item/check_item/fixing_preset_app/app_list_fixing_preset").header("token",TOKEN).param("project_id","0") .param("last_id","0")
+                        .param("timestamp","1541409666") .param("limit","2000")
                         .contentType(MediaType.APPLICATION_JSON_VALUE))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.message").value("success"))
                 .andDo(MockMvcResultHandlers.print()).andReturn();
     }
+
 }

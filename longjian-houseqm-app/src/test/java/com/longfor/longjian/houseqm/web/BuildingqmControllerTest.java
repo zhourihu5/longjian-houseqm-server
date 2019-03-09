@@ -90,5 +90,4 @@ public class BuildingqmControllerTest {
                 .andExpect(jsonPath("$.message").value("success"))
                 .andDo(MockMvcResultHandlers.print()).andReturn();
     }
-
 }
