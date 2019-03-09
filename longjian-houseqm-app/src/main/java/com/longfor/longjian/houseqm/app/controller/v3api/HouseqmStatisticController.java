@@ -100,7 +100,7 @@ public class HouseqmStatisticController {
             result.setHouse_checked_percent(MathUtil.getPercentage2(house.getCheckedCount(), house.getHouseCount()));
             result.setHouse_repaired_percent(MathUtil.getPercentage2(house.getRepairedCount(), house.getHasIssueCount()));
             result.setHouse_approveded_percent(MathUtil.getPercentage2(house.getApprovedCount(), house.getRepairedCount()));
-            result.setHouse_repair_confirm_percent(MathUtil.getPercentage2(house.getRepairConfirmCount(), house.getApprovedCount()));
+            result.setHouse_repair_confirm_percent(MathUtil.getPercentage2(house.getRepairConfirmCount()==null?0:house.getRepairConfirmCount(), house.getApprovedCount()));
             //缺少repair_confirm_count
             item.setItem(result);
             response.setData(item);
@@ -108,6 +108,7 @@ public class HouseqmStatisticController {
             response.setResult(0);
         } catch (Exception e) {
             log.error(e.getMessage());
+            e.printStackTrace();
             response.setMessage(e.getMessage());
             response.setResult(1);
         }

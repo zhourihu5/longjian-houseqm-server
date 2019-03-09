@@ -452,7 +452,7 @@ public class HouseQmCheckTaskIssueServiceImpl implements HouseQmCheckTaskIssueSe
                     break;
                 case UnOnTimeNotFinish:
                     criteria.andEqualTo(STATUS, HouseQmCheckTaskIssueStatusEnum.AssignNoReform.getId())
-                            .andCondition("plan_end_on >" + nowTimeStr);
+                            .andCondition("plan_end_on >'" + nowTimeStr+"'");
                     break;
                 case NoSettingTime:
 
@@ -468,7 +468,7 @@ public class HouseQmCheckTaskIssueServiceImpl implements HouseQmCheckTaskIssueSe
                 case OverTimeNotFinish:
                     criteria.andEqualTo(STATUS, HouseQmCheckTaskIssueStatusEnum.AssignNoReform.getId())
                             .andCondition("plan_end_on > '1970-01-02'")
-                            .andCondition("plan_end_on <" + nowTimeStr);
+                            .andCondition("plan_end_on < '" + nowTimeStr+"'");
                     break;
                 default:
                     break;
