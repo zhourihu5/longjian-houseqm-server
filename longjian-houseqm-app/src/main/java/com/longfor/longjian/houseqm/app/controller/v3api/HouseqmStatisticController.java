@@ -108,7 +108,6 @@ public class HouseqmStatisticController {
             response.setResult(0);
         } catch (Exception e) {
             log.error(e.getMessage());
-            e.printStackTrace();
             response.setMessage(e.getMessage());
             response.setResult(1);
         }
