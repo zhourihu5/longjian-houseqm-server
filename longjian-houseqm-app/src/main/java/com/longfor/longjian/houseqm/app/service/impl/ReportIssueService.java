@@ -1204,9 +1204,6 @@ public class ReportIssueService {
         return issueMapBody;
     }
 
-    private Map createUsersMap(List<Integer> ids) {
-        return  userService.selectByIds(ids);
-    }
 
     private Map<String, Object> apiNotifyStat(Integer status, Integer repairerId, List<Integer> repairerFollowerId) {
         Map<String, Object> map = Maps.newHashMap();

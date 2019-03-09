@@ -1,6 +1,7 @@
 package com.longfor.longjian.houseqm.po.zj2db;
 
 import javax.persistence.Column;
+import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.Table;
 import java.util.Date;
@@ -8,6 +9,7 @@ import java.util.Date;
 @Table(name = "export_file_record")
 public class ExportFileRecord {
     @Id
+    @GeneratedValue(generator = "JDBC")
     private Integer id;
 
     @Column(name = "user_id")

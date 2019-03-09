@@ -228,7 +228,6 @@ public class HouseqmStatServiceImpl implements IHouseqmStatService {
                             default:
                                 break;
                         }
-                        e=null;
                     }
                     HouseQmCheckTaskIssueTypeEnum e1 = null;
                     for (HouseQmCheckTaskIssueTypeEnum value : HouseQmCheckTaskIssueTypeEnum.values()) {
@@ -244,7 +243,6 @@ public class HouseqmStatServiceImpl implements IHouseqmStatService {
                                 break;
                         }
                     }
-                    e1=null;
                 }
             } else {
                 item.setStatus(StatisticFormInspectionStatusEnum.UnChecked.getId());

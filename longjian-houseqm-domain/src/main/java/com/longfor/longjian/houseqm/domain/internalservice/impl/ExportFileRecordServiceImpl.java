@@ -9,7 +9,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.Resource;
-import java.util.Date;
 
 @Service
 @Slf4j
@@ -22,23 +21,8 @@ public class ExportFileRecordServiceImpl implements ExportFileRecordService {
     @Override
     @LFAssignDataSource("zhijian2")
     @Transactional
-    public ExportFileRecord insertFull(int userId, Integer teamId, Integer projectId, int exportType, String params, String resultFilePath, String resultName, int status, String errorMsg, Date executeAt) {
-        ExportFileRecord item = new ExportFileRecord();
-        item.setUserId(userId);
-        item.setTeamId(teamId);
-        item.setProjectId(projectId);
-        item.setExportType(exportType);
-        item.setParams(params);
-        item.setResultFilePath(resultFilePath);
-        item.setResultName(resultName);
-        item.setStatus(status);
-        item.setExecuteAt(executeAt);
-        item.setCreateAt(new Date());
-        item.setUpdateAt(new Date());
-        item.setErrorMsg(errorMsg);
-
+    public ExportFileRecord insertFull(ExportFileRecord item) {
         exportFileRecordMapper.insertSelective(item);
-
         return item;
     }
 }

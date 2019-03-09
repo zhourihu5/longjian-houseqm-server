@@ -1,5 +1,4 @@
 package com.longfor.longjian.houseqm.app.service.impl;
-
 import com.alibaba.fastjson.JSON;
 import com.google.common.collect.Lists;
 import com.longfor.longjian.common.consts.HouseQmCheckTaskIssueStatusEnum;
@@ -216,8 +215,20 @@ public class HouseqmIssueServiceImpl implements IHouseqmIssueService {
         this.writeInput(data, exportName, filepath);
         //记录导出的内容到数据库
         String resultFilePath=  String.format("%s%s%s",baseDir,"/",outputFilename);
-        return exportFileRecordService.insertFull(userId, teamId, projectId, exportType, inputFilename + " " + outputFilename,
-                resultFilePath, exportName, 0, "", executeAt);
+        ExportFileRecord item = new ExportFileRecord();
+        item.setUserId(userId);
+        item.setTeamId(teamId);
+        item.setProjectId(projectId);
+        item.setExportType(exportType);
+        item.setParams(inputFilename + " " + outputFilename);
+        item.setResultFilePath(resultFilePath);
+        item.setResultName(exportName);
+        item.setStatus(0);
+        item.setExecuteAt(executeAt);
+
+        item.setErrorMsg("");
+
+        return exportFileRecordService.insertFull(item);
     }
 
     private void writeInput(String data, String exportName, String filepath) {

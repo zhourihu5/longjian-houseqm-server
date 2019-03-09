@@ -391,7 +391,8 @@ public class BuildingqmServiceImpl implements IBuildingqmService {
     @Override
     public void create(Integer uid, TaskReq taskReq) {
         Map<String, Object> paramMap = prepareForCreateOrEdit(taskReq);
-        execute(uid, taskReq, (List<Integer>) paramMap.get(AREA_IDS), (List<Integer>) paramMap.get(AREA_TYPES), (String) paramMap.get(PLAN_BEGIN_ON), (String) paramMap.get(PLAN_END_ON), (List<ApiBuildingQmTaskMemberGroupVo>) paramMap.get(CHECKER_GROUPS), (List<ApiBuildingQmTaskMemberGroupVo>) paramMap.get(REPAIR_GROUPS), (ConfigVo) paramMap.get(CONFIG));
+
+        execute(uid, taskReq, paramMap);
     }
 
     @Override
@@ -557,7 +558,6 @@ public class BuildingqmServiceImpl implements IBuildingqmService {
         ApiIssueLogVo.ApiIssueLogInfoIssueRsp issue = new ApiIssueLogVo().new ApiIssueLogInfoIssueRsp();
         ArrayList<ApiIssueLogVo.ApiIssueLogListRsp> issueLogList = Lists.newArrayList();
         if (issueInfo == null) {
-            //throw new LjBaseRuntimeException(-99, "没找到此问题");
             return new ApiIssueLogVo();
         }
         ArrayList<Integer> usersId = Lists.newArrayList();
@@ -1226,7 +1226,15 @@ public class BuildingqmServiceImpl implements IBuildingqmService {
         return objects;
     }
 
-    private void execute(Integer uid, TaskReq taskReq, List<Integer> areaIds, List<Integer> areaTypes, String planBeginOn, String planEndOn, List<ApiBuildingQmTaskMemberGroupVo> checkerGroups, List<ApiBuildingQmTaskMemberGroupVo> repairerGroups, ConfigVo config) {
+    private void execute(Integer uid, TaskReq taskReq, Map<String,Object> paramMap) {
+
+        List<Integer> areaIds = (List<Integer>) paramMap.get(AREA_IDS);
+        List<Integer> areaTypes = (List<Integer>) paramMap.get(AREA_TYPES);
+        String planBeginOn = (String) paramMap.get(PLAN_BEGIN_ON);
+        String planEndOn = (String) paramMap.get(PLAN_END_ON);
+        List<ApiBuildingQmTaskMemberGroupVo> checkerGroups = (List<ApiBuildingQmTaskMemberGroupVo>) paramMap.get(CHECKER_GROUPS);
+        List<ApiBuildingQmTaskMemberGroupVo> repairerGroups = (List<ApiBuildingQmTaskMemberGroupVo>) paramMap.get(REPAIR_GROUPS);
+        ConfigVo config = (ConfigVo) paramMap.get(CONFIG);
         Task task = new Task();
         task.setName(taskReq.getName());
         task.setProjectId(taskReq.getProject_id());

@@ -2,6 +2,7 @@ package com.longfor.longjian.houseqm.app.service.impl;
 
 import com.alibaba.fastjson.JSON;
 import com.google.common.collect.Lists;
+import com.google.common.collect.Maps;
 import com.longfor.longjian.common.base.LjBaseResponse;
 import com.longfor.longjian.common.consts.*;
 import com.longfor.longjian.common.push.UmPushUtil;
@@ -472,7 +473,6 @@ public class ScanMsgPushServiceImpl implements ScanMsgPushService {
             String appMasterSecretAndroid;
             String appkeyIos;
             String appMasterSecretIos;
-            // String appSecretXiaoMi;String packageNameXiaoMi;
 
             if (appFlag == PUSH_APP_GCGL) {
                 appkeyAndroid = gcglappKeyAndroid;
@@ -492,8 +492,12 @@ public class ScanMsgPushServiceImpl implements ScanMsgPushService {
                 aliaList.add(aliasEnterprise);
             }
             String alias = StringUtils.join(aliaList, ",");
+            Map<String, Object> paramMap = Maps.newHashMap();
+            paramMap.put("appkeyAndroid",appkeyAndroid);
+            paramMap.put("appMasterSecretAndroid",appMasterSecretAndroid);
+            paramMap.put("alias",alias);
             // 友盟推送Android
-            androidPush(appkeyAndroid, appMasterSecretAndroid, alias,
+            androidPush(paramMap,
                     "user_id", msg, title, msg, "go_app", taskId.toString());
 
             // 友盟推送Ios
@@ -504,11 +508,13 @@ public class ScanMsgPushServiceImpl implements ScanMsgPushService {
         }
     }
 
-    private void androidPush(String appkey, String appMasterSecret,
-                             String alias, String aliasType,
+    private void androidPush(Map<String, Object> paramMap, String aliasType,
                              String ticker, String title, String text,
                              String custom, String taskId) {
             try {
+                String appkey = (String) paramMap.get("appkeyAndroid");
+                String appMasterSecret = (String) paramMap.get("appMasterSecretAndroid");
+                String alias = (String) paramMap.get("alias");
                 boolean result = UmPushUtil.sendAndroidCustomizedcast(
                         appkey, appMasterSecret, alias,
                         aliasType, ticker, title, text, custom, taskId);
