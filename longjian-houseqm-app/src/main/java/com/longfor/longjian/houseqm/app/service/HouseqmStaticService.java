@@ -372,7 +372,7 @@ public class HouseqmStaticService {
         return Lists.newArrayList();
     }
 
-    public Boolean checkRootAreaIntersectAreas(HashMap<Integer, String> areaMap, Integer areaId, List<Integer> comma) {
+    public Boolean checkRootAreaIntersectAreas(Map<Integer, String> areaMap, Integer areaId, List<Integer> comma) {
         for (int i = 0; i < comma.size(); i++) {
             if (comma.get(i).equals(areaId)) {
                 return true;

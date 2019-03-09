@@ -117,17 +117,7 @@ public class HouseqmIssueServiceImpl implements IHouseqmIssueService {
                         setDetailField(detailMap).done();
             }
         }
-        try {
-            helper.execute();
-        } catch (Exception e) {
-            log.error(e.getMessage());
-        }
-        List<String> dropUuids = Lists.newArrayList();
-        List<ApiHouseQmCheckTaskReportRsp> droppedIssue = helper.getDroppedIssue();
-        for (ApiHouseQmCheckTaskReportRsp drop : droppedIssue) {
-            dropUuids.add(drop.getUuid());
-        }
-        return dropUuids;
+        return getBatchResults();
     }
 
     @Override
@@ -196,6 +186,10 @@ public class HouseqmIssueServiceImpl implements IHouseqmIssueService {
             helper.start().setNormalField(map)
                     .setDetailField(detailMap).done();
         }
+        return getBatchResults();
+    }
+
+    private List<String> getBatchResults() {
         try {
             helper.execute();
         } catch (Exception e) {
@@ -217,7 +211,7 @@ public class HouseqmIssueServiceImpl implements IHouseqmIssueService {
         Integer ts = DateUtil.datetimeToTimeStamp(new Date());
         String inputFilename = String.format("%d%d.%s", randCount, ts, "input");
         String outputFilename = String.format("/export/%d%d.%s", randCount, ts, "output");
-        String filepath = baseDir+"/" + inputFilename;
+        String filepath = String.format("%s%s%s",baseDir,"/" , inputFilename);
         String data = JSON.toJSONString(args);
         this.writeInput(data, exportName, filepath);
         //记录导出的内容到数据库

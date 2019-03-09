@@ -113,9 +113,7 @@ public class DocumentHandler {
             while ((bytesToRead = fin.read(buffer)) != -1) {
                 sos.write(buffer, 0, bytesToRead);
             }
-        } catch (FileNotFoundException e) {
-            log.error(e.getMessage());
-        } catch (IOException e) {
+        } catch (Exception e) {
             log.error(e.getMessage());
         } finally {
             if (outFile.delete()) {

@@ -13,7 +13,6 @@ import com.longfor.longjian.houseqm.consts.IssueFieldRequiredStatusEnum;
 import com.longfor.longjian.houseqm.domain.internalservice.IssueFieldSettingService;
 import com.longfor.longjian.houseqm.po.zhijian2_setting.IssueFieldSetting;
 import com.longfor.longjian.houseqm.util.DateUtil;
-import com.longfor.longjian.houseqm.util.StringSplitToListUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Repository;
 import org.springframework.stereotype.Service;
