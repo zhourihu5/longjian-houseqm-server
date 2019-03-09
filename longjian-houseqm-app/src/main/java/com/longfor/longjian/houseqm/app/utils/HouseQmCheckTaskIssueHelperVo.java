@@ -120,7 +120,7 @@ public class HouseQmCheckTaskIssueHelperVo {
         this.currentLog.setAttachmentMd5List(String.valueOf(map.get("str")));
         this.currentLog.setAudioMd5List(String.valueOf(map.get("eStr1")));
         this.currentLog.setMemoAudioMd5List(String.valueOf(map.get("eStr2")));
-        this.currentLog.setClientCreateAt(DateUtil.timeStampToDate(Integer.parseInt(String.valueOf("nowTimestamp")), YMDHMS));
+        this.currentLog.setClientCreateAt(DateUtil.timeStampToDate(Integer.parseInt(String.valueOf(map.get("nowTimestamp"))), YMDHMS));
 
         return this;
     }

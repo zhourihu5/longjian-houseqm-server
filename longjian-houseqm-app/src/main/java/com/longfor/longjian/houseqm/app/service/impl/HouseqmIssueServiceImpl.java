@@ -157,7 +157,7 @@ public class HouseqmIssueServiceImpl implements IHouseqmIssueService {
 
             // 变更类型
             String uuid = UUID.randomUUID().toString().replace("-", "");
-            int nowTimestamp = DateUtil.datetimeToTimeStamp(new Date());
+            int nowTimestamp = com.longfor.longjian.common.util.DateUtil.dateToTimestamp(new Date());
 
             Map<String,Object>map=new HashMap<>();
             map.put("taskId",issue.getTaskId());
