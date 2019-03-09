@@ -10,7 +10,7 @@ import java.util.Set;
 public interface HouseQmCheckTaskIssueAttachmentMapper extends LFMySQLMapper<HouseQmCheckTaskIssueAttachment> {
 
 
-    public List<HouseQmCheckTaskIssueAttachment> selectByIssueUuid(@Param("issueUuids") Set<String> issueUuids, @Param("deleted") String deleted);
+    List<HouseQmCheckTaskIssueAttachment> selectByIssueUuid(@Param("issueUuids") Set<String> issueUuids, @Param("deleted") String deleted);
 
 
     List<HouseQmCheckTaskIssueAttachment> searchByTaskIdAndSelfJoinOrderByIdASCPageUnscoped(@Param("task_id") Integer taskId, @Param("userId") Integer userId, @Param("timestamp") Integer timestamp, @Param("userIds") List<Integer> userIds, @Param("privateInt") Integer privateInt, @Param("publicInt") Integer publicInt, @Param("start") Integer start, @Param("limit") Integer limit);
