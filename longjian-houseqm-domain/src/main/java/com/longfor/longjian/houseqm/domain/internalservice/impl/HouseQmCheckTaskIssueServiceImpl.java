@@ -688,8 +688,7 @@ public class HouseQmCheckTaskIssueServiceImpl implements HouseQmCheckTaskIssueSe
         issue.setUpdateAt(new Date());
         issue.setCreateAt(new Date());
         issue.setClientCreateAt(new Date());
-        houseQmCheckTaskIssueMapper.insert(issue);
-
+        houseQmCheckTaskIssueMapper.insertSelective(issue);
         return issue.getId();
     }
 
