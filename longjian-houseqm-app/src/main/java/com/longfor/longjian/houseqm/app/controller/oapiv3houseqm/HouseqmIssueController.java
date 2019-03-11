@@ -69,6 +69,7 @@ public class HouseqmIssueController {
     private static final String PROJECT_ENGINEERING_QUESTION_MANAGE_EDIT="项目.工程检查.问题管理.编辑";
 
     @RequestMapping(value = "export_pdf", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+    @SuppressWarnings("squid:S3776")
     public LjBaseResponse exportPdf(HttpServletRequest request, @Validated IssueExportPdfReq req) throws IOException {
         LjBaseResponse<Object> response = new LjBaseResponse<>();
         try {

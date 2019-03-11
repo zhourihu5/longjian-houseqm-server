@@ -216,6 +216,7 @@ public class IssueServiceImpl implements IIssueService {
     }
 
     @Override
+    @SuppressWarnings("squid:S3776")
     public Map<String, Object> exportExcel(Integer uid, ExportBuildingExcelReq req) {
 
         //准备数据
@@ -393,6 +394,7 @@ public class IssueServiceImpl implements IIssueService {
     }
 
     @Override
+    @SuppressWarnings("squid:S3776")
     public IssueListRsp list(IssueListDoActionReq req) {
 
         IssueListRsp issueListRsp = new IssueListRsp();
@@ -561,6 +563,7 @@ public class IssueServiceImpl implements IIssueService {
     }
 
     @Override
+    @SuppressWarnings("squid:S3776")
     public List<HouseQmCheckTaskIssueHistoryLogVo> getHouseQmCheckTaskIssueActionLogByIssueUuid(String issueUuid) {
         HouseQmCheckTaskIssue issueInfo = houseQmCheckTaskIssueService.selectByUuidAndNotDelete(issueUuid);
         if (issueInfo == null) {
@@ -955,6 +958,7 @@ public class IssueServiceImpl implements IIssueService {
     }
 
     @Override
+    @SuppressWarnings("squid:S3776")
     public Map<String, Object> repairReplyExport(Integer projectId, String issueIds) {
 
         //准备数据
@@ -1060,6 +1064,7 @@ public class IssueServiceImpl implements IIssueService {
     }
 
     @Override
+    @SuppressWarnings("squid:S3776")
     public LjBaseResponse updateIssueRepairInfoByProjectAndUuid(Integer uid, Integer repairerId, String repairFollowerIds, Integer projectId, String issueUuid) {
         Integer tempRepairerId = 0;
         ArrayList<String> notifyUserIds = Lists.newArrayList();
@@ -1263,6 +1268,7 @@ public class IssueServiceImpl implements IIssueService {
     }
 
     @Override
+    @SuppressWarnings("squid:S3776")
     public LjBaseResponse<IssueInfoVo> getHouseQmCheckTaskIssueDetailBaseByProjectAndUuid(Integer uid, Integer projectId, String issueUuid) {
         Date limitTime = new Date(0);
         HouseQmCheckTaskIssue issueInfo = houseQmCheckTaskIssueService.getIssueByProjectIdAndUuid(projectId, issueUuid);
@@ -1437,6 +1443,7 @@ public class IssueServiceImpl implements IIssueService {
     }
 
     @Override
+    @SuppressWarnings("squid:S3776")
     public Boolean repairNotifyExport(Integer userId, int projectId, String issueUuid, HttpServletResponse response, HttpServletRequest request) {
         List<ExportNotifyDetailVo> input = Lists.newArrayList();
         List<Integer> issueIds = StringUtil.strToInts(issueUuid, ",");

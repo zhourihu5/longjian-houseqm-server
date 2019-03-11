@@ -195,7 +195,7 @@ public class HouseqmStaticService {
         }
         return list;
     }
-
+    @SuppressWarnings("squid:S3776")
     public RepossessionTasksStatusInfoVo getRepossessionTasksStatusInfo(Integer prodectId, List<Integer> taskIds, Integer areaId) {
         RepossessionTasksStatusInfoVo info = new RepossessionTasksStatusInfoVo();
 

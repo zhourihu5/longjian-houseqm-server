@@ -112,6 +112,7 @@ public class HouseqmStatisticServiceImpl implements IHouseqmStatisticService {
     }
 
     @Override
+    @SuppressWarnings("squid:S3776")
     public ProjectRepairerStatRspVo projectRepairerStat(int uid, Integer projectId, Integer taskId, String source, Integer statBegin, Integer statEnd, Integer timestamp) {
         String statBeginInt = "2000-01-01 00:00:00";
         String statEndStr = "2100-01-01 23:59:59";
@@ -180,6 +181,7 @@ public class HouseqmStatisticServiceImpl implements IHouseqmStatisticService {
     }
 
     @Override
+    @SuppressWarnings("squid:S3776")
     public ProjectCheckerStatRspVo projectCheckerStat(int uid, Integer projectId, Integer taskId, String source, Integer statBeginInt, Integer statEndInt, Integer timestamp) {
         String statBegin = "2000-01-01 00:00:00";
         String statEnd = "2100-01-01 23:59:59";
@@ -265,6 +267,7 @@ public class HouseqmStatisticServiceImpl implements IHouseqmStatisticService {
     }
 
     @Override
+    @SuppressWarnings("squid:S3776")
     public ProjectIssueStatRspVo projectIssueStat(int uid, Integer projectId, String source, Integer areaId, Integer timestamp) {
         ProjectIssueStatRspVo result = new ProjectIssueStatRspVo();
         ApiHouseQmProjectStatVo item = new ApiHouseQmProjectStatVo();
@@ -746,6 +749,7 @@ public class HouseqmStatisticServiceImpl implements IHouseqmStatisticService {
      * @return com.longfor.longjian.houseqm.app.vo.RepossessionTasksStatusInfoVo
      **/
     @Override
+    @SuppressWarnings("squid:S3776")
     public RepossessionTasksStatusInfoVo getRepossessionTasksStatusInfo(Integer projectId, List<Integer> taskIds, Integer areaId) {
         RepossessionTasksStatusInfoVo info = new RepossessionTasksStatusInfoVo();
         info.setTaskName("");
@@ -1203,7 +1207,7 @@ public class HouseqmStatisticServiceImpl implements IHouseqmStatisticService {
         return infos;
 
     }
-
+    @SuppressWarnings("squid:S3776")
     public List<HouseQmIssueCategoryStatVo> calculateIssueCount
             (ArrayList<SimpleHouseQmCheckTaskIssueStatVo> issueStatVoList) {
         List<HouseQmIssueCategoryStatVo> r = Lists.newArrayList();

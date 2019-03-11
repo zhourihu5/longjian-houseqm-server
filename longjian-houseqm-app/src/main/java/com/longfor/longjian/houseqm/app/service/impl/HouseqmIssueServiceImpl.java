@@ -120,6 +120,7 @@ public class HouseqmIssueServiceImpl implements IHouseqmIssueService {
     }
 
     @Override
+    @SuppressWarnings("squid:S3776")
     public List<String> updateBatchIssueRepairInfoByUuids(List<String> uuids, Integer projectId, int senderId, Integer repairerId, String repairFollowerIds, Integer planEndOn) {
         int eInt = -1;
         String eStr = "";

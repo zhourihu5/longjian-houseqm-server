@@ -152,7 +152,7 @@ public class AreaServiceImpl implements AreaService {
         checkPath(result, pathA, pathB);
         return new ArrayList<>(new HashSet<>(result));
     }
-
+    @SuppressWarnings("squid:S3776")
     private void checkPath(List<Integer> result, List<String> pathA, List<String> pathB) {
         for (String pA : pathA) {
             for (String pB : pathB) {

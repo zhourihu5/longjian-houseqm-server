@@ -118,7 +118,7 @@ public class IusseTaskListService {
 
         return acceptanceItems;
     }
-
+    @SuppressWarnings("squid:S3776")
     public ApiMineMsg teamsAndProjects(Integer uid, String categorys) {
         ArrayList<ApiMineMsg.ApiMineTeamsMsg> teams = Lists.newArrayList();
         ArrayList<ApiMineMsg.ApiMineProjectsMsg> projects = Lists.newArrayList();

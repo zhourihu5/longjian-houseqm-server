@@ -34,6 +34,7 @@ public class PushServiceImpl implements PushService {
     private PushConfigVo pushConfigVo;
 
     @Override
+    @SuppressWarnings("squid:S3776")
     public void sendUPushByIssues(List<HouseQmCheckTaskIssueVo> issues) {
         if (issues == null || issues.isEmpty()) {
             log.warn("send_upush_empty");

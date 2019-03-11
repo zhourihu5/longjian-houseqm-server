@@ -50,6 +50,7 @@ public class HouseqmExportServiceImpl implements IHouseqmExportService {
     private com.longfor.longjian.houseqm.domain.internalservice.HouseOwnerInfoService houseOwnerInfoService;
 
     @Override
+    @SuppressWarnings("squid:S3776")
     public List<ProjectOrdersVo> searchProjectOrdersByProjIdTaskIdAreaIdsRepairedIdBeginOnEndOn(Integer projectId, Integer taskId, List<Integer> areaIds, Integer repairerId, Date beginOn, Date endOn, Integer categoryCls) {
         //取出和这些areaids相关的区域 后面用来创建树使用
         List<Area> areas = areaService.searchRelatedAreaByAreaIdIn(projectId, areaIds);

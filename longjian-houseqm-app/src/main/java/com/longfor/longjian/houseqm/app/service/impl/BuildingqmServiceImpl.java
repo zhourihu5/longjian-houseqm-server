@@ -422,7 +422,7 @@ public class BuildingqmServiceImpl implements IBuildingqmService {
         compareSquadCheckers(needUpdateCheckTaskSquadUser, needInsertCheckTaskSquadUser, checkerGroups, checkerGroupsDel, doNotNeedDeleteSquaduserPkId, taskEditReq);
         compareSquadRepairers(repairerGroups, taskEditReq, needInsertCheckTaskSquadUser, doNotNeedDeleteSquaduserPkId);
     }
-
+    @SuppressWarnings("squid:S3776")
     private void compareSquadCheckers(List<UserInHouseQmCheckTask> needUpdateCheckTaskSquadUser, List<ApiBuildingQmTaskMemberInsertVo> needInsertCheckTaskSquadUser, List<ApiBuildingQmTaskMemberGroupVo> checkerGroups, List<Object> checkerGroupsDel, Map doNotNeedDeleteSquaduserPkId, TaskEditReq taskEditReq) {
         List<UserInHouseQmCheckTask> dbItems = userInHouseQmCheckTaskService.selectByTaskIdAndRoleType(taskEditReq.getTask_id(), CheckTaskRoleType.Checker.getValue());
         HashMap<Object, Map<Integer, UserInHouseQmCheckTask>> squadUserMap = Maps.newHashMap();
@@ -553,6 +553,7 @@ public class BuildingqmServiceImpl implements IBuildingqmService {
 
 
     @Override
+    @SuppressWarnings("squid:S3776")
     public ApiIssueLogVo getIssueListLogByLastIdAndUpdataAt(Integer taskId, Integer timestamp, String issueUuid) {
         HouseQmCheckTaskIssue issueInfo = houseQmCheckTaskIssueService.selectByTaskIdAndUuidAndNotDel(taskId, issueUuid);
         ApiIssueLogVo.ApiIssueLogInfoIssueRsp issue = new ApiIssueLogVo().new ApiIssueLogInfoIssueRsp();
@@ -837,7 +838,7 @@ public class BuildingqmServiceImpl implements IBuildingqmService {
         vo.setIssue_log_list(issueLogList);
         return vo;
     }
-
+    @SuppressWarnings("squid:S3776")
     private void editExecute(Map<String,Object> map, Integer uid, TaskEditReq taskEditReq) {
 
         List<ApiBuildingQmTaskMemberGroupVo> checkerGroupsAdd = Lists.newArrayList();
@@ -1225,7 +1226,7 @@ public class BuildingqmServiceImpl implements IBuildingqmService {
         }
         return objects;
     }
-
+    @SuppressWarnings("squid:S3776")
     private void execute(Integer uid, TaskReq taskReq, Map<String,Object> paramMap) {
 
         List<Integer> areaIds = (List<Integer>) paramMap.get(AREA_IDS);
@@ -1454,7 +1455,7 @@ public class BuildingqmServiceImpl implements IBuildingqmService {
         }
         return null;
     }
-
+    @SuppressWarnings("squid:S3776")
     private ConfigVo unmarshPushStrategy(String pushStrategyConfig) {
         ConfigVo configVo = new ConfigVo();
         if (StringUtils.isEmpty(pushStrategyConfig)) {
@@ -1553,6 +1554,7 @@ public class BuildingqmServiceImpl implements IBuildingqmService {
     }
 
     @Override
+    @SuppressWarnings("squid:S3776")
     public Map<String, Object> issuestatisticexport(Integer categoryCls, String items, HttpServletResponse response) {
         Integer result = 0;
         String message = "success";
