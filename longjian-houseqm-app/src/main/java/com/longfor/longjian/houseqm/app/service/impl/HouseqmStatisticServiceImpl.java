@@ -159,6 +159,17 @@ public class HouseqmStatisticServiceImpl implements IHouseqmStatisticService {
 
         List<HouseQmCheckTaskIssue> issueList = houseQmCheckTaskIssueService.searchByProjIdAndCategoryClsInAndRepairerIdAndClientCreateAtAndTypInAndStatusInAndTaskIdOrderByClientCreateAt(paramMap, myTaskIds);
 
+        addCount(statMap, issueList);
+        List<ApiHouseQmRepairerStatVo> items = Lists.newArrayList();
+        for (Map.Entry<Integer, ApiHouseQmRepairerStatVo> stat : statMap.entrySet()) {
+            items.add(stat.getValue());
+        }
+        ProjectRepairerStatRspVo result = new ProjectRepairerStatRspVo();
+        result.setItems(items);
+        return result;
+    }
+
+    private void addCount(Map<Integer, ApiHouseQmRepairerStatVo> statMap, List<HouseQmCheckTaskIssue> issueList) {
         for (HouseQmCheckTaskIssue item : issueList) {
             if (statMap.containsKey(item.getRepairerId())) {
                 if (HouseQmCheckTaskIssueStatusEnum.AssignNoReform.getId().equals(item.getStatus())) {
@@ -170,13 +181,6 @@ public class HouseqmStatisticServiceImpl implements IHouseqmStatisticService {
                 }
             }
         }
-        List<ApiHouseQmRepairerStatVo> items = Lists.newArrayList();
-        for (Map.Entry<Integer, ApiHouseQmRepairerStatVo> stat : statMap.entrySet()) {
-            items.add(stat.getValue());
-        }
-        ProjectRepairerStatRspVo result = new ProjectRepairerStatRspVo();
-        result.setItems(items);
-        return result;
     }
 
     @Override

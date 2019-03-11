@@ -156,16 +156,20 @@ public class AreaServiceImpl implements AreaService {
     private void checkPath(List<Integer> result, List<String> pathA, List<String> pathB) {
         for (String pA : pathA) {
             for (String pB : pathB) {
-                if (pA.startsWith(pB)) {
-                    List<Integer> ids = StringUtil.strToInts(pA, "/");
-                    if (CollectionUtils.isNotEmpty(ids)) result.add(ids.get(ids.size() - 1));
-                    continue;
-                }
-                if (pB.startsWith(pA)) {
-                    List<Integer> ids = StringUtil.strToInts(pB, "/");
-                    if (CollectionUtils.isNotEmpty(ids)) result.add(ids.get(ids.size() - 1));
-                }
+                checkStartsWithValue(result, pA, pB);
             }
+        }
+    }
+
+    private void checkStartsWithValue(List<Integer> result, String pA, String pB) {
+        if (pA.startsWith(pB)) {
+            List<Integer> ids = StringUtil.strToInts(pA, "/");
+            if (CollectionUtils.isNotEmpty(ids)) result.add(ids.get(ids.size() - 1));
+            return;
+        }
+        if (pB.startsWith(pA)) {
+            List<Integer> ids = StringUtil.strToInts(pB, "/");
+            if (CollectionUtils.isNotEmpty(ids)) result.add(ids.get(ids.size() - 1));
         }
     }
 
