@@ -629,7 +629,7 @@ public class IssueServiceImpl implements IIssueService {
                     }
                 }
                 HashMap<String, Object> logData = Maps.newHashMap();
-                logData.put("planEndOn", issueLogDetail.get(PLAN_END_ON));
+                logData.put(PLAN_END_ON, issueLogDetail.get(PLAN_END_ON));
                 logData.put("followers", followers);
                 logItem.setData(JSON.toJSONString(logData));
                 items.add(logItem);
@@ -671,7 +671,7 @@ public class IssueServiceImpl implements IIssueService {
                         }
                     }
                     HashMap<String, Object> logData = Maps.newHashMap();
-                    logData.put("planEndOn", issueLogDetail.get(PLAN_END_ON));
+                    logData.put(PLAN_END_ON, issueLogDetail.get(PLAN_END_ON));
                     logData.put("followers", followers);
                     logItem.setData(JSON.toJSONString(logData));
                     items.add(logItem);
