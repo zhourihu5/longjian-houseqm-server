@@ -231,7 +231,7 @@ public class ReportIssueService {
                 }
                 // # 写入推送记录
                 if (CheckTaskIssueStatus.NoteNoAssign.getValue().equals(issue.getStatus())) {
-                    List<Integer> desUserIds = getIssueCheckerList(checkerMap, issue, null);
+                    List<Integer> desUserIds = getIssueCheckerList(checkerMap, issue, false);
 
                     pushList.addAll(desUserIds);
                     if (CollectionUtils.isNotEmpty(desUserIds)) {
@@ -588,7 +588,7 @@ public class ReportIssueService {
             for (Map.Entry<Integer, Integer> sentry : roleUsers.get(user).entrySet()) {
                 Integer squadId = sentry.getKey();
                 if (squadIds.contains(squadId)) {
-                    if (b && !roleUsers.get(user).get(squadId).equals(CheckTaskRoleCanApproveType.Yes.getValue())) {
+                    if (b &&!CheckTaskRoleCanApproveType.Yes.getValue().equals(roleUsers.get(user).get(squadId))) {
                         continue;
                     }
                     if (user > 0 && !desUserIds.contains(user)) {
