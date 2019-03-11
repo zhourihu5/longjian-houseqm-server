@@ -99,7 +99,7 @@ public class ZipUtils {
             }
         }
     }
-
+    @SuppressWarnings("squid:S3776")
     private static void copyResource(List<String> oldResPath, String newResPath) {
         for (String s : oldResPath) {
             try {

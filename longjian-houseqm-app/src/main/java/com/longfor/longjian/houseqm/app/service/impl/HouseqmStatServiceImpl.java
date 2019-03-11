@@ -187,6 +187,7 @@ public class HouseqmStatServiceImpl implements IHouseqmStatService {
 
     // 格式化验房信息
     @Override
+    @SuppressWarnings("squid:S3776")
     public List<InspectionHouseStatusInfoVo> formatFenhuHouseInspectionStatusInfoByAreaIds(Integer issueStatus,Integer taskId, List<Integer> ids) {
         List<InspectionHouseStatusInfoVo> result = Lists.newArrayList();
         if (ids.isEmpty()) return result;
@@ -255,6 +256,7 @@ public class HouseqmStatServiceImpl implements IHouseqmStatService {
     }
 
     // 通过taskId和areaId获取按area_id分组的问题map 添加issueStatus 作区分
+    @SuppressWarnings("squid:S3776")
     public Map<Integer, List<HouseQmCheckTaskIssue>> searchHouseQmCheckTaskIssueMapByTaskIdAreaIds(Integer issueStatus,int taskId, List<Integer> areaIds) {
         Map<Integer, List<HouseQmCheckTaskIssue>> result = Maps.newHashMap();
 
@@ -390,6 +392,7 @@ public class HouseqmStatServiceImpl implements IHouseqmStatService {
 
 
     @Override
+    @SuppressWarnings("squid:S3776")
     public HouseQmStatAreaSituationIssueRspVo getAreaIssueTypeStatByProjectIdAreaIdCategoryCls(Integer projectId, Integer areaId, Integer categoryCls) {
         String areaPath = "";
         if (areaId > 0) {
@@ -590,7 +593,7 @@ public class HouseqmStatServiceImpl implements IHouseqmStatService {
         statListVo.setItems(checkerStatList);
         return statListVo;
     }
-
+    @SuppressWarnings("squid:S3776")
     public ProjectDailyListVo searchTaskSituationDailyByProjTaskIdInOnPage(Integer projectId, List<Integer> taskIdList, Integer pageNum, Integer pageSize) {
         ProjectDailyListVo projectDailyListVo = new ProjectDailyListVo();
         //读取出所有日期

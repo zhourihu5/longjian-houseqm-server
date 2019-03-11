@@ -107,7 +107,7 @@ public class ScanMsgPushServiceImpl implements ScanMsgPushService {
 
         return null;
     }
-
+    @SuppressWarnings("squid:S3776")
     private LjBaseResponse scanNoticeCenterAndPush(Integer moduleId){
 
 
@@ -278,7 +278,7 @@ public class ScanMsgPushServiceImpl implements ScanMsgPushService {
         return teamMap;
     }
 
-
+    @SuppressWarnings("squid:S3776")
     private GcglIssueStatRecordVo createNoticeCenterRealTimeMessage(Map<Integer,Team>teamMap, Map<Integer,Project>projectMap,
                                                    Map<Integer,User>userMap, Integer moduleId,
                                                    NoticeStatKey noticeStatKey, NoticeStatValue noticeStatValue, int  statBeg, int statEnd){

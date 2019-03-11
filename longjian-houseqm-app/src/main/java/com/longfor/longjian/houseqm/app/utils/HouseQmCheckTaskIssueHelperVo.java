@@ -156,7 +156,7 @@ public class HouseQmCheckTaskIssueHelperVo {
         this.currentLog.setDetail(detail);
         return this;
     }
-
+    @SuppressWarnings("squid:S3776")
     public HouseQmCheckTaskIssueHelperVo done() {
         //将log加入到insert列表中
         this.issueLogs.add(this.currentLog);
@@ -302,6 +302,7 @@ public class HouseQmCheckTaskIssueHelperVo {
     }
 
     //执行
+    @SuppressWarnings("squid:S3776")
     public void execute() {
         //执行前补全各种数据
         this.beforeExecute();
@@ -490,7 +491,7 @@ public class HouseQmCheckTaskIssueHelperVo {
         // PUSH Kafka Logs
         this.pushKafkaMsg();
     }
-
+    @SuppressWarnings("squid:S3776")
     public HouseQmCheckTaskIssueHelperVo beforeExecute() {
         //补全数据
         List<Integer> existsAreaIds = Lists.newArrayList();
@@ -563,7 +564,7 @@ public class HouseQmCheckTaskIssueHelperVo {
 
         return this;
     }
-
+    @SuppressWarnings("squid:S3776")
     public void pushKafkaMsg() {
         HouseQmIssueReportMsg msgPkg = new HouseQmIssueReportMsg();
         msgPkg.setCreated_issues(Lists.newArrayList());
@@ -757,7 +758,7 @@ public class HouseQmCheckTaskIssueHelperVo {
         this.categoryMap = categoryV3s.stream().collect(Collectors.toMap(CategoryV3::getKey, categoryV3 -> categoryV3));
         return this;
     }
-
+    @SuppressWarnings("squid:S3776")
     public Map<String, Object> modifyIssue(HouseQmCheckTaskIssueVo issue) {
 
         boolean changed = false;

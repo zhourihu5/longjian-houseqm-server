@@ -92,6 +92,7 @@ public class ExportUtils {
     }
 
     // 导出excel 不带图片 问题列表
+    @SuppressWarnings("squid:S3776")
     public static SXSSFWorkbook exportExcel(List<ExcelIssueData> data, boolean conditionOpen) {
 
         Map<String, Object> initParam = initWorkbook();
@@ -210,6 +211,7 @@ public class ExportUtils {
     }
 
     //导出 整改回复单
+    @SuppressWarnings("squid:S3776")
     public static XWPFDocument exportRepairReply(ExportReplyDetail data) throws IOException, InvalidFormatException {
         String templateNotify = "/templates/reply_template.docx";
         InputStream fis = ExportUtils.class.getResourceAsStream(templateNotify);

@@ -207,6 +207,7 @@ public class IssueListController {
     }
 
     @RequestMapping(value = "configs/", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+    @SuppressWarnings("squid:S3776")
     public LjBaseResponse<ProjectSettingConfigVo> configs(HttpServletRequest request, @RequestParam(value = "project_id") Integer projectId) {
         LjBaseResponse<ProjectSettingConfigVo> response = new LjBaseResponse<>();
         try {

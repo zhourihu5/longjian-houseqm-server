@@ -71,6 +71,7 @@ public class ReportIssueService {
     private static final String   START_VALUE="0001-01-01 00:00:00";
 
     @Transactional
+    @SuppressWarnings("squid:S3776")
     public ReportIssueVo reportIssue(Integer uid, Integer projectId, String data) {
         ArrayList<ReportIssueVo.ApiHouseQmCheckTaskReportMsg> dropped = Lists.newArrayList();
         UnmarshReportIssueRequestBody issueRequestBody = unmarshReportIssueRequest(data);
@@ -563,7 +564,7 @@ public class ReportIssueService {
         return vo;
     }
 
-
+    @SuppressWarnings("squid:S3776")
     private ArrayList<Integer> getIssueCheckerList(Map<Integer, Map<Integer, Map<Integer, Integer>>> checkerMap, HouseQmCheckTaskIssue issue, Boolean b) {
         ArrayList<Integer> desUserIds = Lists.newArrayList();
         if (!checkerMap.containsKey(issue.getTaskId())) {
@@ -600,7 +601,7 @@ public class ReportIssueService {
         }
         return desUserIds;
     }
-
+    @SuppressWarnings("squid:S3776")
     private Map<String, Object> modifyIssue(Map<HouseQmCheckTaskIssue, ApiRefundInfo> refundMap, HashMap<String, ApiUserRoleInIssue> issueRoleMap, HouseQmCheckTaskIssue issue, ApiHouseQmCheckTaskIssueLogInfo item, Boolean b) {
         Boolean flag=!b && convertLogStatus(item.getStatus()).equals(CheckTaskIssueStatus.NoteNoAssign.getValue()) && issue.getStatus().equals(CheckTaskIssueStatus.AssignNoReform.getValue());
         //  # 判断是否修改检查项
@@ -730,7 +731,7 @@ public class ReportIssueService {
         resmap.put(REFUNDMAP, refundMap);
         return resmap;
     }
-
+    @SuppressWarnings("squid:S3776")
     private Map<String, Object> refundIssue(Map<HouseQmCheckTaskIssue, ApiRefundInfo> refundMap,HashMap<String, ApiUserRoleInIssue> issueRoleMap, HouseQmCheckTaskIssue issue, ApiHouseQmCheckTaskIssueLogInfo item) {
         issue.setRepairerId(0);
         issue.setRepairerFollowerIds("");
@@ -820,6 +821,7 @@ public class ReportIssueService {
         return resmap;
     }
     // 检查项修改
+    @SuppressWarnings("squid:S3776")
     private Map<String, Object> reassignIssue(Boolean flag,HashMap<String, ApiUserRoleInIssue> issueRoleMap, HouseQmCheckTaskIssue issue, ApiHouseQmCheckTaskIssueLogInfo item) {
         if (flag){
             issue.setRepairerId(0);
@@ -968,7 +970,7 @@ public class ReportIssueService {
         });
         return resultDict;
     }
-
+    @SuppressWarnings("squid:S3776")
     private HouseQmCheckTaskIssue createIssue(HashMap<String, ApiUserRoleInIssue> issueRoleMap, Integer uid, Integer prijectId, ApiHouseQmCheckTaskIssueLogInfo log) {
         //  # 创建一条新的issue
         HouseQmCheckTaskIssue issue = new HouseQmCheckTaskIssue();
@@ -1240,7 +1242,7 @@ public class ReportIssueService {
         });
         return result;
     }
-
+    @SuppressWarnings("squid:S3776")
     private UnmarshReportIssueRequestBody unmarshReportIssueRequest(String data) {
         List<String> logUuids = Lists.newArrayList();
         List<String> issueUuids = Lists.newArrayList();

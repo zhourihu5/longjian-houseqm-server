@@ -48,7 +48,7 @@ public class BuildingqmSettingService {
         }
         return temp;
     }
-
+    @SuppressWarnings("squid:S3776")
     public LjBaseResponse<ApiIssueFiledSettingMsg.IssueFileds> getIssuefiledSetting(String projectIds, Integer timestamp) {
         List<Integer> projectIdList = StringUtil.strToInts(projectIds, ",");
         ArrayList<ApiIssueFiledSettingMsg> issueFileds = Lists.newArrayList();
