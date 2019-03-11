@@ -113,16 +113,16 @@ public class HouseQmCheckTaskIssueServiceImpl implements HouseQmCheckTaskIssueSe
 
         Example example = new Example(HouseQmCheckTaskIssue.class);
         Example.Criteria criteria = example.createCriteria();
-        criteria.andEqualTo(PROJECT_ID, paramMap.get("projectId"));
+        criteria.andEqualTo(PROJECT_ID, paramMap.get(PROJECT_ID));
         if (CollectionUtils.isNotEmpty((List)paramMap.get("categoryClsList"))) criteria.andIn(CATEGORY_CLS, (List)paramMap.get("categoryClsList"));
         criteria.andNotEqualTo(REPAIRER_ID, 0);
         criteria.andGreaterThanOrEqualTo(CLIENT_CREATE_AT, paramMap.get("statBegin"));
         criteria.andLessThanOrEqualTo(CLIENT_CREATE_AT, paramMap.get("statEnd"));
         List<Integer> typs = (List<Integer>) paramMap.get("typs");
-        List<Integer> status = (List<Integer>) paramMap.get("status");
+        List<Integer> status = (List<Integer>) paramMap.get(STATUS);
         if (CollectionUtils.isNotEmpty(typs)) criteria.andIn(TYPE, typs);
         if (CollectionUtils.isNotEmpty(status)) criteria.andIn(STATUS, status);
-        Integer taskId = (Integer) paramMap.get("taskId");
+        Integer taskId = (Integer) paramMap.get(TASK_ID);
         return getHouseQmCheckTaskIssues(myTaskIds, example, criteria, taskId);
     }
 
@@ -353,7 +353,7 @@ public class HouseQmCheckTaskIssueServiceImpl implements HouseQmCheckTaskIssueSe
     @LFAssignDataSource("zhijian2")
     public List<HouseQmCheckTaskIssueAttachment> searchHouseQmCheckTaskIssueAttachmentByMyIdTaskIdLastIdUpdateAtGt(Integer userId, Map<String, Object> paramMap, Integer start, Integer limit, Integer privateInt, Integer publicInt) {
         try {
-            Integer taskId = (Integer) paramMap.get("taskId");
+            Integer taskId = (Integer) paramMap.get(TASK_ID);
             Integer timestamp = (Integer) paramMap.get("timestamp");
             //A找出与自己同组的人
             ////找到任务中，用户所在的所有组
