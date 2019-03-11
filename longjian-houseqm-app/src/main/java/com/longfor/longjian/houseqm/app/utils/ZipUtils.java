@@ -100,12 +100,12 @@ public class ZipUtils {
         }
     }
 
-    public static void copyResource(List<String> oldResPath, String newResPath) {
-        for (int m = 0; m < oldResPath.size(); m++) {
+    private static void copyResource(List<String> oldResPath, String newResPath) {
+        for (String s : oldResPath) {
             try {
                 // 如果文件夹不存在 则建立新文件夹
                 (new File(newResPath)).mkdirs();
-                File a = new File(oldResPath.get(m));
+                File a = new File(s);
                 // 如果已经是具体文件，读取
                 if (a.isFile()) {
                     readFile(newResPath, a);
@@ -113,12 +113,13 @@ public class ZipUtils {
                 // 如果文件夹下还存在文件，遍历，直到得到具体的文件
                 else {
                     String[] file = a.list();
-                    File temp = null;
-                    for (int i = 0; i < file.length; i++) {
-                        if (oldResPath.get(m).endsWith(File.separator)) {
-                            temp = new File(oldResPath.get(m) + file[i]);
+                    File temp ;
+                    assert file != null;
+                    for (String s1 : file) {
+                        if (s.endsWith(File.separator)) {
+                            temp = new File(s + s1);
                         } else {
-                            temp = new File(oldResPath.get(m) + File.separator + file[i]);
+                            temp = new File(s + File.separator + s1);
                         }
 
                         if (temp.isFile()) {
@@ -126,8 +127,8 @@ public class ZipUtils {
                         }
                         if (temp.isDirectory()) {
                             List<String> oldChildPath = new ArrayList<>();
-                            oldChildPath.add(oldResPath.get(m) + "/" + file[i]);
-                            newResPath = String.format("%s%s%s", newResPath, "/", file[i]);
+                            oldChildPath.add(s + "/" + s1);
+                            newResPath = String.format("%s%s%s", newResPath, "/", s1);
                             // 如果是子文件夹 递归循环
                             copyResource(oldChildPath, newResPath);
                         }
