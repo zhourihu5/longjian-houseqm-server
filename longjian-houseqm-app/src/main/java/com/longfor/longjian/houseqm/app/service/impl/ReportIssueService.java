@@ -21,7 +21,6 @@ import com.longfor.longjian.houseqm.util.StringUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -46,8 +45,6 @@ public class ReportIssueService {
     @Resource
     HouseQmCheckTaskIssueAttachmentService houseQmCheckTaskIssueAttachmentService;
     @Resource
-    UserService userService;
-    @Resource
     AreaService areaService;
     @Resource
     CategoryV3Service categoryV3Service;
@@ -55,14 +52,11 @@ public class ReportIssueService {
     CheckItemV3Service checkItemV3Service;
     @Resource
     HouseQmCheckTaskNotifyRecordService houseQmCheckTaskNotifyRecordService;
-
     @Resource
     ScanMsgPushService scanMsgPushService;
     @Resource
-    @Autowired
     private KafkaProducer kafkaProducer;
-    @Resource
-    private IssueServiceImpl issueService;
+
     private static final String ISSUEREASON="IssueReason";
     private static final String ISSUE_REASOND_ETAIL="IssueReasonDetail";
     private static final String ISSUE_SUGGEST="IssueSuggest";

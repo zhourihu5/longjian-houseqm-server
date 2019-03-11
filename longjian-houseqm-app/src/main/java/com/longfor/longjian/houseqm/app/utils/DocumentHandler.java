@@ -195,7 +195,7 @@ public class DocumentHandler {
             try {
                 if (fin != null) fin.close();
                 if (out != null) out.close();
-                if (zipfile != null) if (!zipfile.delete()) {
+                if (zipfile != null && !zipfile.delete()) {
                     log.error("zip文件删除失败");
                 }
 
