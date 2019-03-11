@@ -54,12 +54,7 @@ public class BuildingqmSettingService {
         ArrayList<ApiIssueFiledSettingMsg> issueFileds = Lists.newArrayList();
         List<IssueFieldSetting> settingList = issueFieldSettingService.findProjectIdsAndModuleId(projectIdList, ModuleInfoEnum.GCGL.getValue());
         HashMap<Integer, List<IssueFieldSetting>> projectMap = Maps.newHashMap();
-        for (int i = 0; i < settingList.size(); i++) {
-            if (!projectMap.containsKey(settingList.get(i).getProjectId())) {
-                projectMap.put(settingList.get(i).getProjectId(), new ArrayList<>());
-            }
-            projectMap.get(settingList.get(i).getProjectId()).add(settingList.get(i));
-        }
+        addValue(settingList, projectMap);
         for (int i = 0; i < projectIdList.size(); i++) {
             if (projectMap.containsKey(projectIdList.get(i))) {
                 List<IssueFieldSetting> objects = projectMap.get(projectIdList.get(i));
@@ -98,6 +93,15 @@ public class BuildingqmSettingService {
         fileds.setIssue_fileds(issueFileds);
         response.setData(fileds);
         return response;
+    }
+
+    private void addValue(List<IssueFieldSetting> settingList, HashMap<Integer, List<IssueFieldSetting>> projectMap) {
+        for (int i = 0; i < settingList.size(); i++) {
+            if (!projectMap.containsKey(settingList.get(i).getProjectId())) {
+                projectMap.put(settingList.get(i).getProjectId(), new ArrayList<>());
+            }
+            projectMap.get(settingList.get(i).getProjectId()).add(settingList.get(i));
+        }
     }
 
     private List<IssueFieldSetting> initDefaultSetting(Integer projectId) {

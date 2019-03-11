@@ -1485,22 +1485,26 @@ public class BuildingqmServiceImpl implements IBuildingqmService {
                 }
 
             }
-            if (categoryThreshold != null) {
-                String categoryKeys = (String) categoryThreshold.get("category_keys");
-                String usIds = (String) categoryThreshold.get(USER_IDS);
-                Integer threshold = (Integer) categoryThreshold.get("threshold");
-                if (categoryKeys.length() > 0 && usIds.length() > 0 && threshold > 0) {
-                    ConfigVo.ApiPushStrategyCategoryThreshold configCategoryThreshold = new ConfigVo().new ApiPushStrategyCategoryThreshold();
-                    configCategoryThreshold.setCategory_keys(categoryKeys);
-                    configCategoryThreshold.setUser_ids(usIds);
-                    configCategoryThreshold.setThreshold(threshold);
-                    configVo.setConfig_category_threshold(configCategoryThreshold);
-                }
-
-            }
+            checkThreshold(configVo, categoryThreshold);
 
         }
         return configVo;
+    }
+
+    private void checkThreshold(ConfigVo configVo, Map categoryThreshold) {
+        if (categoryThreshold != null) {
+            String categoryKeys = (String) categoryThreshold.get("category_keys");
+            String usIds = (String) categoryThreshold.get(USER_IDS);
+            Integer threshold = (Integer) categoryThreshold.get("threshold");
+            if (categoryKeys.length() > 0 && usIds.length() > 0 && threshold > 0) {
+                ConfigVo.ApiPushStrategyCategoryThreshold configCategoryThreshold = new ConfigVo().new ApiPushStrategyCategoryThreshold();
+                configCategoryThreshold.setCategory_keys(categoryKeys);
+                configCategoryThreshold.setUser_ids(usIds);
+                configCategoryThreshold.setThreshold(threshold);
+                configVo.setConfig_category_threshold(configCategoryThreshold);
+            }
+
+        }
     }
 
     private List<ApiBuildingQmTaskMemberGroupVo> createRepairerGroups(String name, List<Integer> repairerIds) {

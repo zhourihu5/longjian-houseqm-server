@@ -221,6 +221,23 @@ public class IssueListController {
 
         List<ProjectSettingV2> projectSetting = iIssueService.getProjectSettingId(projectId);
         ProjectSettingConfigVo vo = new ProjectSettingConfigVo();
+        reasonId = getInteger(reasonList, reasonId, projectSetting, vo);
+        if (reasonId > 0) {
+            for (ProjectSettingV2 projectSettingV2 : projectSetting) {
+                if (projectSettingV2.getParentId().equals(reasonId)) {
+                    ProjectSettingConfigVo.HouseQmIssueReason singleReason = new ProjectSettingConfigVo().new HouseQmIssueReason();
+                    singleReason.setId(projectSettingV2.getId());
+                    singleReason.setValue(projectSettingV2.getValue());
+                    reasonList.add(singleReason);
+                }
+            }
+        }
+        vo.setReason_list(reasonList);
+        response.setData(vo);
+        return response;
+    }
+
+    private Integer getInteger(List<ProjectSettingConfigVo.HouseQmIssueReason> reasonList, Integer reasonId, List<ProjectSettingV2> projectSetting, ProjectSettingConfigVo vo) {
         for (ProjectSettingV2 projectSettingV2 : projectSetting) {
 
             if ("PROJ_ISSUE_REASON_SWITCH".equals(projectSettingV2.getsKey())) {
@@ -245,19 +262,7 @@ public class IssueListController {
                 reasonList.add(singleReason);
             }
         }
-        if (reasonId > 0) {
-            for (ProjectSettingV2 projectSettingV2 : projectSetting) {
-                if (projectSettingV2.getParentId().equals(reasonId)) {
-                    ProjectSettingConfigVo.HouseQmIssueReason singleReason = new ProjectSettingConfigVo().new HouseQmIssueReason();
-                    singleReason.setId(projectSettingV2.getId());
-                    singleReason.setValue(projectSettingV2.getValue());
-                    reasonList.add(singleReason);
-                }
-            }
-        }
-        vo.setReason_list(reasonList);
-        response.setData(vo);
-        return response;
+        return reasonId;
     }
 
     @RequestMapping(value = "delete", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)

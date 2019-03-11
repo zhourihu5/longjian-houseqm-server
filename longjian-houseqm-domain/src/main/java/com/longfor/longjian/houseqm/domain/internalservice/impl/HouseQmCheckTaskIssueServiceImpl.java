@@ -353,7 +353,7 @@ public class HouseQmCheckTaskIssueServiceImpl implements HouseQmCheckTaskIssueSe
     @LFAssignDataSource("zhijian2")
     public List<HouseQmCheckTaskIssueAttachment> searchHouseQmCheckTaskIssueAttachmentByMyIdTaskIdLastIdUpdateAtGt(Integer userId, Map<String, Object> paramMap, Integer start, Integer limit, Integer privateInt, Integer publicInt) {
         try {
-            Integer taskId = (Integer) paramMap.get("taskId");
+            Integer taskId = (Integer) paramMap.get(TASK_ID);
             Integer timestamp = (Integer) paramMap.get("timestamp");
             //A找出与自己同组的人
             ////找到任务中，用户所在的所有组
@@ -688,8 +688,7 @@ public class HouseQmCheckTaskIssueServiceImpl implements HouseQmCheckTaskIssueSe
         issue.setUpdateAt(new Date());
         issue.setCreateAt(new Date());
         issue.setClientCreateAt(new Date());
-        houseQmCheckTaskIssueMapper.insert(issue);
-
+        houseQmCheckTaskIssueMapper.insertSelective(issue);
         return issue.getId();
     }
 

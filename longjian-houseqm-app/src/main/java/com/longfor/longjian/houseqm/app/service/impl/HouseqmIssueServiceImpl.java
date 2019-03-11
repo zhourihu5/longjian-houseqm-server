@@ -135,15 +135,7 @@ public class HouseqmIssueServiceImpl implements IHouseqmIssueService {
 
             // 整改负责人变化了，则需要将他添加进跟进人
             String issueRepairerFollowerIds = "";
-            if (repairerId.equals(issue.getRepairerId()) && issue.getRepairerId() > 0) {
-                List<Integer> followers = StringUtil.strToInts(repairFollowerIds, ",");
-                boolean flag = true;
-                for (Integer f : followers) {
-                    if (f.equals(issue.getRepairerId())) flag = false;
-                }
-                if (flag) followers.add(issue.getRepairerId());
-                issueRepairerFollowerIds = StringSplitToListUtil.dataToString(followers, ",");
-            }
+            issueRepairerFollowerIds = getIssueRepairerFollowerIds(repairerId, repairFollowerIds, issue, issueRepairerFollowerIds);
 
             // 变更类型
             String uuid = UUID.randomUUID().toString().replace("-", "");
@@ -187,6 +179,19 @@ public class HouseqmIssueServiceImpl implements IHouseqmIssueService {
                     .setDetailField(detailMap).done();
         }
         return getBatchResults();
+    }
+
+    private String getIssueRepairerFollowerIds(Integer repairerId, String repairFollowerIds, HouseQmCheckTaskIssue issue, String issueRepairerFollowerIds) {
+        if (repairerId.equals(issue.getRepairerId()) && issue.getRepairerId() > 0) {
+            List<Integer> followers = StringUtil.strToInts(repairFollowerIds, ",");
+            boolean flag = true;
+            for (Integer f : followers) {
+                if (f.equals(issue.getRepairerId())) flag = false;
+            }
+            if (flag) followers.add(issue.getRepairerId());
+            issueRepairerFollowerIds = StringSplitToListUtil.dataToString(followers, ",");
+        }
+        return issueRepairerFollowerIds;
     }
 
     private List<String> getBatchResults() {
