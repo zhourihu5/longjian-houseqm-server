@@ -60,7 +60,7 @@ public class IssueServiceImpl implements IIssueService {
     private static final String ISSUE_SUGGEST = "IssueSuggest";
     private static final String POTENTIAL_RISK = "PotentialRisk";
     private static final String PREVENTIVE_ACTION_DETAIL = "PreventiveActionDetail";
-    private static final String PLAN_END_ON = "PlanEndOn";
+    private static final String PLAN_END_ON = "planEndOn";
     private static final String END_ON = "EndOn";
     private static final String REPAIRER_ID = "RepairerId";
     private static final String REPAIRER_FOLLOWER_IDS = "RepairerFollowerIds";
@@ -645,7 +645,7 @@ public class IssueServiceImpl implements IIssueService {
                 singleItem.setItems(items);
                 result.add(singleItem);
             } else {
-                if ((Integer) issueLogDetail.get(PLAN_END_ON) != -1 || (Integer) issueLogDetail.get(REPAIRER_ID) > 0 || (
+                if ((Integer) issueLogDetail.get(PLAN_END_ON) != -1 || (Integer) issueLogDetail.get(REPAIRER_ID) > 0 || (Objects.nonNull(issueLogDetail.get(REPAIRER_FOLLOWER_IDS))&&
                         !issueLogDetail.get(REPAIRER_FOLLOWER_IDS).equals("-1") &&
                                 ((String) issueLogDetail.get(REPAIRER_FOLLOWER_IDS)).length() > 0)) {
                     HouseQmCheckTaskIssueHistoryLogVo.HouseQmCheckTaskIssueHistoryLogItem logItem = new HouseQmCheckTaskIssueHistoryLogVo().new HouseQmCheckTaskIssueHistoryLogItem();
