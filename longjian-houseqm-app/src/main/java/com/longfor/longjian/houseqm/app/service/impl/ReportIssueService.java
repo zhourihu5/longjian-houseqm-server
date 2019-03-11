@@ -219,58 +219,63 @@ public class ReportIssueService {
         // # 获取相关任务检查人组信息
         Map<Integer, Map<Integer, Map<Integer, Integer>>> checkerMap = createCheckerMap(taskIds);
 
-        //  # 处理新增问题
-        for (Map.Entry<String, HouseQmCheckTaskIssue> entry : issueInsertMap.entrySet()) {
-            HouseQmCheckTaskIssue issue = entry.getValue();
-            Integer res = houseQmCheckTaskIssueService.add(issue);
-            if (res == null) {
-                log.info("insert new issue failed, data=" + JSON.toJSONString(issue) + "");
-            } else {
-                issue.setId(res);
-            }
-            // # 写入推送记录
-            if (CheckTaskIssueStatus.NoteNoAssign.getValue().equals(issue.getStatus())) {
-                List<Integer> desUserIds = getIssueCheckerList(checkerMap, issue, null);
+        try {
+            //  # 处理新增问题
+            for (Map.Entry<String, HouseQmCheckTaskIssue> entry : issueInsertMap.entrySet()) {
+                HouseQmCheckTaskIssue issue = entry.getValue();
+                Integer res = houseQmCheckTaskIssueService.add(issue);
+                if (res == null) {
+                    log.info("insert new issue failed, data=" + JSON.toJSONString(issue) + "");
+                } else {
+                    issue.setId(res);
+                }
+                // # 写入推送记录
+                if (CheckTaskIssueStatus.NoteNoAssign.getValue().equals(issue.getStatus())) {
+                    List<Integer> desUserIds = getIssueCheckerList(checkerMap, issue, null);
 
-                pushList.addAll(desUserIds);
-                if (CollectionUtils.isNotEmpty(desUserIds)) {
-                    HouseQmCheckTaskNotifyRecord itemNotify = new HouseQmCheckTaskNotifyRecord();
-                    itemNotify.setProjectId(issue.getProjectId());
-                    itemNotify.setTaskId(issue.getTaskId());
-                    itemNotify.setSrcUserId(0);
-                    itemNotify.setDesUserIds(StringUtils.join(desUserIds, ","));
-                    itemNotify.setModuleId(ModuleInfoEnum.GCGL.getValue());
-                    itemNotify.setIssueId(issue.getId());
-                    itemNotify.setIssueStatus(CheckTaskIssueStatus.NoteNoAssign.getValue());
-                    itemNotify.setExtraInfo("");
-                    notifyList.add(itemNotify);
-                }
-            } else if (CheckTaskIssueStatus.AssignNoReform.getValue().equals(issue.getStatus())) {
-                ArrayList<Integer> desUserIds = Lists.newArrayList();
-                if (issue.getRepairerId() > 0) {
-                    desUserIds.add(issue.getRepairerId());
-                    pushList.add(issue.getRepairerId());
-                }
-                List<Integer> idsComma = StringUtil.strToInts(issue.getRepairerFollowerIds(), ",");
-                idsComma.forEach(user -> {
-                    if (user > 0 && !desUserIds.contains(user)) {
-                        desUserIds.add(user);
-                        pushList.add(user);
+                    pushList.addAll(desUserIds);
+                    if (CollectionUtils.isNotEmpty(desUserIds)) {
+                        HouseQmCheckTaskNotifyRecord itemNotify = new HouseQmCheckTaskNotifyRecord();
+                        itemNotify.setProjectId(issue.getProjectId());
+                        itemNotify.setTaskId(issue.getTaskId());
+                        itemNotify.setSrcUserId(0);
+                        itemNotify.setDesUserIds(StringUtils.join(desUserIds, ","));
+                        itemNotify.setModuleId(ModuleInfoEnum.GCGL.getValue());
+                        itemNotify.setIssueId(issue.getId());
+                        itemNotify.setIssueStatus(CheckTaskIssueStatus.NoteNoAssign.getValue());
+                        itemNotify.setExtraInfo("");
+                        notifyList.add(itemNotify);
                     }
-                });
-                if (CollectionUtils.isNotEmpty(desUserIds)) {
-                    HouseQmCheckTaskNotifyRecord itemNotify = new HouseQmCheckTaskNotifyRecord();
-                    itemNotify.setProjectId(issue.getProjectId());
-                    itemNotify.setTaskId(issue.getTaskId());
-                    itemNotify.setSrcUserId(0);
-                    itemNotify.setDesUserIds(StringUtils.join(desUserIds, ","));
-                    itemNotify.setModuleId(ModuleInfoEnum.GCGL.getValue());
-                    itemNotify.setIssueId(issue.getId());
-                    itemNotify.setIssueStatus(CheckTaskIssueStatus.AssignNoReform.getValue());
-                    itemNotify.setExtraInfo("");
-                    notifyList.add(itemNotify);
+                } else if (CheckTaskIssueStatus.AssignNoReform.getValue().equals(issue.getStatus())) {
+                    ArrayList<Integer> desUserIds = Lists.newArrayList();
+                    if (issue.getRepairerId() > 0) {
+                        desUserIds.add(issue.getRepairerId());
+                        pushList.add(issue.getRepairerId());
+                    }
+                    List<Integer> idsComma = StringUtil.strToInts(issue.getRepairerFollowerIds(), ",");
+                    idsComma.forEach(user -> {
+                        if (user > 0 && !desUserIds.contains(user)) {
+                            desUserIds.add(user);
+                            pushList.add(user);
+                        }
+                    });
+                    if (CollectionUtils.isNotEmpty(desUserIds)) {
+                        HouseQmCheckTaskNotifyRecord itemNotify = new HouseQmCheckTaskNotifyRecord();
+                        itemNotify.setProjectId(issue.getProjectId());
+                        itemNotify.setTaskId(issue.getTaskId());
+                        itemNotify.setSrcUserId(0);
+                        itemNotify.setDesUserIds(StringUtils.join(desUserIds, ","));
+                        itemNotify.setModuleId(ModuleInfoEnum.GCGL.getValue());
+                        itemNotify.setIssueId(issue.getId());
+                        itemNotify.setIssueStatus(CheckTaskIssueStatus.AssignNoReform.getValue());
+                        itemNotify.setExtraInfo("");
+                        notifyList.add(itemNotify);
+                    }
                 }
             }
+        } catch (Exception e) {
+            log.error("新增问题异常"+e.getMessage());
+            throw new LjBaseRuntimeException(500,e.getMessage());
         }
 
         //  # 处理更新问题
@@ -346,6 +351,7 @@ public class ReportIssueService {
                 }
             }
         }
+
         //  # 处理新增附件
         for (Map.Entry<String, HouseQmCheckTaskIssueAttachment> entry : attachmentInsertMap.entrySet()) {
             int one = houseQmCheckTaskIssueAttachmentService.add(entry.getValue());
