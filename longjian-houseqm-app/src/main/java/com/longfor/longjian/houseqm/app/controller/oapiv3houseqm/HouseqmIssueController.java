@@ -130,17 +130,17 @@ public class HouseqmIssueController {
         Map<String, String> urlargs = Maps.newHashMap();
         urlargs.put("safeCallKey", "268494d141d8054585ef5943e75e49f2");
         urlargs.put("project_id", String.valueOf(req.getProject_id()));
-        urlargs.put("task_id", String.valueOf(req.getTask_id()));
+        urlargs.put("task_id", String.valueOf(req.getTask_id()==null?0:req.getTask_id()));
         urlargs.put("task_name", taskName.toString());
-        urlargs.put("checker_id", String.valueOf(req.getChecker_id()));
-        urlargs.put("repairer_id", String.valueOf(req.getRepairer_id()));
-        urlargs.put("create_on_begin", req.getCreate_on_begin());
-        urlargs.put("create_on_end", req.getCreate_on_end());
-        urlargs.put("category_key", req.getCategory_key());
-        urlargs.put("check_item_key", req.getCheck_item_key());
-        urlargs.put("type", String.valueOf(req.getType()));
-        urlargs.put("condition", String.valueOf(req.getCondition()));
-        urlargs.put("is_overdue", String.valueOf(req.getIs_overdue()));
+        urlargs.put("checker_id", String.valueOf(req.getChecker_id()==null?0:req.getChecker_id()));
+        urlargs.put("repairer_id", String.valueOf(req.getRepairer_id()==null?0:req.getRepairer_id()));
+        urlargs.put("create_on_begin", req.getCreate_on_begin()==null?"":req.getCreate_on_begin());
+        urlargs.put("create_on_end", req.getCreate_on_end()==null?"":req.getCreate_on_end());
+        urlargs.put("category_key", req.getCategory_key()==null?"":req.getCategory_key());
+        urlargs.put("check_item_key", req.getCheck_item_key()==null?"":req.getCheck_item_key());
+        urlargs.put("type", String.valueOf(req.getType()==null?0:req.getType()));
+        urlargs.put("condition", String.valueOf(req.getCondition()==null?0:req.getCondition()));
+        urlargs.put("is_overdue", String.valueOf(req.getIs_overdue()==null?false:req.getIs_overdue()));
         urlargs.put("category_cls", String.valueOf(req.getCategory_cls()));
 
         if (CollectionUtils.isNotEmpty(req.getStatus_in())) {
