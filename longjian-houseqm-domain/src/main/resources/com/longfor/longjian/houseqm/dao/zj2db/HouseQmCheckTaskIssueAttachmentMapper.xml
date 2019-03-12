@@ -54,11 +54,12 @@
         FROM
         house_qm_check_task_issue_user hqctiu
         WHERE
+        <if test="userIds.size() >0">
         hqctiu.user_id IN
         <foreach collection="userIds" item="item" open="(" separator="," close=")" index="index">
             #{item}
         </foreach>
-        AND (`delete_at` IS NULL or `delete_at` = '0001-01-01 00:00:00')
+        AND </if>(`delete_at` IS NULL or `delete_at` = '0001-01-01 00:00:00')
         )
         AND hqctia.user_id = #{userId}
         AND hqctia.public_type = #{privateInt}

@@ -87,7 +87,7 @@ public class HouseqmIssueController {
         List<String> uuids = null;
 
         if (req.getUuids().trim().length() > 0) {
-            uuids = StringSplitToListUtil.splitToStringComma(req.getUuids(), ",");
+            uuids = StringUtil.strToStrs(req.getUuids(), ",");
         }
 
         StringBuilder taskName = new StringBuilder();
