@@ -231,7 +231,8 @@ public class HouseqmIssueServiceImpl implements IHouseqmIssueService {
         item.setResultName(exportName);
         item.setStatus(0);
         item.setExecuteAt(executeAt);
-
+        item.setCreateAt(new Date());
+        item.setUpdateAt(new Date());
         item.setErrorMsg("");
 
         return exportFileRecordService.insertFull(item);
