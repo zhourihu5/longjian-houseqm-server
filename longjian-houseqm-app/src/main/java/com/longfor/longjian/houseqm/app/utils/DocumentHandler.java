@@ -76,9 +76,7 @@ public class DocumentHandler {
      */
     public boolean exportDoc(String tempName, String docName, Map<?, ?> dataMap, HttpServletResponse resp) {
         boolean status = false;
-        if (resp != null) {
             resp.reset();
-        }
         // 设置模本装置方法和路径,FreeMarker支持多种模板装载方法。可以重servlet，classpath，数据库装载。参数2为模板路径
         configuration.setClassForTemplateLoading(this.getClass(), TEMPLATES);
         Template t = null;
@@ -102,12 +100,11 @@ public class DocumentHandler {
             return false;
         }
         try (InputStream fin = new FileInputStream(outFile); ServletOutputStream sos = resp.getOutputStream()) {
-            if (resp != null) {
                 resp.setCharacterEncoding(UTF_8);
                 resp.setContentType("application/msword");
                 docName = new String(docName.getBytes(UTF_8), ISO);
                 resp.setHeader("Content-disposition", "attachment;filename=" + docName + ".doc");
-            }
+
             byte[] buffer = new byte[512];
             int bytesToRead = -1;
             while ((bytesToRead = fin.read(buffer)) != -1) {

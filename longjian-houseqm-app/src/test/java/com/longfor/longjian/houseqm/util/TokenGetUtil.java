@@ -4,6 +4,6 @@ package com.longfor.longjian.houseqm.util;
 public class TokenGetUtil {
 
     public static String getToken(){
-        return "2cqS9IBtOu06m4lHfIYizm3DRUOnovxmOjK2DMJXk5NVlTXUy79sKXIxFjZItGi0";
+        return "4E4p2qXhjbj7Eu6Ui5M6o2zSqqI8SpZrjPuAr6zwksbwB6rrgqGvjHVEJi5uNlNA";
     }
 }
