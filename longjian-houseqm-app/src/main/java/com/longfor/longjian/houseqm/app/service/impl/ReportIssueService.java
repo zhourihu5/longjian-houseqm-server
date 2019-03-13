@@ -492,13 +492,8 @@ public class ReportIssueService {
             }
             for (int i = 0; i < issueLogs.size(); i++) {
                 ApiHouseQmCheckTaskIssueLogInfo log = issueLogs.get(i);
-                if (!issueUpdateMap.containsKey(log.getIssue_uuid())) {
-                    continue;
-                }
-                HouseQmCheckTaskIssue issue = issueUpdateMap.get(log.getIssue_uuid());
-                if (!issue.getCategoryCls().equals(CategoryClsTypeEnum.RCJC.getValue())) {
-                    continue;
-                }
+                HouseQmCheckTaskIssue issue = getHouseQmCheckTaskIssue(issueUpdateMap, log);
+                if (issue == null) continue;
                 if (log.getStatus().equals(CheckTaskIssueStatus.AssignNoReform.getValue())) {
                     ApiHouseQmIssue apiHouseQm = new ApiHouseQmIssue();
                     apiHouseQm.setUuid(issue.getUuid());
@@ -562,6 +557,17 @@ public class ReportIssueService {
         ReportIssueVo vo = new ReportIssueVo();
         vo.setDropped(dropped);
         return vo;
+    }
+
+    private HouseQmCheckTaskIssue getHouseQmCheckTaskIssue(HashMap<Object, HouseQmCheckTaskIssue> issueUpdateMap, ApiHouseQmCheckTaskIssueLogInfo log) {
+        if (!issueUpdateMap.containsKey(log.getIssue_uuid())) {
+            return null;
+        }
+        HouseQmCheckTaskIssue issue = issueUpdateMap.get(log.getIssue_uuid());
+        if (!issue.getCategoryCls().equals(CategoryClsTypeEnum.RCJC.getValue())) {
+            return null;
+        }
+        return issue;
     }
 
     @SuppressWarnings("squid:S3776")

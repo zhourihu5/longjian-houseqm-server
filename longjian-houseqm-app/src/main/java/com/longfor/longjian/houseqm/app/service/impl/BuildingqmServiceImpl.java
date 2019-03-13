@@ -443,11 +443,7 @@ public class BuildingqmServiceImpl implements IBuildingqmService {
         //   # 排除新增的
         for (ApiBuildingQmTaskMemberGroupVo checkerGroup : checkerGroups) {
             Integer groupId = checkerGroup.getGroup_id();
-            if (groupId.equals(0)) {
-                continue;
-            }
-            //  # 排除被删除的
-            if (ignoreSquadIdsMap.containsKey(checkerGroup.getGroup_id())) {
+            if (groupId.equals(0)||ignoreSquadIdsMap.containsKey(checkerGroup.getGroup_id())) {
                 continue;
             }
             List<Integer> userIds = checkerGroup.getUser_ids();
@@ -1636,10 +1632,7 @@ public class BuildingqmServiceImpl implements IBuildingqmService {
         log.info("dataList={},itemsList={}", JSON.toJSONString(dataList), JSON.toJSONString(itemsList));
         for (int i = 1; i < maxCol + 1; i++) {
             for (NodeDataVo item : dataList) {
-                if (!item.getValid_node()) {
-                    continue;
-                }
-                if (item.getPath_keys().size() != i) {
+                if (!item.getValid_node()||item.getPath_keys().size() != i) {
                     continue;
                 }
                 List<NodeVo> nodeList = nodeTree;
