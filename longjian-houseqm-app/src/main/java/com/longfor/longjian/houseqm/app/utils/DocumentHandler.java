@@ -96,9 +96,6 @@ public class DocumentHandler {
         } catch (Exception e1) {
             log.error(ERROR, e1.getMessage());
         }
-        if (resp == null) {
-            return false;
-        }
         try (InputStream fin = new FileInputStream(outFile); ServletOutputStream sos = resp.getOutputStream()) {
                 resp.setCharacterEncoding(UTF_8);
                 resp.setContentType("application/msword");
