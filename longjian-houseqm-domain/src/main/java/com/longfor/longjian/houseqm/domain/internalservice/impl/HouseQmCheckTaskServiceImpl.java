@@ -1,5 +1,6 @@
 package com.longfor.longjian.houseqm.domain.internalservice.impl;
 
+import com.github.pagehelper.PageHelper;
 import com.google.common.collect.Lists;
 import com.longfor.gaia.gfs.data.mybatis.datasource.LFAssignDataSource;
 import com.longfor.longjian.houseqm.dao.zj2db.HouseQmCheckTaskMapper;
@@ -8,7 +9,6 @@ import com.longfor.longjian.houseqm.po.zj2db.HouseQmCheckTask;
 import com.longfor.longjian.houseqm.utils.ExampleUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections.CollectionUtils;
-import org.apache.ibatis.session.RowBounds;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import tk.mybatis.mapper.entity.Example;
@@ -55,7 +55,8 @@ public class HouseQmCheckTaskServiceImpl implements HouseQmCheckTaskService {
         Example.Criteria criteria = example.createCriteria();
         criteria.andEqualTo(PROJECT_ID, projId).andEqualTo(CATEGORY_CLS, categoryCls).andEqualTo(STATUS, status);
         ExampleUtil.addDeleteAtJudge(example);
-        return houseQmCheckTaskMapper.selectByExampleAndRowBounds(example, new RowBounds(start, limit));
+        PageHelper.startPage(start, limit);
+        return houseQmCheckTaskMapper.selectByExample(example);
     }
 
     @Override
