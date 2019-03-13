@@ -4,6 +4,7 @@ import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.longfor.longjian.common.base.LjBaseResponse;
 import com.longfor.longjian.common.consts.ModuleInfoEnum;
+import com.longfor.longjian.common.exception.LjBaseRuntimeException;
 import com.longfor.longjian.common.util.StringUtil;
 import com.longfor.longjian.houseqm.app.vo.ApiIssueFiledSettingMsg;
 import com.longfor.longjian.houseqm.consts.IssueFieldAliasStatusEnum;
@@ -291,4 +292,32 @@ public class BuildingqmSettingService {
         return settingList;
     }
 
+    public LjBaseResponse saveIssuefiledSetting(Integer userId, Integer projectId, Integer fieldId, Integer displayStatus, Integer alias) {
+        ArrayList<Integer> statusList = Lists.newArrayList();
+        statusList.add(IssueFieldDisplayStatusEnum.Yes.getId());
+        statusList.add(IssueFieldDisplayStatusEnum.No.getId());
+        ArrayList<Integer> defaultList = Lists.newArrayList();
+        defaultList.add(IssueFieldDefaultListEnum.JCX.getId());
+        defaultList.add(IssueFieldDefaultListEnum.BCMS.getId());
+        defaultList.add(IssueFieldDefaultListEnum.JCBW.getId());
+        if(!statusList.contains(displayStatus)){
+          throw  new LjBaseRuntimeException(-99, "display_status参数取值错误");
+        }
+        if(defaultList.contains(fieldId)){
+            throw  new LjBaseRuntimeException(-99, "必填字段无法修改");
+        }
+        IssueFieldSetting issueField=  issueFieldSettingService.get(projectId,fieldId,ModuleInfoEnum.GCGL.getValue());
+        if(issueField==null){
+            throw  new LjBaseRuntimeException(-99, "信息不存在");
+        }
+        issueField.setDisplayStatus(displayStatus);
+                issueField.setAlias(String.valueOf(alias));
+        issueField.setModifyUserId(userId);
+                issueField.setUpdateAt(new Date());
+      int num=  issueFieldSettingService.update(issueField);
+      if(num<=0){
+          throw  new LjBaseRuntimeException(-99, "修改失败");
+      }
+        return new LjBaseResponse();
+    }
 }

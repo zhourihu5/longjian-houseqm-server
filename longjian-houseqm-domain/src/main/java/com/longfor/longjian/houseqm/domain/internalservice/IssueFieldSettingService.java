@@ -11,4 +11,8 @@ public interface IssueFieldSettingService {
     int add(IssueFieldSetting settings6);
 
     List<IssueFieldSetting> findProjectIdsAndModuleId(List<Integer> projectIdList, Integer moduleId);
+
+    IssueFieldSetting get(Integer projectId, Integer fieldId, Integer value);
+
+    int update(IssueFieldSetting issueField);
 }

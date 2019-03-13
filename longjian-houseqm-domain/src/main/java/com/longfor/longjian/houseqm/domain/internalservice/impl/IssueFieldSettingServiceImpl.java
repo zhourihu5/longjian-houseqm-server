@@ -40,4 +40,19 @@ public class IssueFieldSettingServiceImpl implements IssueFieldSettingService {
 
         return issueFieldSettingMapper.selectByExample(example);
     }
+
+    @Override
+    @LFAssignDataSource("zhijian2_setting")
+    public IssueFieldSetting get(Integer projectId, Integer fieldId, Integer value) {
+        Example example = new Example(IssueFieldSetting.class);
+        Example.Criteria criteria = example.createCriteria();
+        criteria.andEqualTo("projectId",projectId).andEqualTo("fieldId",fieldId).andEqualTo("moduleId",value).andIsNull("deleteAt");
+        return issueFieldSettingMapper.selectOneByExample(example);
+    }
+
+    @Override
+    public int update(IssueFieldSetting issueField) {
+
+        return issueFieldSettingMapper.updateByPrimaryKeySelective(issueField);
+    }
 }
