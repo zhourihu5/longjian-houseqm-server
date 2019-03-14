@@ -241,14 +241,13 @@ public class ExportUtils {
                     for (String attachment : issue.getAnsw_attachment_path()) {
                         //图片 attachment: pictures/3a98d018fb666e1fd3c41575fa20659b.png
                         // 读取图片 加载到doc中
-                        /*File file = new File(attachment);
+                        File file = new File(attachment);
                         FileInputStream is = new FileInputStream(file);
                         String pictureData = doc.addPictureData(is, XWPFDocument.PICTURE_TYPE_PNG);
                         createPicture(doc, pictureData, doc.getNextPicNameNumber(XWPFDocument.PICTURE_TYPE_PNG), 96, 96,pI3);
                         FileOutputStream fos = new FileOutputStream(file);
                         doc.write(fos);
-                        fos.close();*/
-                        DocumentHandler.getImageBase(attachment);
+                        fos.close();
                     }
                 }
             } else {
@@ -259,14 +258,13 @@ public class ExportUtils {
                     for (String attachment : issue.getAnsw_attachment_path()) {
                         //图片
                         // 读取图片 加载到doc中
-                        /*File file = new File(attachment);
+                        File file = new File(attachment);
                         FileInputStream is = new FileInputStream(file);
                         String pictureData = doc.addPictureData(is, XWPFDocument.PICTURE_TYPE_PNG);
                         createPicture(doc, pictureData, doc.getNextPicNameNumber(XWPFDocument.PICTURE_TYPE_PNG), 96, 96,pI2);
                         FileOutputStream fos = new FileOutputStream(file);
                         doc.write(fos);
-                        fos.close();*/
-                        DocumentHandler.getImageBase(attachment);
+                        fos.close();
                     }
                 } else {
                     XWPFParagraph pI2 = cell.addParagraph();
