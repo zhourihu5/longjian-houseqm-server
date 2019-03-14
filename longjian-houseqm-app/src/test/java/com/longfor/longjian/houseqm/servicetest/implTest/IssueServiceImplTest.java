@@ -29,7 +29,6 @@ public class IssueServiceImplTest {
         try{
             issueServiceImpl.updateIssueDetailByProjectAndUuid(9,927,"a",1,"123");
         }catch (Exception e){
-            e.printStackTrace();
            Assert.fail(e.getMessage());
         }
     }
@@ -56,7 +55,6 @@ public class IssueServiceImplTest {
             req.setStatus_in("1");
             issueServiceImpl.exportExcel(9,req);
         }catch (Exception e){
-            e.printStackTrace();
            Assert.fail(e.getMessage());
         }
     }
@@ -67,7 +65,6 @@ public class IssueServiceImplTest {
         try{
             issueServiceImpl.createTaskMap(Arrays.asList(1,2,3,4,5,6,7,8,9,10));
         }catch (Exception e){
-            e.printStackTrace();
            Assert.fail(e.getMessage());
         }
     }
@@ -95,7 +92,6 @@ public class IssueServiceImplTest {
             req.setType(1);
             issueServiceImpl.list(req);
         }catch (Exception e){
-            e.printStackTrace();
            Assert.fail(e.getMessage());
         }
     }
@@ -105,29 +101,26 @@ public class IssueServiceImplTest {
         try{
             issueServiceImpl.getHouseQmCheckTaskIssueActionLogByIssueUuid("89a3d67168c040f5b13a880556bb082c");
         }catch (Exception e){
-            e.printStackTrace();
            Assert.fail(e.getMessage());
         }
     }
 
- @Test
+ /*@Test
     @Transactional
     public void deleteHouseqmCheckTaskIssueByProjectAndUuid() {
         try{
             issueServiceImpl.deleteHouseqmCheckTaskIssueByProjectAndUuid(1,"460b19da386d4896857b6b1bdc6039cb");
         }catch (Exception e){
-            e.printStackTrace();
            Assert.fail(e.getMessage());
         }
     }
-
+*/
     @Test
     @Transactional
     public void updeteIssueDescByUuid() {
         try{
             issueServiceImpl.updeteIssueDescByUuid(927,"a",9,"a");
         }catch (Exception e){
-            e.printStackTrace();
            Assert.fail(e.getMessage());
         }
     }
@@ -138,7 +131,6 @@ public class IssueServiceImplTest {
         try{
             issueServiceImpl.updateIssuePlanEndOnByProjectAndUuid(927,"a",9, DateUtil.datetimeToTimeStamp(new Date()));
         }catch (Exception e){
-            e.printStackTrace();
            Assert.fail(e.getMessage());
         }
     }
@@ -149,7 +141,6 @@ public class IssueServiceImplTest {
         try{
             issueServiceImpl.updateIssueApproveStatusByUuid(927,"a",9,1,"a");
         }catch (Exception e){
-            e.printStackTrace();
            Assert.fail(e.getMessage());
         }
     }
@@ -161,7 +152,7 @@ public class IssueServiceImplTest {
         try{
             issueServiceImpl.repairNotifyExport2(9,927,"1",new MockHttpServletResponse());
         }catch (Exception e){
-            e.printStackTrace();
+
            Assert.fail(e.getMessage());
         }
     }
@@ -172,7 +163,7 @@ public class IssueServiceImplTest {
         try{
             issueServiceImpl.repairNotifyExport(9,927,"1",new MockHttpServletResponse(),new MockHttpServletRequest());
         }catch (Exception e){
-            e.printStackTrace();
+
            Assert.fail(e.getMessage());
         }
     }
@@ -183,7 +174,7 @@ public class IssueServiceImplTest {
         try{
             issueServiceImpl.getProjectSettingId(927);
         }catch (Exception e){
-            e.printStackTrace();
+
            Assert.fail(e.getMessage());
         }
     }
@@ -194,7 +185,6 @@ public class IssueServiceImplTest {
         try{
             issueServiceImpl.updateIssueRepairInfoByProjectAndUuid(9,1,"1,2,3,4,5,6,7,8,9",927,"a");
         }catch (Exception e){
-            e.printStackTrace();
            Assert.fail(e.getMessage());
         }
     }
@@ -204,7 +194,6 @@ public class IssueServiceImplTest {
         try{
             issueServiceImpl.getDetailRepairLogByIssueUuid("349d204213424acd93478097aa884539");
         }catch (Exception e){
-            e.printStackTrace();
            Assert.fail(e.getMessage());
         }
     }
@@ -214,7 +203,6 @@ public class IssueServiceImplTest {
         try{
             issueServiceImpl.getHouseQmCheckTaskIssueDetailBaseByProjectAndUuid(9,3,"349d204213424acd93478097aa884539");
         }catch (Exception e){
-            e.printStackTrace();
            Assert.fail(e.getMessage());
         }
     }
@@ -225,7 +213,7 @@ public class IssueServiceImplTest {
         try{
             issueServiceImpl.repairNotifyExport(9,927,"a",new MockHttpServletResponse(),new MockHttpServletRequest());
         }catch (Exception e){
-            e.printStackTrace();
+
            Assert.fail(e.getMessage());
         }
     }
@@ -238,7 +226,6 @@ public class IssueServiceImplTest {
             al.addAll(Arrays.asList(new String[]{"1","2","3"}));
             issueServiceImpl.pushBaseMessage(1,al,"1","bvd");
         }catch (Exception e){
-            e.printStackTrace();
            Assert.fail(e.getMessage());
         }
     }

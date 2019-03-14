@@ -23,7 +23,6 @@ public class HouseqmStatServiceImplTest {
         try{
             houseqmStatServiceImpl.searchInspectionAreaIdsByConditions(927,1,1,1,1);
         }catch (Exception e){
-            e.printStackTrace();
            Assert.fail(e.getMessage());
         }
     }
@@ -34,7 +33,7 @@ public class HouseqmStatServiceImplTest {
         try{
             houseqmStatServiceImpl.searchRepossessInspectionAreaIdsByConditions(927,1,1,1,1,new Date(),new Date());
         }catch (Exception e){
-            e.printStackTrace();
+
            Assert.fail(e.getMessage());
         }
     }
@@ -45,7 +44,6 @@ public class HouseqmStatServiceImplTest {
         try{
             houseqmStatServiceImpl.filterAreaPathListByRootAreaId(1, Arrays.asList(new String[]{"/1/","/1/2/3/"}));
         }catch (Exception e){
-            e.printStackTrace();
            Assert.fail(e.getMessage());
         }
     }
@@ -55,7 +53,6 @@ public class HouseqmStatServiceImplTest {
         try{
             houseqmStatServiceImpl.getRepossessAreaPathListByTaskIdAndStatusesAndClientUpdateAt(1,Arrays.asList(new Integer[]{1,2,3,4,5,6,7,8,9,10}),new Date(),new Date());
         }catch (Exception e){
-            e.printStackTrace();
            Assert.fail(e.getMessage());
         }
     }
@@ -65,7 +62,6 @@ public class HouseqmStatServiceImplTest {
         try{
             houseqmStatServiceImpl.formatFenhuHouseInspectionStatusInfoByAreaIds(1,1,Arrays.asList(new Integer[]{1,2,3,4,5,6,7,8,9,10}));
         }catch (Exception e){
-            e.printStackTrace();
            Assert.fail(e.getMessage());
         }
     }
@@ -75,7 +71,6 @@ public class HouseqmStatServiceImplTest {
         try{
             houseqmStatServiceImpl.searchHouseQmCheckTaskIssueMapByTaskIdAreaIds(1,1,Arrays.asList(new Integer[]{1,2,3,4,5,6,7,8,9,10}));
         }catch (Exception e){
-            e.printStackTrace();
            Assert.fail(e.getMessage());
         }
     }
@@ -85,7 +80,6 @@ public class HouseqmStatServiceImplTest {
         try{
             houseqmStatServiceImpl.searchHouseQmIssueCategoryStatByProjTaskIdAreaIdBeginOnEndOn(927,1,1,new Date(),new Date());
         }catch (Exception e){
-            e.printStackTrace();
            Assert.fail(e.getMessage());
         }
     }
@@ -95,7 +89,6 @@ public class HouseqmStatServiceImplTest {
         try{
             houseqmStatServiceImpl.getAreaIssueTypeStatByProjectIdAreaIdCategoryCls(927,1,1);
         }catch (Exception e){
-            e.printStackTrace();
            Assert.fail(e.getMessage());
         }
     }
@@ -105,7 +98,6 @@ public class HouseqmStatServiceImplTest {
         try{
             houseqmStatServiceImpl.searchRepaireIssueStatusStatByProjTaskIdBetweenTime(927,1,new Date(),new Date());
         }catch (Exception e){
-            e.printStackTrace();
            Assert.fail(e.getMessage());
         }
     }
@@ -115,7 +107,6 @@ public class HouseqmStatServiceImplTest {
         try{
             houseqmStatServiceImpl.searchCheckerIssueStatusStatByProjTaskIdBetweenTime(927,1,new Date(),new Date());
         }catch (Exception e){
-            e.printStackTrace();
            Assert.fail(e.getMessage());
         }
     }
@@ -125,7 +116,6 @@ public class HouseqmStatServiceImplTest {
         try{
             houseqmStatServiceImpl.searchCheckerIssueStatisticByProjIdAndTaskId(927,Arrays.asList(new Integer[]{1,2,3,4,5,6,7,8,9,10}));
         }catch (Exception e){
-            e.printStackTrace();
            Assert.fail(e.getMessage());
         }
     }
@@ -135,7 +125,6 @@ public class HouseqmStatServiceImplTest {
         try{
             houseqmStatServiceImpl.searchTaskSituationDailyByProjTaskIdInOnPage(927,Arrays.asList(new Integer[]{1,2,3,4,5,6,7,8,9,10}),1,10);
         }catch (Exception e){
-            e.printStackTrace();
            Assert.fail(e.getMessage());
         }
     }
@@ -145,7 +134,6 @@ public class HouseqmStatServiceImplTest {
         try{
             houseqmStatServiceImpl.getInspectTaskStatByProjTaskId(927,1);
         }catch (Exception e){
-            e.printStackTrace();
            Assert.fail(e.getMessage());
         }
     }
@@ -155,7 +143,6 @@ public class HouseqmStatServiceImplTest {
         try{
             houseqmStatServiceImpl.searchAreasByProjTaskIdTyp(927,1,1);
         }catch (Exception e){
-            e.printStackTrace();
            Assert.fail(e.getMessage());
         }
     }
@@ -165,7 +152,6 @@ public class HouseqmStatServiceImplTest {
         try{
             houseqmStatServiceImpl.searchHouseQmCheckTaskByProjIdAreaIdCategoryClsIn(927,1,Arrays.asList(new Integer[]{1,2,3,4,5,6,7,8,9,10}));
         }catch (Exception e){
-            e.printStackTrace();
            Assert.fail(e.getMessage());
         }
     }

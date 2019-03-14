@@ -23,7 +23,6 @@ public class FixingPresetAppServiceImplTest {
         try{
             fixingPresetAppServiceImpl.appGetFixingPreset(927,1000, DateUtil.dateToTimestamp(new Date()),10);
         }catch (Exception e){
-            e.printStackTrace();
             Assert.fail(e.getMessage());
         }
     }

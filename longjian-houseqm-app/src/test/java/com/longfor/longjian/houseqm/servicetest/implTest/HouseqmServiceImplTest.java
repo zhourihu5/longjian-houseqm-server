@@ -28,7 +28,6 @@ public class HouseqmServiceImplTest {
         try{
             houseqmServiceImpl.searchHouseQmApproveUserIdInMyCheckSquad(9,1);
         }catch (Exception e){
-            e.printStackTrace();
             Assert.fail(e.getMessage());
         }
     }
@@ -43,7 +42,6 @@ public class HouseqmServiceImplTest {
             HttpServletRequest mockReq=new MockHttpServletRequest();
             houseqmServiceImpl.myIssueLogList(deviceReq,mockReq);
         }catch (Exception e){
-            e.printStackTrace();
             Assert.fail(e.getMessage());
         }
     }
@@ -58,7 +56,6 @@ public class HouseqmServiceImplTest {
             HttpServletRequest mockReq = new MockHttpServletRequest();
             houseqmServiceImpl.myIssueList(deviceReq, mockReq);
         }catch (Exception e){
-            e.printStackTrace();
             Assert.fail(e.getMessage());
         }
     }
@@ -72,7 +69,6 @@ public class HouseqmServiceImplTest {
             deviceReq.setTimestamp(DateUtil.datetimeToTimeStamp(new Date()));
             houseqmServiceImpl.issueMembers(deviceReq);
         }catch (Exception e){
-            e.printStackTrace();
             Assert.fail(e.getMessage());
         }
     }
@@ -87,7 +83,6 @@ public class HouseqmServiceImplTest {
             HttpServletRequest mockReq = new MockHttpServletRequest();
             houseqmServiceImpl.myIssueAttachementList(deviceReq,mockReq);
         }catch(Exception e){
-            e.printStackTrace();
             Assert.fail(e.getMessage());
         }
     }
@@ -97,7 +92,6 @@ public class HouseqmServiceImplTest {
         try{
             houseqmServiceImpl.searchTargetAreaByTaskId(3,290);
         }catch (Exception e){
-            e.printStackTrace();
             Assert.fail(e.getMessage());
         }
     }
