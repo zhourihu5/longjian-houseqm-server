@@ -1027,10 +1027,11 @@ public class IssueServiceImpl implements IIssueService {
             detail.setIssue_id(issue.getId());
             detail.setQues_content(issue.getContent());
             detail.setAnsw_content(logMap.containsKey(issue.getUuid()) ? logMap.get(issue.getUuid()).getDesc() : "");
+            detail.setAnsw_attachment_path(Lists.newArrayList());
             if (logMap.containsKey(issue.getUuid())) {
                 for (String attachment : StringUtil.strToStrs(logMap.get(issue.getUuid()).getAttachmentMd5List(), ",")) {
                     if (attachmentMap.containsKey(attachment) && attachmentMap.get(attachment).getStoreKey().length() > 0) {
-                        if (detail.getAnsw_attachment_path().size() >= 2) break;
+                        if (CollectionUtils.isNotEmpty(detail.getAnsw_attachment_path())&&detail.getAnsw_attachment_path().size() >= 2) break;
                         List<String> answAttachMentPath = detail.getAnsw_attachment_path();
                         answAttachMentPath.add(String.format("/data/zhijian/%s", attachmentMap.get(attachment).getStoreKey()));
                         detail.setAnsw_attachment_path(answAttachMentPath);
