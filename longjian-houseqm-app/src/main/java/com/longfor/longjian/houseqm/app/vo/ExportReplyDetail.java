@@ -23,6 +23,6 @@ public class ExportReplyDetail implements Serializable {
         private Integer issue_id = 0;
         private String ques_content = "";
         private String answ_content = "";
-        private List<String> answ_attachment_path;
+        private List<String> answ_attachment_path;//整改回复图片
     }
 }
