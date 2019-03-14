@@ -244,7 +244,7 @@ public class ExportUtils {
                         File file = new File(attachment);
                         FileInputStream is = new FileInputStream(file);
                         String pictureData = doc.addPictureData(is, XWPFDocument.PICTURE_TYPE_PNG);
-                        createPicture(doc, pictureData, doc.getNextPicNameNumber(XWPFDocument.PICTURE_TYPE_PNG), 254, 254);
+                        createPicture(doc, pictureData, doc.getNextPicNameNumber(XWPFDocument.PICTURE_TYPE_PNG), 254, 254,pI3);
                         FileOutputStream fos = new FileOutputStream(file);
                         doc.write(fos);
                         fos.close();
@@ -261,7 +261,7 @@ public class ExportUtils {
                         File file = new File(attachment);
                         FileInputStream is = new FileInputStream(file);
                         String pictureData = doc.addPictureData(is, XWPFDocument.PICTURE_TYPE_PNG);
-                        createPicture(doc, pictureData, doc.getNextPicNameNumber(XWPFDocument.PICTURE_TYPE_PNG), 254, 254);
+                        createPicture(doc, pictureData, doc.getNextPicNameNumber(XWPFDocument.PICTURE_TYPE_PNG), 96, 96,pI2);
                         FileOutputStream fos = new FileOutputStream(file);
                         doc.write(fos);
                         fos.close();
@@ -401,11 +401,11 @@ public class ExportUtils {
         return cell;
     }
 
-    public static void createPicture(XWPFDocument doc, String blipId, int id, int width, int height) {
+    public static void createPicture(XWPFDocument doc, String blipId, int id, int width, int height,XWPFParagraph paragraph) {
         final int EMU = 9525;
         width *= EMU;
         height *= EMU;
-        CTInline inline = doc.createParagraph().createRun().getCTR().addNewDrawing().addNewInline();
+        CTInline inline = paragraph.createRun().getCTR().addNewDrawing().addNewInline();
 
         String picXml = "" +
                 "<a:graphic xmlns:a=\"http://schemas.openxmlformats.org/drawingml/2006/main\">" +
