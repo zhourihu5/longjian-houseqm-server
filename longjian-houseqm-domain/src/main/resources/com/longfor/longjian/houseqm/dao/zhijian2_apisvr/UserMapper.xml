@@ -28,32 +28,4 @@
         user_id, group_code, user_name, password, group_id, mobile, email, real_name, status,
         reg_time, last_login_time, last_login_ip, create_at, update_at, delete_at
     </sql>
-    <select id="selectByUserIds" resultMap="BaseResultMap">
-        SELECT
-        <include refid="Base_Column_List"/>
-        from user
-        <where>
-            <if test="users.size>0">user_id in
-                <foreach collection="users" index="index" item="userId" open="(" separator="," close=")">
-                    #{userId}
-                </foreach>
-            </if>
-        </where>
-    </select>
-
-    <select id="selectByUserIdInAndNoDeleted" resultMap="BaseResultMap">
-        SELECT
-        <include refid="Base_Column_List"/>
-        FROM user
-        <where>
-            <if test="userIds.size>0">user_id in
-                <foreach collection="userIds" item="userId" index="index" open="(" separator="," close=")">
-                    #{userId}
-                </foreach>
-            </if>
-            <if test="deleted=='false'">
-                AND delete_at IS NULL
-            </if>
-        </where>
-    </select>
 </mapper>
