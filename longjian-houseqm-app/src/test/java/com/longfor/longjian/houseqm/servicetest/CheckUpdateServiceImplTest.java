@@ -1,5 +1,6 @@
 package com.longfor.longjian.houseqm.servicetest;
 
+import com.longfor.longjian.houseqm.Application;
 import com.longfor.longjian.houseqm.app.service.impl.CheckUpdateServiceImpl;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -9,7 +10,7 @@ import org.springframework.test.context.junit4.SpringRunner;
 import javax.annotation.Resource;
 import java.util.Date;
 @RunWith(SpringRunner.class)
-@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.DEFINED_PORT)
+@SpringBootTest(classes = Application.class,webEnvironment = SpringBootTest.WebEnvironment.DEFINED_PORT)
 public class CheckUpdateServiceImplTest {
 
     @Resource
@@ -54,7 +55,8 @@ public class CheckUpdateServiceImplTest {
     @Test
     public void getHouseQmCheckTaskLastUpdateTime() {
         try{
-            checkUpdateServiceimpl.getHouseQmCheckTaskLastUpdateTime(1);
+            Date houseQmCheckTaskLastUpdateTime = checkUpdateServiceimpl.getHouseQmCheckTaskLastUpdateTime(1);
+            System.out.println(houseQmCheckTaskLastUpdateTime);
         }catch (Exception e){
            // Assert.fail(e.getMessage());
         }
