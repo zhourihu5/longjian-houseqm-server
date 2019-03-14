@@ -1,10 +1,10 @@
-package com.longfor.longjian.houseqm.servicetest;
+package com.longfor.longjian.houseqm.servicetest.implTest;
 
 import com.longfor.longjian.houseqm.Application;
-import com.longfor.longjian.houseqm.app.req.TaskEditReq;
 import com.longfor.longjian.houseqm.app.req.TaskReq;
 import com.longfor.longjian.houseqm.app.service.impl.BuildingqmServiceImpl;
 import com.longfor.longjian.houseqm.util.DateUtil;
+import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -30,7 +30,7 @@ public class BuildingqmServiceImplTest {
         try{
             buildingqmServiceImpl.myTaskList(9);
         }catch (Exception e){
-            //Assert.fail(e.getMessage());
+            Assert.fail(e.getMessage());
         }
     }
 
@@ -39,7 +39,7 @@ public class BuildingqmServiceImplTest {
         try{
             buildingqmServiceImpl.taskSquadsMembers("1,2,3,4,5,6,7,8,9,10");
         }catch (Exception e){
-            //Assert.fail(e.getMessage());
+            Assert.fail(e.getMessage());
         }
     }
 
@@ -48,7 +48,7 @@ public class BuildingqmServiceImplTest {
         try{
             buildingqmServiceImpl.myIssuePathList(9,1, DateUtil.datetimeToTimeStamp(new Date()));
         }catch (Exception e){
-            //Assert.fail(e.getMessage());
+            Assert.fail(e.getMessage());
         }
     }
 
@@ -76,7 +76,7 @@ public class BuildingqmServiceImplTest {
             req.setRepairer_follower_permission(1);
             buildingqmServiceImpl.create(9,req);
         }catch (Exception e){
-            //Assert.fail(e.getMessage());
+            Assert.fail(e.getMessage());
         }
     }
 
@@ -85,11 +85,11 @@ public class BuildingqmServiceImplTest {
         try{
             buildingqmServiceImpl.searchHouseqmCheckTaskSquad("930","11");
         }catch (Exception e){
-            //Assert.fail(e.getMessage());
+            Assert.fail(e.getMessage());
         }
     }
 
-    @Test
+/*    @Test
     @Transactional
     public void edit() {
         try{
@@ -112,16 +112,16 @@ public class BuildingqmServiceImplTest {
             req.setTask_id(1);
             buildingqmServiceImpl.edit(9,req);
         }catch (Exception e){
-            //Assert.fail(e.getMessage());
+            Assert.fail(e.getMessage());
         }
-    }
+    }*/
 //java.lang.AssertionError: 没找到此问题
     @Test
     public void getIssueListLogByLastIdAndUpdataAt() {
         try{
             buildingqmServiceImpl.getIssueListLogByLastIdAndUpdataAt(1,DateUtil.datetimeToTimeStamp(new Date()),"1");
         }catch (Exception e){
-           //Assert.fail(e.getMessage());
+           Assert.fail(e.getMessage());
         }
     }
 
@@ -131,7 +131,7 @@ public class BuildingqmServiceImplTest {
             HttpServletResponse res=new MockHttpServletResponse();
             buildingqmServiceImpl.issuestatisticexport(1,"[{}]",res);
         }catch (Exception e){
-            //Assert.fail(e.getMessage());
+            Assert.fail(e.getMessage());
         }
     }
 }
