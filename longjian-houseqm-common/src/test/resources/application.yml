@@ -1,0 +1,42 @@
+# ===================================================================
+# springboot标准配置
+# ===================================================================
+spring:
+  profiles:
+    active: dev
+  mvc:
+    favicon:
+      enabled: false
+  devtools:
+    restart:
+      enabled: true
+    livereload:
+      enabled: true
+#  jackson:
+#   default-property-inclusion: non_empty # 设置空如何序列化
+
+logging:
+  level:
+    ROOT: WARN #INFO
+    com.longfor: debug
+    com.longfor.longjian.houseqm.dao: debug
+    graphql.GraphQL: debug
+
+management:
+  security:
+    enabled: false
+  info:
+    git:
+      enabled: true
+    env:
+      enabled: true
+endpoints:
+  health:
+    sensitive: false
+  restart:
+    enabled: true
+  shutdown:
+    enabled: true
+  info:
+    enabled: true
+    sensitive: false
