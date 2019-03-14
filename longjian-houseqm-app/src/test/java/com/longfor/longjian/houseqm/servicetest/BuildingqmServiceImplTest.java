@@ -76,7 +76,6 @@ public class BuildingqmServiceImplTest {
             req.setRepairer_follower_permission(1);
             buildingqmServiceImpl.create(9,req);
         }catch (Exception e){
-            e.printStackTrace();
             //Assert.fail(e.getMessage());
         }
     }
@@ -113,7 +112,6 @@ public class BuildingqmServiceImplTest {
             req.setTask_id(1);
             buildingqmServiceImpl.edit(9,req);
         }catch (Exception e){
-            e.printStackTrace();
             //Assert.fail(e.getMessage());
         }
     }
