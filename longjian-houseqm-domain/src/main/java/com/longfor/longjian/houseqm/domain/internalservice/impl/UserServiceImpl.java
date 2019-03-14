@@ -1,5 +1,6 @@
 package com.longfor.longjian.houseqm.domain.internalservice.impl;
 
+import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.longfor.gaia.gfs.data.mybatis.datasource.LFAssignDataSource;
 import com.longfor.longjian.houseqm.dao.zhijian2_apisvr.UserMapper;
@@ -41,6 +42,7 @@ public class UserServiceImpl implements UserService {
     @Override
     @LFAssignDataSource("zhijian2_apisvr")
     public List<User> searchByUserIdInAndNoDeleted(List<Integer> userIds) {
+        if (CollectionUtils.isEmpty(userIds)) return Lists.newArrayList();
         Example example = new Example(User.class);
         Example.Criteria criteria = example.createCriteria();
         criteria.andIn(USER_ID, userIds);
