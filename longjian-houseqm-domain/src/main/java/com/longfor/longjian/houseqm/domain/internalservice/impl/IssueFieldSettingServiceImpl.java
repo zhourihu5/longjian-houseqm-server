@@ -51,8 +51,8 @@ public class IssueFieldSettingServiceImpl implements IssueFieldSettingService {
     }
 
     @Override
+    @LFAssignDataSource("zhijian2_setting")
     public int update(IssueFieldSetting issueField) {
-
         return issueFieldSettingMapper.updateByPrimaryKeySelective(issueField);
     }
 }

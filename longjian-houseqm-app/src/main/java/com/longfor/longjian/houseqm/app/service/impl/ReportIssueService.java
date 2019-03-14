@@ -23,6 +23,7 @@ import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Repository;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.Resource;
 import java.text.SimpleDateFormat;
@@ -70,6 +71,7 @@ public class ReportIssueService {
     private static final String   START_VALUE="0001-01-01 00:00:00";
 
     @SuppressWarnings("squid:S3776")
+    @Transactional
     public ReportIssueVo reportIssue(Integer uid, Integer projectId, String data) {
         ArrayList<ReportIssueVo.ApiHouseQmCheckTaskReportMsg> dropped = Lists.newArrayList();
         UnmarshReportIssueRequestBody issueRequestBody = unmarshReportIssueRequest(data);
@@ -430,7 +432,6 @@ public class ReportIssueService {
             if (refundMap.size() > 0) {
                 for (Map.Entry<HouseQmCheckTaskIssue, ApiRefundInfo> entry : refundMap.entrySet()) {
                     ids.add(refundMap.get(entry.getKey()).getRepairer());
-
                 }
                 String title = "新的待处理问题";
                 Map<Integer,User>userMap=scanMsgPushService.createUserMap(ids);
