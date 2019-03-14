@@ -1,4 +1,4 @@
-package com.longfor.longjian.houseqm.servicetest;
+package com.longfor.longjian.houseqm.servicetest.implTest;
 
 import com.longfor.longjian.houseqm.Application;
 import com.longfor.longjian.houseqm.app.service.impl.CheckUpdateServiceImpl;
