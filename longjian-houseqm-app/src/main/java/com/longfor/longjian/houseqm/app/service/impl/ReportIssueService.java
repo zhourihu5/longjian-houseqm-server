@@ -938,7 +938,7 @@ public class ReportIssueService {
         List<ApiHouseQmCheckTaskIssueLogInfo.ApiHouseQmCheckTaskIssueLogDetailInfo> detail = item.getDetail();
         if (objects.contains(issue.getStatus())) {
             for (int i = 0; i < detail.size(); i++) {
-                if (!detail.get(i).getCategory_key().equals("") || !detail.get(i).getCategory_key().equals("-1") ||! detail.get(i).getCheck_item_key().equals("") || !detail.get(i).getCheck_item_key().equals("-1")) {
+                if ((!detail.get(i).getCategory_key().equals("") && !detail.get(i).getCategory_key().equals("-1")) ||(! detail.get(i).getCheck_item_key().equals("") && !detail.get(i).getCheck_item_key().equals("-1"))) {
                     if (!issue.getCategoryKey().equals(detail.get(i).getCategory_key()) || !issue.getCheckItemKey().equals(detail.get(i).getCheck_item_key())) {
                         return true;
                     }
