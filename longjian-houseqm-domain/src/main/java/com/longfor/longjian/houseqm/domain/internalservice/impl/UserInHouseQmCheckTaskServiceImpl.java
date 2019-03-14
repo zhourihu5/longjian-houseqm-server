@@ -191,6 +191,7 @@ public class UserInHouseQmCheckTaskServiceImpl implements UserInHouseQmCheckTask
 
     @Override
     @LFAssignDataSource("zhijian2")
+    @Transactional
     public int delete(UserInHouseQmCheckTask userInHouseQmCheckTask) {
         UserInHouseQmCheckTask task = userInHouseQmCheckTaskMapper.selectOne(userInHouseQmCheckTask);
         task.setDeleteAt(new Date());

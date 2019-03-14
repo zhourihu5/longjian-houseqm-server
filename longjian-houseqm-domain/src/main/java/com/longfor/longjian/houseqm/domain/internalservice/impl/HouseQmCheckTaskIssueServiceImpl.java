@@ -683,6 +683,7 @@ public class HouseQmCheckTaskIssueServiceImpl implements HouseQmCheckTaskIssueSe
     }
 
     @Override
+    @Transactional
     @LFAssignDataSource("zhijian2")
     public Integer add(HouseQmCheckTaskIssue issue) {
         issue.setUpdateAt(new Date());
