@@ -244,7 +244,7 @@ public class ExportUtils {
                         File file = new File(attachment);
                         FileInputStream is = new FileInputStream(file);
                         String pictureData = doc.addPictureData(is, XWPFDocument.PICTURE_TYPE_PNG);
-                        createPicture(doc, pictureData, doc.getNextPicNameNumber(XWPFDocument.PICTURE_TYPE_PNG), 254, 254,pI3);
+                        createPicture(doc, pictureData, doc.getNextPicNameNumber(XWPFDocument.PICTURE_TYPE_PNG), 96, 96,pI3);
                         FileOutputStream fos = new FileOutputStream(file);
                         doc.write(fos);
                         fos.close();
