@@ -88,7 +88,7 @@ public class IusseTaskListControllerTest {
     public void testIssueDetailLog() throws Exception {
         mockMvc.perform(
                 post("/houseqm/v3/papi/issue/detail_log").header("token",TOKEN)
-                        .param("project_id","930").param("issue_uuid","9dd9fb3e8644427ab24569c0021bbb38")
+                        .param("project_id","930").param("issue_uuid","F25EC87C563842CB96A8BD0EE87BD7C5")
                         .contentType(MediaType.APPLICATION_JSON_VALUE))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.message").value("success"))

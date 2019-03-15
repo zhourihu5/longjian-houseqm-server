@@ -120,7 +120,7 @@ public class BuildingqmControllerTest {
                 post("/buildingqm/v3/papi/task/edit").header("token",TOKEN)
                         .param("category_cls","23").param("project_id","930")
                         .param("group_id","4").param("team_id","25")
-                        .param("task_id","67718991").param("name","2019-3-11")
+                        .param("task_id","67716252").param("name","2019-3-8-1")
                         .param("area_ids","2952246").param("area_types","2,3,4")
                         .param("plan_begin_on"," 2019-03-11").param("plan_end_on","2019-03-31")
                         .param("repairer_ids","19959").param("checker_groups","[{\"name\":\"检查组1\",\"user_ids\":\"19970,19958\",\"approve_ids\":\"19970\",\"reassign_ids\":\"\",\"id\":6198,\"direct_approve_ids\":\"19970\"}]")
