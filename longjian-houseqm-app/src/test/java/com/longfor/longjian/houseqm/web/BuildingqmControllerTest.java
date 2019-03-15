@@ -9,12 +9,10 @@ import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
-import org.springframework.test.annotation.Rollback;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.result.MockMvcResultHandlers;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
-import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.context.WebApplicationContext;
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
@@ -93,8 +91,6 @@ public class BuildingqmControllerTest {
                 .andDo(MockMvcResultHandlers.print()).andReturn();
     }
     @Test
-    @Transactional
-    @Rollback
     public void testCreate() throws Exception {
         mockMvc.perform(
                 post("/buildingqm/v3/papi/task/create").header("token",TOKEN)
@@ -113,8 +109,6 @@ public class BuildingqmControllerTest {
                 .andDo(MockMvcResultHandlers.print()).andReturn();
     }
     @Test
-    @Transactional
-    @Rollback
     public void testEdit() throws Exception {
         mockMvc.perform(
                 post("/buildingqm/v3/papi/task/edit").header("token",TOKEN)
@@ -132,8 +126,6 @@ public class BuildingqmControllerTest {
                 .andDo(MockMvcResultHandlers.print()).andReturn();
     }
     @Test
-    @Transactional
-    @Rollback
     public void testDelete() throws Exception {
         mockMvc.perform(
                 post("/oapi/v3/houseqm/task/delete/").header("token",TOKEN)
