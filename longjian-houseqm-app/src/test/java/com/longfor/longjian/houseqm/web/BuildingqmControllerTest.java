@@ -133,7 +133,7 @@ public class BuildingqmControllerTest {
     @Test
     public void testEditPlanEndOns() throws Exception {
         mockMvc.perform(
-                post("/houseqm/v3/papi/issue/edit_plan_end_on").header("token",TOKEN)
+                post("/buildingqm/v3/papi/issue/edit_plan_end_on").header("token",TOKEN)
                         .param("issue_uuid","D217A7D9922B43F5B65F69DBE3C5CAF3").param("project_id","930")
                         .param("plan_end_on","1552492803")
                         .contentType(MediaType.APPLICATION_JSON_VALUE))
