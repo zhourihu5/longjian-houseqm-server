@@ -130,15 +130,4 @@ public class BuildingqmControllerTest {
                 .andExpect(jsonPath("$.message").value("success"))
                 .andDo(MockMvcResultHandlers.print()).andReturn();
     }
-    @Test
-    public void testEditPlanEndOns() throws Exception {
-        mockMvc.perform(
-                post("/buildingqm/v3/papi/issue/edit_plan_end_on").header("token",TOKEN)
-                        .param("issue_uuid","D217A7D9922B43F5B65F69DBE3C5CAF3").param("project_id","930")
-                        .param("plan_end_on","1552492800")
-                        .contentType(MediaType.APPLICATION_JSON_VALUE))
-                .andExpect(status().isOk())
-                .andExpect(jsonPath("$.message").value("success"))
-                .andDo(MockMvcResultHandlers.print()).andReturn();
-    }
 }
