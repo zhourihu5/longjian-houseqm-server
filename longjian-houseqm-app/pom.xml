@@ -111,6 +111,12 @@
             <artifactId>jacoco-maven-plugin</artifactId>
             <version>0.7.8</version>
         </dependency>
+        <!--apollo 统一配置-->
+        <dependency>
+            <groupId>com.longfor.gaia.gfs</groupId>
+            <artifactId>gaia-gfs-apollo-client</artifactId>
+            <version>1.1.1</version>
+        </dependency>
 
     </dependencies>
 
