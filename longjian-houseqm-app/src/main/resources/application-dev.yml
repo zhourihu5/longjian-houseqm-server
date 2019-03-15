@@ -1,286 +1,286 @@
-#start
-server.port: 8082
-management.port: 9982 #9982
-
-spring:
-  application:
-    name: longjian-houseqm-app
-  cloud:
-    consul:
-      enabled: false # true
-      host: 127.0.0.1 # 127.0.0.1
-      port: 8500
-      discovery:
-        register: true
-        healthCheckInterval: 600s
-        fail-fast: false
-        #preferIpAddress: true
-    sleuth:
-      enabled: true
-
-management:
-  security:
-    enabled: false
-
-longfor:
-  web:
-    swagger:
-      enabled: true
-      description: api docs for longjian houseqm app
-      basePackage: com.longfor
-      contact:
-        name: lipeishuai
-        url: https://www.shanhh.com
-        email: lipeishuai@longfor.com
-    mockserver:
-      enabled: true
-    metrics:
-      jmx:
-        enabled: true # default true
-      prometheus:
-        enabled: true # default false
-      logs:
-        enabled: true # default false
-        reportFrequency: 600 # default 60
-    feign:
-      clients:
-        longjian-basic-server:
-          permission:
-            url: http://172.17.96.88:8082/uc/inner/ # test 环境 192.168.37.157
-          repossession:
-            url: http://172.17.96.88:8082/v3/api/repossession/ # dev 环境 172.17.96.88
-          buildingqmexport:
-            url: http://172.17.96.88:8082/papi/v3/bgtask/buildingqm/
-          houseqmcheckissue:
-            url: http://172.17.96.88:8082/v3/stat_export/houseqm_check_task_issue/
-        config:
-          permission:
-            connectTimeout: 5000
-            readTimeout: 5000
-          repossession:
-            connectTimeout: 5000
-            readTimeout: 5000
-          buildingqmexport:
-            connectTimeout: 5000
-            readTimeout: 5000
-          houseqmcheckissue:
-            connectTimeout: 5000
-            readTimeout: 5000
-        cas-server:
-          cas:
-            url: http://api.longfor.uat/cas-server-uat
-            apikey: ddd
-          config:
-            cas:
-              connectTimeout: 5000
-              readTimeout: 5000
-      #logging:
-      #  kafka:
-      #   enabled: true
-      #   broker: kafka01.paas.longhu.net:9092,kafka02.paas.longhu.net:9092,kafka03.paas.longhu.net:9092
-      #   env: test
-
-  data:
-    pagehelper:
-      helperDialect: mysql
-      reasonable: true
-      supportMethodsArguments: true
-      params: count=countSql
-    mybatis:
-      typeAliasesPackage: com.longfor.longjian.houseqmqm.dao
-      mapperLocations:
-        - classpath:com/longfor/longjian/houseqm/dao/*.xml
-    mapper:
-      notEmpty: true
-    #多数据源配置
-    database:
-      primary: zhijian2
-      connection:
-        master:
-          #默认数据源
-          type: com.alibaba.druid.pool.DruidDataSource
-          driver-class-name: org.h2.Driver
-          url: jdbc:h2:mem:siberia;DB_CLOSE_DELAY=-1;DB_CLOSE_ON_EXIT=FALSE
-          username: sa
-          password:
-          druid:
-            filters: stat
-            max-active: 20
-            initial-size: 1
-            max-wait: 30000
-            min-idle: 1
-            time-between-eviction-runs-millis: 60000
-            min-evictable-idle-time-millis: 300000
-            test-while-idle: true
-            test-on-borrow: false
-            test-on-return: false
-            pool-prepared-statements: false
-            max-open-prepared-statements: -1
-            remove-abandoned: true
-            remove-abandoned-timeout-millis: 500000
-            web-stat-filter-exclusions: '*.js,*.gif,*.jpg,*.bmp,*.png,*.css,*.ico,/druid/*,/download/*,/wj/*,/assets/*'
-        custom01:
-          type: com.zaxxer.hikari.HikariDataSource
-          driver-class-name: org.h2.Driver
-          url: jdbc:h2:mem:siberia;DB_CLOSE_DELAY=-1;DB_CLOSE_ON_EXIT=FALSE
-          username: sa
-          password:
-          hikari:
-            #控制从池返回的连接的默认自动提交行为。默认值：true
-            auto-commit: true
-            #客户端等待连接的最大毫秒数。如果在没有可用连接的情况下超过此时间，则会抛出SQLException。默认值：30000
-            connection-timeout: 10000
-            #此属性控制允许连接在池中闲置的最长时间。此设置仅适用于minimumIdle定义为小于maximumPoolSize。默认值：600000（10分钟）
-            idle-timeout: 600000
-            #此属性控制池中连接的最大生存期。默认值：1800000（30分钟）
-            max-lifetime: 1800000
-            #该属性控制HikariCP尝试在池中维护的最小空闲连接数。默认值：与maximumPoolSize相同
-            minimum-idle: 10
-            #此属性控制池允许达到的最大大小，包括空闲和正在使用的连接。默认值：10
-            maximum-pool-size: 10
-        custom02:
-          driver-class-name: com.mysql.jdbc.Driver
-          url: jdbc:mysql://192.168.37.158:3306/zhijian2_apisvr?useUnicode=true&characterEncoding=UTF8 #192.168.36.95
-          username: zhijian
-          password: JM4tLp9u6pPANLhT
-        zhijian2_apisvr:
-          driver-class-name: com.mysql.jdbc.Driver
-          url: jdbc:mysql://192.168.37.158:3306/zhijian2_apisvr?useUnicode=true&characterEncoding=UTF8 #192.168.36.95
-          username: zhijian
-          password: JM4tLp9u6pPANLhT
-        zhijian2:
-          driver-class-name: com.mysql.jdbc.Driver
-          url: jdbc:mysql://192.168.37.158:3306/zhijian2?useUnicode=true&characterEncoding=UTF8
-          username: zhijian
-          password: JM4tLp9u6pPANLhT
-        zhijian2_notify:
-          driver-class-name: com.mysql.jdbc.Driver
-          url: jdbc:mysql://192.168.37.158:3306/zhijian2_notify?useUnicode=true&characterEncoding=UTF8
-          username: zhijian
-          password: JM4tLp9u6pPANLhT
-        zhijian2_setting:
-          driver-class-name: com.mysql.jdbc.Driver
-          url: jdbc:mysql://192.168.37.158:3306/zhijian2_setting?useUnicode=true&characterEncoding=UTF8
-          username: zhijian
-          password: JM4tLp9u6pPANLhT
-        zhijian2_stat:
-          driver-class-name: com.mysql.jdbc.Driver
-          url: jdbc:mysql://192.168.36.95:3306/zhijian2_stat?useUnicode=true&characterEncoding=UTF8
-          username: zhijian
-          password: JM4tLp9u6pPANLhT
-
-    redis:
-      namespace: longjian:app
-      connection:
-        demoRedis:
-          database: 1 # redis session 鉴权 库
-          timeout: 2000
-          host: 192.168.37.158 #192.168.36.93
-          port: 6379
-          pool:
-            minIdle: 50
-            maxActive: 50
-kafka:
-  kafka_prefix: 32_lhone
-  producer:
-    servers: 192.168.37.159:9092,192.168.37.159:9093,192.168.37.159:9094
-    retries: 0
-    batch:
-      size: 4096
-    linger: 1
-    buffer:
-      # 为生产者提供的可控制的内存大小 单位为字节 此处暂时设置为128MB
-      memory: 134217728
-  consumer:
-    zookeeper:
-      connect: 192.168.37.159:2181
-    servers:  192.168.37.159:9092,192.168.37.159:9093,192.168.37.159:9094
-    enable:
-      auto:
-        commit: false
-    session:
-      timeout: 6000
-    auto:
-      commit:
-        interval: 100
-      offset:
-        reset: latest
-    group:
-      id: event_unpkg
-    concurrency: 10
-
-# 第三方配置
-#IssueListController /buildingqm/v3/papi/houseqmissue/list/ 引入配置host_list devtest8.buildingqm.com
-env_info:
-  host_list: devlongjian.longhu.net longjianapp.longhu.net lh.zj.com
-#TaskListController buildingqm/v3/papi/task/list  getExportIssueConfig() 导入配置信息
-spe:
-  # 清水
-  team_group_100194:
-    # 导出Excel
-    export_issue: /v3stat/spec/qingshui/export_issue/
-  team_group_100044: #dev
-    # 导出Excel
-    export_issue: /v3stat/spec/qingshui/export_issue/
-  team_group_100137: #test
-    # 导出Excel
-    export_issue: /v3stat/spec/qingshui/export_issue/
-#导出
-export_path: /Users/xijunguo/Work/tmp
-
-# HouseqmIssueController exportPdf 导出 url
-stat_export_server_addr: http://172.17.96.88:8082/v3
-export:
-  base_dir: /data/zhijian/writable
-  base_uri: writable
-# todo 消息推送 python 和 go 代码 中给的以下推送参数不一致
-push_config:
-  enterprise_id: longhu #go longhu  python(dongshun)  t8对应的?
-  rhapp:
-    app_key_android: "5a1fdb14a40fa353430000d8"
-    app_master_secret_android: "wzqmrawvme9qfmv8mveyawxldbmyv7kf"
-    app_key_ios: "5ba9d3bab465f5a845000335"
-    app_master_secret_ios: "s8258p7gu0lza6rcv4wvup0tbibbmfsj"
-    app_secret_xiao_mi: "/5oICHq74zbknpIQITgrRQ=="
-    package_name_xiao_mi: "cn.smartinspection.combine.debug"
-  ydyf:
-    app_key_android: "56ef621667e58edcc2000e7e"
-    app_master_secret_android: "wzqhrc6nk4ovucurknxrxu5cobeqh5ns"
-    app_key_ios: "5ba9d3bab465f5a845000335"
-    app_master_secret_ios: "s8258p7gu0lza6rcv4wvup0tbibbmfsj"
-    app_secret_xiao_mi: "MUhJVuiHkecIdZ5rupmetg=="
-    package_name_xiao_mi: "cn.smartinspection.houseqm3.debug"
-  gcgl:
-    app_key_android: "58fdaad39f06fd31f7000b05"
-    app_master_secret_android: "b9xmdal2wbqlledcpsqhnsu2zvznayrg"
-    app_key_ios: "591514d48f4a9d1942000494"
-    app_master_secret_ios: "wglml5rrrpkhhsmiudlqobfl1vhacjri"
-    app_secret_xiao_mi: "lL0grnNDGdoRIeTqa4EUXA=="
-    package_name_xiao_mi:  "cn.smartinspection.buildingqm3"
-  gxgl:
-    app_key_android: "57ecce9de0f55acbe6001f68"
-    app_master_secret_android: "2iaweb5ssaceme9yol7hrtbwbyq0ngix"
-    app_key_ios: "5ba9d3bab465f5a845000335"
-    app_master_secret_ios: "s8258p7gu0lza6rcv4wvup0tbibbmfsj"
-    app_secret_xiao_mi: "vdvG+lOHl8yY7bZR8VRXug=="
-    package_name_xiao_mi:  "cn.smartinspection.keyprocedure.keyprocedure"
-display_logo_url: assets/favicon.png
-display_company_name: 默认
-display_system_name: 智检
-  # #######
-  #dev环境
-  # app_key_ios: "5ba9d3bab465f5a845000335"
-  # app_master_secret_ios: "s8258p7gu0lza6rcv4wvup0tbibbmfsj"
-  # test
-  # app_key_ios: "5b559ccb8f4a9d7a4800000f"
-# app_master_secret_ios: "zzl7yp8youbkvto9os8ucs1x2fu6rdw2"
-#########
-verify:
-  geetest_id: f0370d8987628efaabcef62d917427cc
-  geetest_key: d85710a3d834ba2ed7a98cabf219df50
-  max_account_count: 5
-  max_fail_count: 3
-  # 以毫秒为单位
-  login_fail_ttl: 86400000
-  login_inhibit_ttl: 900000
-  login_account_ttl: 14400000
+##start
+#server.port: 8082
+#management.port: 9982 #9982
+#
+#spring:
+#  application:
+#    name: longjian-houseqm-app
+#  cloud:
+#    consul:
+#      enabled: false # true
+#      host: 127.0.0.1 # 127.0.0.1
+#      port: 8500
+#      discovery:
+#        register: true
+#        healthCheckInterval: 600s
+#        fail-fast: false
+#        #preferIpAddress: true
+#    sleuth:
+#      enabled: true
+#
+#management:
+#  security:
+#    enabled: false
+#
+#longfor:
+#  web:
+#    swagger:
+#      enabled: true
+#      description: api docs for longjian houseqm app
+#      basePackage: com.longfor
+#      contact:
+#        name: lipeishuai
+#        url: https://www.shanhh.com
+#        email: lipeishuai@longfor.com
+#    mockserver:
+#      enabled: true
+#    metrics:
+#      jmx:
+#        enabled: true # default true
+#      prometheus:
+#        enabled: true # default false
+#      logs:
+#        enabled: true # default false
+#        reportFrequency: 600 # default 60
+#    feign:
+#      clients:
+#        longjian-basic-server:
+#          permission:
+#            url: http://172.17.96.88:8082/uc/inner/ # test 环境 192.168.37.157
+#          repossession:
+#            url: http://172.17.96.88:8082/v3/api/repossession/ # dev 环境 172.17.96.88
+#          buildingqmexport:
+#            url: http://172.17.96.88:8082/papi/v3/bgtask/buildingqm/
+#          houseqmcheckissue:
+#            url: http://172.17.96.88:8082/v3/stat_export/houseqm_check_task_issue/
+#        config:
+#          permission:
+#            connectTimeout: 5000
+#            readTimeout: 5000
+#          repossession:
+#            connectTimeout: 5000
+#            readTimeout: 5000
+#          buildingqmexport:
+#            connectTimeout: 5000
+#            readTimeout: 5000
+#          houseqmcheckissue:
+#            connectTimeout: 5000
+#            readTimeout: 5000
+#        cas-server:
+#          cas:
+#            url: http://api.longfor.uat/cas-server-uat
+#            apikey: ddd
+#          config:
+#            cas:
+#              connectTimeout: 5000
+#              readTimeout: 5000
+#      #logging:
+#      #  kafka:
+#      #   enabled: true
+#      #   broker: kafka01.paas.longhu.net:9092,kafka02.paas.longhu.net:9092,kafka03.paas.longhu.net:9092
+#      #   env: test
+#
+#  data:
+#    pagehelper:
+#      helperDialect: mysql
+#      reasonable: true
+#      supportMethodsArguments: true
+#      params: count=countSql
+#    mybatis:
+#      typeAliasesPackage: com.longfor.longjian.houseqmqm.dao
+#      mapperLocations:
+#        - classpath:com/longfor/longjian/houseqm/dao/*.xml
+#    mapper:
+#      notEmpty: true
+#    #多数据源配置
+#    database:
+#      primary: zhijian2
+#      connection:
+#        master:
+#          #默认数据源
+#          type: com.alibaba.druid.pool.DruidDataSource
+#          driver-class-name: org.h2.Driver
+#          url: jdbc:h2:mem:siberia;DB_CLOSE_DELAY=-1;DB_CLOSE_ON_EXIT=FALSE
+#          username: sa
+#          password:
+#          druid:
+#            filters: stat
+#            max-active: 20
+#            initial-size: 1
+#            max-wait: 30000
+#            min-idle: 1
+#            time-between-eviction-runs-millis: 60000
+#            min-evictable-idle-time-millis: 300000
+#            test-while-idle: true
+#            test-on-borrow: false
+#            test-on-return: false
+#            pool-prepared-statements: false
+#            max-open-prepared-statements: -1
+#            remove-abandoned: true
+#            remove-abandoned-timeout-millis: 500000
+#            web-stat-filter-exclusions: '*.js,*.gif,*.jpg,*.bmp,*.png,*.css,*.ico,/druid/*,/download/*,/wj/*,/assets/*'
+#        custom01:
+#          type: com.zaxxer.hikari.HikariDataSource
+#          driver-class-name: org.h2.Driver
+#          url: jdbc:h2:mem:siberia;DB_CLOSE_DELAY=-1;DB_CLOSE_ON_EXIT=FALSE
+#          username: sa
+#          password:
+#          hikari:
+#            #控制从池返回的连接的默认自动提交行为。默认值：true
+#            auto-commit: true
+#            #客户端等待连接的最大毫秒数。如果在没有可用连接的情况下超过此时间，则会抛出SQLException。默认值：30000
+#            connection-timeout: 10000
+#            #此属性控制允许连接在池中闲置的最长时间。此设置仅适用于minimumIdle定义为小于maximumPoolSize。默认值：600000（10分钟）
+#            idle-timeout: 600000
+#            #此属性控制池中连接的最大生存期。默认值：1800000（30分钟）
+#            max-lifetime: 1800000
+#            #该属性控制HikariCP尝试在池中维护的最小空闲连接数。默认值：与maximumPoolSize相同
+#            minimum-idle: 10
+#            #此属性控制池允许达到的最大大小，包括空闲和正在使用的连接。默认值：10
+#            maximum-pool-size: 10
+#        custom02:
+#          driver-class-name: com.mysql.jdbc.Driver
+#          url: jdbc:mysql://192.168.37.158:3306/zhijian2_apisvr?useUnicode=true&characterEncoding=UTF8 #192.168.36.95
+#          username: zhijian
+#          password: JM4tLp9u6pPANLhT
+#        zhijian2_apisvr:
+#          driver-class-name: com.mysql.jdbc.Driver
+#          url: jdbc:mysql://192.168.37.158:3306/zhijian2_apisvr?useUnicode=true&characterEncoding=UTF8 #192.168.36.95
+#          username: zhijian
+#          password: JM4tLp9u6pPANLhT
+#        zhijian2:
+#          driver-class-name: com.mysql.jdbc.Driver
+#          url: jdbc:mysql://192.168.37.158:3306/zhijian2?useUnicode=true&characterEncoding=UTF8
+#          username: zhijian
+#          password: JM4tLp9u6pPANLhT
+#        zhijian2_notify:
+#          driver-class-name: com.mysql.jdbc.Driver
+#          url: jdbc:mysql://192.168.37.158:3306/zhijian2_notify?useUnicode=true&characterEncoding=UTF8
+#          username: zhijian
+#          password: JM4tLp9u6pPANLhT
+#        zhijian2_setting:
+#          driver-class-name: com.mysql.jdbc.Driver
+#          url: jdbc:mysql://192.168.37.158:3306/zhijian2_setting?useUnicode=true&characterEncoding=UTF8
+#          username: zhijian
+#          password: JM4tLp9u6pPANLhT
+#        zhijian2_stat:
+#          driver-class-name: com.mysql.jdbc.Driver
+#          url: jdbc:mysql://192.168.36.95:3306/zhijian2_stat?useUnicode=true&characterEncoding=UTF8
+#          username: zhijian
+#          password: JM4tLp9u6pPANLhT
+#
+#    redis:
+#      namespace: longjian:app
+#      connection:
+#        demoRedis:
+#          database: 1 # redis session 鉴权 库
+#          timeout: 2000
+#          host: 192.168.37.158 #192.168.36.93
+#          port: 6379
+#          pool:
+#            minIdle: 50
+#            maxActive: 50
+#kafka:
+#  kafka_prefix: 32_lhone
+#  producer:
+#    servers: 192.168.37.159:9092,192.168.37.159:9093,192.168.37.159:9094
+#    retries: 0
+#    batch:
+#      size: 4096
+#    linger: 1
+#    buffer:
+#      # 为生产者提供的可控制的内存大小 单位为字节 此处暂时设置为128MB
+#      memory: 134217728
+#  consumer:
+#    zookeeper:
+#      connect: 192.168.37.159:2181
+#    servers:  192.168.37.159:9092,192.168.37.159:9093,192.168.37.159:9094
+#    enable:
+#      auto:
+#        commit: false
+#    session:
+#      timeout: 6000
+#    auto:
+#      commit:
+#        interval: 100
+#      offset:
+#        reset: latest
+#    group:
+#      id: event_unpkg
+#    concurrency: 10
+#
+## 第三方配置
+##IssueListController /buildingqm/v3/papi/houseqmissue/list/ 引入配置host_list devtest8.buildingqm.com
+#env_info:
+#  host_list: devlongjian.longhu.net longjianapp.longhu.net lh.zj.com
+##TaskListController buildingqm/v3/papi/task/list  getExportIssueConfig() 导入配置信息
+#spe:
+#  # 清水
+#  team_group_100194:
+#    # 导出Excel
+#    export_issue: /v3stat/spec/qingshui/export_issue/
+#  team_group_100044: #dev
+#    # 导出Excel
+#    export_issue: /v3stat/spec/qingshui/export_issue/
+#  team_group_100137: #test
+#    # 导出Excel
+#    export_issue: /v3stat/spec/qingshui/export_issue/
+##导出
+#export_path: /Users/xijunguo/Work/tmp
+#
+## HouseqmIssueController exportPdf 导出 url
+#stat_export_server_addr: http://172.17.96.88:8082/v3
+#export:
+#  base_dir: /data/zhijian/writable
+#  base_uri: writable
+## todo 消息推送 python 和 go 代码 中给的以下推送参数不一致
+#push_config:
+#  enterprise_id: longhu #go longhu  python(dongshun)  t8对应的?
+#  rhapp:
+#    app_key_android: "5a1fdb14a40fa353430000d8"
+#    app_master_secret_android: "wzqmrawvme9qfmv8mveyawxldbmyv7kf"
+#    app_key_ios: "5ba9d3bab465f5a845000335"
+#    app_master_secret_ios: "s8258p7gu0lza6rcv4wvup0tbibbmfsj"
+#    app_secret_xiao_mi: "/5oICHq74zbknpIQITgrRQ=="
+#    package_name_xiao_mi: "cn.smartinspection.combine.debug"
+#  ydyf:
+#    app_key_android: "56ef621667e58edcc2000e7e"
+#    app_master_secret_android: "wzqhrc6nk4ovucurknxrxu5cobeqh5ns"
+#    app_key_ios: "5ba9d3bab465f5a845000335"
+#    app_master_secret_ios: "s8258p7gu0lza6rcv4wvup0tbibbmfsj"
+#    app_secret_xiao_mi: "MUhJVuiHkecIdZ5rupmetg=="
+#    package_name_xiao_mi: "cn.smartinspection.houseqm3.debug"
+#  gcgl:
+#    app_key_android: "58fdaad39f06fd31f7000b05"
+#    app_master_secret_android: "b9xmdal2wbqlledcpsqhnsu2zvznayrg"
+#    app_key_ios: "591514d48f4a9d1942000494"
+#    app_master_secret_ios: "wglml5rrrpkhhsmiudlqobfl1vhacjri"
+#    app_secret_xiao_mi: "lL0grnNDGdoRIeTqa4EUXA=="
+#    package_name_xiao_mi:  "cn.smartinspection.buildingqm3"
+#  gxgl:
+#    app_key_android: "57ecce9de0f55acbe6001f68"
+#    app_master_secret_android: "2iaweb5ssaceme9yol7hrtbwbyq0ngix"
+#    app_key_ios: "5ba9d3bab465f5a845000335"
+#    app_master_secret_ios: "s8258p7gu0lza6rcv4wvup0tbibbmfsj"
+#    app_secret_xiao_mi: "vdvG+lOHl8yY7bZR8VRXug=="
+#    package_name_xiao_mi:  "cn.smartinspection.keyprocedure.keyprocedure"
+#display_logo_url: assets/favicon.png
+#display_company_name: 默认
+#display_system_name: 智检
+#  # #######
+#  #dev环境
+#  # app_key_ios: "5ba9d3bab465f5a845000335"
+#  # app_master_secret_ios: "s8258p7gu0lza6rcv4wvup0tbibbmfsj"
+#  # test
+#  # app_key_ios: "5b559ccb8f4a9d7a4800000f"
+## app_master_secret_ios: "zzl7yp8youbkvto9os8ucs1x2fu6rdw2"
+##########
+#verify:
+#  geetest_id: f0370d8987628efaabcef62d917427cc
+#  geetest_key: d85710a3d834ba2ed7a98cabf219df50
+#  max_account_count: 5
+#  max_fail_count: 3
+#  # 以毫秒为单位
+#  login_fail_ttl: 86400000
+#  login_inhibit_ttl: 900000
+#  login_account_ttl: 14400000
