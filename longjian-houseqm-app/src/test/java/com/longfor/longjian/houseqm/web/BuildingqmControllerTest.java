@@ -9,10 +9,12 @@ import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
+import org.springframework.test.annotation.Rollback;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.result.MockMvcResultHandlers;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.context.WebApplicationContext;
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
@@ -91,6 +93,28 @@ public class BuildingqmControllerTest {
                 .andDo(MockMvcResultHandlers.print()).andReturn();
     }
     @Test
+    @Transactional
+    @Rollback
+    public void testCreate() throws Exception {
+        mockMvc.perform(
+                post("/buildingqm/v3/papi/task/create").header("token",TOKEN)
+                        .param("category_cls","23").param("project_id","930")
+                        .param("group_id","4").param("team_id","25")
+                        .param("task_id","67718991").param("name","2019-3-11-1")
+                        .param("area_ids","2952246").param("area_types","2,3,4")
+                        .param("plan_begin_on"," 2019-03-11").param("plan_end_on","2019-03-31")
+                        .param("repairer_ids","19959").param("checker_groups","[{\"name\":\"检查组1\",\"user_ids\":\"19970,19958\",\"approve_ids\":\"19970\",\"reassign_ids\":\"\",\"id\":6198,\"direct_approve_ids\":\"19970\"}]")
+                        .param("repairer_follower_permission","10").param("repaired_picture_status","10")
+                        .param("issue_desc_status","0").param("push_strategy_config","{}")
+                        .param("root_category_key","1585")
+                        .contentType(MediaType.APPLICATION_JSON_VALUE))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.message").value("success"))
+                .andDo(MockMvcResultHandlers.print()).andReturn();
+    }
+    @Test
+    @Transactional
+    @Rollback
     public void testEdit() throws Exception {
         mockMvc.perform(
                 post("/buildingqm/v3/papi/task/edit").header("token",TOKEN)
@@ -102,6 +126,18 @@ public class BuildingqmControllerTest {
                         .param("repairer_ids","19959").param("checker_groups","[{\"name\":\"检查组1\",\"user_ids\":\"19970,19958\",\"approve_ids\":\"19970\",\"reassign_ids\":\"\",\"id\":6198,\"direct_approve_ids\":\"19970\"}]")
                         .param("repairer_follower_permission","10").param("repaired_picture_status","10")
                         .param("issue_desc_status","0").param("push_strategy_config","{}")
+                        .contentType(MediaType.APPLICATION_JSON_VALUE))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.message").value("success"))
+                .andDo(MockMvcResultHandlers.print()).andReturn();
+    }
+    @Test
+    @Transactional
+    @Rollback
+    public void testDelete() throws Exception {
+        mockMvc.perform(
+                post("/oapi/v3/houseqm/task/delete/").header("token",TOKEN)
+                        .param("task_id","67718991").param("project_id","930")
                         .contentType(MediaType.APPLICATION_JSON_VALUE))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.message").value("success"))
