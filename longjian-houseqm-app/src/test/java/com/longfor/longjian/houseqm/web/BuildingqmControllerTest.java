@@ -91,24 +91,6 @@ public class BuildingqmControllerTest {
                 .andDo(MockMvcResultHandlers.print()).andReturn();
     }
     @Test
-    public void testCreate() throws Exception {
-        mockMvc.perform(
-                post("/buildingqm/v3/papi/task/create").header("token",TOKEN)
-                        .param("category_cls","23").param("project_id","930")
-                        .param("group_id","4").param("team_id","25")
-                        .param("task_id","67718991").param("name","2019-3-11-1")
-                        .param("area_ids","2952246").param("area_types","2,3,4")
-                        .param("plan_begin_on"," 2019-03-11").param("plan_end_on","2019-03-31")
-                        .param("repairer_ids","19959").param("checker_groups","[{\"name\":\"检查组1\",\"user_ids\":\"19970,19958\",\"approve_ids\":\"19970\",\"reassign_ids\":\"\",\"id\":6198,\"direct_approve_ids\":\"19970\"}]")
-                        .param("repairer_follower_permission","10").param("repaired_picture_status","10")
-                        .param("issue_desc_status","0").param("push_strategy_config","{}")
-                        .param("root_category_key","1585")
-                        .contentType(MediaType.APPLICATION_JSON_VALUE))
-                .andExpect(status().isOk())
-                .andExpect(jsonPath("$.message").value("success"))
-                .andDo(MockMvcResultHandlers.print()).andReturn();
-    }
-    @Test
     public void testEdit() throws Exception {
         mockMvc.perform(
                 post("/buildingqm/v3/papi/task/edit").header("token",TOKEN)
@@ -125,11 +107,46 @@ public class BuildingqmControllerTest {
                 .andExpect(jsonPath("$.message").value("success"))
                 .andDo(MockMvcResultHandlers.print()).andReturn();
     }
+
     @Test
-    public void testDelete() throws Exception {
+    public void testAddDesc() throws Exception {
         mockMvc.perform(
-                post("/oapi/v3/houseqm/task/delete/").header("token",TOKEN)
-                        .param("task_id","67718991").param("project_id","930")
+                post("/buildingqm/v3/papi/issue/add_desc").header("token",TOKEN)
+                        .param("issue_uuid","6032c4640393427b88942764f78675df").param("project_id","930")
+                        .param("content","测试")
+                        .contentType(MediaType.APPLICATION_JSON_VALUE))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.message").value("success"))
+                .andDo(MockMvcResultHandlers.print()).andReturn();
+    }
+    @Test
+    public void testAddDescs() throws Exception {
+        mockMvc.perform(
+                post("/houseqm/v3/papi/issue/add_desc").header("token",TOKEN)
+                        .param("issue_uuid","6032c4640393427b88942764f78675df").param("project_id","930")
+                        .param("content","测试1")
+                        .contentType(MediaType.APPLICATION_JSON_VALUE))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.message").value("success"))
+                .andDo(MockMvcResultHandlers.print()).andReturn();
+    }
+    @Test
+    public void testEditPlanEndOns() throws Exception {
+        mockMvc.perform(
+                post("/houseqm/v3/papi/issue/edit_plan_end_on").header("token",TOKEN)
+                        .param("issue_uuid","D217A7D9922B43F5B65F69DBE3C5CAF3").param("project_id","930")
+                        .param("plan_end_on","1552492803")
+                        .contentType(MediaType.APPLICATION_JSON_VALUE))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.message").value("success"))
+                .andDo(MockMvcResultHandlers.print()).andReturn();
+    }
+    @Test
+    public void testEditPlanEndOn() throws Exception {
+        mockMvc.perform(
+                post("/buildingqm/v3/papi/issue/edit_plan_end_on").header("token",TOKEN)
+                        .param("issue_uuid","D217A7D9922B43F5B65F69DBE3C5CAF3").param("project_id","930")
+                        .param("plan_end_on","1552320000")
                         .contentType(MediaType.APPLICATION_JSON_VALUE))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.message").value("success"))
