@@ -1273,13 +1273,13 @@ public class IssueServiceImpl implements IIssueService {
     public LjBaseResponse<IssueInfoVo> getHouseQmCheckTaskIssueDetailBaseByProjectAndUuid(Integer uid, Integer projectId, String issueUuid) {
         Date limitTime = new Date(0);
         HouseQmCheckTaskIssue issueInfo = houseQmCheckTaskIssueService.getIssueByProjectIdAndUuid(projectId, issueUuid);
-        Map issueDetail = JSON.parseObject(issueInfo.getDetail(), Map.class);
         if (issueInfo == null) {
             LjBaseResponse<IssueInfoVo> response = new LjBaseResponse<>();
             response.setResult(1);
             response.setMessage(CAN_NOT_FIND_THIS_ISSUE);
             return response;
         }
+        Map issueDetail = JSON.parseObject(issueInfo.getDetail(), Map.class);
         Integer taskId = issueInfo.getTaskId();
         List<String> attachmentMd5List = StringSplitToListUtil.removeStartAndEndStrAndSplit(issueInfo.getAttachmentMd5List(), ",", ",");
         HouseQmCheckTask taskInfo = houseQmCheckTaskService.selectByProjectIdAndTaskIdAndDel(projectId, taskId);

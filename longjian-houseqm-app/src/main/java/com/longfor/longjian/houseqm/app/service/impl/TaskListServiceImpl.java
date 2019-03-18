@@ -73,6 +73,15 @@ public class TaskListServiceImpl implements ITaskListService {
     public Map<Integer, CheckTaskIssueTypeStatInfo> searchTaskIssueStatMapByTaskIds(List<Integer> taskIds) {
         List<HouseQmCheckTaskIssue> issues = houseQmCheckTaskIssueService.searchByTaskIdInGroupByTaskIdAndStatus(taskIds);
         Map<Integer, CheckTaskIssueTypeStatInfo> statMap = Maps.newHashMap();
+        HashMap<Integer, HouseQmCheckTaskIssueStatusEnum> map = Maps.newHashMap();
+        map.put(HouseQmCheckTaskIssueStatusEnum.NoProblem.getId(),HouseQmCheckTaskIssueStatusEnum.NoProblem);
+        map.put(HouseQmCheckTaskIssueStatusEnum.NoteNoAssign.getId(),HouseQmCheckTaskIssueStatusEnum.NoteNoAssign);
+        map.put(HouseQmCheckTaskIssueStatusEnum.AssignNoReform.getId(),HouseQmCheckTaskIssueStatusEnum.AssignNoReform);
+        map.put(HouseQmCheckTaskIssueStatusEnum.Repairing.getId(),HouseQmCheckTaskIssueStatusEnum.Repairing);
+        map.put(HouseQmCheckTaskIssueStatusEnum.ReformNoCheck.getId(),HouseQmCheckTaskIssueStatusEnum.ReformNoCheck);
+        map.put(HouseQmCheckTaskIssueStatusEnum.CheckYes.getId(),HouseQmCheckTaskIssueStatusEnum.CheckYes);
+        map.put(HouseQmCheckTaskIssueStatusEnum.Cancel.getId(),HouseQmCheckTaskIssueStatusEnum.Cancel);
+
         for (HouseQmCheckTaskIssue res : issues) {
             if (!statMap.containsKey(res.getTaskId())) {
                 CheckTaskIssueTypeStatInfo value = new CheckTaskIssueTypeStatInfo();
@@ -87,13 +96,7 @@ public class TaskListServiceImpl implements ITaskListService {
             }
 
             CheckTaskIssueTypeStatInfo result = statMap.get(res.getTaskId());
-            HouseQmCheckTaskIssueStatusEnum e = null;
-            for (HouseQmCheckTaskIssueStatusEnum value : HouseQmCheckTaskIssueStatusEnum.values()) {
-                if (value.getId().equals(res.getStatus())) {
-                    e = value;
-                }
-            }
-            handleStatistics(res, result, e);
+            handleStatistics(res, result, map.get(res.getStatus()));
         }
         return statMap;
     }
@@ -139,13 +142,6 @@ public class TaskListServiceImpl implements ITaskListService {
         }
     }
 
-    /**
-     * @param teamId
-     * @param projectId
-     * @param categoryCls
-     * @param status
-     * @return
-     */
     public TaskList2Vo list(int teamId, int projectId, int categoryCls, int status) {
         TaskList2Vo taskListVo = new TaskList2Vo();
         List<ApiBuildingQmCheckTaskMsg> list = Lists.newArrayList();

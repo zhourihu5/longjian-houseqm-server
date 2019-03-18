@@ -27,11 +27,7 @@ import tk.mybatis.mapper.entity.Example;
 import javax.annotation.Resource;
 import java.util.*;
 
-/**
- * @author Houyan
- * @date 2018/12/11 0011 15:39
- */
-//@Transactional
+@Transactional
 @Service
 @Slf4j
 public class HouseQmCheckTaskIssueServiceImpl implements HouseQmCheckTaskIssueService {
