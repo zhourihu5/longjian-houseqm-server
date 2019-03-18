@@ -1,6 +1,5 @@
 package com.longfor.longjian.houseqm.domain.internalservice.impl;
 
-import com.github.pagehelper.PageHelper;
 import com.google.common.collect.Lists;
 import com.longfor.gaia.gfs.data.mybatis.datasource.LFAssignDataSource;
 import com.longfor.longjian.common.consts.HouseQmCheckTaskIssueStatusEnum;
@@ -532,8 +531,8 @@ public class HouseQmCheckTaskIssueServiceImpl implements HouseQmCheckTaskIssueSe
         HouseQmCheckTaskIssueDto dto = new HouseQmCheckTaskIssueDto();
         int i = houseQmCheckTaskIssueMapper.selectCountByExample(example);
         example.orderBy(CLIENT_CREATE_AT);
-        PageHelper.startPage((Integer) condiMap.get("page"), (Integer) condiMap.get("pageSize"));
-        List<HouseQmCheckTaskIssue> qmCheckTaskIssueList = houseQmCheckTaskIssueMapper.selectByExample(example);
+        Integer pageNum = ((Integer) condiMap.get("page") - 1)*(Integer) condiMap.get("pageSize");
+        List<HouseQmCheckTaskIssue> qmCheckTaskIssueList = houseQmCheckTaskIssueMapper.selectByExampleAndRowBounds(example,new RowBounds(pageNum,(Integer) condiMap.get("pageSize")));
         dto.setTotal(i);
         dto.setItems(qmCheckTaskIssueList);
         return dto;
