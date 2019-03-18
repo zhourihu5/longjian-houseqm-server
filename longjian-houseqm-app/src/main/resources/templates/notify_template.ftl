@@ -662,7 +662,7 @@
                         </w:p>
                         <w:p/>
                         <#list image as qk>
-                            <w:p>
+                          <#--  <w:p>
                                 <w:r>
                                     <w:pict>
                                         <w:binData w:name="wordml://${qk_index}.png">${qk}</w:binData>
@@ -677,7 +677,19 @@
                                         </v:shape>
                                     </w:pict>
                                 </w:r>
-                            </w:p>
+                            </w:p>-->
+                            <w:pict>
+                                <w:binData w:name="wordml://${qk_index}.png">${qk}</w:binData>
+                                <v:shape id="Picture 1" o:spid="_x0000_s1026" o:spt="75" alt="" type="#_x0000_t75" style="height:72pt;width:72pt;" filled="f" o:preferrelative="t" stroked="f" coordsize="21600,21600">
+                                    <v:path/>
+                                    <v:fill on="f" focussize="0,0"/>
+                                    <v:stroke on="f"/>
+                                    <v:imagedata src="wordml://${qk_index}.png" o:title=""/>
+                                    <o:lock v:ext="edit" aspectratio="t"/>
+                                    <w10:wrap type="none"/>
+                                    <w10:anchorlock/>
+                                </v:shape>
+                            </w:pict>
                         </#list>
                         <w:p/>
                         <w:p>

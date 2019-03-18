@@ -21,7 +21,7 @@ public class HouseqmIssueServiceImplTest {
     @Resource
     private HouseqmIssueServiceImpl houseqmIssueServiceImpl;
 //LjBaseRuntimeException(errorCode=-1, errorMsg=删除问题失败)
- /*   @Test
+ /*   @Tests
     @Transactional
     public void deleteHouseQmCheckTaskIssueByProjUuid() {
         try{

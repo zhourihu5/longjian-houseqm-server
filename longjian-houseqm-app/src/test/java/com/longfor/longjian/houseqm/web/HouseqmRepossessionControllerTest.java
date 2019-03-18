@@ -35,7 +35,7 @@ public class HouseqmRepossessionControllerTest {
     }
 
 /*
-    @Test
+    @Tests
     public void testreport() throws Exception {
         mockMvc.perform(
                 post("/houseqm/v3/papi/repossession/report").header("token",TOKEN)

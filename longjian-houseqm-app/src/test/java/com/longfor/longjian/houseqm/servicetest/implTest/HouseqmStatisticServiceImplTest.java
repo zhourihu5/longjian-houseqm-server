@@ -129,7 +129,7 @@ public class HouseqmStatisticServiceImplTest {
         }
     }
 //java.lang.NullPointerException
-/*    @Test
+/*    @Tests
     public void getRepossessionTasksStatusInfo() {
         try{
             houseqmStatisticServiceImpl.getRepossessionTasksStatusInfo(9, Arrays.asList(new Integer[]{120092,120263,130895}),1);
@@ -158,7 +158,7 @@ public class HouseqmStatisticServiceImplTest {
     }
 
 /*
-    @Test
+    @Tests
     public void searchHouseQmCheckTaskIssueOnlineInfoByProjCategoryKeyAreaIdPaged() {
         try{
             houseqmStatisticServiceImpl.searchHouseQmCheckTaskIssueOnlineInfoByProjCategoryKeyAreaIdPaged(927,"1",1,1,10);

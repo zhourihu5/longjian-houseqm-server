@@ -89,7 +89,7 @@ public class BuildingqmServiceImplTest {
         }
     }
 
-/*    @Test
+/*    @Tests
     @Transactional
     public void edit() {
         try{

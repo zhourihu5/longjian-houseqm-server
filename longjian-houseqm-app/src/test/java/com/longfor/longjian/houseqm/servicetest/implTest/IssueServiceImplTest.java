@@ -105,7 +105,7 @@ public class IssueServiceImplTest {
         }
     }
 
- /*@Test
+ /*@Tests
     @Transactional
     public void deleteHouseqmCheckTaskIssueByProjectAndUuid() {
         try{
@@ -146,7 +146,7 @@ public class IssueServiceImplTest {
     }
 
 /*
-    @Test
+    @Tests
     @Transactional
     public void repairNotifyExport2() {
         try{
@@ -157,7 +157,7 @@ public class IssueServiceImplTest {
         }
     }
 
-    @Test
+    @Tests
     @Transactional
     public void repairReplyExport() {
         try{
@@ -207,7 +207,7 @@ public class IssueServiceImplTest {
         }
     }
 
- /*   @Test
+ /*   @Tests
     @Transactional
     public void repairNotifyExport() {
         try{
