@@ -28,7 +28,7 @@ public class HouseqmStatServiceImplTest {
     }
 
 /*
-    @Test
+    @Tests
     public void searchRepossessInspectionAreaIdsByConditions() {
         try{
             houseqmStatServiceImpl.searchRepossessInspectionAreaIdsByConditions(927,1,1,1,1,new Date(),new Date());
