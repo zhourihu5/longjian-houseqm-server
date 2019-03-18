@@ -442,9 +442,9 @@ public class IssueServiceImpl implements IIssueService {
             status2.add(HouseQmCheckTaskIssueStatusEnum.CheckYes.getId());
             condiMap.put("status2", status2);
         }
-        if (req.getKey_word().length() > 0) {//content like xxx
+        if (req.getKey_word().length() > 0) {
             condiMap.put(CONTENT, "%" + req.getKey_word() + "%");
-            if (StringSplitToListUtil.isInteger(req.getKey_word())) {// or id=xxx
+            if (StringSplitToListUtil.isInteger(req.getKey_word())) {
                 condiMap.put("id", req.getKey_word());
             }
         }
