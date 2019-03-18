@@ -40,14 +40,5 @@
         -->
         setting, custom_extra
     </sql>
-    <select id="selectByTeamId" resultMap="BaseResultMap">
-        SELECT
-        <include refid="Base_Column_List"/>
-        FROM team
-        WHERE team_id=#{teamId}
-        <if test="deleted == 'false'">
-            AND delete_at is NULL
-        </if>
 
-    </select>
 </mapper>

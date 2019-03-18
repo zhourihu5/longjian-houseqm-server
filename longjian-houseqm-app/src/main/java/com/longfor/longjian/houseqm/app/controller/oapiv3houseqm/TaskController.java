@@ -85,7 +85,7 @@ public class TaskController {
             return CtrlToolUtils.errorReturn(response,e);
         }
         // 如果没有页数，默认取1000个
-        if (req.getPage() == 0) {
+        if (req.getPage().equals(0)) {
             req.setPage(1);
             req.setPage_size(1000);
         }
