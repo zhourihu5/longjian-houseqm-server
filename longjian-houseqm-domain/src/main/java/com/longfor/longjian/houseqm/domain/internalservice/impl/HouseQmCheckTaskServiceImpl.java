@@ -53,7 +53,7 @@ public class HouseQmCheckTaskServiceImpl implements HouseQmCheckTaskService {
     public List<HouseQmCheckTask> searchByProjIdAndCategoryClsAndStatusByPage(Integer projId, Integer categoryCls, Integer status, int limit, int start) {
         Example example = new Example(HouseQmCheckTask.class);
         Example.Criteria criteria = example.createCriteria();
-        criteria.andEqualTo(PROJECT_ID, projId).andEqualTo(CATEGORY_CLS, categoryCls).andEqualTo(STATUS, status).andIsNull("deleted");
+        criteria.andEqualTo(PROJECT_ID, projId).andEqualTo(CATEGORY_CLS, categoryCls).andEqualTo(STATUS, status).andIsNull("deleteAt");
         ExampleUtil.addDeleteAtJudge(example);
         //PageHelper.startPage(start, limit);
         RowBounds rowBounds = new RowBounds(start,limit);

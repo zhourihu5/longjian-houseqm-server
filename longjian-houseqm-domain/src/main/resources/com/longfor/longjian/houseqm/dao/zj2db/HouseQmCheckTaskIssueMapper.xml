@@ -823,7 +823,7 @@
     <select id="searchByTaskIdInGroupByTaskIdAndStatus" resultMap="BaseResultMap">
         SELECT task_id,`status`, COUNT(*) AS pos_x FROM house_qm_check_task_issue
         <where>
-            `delete_at` IS NULL OR `delete_at` = '0001-01-01 00:00:00'
+            (`delete_at` IS NULL OR `delete_at` = '0001-01-01 00:00:00')
             <if test="taskIds.size()>0">
                 and task_id in
                 <foreach collection="taskIds" index="index" item="task_id" open="(" separator="," close=")">
