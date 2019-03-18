@@ -408,8 +408,8 @@ public class IssueServiceImpl implements IIssueService {
         } else {
             host = "";
         }
-        List<Integer> areaIdList = com.longfor.longjian.common.util.StringUtil.strToInts(req.getArea_ids(), ",");
-        List<Integer> statusInList = com.longfor.longjian.common.util.StringUtil.strToInts(req.getStatus_in(), ",");
+        List<Integer> areaIdList = StringUtil.strToInts(req.getArea_ids(), ",");
+        List<Integer> statusInList = StringUtil.strToInts(req.getStatus_in(), ",");
         Map<String, Object> condiMap = Maps.newHashMap();
         condiMap.put("projectId", req.getProject_id());
         condiMap.put("categoryCls", req.getCategory_cls());
