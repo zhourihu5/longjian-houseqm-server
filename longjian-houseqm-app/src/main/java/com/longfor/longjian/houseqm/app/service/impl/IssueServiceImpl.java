@@ -1084,7 +1084,7 @@ public class IssueServiceImpl implements IIssueService {
 
         List<String> followers = StringSplitToListUtil.removeStartAndEndStrAndSplit(StringSplitToListUtil.removeStartAndEndStr(repairFollowerIds, "[", "]"), ",", ",");
 
-        if (!followers.contains(issueInfo.getRepairerId()) && repairerId > 0 && !repairerId.equals(issueInfo.getRepairerId())) {
+        if (!followers.contains(String.valueOf(issueInfo.getRepairerId())) && repairerId > 0 && !repairerId.equals(issueInfo.getRepairerId())) {
             followers.add(String.valueOf(issueInfo.getRepairerId()));
             tempRepairerId = issueInfo.getRepairerId();
         }
