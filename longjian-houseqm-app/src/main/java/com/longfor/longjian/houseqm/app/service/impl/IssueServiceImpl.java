@@ -415,12 +415,12 @@ public class IssueServiceImpl implements IIssueService {
         condiMap.put("categoryCls", req.getCategory_cls());
         if (req.getTask_id() != null && req.getTask_id() > 0) condiMap.put("taskId", req.getTask_id());
         if (req.getStatus_in().length() > 0) condiMap.put("status", statusInList);
-        if (req.getCategory_key().length() > 0) condiMap.put("categoryPathAndKey", "%/" + req.getCategory_key() + "/%");
+        if (req.getCategory_key().length() > 0) condiMap.put("categoryPathAndKey", String.format("%%/%s/%%",req.getCategory_key()));
         if (req.getCheck_item_key().length() > 0) condiMap.put("checkItemKey", req.getCheck_item_key());
         if (!areaIdList.isEmpty()) {
             List<String> areaPathAndIdLikeList = Lists.newArrayList();
             for (Integer i : areaIdList) {
-                areaPathAndIdLikeList.add("%/" + i + "/%");
+                areaPathAndIdLikeList.add(String.format("%%/%s/%%",String.valueOf(i)));
             }
             condiMap.put("areaPathAndId", areaPathAndIdLikeList);
         }
@@ -443,7 +443,7 @@ public class IssueServiceImpl implements IIssueService {
             condiMap.put("status2", status2);
         }
         if (req.getKey_word().length() > 0) {
-            condiMap.put(CONTENT, "%" + req.getKey_word() + "%");
+            condiMap.put(CONTENT, String.format("%%/%s/%%",req.getKey_word()));
             if (StringSplitToListUtil.isInteger(req.getKey_word())) {
                 condiMap.put("id", req.getKey_word());
             }
