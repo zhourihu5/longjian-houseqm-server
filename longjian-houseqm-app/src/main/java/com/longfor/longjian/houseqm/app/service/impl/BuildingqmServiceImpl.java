@@ -1141,12 +1141,10 @@ public class BuildingqmServiceImpl implements IBuildingqmService {
                 }
 
             } else {
-                if (dbConfigCategoryOverdue != null) {
                     int one = pushStrategyCategoryOverdueService.delete(dbConfigCategoryOverdue);
                     if (one <= 0) {
                         log.info("PushStrategyCategoryOverdueDao().delete failed");
-                    }
-                } else {
+                    } else {
                     log.info("task push strategy category overdue config not set");
                 }
             }
@@ -1186,12 +1184,10 @@ public class BuildingqmServiceImpl implements IBuildingqmService {
                     log.info("PushStrategyCategoryThresholdDao().update failed");
                 }
             } else {
-                if (dbConfigCategoryThreshold != null) {
                     int one = pushStrategyCategoryThresholdService.delete(dbConfigCategoryThreshold);
                     if (one <= 0) {
                         log.info("PushStrategyCategoryThresholdDao().delete failed");
-                    }
-                } else {
+                    } else {
                     log.info("task push strategy category threshold config not set");
                 }
 
