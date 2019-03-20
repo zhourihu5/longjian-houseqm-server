@@ -73,7 +73,7 @@ public class IssueServiceImplTest {
     public void list() {
         try{
             IssueListDoActionReq req=new IssueListDoActionReq();
-            req.set_overdue(false);
+            req.setIs_overdue(false);
             req.setArea_ids("1,2,3,4,5,6,7,8,9");
             req.setCategory_cls(1);
             req.setCategory_key("1");

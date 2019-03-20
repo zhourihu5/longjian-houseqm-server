@@ -102,7 +102,7 @@ public class IssueListController {
     @RequestMapping(value = "list", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     public LjBaseResponse<IssueListRsp> doAction(HttpServletRequest request, @Valid IssueListDoActionReq req) {
         log.info("list, project_id=" + req.getProject_id() + ", category_cls=" + req.getCategory_cls() + ", task_id=" + req.getTask_id() + ", category_key=" + req.getCategory_key() + ", check_item_key=" + req.getCheck_item_key() + ", area_ids=" + req.getArea_ids() + ", status_in=" + req.getStatus_in() + ", checker_id=" + req.getChecker_id() + ", repairer_id=" + req.getRepairer_id() + "," +
-                " type=" + req.getType() + ", condition=" + req.getCondition() + ", key_word=" + req.getKey_word() + ", create_on_begin=" + req.getCreate_on_begin() + ", create_on_end=" + req.getCreate_on_end() + ", is_overdue=" + req.is_overdue() + ", page=" + req.getPage() + ", page_size=" + req.getPage_size()
+                " type=" + req.getType() + ", condition=" + req.getCondition() + ", key_word=" + req.getKey_word() + ", create_on_begin=" + req.getCreate_on_begin() + ", create_on_end=" + req.getCreate_on_end() + ", is_overdue=" + req.getIs_overdue() + ", page=" + req.getPage() + ", page_size=" + req.getPage_size()
         );
         LjBaseResponse<IssueListRsp> response = new LjBaseResponse<>();
         try {

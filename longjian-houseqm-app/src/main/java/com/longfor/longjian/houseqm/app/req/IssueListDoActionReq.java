@@ -6,14 +6,7 @@ import lombok.NoArgsConstructor;
 import javax.validation.constraints.NotNull;
 import java.io.Serializable;
 
-/**
- * @ProjectName: longjian-houseqm-server
- * @Package: com.longfor.longjian.houseqm.app.req
- * @ClassName: IssueListDoActionReq
- * @Description: java类作用描述
- * @Author: hy
- * @CreateDate: 2019/1/17 10:14
- */
+
 @Data
 @NoArgsConstructor
 public class IssueListDoActionReq implements Serializable {
@@ -36,9 +29,7 @@ public class IssueListDoActionReq implements Serializable {
     private String key_word = "";//关键词
     private String create_on_begin = "";//开始时间范围
     private String create_on_end = "";//结束时间范围
-    private boolean is_overdue = false;//是否超期
+    private Boolean is_overdue = false;//是否超期
     private Integer page = 1;//页码
     private Integer page_size = 20;//每页数量
-
-
 }
