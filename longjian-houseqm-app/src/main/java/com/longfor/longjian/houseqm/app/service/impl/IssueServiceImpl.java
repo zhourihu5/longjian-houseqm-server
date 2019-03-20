@@ -60,7 +60,7 @@ public class IssueServiceImpl implements IIssueService {
     private static final String ISSUE_SUGGEST = "IssueSuggest";
     private static final String POTENTIAL_RISK = "PotentialRisk";
     private static final String PREVENTIVE_ACTION_DETAIL = "PreventiveActionDetail";
-    private static final String PLAN_END_ON = "planEndOn";
+    private static final String PLAN_END_ON = "PlanEndOn";
     private static final String END_ON = "EndOn";
     private static final String REPAIRER_ID = "RepairerId";
     private static final String REPAIRER_FOLLOWER_IDS = "RepairerFollowerIds";
