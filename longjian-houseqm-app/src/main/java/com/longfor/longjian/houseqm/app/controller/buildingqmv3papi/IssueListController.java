@@ -224,7 +224,7 @@ public class IssueListController {
         reasonId = getInteger(reasonList, reasonId, projectSetting, vo);
         if (reasonId > 0) {
             for (ProjectSettingV2 projectSettingV2 : projectSetting) {
-                if (projectSettingV2.getParentId().equals(reasonId)) {
+                if (projectSettingV2.getParentId()!=null&&projectSettingV2.getParentId().equals(reasonId)) {
                     ProjectSettingConfigVo.HouseQmIssueReason singleReason = new ProjectSettingConfigVo().new HouseQmIssueReason();
                     singleReason.setId(projectSettingV2.getId());
                     singleReason.setValue(projectSettingV2.getValue());
