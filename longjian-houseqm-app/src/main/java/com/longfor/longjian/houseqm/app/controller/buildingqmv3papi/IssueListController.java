@@ -81,7 +81,7 @@ public class IssueListController {
             SXSSFWorkbook wb = (SXSSFWorkbook) map.get("workbook");
             response.setContentType("application/vnd.ms-excel");
             response.setCharacterEncoding(UTF_8);
-            response.setHeader("Content-Disposition", "attachment;filename=" + new String(fileName.getBytes(UTF_8), "iso8859-1") + ".xls");
+            response.setHeader("Content-Disposition", "attachment;filename=" + new String(fileName.getBytes(UTF_8), "iso8859-1"));
             wb.write(os);
             os.flush();
         } catch (Exception e) {

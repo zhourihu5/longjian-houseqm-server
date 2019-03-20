@@ -408,8 +408,8 @@ public class IssueServiceImpl implements IIssueService {
         } else {
             host = "";
         }
-        List<Integer> areaIdList = com.longfor.longjian.common.util.StringUtil.strToInts(req.getArea_ids(), ",");
-        List<Integer> statusInList = com.longfor.longjian.common.util.StringUtil.strToInts(req.getStatus_in(), ",");
+        List<Integer> areaIdList = StringUtil.strToInts(req.getArea_ids(), ",");
+        List<Integer> statusInList = StringUtil.strToInts(req.getStatus_in(), ",");
         Map<String, Object> condiMap = Maps.newHashMap();
         condiMap.put("projectId", req.getProject_id());
         condiMap.put("categoryCls", req.getCategory_cls());
@@ -442,9 +442,9 @@ public class IssueServiceImpl implements IIssueService {
             status2.add(HouseQmCheckTaskIssueStatusEnum.CheckYes.getId());
             condiMap.put("status2", status2);
         }
-        if (req.getKey_word().length() > 0) {//content like xxx
+        if (req.getKey_word().length() > 0) {
             condiMap.put(CONTENT, "%" + req.getKey_word() + "%");
-            if (StringSplitToListUtil.isInteger(req.getKey_word())) {// or id=xxx
+            if (StringSplitToListUtil.isInteger(req.getKey_word())) {
                 condiMap.put("id", req.getKey_word());
             }
         }
@@ -464,15 +464,15 @@ public class IssueServiceImpl implements IIssueService {
         for (HouseQmCheckTaskIssue issue : validIssues) {
             if (!categoryKeys.contains(issue.getCategoryKey())) categoryKeys.add(issue.getCategoryKey());
             if (issue.getRepairerId() != 0) repairers.add(issue.getRepairerId());
-            List<String> checkItemPathAndKeyList = com.longfor.longjian.common.util.StringUtil.strToStrs(issue.getCheckItemPathAndKey(), "/");
+            List<String> checkItemPathAndKeyList = StringUtil.strToStrs(issue.getCheckItemPathAndKey(), "/");
             checkItemPathAndKeyList.forEach(s -> {
                 if (!checkItems.contains(s)) checkItems.add(s);
             });
-            List<Integer> areaPathAndIdList = com.longfor.longjian.common.util.StringUtil.strToInts(issue.getAreaPathAndId(), "/");
+            List<Integer> areaPathAndIdList = StringUtil.strToInts(issue.getAreaPathAndId(), "/");
             areaPathAndIdList.forEach(item -> {
                 if (!areaPaths.contains(item)) areaPaths.add(item);
             });
-            List<String> attachmentMd5List = com.longfor.longjian.common.util.StringUtil.strToStrs(issue.getAttachmentMd5List(), ",");
+            List<String> attachmentMd5List =StringUtil.strToStrs(issue.getAttachmentMd5List(), ",");
             attachmentMd5List.forEach(item -> {
                 if (!attachments.contains(item)) attachments.add(item);
             });
@@ -1651,17 +1651,10 @@ public class IssueServiceImpl implements IIssueService {
         }
         return map;
     }
-
-    /**
-     * @param map
-     * @param areaPathAndId
-     * @return java.util.List<java.lang.String>
-     * @author hy
-     * @date 2018/12/21 0021
-     */
+    
     private List<String> getAreaPathName(Map<Integer, Area> map, String areaPathAndId) {
         List<String> areaNames = Lists.newArrayList();
-        List<Integer> areaIds = com.longfor.longjian.common.util.StringUtil.strToInts(areaPathAndId, "/");
+        List<Integer> areaIds = StringUtil.strToInts(areaPathAndId, "/");
         areaIds.forEach(id -> {
             String areaName = id + "";
             if (map.containsKey(id)) {

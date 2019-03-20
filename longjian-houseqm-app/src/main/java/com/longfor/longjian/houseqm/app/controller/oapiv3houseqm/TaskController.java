@@ -121,8 +121,8 @@ public class TaskController {
             task.setRoot_category_key(item.getRootCategoryKey());
             task.setArea_ids(item.getAreaIds());
             task.setArea_types(item.getAreaTypes());
-            task.setPlan_begin_on(DateUtil.dateToTimestamp(item.getPlanBeginOn()));
-            task.setPlan_end_on(DateUtil.dateToTimestamp(item.getPlanEndOn()));
+            task.setPlan_begin_on(item.getPlanBeginOn()==null?0:DateUtil.dateToTimestamp(item.getPlanBeginOn()));
+            task.setPlan_end_on(item.getPlanEndOn()==null?0:DateUtil.dateToTimestamp(item.getPlanEndOn()));
             task.setCreate_at(item.getCreateAt() == null ? 0 : DateUtil.dateToTimestamp(item.getCreateAt()));
             task.setUpdate_at(item.getUpdateAt() == null ? 0 : DateUtil.dateToTimestamp(item.getUpdateAt()));
             task.setDelete_at(item.getDeleteAt() == null ? 0 : DateUtil.dateToTimestamp(item.getDeleteAt()));
@@ -160,20 +160,6 @@ public class TaskController {
         return response;
     }
 
-    /*
-     * @Author hy
-     * @Description 删除任务
-     * http://192.168.37.159:3000/project/8/interface/api/3204
-     *  SELECT * FROM user_in_house_qm_check_task WHERE project_id=930 AND task_id=86430885
-        INSERT INTO user_in_house_qm_check_task (task_id,project_id,squad_id,user_id,role_type) VALUES(86430885,930,6554,20225,10)
-     * SELECT * FROM house_qm_check_task_issue WHERE project_id=930 AND task_id=86430885
-        insert into house_qm_check_task_issue (project_id,task_id,title)VALUES(930,86430885,'')
-        SELECT * FROM house_qm_check_task WHERE project_id=930 AND task_id=86430885
-        insert into house_qm_check_task (project_id,task_id)VALUES(930,86430885)
-     * @Date 11:33 2019/1/9
-     * @Param [req]
-     * @return com.longfor.longjian.common.base.LjBaseResponse
-     **/
     @RequestMapping(value = "delete", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     public LjBaseResponse delete(HttpServletRequest request, @Valid TaskDeleteReq req) {
         LjBaseResponse response = new LjBaseResponse();

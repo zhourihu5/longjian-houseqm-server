@@ -417,7 +417,7 @@ public class ReportIssueService {
             //  # 处理代办事项消息推送
             if (CollectionUtils.isNotEmpty(pushList)) {
                 String title = "新的待处理问题";
-                String msg = "您在［工程检查］有新的待处理问题，请进入App同步更新。";
+                String msg = "您在［过程检查］有新的待处理问题，请进入App同步更新。";
                 List<Integer> ids = new ArrayList<>();
                 for (Object push : pushList) {
                     ids.add(Integer.parseInt(String.valueOf(push)));
@@ -438,7 +438,7 @@ public class ReportIssueService {
 
                 for (Map.Entry<HouseQmCheckTaskIssue, ApiRefundInfo> entry : refundMap.entrySet()) {
                     sendIds.add(refundMap.get(entry.getKey()).getChecker());
-                    String msg = " 退回了一条问题，请进入[工程检查]App跟进处理";
+                    String msg = " 退回了一条问题，请进入[过程检查]App跟进处理";
                     ApiRefundInfo info = refundMap.get(entry);
                     if (info != null) msg=userMap.get(info.getRepairer()).getRealName()+msg;
                     log.debug("处理退单消息推送: ====> {}",msg);
