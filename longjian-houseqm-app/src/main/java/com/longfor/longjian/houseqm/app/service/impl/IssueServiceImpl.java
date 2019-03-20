@@ -572,9 +572,9 @@ public class IssueServiceImpl implements IIssueService {
         List<HouseQmCheckTaskIssueLog> issueLogInfo = houseQmCheckTaskIssueLogService.selectByUuidAndNotDelete(issueUuid);
         ArrayList<Integer> uids = Lists.newArrayList();
         HashMap<Integer, String> userIdRealNameMap = Maps.newHashMap();
-        for (int i = 0; i < issueLogInfo.size(); i++) {
-            uids.add(issueLogInfo.get(i).getSenderId());
-            Map<String, Object> issueLogDetail = JSON.parseObject(issueLogInfo.get(i).getDetail(), Map.class);
+        for (HouseQmCheckTaskIssueLog houseQmCheckTaskIssueLog : issueLogInfo) {
+            uids.add(houseQmCheckTaskIssueLog.getSenderId());
+            Map<String, Object> issueLogDetail = JSON.parseObject(houseQmCheckTaskIssueLog.getDetail(), Map.class);
             if ((Integer) issueLogDetail.get(REPAIRER_ID) > 0) {
                 uids.add((Integer) issueLogDetail.get(REPAIRER_ID));
             }
@@ -595,27 +595,27 @@ public class IssueServiceImpl implements IIssueService {
             }
             List uidlist = CollectionUtil.removeDuplicate(uids);
             List<User> userInfo = userService.searchByUserIdInAndNoDeleted(uidlist);
-            for (int j = 0; j < userInfo.size(); j++) {
-                userIdRealNameMap.put(userInfo.get(j).getUserId(), userInfo.get(j).getRealName());
+            for (User user : userInfo) {
+                userIdRealNameMap.put(user.getUserId(), user.getRealName());
             }
         }
         ArrayList<HouseQmCheckTaskIssueHistoryLogVo> result = Lists.newArrayList();
         boolean hasCreateLog = false;
-        for (int i = 0; i < issueLogInfo.size(); i++) {
-            Map<String, Object> issueLogDetail = JSON.parseObject(issueLogInfo.get(i).getDetail(), Map.class);
+        for (HouseQmCheckTaskIssueLog houseQmCheckTaskIssueLog : issueLogInfo) {
+            Map<String, Object> issueLogDetail = JSON.parseObject(houseQmCheckTaskIssueLog.getDetail(), Map.class);
             HouseQmCheckTaskIssueHistoryLogVo singleItem = new HouseQmCheckTaskIssueHistoryLogVo();
-            singleItem.setUser_id(issueLogInfo.get(i).getSenderId());
-            singleItem.setUser_name(userIdRealNameMap.get(issueLogInfo.get(i).getSenderId()));
-            singleItem.setCreate_at(DateUtil.datetimeToTimeStamp(issueLogInfo.get(i).getCreateAt()));
+            singleItem.setUser_id(houseQmCheckTaskIssueLog.getSenderId());
+            singleItem.setUser_name(userIdRealNameMap.get(houseQmCheckTaskIssueLog.getSenderId()));
+            singleItem.setCreate_at(DateUtil.datetimeToTimeStamp(houseQmCheckTaskIssueLog.getCreateAt()));
             List<HouseQmCheckTaskIssueHistoryLogVo.HouseQmCheckTaskIssueHistoryLogItem> items = Lists.newArrayList();
-            if (issueLogInfo.get(i).getStatus().equals(HouseQmCheckTaskIssueLogStatus.NoteNoAssign.getValue())) {
+            if (houseQmCheckTaskIssueLog.getStatus().equals(HouseQmCheckTaskIssueLogStatus.NoteNoAssign.getValue())) {
                 hasCreateLog = true;
                 HouseQmCheckTaskIssueHistoryLogVo.HouseQmCheckTaskIssueHistoryLogItem logItem = new HouseQmCheckTaskIssueHistoryLogVo().new HouseQmCheckTaskIssueHistoryLogItem();
                 logItem.setLog_type(HouseQmCheckTaskActionLogType.Create.getValue());
                 items.add(logItem);
                 singleItem.setItems(items);
                 result.add(singleItem);
-            } else if (issueLogInfo.get(i).getStatus().equals(HouseQmCheckTaskIssueLogStatus.Repairing.getValue())) {
+            } else if (houseQmCheckTaskIssueLog.getStatus().equals(HouseQmCheckTaskIssueLogStatus.Repairing.getValue())) {
                 HouseQmCheckTaskIssueHistoryLogVo.HouseQmCheckTaskIssueHistoryLogItem logItem = new HouseQmCheckTaskIssueHistoryLogVo().new HouseQmCheckTaskIssueHistoryLogItem();
                 logItem.setLog_type(HouseQmCheckTaskActionLogType.Assign.getValue());
                 logItem.setTarget_user_id((Integer) issueLogDetail.get(REPAIRER_ID));
@@ -624,8 +624,8 @@ public class IssueServiceImpl implements IIssueService {
                 if ((Integer) issueLogDetail.get(REPAIRER_FOLLOWER_IDS) > 0) {
 
                     List<Integer> followersId = StringUtil.strToInts((String) issueLogDetail.get(REPAIRER_FOLLOWER_IDS), ",");
-                    for (int j = 0; j < followersId.size(); j++) {
-                        followers.add(userIdRealNameMap.get(followersId.get(j)));
+                    for (Integer integer : followersId) {
+                        followers.add(userIdRealNameMap.get(integer));
                     }
                 }
                 HashMap<String, Object> logData = Maps.newHashMap();
@@ -635,22 +635,22 @@ public class IssueServiceImpl implements IIssueService {
                 items.add(logItem);
                 singleItem.setItems(items);
                 result.add(singleItem);
-            } else if (issueLogInfo.get(i).getStatus().equals(HouseQmCheckTaskIssueLogStatus.ReformNoCheck.getValue())) {
+            } else if (houseQmCheckTaskIssueLog.getStatus().equals(HouseQmCheckTaskIssueLogStatus.ReformNoCheck.getValue())) {
                 HouseQmCheckTaskIssueHistoryLogVo.HouseQmCheckTaskIssueHistoryLogItem logItem = new HouseQmCheckTaskIssueHistoryLogVo().new HouseQmCheckTaskIssueHistoryLogItem();
                 logItem.setLog_type(HouseQmCheckTaskActionLogType.Repair.getValue());
                 items.add(logItem);
                 singleItem.setItems(items);
                 result.add(singleItem);
-            } else if (issueLogInfo.get(i).getStatus().equals(HouseQmCheckTaskIssueLogStatus.CheckYes.getValue())) {
+            } else if (houseQmCheckTaskIssueLog.getStatus().equals(HouseQmCheckTaskIssueLogStatus.CheckYes.getValue())) {
                 HouseQmCheckTaskIssueHistoryLogVo.HouseQmCheckTaskIssueHistoryLogItem logItem = new HouseQmCheckTaskIssueHistoryLogVo().new HouseQmCheckTaskIssueHistoryLogItem();
                 logItem.setLog_type(HouseQmCheckTaskActionLogType.Approve.getValue());
                 items.add(logItem);
                 singleItem.setItems(items);
                 result.add(singleItem);
             } else {
-                if ((Integer) issueLogDetail.get(PLAN_END_ON) != -1 || (Integer) issueLogDetail.get(REPAIRER_ID) > 0 || (Objects.nonNull(issueLogDetail.get(REPAIRER_FOLLOWER_IDS))&&
+                if ((Integer) issueLogDetail.get(PLAN_END_ON) != -1 || (Integer) issueLogDetail.get(REPAIRER_ID) > 0 || (Objects.nonNull(issueLogDetail.get(REPAIRER_FOLLOWER_IDS)) &&
                         !issueLogDetail.get(REPAIRER_FOLLOWER_IDS).equals("-1") &&
-                                ((String) issueLogDetail.get(REPAIRER_FOLLOWER_IDS)).length() > 0)) {
+                        ((String) issueLogDetail.get(REPAIRER_FOLLOWER_IDS)).length() > 0)) {
                     HouseQmCheckTaskIssueHistoryLogVo.HouseQmCheckTaskIssueHistoryLogItem logItem = new HouseQmCheckTaskIssueHistoryLogVo().new HouseQmCheckTaskIssueHistoryLogItem();
                     logItem.setLog_type(HouseQmCheckTaskActionLogType.Assign.getValue());
                     logItem.setTarget_user_id((Integer) issueLogDetail.get(REPAIRER_ID));
@@ -663,9 +663,9 @@ public class IssueServiceImpl implements IIssueService {
 
                     if (StringUtils.isNotBlank((String) issueLogDetail.get(REPAIRER_FOLLOWER_IDS))) {
                         List<Integer> followersId = StringUtil.strToInts((String) issueLogDetail.get(REPAIRER_FOLLOWER_IDS), ",");
-                        for (int j = 0; j < followersId.size(); j++) {
-                            if (userIdRealNameMap.containsKey(followersId.get(j))) {
-                                followers.add(userIdRealNameMap.get(followersId.get(j)));
+                        for (Integer integer : followersId) {
+                            if (userIdRealNameMap.containsKey(integer)) {
+                                followers.add(userIdRealNameMap.get(integer));
                             }
 
                         }
@@ -679,14 +679,14 @@ public class IssueServiceImpl implements IIssueService {
 
                 }
 
-                if (issueLogInfo.get(i).getDesc().length() > 0) {
+                if (houseQmCheckTaskIssueLog.getDesc().length() > 0) {
                     HouseQmCheckTaskIssueHistoryLogVo.HouseQmCheckTaskIssueHistoryLogItem logItems = new HouseQmCheckTaskIssueHistoryLogVo().new HouseQmCheckTaskIssueHistoryLogItem();
                     logItems.setLog_type(HouseQmCheckTaskActionLogType.AddDesc.getValue());
                     items.add(logItems);
                     singleItem.setItems(items);
 
                 }
-                if (issueLogInfo.get(i).getAttachmentMd5List().length() > 0) {
+                if (houseQmCheckTaskIssueLog.getAttachmentMd5List().length() > 0) {
                     HouseQmCheckTaskIssueHistoryLogVo.HouseQmCheckTaskIssueHistoryLogItem logItems = new HouseQmCheckTaskIssueHistoryLogVo().new HouseQmCheckTaskIssueHistoryLogItem();
                     logItems.setLog_type(HouseQmCheckTaskActionLogType.AddAttachment.getValue());
                     items.add(logItems);
@@ -1240,27 +1240,27 @@ public class IssueServiceImpl implements IIssueService {
         }
         List<HouseQmCheckTaskIssueLog> issueLogInfo = houseQmCheckTaskIssueLogService.selectByIssueUuIdAndStatusNotDel(issueUuid, issueLogStatus);
         ArrayList<Integer> issueLogUsersId = Lists.newArrayList();
-        for (int i = 0; i < issueLogInfo.size(); i++) {
-            Integer senderId = issueLogInfo.get(i).getSenderId();
+        for (HouseQmCheckTaskIssueLog houseQmCheckTaskIssueLog : issueLogInfo) {
+            Integer senderId = houseQmCheckTaskIssueLog.getSenderId();
             issueLogUsersId.add(senderId);
         }
         List<User> userInfo = userService.searchByUserIdInAndNoDeleted(issueLogUsersId);
         HashMap<Integer, String> userIdRealNameMap = Maps.newHashMap();
-        for (int i = 0; i < userInfo.size(); i++) {
-            userIdRealNameMap.put(userInfo.get(i).getUserId(), userInfo.get(i).getRealName());
+        for (User user : userInfo) {
+            userIdRealNameMap.put(user.getUserId(), user.getRealName());
         }
-        for (int i = 0; i < issueLogInfo.size(); i++) {
+        for (HouseQmCheckTaskIssueLog houseQmCheckTaskIssueLog : issueLogInfo) {
             HouseQmCheckTaskIssueDetailRepairLogVo single = new HouseQmCheckTaskIssueDetailRepairLogVo();
-            single.setContent(issueLogInfo.get(i).getDesc());
-            single.setUser_id(issueLogInfo.get(i).getSenderId());
-            single.setCreate_at(DateUtil.datetimeToTimeStamp(issueLogInfo.get(i).getCreateAt()));
-            if (issueLogInfo.get(i).getAttachmentMd5List().length() > 0) {
-                List<String> attachmentMdeList = StringSplitToListUtil.removeStartAndEndStrAndSplit(issueLogInfo.get(i).getAttachmentMd5List(), ",", ",");
+            single.setContent(houseQmCheckTaskIssueLog.getDesc());
+            single.setUser_id(houseQmCheckTaskIssueLog.getSenderId());
+            single.setCreate_at(DateUtil.datetimeToTimeStamp(houseQmCheckTaskIssueLog.getCreateAt()));
+            if (houseQmCheckTaskIssueLog.getAttachmentMd5List().length() > 0) {
+                List<String> attachmentMdeList = StringSplitToListUtil.removeStartAndEndStrAndSplit(houseQmCheckTaskIssueLog.getAttachmentMd5List(), ",", ",");
                 single.setAttachment_md5_list(StringSplitToListUtil.removeStartAndEndStr(attachmentMdeList.toString(), "[", "]").replaceAll(" ", ""));
             } else {
                 single.setAttachment_md5_list("");
             }
-            single.setUser_name(userIdRealNameMap.get(issueLogInfo.get(i).getSenderId()));
+            single.setUser_name(userIdRealNameMap.get(houseQmCheckTaskIssueLog.getSenderId()));
             result.add(single);
         }
         LjBaseResponse<List<HouseQmCheckTaskIssueDetailRepairLogVo>> response = new LjBaseResponse<>();
@@ -1295,11 +1295,11 @@ public class IssueServiceImpl implements IIssueService {
             List<String> categoryKeys = StringSplitToListUtil.removeStartAndEndStrAndSplit(issueInfo.getCategoryPathAndKey(), "/", "/");
             List<CategoryV3> categoryInfo = categoryV3Service.searchCategoryV3ByKeyInAndNoDeleted(categoryKeys);
             HashMap<String, String> categoryKeyNameMap = Maps.newHashMap();
-            for (int i = 0; i < categoryInfo.size(); i++) {
-                categoryKeyNameMap.put(categoryInfo.get(i).getKey(), categoryInfo.get(i).getName());
+            for (CategoryV3 categoryV3 : categoryInfo) {
+                categoryKeyNameMap.put(categoryV3.getKey(), categoryV3.getName());
             }
-            for (int i = 0; i < categoryKeys.size(); i++) {
-                categoryNames.add(categoryKeyNameMap.get(categoryKeys.get(i)));
+            for (String categoryKey : categoryKeys) {
+                categoryNames.add(categoryKeyNameMap.get(categoryKey));
             }
         }
         ArrayList<Object> checkItemNames = Lists.newArrayList();
@@ -1307,27 +1307,27 @@ public class IssueServiceImpl implements IIssueService {
             List<String> checkItemKeys = StringSplitToListUtil.removeStartAndEndStrAndSplit(issueInfo.getCheckItemPathAndKey(), "/", "/");
             List<CheckItemV3> checkItemInfo = checkItemV3Service.searchCheckItemyV3ByKeyInAndNoDeleted(checkItemKeys);
             HashMap<String, String> checkItemKeyNameMap = Maps.newHashMap();
-            for (int i = 0; i < checkItemInfo.size(); i++) {
-                checkItemKeyNameMap.put(checkItemInfo.get(i).getKey(), checkItemInfo.get(i).getName());
+            for (CheckItemV3 checkItemV3 : checkItemInfo) {
+                checkItemKeyNameMap.put(checkItemV3.getKey(), checkItemV3.getName());
             }
-            for (int i = 0; i < checkItemKeys.size(); i++) {
-                checkItemNames.add(checkItemKeyNameMap.get(checkItemKeys.get(i)));
+            for (String checkItemKey : checkItemKeys) {
+                checkItemNames.add(checkItemKeyNameMap.get(checkItemKey));
             }
         }
         ArrayList<Object> areaNames = Lists.newArrayList();
         if (!issueInfo.getAreaPathAndId().equals("/")) {
             List<String> areaIds = StringSplitToListUtil.removeStartAndEndStrAndSplit(issueInfo.getAreaPathAndId().replace("//", "/"), "/", "/");
             ArrayList<Integer> areaIdsList = Lists.newArrayList();
-            for (int i = 0; i < areaIds.size(); i++) {
-                areaIdsList.add(Integer.valueOf(areaIds.get(i)));
+            for (String areaId : areaIds) {
+                areaIdsList.add(Integer.valueOf(areaId));
             }
             List<Area> areaInfo = areaService.selectByAreaIds(areaIdsList);
             HashMap<Integer, String> areaIdNameMap = Maps.newHashMap();
-            for (int i = 0; i < areaInfo.size(); i++) {
-                areaIdNameMap.put(areaInfo.get(i).getId(), areaInfo.get(i).getName());
+            for (Area area : areaInfo) {
+                areaIdNameMap.put(area.getId(), area.getName());
             }
-            for (int i = 0; i < areaIdsList.size(); i++) {
-                areaNames.add(areaIdNameMap.get(areaIdsList.get(i)));
+            for (Integer integer : areaIdsList) {
+                areaNames.add(areaIdNameMap.get(integer));
             }
         }
         ArrayList<Object> allUserId = Lists.newArrayList();
@@ -1344,34 +1344,32 @@ public class IssueServiceImpl implements IIssueService {
                 repairerFollowerIds.remove(0);
             }
             if (!repairerFollowerIds.isEmpty()) {
-                for (int i = 0; i < repairerFollowerIds.size(); i++) {
-                    allUserId.add(repairerFollowerIds.get(i));
-                }
+                allUserId.addAll(repairerFollowerIds);
 
             }
         }
         List allUserIdList = CollectionUtil.removeDuplicate(allUserId);
         List<User> allUserInfo = userService.searchByUserIdInAndNoDeleted(allUserIdList);
         HashMap<Object, Object> userIdRealNameMap = Maps.newHashMap();
-        for (int i = 0; i < allUserInfo.size(); i++) {
-            userIdRealNameMap.put(allUserInfo.get(i).getUserId(), allUserInfo.get(i).getRealName());
+        for (User user : allUserInfo) {
+            userIdRealNameMap.put(user.getUserId(), user.getRealName());
         }
         List<HouseQmCheckTaskIssueAttachment> myAudiosInfo = houseQmCheckTaskIssueAttachmentService.selectByissueUuidAnduserIdAndpublicTypeAndattachmentTypeAndNotDel(issueUuid, uid, CheckTaskIssueAttachmentPublicType.Private.getValue(), CheckTaskIssueAttachmentAttachmentType.Audio.getValue());
         ArrayList<IssueInfoVo.HouseQmCheckTaskIssueAttachmentVo> myAudios = Lists.newArrayList();
-        for (int i = 0; i < myAudiosInfo.size(); i++) {
+        for (HouseQmCheckTaskIssueAttachment houseQmCheckTaskIssueAttachment1 : myAudiosInfo) {
             IssueInfoVo.HouseQmCheckTaskIssueAttachmentVo houseQmCheckTaskIssueAttachment = new IssueInfoVo().new HouseQmCheckTaskIssueAttachmentVo();
-            houseQmCheckTaskIssueAttachment.setMd5(myAudiosInfo.get(i).getMd5());
+            houseQmCheckTaskIssueAttachment.setMd5(houseQmCheckTaskIssueAttachment1.getMd5());
             houseQmCheckTaskIssueAttachment.setTyp(CheckTaskIssueAttachmentAttachmentType.Audio.getValue());
-            houseQmCheckTaskIssueAttachment.setCreate_at(DateUtil.datetimeToTimeStamp(myAudiosInfo.get(i).getClientCreateAt()));
+            houseQmCheckTaskIssueAttachment.setCreate_at(DateUtil.datetimeToTimeStamp(houseQmCheckTaskIssueAttachment1.getClientCreateAt()));
             myAudios.add(houseQmCheckTaskIssueAttachment);
         }
         ArrayList<IssueInfoVo.HouseQmCheckTaskIssueAttachmentVo> audios = Lists.newArrayList();
         List<HouseQmCheckTaskIssueAttachment> audiosInfo = houseQmCheckTaskIssueAttachmentService.selectByIssueUuidAndpublicTypeAndattachmentTypeAndNotDel(issueUuid, CheckTaskIssueAttachmentPublicType.Public.getValue(), CheckTaskIssueAttachmentAttachmentType.Audio.getValue());
-        for (int i = 0; i < audiosInfo.size(); i++) {
+        for (HouseQmCheckTaskIssueAttachment houseQmCheckTaskIssueAttachment1 : audiosInfo) {
             IssueInfoVo.HouseQmCheckTaskIssueAttachmentVo houseQmCheckTaskIssueAttachment = new IssueInfoVo().new HouseQmCheckTaskIssueAttachmentVo();
-            houseQmCheckTaskIssueAttachment.setMd5(audiosInfo.get(i).getMd5());
+            houseQmCheckTaskIssueAttachment.setMd5(houseQmCheckTaskIssueAttachment1.getMd5());
             houseQmCheckTaskIssueAttachment.setTyp(CheckTaskIssueAttachmentAttachmentType.Audio.getValue());
-            houseQmCheckTaskIssueAttachment.setCreate_at(DateUtil.datetimeToTimeStamp(audiosInfo.get(i).getClientCreateAt()));
+            houseQmCheckTaskIssueAttachment.setCreate_at(DateUtil.datetimeToTimeStamp(houseQmCheckTaskIssueAttachment1.getClientCreateAt()));
             audios.add(houseQmCheckTaskIssueAttachment);
         }
         HashMap<String, Object> detailMap = Maps.newHashMap();
@@ -1389,25 +1387,25 @@ public class IssueServiceImpl implements IIssueService {
         }
         List<HouseQmCheckTaskIssueLog> issueLogInfo = houseQmCheckTaskIssueLogService.selectByIssueUuIdAndStatusNotDel(issueUuid, logStatus);
         ArrayList<Integer> logUserIds = Lists.newArrayList();
-        for (int i = 0; i < issueLogInfo.size(); i++) {
-            logUserIds.add(issueLogInfo.get(i).getSenderId());
+        for (HouseQmCheckTaskIssueLog houseQmCheckTaskIssueLog : issueLogInfo) {
+            logUserIds.add(houseQmCheckTaskIssueLog.getSenderId());
         }
 
         List<User> logUserInfo = userService.searchByUserIdInAndNoDeleted(logUserIds);
         HashMap<Object, Object> logUserIdNameMap = Maps.newHashMap();
-        for (int i = 0; i < logUserInfo.size(); i++) {
-            logUserIdNameMap.put(logUserInfo.get(i).getUserId(), logUserInfo.get(i).getRealName());
+        for (User user : logUserInfo) {
+            logUserIdNameMap.put(user.getUserId(), user.getRealName());
         }
-        for (int i = 0; i < issueLogInfo.size(); i++) {
-            if (issueLogInfo.get(i).getDesc().length() < 1 && issueLogInfo.get(i).getAttachmentMd5List().length() < 1) {
+        for (HouseQmCheckTaskIssueLog houseQmCheckTaskIssueLog : issueLogInfo) {
+            if (houseQmCheckTaskIssueLog.getDesc().length() < 1 && houseQmCheckTaskIssueLog.getAttachmentMd5List().length() < 1) {
                 IssueInfoVo.HouseQmCheckTaskIssueDetailEditLog singleLog = new IssueInfoVo().new HouseQmCheckTaskIssueDetailEditLog();
-                singleLog.setContent(issueLogInfo.get(i).getDesc());
-                singleLog.setUser_id(issueLogInfo.get(i).getSenderId());
-                singleLog.setCreate_at(DateUtil.datetimeToTimeStamp(issueLogInfo.get(i).getCreateAt()));
-                if (issueLogInfo.get(i).getAttachmentMd5List().length() > 0) {
-                    singleLog.setAttachment_md5_list(StringSplitToListUtil.removeStartAndEndStrAndSplit(issueLogInfo.get(i).getAttachmentMd5List(), ",", ","));
+                singleLog.setContent(houseQmCheckTaskIssueLog.getDesc());
+                singleLog.setUser_id(houseQmCheckTaskIssueLog.getSenderId());
+                singleLog.setCreate_at(DateUtil.datetimeToTimeStamp(houseQmCheckTaskIssueLog.getCreateAt()));
+                if (houseQmCheckTaskIssueLog.getAttachmentMd5List().length() > 0) {
+                    singleLog.setAttachment_md5_list(StringSplitToListUtil.removeStartAndEndStrAndSplit(houseQmCheckTaskIssueLog.getAttachmentMd5List(), ",", ","));
                 }
-                singleLog.setUser_name((String) logUserIdNameMap.get(issueLogInfo.get(i).getSenderId()));
+                singleLog.setUser_name((String) logUserIdNameMap.get(houseQmCheckTaskIssueLog.getSenderId()));
                 editLogs.add(singleLog);
             }
         }
