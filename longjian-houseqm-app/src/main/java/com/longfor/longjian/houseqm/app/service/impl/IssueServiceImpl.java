@@ -432,7 +432,7 @@ public class IssueServiceImpl implements IIssueService {
             condiMap.put("clientCreateAtGte", req.getCreate_on_begin() + " 00:00:00");
         if (req.getCreate_on_end().length() > 0)
             condiMap.put("clientCreateAtLte", req.getCreate_on_end() + " 23:59:59");
-        if (req.is_overdue()) {
+        if (req.getIs_overdue()) {
             List<Integer> status1 = Lists.newArrayList();
             List<Integer> status2 = Lists.newArrayList();
             status1.add(HouseQmCheckTaskIssueStatusEnum.NoteNoAssign.getId());
