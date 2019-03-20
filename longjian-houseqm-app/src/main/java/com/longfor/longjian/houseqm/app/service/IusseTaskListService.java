@@ -43,16 +43,16 @@ public class IusseTaskListService {
     public List<HouseQmCheckTaskSimpleRspVo> selectByProjectIdAndCategoryCls(Integer projectId, Integer categoryCls) {
         List<HouseQmCheckTask> houseQmCheckTaskList = houseQmCheckTaskService.selectByProjectIdAndCategoryCls(projectId, categoryCls);
         ArrayList<HouseQmCheckTaskSimpleRspVo> hQmCheckTaskList = new ArrayList<>();
-        for (int i = 0; i < houseQmCheckTaskList.size(); i++) {
+        for (HouseQmCheckTask houseQmCheckTask : houseQmCheckTaskList) {
             HouseQmCheckTaskSimpleRspVo rspVo = new HouseQmCheckTaskSimpleRspVo();
-            rspVo.setProject_id(houseQmCheckTaskList.get(i).getProjectId());
-            rspVo.setTask_id(houseQmCheckTaskList.get(i).getTaskId());
-            List<Integer> split = StringUtil.strToInts(houseQmCheckTaskList.get(i).getAreaTypes(), ",");
+            rspVo.setProject_id(houseQmCheckTask.getProjectId());
+            rspVo.setTask_id(houseQmCheckTask.getTaskId());
+            List<Integer> split = StringUtil.strToInts(houseQmCheckTask.getAreaTypes(), ",");
             rspVo.setArea_types(split);
-            rspVo.setName(houseQmCheckTaskList.get(i).getName());
-            rspVo.setPlan_end_on(DateUtil.datetimeToTimeStamp(houseQmCheckTaskList.get(i).getPlanEndOn()));
-            rspVo.setCreate_at(DateUtil.datetimeToTimeStamp(houseQmCheckTaskList.get(i).getCreateAt()));
-            rspVo.setPlan_begin_on(DateUtil.datetimeToTimeStamp(houseQmCheckTaskList.get(i).getPlanBeginOn()));
+            rspVo.setName(houseQmCheckTask.getName());
+            rspVo.setPlan_end_on(DateUtil.datetimeToTimeStamp(houseQmCheckTask.getPlanEndOn()));
+            rspVo.setCreate_at(DateUtil.datetimeToTimeStamp(houseQmCheckTask.getCreateAt()));
+            rspVo.setPlan_begin_on(DateUtil.datetimeToTimeStamp(houseQmCheckTask.getPlanBeginOn()));
             hQmCheckTaskList.add(rspVo);
         }
         return hQmCheckTaskList;

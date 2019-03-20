@@ -29,7 +29,7 @@ public interface HouseQmCheckTaskService {
 
     List<HouseQmCheckTask> selectByProjectIdAndCategoryCls(Integer projectId, Integer categoryCls);
 
-    List<HouseQmCheckTask> selectByProjectIdAndCategoryClsAndStatus(HouseQmCheckTask houseQmCheckTask);
+
 
     HouseQmCheckTask selectByProjectIdAndTaskId(Integer projectId, Integer taskId);
 
@@ -62,4 +62,6 @@ public interface HouseQmCheckTaskService {
     List<HouseQmCheckTask> selectByProjectIdsAndCategoryClsNotDel(ArrayList<Integer> parentIds, List<Integer> categorylist);
 
     HouseQmCheckTask getByTaskId(Integer taskId);
+
+    List<HouseQmCheckTask> selectByProjectIdAndCategoryClsAndStatus(int projectId, int categoryCls, int status);
 }

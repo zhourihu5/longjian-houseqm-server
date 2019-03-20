@@ -119,7 +119,13 @@ public class HouseQmCheckTaskServiceImpl implements HouseQmCheckTaskService {
      */
     @LFAssignDataSource("zhijian2")
     public List<HouseQmCheckTask> selectByTaskIds(Set<Integer> taskIds) {
-        return houseQmCheckTaskMapper.selectByTaskIds(taskIds, FALSE);
+        if (CollectionUtils.isEmpty(taskIds)){
+             return Lists.newArrayList();
+        }
+        Example example = new Example(HouseQmCheckTask.class);
+        example.createCriteria().andIn(TASK_ID,taskIds);
+        ExampleUtil.addDeleteAtJudge(example);
+        return houseQmCheckTaskMapper.selectByExample(example);
     }
 
 
@@ -140,18 +146,24 @@ public class HouseQmCheckTaskServiceImpl implements HouseQmCheckTaskService {
 
     @LFAssignDataSource("zhijian2")
     public List<HouseQmCheckTask> selectByProjectIdAndCategoryCls(Integer projectId, Integer categoryCls) {
-        return houseQmCheckTaskMapper.selectByProjectIdAndCategoryCls(projectId, categoryCls, FALSE);
+        Example example = new Example(HouseQmCheckTask.class);
+        example.createCriteria().andEqualTo(PROJECT_ID,projectId).andEqualTo(CATEGORY_CLS,categoryCls);
+        ExampleUtil.addDeleteAtJudge(example);
+        return  houseQmCheckTaskMapper.selectByExample(example);
     }
 
     /**
      * 取未删除的数据
      *
-     * @param houseQmCheckTask
+     * @param
      * @return
      */
     @LFAssignDataSource("zhijian2")
-    public List<HouseQmCheckTask> selectByProjectIdAndCategoryClsAndStatus(HouseQmCheckTask houseQmCheckTask) {
-        return houseQmCheckTaskMapper.selectByProjectIdAndCategoryClsAndStatus(houseQmCheckTask, FALSE);
+    public List<HouseQmCheckTask> selectByProjectIdAndCategoryClsAndStatus(int projectId, int categoryCls, int status) {
+        Example example = new Example(HouseQmCheckTask.class);
+        example.createCriteria().andEqualTo(PROJECT_ID,projectId).andEqualTo(CATEGORY_CLS,categoryCls).andEqualTo(STATUS,status);
+        ExampleUtil.addDeleteAtJudge(example);
+        return  houseQmCheckTaskMapper.selectByExample(example);
     }
 
     /**

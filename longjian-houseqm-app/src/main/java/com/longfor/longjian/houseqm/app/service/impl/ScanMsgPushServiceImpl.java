@@ -284,7 +284,7 @@ public class ScanMsgPushServiceImpl implements ScanMsgPushService {
                                                    NoticeStatKey noticeStatKey, NoticeStatValue noticeStatValue, int  statBeg, int statEnd){
 
 
-     Integer teamId=projectMap.get(noticeStatKey.getProjectId()).getTeamId()==null?0:projectMap.get(noticeStatKey.getProjectId()).getTeamId();
+    Integer teamId=projectMap.get(noticeStatKey.getProjectId()).getTeamId()==null?0:projectMap.get(noticeStatKey.getProjectId()).getTeamId();
     String teamName=teamMap.get(teamId).getTeamName()==null?"":teamMap.get(teamId).getTeamName();
     String title= ModuleNameEnum.getValue(moduleId);
     Integer projectId=noticeStatKey.getProjectId();

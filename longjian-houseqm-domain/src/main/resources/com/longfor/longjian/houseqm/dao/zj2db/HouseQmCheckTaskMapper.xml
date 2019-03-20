@@ -47,7 +47,7 @@
         area_ids
     </sql>
 
-    <select id="selectByTaskIds" resultMap="ResultMapWithBLOBs">
+   <!-- <select id="selectByTaskIds" resultMap="ResultMapWithBLOBs">
         select
         <include refid="Base_Column_List"/>,
         <include refid="Blob_Column_List"/>
@@ -63,8 +63,9 @@
                 and delete_at is null
             </if>
         </where>
-    </select>
+    </select>-->
 
+<!--
     <select id="selectByProjectIdAndCategoryClsAndStatus" resultMap="ResultMapWithBLOBs">
         SELECT<include refid="Base_Column_List"/>,
         <include refid="Blob_Column_List"/>
@@ -75,6 +76,7 @@
             AND delete_at is NULL
         </if>
     </select>
+-->
 
     <select id="selectByProjectIdAndCategoryClsIn" resultMap="ResultMapWithBLOBs">
         SELECT<include refid="Base_Column_List"/>,
@@ -93,7 +95,7 @@
         FROM house_qm_check_task
         WHERE task_id=#{taskId} and project_id=#{projectId}
     </select>
-    <select id="selectByProjectIdAndCategoryCls" resultMap="BaseResultMap">
+   <!-- <select id="selectByProjectIdAndCategoryCls" resultMap="BaseResultMap">
         select
         <include refid="Base_Column_List"/>
         from house_qm_check_task
@@ -109,7 +111,7 @@
             and delete_at is null
         </if>
     </select>
-
+-->
 
     <select id="selectAreaIdsByProjectIdAndTaskIdAndNoDeleted" resultMap="ResultMapWithBLOBs">
         SELECT area_ids from house_qm_check_task

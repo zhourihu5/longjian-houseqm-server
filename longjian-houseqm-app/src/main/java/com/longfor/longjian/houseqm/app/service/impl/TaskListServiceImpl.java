@@ -145,11 +145,7 @@ public class TaskListServiceImpl implements ITaskListService {
     public TaskList2Vo list(int teamId, int projectId, int categoryCls, int status) {
         TaskList2Vo taskListVo = new TaskList2Vo();
         List<ApiBuildingQmCheckTaskMsg> list = Lists.newArrayList();
-        HouseQmCheckTask houseQmCheckTask = new HouseQmCheckTask();
-        houseQmCheckTask.setProjectId(projectId);
-        houseQmCheckTask.setCategoryCls(categoryCls);
-        houseQmCheckTask.setStatus(status);
-        List<HouseQmCheckTask> checkTaskList = houseQmCheckTaskService.selectByProjectIdAndCategoryClsAndStatus(houseQmCheckTask);
+        List<HouseQmCheckTask> checkTaskList = houseQmCheckTaskService.selectByProjectIdAndCategoryClsAndStatus(projectId,categoryCls,status);
         if (checkTaskList.isEmpty()) {
             return taskListVo;
         }
