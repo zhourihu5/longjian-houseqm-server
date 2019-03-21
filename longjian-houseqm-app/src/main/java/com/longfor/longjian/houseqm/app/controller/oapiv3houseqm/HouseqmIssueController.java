@@ -302,8 +302,7 @@ public class HouseqmIssueController {
     private String buildMap(Map<String, String> map) {
         StringBuilder sb = new StringBuilder();
         if (map.size() > 0) {
-            for (Iterator<String> iterator = map.keySet().iterator(); iterator.hasNext(); ) {
-                String key = iterator.next();
+            for (String key : map.keySet()) {
                 sb.append(key).append("=");
                 if (StringUtils.isEmpty(map.get(key))) {
                     sb.append("&");
@@ -314,7 +313,7 @@ public class HouseqmIssueController {
                     } catch (UnsupportedEncodingException e) {
                         log.error(e.getMessage());
                     }
-                    sb.append(value + "&");
+                    sb.append(value).append("&");
                 }
             }
         }
