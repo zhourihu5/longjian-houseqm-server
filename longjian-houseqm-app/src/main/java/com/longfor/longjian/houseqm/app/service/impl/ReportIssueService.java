@@ -63,7 +63,7 @@ public class ReportIssueService {
     private static final String POTENTIAL_RISK="PotentialRisk";
     private static final String PREVENTIVE_ACTION_DETAIL="PreventiveActionDetail";
     private static final String YMDHMS="yyyy-MM-dd HH:mm:ss";
-    private static final String PLAN_END_ON="planEndOn";
+    private static final String PLAN_END_ON="PlanEndOn";
     private static final String CHECK_ITEM_MD5="CheckItemMD5";
     private static final String ISSUE="issue";
     private static final String  REFUNDMAP="refundMap";
@@ -1064,7 +1064,7 @@ public class ReportIssueService {
             } else {
                 details.put(PREVENTIVE_ACTION_DETAIL, "");
             }
-            issue.setDetail(JSON.toJSONString(detail));
+            issue.setDetail(JSON.toJSONString(details));
             ApiUserRoleInIssue roleItem = new ApiUserRoleInIssue();
             roleItem.setTask_id(log.getTask_id());
             if (detail.getRepairer_id() > 0 && !detail.getRepairer_follower_ids().equals("-1")) {
