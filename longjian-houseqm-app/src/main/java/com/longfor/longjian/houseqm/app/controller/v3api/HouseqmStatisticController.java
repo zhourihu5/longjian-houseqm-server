@@ -175,8 +175,8 @@ public class HouseqmStatisticController {
             return null;
         }
         HashMap<Integer, Boolean> checkMap = Maps.newHashMap();
-        for (int i = 0; i < checkers.size(); i++) {
-            checkMap.put(checkers.get(i).getTaskId(), true);
+        for (UserInHouseQmCheckTask checker : checkers) {
+            checkMap.put(checker.getTaskId(), true);
         }
         List<HouseQmCheckTask> resTask = Lists.newArrayList();
 
@@ -189,12 +189,12 @@ public class HouseqmStatisticController {
             resTask.addAll(res);
         }
         List<ApiTaskInfo> items = Lists.newArrayList();
-        for (int i = 0; i < resTask.size(); i++) {
-            if (checkMap.containsKey(resTask.get(i).getTaskId())) {
+        for (HouseQmCheckTask houseQmCheckTask : resTask) {
+            if (checkMap.containsKey(houseQmCheckTask.getTaskId())) {
                 ApiTaskInfo info = new ApiTaskInfo();
-                info.setId(resTask.get(i).getTaskId());
-                info.setName(resTask.get(i).getName());
-                info.setCategory_cls(resTask.get(i).getCategoryCls());
+                info.setId(houseQmCheckTask.getTaskId());
+                info.setName(houseQmCheckTask.getName());
+                info.setCategory_cls(houseQmCheckTask.getCategoryCls());
                 items.add(info);
             }
         }
@@ -401,25 +401,25 @@ public class HouseqmStatisticController {
         HouseQmCheckTaskIssueVoRsp issueVo = iHouseqmStatisticService.searchHouseQmCheckTaskIssueOnlineInfoByProjCategoryKeyAreaIdPaged(projectId, categoryKey, areaId, page, pageSize);
         List<HouseQmCheckTaskIssueOnlineInfoVo> infoList = issueVo.getItems();
         ArrayList<HouseqmStatisticCategoryIssueListRspMsgVo.ApiTaskIssueRepairListRsp> objects = Lists.newArrayList();
-        for (int i = 0; i < infoList.size(); i++) {
+        for (HouseQmCheckTaskIssueOnlineInfoVo houseQmCheckTaskIssueOnlineInfoVo : infoList) {
             HouseqmStatisticCategoryIssueListRspMsgVo.ApiTaskIssueRepairListRsp listRsp = new HouseqmStatisticCategoryIssueListRspMsgVo().new ApiTaskIssueRepairListRsp();
-            listRsp.setId(infoList.get(i).getId());
-            listRsp.setProject_id(infoList.get(i).getProjectId());
-            listRsp.setTask_id(infoList.get(i).getTaskId());
-            listRsp.setUuid(infoList.get(i).getUuid());
-            listRsp.setTitle(infoList.get(i).getTitle());
-            listRsp.setTyp(infoList.get(i).getTyp());
-            listRsp.setContent(infoList.get(i).getContent());
-            listRsp.setCondition(infoList.get(i).getCondition());
-            listRsp.setStatus(infoList.get(i).getStatus());
-            listRsp.setPlan_end_on(DateUtil.datetimeToTimeStamp(infoList.get(i).getPlanEndOn()));
-            listRsp.setAttachment_md5_list(infoList.get(i).getAttachmentMd5List());
-            listRsp.setClient_create_at(DateUtil.datetimeToTimeStamp(infoList.get(i).getClientCreateAt()));
-            listRsp.setUpdate_at(DateUtil.datetimeToTimeStamp(infoList.get(i).getUpdateAt()));
-            listRsp.setAttachment_url_list(infoList.get(i).getAttachmentUrlList());
-            listRsp.setArea_path_name(infoList.get(i).getAreaPathName());
-            listRsp.setCategory_path_name(infoList.get(i).getCategoryPathName());
-            listRsp.setCheck_item_path_name(infoList.get(i).getCheckItemPathName());
+            listRsp.setId(houseQmCheckTaskIssueOnlineInfoVo.getId());
+            listRsp.setProject_id(houseQmCheckTaskIssueOnlineInfoVo.getProjectId());
+            listRsp.setTask_id(houseQmCheckTaskIssueOnlineInfoVo.getTaskId());
+            listRsp.setUuid(houseQmCheckTaskIssueOnlineInfoVo.getUuid());
+            listRsp.setTitle(houseQmCheckTaskIssueOnlineInfoVo.getTitle());
+            listRsp.setTyp(houseQmCheckTaskIssueOnlineInfoVo.getTyp());
+            listRsp.setContent(houseQmCheckTaskIssueOnlineInfoVo.getContent());
+            listRsp.setCondition(houseQmCheckTaskIssueOnlineInfoVo.getCondition());
+            listRsp.setStatus(houseQmCheckTaskIssueOnlineInfoVo.getStatus());
+            listRsp.setPlan_end_on(DateUtil.datetimeToTimeStamp(houseQmCheckTaskIssueOnlineInfoVo.getPlanEndOn()));
+            listRsp.setAttachment_md5_list(houseQmCheckTaskIssueOnlineInfoVo.getAttachmentMd5List());
+            listRsp.setClient_create_at(DateUtil.datetimeToTimeStamp(houseQmCheckTaskIssueOnlineInfoVo.getClientCreateAt()));
+            listRsp.setUpdate_at(DateUtil.datetimeToTimeStamp(houseQmCheckTaskIssueOnlineInfoVo.getUpdateAt()));
+            listRsp.setAttachment_url_list(houseQmCheckTaskIssueOnlineInfoVo.getAttachmentUrlList());
+            listRsp.setArea_path_name(houseQmCheckTaskIssueOnlineInfoVo.getAreaPathName());
+            listRsp.setCategory_path_name(houseQmCheckTaskIssueOnlineInfoVo.getCategoryPathName());
+            listRsp.setCheck_item_path_name(houseQmCheckTaskIssueOnlineInfoVo.getCheckItemPathName());
             objects.add(listRsp);
 
         }
