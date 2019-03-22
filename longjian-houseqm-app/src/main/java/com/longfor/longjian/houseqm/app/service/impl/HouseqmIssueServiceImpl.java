@@ -217,11 +217,11 @@ public class HouseqmIssueServiceImpl implements IHouseqmIssueService {
         Integer ts = DateUtil.datetimeToTimeStamp(new Date());
         String inputFilename = String.format("%d%d.%s", randCount, ts, "input");
         String outputFilename = String.format("export/%d%d.%s", randCount, ts, "output");
-        String filepath = String.format("%s%s%s",baseUri,"/" , inputFilename);
+        String filepath = String.format("%s%s%s",baseDir,"/" , inputFilename);
         String data = JSON.toJSONString(args);
         this.writeInput(data, exportName, filepath);
         //记录导出的内容到数据库
-        String resultFilePath=  String.format("%s%s%s",baseDir,"/",outputFilename);
+        String resultFilePath=  String.format("%s%s%s",baseUri,"/",outputFilename);
         ExportFileRecord item = new ExportFileRecord();
         item.setUserId(userId);
         item.setTeamId(teamId);
@@ -230,7 +230,7 @@ public class HouseqmIssueServiceImpl implements IHouseqmIssueService {
         item.setParams(inputFilename + " " + outputFilename);
         item.setResultFilePath(resultFilePath);
         item.setResultName(exportName);
-        item.setStatus(0);
+        item.setStatus(10);
         item.setExecuteAt(executeAt);
         item.setCreateAt(new Date());
         item.setUpdateAt(new Date());
