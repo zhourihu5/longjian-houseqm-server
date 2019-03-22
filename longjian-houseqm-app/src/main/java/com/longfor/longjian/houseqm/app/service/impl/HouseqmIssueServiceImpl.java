@@ -215,7 +215,7 @@ public class HouseqmIssueServiceImpl implements IHouseqmIssueService {
         String baseDir = exportVo.getBase_dir();
         Integer ts = DateUtil.datetimeToTimeStamp(new Date());
         String inputFilename = String.format("%d%d.%s", randCount, ts, "input");
-        String outputFilename = String.format("/export/%d%d.%s", randCount, ts, "output");
+        String outputFilename = String.format("export/%d%d.%s", randCount, ts, "output");
         String filepath = String.format("%s%s%s",baseDir,"/" , inputFilename);
         String data = JSON.toJSONString(args);
         this.writeInput(data, exportName, filepath);
