@@ -213,10 +213,11 @@ public class HouseqmIssueServiceImpl implements IHouseqmIssueService {
         //生成随机数
         long randCount = new Date().getTime();
         String baseDir = exportVo.getBase_dir();
+        String baseUri = exportVo.getBase_uri();
         Integer ts = DateUtil.datetimeToTimeStamp(new Date());
         String inputFilename = String.format("%d%d.%s", randCount, ts, "input");
         String outputFilename = String.format("export/%d%d.%s", randCount, ts, "output");
-        String filepath = String.format("%s%s%s",baseDir,"/" , inputFilename);
+        String filepath = String.format("%s%s%s",baseUri,"/" , inputFilename);
         String data = JSON.toJSONString(args);
         this.writeInput(data, exportName, filepath);
         //记录导出的内容到数据库
