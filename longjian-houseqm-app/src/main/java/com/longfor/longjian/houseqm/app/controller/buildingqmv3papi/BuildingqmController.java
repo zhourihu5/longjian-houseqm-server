@@ -259,11 +259,11 @@ public class BuildingqmController {
             ctrlTool.projPerm(request, "项目.工程检查.任务管理.查看");
             List<HouseQmCheckTaskSquad> info = buildingqmService.searchHouseqmCheckTaskSquad(projectId, taskId);
             ArrayList<HouseQmCheckTaskSquadListRspVo> squadList = Lists.newArrayList();
-            for (int i = 0; i < info.size(); i++) {
+            for (HouseQmCheckTaskSquad houseQmCheckTaskSquad : info) {
                 HouseQmCheckTaskSquadListRspVo rspVo = new HouseQmCheckTaskSquadListRspVo();
-                rspVo.setId(info.get(i).getId());
-                rspVo.setName(info.get(i).getName());
-                rspVo.setSquad_type(info.get(i).getSquadType());
+                rspVo.setId(houseQmCheckTaskSquad.getId());
+                rspVo.setName(houseQmCheckTaskSquad.getName());
+                rspVo.setSquad_type(houseQmCheckTaskSquad.getSquadType());
                 squadList.add(rspVo);
             }
             HouseQmCheckTaskSquadListRspVo.HouseQmCheckTaskSquadListRspVoList houseQmCheckTaskSquadListRspVoList = new HouseQmCheckTaskSquadListRspVo().new HouseQmCheckTaskSquadListRspVoList();

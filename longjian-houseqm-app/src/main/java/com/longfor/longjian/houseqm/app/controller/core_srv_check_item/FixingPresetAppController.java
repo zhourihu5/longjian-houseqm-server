@@ -54,20 +54,20 @@ public class FixingPresetAppController {
         List<AppFixingPresetProtoVo> items = Lists.newArrayList();
         LjBaseResponse<AppListFixingPresetVo> response = new LjBaseResponse<>();
         if (fixingPresetData != null) {
-            for (int i = 0; i < fixingPresetData.size(); i++) {
+            for (FixingPreset fixingPresetDatum : fixingPresetData) {
                 AppFixingPresetProtoVo vo = new AppFixingPresetProtoVo();
-                vo.setId(String.valueOf(fixingPresetData.get(i).getId()));
-                vo.setProject_id(fixingPresetData.get(i).getProjectId());
-                vo.setArea_id(fixingPresetData.get(i).getAreaId());
-                vo.setRoot_category_key(fixingPresetData.get(i).getRootCategoryKey());
-                vo.setCategory_key(fixingPresetData.get(i).getCategoryKey());
-                vo.setCheck_item_key(fixingPresetData.get(i).getCheckItemKey());
-                vo.setUser_ids(fixingPresetData.get(i).getUserIds());
-                vo.setMinutes(fixingPresetData.get(i).getMinutes());
-                if (fixingPresetData.get(i).getMinutes() > 0) {
-                    vo.setDays(fixingPresetData.get(i).getMinutes() / 1440);
+                vo.setId(String.valueOf(fixingPresetDatum.getId()));
+                vo.setProject_id(fixingPresetDatum.getProjectId());
+                vo.setArea_id(fixingPresetDatum.getAreaId());
+                vo.setRoot_category_key(fixingPresetDatum.getRootCategoryKey());
+                vo.setCategory_key(fixingPresetDatum.getCategoryKey());
+                vo.setCheck_item_key(fixingPresetDatum.getCheckItemKey());
+                vo.setUser_ids(fixingPresetDatum.getUserIds());
+                vo.setMinutes(fixingPresetDatum.getMinutes());
+                if (fixingPresetDatum.getMinutes() > 0) {
+                    vo.setDays(fixingPresetDatum.getMinutes() / 1440);
                 } else {
-                    vo.setDays(fixingPresetData.get(i).getMinutes());
+                    vo.setDays(fixingPresetDatum.getMinutes());
                 }
                 items.add(vo);
             }
