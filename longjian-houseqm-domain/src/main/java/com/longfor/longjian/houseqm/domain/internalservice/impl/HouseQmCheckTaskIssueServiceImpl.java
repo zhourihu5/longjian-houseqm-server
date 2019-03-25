@@ -75,7 +75,8 @@ public class HouseQmCheckTaskIssueServiceImpl implements HouseQmCheckTaskIssueSe
     public Integer countByProjIdAndTaskIdAndTypInGroupByCategoryPathAndKeyAndCheckItemKey(Integer projectId, Integer taskId, List<Integer> typs, Integer areaId, Date beginOn, Date endOn) {
         Example example = new Example(HouseQmCheckTaskIssue.class);
         Example.Criteria criteria = example.createCriteria();
-        criteria.andEqualTo(PROJECT_ID, projectId).andEqualTo(TASK_ID, taskId).andIn(TYPE, typs);
+        criteria.andEqualTo(PROJECT_ID, projectId).andEqualTo(TASK_ID, taskId);
+        if (CollectionUtils.isNotEmpty(typs))criteria.andIn(TYPE, typs);
         if (areaId > 0) {
             criteria.andLike(AREA_PATH_AND_ID, "%/" + areaId + "/%");
         }
@@ -426,7 +427,8 @@ public class HouseQmCheckTaskIssueServiceImpl implements HouseQmCheckTaskIssueSe
 
         Example example = new Example(HouseQmCheckTaskIssue.class);
         Example.Criteria criteria = example.createCriteria();
-        criteria.andEqualTo(PROJECT_ID, projectId).andIn(CATEGORY_CLS, categoryClsList);
+        criteria.andEqualTo(PROJECT_ID, projectId);
+        if (CollectionUtils.isNotEmpty(categoryClsList))criteria.andIn(CATEGORY_CLS, categoryClsList);
         judgeValue(taskId, areaId, beginOn, endOn, criteria);
         ArrayList<Integer> typs = Lists.newArrayList();
         typs.add(HouseQmCheckTaskIssueEnum.FindProblem.getId());
@@ -520,7 +522,8 @@ public class HouseQmCheckTaskIssueServiceImpl implements HouseQmCheckTaskIssueSe
     public HouseQmCheckTaskIssueDto searchHouseQmCheckTaskIssueByProjCategoryKeyAreaId(HashMap<String, Object> condiMap) {
         Example example = new Example(HouseQmCheckTaskIssue.class);
         Example.Criteria criteria = example.createCriteria();
-        criteria.andEqualTo(PROJECT_ID, condiMap.get(PROJECT_ID)).andIn(TYPE, (List<Integer>) condiMap.get("types")).andLike(CATEGORY_PATH_AND_KEY, "%" + (String) condiMap.get("categoryKey") + "%");
+        criteria.andEqualTo(PROJECT_ID, condiMap.get(PROJECT_ID)).andLike(CATEGORY_PATH_AND_KEY, "%" + (String) condiMap.get("categoryKey") + "%");
+        if (CollectionUtils.isNotEmpty((List<Integer>) condiMap.get("types")))criteria.andIn(TYPE, (List<Integer>) condiMap.get("types"));
         if (condiMap.get(AREA_ID) != null) {
             criteria.andLike(AREA_PATH_AND_ID, "%" + condiMap.get(AREA_ID) + "%");
         }
@@ -661,8 +664,8 @@ public class HouseQmCheckTaskIssueServiceImpl implements HouseQmCheckTaskIssueSe
         Example example = new Example(HouseQmCheckTaskIssue.class);
         Example.Criteria criteria = example.createCriteria();
         criteria.andEqualTo(PROJECT_ID, projectId);
-        criteria.andIn(ID, issueIds);
-        criteria.andIn(STATUS, statusList);
+        if (CollectionUtils.isNotEmpty(issueIds))criteria.andIn(ID, issueIds);
+        if (CollectionUtils.isNotEmpty(statusList))criteria.andIn(STATUS, statusList);
         ExampleUtil.addDeleteAtJudge(example);//源码中有no_deleted orderby  desc
         example.orderBy(CLIENT_CREATE_AT).desc();
         return houseQmCheckTaskIssueMapper.selectByExample(example);
@@ -691,6 +694,7 @@ public class HouseQmCheckTaskIssueServiceImpl implements HouseQmCheckTaskIssueSe
     @Override
     @LFAssignDataSource("zhijian2")
     public List<HouseQmCheckTaskIssue> selectByUuids(List<String> issueUuids) {
+        if (CollectionUtils.isEmpty(issueUuids))return Lists.newArrayList();
         Example example = new Example(HouseQmCheckTaskIssue.class);
         example.createCriteria().andIn(UUID, issueUuids);
         example.orderBy(CLIENT_CREATE_AT).desc();

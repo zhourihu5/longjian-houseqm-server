@@ -24,7 +24,7 @@ import java.util.Set;
 public class HouseQmCheckTaskIssueAttachmentServiceImpl implements HouseQmCheckTaskIssueAttachmentService {
 
     @Resource
-    HouseQmCheckTaskIssueAttachmentMapper houseQmCheckTaskIssueAttachmentMapper;
+    private HouseQmCheckTaskIssueAttachmentMapper houseQmCheckTaskIssueAttachmentMapper;
 
 
     private static final String ISSUE_UUID="issueUuid";

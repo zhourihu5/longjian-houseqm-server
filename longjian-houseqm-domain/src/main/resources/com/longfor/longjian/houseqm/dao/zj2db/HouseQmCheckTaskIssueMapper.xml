@@ -253,10 +253,12 @@
     <select id="selectByProjectIdAndTaskIdIn" resultMap="checkerIssueStat">
         SELECT area_id,`typ`,sender_id AS user_id,area_path_and_id,COUNT(*) AS count
         from house_qm_check_task_issue
-        WHERE project_id=#{projectId} AND task_id IN
+        WHERE project_id=#{projectId}
+        <if test="taskIds!=null and taskIds.size()>0" >
+        AND task_id IN
         <foreach collection="taskIds" item="taskId" open="(" separator="," close=")" index="index">
             #{taskId}
-        </foreach>
+        </foreach></if>
         <if test="deleted =='false'">
             and delete_at is NULL
         </if>
@@ -264,10 +266,12 @@
     </select>
     <select id="selectCreateAtByProjectIdAndTaskIdsIn" resultMap="checkerIssueStat">
         SELECT DATE_FORMAT(client_create_at,'%Y-%m-%d') AS date from house_qm_check_task_issue
-        WHERE project_id=#{projectId} AND task_id IN
+        WHERE project_id=#{projectId}
+        <if test="taskIds!=null and taskIds.size()>0" >
+        AND task_id IN
         <foreach collection="taskIds" open="(" separator="," close=")" item="taskId" index="index">
             #{taskId}
-        </foreach>
+        </foreach></if>
         <if test="deleted=='false'">
             AND (`delete_at` IS NULL OR `delete_at` = '0001-01-01 00:00:00')
         </if>
@@ -275,10 +279,12 @@
     </select>
     <select id="selectByProjectIdAndTaskIdAndClientCreateAt" resultMap="checkerIssueStat">
         SELECT area_id,`typ`,sender_id as user_id,area_path_and_id,COUNT(*) AS count from house_qm_check_task_issue
-        WHERE project_id=#{projectId} AND task_id IN
+        WHERE project_id=#{projectId}
+        <if test="taskIds!=null and taskIds.size()>0" >
+        AND task_id IN
         <foreach collection="taskIds" index="index" item="taskId" open="(" separator="," close=")">
             #{taskId}
-        </foreach>
+        </foreach></if>
         AND client_create_at &gt;= #{date} AND
         client_create_at &lt;= DATE_ADD(#{date},INTERVAL 1 DAY)
         <if test="deleted=='false'">
@@ -288,10 +294,12 @@
     </select>
     <select id="selectByProjectIdAndTaskIdsAndClientCreateAt" resultMap="checkerIssueStat">
         SELECT area_id,typ,sender_id,area_path_and_id,COUNT(*) AS count from house_qm_check_task_issue
-        WHERE project_id=#{projectId} AND task_id IN
+        WHERE project_id=#{projectId}
+        <if test="taskIds!=null and taskIds.size()>0" >
+        AND task_id IN
         <foreach collection="taskIds" index="index" item="taskId" open="(" separator="," close=")">
             #{taskId}
-        </foreach>
+        </foreach></if>
         AND
         client_create_at &lt;= (DATE_ADD(#{date},INTERVAL 1 DAY))
         <if test="deleted=='false'">
@@ -342,10 +350,12 @@
         SELECT LEFT(area_path_and_id,LENGTH(area_path_and_id)-LENGTH(area_id)-1) AS area_path,
         area_id,MIN(status) AS status,COUNT(*) AS extend_col
         FROM house_qm_check_task_issue
-        WHERE task_id=#{taskId} AND typ IN
+        WHERE task_id=#{taskId}
+        <if test="types!=null and types.size()>0">
+        AND typ IN
         <foreach collection="types" item="type" index="index" open="(" separator="," close=")">
             #{type}
-        </foreach>
+        </foreach></if>
         <if test="deleted=='false'">
             AND delete_at IS NULL
         </if>
@@ -468,10 +478,12 @@
     </select>
     <select id="selectAreaIdByProjectIdAndTaskIdAndAreaIdInAndNoDeleted" resultMap="BaseResultMap">
         select area_id from house_qm_check_task_issue
-        WHERE project_id=#{projectId} AND task_id =#{taskId} AND area_id IN
+        WHERE project_id=#{projectId} AND task_id =#{taskId}
+        <if test="areaIds!=null and areaIds.size()>0">
+        AND area_id IN
         <foreach collection="areaIds" item="areaId" index="index" open="(" separator="," close=")">
             #{areaId}
-        </foreach>
+        </foreach></if>
         <if test="deleted=='false'">
             AND delete_at IS NULL
         </if>
@@ -701,11 +713,13 @@
     <select id="searchhouseQmCheckTaskIssueByProTaskIdAreaidBegin" resultMap="BaseResultMap">
         SELECT check_item_key,check_item_path_and_key,category_key,category_path_and_key,count(*)as count
         from house_qm_check_task_issue
-        WHERE project_id=#{projectId} AND area_path_and_id LIKE concat('%', #{areaId},'%') AND task_id=#{taskId} AND typ
+        WHERE project_id=#{projectId} AND area_path_and_id LIKE concat('%', #{areaId},'%') AND task_id=#{taskId}
+        <if test="types!=null and types.size()>0">
+        AND typ
         IN
         <foreach collection="types" item="type" open="(" separator="," close=")" index="index">
             #{type}
-        </foreach>
+        </foreach></if>
         AND client_create_at &gt;= #{begin} AND
         client_create_at &lt;= #{endOns}
         <if test="deleted =='false'">
@@ -759,7 +773,7 @@
                 #{item}
             </foreach>
             OR
-            <if test="uuids.size>0">uuid IN
+            <if test="uuids.size()>0">uuid IN
                 <foreach collection="uuids" item="item" index="index" open="(" separator="," close=")">
                     #{item}
                 </foreach>

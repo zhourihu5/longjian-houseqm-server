@@ -22,14 +22,8 @@ import java.util.List;
 public class FileResourceServiceImpl implements FileResourceService {
 
     @Resource
-    FileResourceMapper fileResourceMapper;
+    private FileResourceMapper fileResourceMapper;
 
-    /**
-     * @param attachments
-     * @return java.util.List<com.longfor.longjian.houseqm.po.zj2db.FileResource>
-     * @author hy
-     * @date 2018/12/21 0021
-     */
     @Override
     @LFAssignDataSource("zhijian2")
     public List<FileResource> searchFileResourceByFileMd5InAndNoDeleted(List<String> attachments) {
@@ -40,6 +34,7 @@ public class FileResourceServiceImpl implements FileResourceService {
     @Override
     @LFAssignDataSource("zhijian2")
     public List<FileResource> searchByMd5In(ArrayList<String> attachmentMd5List) {
+        if (CollectionUtils.isEmpty(attachmentMd5List))return Lists.newArrayList();
         return fileResourceMapper.searchByMd5In(attachmentMd5List);
     }
 }

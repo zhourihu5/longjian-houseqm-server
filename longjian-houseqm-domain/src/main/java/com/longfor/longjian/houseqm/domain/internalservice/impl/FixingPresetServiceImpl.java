@@ -18,7 +18,7 @@ import java.util.List;
 @Slf4j
 public class FixingPresetServiceImpl implements FixingPresetService {
     @Resource
-    FixingPresetMapper fixingPresetMapper;
+    private FixingPresetMapper fixingPresetMapper;
 
     @Override
     @LFAssignDataSource("zhijian2")

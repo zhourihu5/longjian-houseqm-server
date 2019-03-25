@@ -31,7 +31,7 @@ import java.util.Set;
 public class HouseQmCheckTaskIssueLogServiceImpl implements HouseQmCheckTaskIssueLogService {
 
     @Resource
-    HouseQmCheckTaskIssueLogMapper houseQmCheckTaskIssueLogMapper;
+    private HouseQmCheckTaskIssueLogMapper houseQmCheckTaskIssueLogMapper;
     @Resource
     private UserInHouseQmCheckTaskMapper userInHouseQmCheckTaskMapper;
     private static final String STATUS="status";
@@ -42,6 +42,7 @@ public class HouseQmCheckTaskIssueLogServiceImpl implements HouseQmCheckTaskIssu
     @LFAssignDataSource("zhijian2")
     @Transactional
     public int deleteIssueLogByUuids(List<String> uuids) {
+        if (CollectionUtils.isEmpty(uuids))return 0;
         Example example = new Example(HouseQmCheckTaskIssueLog.class);
         Example.Criteria criteria = example.createCriteria();
         criteria.andIn("uuid", uuids);
@@ -151,7 +152,7 @@ public class HouseQmCheckTaskIssueLogServiceImpl implements HouseQmCheckTaskIssu
         Example example = new Example(HouseQmCheckTaskIssueLog.class);
         Example.Criteria criteria = example.createCriteria();
         criteria.andEqualTo(ISSUE_UUID, issueUuid);
-        criteria.andIn(STATUS, issueLogStatus);
+        if (CollectionUtils.isNotEmpty(issueLogStatus))criteria.andIn(STATUS, issueLogStatus);
         criteria.andIsNull(DELETE_AT);
         return houseQmCheckTaskIssueLogMapper.selectByExample(example);
     }
@@ -162,7 +163,7 @@ public class HouseQmCheckTaskIssueLogServiceImpl implements HouseQmCheckTaskIssu
         Example example = new Example(HouseQmCheckTaskIssueLog.class);
         Example.Criteria criteria = example.createCriteria();
         criteria.andEqualTo(ISSUE_UUID, issueUuid);
-        criteria.andIn(STATUS, issueLogStatus);
+        if (CollectionUtils.isNotEmpty(issueLogStatus)) criteria.andIn(STATUS, issueLogStatus);
         criteria.andIsNull(DELETE_AT);
         return houseQmCheckTaskIssueLogMapper.selectCountByExample(example);
     }
@@ -170,6 +171,7 @@ public class HouseQmCheckTaskIssueLogServiceImpl implements HouseQmCheckTaskIssu
     @Override
     @LFAssignDataSource("zhijian2")
     public List<HouseQmCheckTaskIssueLog> selectByUuidsAndNotDelete(List<String> logUuids) {
+        if (CollectionUtils.isEmpty(logUuids))return Lists.newArrayList();
         Example example = new Example(HouseQmCheckTaskIssueLog.class);
         Example.Criteria criteria = example.createCriteria();
         criteria.andIn("uuid", logUuids);
@@ -182,7 +184,7 @@ public class HouseQmCheckTaskIssueLogServiceImpl implements HouseQmCheckTaskIssu
     public List<HouseQmCheckTaskIssueLog> selectByIssueUuIdInAndStatus(List<String> issueUuids, Integer status) {
         Example example = new Example(HouseQmCheckTaskIssueLog.class);
         Example.Criteria criteria = example.createCriteria();
-        criteria.andIn(ISSUE_UUID, issueUuids);
+        if (CollectionUtils.isNotEmpty(issueUuids))criteria.andIn(ISSUE_UUID, issueUuids);
         criteria.andEqualTo(STATUS, status);
         ExampleUtil.addDeleteAtJudge(example);
         example.orderBy("clientCreateAt").asc();
