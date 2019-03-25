@@ -54,37 +54,37 @@ import java.util.*;
 public class BuildingqmServiceImpl implements IBuildingqmService {
 
     @Resource
-    UserInHouseQmCheckTaskService userInHouseQmCheckTaskService;
+    private UserInHouseQmCheckTaskService userInHouseQmCheckTaskService;
     @Resource
-    HouseQmCheckTaskService houseQmCheckTaskService;
+    private HouseQmCheckTaskService houseQmCheckTaskService;
     @Resource
-    HouseQmCheckTaskSquadService houseQmCheckTaskSquadService;
+    private HouseQmCheckTaskSquadService houseQmCheckTaskSquadService;
     @Resource
-    HouseQmCheckTaskIssueUserService houseQmCheckTaskIssueUserService;
+    private HouseQmCheckTaskIssueUserService houseQmCheckTaskIssueUserService;
     @Resource
-    HouseQmCheckTaskIssueService houseQmCheckTaskIssueService;
+    private HouseQmCheckTaskIssueService houseQmCheckTaskIssueService;
     @Resource
-    HouseQmCheckTaskIssueLogService houseQmCheckTaskIssueLogService;
+    private HouseQmCheckTaskIssueLogService houseQmCheckTaskIssueLogService;
     @Resource
-    HouseQmCheckTaskIssueAttachmentService houseQmCheckTaskIssueAttachmentService;
+    private HouseQmCheckTaskIssueAttachmentService houseQmCheckTaskIssueAttachmentService;
     @Resource
-    TasksService taskService;
+    private TasksService taskService;
     @Resource
-    PushStrategyAssignTimeService pushStrategyAssignTimeService;
+    private PushStrategyAssignTimeService pushStrategyAssignTimeService;
     @Resource
-    PushStrategyCategoryOverdueService pushStrategyCategoryOverdueService;
+    private PushStrategyCategoryOverdueService pushStrategyCategoryOverdueService;
     @Resource
-    PushStrategyCategoryThresholdService pushStrategyCategoryThresholdService;
+    private PushStrategyCategoryThresholdService pushStrategyCategoryThresholdService;
     @Resource
-    UserService userService;
+    private UserService userService;
     @Resource
-    FileResourceService fileResourceService;
+    private FileResourceService fileResourceService;
     @Resource
-    AreaService areaService;
+    private AreaService areaService;
     @Resource
-    CategoryV3Service categoryV3Service;
+    private CategoryV3Service categoryV3Service;
     @Resource
-    CheckItemV3Service checkItemV3Service;
+    private CheckItemV3Service checkItemV3Service;
 
     private static final String ISSUEREASON="IssueReason";
     private static final String ISSUE_REASOND_ETAIL="IssueReasonDetail";

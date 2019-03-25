@@ -13,6 +13,7 @@ import com.longfor.longjian.houseqm.app.vo.*;
 import com.longfor.longjian.houseqm.app.vo.houseqmstatistic.TaskIssueRepairListVo;
 import com.longfor.longjian.houseqm.app.vo.houseqmstatisticapp.*;
 import com.longfor.longjian.houseqm.consts.*;
+import com.longfor.longjian.houseqm.domain.internalservice.*;
 import com.longfor.longjian.houseqm.dto.HouseQmCheckTaskIssueDto;
 import com.longfor.longjian.houseqm.dto.HouseQmCheckTaskIssueListDto;
 import com.longfor.longjian.houseqm.dto.RepossessionStatusCompleteDailyCountDto;
@@ -52,39 +53,37 @@ public class HouseqmStatisticServiceImpl implements IHouseqmStatisticService {
     private static final String ERROR = "error:";
     private static final String YYYY_MM_DD = "yyyy-MM-dd";
     @Resource
-    com.longfor.longjian.houseqm.domain.internalservice.HouseQmCheckTaskIssueService houseQmCheckTaskIssueService;
+    private HouseQmCheckTaskIssueService houseQmCheckTaskIssueService;
     @Resource
-    com.longfor.longjian.houseqm.domain.internalservice.HouseQmCheckTaskService houseQmCheckTaskService;
+    private HouseQmCheckTaskService houseQmCheckTaskService;
     @Resource
-    IHouseqmService iHouseqmService;
+    private IHouseqmService iHouseqmService;
     @Resource
-    HouseqmStaticService houseqmStaticService;
+    private HouseqmStaticService houseqmStaticService;
     @Resource
-    com.longfor.longjian.houseqm.domain.internalservice.AreaService areaService;
+    private AreaService areaService;
     @Resource
-    com.longfor.longjian.houseqm.domain.internalservice.CategoryService categoryService;
+    private CategoryService categoryService;
     @Resource
-    com.longfor.longjian.houseqm.domain.internalservice.CheckItemService checkItemService;
+    private CheckItemService checkItemService;
     @Resource
-    com.longfor.longjian.houseqm.domain.internalservice.FileResourceService fileService;
+    private FileResourceService fileResourceService;
     @Resource
-    com.longfor.longjian.houseqm.domain.internalservice.FileResourceService fileResourceService;
+    private CategoryV3Service categoryV3Service;
     @Resource
-    com.longfor.longjian.houseqm.domain.internalservice.CategoryV3Service categoryV3Service;
+    private CheckItemV3Service checkItemV3Service;
     @Resource
-    com.longfor.longjian.houseqm.domain.internalservice.CheckItemV3Service checkItemV3Service;
+    private RepossessionStatusService repossessionStatusService;
     @Resource
-    com.longfor.longjian.houseqm.domain.internalservice.RepossessionStatusService repossessionStatusService;
+    private UserInProjectService iUserInProjectService;
     @Resource
-    private com.longfor.longjian.houseqm.domain.internalservice.UserInProjectService iUserInProjectService;
+    private UserInHouseQmCheckTaskService userInHouseQmCheckTaskService;
     @Resource
-    private com.longfor.longjian.houseqm.domain.internalservice.UserInHouseQmCheckTaskService userInHouseQmCheckTaskService;
+    private ProjectService projectService;
     @Resource
-    private com.longfor.longjian.houseqm.domain.internalservice.ProjectService projectService;
+    private TeamService teamService;
     @Resource
-    private com.longfor.longjian.houseqm.domain.internalservice.TeamService teamService;
-    @Resource
-    private com.longfor.longjian.houseqm.domain.internalservice.UserService userService;
+    private UserService userService;
 
     /**
      * 判断某个字符串出现的次数
@@ -1060,7 +1059,7 @@ public class HouseqmStatisticServiceImpl implements IHouseqmStatisticService {
             }
 
         }
-        List<FileResource> fileList = fileService.searchByMd5In(attachmentMd5List);
+        List<FileResource> fileList = fileResourceService.searchByMd5In(attachmentMd5List);
         HashMap<String, String> map = Maps.newHashMap();
         for (int i = 0; i < fileList.size(); i++) {
             map.put(fileList.get(i).getFileMd5(), fileList.get(i).getStoreKey());

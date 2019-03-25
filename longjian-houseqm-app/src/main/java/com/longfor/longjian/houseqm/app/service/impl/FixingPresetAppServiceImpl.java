@@ -19,7 +19,7 @@ import java.util.List;
 @Slf4j
 public class FixingPresetAppServiceImpl implements FixingPresetAppService {
     @Resource
-    FixingPresetService fixingPresetService;
+    private FixingPresetService fixingPresetService;
 
     @Override
     public List<FixingPreset> appGetFixingPreset(Integer projectId, Integer lastId, Integer timestamp, Integer limit) {

@@ -13,6 +13,7 @@ import com.longfor.longjian.houseqm.app.vo.houseqmstat.HouseQmStatCategorySituat
 import com.longfor.longjian.houseqm.app.vo.houseqmstat.InspectionHouseStatusInfoVo;
 import com.longfor.longjian.houseqm.app.vo.houseqmstat.StatCategoryStatRspVo;
 import com.longfor.longjian.houseqm.consts.*;
+import com.longfor.longjian.houseqm.domain.internalservice.*;
 import com.longfor.longjian.houseqm.dto.CheckerIssueStatusStatDto;
 import com.longfor.longjian.houseqm.dto.RepaireIssueStatusStatDto;
 import com.longfor.longjian.houseqm.po.CheckerIssueStat;
@@ -45,17 +46,17 @@ public class HouseqmStatServiceImpl implements IHouseqmStatService {
 
 
     @Resource
-    private com.longfor.longjian.houseqm.domain.internalservice.HouseQmCheckTaskIssueService houseQmCheckTaskIssueService;
+    private HouseQmCheckTaskIssueService houseQmCheckTaskIssueService;
     @Resource
-    private com.longfor.longjian.houseqm.domain.internalservice.UserService userService;
+    private UserService userService;
     @Resource
-    private com.longfor.longjian.houseqm.domain.internalservice.HouseQmCheckTaskService houseQmCheckTaskService;
+    private HouseQmCheckTaskService houseQmCheckTaskService;
     @Resource
-    private com.longfor.longjian.houseqm.domain.internalservice.AreaService areaService;
+    private AreaService areaService;
     @Resource
     private HouseqmStatisticServiceImpl houseqmStatisticService;
     @Resource
-    private com.longfor.longjian.houseqm.domain.internalservice.RepossessionStatusService repossessionStatusService;
+    private RepossessionStatusService repossessionStatusService;
     @Resource
     private HouseqmStaticService houseqmStaticService;
 

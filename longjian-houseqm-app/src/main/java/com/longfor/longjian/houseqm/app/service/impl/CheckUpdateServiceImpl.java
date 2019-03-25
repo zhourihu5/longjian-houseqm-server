@@ -26,19 +26,19 @@ import java.util.stream.Collectors;
 public class CheckUpdateServiceImpl implements ICheckUpdateService {
 
     @Resource
-    HouseQmCheckTaskService houseQmCheckTaskService;
+    private HouseQmCheckTaskService houseQmCheckTaskService;
 
     @Resource
-    UserInHouseQmCheckTaskService userInHouseQmCheckTaskService;
+    private UserInHouseQmCheckTaskService userInHouseQmCheckTaskService;
 
     @Resource
-    HouseQmCheckTaskIssueUserService houseQmCheckTaskIssueUserService;
+    private HouseQmCheckTaskIssueUserService houseQmCheckTaskIssueUserService;
 
     @Resource
-    HouseQmCheckTaskIssueService houseQmCheckTaskIssueService;
+    private HouseQmCheckTaskIssueService houseQmCheckTaskIssueService;
 
     @Resource
-    HouseQmCheckTaskIssueLogService houseQmCheckTaskIssueLogService;
+    private HouseQmCheckTaskIssueLogService houseQmCheckTaskIssueLogService;
 
     /**
      * @param taskId

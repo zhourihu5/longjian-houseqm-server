@@ -34,15 +34,15 @@ import java.util.*;
 @Slf4j
 public class HouseqmStaticService {
     @Resource
-    HouseQmCheckTaskService houseQmCheckTaskService;
+    private HouseQmCheckTaskService houseQmCheckTaskService;
     @Resource
-    AreaService areaService;
+    private AreaService areaService;
     @Resource
-    HouseQmCheckTaskIssueService houseQmCheckTaskIssueService;
+    private HouseQmCheckTaskIssueService houseQmCheckTaskIssueService;
     @Resource
-    RepossessionStatusService repossessionStatusService;
+    private RepossessionStatusService repossessionStatusService;
     @Resource
-    UserInHouseQmCheckTaskService userInHouseQmCheckTaskService;
+    private UserInHouseQmCheckTaskService userInHouseQmCheckTaskService;
 
     public List<HouseQmCheckTaskSimpleRspVo> searchHouseQmCheckTaskByProjCategoryCls(Integer projectId, Integer categoryCls) {
         List<HouseQmCheckTask> houseQmCheckTasks = houseQmCheckTaskService.selectByProjectIdAndCategoryCls(projectId, categoryCls);
