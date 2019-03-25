@@ -5,6 +5,7 @@ import com.longfor.longjian.houseqm.dao.zhijian2_setting.IssueFieldSettingMapper
 import com.longfor.longjian.houseqm.domain.internalservice.IssueFieldSettingService;
 import com.longfor.longjian.houseqm.po.zhijian2_setting.IssueFieldSetting;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.collections.CollectionUtils;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import tk.mybatis.mapper.entity.Example;
@@ -21,7 +22,7 @@ import java.util.List;
 @Service
 public class IssueFieldSettingServiceImpl implements IssueFieldSettingService {
     @Resource
-    IssueFieldSettingMapper issueFieldSettingMapper;
+    private IssueFieldSettingMapper issueFieldSettingMapper;
 
     @Override
     @LFAssignDataSource("zhijian2_setting")
@@ -36,8 +37,8 @@ public class IssueFieldSettingServiceImpl implements IssueFieldSettingService {
     public List<IssueFieldSetting> findProjectIdsAndModuleId(List<Integer> projectIdList, Integer moduleId) {
         Example example = new Example(IssueFieldSetting.class);
         Example.Criteria criteria = example.createCriteria();
-        criteria.andEqualTo("moduleId", moduleId).andIn("projectId", projectIdList);
-
+        criteria.andEqualTo("moduleId", moduleId);
+        if (CollectionUtils.isNotEmpty(projectIdList))criteria.andIn("projectId", projectIdList);
         return issueFieldSettingMapper.selectByExample(example);
     }
 

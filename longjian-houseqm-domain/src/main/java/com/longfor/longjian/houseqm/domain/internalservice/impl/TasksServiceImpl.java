@@ -19,7 +19,7 @@ import java.util.Date;
 @Transactional
 public class TasksServiceImpl implements TasksService {
     @Resource
-    TaskMapper taskMapper;
+    private TaskMapper taskMapper;
 
     @LFAssignDataSource("zhijian2")
     @Override

@@ -6,6 +6,7 @@ import com.longfor.longjian.houseqm.dao.zj2db.HouseQmCheckTaskNotifyRecordMapper
 import com.longfor.longjian.houseqm.domain.internalservice.HouseQmCheckTaskNotifyRecordService;
 import com.longfor.longjian.houseqm.po.zj2db.HouseQmCheckTaskNotifyRecord;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.collections.CollectionUtils;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import tk.mybatis.mapper.entity.Example;
@@ -24,7 +25,7 @@ import java.util.Map;
 @Slf4j
 public class HouseQmCheckTaskNotifyRecordServiceImpl implements HouseQmCheckTaskNotifyRecordService {
     @Resource
-    HouseQmCheckTaskNotifyRecordMapper houseQmCheckTaskNotifyRecordMapper;
+    private HouseQmCheckTaskNotifyRecordMapper houseQmCheckTaskNotifyRecordMapper;
 
     @Transactional
     @Override
@@ -39,6 +40,7 @@ public class HouseQmCheckTaskNotifyRecordServiceImpl implements HouseQmCheckTask
     @Override
     @LFAssignDataSource("zhijian2")
     public void addMany(ArrayList<HouseQmCheckTaskNotifyRecord> dataSource) {
+        if (CollectionUtils.isEmpty(dataSource))return;
         for (HouseQmCheckTaskNotifyRecord record : dataSource) {
             record.setCreateAt(new Date());
             record.setUpdateAt(new Date());
@@ -51,13 +53,12 @@ public class HouseQmCheckTaskNotifyRecordServiceImpl implements HouseQmCheckTask
     public List<HouseQmCheckTaskNotifyRecord> findExample(Map<String,Object> map, List<Integer> statusList) {
 
         Example example = new Example(HouseQmCheckTaskNotifyRecord.class);
-        example.createCriteria()
-                .andEqualTo("moduleId",map.get("moduleId"))
-                .andIn("issueStatus", statusList)
+        Example.Criteria criteria = example.createCriteria();
+        criteria.andEqualTo("moduleId",map.get("moduleId"))
                 .andGreaterThan("createAt",map.get("statBeg"))
                 .andLessThanOrEqualTo("createAt",map.get("statEnd"))
                 .andIsNull("deleteAt");
-
+        if (CollectionUtils.isNotEmpty(statusList))criteria.andIn("issueStatus", statusList);
         return houseQmCheckTaskNotifyRecordMapper.selectByExample(example);
     }
 

@@ -27,7 +27,7 @@ import java.util.Set;
 public class PushStrategyCategoryOverdueServiceImpl implements PushStrategyCategoryOverdueService {
 
     @Resource
-    PushStrategyCategoryOverdueMapper pushStrategyCategoryOverdueMapper;
+    private PushStrategyCategoryOverdueMapper pushStrategyCategoryOverdueMapper;
 
     @LFAssignDataSource("zhijian2_notify")
     public List<PushStrategyCategoryOverdue> searchByTaskIds(Set<Integer> taskIds) {

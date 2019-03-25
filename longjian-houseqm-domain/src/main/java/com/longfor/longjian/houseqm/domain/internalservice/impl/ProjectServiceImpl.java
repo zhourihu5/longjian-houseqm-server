@@ -56,6 +56,7 @@ public class ProjectServiceImpl implements ProjectService {
     @Override
     @LFAssignDataSource("zhijian2")
     public List<Project> selectByTeamIdsNotDel(List<Integer> teamIdsList) {
+        if (CollectionUtils.isEmpty(teamIdsList))return Lists.newArrayList();
         Example example = new Example(Project.class);
         example.createCriteria().andIn("teamId", teamIdsList).andIsNull("deleteAt");
         return projectMapper.selectByExample(example);

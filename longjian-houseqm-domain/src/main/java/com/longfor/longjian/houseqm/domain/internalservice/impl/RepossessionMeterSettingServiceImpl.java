@@ -21,7 +21,7 @@ import java.util.List;
 @Slf4j
 public class RepossessionMeterSettingServiceImpl implements RepossessionMeterSettingService {
     @Resource
-    RepossessionMeterSettingMapper repossessionMeterSettingMapper;
+    private RepossessionMeterSettingMapper repossessionMeterSettingMapper;
 
     @Override
     @LFAssignDataSource("zhijian2")

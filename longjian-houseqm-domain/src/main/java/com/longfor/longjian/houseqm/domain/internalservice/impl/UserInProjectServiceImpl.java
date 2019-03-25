@@ -22,7 +22,7 @@ import java.util.List;
 @Slf4j
 public class UserInProjectServiceImpl implements UserInProjectService {
     @Resource
-    UserInProjectMapper userInProjectMapper;
+    private UserInProjectMapper userInProjectMapper;
 
     @Override
     @LFAssignDataSource("zhijian2")

@@ -27,7 +27,7 @@ public class HouseQmCheckTaskSquadServiceImpl implements HouseQmCheckTaskSquadSe
 
 
     @Resource
-    HouseQmCheckTaskSquadMapper houseQmCheckTaskSquadMapper;
+    private HouseQmCheckTaskSquadMapper houseQmCheckTaskSquadMapper;
 
     private static final String TASK_ID="taskId";
 

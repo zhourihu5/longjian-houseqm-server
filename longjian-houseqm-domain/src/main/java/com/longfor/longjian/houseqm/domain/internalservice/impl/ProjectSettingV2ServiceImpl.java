@@ -18,7 +18,7 @@ import java.util.List;
 @Slf4j
 public class ProjectSettingV2ServiceImpl implements ProjectSettingV2Service {
     @Resource
-    ProjectSettingV2Mapper projectSettingV2Mapper;
+    private ProjectSettingV2Mapper projectSettingV2Mapper;
 
     @Override
     @LFAssignDataSource("zhijian2")

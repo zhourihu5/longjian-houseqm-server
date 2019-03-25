@@ -29,8 +29,8 @@ public class UserInHouseQmCheckTaskServiceImpl implements UserInHouseQmCheckTask
 
 
     @Resource
-    UserInHouseQmCheckTaskMapper userInHouseQmCheckTaskMapper;
-  private static final String DELETE_AT="deleteAt";
+    private UserInHouseQmCheckTaskMapper userInHouseQmCheckTaskMapper;
+    private static final String DELETE_AT="deleteAt";
 
     private static final String SQUAL_ID="squadId";
     private static final String USER_ID="userId";
@@ -235,7 +235,8 @@ public class UserInHouseQmCheckTaskServiceImpl implements UserInHouseQmCheckTask
     public List<UserInHouseQmCheckTask> selectByTaskIdInAndRoleTypeNotDel(List<Integer> taskIds, Integer value) {
         Example example = new Example(UserInHouseQmCheckTask.class);
         Example.Criteria criteria = example.createCriteria();
-        criteria.andIn(TASK_ID, taskIds).andEqualTo(ROLE_TYPE, value)
+        if (CollectionUtils.isNotEmpty(taskIds))criteria.andIn(TASK_ID, taskIds);
+        criteria.andEqualTo(ROLE_TYPE, value)
                 .andIsNull(DELETE_AT);
         return userInHouseQmCheckTaskMapper.selectByExample(example);
     }

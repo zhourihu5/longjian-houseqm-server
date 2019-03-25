@@ -24,7 +24,7 @@ import java.util.Map;
 @Slf4j
 public class RepossessionStatusServiceImpl implements RepossessionStatusService {
     @Resource
-    RepossessionStatusMapper repossessionStatusMapper;
+    private RepossessionStatusMapper repossessionStatusMapper;
 
     @Override
     @LFAssignDataSource("zhijian2")

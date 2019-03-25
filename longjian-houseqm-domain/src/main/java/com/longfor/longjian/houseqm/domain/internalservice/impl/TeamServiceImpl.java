@@ -23,7 +23,7 @@ import java.util.List;
 public class TeamServiceImpl implements TeamService {
 
     @Resource
-    TeamMapper teamMapper;
+    private TeamMapper teamMapper;
 
 
     @Override

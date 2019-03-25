@@ -1,10 +1,12 @@
 package com.longfor.longjian.houseqm.domain.internalservice.impl;
 
+import com.google.common.collect.Lists;
 import com.longfor.gaia.gfs.data.mybatis.datasource.LFAssignDataSource;
 import com.longfor.longjian.houseqm.dao.zhijian2_notify.PushStrategyCategoryThresholdMapper;
 import com.longfor.longjian.houseqm.domain.internalservice.PushStrategyCategoryThresholdService;
 import com.longfor.longjian.houseqm.po.zhijian2_notify.PushStrategyCategoryThreshold;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.collections.CollectionUtils;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import tk.mybatis.mapper.entity.Example;
@@ -25,7 +27,7 @@ import java.util.Set;
 public class PushStrategyCategoryThresholdServiceImpl implements PushStrategyCategoryThresholdService {
 
     @Resource
-    PushStrategyCategoryThresholdMapper pushStrategyCategoryThresholdMapper;
+    private PushStrategyCategoryThresholdMapper pushStrategyCategoryThresholdMapper;
 
     /**
      * 取未删除的数据
@@ -35,6 +37,7 @@ public class PushStrategyCategoryThresholdServiceImpl implements PushStrategyCat
      */
     @LFAssignDataSource("zhijian2_notify")
     public List<PushStrategyCategoryThreshold> searchByTaskIds(Set<Integer> taskIds) {
+        if (CollectionUtils.isEmpty(taskIds))return Lists.newArrayList();
         return pushStrategyCategoryThresholdMapper.selectByTaskIds(taskIds, "false");
     }
 

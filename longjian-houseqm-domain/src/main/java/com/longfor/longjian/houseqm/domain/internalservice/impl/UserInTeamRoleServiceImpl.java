@@ -20,7 +20,7 @@ import java.util.List;
 @Service
 public class UserInTeamRoleServiceImpl implements UserInTeamRoleService {
     @Resource
-    UserInTeamRoleMapper userInTeamRoleMapper;
+    private UserInTeamRoleMapper userInTeamRoleMapper;
 
     @Override
     @LFAssignDataSource("zhijian2_apisvr")

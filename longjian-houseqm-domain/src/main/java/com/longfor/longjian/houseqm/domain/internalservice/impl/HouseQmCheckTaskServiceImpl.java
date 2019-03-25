@@ -30,7 +30,7 @@ public class HouseQmCheckTaskServiceImpl implements HouseQmCheckTaskService {
 
 
     @Resource
-    HouseQmCheckTaskMapper houseQmCheckTaskMapper;
+    private HouseQmCheckTaskMapper houseQmCheckTaskMapper;
 
     private static final String PROJECT_ID="projectId";
     private static final String CATEGORY_CLS="categoryCls";
@@ -75,11 +75,11 @@ public class HouseQmCheckTaskServiceImpl implements HouseQmCheckTaskService {
     @Override
     @LFAssignDataSource("zhijian2")
     public List<HouseQmCheckTask> searchByProjectIdInAndCategoryClsIn(List<Integer> projectIds, List<Integer> categoryClsList) {
-        if (CollectionUtils.isEmpty(projectIds)||CollectionUtils.isEmpty(categoryClsList))return Lists.newArrayList();
+        if (CollectionUtils.isEmpty(projectIds) && CollectionUtils.isEmpty(categoryClsList))return Lists.newArrayList();
         Example example = new Example(HouseQmCheckTask.class);
         Example.Criteria criteria = example.createCriteria();
-        criteria.andIn(PROJECT_ID, projectIds);
-        criteria.andIn(CATEGORY_CLS, categoryClsList);
+        if (CollectionUtils.isNotEmpty(projectIds))criteria.andIn(PROJECT_ID, projectIds);
+        if (CollectionUtils.isNotEmpty(categoryClsList))criteria.andIn(CATEGORY_CLS, categoryClsList);
         ExampleUtil.addDeleteAtJudge(example);
         return houseQmCheckTaskMapper.selectByExample(example);
     }
@@ -264,8 +264,12 @@ public class HouseQmCheckTaskServiceImpl implements HouseQmCheckTaskService {
     @Override
     @LFAssignDataSource("zhijian2")
     public List<HouseQmCheckTask> selectByProjectIdsAndCategoryClsNotDel(ArrayList<Integer> parentIds, List<Integer> categorylist) {
+        if (CollectionUtils.isEmpty(parentIds)&&CollectionUtils.isEmpty(categorylist))return Lists.newArrayList();
         Example example = new Example(HouseQmCheckTask.class);
-        example.createCriteria().andIn(PROJECT_ID, parentIds).andIn(CATEGORY_CLS, categorylist).andIsNull(DELETE_AT);
+        Example.Criteria criteria = example.createCriteria();
+        if (CollectionUtils.isNotEmpty(parentIds))criteria.andIn(PROJECT_ID, parentIds);
+        if (CollectionUtils.isNotEmpty(categorylist))criteria.andIn(CATEGORY_CLS, categorylist);
+        criteria.andIsNull(DELETE_AT);
         return houseQmCheckTaskMapper.selectByExample(example);
     }
 

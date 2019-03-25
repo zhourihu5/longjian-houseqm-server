@@ -25,7 +25,7 @@ import java.util.Set;
 @Slf4j
 public class PushStrategyAssignTimeServiceImpl implements PushStrategyAssignTimeService {
     @Resource
-    PushStrategyAssignTimeMapper pushStrategyAssignTimeMapper;
+    private PushStrategyAssignTimeMapper pushStrategyAssignTimeMapper;
 
     /**
      * @param taskIds

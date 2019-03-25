@@ -27,13 +27,14 @@ import java.util.List;
 public class HouseQmCheckTaskIssueUserServiceImpl implements HouseQmCheckTaskIssueUserService {
 
     @Resource
-    HouseQmCheckTaskIssueUserMapper houseQmCheckTaskIssueUserMapper;
+    private HouseQmCheckTaskIssueUserMapper houseQmCheckTaskIssueUserMapper;
 
     private static final String USER_ID="userId";
     @Transactional
     @Override
     @LFAssignDataSource(value = "zhijian2")
     public int insertBatch(List<HouseQmCheckTaskIssueUser> issueUsers) {
+        if (CollectionUtils.isEmpty(issueUsers))return 0;
         for (HouseQmCheckTaskIssueUser issueUser : issueUsers) {
             issueUser.setUpdateAt(new Date());
             issueUser.setCreateAt(new Date());
@@ -109,7 +110,7 @@ public class HouseQmCheckTaskIssueUserServiceImpl implements HouseQmCheckTaskIss
         Example example = new Example(HouseQmCheckTaskIssueUser.class);
         Example.Criteria criteria = example.createCriteria();
         criteria.andEqualTo("roleType", value);
-        criteria.andIn(USER_ID, intFollowers);
+        if (CollectionUtils.isNotEmpty(intFollowers))criteria.andIn(USER_ID, intFollowers);
         criteria.andEqualTo("issueUuid", uuid).andIsNull("deleteAt");
         return houseQmCheckTaskIssueUserMapper.selectByExample(example);
     }
@@ -118,6 +119,7 @@ public class HouseQmCheckTaskIssueUserServiceImpl implements HouseQmCheckTaskIss
     @Override
     @LFAssignDataSource(value = "zhijian2")
     public void insertMany(ArrayList<HouseQmCheckTaskIssueUser> insertData) {
+        if (CollectionUtils.isEmpty(insertData))return;
         for (HouseQmCheckTaskIssueUser datum : insertData) {
             datum.setUpdateAt(new Date());
             datum.setCreateAt(new Date());

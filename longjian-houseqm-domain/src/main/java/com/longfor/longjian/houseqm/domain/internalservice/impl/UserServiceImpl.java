@@ -26,7 +26,7 @@ import java.util.stream.Collectors;
 @Slf4j
 public class UserServiceImpl implements UserService {
     @Resource
-    UserMapper userMapper;
+    private UserMapper userMapper;
 
     private static final String USER_ID="userId";
     @LFAssignDataSource("zhijian2_apisvr")
