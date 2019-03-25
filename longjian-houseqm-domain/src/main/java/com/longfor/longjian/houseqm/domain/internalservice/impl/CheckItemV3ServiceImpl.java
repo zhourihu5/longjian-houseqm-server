@@ -22,7 +22,7 @@ import java.util.List;
 public class CheckItemV3ServiceImpl implements CheckItemV3Service {
 
     @Resource
-    CheckItemV3Mapper checkItemV3Mapper;
+    private CheckItemV3Mapper checkItemV3Mapper;
 
     /**
      * @return java.util.List<com.longfor.longjian.houseqm.po.zj2db.CheckItemV3>

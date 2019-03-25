@@ -192,7 +192,8 @@ public class HouseQmCheckTaskServiceImpl implements HouseQmCheckTaskService {
     public List<HouseQmCheckTask> searchByProjectIdAndCategoryClsIn(Integer projectId, List<Integer> categoryCls) {
         Example example = new Example(HouseQmCheckTask.class);
         Example.Criteria criteria = example.createCriteria();
-        criteria.andEqualTo(PROJECT_ID, projectId).andIn(CATEGORY_CLS, categoryCls);
+        criteria.andEqualTo(PROJECT_ID, projectId);
+        if (CollectionUtils.isNotEmpty(categoryCls))criteria.andIn(CATEGORY_CLS, categoryCls);
         ExampleUtil.addDeleteAtJudge(example);
         return houseQmCheckTaskMapper.selectByExample(example);
     }

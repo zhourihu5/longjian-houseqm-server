@@ -22,7 +22,7 @@ import java.util.List;
 public class CategoryV3ServiceImpl implements CategoryV3Service {
 
     @Resource
-    CategoryV3Mapper categoryV3Mapper;
+    private CategoryV3Mapper categoryV3Mapper;
 
     /**
      * @return java.util.List<com.longfor.longjian.houseqm.po.zj2db.CategoryV3>
