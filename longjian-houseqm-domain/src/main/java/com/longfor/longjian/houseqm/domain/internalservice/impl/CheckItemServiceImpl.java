@@ -1,5 +1,6 @@
 package com.longfor.longjian.houseqm.domain.internalservice.impl;
 
+import com.google.common.collect.Lists;
 import com.longfor.gaia.gfs.data.mybatis.datasource.LFAssignDataSource;
 import com.longfor.longjian.houseqm.dao.zj2db.CheckItemMapper;
 import com.longfor.longjian.houseqm.domain.internalservice.CheckItemService;
@@ -20,16 +21,15 @@ import java.util.List;
 @Slf4j
 public class CheckItemServiceImpl implements CheckItemService {
     @Resource
-    CheckItemMapper checkItemMapper;
+    private CheckItemMapper checkItemMapper;
 
     @Override
     @LFAssignDataSource("zhijian2")
     public List<CheckItem> searchCheckItemByKeyIn(List<String> keys) {
+        if (CollectionUtils.isEmpty(keys)) return Lists.newArrayList();
         Example example = new Example(CheckItem.class);
         Example.Criteria criteria = example.createCriteria();
-        if (CollectionUtils.isNotEmpty(keys)) {
-            criteria.andIn("key", keys);
-        }
+        criteria.andIn("key", keys);
         ExampleUtil.addDeleteAtJudge(example);
         return checkItemMapper.selectByExample(example);
     }

@@ -30,7 +30,7 @@ import java.util.*;
 public class AreaServiceImpl implements AreaService {
 
     @Resource
-    AreaMapper areaMapper;
+    private AreaMapper areaMapper;
     private static final String PROJECT_ID="projectId";
 
     @Override
@@ -57,7 +57,8 @@ public class AreaServiceImpl implements AreaService {
     public List<Area> searchRelatedAreaByAreaIdIn(Integer projectId, List<Integer> areaIds) {
         Example example = new Example(Area.class);
         Example.Criteria criteria = example.createCriteria();
-        criteria.andEqualTo(PROJECT_ID, projectId).andIn("id", areaIds);
+        criteria.andEqualTo(PROJECT_ID, projectId);
+        if (CollectionUtils.isNotEmpty(areaIds))criteria.andIn("id", areaIds);
         ExampleUtil.addDeleteAtJudge(example);
         List<Area> fAreas = areaMapper.selectByExample(example);
 
@@ -79,7 +80,8 @@ public class AreaServiceImpl implements AreaService {
 
         Example example1 = new Example(Area.class);
         Example.Criteria criteria1 = example1.createCriteria();
-        criteria1.andEqualTo(PROJECT_ID, projectId).andIn("id", set);
+        criteria1.andEqualTo(PROJECT_ID, projectId);
+        if (CollectionUtils.isNotEmpty(set))criteria1.andIn("id", set);
         for (Area item : fAreas) {
             criteria1.orLike("path", item.getPath() + item.getId() + "/%%");
         }
@@ -152,26 +154,7 @@ public class AreaServiceImpl implements AreaService {
         checkPath(result, pathA, pathB);
         return new ArrayList<>(new HashSet<>(result));
     }
-    @SuppressWarnings("squid:S3776")
-    private void checkPath(List<Integer> result, List<String> pathA, List<String> pathB) {
-        for (String pA : pathA) {
-            for (String pB : pathB) {
-                checkStartsWithValue(result, pA, pB);
-            }
-        }
-    }
 
-    private void checkStartsWithValue(List<Integer> result, String pA, String pB) {
-        if (pA.startsWith(pB)) {
-            List<Integer> ids = StringUtil.strToInts(pA, "/");
-            if (CollectionUtils.isNotEmpty(ids)) result.add(ids.get(ids.size() - 1));
-            return;
-        }
-        if (pB.startsWith(pA)) {
-            List<Integer> ids = StringUtil.strToInts(pB, "/");
-            if (CollectionUtils.isNotEmpty(ids)) result.add(ids.get(ids.size() - 1));
-        }
-    }
 
     @LFAssignDataSource("zhijian2")
     public List<Area> searchAreaListByRootIdAndTypes(Integer projectId, List<Integer> rootIds, List<Integer> types) {
@@ -223,16 +206,11 @@ public class AreaServiceImpl implements AreaService {
         return areaMapper.selectByExample(example);
     }
 
-    /**
-     * @param areaPaths
-     * @return java.util.List<com.longfor.longjian.houseqm.po.zj2db.Area>
-     * @author hy
-     * @date 2018/12/21 0021
-     */
     @Override
     @LFAssignDataSource("zhijian2")
     public List<Area> searchAreaByIdInAndNoDeleted(List<Integer> areaPaths) {
-        return areaMapper.selectAreaByIdInAndNoDeleted(areaPaths, "false");
+        return selectByAreaIds(areaPaths);
+       // return areaMapper.selectAreaByIdInAndNoDeleted(areaPaths, "false");
     }
 
 
@@ -277,5 +255,25 @@ public class AreaServiceImpl implements AreaService {
         return items;
     }
 
+    @SuppressWarnings("squid:S3776")
+    private void checkPath(List<Integer> result, List<String> pathA, List<String> pathB) {
+        for (String pA : pathA) {
+            for (String pB : pathB) {
+                checkStartsWithValue(result, pA, pB);
+            }
+        }
+    }
+
+    private void checkStartsWithValue(List<Integer> result, String pA, String pB) {
+        if (pA.startsWith(pB)) {
+            List<Integer> ids = StringUtil.strToInts(pA, "/");
+            if (CollectionUtils.isNotEmpty(ids)) result.add(ids.get(ids.size() - 1));
+            return;
+        }
+        if (pB.startsWith(pA)) {
+            List<Integer> ids = StringUtil.strToInts(pB, "/");
+            if (CollectionUtils.isNotEmpty(ids)) result.add(ids.get(ids.size() - 1));
+        }
+    }
 
 }

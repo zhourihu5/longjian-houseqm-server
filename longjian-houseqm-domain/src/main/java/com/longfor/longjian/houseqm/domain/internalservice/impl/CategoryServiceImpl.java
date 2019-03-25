@@ -21,14 +21,15 @@ import java.util.List;
 @Slf4j
 public class CategoryServiceImpl implements CategoryService {
     @Resource
-    CategoryV3Mapper categoryMapper;
+    private CategoryV3Mapper categoryMapper;
 
     @Override
     @LFAssignDataSource("zhijian2")
     public List<CategoryV3> searchCategoryByKeyIn(List<String> keys) {
+        if (CollectionUtils.isEmpty(keys)) return Lists.newArrayList();
         Example example = new Example(CategoryV3.class);
         Example.Criteria criteria = example.createCriteria();
-        if (CollectionUtils.isNotEmpty(keys)) criteria.andIn("key", keys);
+         criteria.andIn("key", keys);
         ExampleUtil.addDeleteAtJudge(example);
         return categoryMapper.selectByExample(example);
     }
