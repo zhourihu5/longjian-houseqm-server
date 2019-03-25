@@ -87,6 +87,7 @@ public class HouseQmCheckTaskServiceImpl implements HouseQmCheckTaskService {
     @Override
     @LFAssignDataSource("zhijian2")
     public List<HouseQmCheckTask> searchHouseQmCheckTaskByTaskIdIn(List<Integer> taskIds) {
+        if(CollectionUtils.isEmpty(taskIds))return Lists.newArrayList();
         Example example = new Example(HouseQmCheckTask.class);
         Example.Criteria criteria = example.createCriteria();
         criteria.andIn(TASK_ID, taskIds);

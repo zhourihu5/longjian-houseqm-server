@@ -1,10 +1,12 @@
 package com.longfor.longjian.houseqm.domain.internalservice.impl;
 
+import com.google.common.collect.Lists;
 import com.longfor.gaia.gfs.data.mybatis.datasource.LFAssignDataSource;
 import com.longfor.longjian.houseqm.dao.zj2db.HouseQmCheckTaskSquadMapper;
 import com.longfor.longjian.houseqm.domain.internalservice.HouseQmCheckTaskSquadService;
 import com.longfor.longjian.houseqm.po.zj2db.HouseQmCheckTaskSquad;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.collections.CollectionUtils;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import tk.mybatis.mapper.entity.Example;
@@ -31,13 +33,14 @@ public class HouseQmCheckTaskSquadServiceImpl implements HouseQmCheckTaskSquadSe
 
     @LFAssignDataSource("zhijian2")
     public List<HouseQmCheckTaskSquad> selectByTaskIds(Set<Integer> taskIdList) {
-
+        if(CollectionUtils.isEmpty(taskIdList))return Lists.newArrayList();
         return houseQmCheckTaskSquadMapper.selectByTaskIds(taskIdList, "false");
     }
 
 
     @LFAssignDataSource("zhijian2")
     public List<HouseQmCheckTaskSquad> selectByTaskIdsEvenDeleted(Set<Integer> taskIdList) {
+        if(CollectionUtils.isEmpty(taskIdList))return Lists.newArrayList();
         Example example = new Example(HouseQmCheckTaskSquad.class);
         Example.Criteria criteria = example.createCriteria();
         criteria.andIn(TASK_ID, taskIdList);

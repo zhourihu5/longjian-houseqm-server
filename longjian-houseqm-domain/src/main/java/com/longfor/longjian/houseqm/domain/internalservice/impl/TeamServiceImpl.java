@@ -53,6 +53,7 @@ public class TeamServiceImpl implements TeamService {
     @Override
     @LFAssignDataSource("zhijian2_apisvr")
     public List<Team> selectByTeamIdsNotDel(List<Integer> teamIds) {
+        if(CollectionUtils.isEmpty(teamIds))return Lists.newArrayList();
         Example example = new Example(Team.class);
         Example.Criteria criteria = example.createCriteria();
         criteria.andIn("teamId", teamIds).andIsNull("deleteAt");

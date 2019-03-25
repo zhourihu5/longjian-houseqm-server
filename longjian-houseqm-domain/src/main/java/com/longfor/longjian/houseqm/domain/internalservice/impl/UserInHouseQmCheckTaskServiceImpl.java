@@ -89,12 +89,14 @@ public class UserInHouseQmCheckTaskServiceImpl implements UserInHouseQmCheckTask
 
     @LFAssignDataSource("zhijian2")
     public List<UserInHouseQmCheckTask> selectByTaskIds(Set<Integer> taskIdList) {
+        if(CollectionUtils.isEmpty(taskIdList))return Lists.newArrayList();
         List<Integer> list = taskIdList.stream().collect(Collectors.toList());
         return userInHouseQmCheckTaskMapper.selectByTaskIds(list, "false");
     }
 
     @LFAssignDataSource("zhijian2")
     public List<UserInHouseQmCheckTask> selectByTaskIdsEvenDeleted(Set<Integer> taskIdList) {
+        if(CollectionUtils.isEmpty(taskIdList))return Lists.newArrayList();
         Example example = new Example(UserInHouseQmCheckTask.class);
         Example.Criteria criteria = example.createCriteria();
         criteria.andIn(TASK_ID, taskIdList);

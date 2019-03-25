@@ -1,10 +1,12 @@
 package com.longfor.longjian.houseqm.domain.internalservice.impl;
 
+import com.google.common.collect.Lists;
 import com.longfor.gaia.gfs.data.mybatis.datasource.LFAssignDataSource;
 import com.longfor.longjian.houseqm.dao.zhijian2_notify.PushStrategyCategoryOverdueMapper;
 import com.longfor.longjian.houseqm.domain.internalservice.PushStrategyCategoryOverdueService;
 import com.longfor.longjian.houseqm.po.zhijian2_notify.PushStrategyCategoryOverdue;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.collections.CollectionUtils;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import tk.mybatis.mapper.entity.Example;
@@ -29,6 +31,7 @@ public class PushStrategyCategoryOverdueServiceImpl implements PushStrategyCateg
 
     @LFAssignDataSource("zhijian2_notify")
     public List<PushStrategyCategoryOverdue> searchByTaskIds(Set<Integer> taskIds) {
+        if(CollectionUtils.isEmpty(taskIds))return Lists.newArrayList();
         return pushStrategyCategoryOverdueMapper.selectByTaskIds(taskIds, "false");
     }
 
