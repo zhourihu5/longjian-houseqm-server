@@ -460,7 +460,7 @@ public class ReportIssueService {
                 for (Map.Entry<HouseQmCheckTaskIssue, ApiRefundInfo> entry : refundMap.entrySet()) {
                     sendIds.add(refundMap.get(entry.getKey()).getChecker());
                     String msg = " 退回了一条问题，请进入[过程检查]App跟进处理";
-                    ApiRefundInfo info = refundMap.get(entry);
+                    ApiRefundInfo info = refundMap.get(entry.getKey());
                     if (info != null) msg=userMap.get(info.getRepairer()).getRealName()+msg;
                     log.debug("处理退单消息推送: ====> {}",msg);
                     scanMsgPushService.sendUPush(title,msg,0,sendIds,1);
