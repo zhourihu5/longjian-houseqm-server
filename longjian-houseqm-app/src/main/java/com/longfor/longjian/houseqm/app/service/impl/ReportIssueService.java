@@ -133,8 +133,8 @@ public class ReportIssueService {
                         attachmentInsertMap.put(items, attachment);
                     });
                 }
-                //   # 私有录音
-                List<String> memoMd5List = StringSplitToListUtil.removeStartAndEndStrAndSplit(item.getAudio_md5_list(), ",", ",");
+                //   # 私有录音 备忘录
+                List<String> memoMd5List = StringSplitToListUtil.removeStartAndEndStrAndSplit(item.getMemo_audio_md5_list(), ",", ",");
                 if (CollectionUtils.isNotEmpty(memoMd5List)) {
                     memoMd5List.forEach(md5 -> {
                         HouseQmCheckTaskIssueAttachment attachment = new HouseQmCheckTaskIssueAttachment();
