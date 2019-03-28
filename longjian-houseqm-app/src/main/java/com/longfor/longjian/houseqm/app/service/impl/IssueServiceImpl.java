@@ -443,7 +443,7 @@ public class IssueServiceImpl implements IIssueService {
             condiMap.put("status2", status2);
         }
         if (req.getKey_word().length() > 0) {
-            condiMap.put(CONTENT, String.format("%%/%s/%%",req.getKey_word()));
+            condiMap.put(CONTENT, String.format("%%%s%%",req.getKey_word()));
             if (StringSplitToListUtil.isInteger(req.getKey_word())) {
                 condiMap.put("id", req.getKey_word());
             }
