@@ -261,7 +261,7 @@ public class IssueServiceImpl implements IIssueService {
             condiMap.put("status2", status2);
         }
         if (req.getKey_word().length() > 0) {//content like xxx
-            condiMap.put(CONTENT, "%/" + req.getKey_word() + "/%");
+            condiMap.put(CONTENT, "%" + req.getKey_word() + "%");
             if (StringSplitToListUtil.isInteger(req.getKey_word())) {// or id=xxx
                 condiMap.put("id", req.getKey_word());
             }

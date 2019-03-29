@@ -85,7 +85,7 @@ public class IssueListController {
             wb.write(os);
             os.flush();
         } catch (Exception e) {
-            log.error("excel 导出异常");
+            log.error("excel 导出异常", e);
             return CtrlToolUtils.errorReturn(ljBaseResponse,e);
         } finally {
             try {
