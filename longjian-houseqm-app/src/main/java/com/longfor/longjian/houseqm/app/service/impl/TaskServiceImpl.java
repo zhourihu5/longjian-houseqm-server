@@ -1,7 +1,6 @@
 package com.longfor.longjian.houseqm.app.service.impl;
 
 import com.google.common.collect.Lists;
-import com.longfor.gaia.gfs.data.mybatis.datasource.LFAssignDataSource;
 import com.longfor.longjian.common.exception.LjBaseRuntimeException;
 import com.longfor.longjian.common.util.StringUtil;
 import com.longfor.longjian.houseqm.app.service.ITaskService;
@@ -19,6 +18,7 @@ import com.longfor.longjian.houseqm.util.DateUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Repository;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.Resource;
 import java.util.List;
@@ -99,7 +99,7 @@ public class TaskServiceImpl implements ITaskService {
 
 
     @Override
-    @LFAssignDataSource("zhijian2")
+    @Transactional
     public void deleteHouseQmCheckTaskByProjTaskId(Integer projectId, Integer taskId) {
         try {
             // 删除人员
