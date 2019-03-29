@@ -159,6 +159,7 @@ public class UserInHouseQmCheckTaskServiceImpl implements UserInHouseQmCheckTask
         List<UserInHouseQmCheckTask> userInHouseQmCheckTasks = userInHouseQmCheckTaskMapper.selectByExample(example);
         for (UserInHouseQmCheckTask task : userInHouseQmCheckTasks) {
             task.setDeleteAt(new Date());
+            task.setUpdateAt(new Date());
             userInHouseQmCheckTaskMapper.updateByPrimaryKey(task);
         }
         return userInHouseQmCheckTasks.size();

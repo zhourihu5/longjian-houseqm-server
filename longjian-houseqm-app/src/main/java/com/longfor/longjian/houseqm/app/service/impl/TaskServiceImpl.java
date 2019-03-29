@@ -105,9 +105,9 @@ public class TaskServiceImpl implements ITaskService {
             // 删除人员
             userInHouseQmCheckTaskService.removeByTaskId(taskId);
             // 删除问题
-          houseQmCheckTaskIssueService.removeHouseQmCheckTaskIssueByProjectIdAndTaskId(projectId, taskId);
+            houseQmCheckTaskIssueService.removeHouseQmCheckTaskIssueByProjectIdAndTaskId(projectId, taskId);
             // 删除任务
-          houseQmCheckTaskService.removeHouseQmCheckTaskByProjectIdAndTaskId(projectId, taskId);
+            houseQmCheckTaskService.removeHouseQmCheckTaskByProjectIdAndTaskId(projectId, taskId);
         } catch (Exception e) {
             log.error(e.getMessage());
             throw new LjBaseRuntimeException(500, e.getMessage());

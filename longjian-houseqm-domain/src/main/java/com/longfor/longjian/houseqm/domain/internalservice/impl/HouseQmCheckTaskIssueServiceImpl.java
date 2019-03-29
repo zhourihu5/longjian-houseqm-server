@@ -595,6 +595,7 @@ public class HouseQmCheckTaskIssueServiceImpl implements HouseQmCheckTaskIssueSe
         List<HouseQmCheckTaskIssue> houseQmCheckTaskIssues = houseQmCheckTaskIssueMapper.selectByExample(example);
         for (HouseQmCheckTaskIssue issue : houseQmCheckTaskIssues) {
             issue.setDeleteAt(new Date());
+            issue.setUpdateAt(new Date());
             houseQmCheckTaskIssueMapper.updateByPrimaryKey(issue);
         }
         return houseQmCheckTaskIssues.size();

@@ -215,6 +215,7 @@ public class HouseQmCheckTaskServiceImpl implements HouseQmCheckTaskService {
         List<HouseQmCheckTask> houseQmCheckTasks = houseQmCheckTaskMapper.selectByExample(example);
         for (HouseQmCheckTask task : houseQmCheckTasks) {
             task.setDeleteAt(new Date());
+            task.setUpdateAt(new Date());
             houseQmCheckTaskMapper.updateByPrimaryKey(task);
         }
         return houseQmCheckTasks.size();
